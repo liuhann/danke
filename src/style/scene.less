@@ -1,0 +1,24 @@
+.in-active {
+  display: none;
+}
+
+.animated {
+  -webkit-animation-duration: .3s;
+  animation-duration: .3s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale3d(2, 2, 2);
+  }
+  to {
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+.scaleIn {
+  -webkit-animation-name: scaleIn;
+  animation-name: scaleIn;
+}
