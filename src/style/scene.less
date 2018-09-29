@@ -18,6 +18,20 @@
   }
 }
 
+@keyframes zoomOut {
+  from {
+    transform: scale3d(1, 1, 1);
+  }
+  to {
+    transform: scale3d(.1, .1, .1);
+    opacity: 0;
+  }
+}
+
+.zoomOut {
+  -webkit-animation-name: zoomOut;
+  animation-name: zoomOut;
+}
 .scaleIn {
   -webkit-animation-name: scaleIn;
   animation-name: scaleIn;

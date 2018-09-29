@@ -17,6 +17,7 @@ export default class Danke {
   }
 
   async boot () {
+    const danke = this
     const { default: Vue } = await import('vue')
     const { default: Slider } = await import('./Slider.vue')
     Vue.config.productionTip = false
@@ -31,12 +32,21 @@ export default class Danke {
       const sceneInstance = new SceneInstance(this.engine, this.vm.scenes[i])
       sceneInstance.onLeave((scene, next) => {
         if (!next) {
+          if (scene.index < danke.vm.scenes.length - 1) {
+            danke.vm.scenes[scene.index + 1].state = 'enter'
+          }
+        }
+        danke.sceneInstances.forEach(sceneInstance => {
+          sceneInstance.tryStart()
+        })
+        if (danke.engine.raf === 0) {
+          danke.engine.play()
         }
       })
+      sceneInstance.tryStart()
       this.sceneInstances.push(sceneInstance)
     }
 
-    this.sceneInstances[0].tryStart()
     if (this.engine.raf === 0) {
       this.engine.play()
     }
@@ -54,7 +64,8 @@ export default class Danke {
         transition: this.data.transition,
         state: 'in-active',
         active: '',
-        auto: this.data.auto
+        auto: this.data.auto,
+        index: i
       }, this.data.scenes[i])
       if (i === 0) {
         merged.state = 'enter'
