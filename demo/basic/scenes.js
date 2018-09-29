@@ -1,7 +1,15 @@
 export default {
-  enter: 'scaleIn',
-  leave: 'zoomOut',
-  trigger: '',
+  auto: 2000,
+  transition: {
+    enter: {
+      animation: 'scaleIn',
+      duration: 300
+    },
+    leave: {
+      animation: 'zoomOut',
+      duration: 300
+    }
+  },
   scenes: [{
     template: 'center-text',
     data: {

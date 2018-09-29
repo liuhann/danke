@@ -1,39 +1,33 @@
-import Instance from './instance'
-
-const state = {
-  IN_ACTIVE: 'in-active',
-  ENTER: 'enter',
-  LEAVE: 'leave'
-}
-
-export default class SceneInstance extends Instance {
-  constructor (engine, scene, allScenes) {
-    super()
+export default class SceneInstance {
+  constructor (engine, scene) {
     this.engine = engine
     this.scene = scene
-    this.allScenes = allScenes
-    this.engine.addTick((t) => {
-      this.tryStart()
-    })
   }
 
   tryStart () {
-    if (this.scene.state === state.ENTER) {
-      this.scene.active = this.scene.transition[state.ENTER]
+    if (this.scene.state === 'enter') {
+      this.scene.active = this.scene.transition.enter.animation
       if (this.scene.auto) {
         this.engine.addTick((t) => {
-          this.tryLeave()
+          this.autoLeave()
         }, this.scene.auto)
       }
     }
   }
 
-  tryLeave () {
-    this.scene.state = state.LEAVE
-    this.scene.active = this.scene.transition.leave.name
+  onLeave (callback) {
+    this.onLeaveCallback = callback
+  }
 
+  autoLeave () {
+    this.scene.state = 'leave'
+    this.scene.active = this.scene.transition.leave.animation
+
+    // just emit on leave to callback
+    this.onLeaveCallback(this.scene)
     this.engine.addTick((t) => {
       this.scene.state = 'in-active'
-    }, this.scene.transition.leave.dura)
+      this.scene.active = ''
+    }, this.scene.transition.leave.duration)
   }
 }

@@ -1,24 +1,25 @@
 export default class Engine {
   constructor () {
-    this.activeInstances = []
     this.ticks = []
     this.raf = 0
   }
 
   step (t) {
-    const tickLength = this.ticks.length
+    const ticks = this.ticks
+    this.ticks = []
+    const tickLength = ticks.length
     if (tickLength) {
       let i = 0
-      let remains = []
+      const now = new Date().getTime()
       while (i < tickLength) {
-        if (this.ticks[i].mill < t) {
-          this.ticks[i].tick(t)
+        // run ticks without mill or mill passed
+        if (!ticks[i].mill || ticks[i].mill < now) {
+          ticks[i].tick(t)
         } else {
-          remains.push(this.ticks[i])
+          this.ticks.push(ticks[i])
         }
         i++
       }
-      this.ticks = remains
       this.play()
     } else {
       cancelAnimationFrame(this.raf)
@@ -26,14 +27,14 @@ export default class Engine {
     }
   }
 
-  addTick (tick, delay) {
-    this.ticks.push({
-      tick,
-      mill: new Date().getTime() + delay
-    })
-    if (this.raf === 0) {
-      this.play()
+  addTick (tf, delay) {
+    const tick = {
+      tick: tf
     }
+    if (delay) {
+      tick.mill = new Date().getTime() + delay
+    }
+    this.ticks.push(tick)
   }
 
   play () {

@@ -1,6 +1,6 @@
 <template>
 <div class="slider">
-  <div v-for="(scene, index) in scenes" class="scene-wrapper animated" :key="index" :class="[scene.state, scene.transition]">
+  <div v-for="(scene, index) in scenes" class="scene-wrapper animated" :key="index" :class="[scene.state, scene.active]">
     <scene
       :template="scene.template"
       :data="scene.data"
@@ -13,7 +13,6 @@
 
 <script>
 import Scene from './scene'
-import STATES from './states'
 import './style/base.less'
 import './style/scene.less'
 
@@ -23,18 +22,19 @@ export default {
     Scene
   },
   props: {
-    scenes: {
-      type: Array
-    }
+
   },
   data () {
     return {
-      stages: []
+      scenes: []
     }
   },
-  methods: {
-    enterScene (scene) {
+  created () {
+  },
 
+  methods: {
+    setScenes (scenes) {
+      this.scenes = scenes
     },
 
     outScene (scene) {
@@ -42,11 +42,11 @@ export default {
     },
 
     onSceneBeginLeave (scene, data) {
-      scene.state = STATES.LEAVING
+
     },
 
     onSceneEndLeave (scene, data) {
-      scene.state = STATES.LEAVE_TO
+
     }
   }
 }
