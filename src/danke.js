@@ -1,5 +1,4 @@
 import CenterText from './templates/CenterText'
-import MotionPlugin from './motions/motion'
 
 import Engine from './engine/Engine'
 import SceneInstance from './engine/SceneInstance'
@@ -42,7 +41,6 @@ export default class Danke {
 
     Vue.prototype.engine = this
     Vue.config.productionTip = false
-    Vue.use(MotionPlugin)
     Vue.component('scene-center-text', CenterText)
     this.vm = new Vue(Slider).$mount(this.mount)
     this.vm.setScenes(this.data.scenes)
