@@ -31,10 +31,6 @@ export default class Danke {
     }
   }
 
-  emit (event) {
-
-  }
-
   async loadVue () {
     const { default: Vue } = await import('vue')
     const { default: Slider } = await import('./Slider.vue')
@@ -75,5 +71,14 @@ export default class Danke {
       }
     }
     return transitions
+  }
+
+  emit (event) {
+    const transitions = this.getTransitionsByFrom(event.index)
+
+    for (let transition of transitions) {
+      transition.on(event)
+    }
+    console.log(event)
   }
 }

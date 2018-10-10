@@ -4,13 +4,13 @@ export default class SceneInstance {
     this.engine = danke.engine
     this.scene = scene
   }
-  leave () {
+  leave (effect) {
     this.scene.state = 'leave'
-    this.scene.active = this.scene.transition.leave.animation
+    this.scene.active = effect.leave.animation
     this.engine.addTick((t) => {
       this.scene.state = 'in-active'
       this.scene.active = ''
-    }, this.scene.transition.leave.duration)
+    }, effect.leave.duration)
   }
 
   enter (effect) {
@@ -20,10 +20,9 @@ export default class SceneInstance {
       this.scene.state = 'on'
       this.scene.active = ''
     }, effect.enter.duration)
-    debugger
+    
     const targetTransitions = this.danke.getTransitionsByFrom(this.scene)
     for (let transition of targetTransitions) {
-      debugger
       transition.active()
     }
   }

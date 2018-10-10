@@ -1,6 +1,9 @@
 export default {
   name: 'scene',
   props: {
+    index: {
+      type: Number
+    },
     template: {
       type: String
     },
@@ -18,7 +21,8 @@ export default {
     const vm = this
     return h('scene-' + this.template, {
       props: {
-        data: this.data
+        data: this.data,
+        index: this.index
       },
       on: {
         beginOut: function (args) {

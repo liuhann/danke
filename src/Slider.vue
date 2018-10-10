@@ -3,9 +3,8 @@
   <div v-for="(scene, index) in scenes" class="scene-wrapper animated" :key="index" :class="[scene.state, scene.active]">
     <scene
       :template="scene.template"
-      :data="scene.data"
-      @leave-begin="onSceneBeginLeave(scene, $event)"
-      @leave-end="onSceneEndLeave(scene, $event)">
+      :index="scene.index"
+      :data="scene.data">
     </scene>
   </div>
 </div>

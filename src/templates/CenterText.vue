@@ -10,11 +10,17 @@ export default {
   props: {
     data: {
       type: Object
+    },
+    index: {
+      type: Number
     }
   },
   methods: {
     screenClick () {
-      this.$emit('click')
+      this.engine.emit({
+        index: this.index,
+        name: 'click'
+      })
     }
   }
 }

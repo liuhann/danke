@@ -13,7 +13,7 @@ export default class Transition {
   }
 
   on (event) {
-    if (event.name === this.triggerOpt.event && this.isFrom(event.from)) {
+    if (event.name === this.triggerOpt.event) {
       this.trigger()
     }
   }
