@@ -1,33 +1,28 @@
 export default class SceneInstance {
-  constructor (engine, scene) {
-    this.engine = engine
+  constructor (danke, scene) {
+    this.danke = danke
+    this.engine = danke.engine
     this.scene = scene
   }
-
-  tryStart () {
-    if (this.scene.state === 'enter') {
-      this.scene.active = this.scene.transition.enter.animation
-      if (this.scene.auto) {
-        this.engine.addTick((t) => {
-          this.autoLeave()
-        }, this.scene.auto)
-      }
-    }
-  }
-
-  onLeave (callback) {
-    this.onLeaveCallback = callback
-  }
-
-  autoLeave () {
+  leave () {
     this.scene.state = 'leave'
     this.scene.active = this.scene.transition.leave.animation
-
-    // just emit on leave to callback
-    this.onLeaveCallback(this.scene)
     this.engine.addTick((t) => {
       this.scene.state = 'in-active'
       this.scene.active = ''
     }, this.scene.transition.leave.duration)
+  }
+
+  enter (effect) {
+    this.scene.state = 'enter'
+    this.scene.active = effect.enter.animation
+    this.engine.addTick((t) => {
+      this.scene.state = 'on'
+      this.scene.active = ''
+    }, effect.enter.duration)
+    const targetTransitions = this.danke.getTransitionsByFrom(this)
+    for (let transition of targetTransitions) {
+      transition.active()
+    }
   }
 }

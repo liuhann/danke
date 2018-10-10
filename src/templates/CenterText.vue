@@ -1,5 +1,5 @@
 <template>
-  <div class="center-text">
+  <div class="center-text" @click="screenClick">
     {{data.text}}
   </div>
 </template>
@@ -10,6 +10,11 @@ export default {
   props: {
     data: {
       type: Object
+    }
+  },
+  methods: {
+    screenClick () {
+      this.$emit('click')
     }
   }
 }

@@ -21,7 +21,6 @@
 import './style/base.less'
 import merge from 'merge'
 import Slider from './Slider'
-import Scene from './scene'
 
 export default {
   name: 'App',

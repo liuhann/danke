@@ -5,8 +5,8 @@
       :template="scene.template"
       :data="scene.data"
       @leave-begin="onSceneBeginLeave(scene, $event)"
-      @leave-end="onSceneEndLeave(scene, $event)"
-     />
+      @leave-end="onSceneEndLeave(scene, $event)">
+    </scene>
   </div>
 </div>
 </template>
@@ -59,5 +59,9 @@ export default {
   top: 0;
   right: 0;
   bottom: 0;
+  display: none;
+  &.on, &.enter, &.leave {
+    display: block;
+  }
 }
 </style>

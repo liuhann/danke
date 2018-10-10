@@ -1,10 +1,9 @@
-import merge from 'merge'
-
 import CenterText from './templates/CenterText'
 import MotionPlugin from './motions/motion'
 
 import Engine from './engine/Engine'
 import SceneInstance from './engine/SceneInstance'
+import Transition from './engine/Transition'
 
 /**
  * Loading scenes and  resources then init engine + views
@@ -14,61 +13,69 @@ export default class Danke {
     this.mount = mount
     this.data = config
     this.engine = new Engine()
+    this.effects = this.data.effects
   }
 
   async boot () {
-    const danke = this
+    // vue
+    await this.loadVue()
+    //
+    this.loadScenes()
+    this.loadTransition()
+    this.begin()
+  }
+
+  begin () {
+    this.activeTransitions = this.getTransitionsByFrom(null)
+    for (let transition of this.activeTransitions) {
+      transition.trigger()
+    }
+  }
+
+  emit (event) {
+
+  }
+
+  async loadVue () {
     const { default: Vue } = await import('vue')
     const { default: Slider } = await import('./Slider.vue')
+
+    Vue.prototype.engine = this
     Vue.config.productionTip = false
-    this.prepareTemplate(Vue)
-    Vue.prototype.dankeEngine = this.engine
-
-    this.vm = new Vue(Slider).$mount(this.mount)
-    this.vm.setScenes(this.prepareScene())
-
-    this.sceneInstances = []
-    for (var i = 0; i < this.vm.scenes.length; i++) {
-      const sceneInstance = new SceneInstance(this.engine, this.vm.scenes[i])
-      sceneInstance.onLeave((scene, next) => {
-        if (!next) {
-          if (scene.index < danke.vm.scenes.length - 1) {
-            danke.vm.scenes[scene.index + 1].state = 'enter'
-          }
-        }
-        danke.sceneInstances.forEach(sceneInstance => {
-          sceneInstance.tryStart()
-        })
-        if (danke.engine.raf === 0) {
-          danke.engine.play()
-        }
-      })
-      this.sceneInstances.push(sceneInstance)
-      sceneInstance.tryStart()
-    }
-    if (this.engine.raf === 0) {
-      this.engine.play()
-    }
-  }
-
-  prepareTemplate (Vue) {
     Vue.use(MotionPlugin)
     Vue.component('scene-center-text', CenterText)
+    this.vm = new Vue(Slider).$mount(this.mount)
+    this.vm.setScenes(this.data.scenes)
   }
 
-  prepareScene () {
-    const prepared = []
-    for (let i = 0; i < this.data.scenes.length; i++) {
-      let merged = merge.recursive(true, this.data.default, {
-        state: 'in-active',
-        active: '',
-        index: i
-      }, this.data.scenes[i])
-      if (i === 0) {
-        merged.state = 'enter'
-      }
-      prepared.push(merged)
+  loadTransition () {
+    this.transitionInstances = []
+    for (let transitionConfig of this.data.transitions) {
+      const transitionInstance = new Transition(this, transitionConfig)
+      this.transitionInstances.push(transitionInstance)
     }
-    return prepared
+  }
+
+  loadScenes () {
+    this.sceneInstances = []
+    for (var i = 0; i < this.vm.scenes.length; i++) {
+      this.vm.scenes[i].index = i
+      const sceneInstance = new SceneInstance(this, this.vm.scenes[i])
+      this.sceneInstances.push(sceneInstance)
+    }
+  }
+
+  getSceneInstanceByIndex (index) {
+    return this.sceneInstances[index]
+  }
+
+  getTransitionsByFrom (from) {
+    const transitions = []
+    for (let transition of this.transitionInstances) {
+      if (transition.isFrom(from)) {
+        transitions.push(transition)
+      }
+    }
+    return transitions
   }
 }
