@@ -20,8 +20,10 @@ export default class SceneInstance {
       this.scene.state = 'on'
       this.scene.active = ''
     }, effect.enter.duration)
-    const targetTransitions = this.danke.getTransitionsByFrom(this)
+    debugger
+    const targetTransitions = this.danke.getTransitionsByFrom(this.scene)
     for (let transition of targetTransitions) {
+      debugger
       transition.active()
     }
   }

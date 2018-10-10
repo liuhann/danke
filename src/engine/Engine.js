@@ -35,6 +35,9 @@ export default class Engine {
       tick.mill = new Date().getTime() + delay
     }
     this.ticks.push(tick)
+    if (this.raf === 0) {
+      this.play()
+    }
   }
 
   play () {

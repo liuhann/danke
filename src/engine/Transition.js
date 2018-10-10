@@ -48,7 +48,6 @@ export default class Transition {
       this.from.leave(this.danke.effects[this.effect])
     }
     if (this.to) {
-      debugger
       this.to.enter(this.danke.effects[this.effect])
     }
   }
