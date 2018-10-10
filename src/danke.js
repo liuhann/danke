@@ -3,8 +3,8 @@ import merge from 'merge'
 import CenterText from './templates/CenterText'
 import MotionPlugin from './motions/motion'
 
-import Engine from './engine/engine'
-import SceneInstance from './engine/scene-instance'
+import Engine from './engine/Engine'
+import SceneInstance from './engine/SceneInstance'
 
 /**
  * Loading scenes and  resources then init engine + views
@@ -25,7 +25,7 @@ export default class Danke {
     Vue.prototype.dankeEngine = this.engine
 
     this.vm = new Vue(Slider).$mount(this.mount)
-    this.vm.setScenes(this.parepareScene())
+    this.vm.setScenes(this.prepareScene())
 
     this.sceneInstances = []
     for (var i = 0; i < this.vm.scenes.length; i++) {
@@ -43,10 +43,9 @@ export default class Danke {
           danke.engine.play()
         }
       })
-      sceneInstance.tryStart()
       this.sceneInstances.push(sceneInstance)
+      sceneInstance.tryStart()
     }
-
     if (this.engine.raf === 0) {
       this.engine.play()
     }
@@ -57,14 +56,12 @@ export default class Danke {
     Vue.component('scene-center-text', CenterText)
   }
 
-  parepareScene () {
+  prepareScene () {
     const prepared = []
     for (let i = 0; i < this.data.scenes.length; i++) {
-      let merged = merge.recursive(true, {
-        transition: this.data.transition,
+      let merged = merge.recursive(true, this.data.default, {
         state: 'in-active',
         active: '',
-        auto: this.data.auto,
         index: i
       }, this.data.scenes[i])
       if (i === 0) {

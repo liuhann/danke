@@ -1,13 +1,15 @@
 export default {
-  auto: 2000,
-  transition: {
-    enter: {
-      animation: 'scaleIn',
-      duration: 300
-    },
-    leave: {
-      animation: 'zoomOut',
-      duration: 300
+  default: {
+    auto: 2000,
+    transition: {
+      enter: {
+        animation: 'scaleIn',
+        duration: 300
+      },
+      leave: {
+        animation: 'zoomOut',
+        duration: 300
+      }
     }
   },
   scenes: [{
@@ -17,8 +19,10 @@ export default {
     }
   }, {
     template: 'center-text',
+    auto: false,
     data: {
-      text: '看见拉风的事'
+      text: '看见拉风的事',
+      clickNext: 2
     }
   }, {
     template: 'center-text',
