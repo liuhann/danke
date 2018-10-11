@@ -1,5 +1,7 @@
 import CenterText from './templates/CenterText'
 
+import './style/animate.css'
+
 import Engine from './engine/Engine'
 import SceneInstance from './engine/SceneInstance'
 import Transition from './engine/Transition'

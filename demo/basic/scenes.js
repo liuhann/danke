@@ -1,5 +1,15 @@
 export default {
   effects: {
+    empty: {
+      leave: {
+        animation: '',
+        duration: 0
+      },
+      enter: {
+        animation: '',
+        duration: 0
+      }
+    },
     zoom: {
       leave: {
         animation: 'zoomOut',
@@ -9,19 +19,29 @@ export default {
         animation: 'scaleIn',
         duration: 300
       }
+    },
+    fade: {
+      leave: {
+        animation: 'fadeOut',
+        duration: 300
+      },
+      enter: {
+        animation: 'fadeIn',
+        duration: 300
+      }
     }
   },
   scenes: [{
     template: 'center-text',
     state: '',
-    active: '',
+    active: {},
     data: {
-      text: '你好'
+      text: 'All VNodes in the component tree must be unique'
     }
   }, {
     template: 'center-text',
     state: '',
-    active: '',
+    active: {},
     auto: false,
     data: {
       text: '看见拉风的事'
@@ -29,14 +49,14 @@ export default {
   }, {
     template: 'center-text',
     state: '',
-    active: '',
+    active: {},
     data: {
       text: '发的是发动机旅客'
     }
   }, {
     template: 'center-text',
     state: '',
-    active: '',
+    active: {},
     data: {
       text: '发的烧录卡家乐福开始的'
     }
@@ -50,14 +70,14 @@ export default {
     trigger: {
       delay: 3000
     },
-    effect: 'zoom'
+    effect: 'fade'
   }, {
     from: 1,
     to: 2,
     trigger: {
       event: 'click'
     },
-    effect: 'zoom'
+    effect: 'empty'
   }, {
     from: 2,
     to: 3,
