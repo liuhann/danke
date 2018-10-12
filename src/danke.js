@@ -1,4 +1,5 @@
 import CenterText from './templates/CenterText'
+import FullPicture from './templates/FullPicture'
 
 import './style/animate.css'
 
@@ -35,11 +36,12 @@ export default class Danke {
 
   async loadVue () {
     const { default: Vue } = await import('vue')
-    const { default: Slider } = await import('./Slider.vue')
+    const { default: Slider } = await import('./vue/Slider.vue')
 
     Vue.prototype.engine = this
     Vue.config.productionTip = false
     Vue.component('scene-center-text', CenterText)
+    Vue.component('full-picture', FullPicture)
     this.vm = new Vue(Slider).$mount(this.mount)
     this.vm.setScenes(this.data.scenes)
   }

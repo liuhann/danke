@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import './style/base.less'
+import '../style/base.less'
 import merge from 'merge'
 import Slider from './Slider'
 

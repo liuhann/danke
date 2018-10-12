@@ -15,7 +15,7 @@
 
 <script>
 import Scene from './scene'
-import './style/base.less'
+import '../style/base.less'
 import './style/scene.less'
 
 export default {
