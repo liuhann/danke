@@ -1,18 +1,30 @@
 <template>
   <div class="center-text" @click="screenClick">
-    {{data.text}}
+    <vue-anime-typing v-if="state==='on'">{{data.text}}</vue-anime-typing>
   </div>
 </template>
 
 <script>
+import VueAnimeTyping from 'vue-anime-typing/src/AnimeTyping'
 export default {
   name: 'CenterText',
+  components: {
+    VueAnimeTyping
+  },
   props: {
+    state: {
+      type: String
+    },
     data: {
       type: Object
     },
     index: {
       type: Number
+    }
+  },
+  watch: {
+    state (val) {
+
     }
   },
   methods: {

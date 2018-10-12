@@ -5,6 +5,7 @@
        :style="{animationDuration: scene.active.duration + 'ms'}">
     <scene
       :template="scene.template"
+      :state="scene.state"
       :index="scene.index"
       :data="scene.data">
     </scene>

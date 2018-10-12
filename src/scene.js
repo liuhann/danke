@@ -4,6 +4,9 @@ export default {
     index: {
       type: Number
     },
+    state: {
+      type: String
+    },
     template: {
       type: String
     },
@@ -13,23 +16,19 @@ export default {
   },
 
   methods: {
-    in () {
-      this.$refs.scene.in()
-    }
   },
+
   render (h) {
-    const vm = this
     return h('scene-' + this.template, {
       props: {
+        state: this.state,
         data: this.data,
         index: this.index
       },
       on: {
         beginOut: function (args) {
-          vm.$emit('begin-out', args)
         },
         outComplete: function (...args) {
-          vm.$emit('out-complete', args)
         }
       },
       ref: 'scene'
