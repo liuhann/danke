@@ -1,7 +1,11 @@
 <template>
-  <div class="full-picture" @click="screenClick">
-    <img :src="data.src">
-    <vue-anime-typing v-if="state==='on'" class="typing">{{data.text}}</vue-anime-typing>
+  <div class="full-picture" @click="screenClick" ref="container">
+    <div class="picture">
+      <img :src="data.src">
+    </div>
+    <div class="text-explain">
+      <vue-anime-typing v-if="state==='on'" class="typing">{{data.text}}</vue-anime-typing>
+    </div>
   </div>
 </template>
 
@@ -19,6 +23,11 @@ const styleSet = {
 export default {
   name: 'FullPicture',
   mixins: [templateMixins],
+
+  mounted () {
+    console.log(this.$refs.container)
+  },
+
   methods: {
     coverStyle () {
       if (this.data.style) {

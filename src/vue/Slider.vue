@@ -16,7 +16,7 @@
 <script>
 import Scene from './scene'
 import '../style/base.less'
-import './style/scene.less'
+import '../style/scene.less'
 
 export default {
   name: 'Slider',

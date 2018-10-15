@@ -32,10 +32,12 @@ export default {
     }
   },
   scenes: [{
-    template: 'center-text',
+    template: 'full-picture',
     state: '',
     active: {},
     data: {
+      src: '/picture/wf.png',
+      picsize: '',
       text: 'All VNodes in the component tree must be unique'
     }
   }, {
@@ -63,12 +65,12 @@ export default {
   }],
   transitions: [{
     to: 0,
-    effect: 'zoom'
+    effect: 'empty'
   }, {
     from: 0,
     to: 1,
     trigger: {
-      delay: 3000
+      delay: 3000000
     },
     effect: 'fade'
   }, {

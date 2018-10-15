@@ -41,7 +41,7 @@ export default class Danke {
     Vue.prototype.engine = this
     Vue.config.productionTip = false
     Vue.component('scene-center-text', CenterText)
-    Vue.component('full-picture', FullPicture)
+    Vue.component('scene-full-picture', FullPicture)
     this.vm = new Vue(Slider).$mount(this.mount)
     this.vm.setScenes(this.data.scenes)
   }
