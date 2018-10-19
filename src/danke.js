@@ -1,5 +1,6 @@
 import CenterText from './templates/CenterText'
 import FullPicture from './templates/FullPicture'
+import DesignedScene from './templates/DesignedScene'
 
 import './style/animate.css'
 
@@ -42,7 +43,9 @@ export default class Danke {
     Vue.config.productionTip = false
     Vue.component('scene-center-text', CenterText)
     Vue.component('scene-full-picture', FullPicture)
+    Vue.component('scene-designed', DesignedScene)
     this.vm = new Vue(Slider).$mount(this.mount)
+    this.vm.config = this.data
     this.vm.setScenes(this.data.scenes)
   }
 

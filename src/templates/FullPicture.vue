@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import templateMixins from './templateMixins'
+import templateMixins from './SceneMixins'
 
 const styleSet = {
   cover: {

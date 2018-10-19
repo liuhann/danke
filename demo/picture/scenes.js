@@ -31,14 +31,23 @@ export default {
       }
     }
   },
+  grid: {
+    x: 10,
+    y: 20
+  },
   scenes: [{
-    template: 'full-picture',
+    template: 'designed',
     state: '',
     active: {},
     data: {
-      src: '/picture/wf.png',
-      picsize: '',
-      text: 'All VNodes in the component tree must be unique'
+      elements: [{
+        type: 'typing',
+        text: 'hello',
+        left: 3,
+        top: 5,
+        width: 6,
+        height: 1
+      }]
     }
   }, {
     template: 'center-text',

@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import templateMixins from './templateMixins'
+import templateMixins from './SceneMixins'
 export default {
   name: 'CenterText',
   mixins: [templateMixins],

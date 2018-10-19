@@ -1,8 +1,10 @@
 import VueAnimeTyping from 'vue-anime-typing/src/AnimeTyping'
+import VueMovingImage from 'vue-moving-image/src/components/MovingImage'
 
 export default {
   components: {
-    VueAnimeTyping
+    VueAnimeTyping,
+    VueMovingImage
   },
   props: {
     state: {
