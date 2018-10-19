@@ -47,6 +47,14 @@ export default {
         top: 5,
         width: 6,
         height: 1
+      }, {
+        type: 'image',
+        url: '/picture/wf.png',
+        left: 2,
+        top: 10,
+        width: 6,
+        shape: 'square',
+        clipPath: 'polygon(0 0, 57% 0, 100% 100%, 0% 100%)'
       }]
     }
   }, {
