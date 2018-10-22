@@ -1,8 +1,9 @@
 <template>
-  <div class="designed-scene" ref="root">
+  <div class="designed-scene" ref="root" :style="sceneStyle">
     <div v-for="(element, index) in data.elements" :key="index" :style="getElementStyle(element)">
       <vue-anime-typing v-if="element.type==='typing'">{{element.text}}</vue-anime-typing>
       <vue-moving-image v-if="element.type==='image'" :url="element.url"></vue-moving-image>
+      <vue-text-bubble v-if="element.type==='text-bubble'">{{element.text}}</vue-text-bubble>
     </div>
   </div>
 </template>
@@ -12,6 +13,13 @@ import SceneMixins from './SceneMixins'
 export default {
   name: 'DesignedScene',
   mixins: [SceneMixins],
+  computed: {
+    sceneStyle () {
+      return {
+        background: this.data.background
+      }
+    }
+  },
   data () {
     return {
       grid: {
@@ -50,6 +58,8 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="less">
+.designed-scene {
+  height: 100%;
+}
 </style>
