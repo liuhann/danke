@@ -47,6 +47,7 @@ export default {
         left: 3,
         top: 5,
         width: 6,
+        delay: 1000,
         height: 1
       }, {
         type: 'image1',
@@ -58,10 +59,18 @@ export default {
         clipPath: 'polygon(0 0, 57% 0, 100% 100%, 0% 100%)'
       }, {
         type: 'text-bubble',
-        text: 'Compiled successfully',
+        text: '你确定是这样的',
         left: 2,
         top: 3,
-        width: 6
+        width: 4
+      }, {
+        delay: 3000,
+        type: 'text-bubble',
+        text: '当然没问题',
+        left: 4,
+        top: 14,
+        width: 4,
+        position: 'bottom-right'
       }]
     }
   }, {

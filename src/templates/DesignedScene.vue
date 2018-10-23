@@ -1,9 +1,10 @@
 <template>
   <div class="designed-scene" ref="root" :style="sceneStyle">
-    <div v-for="(element, index) in data.elements" :key="index" :style="getElementStyle(element)">
-      <vue-anime-typing v-if="element.type==='typing'">{{element.text}}</vue-anime-typing>
-      <vue-moving-image v-if="element.type==='image'" :url="element.url"></vue-moving-image>
-      <vue-text-bubble v-if="element.type==='text-bubble'">{{element.text}}</vue-text-bubble>
+    <div v-for="(element, index) in elements" :key="index" :style="getElementStyle(element)">
+      <vue-anime-typing v-if="element.type==='typing' && element.mount">{{element.text}}</vue-anime-typing>
+      <vue-moving-image v-if="element.type==='image' && element.mount" :url="element.url"></vue-moving-image>
+      <vue-text-bubble v-if="element.type==='text-bubble' && element.mount"
+                       :position="element.position">{{element.text}}</vue-text-bubble>
     </div>
   </div>
 </template>
@@ -22,12 +23,32 @@ export default {
   },
   data () {
     return {
+      elements: [],
       grid: {
         width: 0,
         height: 0
       }
     }
   },
+
+  created () {
+    this.elements = this.data.elements
+
+    for (let i = 0; i < this.elements.length; i++) {
+      const element = this.elements[i]
+      element.index = i
+      if (element.delay) {
+        element.mount = false
+        setTimeout(() => {
+          element.mount = true
+          this.$set(this.elements, element.index, element)
+        }, element.delay)
+      } else {
+        element.mount = true
+      }
+    }
+  },
+
   mounted () {
     let gridConfig = this.$root.config.grid
     if (!gridConfig) {
