@@ -1,7 +1,7 @@
 export default class Transition {
   constructor (danke, opts) {
     this.danke = danke
-    this.engine = danke.engine
+    this.ticker = danke.ticker
     if (opts.from != null) {
       this.from = danke.getSceneInstanceByIndex(opts.from)
     }
@@ -20,7 +20,7 @@ export default class Transition {
 
   active () {
     if (this.triggerOpt.delay) {
-      this.engine.addTick((t) => {
+      this.ticker.addTick((t) => {
         this.trigger()
       }, this.triggerOpt.delay)
     }

@@ -103,7 +103,7 @@ export default {
     from: 0,
     to: 1,
     trigger: {
-      delay: 3000000
+      delay: 4000
     },
     effect: 'fade'
   }, {

@@ -6,7 +6,7 @@
     <scene
       :template="scene.template"
       :state="scene.state"
-      :index="scene.index"
+      :index="index"
       :data="scene.data">
     </scene>
   </div>

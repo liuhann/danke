@@ -1,21 +1,24 @@
+import nanobus from 'nanobus'
+
 import CenterText from './templates/CenterText'
 import FullPicture from './templates/FullPicture'
 import DesignedScene from './templates/DesignedScene'
 
 import './style/animate.css'
 
-import Engine from './engine/Engine'
+import Ticker from './engine/Ticker'
 import SceneInstance from './engine/SceneInstance'
 import Transition from './engine/Transition'
 
 /**
- * Loading scenes and  resources then init engine + views
+ * Loading scenes and  resources then init ticker + views
  */
 export default class Danke {
   constructor (mount, config) {
     this.mount = mount
     this.data = config
-    this.engine = new Engine()
+    this.ticker = new Ticker()
+    this.nanobus = nanobus()
     this.effects = this.data.effects
   }
 
@@ -39,8 +42,11 @@ export default class Danke {
     const { default: Vue } = await import('vue')
     const { default: Slider } = await import('./vue/Slider.vue')
 
-    Vue.prototype.engine = this
+    Vue.prototype.ticker = this
     Vue.config.productionTip = false
+    Object.assign(Vue.prototype, {
+      danke: this
+    })
     Vue.component('scene-center-text', CenterText)
     Vue.component('scene-full-picture', FullPicture)
     Vue.component('scene-designed', DesignedScene)
@@ -82,10 +88,8 @@ export default class Danke {
 
   emit (event) {
     const transitions = this.getTransitionsByFrom(event.index)
-
     for (let transition of transitions) {
       transition.on(event)
     }
-    console.log(event)
   }
 }

@@ -57,6 +57,7 @@ export default {
     this.grid.width = window.outerWidth / gridConfig.x
     this.grid.height = window.outerHeight / gridConfig.y
   },
+
   methods: {
     getElementStyle (element) {
       const style = {

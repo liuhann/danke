@@ -23,12 +23,23 @@ export default {
 
     }
   },
+
+  mounted () {
+    this.danke.nanobus.once('scene-enter-' + this.index, this.onEnter)
+    this.danke.nanobus.once('scene-leave-' + this.index, this.onLeave)
+  },
   methods: {
     screenClick () {
-      this.engine.emit({
+      this.ticker.emit({
         index: this.index,
         name: 'click'
       })
+    },
+    onEnter (data) {
+      console.log('scene enter')
+    },
+    onLeave (data) {
+      console.log('scene leave')
     }
   }
 }

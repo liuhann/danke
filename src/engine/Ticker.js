@@ -1,7 +1,9 @@
-export default class Engine {
+export default class Ticker {
   constructor () {
     this.ticks = []
     this.raf = 0
+    this.pausedTime = 0
+    this.pausedTicks = []
   }
 
   step (t) {
@@ -25,6 +27,30 @@ export default class Engine {
       cancelAnimationFrame(this.raf)
       this.raf = 0
     }
+  }
+
+  pause () {
+    this.pausedTime = new Date().getTime()
+    if (this.ticks.length) {
+      this.pausedTicks = this.ticks
+      this.ticks = []
+    }
+    if (this.raf) {
+      cancelAnimationFrame(this.raf)
+    }
+  }
+
+  resume () {
+    const resumeNow = new Date().getTime()
+    if (this.pausedTicks.length) {
+      for (let tick of this.pausedTicks) {
+        if (tick.mill) {
+          tick.mill += resumeNow - this.pausedTime
+        }
+        this.ticks.push(tick)
+      }
+    }
+    this.play()
   }
 
   addTick (tf, delay) {
