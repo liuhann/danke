@@ -20,6 +20,16 @@ export default {
         duration: 300
       }
     },
+    delay: {
+      leave: {
+        animation: '',
+        duration: 500
+      },
+      enter: {
+        animation: '',
+        duration: 500
+      }
+    },
     fade: {
       leave: {
         animation: 'fadeOut',
@@ -50,12 +60,17 @@ export default {
         delay: 1000,
         height: 1
       }, {
-        type: 'image1',
+        type: 'image',
         url: '/picture/wf.png',
         left: 2,
         top: 10,
         width: 6,
         shape: 'square',
+        anime: {
+          from: { clipPath: 'ellipse(100% 0% at -20% -20%)' },
+          to: { clipPath: 'ellipse(150% 150% at -50% -50%)' },
+          leave: { clipPath: 'ellipse(250% 250% at -50% -50%)' }
+        },
         clipPath: 'polygon(0 0, 57% 0, 100% 100%, 0% 100%)'
       }, {
         type: 'text-bubble',
@@ -105,7 +120,7 @@ export default {
     trigger: {
       delay: 4000
     },
-    effect: 'fade'
+    effect: 'delay'
   }, {
     from: 1,
     to: 2,

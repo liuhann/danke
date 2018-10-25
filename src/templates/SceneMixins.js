@@ -1,11 +1,13 @@
 import VueAnimeTyping from 'vue-anime-typing/src/AnimeTyping'
 import VueMovingImage from 'vue-moving-image/src/components/MovingImage'
+import { VueAnime } from 'vue-anime'
 import VueTextBubble from './TextBubble'
 export default {
   components: {
     VueAnimeTyping,
     VueMovingImage,
-    VueTextBubble
+    VueTextBubble,
+    VueAnime
   },
   props: {
     state: {

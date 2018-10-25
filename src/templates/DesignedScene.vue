@@ -1,10 +1,12 @@
 <template>
   <div class="designed-scene" ref="root" :style="sceneStyle">
     <div v-for="(element, index) in elements" :key="index" :style="getElementStyle(element)">
-      <vue-anime-typing v-if="element.type==='typing' && element.mount">{{element.text}}</vue-anime-typing>
-      <vue-moving-image v-if="element.type==='image' && element.mount" :url="element.url"></vue-moving-image>
-      <vue-text-bubble v-if="element.type==='text-bubble' && element.mount"
-                       :position="element.position">{{element.text}}</vue-text-bubble>
+      <vue-anime tag="div" :ref="'element' + index" easing="linear">
+        <vue-anime-typing v-if="element.type==='typing' && element.mount">{{element.text}}</vue-anime-typing>
+        <vue-moving-image v-if="element.type==='image' && element.mount" :url="element.url"></vue-moving-image>
+        <vue-text-bubble v-if="element.type==='text-bubble' && element.mount"
+                         :position="element.position">{{element.text}}</vue-text-bubble>
+      </vue-anime>
     </div>
   </div>
 </template>
@@ -56,6 +58,7 @@ export default {
     }
     this.grid.width = window.outerWidth / gridConfig.x
     this.grid.height = window.outerHeight / gridConfig.y
+    this.setElementAnimeIn()
   },
 
   methods: {
@@ -71,12 +74,39 @@ export default {
       } else if (element.height) {
         style.height = element.height * this.grid.height + 'px'
       }
-      if (element.clipPath) {
+      /* if (element.clipPath) {
         style.clipPath = element.clipPath
-      }
+      } */
       return style
+    },
+
+    setElementAnimeIn () {
+      for (let i = 0; i < this.elements.length; i++) {
+        if (this.elements[i].anime) {
+          const ref = this.$refs['element' + i][0]
+          Object.assign(ref.$el.style, this.elements[i].anime.from)
+          ref.animate = this.elements[i].anime.to
+          ref.reset()
+        }
+      }
+    },
+
+    setElementAnimeOut () {
+      for (let i = 0; i < this.elements.length; i++) {
+        if (this.elements[i].anime) {
+          const ref = this.$refs['element' + i][0]
+          Object.assign(ref.$el.style, this.elements[i].anime.to)
+          ref.animate = this.elements[i].anime.leave
+          ref.reset()
+        }
+      }
+    },
+    onLeave (data) {
+      console.log('scene leave')
+      this.setElementAnimeOut()
     }
   }
+
 }
 </script>
 

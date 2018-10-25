@@ -1,6 +1,6 @@
 <template>
 <div class="slider">
-  <div v-for="(scene, index) in scenes" class="scene-wrapper animated" :key="index"
+  <div v-for="(scene, index) in scenes" class="scene-wrapper animated" :key="index" :z-index="index*1000"
        :class="[scene.state, scene.active.animation]"
        :style="{animationDuration: scene.active.duration + 'ms'}">
     <scene
