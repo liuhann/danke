@@ -1,12 +1,12 @@
 export default class Transition {
-  constructor (danke, opts) {
-    this.danke = danke
-    this.ticker = danke.ticker
+  constructor (engine, opts) {
+    this.engine = engine
+    this.ticker = engine.ticker
     if (opts.from != null) {
-      this.from = danke.getSceneInstanceByIndex(opts.from)
+      this.from = engine.getSceneInstanceByIndex(opts.from)
     }
     if (opts.to != null) {
-      this.to = danke.getSceneInstanceByIndex(opts.to)
+      this.to = engine.getSceneInstanceByIndex(opts.to)
     }
     this.triggerOpt = opts.trigger
     this.effect = opts.effect
@@ -19,6 +19,7 @@ export default class Transition {
   }
 
   active () {
+    // handle on auto trigger
     if (this.triggerOpt.delay) {
       this.ticker.addTick((t) => {
         this.trigger()
@@ -45,10 +46,10 @@ export default class Transition {
 
   trigger () {
     if (this.from) {
-      this.from.leave(this.danke.effects[this.effect])
+      this.from.leave(this.engine.effects[this.effect])
     }
     if (this.to) {
-      this.to.enter(this.danke.effects[this.effect])
+      this.to.enter(this.engine.effects[this.effect])
     }
   }
 }

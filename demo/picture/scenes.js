@@ -2,11 +2,9 @@ export default {
   effects: {
     empty: {
       leave: {
-        animation: '',
         duration: 0
       },
       enter: {
-        animation: '',
         duration: 0
       }
     },
@@ -45,10 +43,29 @@ export default {
     x: 10,
     y: 20
   },
+  grounds: [{
+    template: 'designed',
+    key: 'fore',
+    data: {
+      background: '#343436',
+      state: '',
+      active: {},
+      elements: [{
+        type: 'image',
+        url: '/picture/bg_header_01_mobile.svg',
+        left: 0,
+        top: 0,
+        width: 10,
+        height: 20
+      }]
+    }
+  }],
   scenes: [{
     template: 'designed',
     state: '',
     active: {},
+    background: 'back',
+    foreground: 'fore',
     data: {
       background: '#343436',
       elements: [{

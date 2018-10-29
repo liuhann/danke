@@ -10,6 +10,16 @@
       :data="scene.data">
     </scene>
   </div>
+  <div v-for="(ground, index) in grounds"  class="scene-wrapper animated" :key="ground.key"
+       :class="[ground.state]"
+  >
+    <scene
+      :template="ground.template"
+      :state="ground.state"
+      :index="index"
+      :data="ground.data">
+    </scene>
+  </div>
 </div>
 </template>
 
@@ -28,7 +38,8 @@ export default {
   },
   data () {
     return {
-      scenes: []
+      scenes: [],
+      grounds: []
     }
   },
   created () {
@@ -38,17 +49,8 @@ export default {
     setScenes (scenes) {
       this.scenes = scenes
     },
-
-    outScene (scene) {
-
-    },
-
-    onSceneBeginLeave (scene, data) {
-
-    },
-
-    onSceneEndLeave (scene, data) {
-
+    setGrounds (grounds) {
+      this.grounds = grounds
     }
   }
 }

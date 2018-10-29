@@ -34,29 +34,16 @@ export default {
 
   created () {
     this.elements = this.data.elements
-
     for (let i = 0; i < this.elements.length; i++) {
       const element = this.elements[i]
       element.index = i
-      if (element.delay) {
-        element.mount = false
-        setTimeout(() => {
-          element.mount = true
-          this.$set(this.elements, element.index, element)
-        }, element.delay)
-      } else {
-        element.mount = true
-      }
+      element.mount = false
     }
+    this.grid.width = this.engine.gridCfg.width
+    this.grid.height = this.engine.gridCfg.height
   },
 
   mounted () {
-    let gridConfig = this.$root.config.grid
-    if (!gridConfig) {
-      console.error('designed scene require grid config')
-    }
-    this.grid.width = window.outerWidth / gridConfig.x
-    this.grid.height = window.outerHeight / gridConfig.y
     this.setElementAnimeIn()
   },
 
@@ -72,6 +59,7 @@ export default {
         style.height = style.width
       } else if (element.height) {
         style.height = element.height * this.grid.height + 'px'
+        console.log('set style height', element, style.height)
       }
       /* if (element.clipPath) {
         style.clipPath = element.clipPath
@@ -81,10 +69,20 @@ export default {
 
     setElementAnimeIn () {
       for (let i = 0; i < this.elements.length; i++) {
+        const element = this.elements[i]
         if (this.elements[i].anime) {
           const ref = this.$refs['element' + i][0]
           Object.assign(ref.$el.style, this.elements[i].anime.from)
           ref.animate = this.elements[i].anime.to
+        }
+        if (element.delay) {
+          element.mount = false
+          this.ticker.addTick(() => {
+            element.mount = true
+            this.$set(this.elements, element.index, element)
+          }, element.delay)
+        } else {
+          element.mount = true
         }
       }
     },

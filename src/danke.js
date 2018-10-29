@@ -7,22 +7,24 @@ import DesignedScene from './templates/DesignedScene'
 import './style/animate.css'
 
 import Ticker from './engine/Ticker'
-import SceneInstance from './engine/SceneInstance'
+import Scene from './engine/Scene'
 import Transition from './engine/Transition'
+import Ground from './engine/Ground'
 
 /**
  * Loading scenes and  resources then init ticker + views
  */
 export default class Danke {
-  constructor (mount, config) {
+  constructor (mount, config, effects) {
     this.mount = mount
     this.data = config
     this.ticker = new Ticker()
     this.nanobus = nanobus()
-    this.effects = this.data.effects
+    this.effects = Object.assign({}, effects, this.data.effects)
   }
 
   async boot () {
+    this.initDeviceInfo()
     // vue
     await this.loadVue()
     //
@@ -42,9 +44,11 @@ export default class Danke {
     const { default: Vue } = await import('vue')
     const { default: Slider } = await import('./vue/Slider.vue')
 
-    Vue.prototype.ticker = this
     Vue.config.productionTip = false
     Object.assign(Vue.prototype, {
+      ticker: this.ticker,
+      nanobus: this.nanobus,
+      engine: this,
       danke: this
     })
     Vue.component('scene-center-text', CenterText)
@@ -52,7 +56,8 @@ export default class Danke {
     Vue.component('scene-designed', DesignedScene)
     this.vm = new Vue(Slider).$mount(this.mount)
     this.vm.config = this.data
-    this.vm.setScenes(this.data.scenes)
+    this.vm.setScenes(this.data.scenes || [])
+    this.vm.setGrounds(this.data.grounds || [])
   }
 
   loadTransition () {
@@ -67,9 +72,20 @@ export default class Danke {
     this.sceneInstances = []
     for (var i = 0; i < this.vm.scenes.length; i++) {
       this.vm.scenes[i].index = i
-      const sceneInstance = new SceneInstance(this, this.vm.scenes[i])
+      const sceneInstance = new Scene(this, this.vm.scenes[i])
       this.sceneInstances.push(sceneInstance)
     }
+  }
+
+  loadGrounds () {
+    this.groundInstances = []
+    for (var i = 0; i < this.vm.grounds.length; i++) {
+      this.groundInstances[this.vm.grounds[i].key] = new Ground(this, this.vm.grounds[i])
+    }
+  }
+
+  getBackgroundById (id) {
+
   }
 
   getSceneInstanceByIndex (index) {
@@ -90,6 +106,20 @@ export default class Danke {
     const transitions = this.getTransitionsByFrom(event.index)
     for (let transition of transitions) {
       transition.on(event)
+    }
+  }
+
+  initDeviceInfo () {
+    this.device = {
+      screenWidth: window.outerWidth,
+      screenHeight: window.outerHeight
+    }
+    this.gridCfg = {}
+    if (this.data.grid) {
+      this.gridCfg = {
+        width: window.outerWidth / (this.data.grid.x || 10),
+        height: this.device.screenHeight / (this.data.grid.y || 20)
+      }
     }
   }
 }

@@ -1,7 +1,8 @@
 import VueAnimeTyping from 'vue-anime-typing/src/AnimeTyping'
 import VueMovingImage from 'vue-moving-image/src/components/MovingImage'
-import { VueAnime } from 'vue-anime'
 import VueTextBubble from './TextBubble'
+
+import { VueAnime } from 'vue-anime'
 export default {
   components: {
     VueAnimeTyping,
@@ -27,8 +28,8 @@ export default {
   },
 
   mounted () {
-    this.danke.nanobus.once('scene-enter-' + this.index, this.onEnter)
-    this.danke.nanobus.once('scene-leave-' + this.index, this.onLeave)
+    this.engine.nanobus.once('scene-enter-' + this.index, this.onEnter)
+    this.engine.nanobus.once('scene-leave-' + this.index, this.onLeave)
   },
   methods: {
     screenClick () {
