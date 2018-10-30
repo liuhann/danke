@@ -33,6 +33,9 @@ export default class Danke {
     this.begin()
   }
 
+  /**
+   * Load transitions with null start and trigger them
+   */
   begin () {
     this.activeTransitions = this.getTransitionsByFrom(null)
     for (let transition of this.activeTransitions) {
@@ -49,7 +52,8 @@ export default class Danke {
       ticker: this.ticker,
       nanobus: this.nanobus,
       engine: this,
-      danke: this
+      gridWidth: this.grid.width,
+      gridHeight: this.grid.height
     })
     Vue.component('scene-center-text', CenterText)
     Vue.component('scene-full-picture', FullPicture)
@@ -57,7 +61,7 @@ export default class Danke {
     this.vm = new Vue(Slider).$mount(this.mount)
     this.vm.config = this.data
     this.vm.setScenes(this.data.scenes || [])
-    this.vm.setGrounds(this.data.grounds || [])
+    // this.vm.setGrounds(this.data.grounds || [])
   }
 
   loadTransition () {
@@ -72,6 +76,7 @@ export default class Danke {
     this.sceneInstances = []
     for (var i = 0; i < this.vm.scenes.length; i++) {
       this.vm.scenes[i].index = i
+      this.vm.scenes[i].mount = false
       const sceneInstance = new Scene(this, this.vm.scenes[i])
       this.sceneInstances.push(sceneInstance)
     }
@@ -114,12 +119,10 @@ export default class Danke {
       screenWidth: window.outerWidth,
       screenHeight: window.outerHeight
     }
-    this.gridCfg = {}
-    if (this.data.grid) {
-      this.gridCfg = {
-        width: window.outerWidth / (this.data.grid.x || 10),
-        height: this.device.screenHeight / (this.data.grid.y || 20)
-      }
+    this.data.grid = this.data.grid || {}
+    this.grid = {
+      width: this.device.screenWidth / (this.data.grid.x || 10),
+      height: this.device.screenHeight / (this.data.grid.y || 20)
     }
   }
 }

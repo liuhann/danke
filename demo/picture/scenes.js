@@ -64,8 +64,6 @@ export default {
     template: 'designed',
     state: '',
     active: {},
-    background: 'back',
-    foreground: 'fore',
     data: {
       background: '#343436',
       elements: [{
@@ -127,9 +125,26 @@ export default {
     data: {
       text: '发的烧录卡家乐福开始的'
     }
+  }, {
+    template: 'designed',
+    state: '',
+    active: {},
+    data: {
+      elements: [{
+        type: 'image',
+        url: '/picture/bg_header_01_mobile.svg',
+        left: 0,
+        top: 0,
+        width: 10,
+        height: 20
+      }]
+    }
   }],
   transitions: [{
     to: 0,
+    effect: 'empty'
+  }, {
+    to: 4,
     effect: 'empty'
   }, {
     from: 0,

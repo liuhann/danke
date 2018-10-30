@@ -27,6 +27,7 @@ export default class Scene {
   enter (effect) {
     if (effect.enter.duration) {
       this.scene.state = 'enter'
+      this.scene.mount = true
       this.scene.active = {
         animation: effect.enter.animation,
         duration: effect.enter.duration

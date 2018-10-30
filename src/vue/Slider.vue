@@ -4,20 +4,11 @@
        :class="[scene.state, scene.active.animation]"
        :style="{animationDuration: scene.active.duration + 'ms'}">
     <scene
+      v-if="scene.mount"
       :template="scene.template"
       :state="scene.state"
       :index="index"
       :data="scene.data">
-    </scene>
-  </div>
-  <div v-for="(ground, index) in grounds"  class="scene-wrapper animated" :key="ground.key"
-       :class="[ground.state]"
-  >
-    <scene
-      :template="ground.template"
-      :state="ground.state"
-      :index="index"
-      :data="ground.data">
     </scene>
   </div>
 </div>

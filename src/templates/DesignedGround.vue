@@ -1,6 +1,6 @@
 <template>
-  <div class="designed-ground" ref="root" :style="sceneStyle">
-    <div v-for="(element, index) in elements" :key="index" :style="getElementStyle(element)">
+  <div class="designed-ground" ref="root">
+    <div v-for="(element, index) in elements" :key="index" :style="getElementSizingStyle(element)">
       <vue-anime tag="div" :ref="'element' + index" :easing="element.easing || 'linear'">
         <vue-moving-image v-if="element.type==='image'" :url="element.url"></vue-moving-image>
       </vue-anime>
@@ -28,24 +28,7 @@ export default {
     }
   },
   methods: {
-    getElementStyle (element) {
-      const style = {
-        position: 'absolute',
-        left: element.left * this.grid.width + 'px',
-        top: element.top * this.grid.height + 'px',
-        width: element.width * this.grid.width + 'px'
-      }
-      if (element.shape === 'circle' || element.shape === 'square') {
-        style.height = style.width
-      } else if (element.height) {
-        style.height = element.height * this.grid.height + 'px'
-        console.log('set style height', element, style.height)
-      }
-      /* if (element.clipPath) {
-        style.clipPath = element.clipPath
-      } */
-      return style
-    }
+
   }
 }
 </script>

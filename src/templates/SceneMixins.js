@@ -38,6 +38,12 @@ export default {
         name: 'click'
       })
     },
+    fontGroupStyle (element) {
+      return {
+        fontSize: (element.fontSize || 1) * this.gridWidth + 'px',
+        color: element.color || '#fff'
+      }
+    },
     onEnter (data) {
       console.log('scene enter')
     },
