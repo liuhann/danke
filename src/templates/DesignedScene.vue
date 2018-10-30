@@ -4,10 +4,10 @@
       <vue-anime tag="div" v-if="element.mount" :ref="'element' + index" :easing="element.anime && element.anime.easing" :style="getPositionSizing(element)">
         <vue-anime-typing v-if="element.type==='typing'"
             :group-style="fontGroupStyle(element)"
-            :duration="element.duration"
-            :easing="element.easing"
-            :animation-in="element.animationIn"
-            :delay="element.delay">{{element.text}}</vue-anime-typing>
+            :duration="element.config.duration"
+            :easing="element.config.easing"
+            :animation-in="element.config.animationIn"
+            :delay="element.config.delay">{{element.text}}</vue-anime-typing>
         <vue-moving-image v-if="element.type==='image'" :url="element.url" :duration="element.duration"></vue-moving-image>
         <vue-text-bubble v-if="element.type==='text-bubble'" :position="element.position">{{element.text}}</vue-text-bubble>
       </vue-anime>

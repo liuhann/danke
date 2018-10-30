@@ -14,6 +14,7 @@ export default class Scene {
       this.engine.ticker.addTick((t) => {
         this.scene.state = 'in-active'
         this.scene.active = {}
+        this.scene.mount = false
       }, effect.leave.duration)
     } else {
       this.scene.state = 'in-active'
@@ -25,9 +26,9 @@ export default class Scene {
   }
 
   enter (effect) {
+    this.scene.mount = true
     if (effect.enter.duration) {
       this.scene.state = 'enter'
-      this.scene.mount = true
       this.scene.active = {
         animation: effect.enter.animation,
         duration: effect.enter.duration
