@@ -1,7 +1,10 @@
 <template>
   <div class="designed-scene" ref="root" :style="sceneStyle">
     <div v-for="(element, index) in elements" :key="index">
-      <vue-anime tag="div" v-if="element.mount" :ref="'element' + index" :easing="element.anime && element.anime.easing" :style="getPositionSizing(element)">
+      <vue-anime tag="div" v-if="element.mount" :ref="'element' + index"
+                 :easing="element.anime && element.anime.easing"
+                 :duration="element.anime && element.anime.duration"
+                 :style="getPositionSizing(element)">
         <vue-anime-typing v-if="element.type==='typing'"
             :group-style="fontGroupStyle(element)"
             :duration="element.config.duration"
@@ -61,9 +64,6 @@ export default {
       } else if (element.height) {
         style.height = element.height * this.gridHeight + 'px'
       }
-      /* if (element.clipPath) {
-        style.clipPath = element.clipPath
-      } */
       return style
     },
 

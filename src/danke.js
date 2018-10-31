@@ -1,4 +1,5 @@
 import nanobus from 'nanobus'
+import ImagePreloader from 'image-preloader'
 
 import CenterText from './templates/CenterText'
 import FullPicture from './templates/FullPicture'
@@ -24,6 +25,7 @@ export default class Danke {
   }
 
   async boot () {
+    await this.loadResources()
     this.initDeviceInfo()
     // vue
     await this.loadVue()
@@ -111,6 +113,16 @@ export default class Danke {
     const transitions = this.getTransitionsByFrom(event.index)
     for (let transition of transitions) {
       transition.on(event)
+    }
+  }
+
+  async loadResources () {
+    const preloader = new ImagePreloader()
+
+    for (let resource of this.data.resources) {
+      if (resource.type === 'image') {
+        await preloader.preload(resource.url)
+      }
     }
   }
 
