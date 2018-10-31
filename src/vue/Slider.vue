@@ -11,6 +11,7 @@
       :data="scene.data">
     </scene>
   </div>
+  <img v-for="(resource, index) in resources" :src="resource.url" :key="index" :style="{display: 'none'}">
 </div>
 </template>
 
@@ -30,7 +31,8 @@ export default {
   data () {
     return {
       scenes: [],
-      grounds: []
+      grounds: [],
+      resources: []
     }
   },
   created () {
@@ -42,6 +44,9 @@ export default {
     },
     setGrounds (grounds) {
       this.grounds = grounds
+    },
+    setResources (resources) {
+      this.resources = resources
     }
   }
 }

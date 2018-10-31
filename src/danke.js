@@ -63,6 +63,7 @@ export default class Danke {
     this.vm = new Vue(Slider).$mount(this.mount)
     this.vm.config = this.data
     this.vm.setScenes(this.data.scenes || [])
+    this.vm.setResources(this.data.resources)
     // this.vm.setGrounds(this.data.grounds || [])
   }
 

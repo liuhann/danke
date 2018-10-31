@@ -51,13 +51,13 @@ export default {
     url: '/xjtu2018autumn/home2.jpg'
   }, {
     type: 'image',
-    url: '/xjtu2018autumn/a1jpg'
+    url: '/xjtu2018autumn/a1.jpg'
   }, {
     type: 'image',
     url: '/xjtu2018autumn/a2.jpg'
   }, {
     type: 'image',
-    url: '/xjtu2018autumn/a2.jpg'
+    url: '/xjtu2018autumn/a3.jpg'
   }, {
     type: 'image',
     url: '/xjtu2018autumn/a4.jpg'
@@ -423,8 +423,8 @@ export default {
         url: '/xjtu2018autumn/xjtu.jpg',
         left: 2,
         top: 1,
-        height: 10,
-        width: 8,
+        height: 1,
+        width: 4,
         duration: 200000
       }]
     }
