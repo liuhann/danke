@@ -2,7 +2,7 @@ import Home from './Home'
 
 export default {
   routes: [{
-    path: '/home',
+    path: '/',
     component: Home
   }],
   async onload (ctx) {

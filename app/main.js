@@ -3,6 +3,7 @@ import config from './config'
 import App from './app.vue'
 
 import home from './packages/home'
+import designer from './packages/designer'
 
 const boot = new AsyncBoot({
   vue: {
@@ -11,13 +12,10 @@ const boot = new AsyncBoot({
   },
   servers: config.servers,
   packages: [
-    home
+    home, designer
   ],
   started: async (ctx, next) => {
     console.log(location.href)
-    if (!location.href.match('home')) {
-      ctx._router.replace('/home')
-    }
     await next()
   }
 })
