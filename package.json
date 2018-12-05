@@ -8,6 +8,8 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "async-boot": "^1.1.9",
+    "axios": "^0.18.0",
     "image-preloader": "^1.1.1",
     "merge": "^1.2.1",
     "mo-js": "^0.288.2",
