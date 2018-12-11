@@ -24,6 +24,11 @@ export default {
     }
   },
 
+  watch: {
+    scene () {
+      debugger
+    }
+  },
   computed: {
     sceneStyle () {
       return {
@@ -32,6 +37,7 @@ export default {
       }
     },
     sceneConfig () {
+      debugger
       return utils.generateSceneDisplayStyle(this.scene, this.device, this.coordinate)
     }
   },
