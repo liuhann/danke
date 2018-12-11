@@ -1,9 +1,12 @@
+import TapAndHold from 'vue-tap-and-hold'
+
 import AsyncBoot from 'async-boot'
 import config from './config'
 import App from './app.vue'
 
 import home from './packages/home'
 import designer from './packages/designer'
+
 
 const boot = new AsyncBoot({
   vue: {
@@ -15,7 +18,7 @@ const boot = new AsyncBoot({
     home, designer
   ],
   started: async (ctx, next) => {
-    console.log(location.href)
+    ctx.Vue.use(TapAndHold)
     await next()
   }
 })

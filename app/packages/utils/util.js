@@ -215,7 +215,7 @@ function generateSceneDisplayStyle (scene, device, coordinate) {
       width: device.width,
       height: device.height
     }, scene.coordinate, null).join(';')
-    elements.push(element)
+    elements.push(cloned)
   }
   return {
     elements

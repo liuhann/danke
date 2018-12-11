@@ -1,37 +1,39 @@
 <template>
 <div class="designer mobile">
-  <div class="scene">
-    <scene v-if="currentScene" :scene="currentScene" :device="{}"></scene>
+  <div class="scene-place" :style="{height: placeHeight}" v-hold="longHoldPlace">
+    <van-swipe indicator-color="white" :width="slideWidth" :height="slideHeight">
+      <van-swipe-item v-for="(scene, index) in scenes" :key="index">
+        <scene :scene="scene" :device="{width: slideWidth, height: slideHeight}"></scene>
+      </van-swipe-item>
+    </van-swipe>
+    <van-icon name="add" @click="showAddElement=true"/>
   </div>
 
-  <div class="prop-panel">
+  <van-popup v-model="showWorkConfigPop" :overlay="false" position="bottom">
+    <van-tabs class="tabs-work-config">
+      <van-tab title="页面">
+        <div class="scene-list">
+          <scene :scene="scene" :device="{width: 32, height: 60}" v-for="(scene, index) in scenes" :key="index"></scene>
+        </div>
+        <van-button size="mini" icon="add" @click="addEmptyScene">增加</van-button>
+      </van-tab>
+      <van-tab title="配置">
+        <cell title="圆形" :clickable="true" icon="check" />
+        <cell title="方形" :clickable="true" icon="location" />
+        <cell title="三角形" :clickable="true" icon="location" />
+      </van-tab>
+      <van-tab title="保存">
 
-  </div>
+      </van-tab>
+    </van-tabs>
+  </van-popup>
 
-  <div class="floating-buttons">
-    <van-icon class="menu" name="wap-nav" @click="showWorkMenu=true"/>
-    <van-icon name="add" v-if="currentScene" @click="showAddElement=true"/>
-  </div>
+  <van-popup v-model="showElementConfigPop">
+
+  </van-popup>
 
   <van-popup v-model="showAddElement" class="pop-select-element" position="center" :overlay="true">
     <choose-add-element @selected="selectAddElement"></choose-add-element>
-  </van-popup>
-
-  <van-popup v-model="showWorkMenu" class="setting" position="right" :overlay="true">
-    <van-cell>菜单</van-cell>
-    <van-panel>
-      <div class="scene-list">
-        <scene :scene="scene" :device="{width: '12vw', height: '22vw'}" v-for="(scene, index) in scenes" :key="index"></scene>
-      </div>
-      <div slot="footer">
-        <van-button size="mini" icon="add" @click="addEmptyScene">增加</van-button>
-      </div>
-    </van-panel>
-    <van-panel title="场景配置"  v-if="currentScene">
-      <div slot="footer">
-        <van-button size="mini" icon="add" @click="addEmptyScene">保存</van-button>
-      </div>
-    </van-panel>
   </van-popup>
 
 </div>
@@ -41,7 +43,6 @@
 import Scene from './Scene'
 import ChooseAddElement from './ChooseAddElement'
 import utils from '../utils/util'
-import { Popup, Icon, Button, Cell, CellGroup, Panel, Stepper, Collapse, CollapseItem } from 'vant'
 
 const SCENE_TEMPLATE = {
   'template': 'designed',
@@ -54,29 +55,60 @@ export default {
   name: 'Designer',
   components: {
     Scene,
-    ChooseAddElement,
-    'van-popup': Popup,
-    'van-button': Button,
-    'van-icon': Icon,
-    'van-cell': Cell,
-    'van-cell-group': CellGroup,
-    'van-panel': Panel,
-    'van-stepper': Stepper,
-    Collapse,
-    CollapseItem
+    ChooseAddElement
   },
   data () {
     return {
-      currentScene: null,
-      showWorkMenu: false,
+      isFullScreen: true,
+      device: {
+        width: window.innerWidth,
+        height: window.innerHeight
+      },
+      showWorkConfigPop: false,
+      showElementConfigPop: false,
       showAddElement: false,
-      scenes: [],
+      currentScene: null,
+      scenes: [utils.clone(SCENE_TEMPLATE)],
       workMenu: ['1'],
       pageConfig: {
       }
     }
   },
+  computed: {
+    toolsHeight () {
+      return 140
+    },
+
+    slideWidth () {
+      if (this.isFullScreen) {
+        return window.innerWidth + 'px'
+      } else {
+        return (window.innerWidth * (window.innerHeight - this.toolsHeight) / window.innerHeight) + 'px'
+      }
+    },
+    placeHeight () {
+      if (this.isFullScreen) {
+        return window.innerHeight + 'px'
+      } else {
+        return (window.innerHeight - this.toolsHeight) + 'px'
+      }
+    },
+    slideHeight () {
+      if (this.isFullScreen) {
+        return window.innerHeight + 'px'
+      } else {
+        return (window.innerHeight - this.toolsHeight) + 'px'
+      }
+    }
+  },
+  created () {
+    this.currentScene = this.scenes[0]
+  },
   methods: {
+    longHoldPlace () {
+      this.isFullScreen = false
+      this.showWorkConfigPop = true
+    },
     addEmptyScene () {
       this.scenes.push(utils.clone(SCENE_TEMPLATE))
       this.currentScene = this.scenes[this.scenes.length - 1]
@@ -91,10 +123,7 @@ export default {
         y: '20vw'
       })
     },
-    addElement () {
-
-    },
-    updateElement () {
+    selectEditElement (index) {
 
     }
   }
@@ -102,43 +131,31 @@ export default {
 </script>
 
 <style lang="less">
+
 .designer.mobile {
   position: absolute;
   left: 0;
   top: 0;
   width: 100vw;
   height: 100vh;
-
-  .floating-buttons {
-    .van-icon {
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 29px;
-    }
-    .menu {
+  .scene-place {
+    width: 100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .van-icon-add {
       position: absolute;
+      bottom: 10px;
       right: 10px;
-      top: 10px;
+      font-size: 32px;
     }
-  }
-  .van-popup.setting {
-    width: 88vw;
-    height: 100vh;
   }
 
-  .setting {
-    .scene-list {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      overflow-y: auto;
-      .scene {
-        margin:1vw;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-      }
-    }
+  .tabs-work-config {
+    height: 140px;
   }
+
 }
 
 </style>

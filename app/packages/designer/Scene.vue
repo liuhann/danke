@@ -1,8 +1,10 @@
 <template>
 <div class="scene" :style="sceneStyle">
-  <div class="element-wrapper" v-for="(element, index) in sceneConfig.elements" :key="index">
-    <img v-if="element.type==='image'" class="slide-image" :style="element.displayStyle"
-           :src="element.src||''">
+  <div class="element-wrapper" :class="[currentIndex===index?'selected':'']" v-for="(element, index) in sceneConfig.elements" :key="index" :style="element.displayStyle" @click="checkThis(index)">
+    <div v-if="element.type==='image'" class="slide-image" :style="{
+      backgroundImage: element.src
+    }">
+    </div>
   </div>
 </div>
 </template>
@@ -12,6 +14,10 @@ import utils from '../utils/util'
 export default {
   name: 'Scene',
   props: {
+    checkable: {
+      type: Boolean,
+      default: false
+    },
     scene: {
       type: Object
     },
@@ -37,23 +43,43 @@ export default {
       }
     },
     sceneConfig () {
-      debugger
       return utils.generateSceneDisplayStyle(this.scene, this.device, this.coordinate)
     }
   },
 
   data () {
     return {
+      currentElement: null,
+      currentIndex: -1
     }
   },
   methods: {
     computeSceneStyle () {
       return utils.generateSceneDisplayStyle(this.scene, this.device, this.coordinate)
+    },
+
+    checkThis (index) {
+      this.currentIndex = index
+      this.$emit('selected', index)
     }
   }
 }
 </script>
 
-<style scoped>
-
+<style lang="less">
+.scene {
+  position: relative;
+  .element-wrapper {
+    position: absolute;
+    box-sizing: border-box;
+    &.selected {
+      border: 1px solid #4B946A;
+    }
+    .slide-image {
+      width: 100%;
+      height: 100%;
+      background-color: #E4E4E4;
+    }
+  }
+}
 </style>
