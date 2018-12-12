@@ -1,6 +1,6 @@
 <template>
 <div class="scene" :style="sceneStyle">
-  <div class="element-wrapper" :class="[currentIndex===index?'selected':'']" v-for="(element, index) in sceneConfig.elements" :key="index" :style="element.displayStyle" @click="checkThis(index)">
+  <div class="element-wrapper" :class="[currentIndex===index?'selected':'']" v-for="(element, index) in sceneConfig.elements" :key="index" :style="element.displayStyle" v-tap.stop="checkThis.bind(null, index)">
     <div v-if="element.type==='image'" class="slide-image" :style="{
       backgroundImage: element.src
     }">
@@ -38,8 +38,8 @@ export default {
   computed: {
     sceneStyle () {
       return {
-        width: this.device.width,
-        height: this.device.height
+        width: this.device.width + 'px',
+        height: this.device.height + 'px'
       }
     },
     sceneConfig () {
@@ -60,7 +60,7 @@ export default {
 
     checkThis (index) {
       this.currentIndex = index
-      this.$emit('selected', index)
+      this.$emit('element-selected', index)
     }
   }
 }
