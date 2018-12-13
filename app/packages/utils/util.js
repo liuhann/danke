@@ -45,6 +45,9 @@ function getElementStyle (element, device, coordinate, inOrOut) {
     elementStyle.push(`height: ${getLength(element.radius, device) * 2}px`)
     elementStyle.push(`width: ${getLength(element.radius, device) * 2}px`)
   }
+  if (element.clipPath) {
+    elementStyle.push(`clip-path: ${element.clipPath}`)
+  }
   if (element.style) {
     elementStyle.push(element.style)
   }

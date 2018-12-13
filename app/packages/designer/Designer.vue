@@ -38,13 +38,6 @@ import ChooseAddElement from './ChooseAddElement'
 import ElementEdit from './ElementEdit'
 import utils from '../utils/util'
 
-const SCENE_TEMPLATE = {
-  'template': 'designed',
-  'hideDelay': 2000,
-  'triggerClose': 3000,
-  'elements': []
-}
-
 export default {
   name: 'Designer',
   components: {
@@ -59,15 +52,14 @@ export default {
         width: window.innerWidth,
         height: window.innerHeight
       },
+      scenes: [],
+      currentScene: null,
+      currentElement: null,
+      workConfig: {
+      },
       showWorkConfigPop: false,
       showElementConfigPop: false,
-      showAddElement: false,
-      currentScene: null,
-      currentElement: {},
-      scenes: [utils.clone(SCENE_TEMPLATE)],
-      workMenu: ['1'],
-      pageConfig: {
-      }
+      showAddElement: false
     }
   },
   computed: {
@@ -98,6 +90,7 @@ export default {
     }
   },
   created () {
+    this.addEmptyScene()
     this.currentScene = this.scenes[0]
   },
   methods: {
@@ -121,24 +114,35 @@ export default {
     },
 
     addEmptyScene () {
-      this.scenes.push(utils.clone(SCENE_TEMPLATE))
-      this.currentScene = this.scenes[this.scenes.length - 1]
+      this.scenes.push({
+        'template': 'designed',
+        'hideDelay': 2000,
+        'triggerClose': 3000,
+        'elements': []
+      })
     },
+
     selectAddElement (elementName) {
       this.showAddElement = false
+      this.addElement(elementName)
+    },
+
+    addElement (elementName) {
       this.currentScene.elements.push({
         type: elementName,
         width: '30vw',
-        height: '30vw',
+        height: '30vh',
         x: '20vw',
-        y: '20vw'
+        y: '20vh',
+        clipPath: ''
       })
     },
+
     tapElementEdit (index) {
-      debugger;
-      this.currentElement = utils.clone(this.currentScene.elements[index])
       this.showElementConfigPop = true
       this.showWorkConfigPop = false
+      this.isFullScreen = false
+      this.currentElement = this.currentScene.elements[index]
     }
   }
 }

@@ -1,9 +1,17 @@
 <template>
 <div class="scene" :style="sceneStyle">
-  <div class="element-wrapper" :class="[currentIndex===index?'selected':'']" v-for="(element, index) in sceneConfig.elements" :key="index" :style="element.displayStyle" v-tap.stop="checkThis.bind(null, index)">
-    <div v-if="element.type==='image'" class="slide-image" :style="{
+  <div class="element-wrapper" v-for="(element, index) in sceneConfig.elements" :key="index"
+       :class="[currentIndex===index?'selected':'']"  :style="element.displayStyle" v-tap.stop="checkThis.bind(null, index)">
+    <div v-if="element.type==='image'" class="image" :style="{
       backgroundImage: element.src
     }">
+    </div>
+    <div v-if="element.type === 'text'" class="text" :style="{
+      fontSize: element.font
+    }">
+      {{element.content}}
+    </div>
+    <div v-if="element.type === 'circle'" class="circle">
     </div>
   </div>
 </div>
@@ -27,13 +35,14 @@ export default {
     coordinate: {
       type: String,
       default: 'tl'
+    },
+    styleName: {
+      type: String
     }
   },
 
   watch: {
-    scene () {
-      debugger
-    }
+    scene () {}
   },
   computed: {
     sceneStyle () {
@@ -43,7 +52,7 @@ export default {
       }
     },
     sceneConfig () {
-      return utils.generateSceneDisplayStyle(this.scene, this.device, this.coordinate)
+      return utils.generateSceneDisplayStyle(this.scene, this.device, this.coordinate, this.styleName)
     }
   },
 
@@ -75,7 +84,7 @@ export default {
     &.selected {
       border: 1px solid #4B946A;
     }
-    .slide-image {
+    .image {
       width: 100%;
       height: 100%;
       background-color: #E4E4E4;
