@@ -86,7 +86,7 @@ function pushAnimations (elementStyle, animationConfig) {
     elementStyle.push(`animation-duration:${animationConfig.duration}ms`)
     elementStyle.push(`animation-timing-function:${cubicBesizers[animationConfig.timing] || cubicBesizers['easeOutQuad']}`)
     elementStyle.push(`animation-delay:${animationConfig.delay || 0}`)
-    elementStyle.push(`animation-fill-mode:both`)
+    elementStyle.push(`animation-fill-mode:${animationConfig.fillMode || 'both'}`)
   }
 }
 

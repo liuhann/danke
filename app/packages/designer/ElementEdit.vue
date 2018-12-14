@@ -85,8 +85,8 @@
     </van-tab>
     <van-tab title="离开特效">
       <van-row type="flex" justify="space-around">
-        <van-col span="10">特效</van-col>
-        <van-col span="10"></van-col>
+        <van-col span="4">效果</van-col>
+        <van-col span="16"><van-tag v-if="exits.animation" plain>{{exits.animation}}</van-tag> <van-button size="small" plain type="primary" @click="showChooseAnimation('exits')">选择</van-button> </van-col>
       </van-row>
       <van-row type="flex" justify="space-around">
         <van-col span="10">时长</van-col>
