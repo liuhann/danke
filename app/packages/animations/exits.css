@@ -1,0 +1,2 @@
+@keyframes scale-out-center{0%{transform:scale(1);opacity:1}100%{transform:scale(0);opacity:1}}
+.scale-out-center{animation:scale-out-center .5s cubic-bezier(.55,.085,.68,.53) both}

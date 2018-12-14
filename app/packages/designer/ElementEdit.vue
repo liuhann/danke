@@ -53,16 +53,34 @@
     </van-tab>
     <van-tab title="进入特效">
       <van-row type="flex" justify="space-around">
-        <van-col span="10">特效</van-col>
-        <van-col span="10"></van-col>
+        <van-col span="4">效果</van-col>
+        <van-col span="16"><van-tag v-if="entrance.animation" plain>{{entrance.animation}}</van-tag> <van-button size="small" plain type="primary" @click="showChooseAnimation('entrance')">选择</van-button> </van-col>
       </van-row>
       <van-row type="flex" justify="space-around">
-        <van-col span="10">时长</van-col>
-        <van-col span="10"></van-col>
+        <van-col span="4">时长</van-col>
+        <van-col span="16"><van-stepper v-model="entrance.duration" integer disable-input :step="50"/></van-col>
       </van-row>
       <van-row type="flex" justify="space-around">
-        <van-col span="10">延迟</van-col>
-        <van-col span="10"></van-col>
+        <van-col span="4">延迟</van-col>
+        <van-col span="16"><van-stepper v-model="entrance.delay" disable-input :step="20"/></van-col>
+      </van-row>
+      <van-row type="flex" justify="space-around">
+        <van-col span="4">Timing</van-col>
+        <van-col span="16"></van-col>
+      </van-row>
+    </van-tab>
+    <van-tab title="持续特效">
+      <van-row type="flex" justify="space-around">
+        <van-col span="4">效果</van-col>
+        <van-col span="16"><van-tag v-if="entrance.animation" plain>{{entrance.animation}}</van-tag> <van-button size="small" plain type="primary" @click="showChooseAnimation('entrance')">选择</van-button> </van-col>
+      </van-row>
+      <van-row type="flex" justify="space-around">
+        <van-col span="4">时长</van-col>
+        <van-col span="16"><van-stepper v-model="entrance.duration" integer disable-input :step="50"/></van-col>
+      </van-row>
+      <van-row type="flex" justify="space-around">
+        <van-col span="4">延迟</van-col>
+        <van-col span="16"><van-stepper v-model="entrance.delay" disable-input :step="20"/></van-col>
       </van-row>
     </van-tab>
     <van-tab title="离开特效">
@@ -80,14 +98,18 @@
       </van-row>
     </van-tab>
   </van-tabs>
-
+  <animation-selector ref="animationSelector"></animation-selector>
 </div>
 </template>
 
 <script>
+import AnimationSelector from './AnimationSelector'
 const REG_LEN = /([+-]?[0-9#]+)(%|px|pt|em|rem|in|cm|mm|ex|ch|pc|vw|vh|vmin|vmax|deg|rad|turn)?$/
 export default {
   name: 'ElementEdit',
+  components: {
+    AnimationSelector
+  },
   props: {
     value: {
       type: Object
@@ -115,6 +137,17 @@ export default {
         cy: 100,
         dx: 0,
         dy: 100
+      },
+      entrance: {
+        animation: '',
+        duration: 400,
+        timing: 'easeOutQuad',
+        delay: 0
+      },
+      exits: {
+        animation: '',
+        duration: 400,
+        delay: 0
       }
     }
   },
@@ -165,6 +198,19 @@ export default {
       }
     },
 
+    showChooseAnimation (type) {
+      this.$refs.animationSelector.open(type, cssName => {
+        this.value.animationPreview = {
+          animation: cssName,
+          duration: 1000,
+          timing: 'easeOutQuad',
+          delay: 0
+        }
+      }, cssName => {
+        this[type].animation = cssName
+      })
+    },
+
     getLengthUnit (len) {
       // -15vw ->  [-15vw,-15,vw]
       const splits = REG_LEN.exec(len)
@@ -182,7 +228,13 @@ export default {
   .van-row {
     height: 48px;
     box-sizing: border-box;
-    padding-top: 23px;
+    line-height: 48px;
+
+    .van-col {
+      .van-slider {
+        margin-top: 23px;
+      }
+    }
   }
   .van-cell {
     .van-cell__title {

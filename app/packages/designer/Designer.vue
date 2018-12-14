@@ -134,7 +134,8 @@ export default {
         height: '30vh',
         x: '20vw',
         y: '20vh',
-        clipPath: ''
+        clipPath: '',
+        animationPreview: {}
       })
     },
 

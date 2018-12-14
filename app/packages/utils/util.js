@@ -1,3 +1,5 @@
+import cubicBesizers from './cubic-beziers'
+
 const formatTime = date => {
   const year = date.getFullYear()
   const month = date.getMonth() + 1
@@ -60,29 +62,32 @@ function getElementStyle (element, device, coordinate, inOrOut) {
   }
 
   if (element.in && inOrOut === 'in') {
-    if (element.in.animation) {
-      elementStyle.push(`animation-duration:${element.in.duration}`)
-      if (element.in.delay) {
-        elementStyle.push(`animation-delay:${element.in.delay}`)
-      }
-    }
+    pushAnimations(elementStyle, element.in)
     if (element.in.style) {
       elementStyle.push(element.in.style)
     }
   }
-
   if (element.out && inOrOut === 'out') {
-    if (element.out.animation) {
-      elementStyle.push(`animation-duration:${element.out.duration}`)
-      if (element.out.delay) {
-        elementStyle.push(`animation-delay:${element.out.delay}`)
-      }
-    }
+    pushAnimations(elementStyle, element.out)
     if (element.out.style) {
-      elementStyle.push(element.in.style)
+      elementStyle.push(element.out.style)
     }
   }
+
+  if (element.animationPreview) {
+    pushAnimations(elementStyle, element.animationPreview)
+  }
   return elementStyle
+}
+
+function pushAnimations (elementStyle, animationConfig) {
+  if (animationConfig.animation) {
+    elementStyle.push(`animation-name: ${animationConfig.animation}`)
+    elementStyle.push(`animation-duration:${animationConfig.duration}ms`)
+    elementStyle.push(`animation-timing-function:${cubicBesizers[animationConfig.timing] || cubicBesizers['easeOutQuad']}`)
+    elementStyle.push(`animation-delay:${animationConfig.delay || 0}`)
+    elementStyle.push(`animation-fill-mode:both`)
+  }
 }
 
 function getImageBosUrlByDevice (bosKey, device, imgElementDef) {
