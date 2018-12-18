@@ -1,34 +1,61 @@
 <template>
 <div class="designer mobile">
-  <van-icon name="add" v-tap.stop="tapAddElement"/>
+  <van-icon name="arrow-left" v-if="isFullScreen" @click="toggleConfigMode"/>
 
-  <div class="scene-wrapper" :class="[isFullScreen? '': 'preview']" :style="{height: device.height + 'px', width: device.width + 'px'}" v-hold="longHoldPlace" v-tap="tapPlace">
+  <!--操作按钮列表-->
+  <van-popup v-model="showSettingAside" class="pop-setting-aside" :overlay="false" position="right">
+    <van-icon name="arrow" class="return" @click="toggleFullscreenMode"/>
+    <van-icon name="setting-o" class="setting" >
+      <span>配置</span>
+    </van-icon>
+    <van-icon name="apps-o" class="pages" @click="showPageListPop = true" >
+      <span>全部页面</span>
+    </van-icon>
+
+    <van-icon name="add-o" class="add" @click="tapAddElement">
+      <span>新增元素</span>
+    </van-icon>
+    <van-icon name="paid" class="add" @click="tapShowResources">
+      <span>资源</span>
+    </van-icon>
+  </van-popup>
+
+  <!--效果预览区-->
+  <div class="scene-wrapper" :class="[isFullScreen? '': 'preview']" :style="{height: device.height + 'px', width: device.width + 'px'}">
       <scene v-if="currentScene" :scene="currentScene" :device="device" @element-selected="tapElementEdit"></scene>
   </div>
 
-  <van-popup v-model="showWorkConfigPop" class="pop-config-work" :overlay="false" position="bottom">
-    <div class="head">
-      <van-button size="mini">整体配置</van-button>
-    </div>
-    <div class="scene-list">
-      <div class="wrapper" :style="{width: (scenes.length+1) * 55 + 'px'}">
-        <div class="block scene" v-for="(scene, index) in scenes" :key="index">
-          <scene :scene="scene" :device="{width: 32, height: 60}" ></scene>
-        </div>
-        <div class="block add" v-tap.stop="tapAddScene">
-          <van-icon name="add-o"></van-icon>
+  <!--底部配置区-->
+  <van-popup v-model="showElementConfigPop" class="pop-config-element" :overlay="false" position="bottom">
+    <scene-edit v-if="!currentElement" v-model="currentScene"></scene-edit>
+    <element-edit v-if="currentElement" v-model="currentElement"></element-edit>
+  </van-popup>
+
+  <!--新增元素弹出框-->
+  <van-popup v-model="showAddElement" class="pop-select-element" position="center" :overlay="true">
+    <choose-add-element @selected="selectAddElement"></choose-add-element>
+  </van-popup>
+
+  <!--页面列表、新增按钮-->
+  <van-popup v-model="showPageListPop" class="pop-page-list" position="center" :overlay="true">
+    <div class="pages-wrapper">
+      <van-row type="flex" justify="space-around" class="header">
+        <van-col span="21">
+          <van-button plain type="primary" @click="addEmptyScene" size="small">新增</van-button>
+          <van-button plain type="primary" @click="cloneCurrentScene" size="small">复制当前页</van-button>
+        </van-col>
+        <van-col span="2"><van-icon name="cross" @click="showPageListPop = false"></van-icon></van-col>
+      </van-row>
+      <div class="list">
+        <div class="block scene" v-for="(scene, index) in scenes" :key="index" @click="chooseScene(index)" :class="[currentScene === scene?'current': '']">
+          <scene :scene="scene" :device="{width: 64, height: 120}"></scene>
+          <van-icon name="delete" @click.stop="deleteScene(index)"></van-icon>
+          <div class="order">{{index+1}}</div>
         </div>
       </div>
     </div>
   </van-popup>
 
-  <van-popup v-model="showElementConfigPop" class="pop-config-element" :overlay="false" position="bottom">
-    <element-edit v-model="currentElement"></element-edit>
-  </van-popup>
-
-  <van-popup v-model="showAddElement" class="pop-select-element" position="center" :overlay="true">
-    <choose-add-element @selected="selectAddElement"></choose-add-element>
-  </van-popup>
 </div>
 </template>
 
@@ -36,12 +63,14 @@
 import Scene from './Scene'
 import ChooseAddElement from './ChooseAddElement'
 import ElementEdit from './ElementEdit'
+import SceneEdit from './SceneEdit'
 import utils from '../utils/util'
 
 export default {
   name: 'Designer',
   components: {
     ElementEdit,
+    SceneEdit,
     Scene,
     ChooseAddElement
   },
@@ -55,16 +84,25 @@ export default {
       scenes: [],
       currentScene: null,
       currentElement: null,
-      workConfig: {
-      },
+      workConfig: {},
       showWorkConfigPop: false,
-      showElementConfigPop: false,
-      showAddElement: false
+      showAddElement: false,
+      showSettingAside: false,
+      showPageListPop: false
     }
   },
   computed: {
     toolsHeight () {
       return 156
+    },
+
+    showElementConfigPop: {
+      get () {
+        return !this.isFullScreen
+      },
+      set (newValue) {
+        this.isFullScreen = !newValue
+      }
     },
 
     slideWidth () {
@@ -94,6 +132,17 @@ export default {
     this.currentScene = this.scenes[0]
   },
   methods: {
+    // 切换到编辑模式
+    toggleConfigMode () {
+      this.showSettingAside = true
+      this.isFullScreen = false
+    },
+    // 切换到全屏模式
+    toggleFullscreenMode () {
+      this.isFullScreen = true
+      this.showSettingAside = false
+    },
+
     longHoldPlace () {
       this.isFullScreen = false
       this.showWorkConfigPop = true
@@ -113,6 +162,10 @@ export default {
       this.addEmptyScene()
     },
 
+    tapShowResources () {
+
+    },
+
     addEmptyScene () {
       this.scenes.push({
         'template': 'designed',
@@ -122,21 +175,50 @@ export default {
       })
     },
 
+    chooseScene (index) {
+      this.currentScene = this.scenes[index]
+      this.currentElement = null
+      this.showPageListPop = false
+    },
+
+    deleteScene (index) {
+      vant.Dialog.confirm({
+        title: '标题',
+        message: '弹窗内容'
+      }).then(() => {
+        // on confirm
+      }).catch(() => {
+        // on cancel
+      })
+    },
+
     selectAddElement (elementName) {
       this.showAddElement = false
       this.addElement(elementName)
     },
 
     addElement (elementName) {
-      this.currentScene.elements.push({
-        type: elementName,
-        width: '30vw',
-        height: '30vh',
-        x: '20vw',
-        y: '20vh',
-        clipPath: '',
-        animationPreview: {}
-      })
+      if (elementName === 'image') {
+        this.currentScene.elements.push({
+          type: elementName,
+          width: '80vw',
+          height: '60vw',
+          x: '10vw',
+          y: '20vh',
+          clipPath: '',
+          animationPreview: {}
+        })
+      }
+      if (elementName === 'text') {
+        this.currentScene.elements.push({
+          type: elementName,
+          width: '80vw',
+          x: '10vw',
+          y: '20vh',
+          content: '请输入文字',
+          animationPreview: {}
+        })
+      }
     },
 
     tapElementEdit (index) {
@@ -158,54 +240,99 @@ export default {
   width: 100vw;
   height: 100vh;
   background-color: #f2f2f2;
+
+  .van-icon-arrow-left {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 24px;
+    z-index: 101;
+    color: #666;
+  }
   .scene-wrapper {
     background-color: #fff;
     border: 1px solid #fefefe;
     border-radius: 10px;
     box-sizing: border-box;
     transition: transform .4s linear;
+    transform-origin: 30px 30px;
     &.preview {
-      transform: scale(.7);
-      transform-origin: center 30px;
+      transform: scaleX(.7) scaleY(.7);
     }
   }
-
-  .van-icon-add {
+  .pop-setting-aside {
     position: absolute;
-    bottom: 10px;
-    right: 10px;
-    font-size: 32px;
+    color: #666;
     z-index: 101;
+    width: 15vw;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    .van-icon {
+      margin-top: 2vw;
+      height: 13vw;
+      font-size: 6vw;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      span {
+        line-height: 20px;
+        font-size: 9px;
+      }
+    }
   }
 
-  .pop-config-work {
-    height: 144px;
-    .head {
-      border-top: 1px solid #eee;
-      padding: 5px;
-    }
-    .scene-list {
-      margin-top: 5px;
-      height: 100px;
-      width: 100%;
-      overflow-x: auto;
-      .wrapper {
-        display: flex;
-        justify-content: space-around;
+  .pop-page-list {
+    .pages-wrapper {
+      width: 320px;
+      height: 480px;
+
+      .header {
+        line-height: 40px;
+        height: 40px;
+        border-bottom: 1px solid #E4E4E4;
+        .van-button {
+          margin-left: 10px;
+        }
+      }
+      .list {
+        height: 440px;
+        overflow-y: auto;
         .block {
-          &.add {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-          }
+          width: 64px;
+          height: 120px;
+          margin: 5px 6px;
+          float: left;
+          box-sizing: border-box;
           &.scene {
             border: 1px solid #eee;
+            border-radius: 5px;
+            position: relative;
+            &.current {
+              border: 2px solid #4b0;
+              .order {
+                background: #4b0;
+              }
+            }
+            .van-icon-delete {
+              position: absolute;
+              bottom: 10px;
+              font-size: 18px;
+              color: #f44;
+              left: 21px;
+            }
+            .order {
+              position: absolute;
+              right: 5px;
+              top: 5px;
+              font-size: 12px;
+              background: rgba(0,0,0,.6);
+              color: #fff;
+              width: 14px;
+              border-radius: 7px;
+              text-align: center;
+            }
           }
-          position: relative;
-          float: left;
-          height: 96px;
-          width: 48px;
         }
       }
     }

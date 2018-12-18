@@ -1,7 +1,8 @@
 <template>
 <div class="scene" :style="sceneStyle">
   <div class="element-wrapper" v-for="(element, index) in sceneConfig.elements" :key="index"
-       :class="[currentIndex===index?'selected':'', element.animationPreview]"  :style="element.displayStyle" v-tap.stop="checkThis.bind(null, index)">
+       @click="onElementClicked(index)"
+       :class="[currentIndex===index?'selected':'', element.animationPreview]" :style="element.displayStyle">
     <div v-if="element.type==='image'" class="image" :style="{
       backgroundImage: element.src
     }">
@@ -21,6 +22,7 @@
 import '../animations/entrance.css'
 import '../animations/exits.css'
 import utils from '../utils/util'
+
 export default {
   name: 'Scene',
   props: {
@@ -68,10 +70,10 @@ export default {
     computeSceneStyle () {
       return utils.generateSceneDisplayStyle(this.scene, this.device, this.coordinate)
     },
-
-    checkThis (index) {
+    onElementClicked (index) {
       this.currentIndex = index
       this.$emit('element-selected', index)
+      this.currentElement = this.scene.elements[index]
     }
   }
 }

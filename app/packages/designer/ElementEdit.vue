@@ -24,7 +24,7 @@
             <van-radio name="vh">屏高</van-radio>
           </van-radio-group>
         </van-cell>
-        <van-cell title="高度">
+        <van-cell title="高度" v-if="position.h!=='auto'">
           <van-stepper v-model="position.h" />
           <van-radio-group v-model="position.hu">
             <van-radio name="vw">屏宽</van-radio>
@@ -33,7 +33,7 @@
         </van-cell>
       </van-cell-group>
     </van-tab>
-    <van-tab title="四角裁切">
+    <van-tab title="四角裁切" v-if="clipable">
       <van-row type="flex" justify="space-around">
         <van-col span="10"><van-slider v-model="clip.ax" /></van-col>
         <van-col span="10"><van-slider v-model="clip.ay" /></van-col>
@@ -50,6 +50,12 @@
         <van-col span="10"><van-slider v-model="clip.dx" /></van-col>
         <van-col span="10"><van-slider v-model="clip.dy" /></van-col>
       </van-row>
+    </van-tab>
+    <van-tab title="字体设置" v-if="fontable">
+      <van-col span="4">文字大小</van-col>
+      <van-col span="16"></van-col>
+      <van-col span="4">背景</van-col>
+      <van-col span="16"><van-tag v-if="entrance.animation" plain>{{entrance.animation}}</van-tag> <van-button size="small" plain type="primary" @click="showChooseAnimation('entrance')">选择</van-button> </van-col>
     </van-tab>
     <van-tab title="进入特效">
       <van-row type="flex" justify="space-around">
@@ -172,6 +178,14 @@ export default {
     }
   },
 
+  computed: {
+    clipable () {
+      return this.value.type === 'image'
+    },
+    fontable () {
+      return this.value.type === 'text'
+    }
+  },
   created () {
     this.setDataFromValue()
   },
@@ -187,9 +201,14 @@ export default {
       let we = this.getLengthUnit(this.value.width)
       this.position.w = we.number
       this.position.wu = we.unit
-      let he = this.getLengthUnit(this.value.height)
-      this.position.h = he.number
-      this.position.hu = he.unit
+      if (this.value.height) {
+        let he = this.getLengthUnit(this.value.height)
+        this.position.h = he.number
+        this.position.hu = he.unit
+      } else {
+        debugger
+        this.position.h = 'auto'
+      }
 
       if (this.value.clipPath) {
         const matches = this.value.clipPath.match(/[\d]+/g)
@@ -225,6 +244,7 @@ export default {
 
 <style lang="less">
 .element-edit {
+  height: 28vh;
   .van-row {
     height: 48px;
     box-sizing: border-box;
