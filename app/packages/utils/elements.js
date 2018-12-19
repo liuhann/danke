@@ -45,5 +45,6 @@ const CIRCLE = Object.assign(BASE, {
 
 export default {
   IMAGE,
-  TEXT
+  TEXT,
+  CIRCLE
 }
