@@ -17,31 +17,35 @@ const formatNumber = n => {
 }
 
 const REG_LEN = /([+-]?[0-9#\.]+)(%|px|pt|em|rem|in|cm|mm|ex|ch|pc|vw|vh|vmin|vmax|deg|rad|turn)?$/
-function getLength (len, scale) {
+function getLength (len, scale, px) {
   // -15vw ->  [-15vw,-15,vw]
   const splits = REG_LEN.exec(len)
+  let number = 0
   if (splits[2] === 'vw') {
-    return Math.floor(scale.width * Number.parseFloat(splits[1]) / 100)
+    number = Math.floor(scale.width * Number.parseFloat(splits[1]) / 100)
   } else if (splits[2] === 'vh') {
-    return Math.floor(scale.height * Number.parseFloat(splits[1]) / 100)
+    number = Math.floor(scale.height * Number.parseFloat(splits[1]) / 100)
+  } else if (splits[2] === 'px') {
+    number = splits[1]
   }
+  return number + (px || '')
 }
 
 function getElementStyle (element, device, coordinate, inOrOut) {
   const elementStyle = []
-  elementStyle.push(`left: ${getLength(element.x, device)}px`)
+  elementStyle.push(`left: ${getLength(element.x, device, 'px')}`)
   if (coordinate === 'center') {
     let y = device.height / 2 + getLength(element.y, device)
     elementStyle.push(`top: ${y}px`)
   } else {
-    elementStyle.push(`top: ${getLength(element.y, device)}px`)
+    elementStyle.push(`top: ${getLength(element.y, device, 'px')}`)
   }
 
   if (element.width) {
-    elementStyle.push(`width: ${getLength(element.width, device)}px`)
+    elementStyle.push(`width: ${getLength(element.width, device, 'px')}`)
   }
   if (element.height) {
-    elementStyle.push(`height: ${getLength(element.height, device)}px`)
+    elementStyle.push(`height: ${getLength(element.height, device, 'px')}`)
   }
   if (element.radius) {
     elementStyle.push(`height: ${getLength(element.radius, device) * 2}px`)

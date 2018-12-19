@@ -27,8 +27,7 @@
 
   <!--底部配置区-->
   <van-popup v-model="showElementConfigPop" class="pop-config-element" :overlay="false" position="bottom">
-    <scene-edit v-if="!currentElement" v-model="currentScene"></scene-edit>
-    <element-edit v-if="currentElement" v-model="currentElement"></element-edit>
+    <element-edit v-if="currentElement" :element="currentElement||currentScene"></element-edit>
   </van-popup>
 
   <!--新增元素弹出框-->
