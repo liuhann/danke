@@ -33,19 +33,25 @@ function getLength (len, scale, px) {
 
 function getElementStyle (element, device, coordinate, inOrOut) {
   const elementStyle = []
+  element.dnd = {}
   elementStyle.push(`left: ${getLength(element.x, device, 'px')}`)
+  element.dnd.x = getLength(element.x, device)
   if (coordinate === 'center') {
     let y = device.height / 2 + getLength(element.y, device)
     elementStyle.push(`top: ${y}px`)
+    element.dnd.y = y
   } else {
     elementStyle.push(`top: ${getLength(element.y, device, 'px')}`)
+    element.dnd.y = getLength(element.y, device)
   }
 
   if (element.width) {
     elementStyle.push(`width: ${getLength(element.width, device, 'px')}`)
+    element.dnd.w = getLength(element.width, device)
   }
   if (element.height) {
     elementStyle.push(`height: ${getLength(element.height, device, 'px')}`)
+    element.dnd.h = getLength(element.height, device)
   }
   if (element.radius) {
     elementStyle.push(`height: ${getLength(element.radius, device) * 2}px`)

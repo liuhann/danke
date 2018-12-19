@@ -1,6 +1,24 @@
 <template>
 <div class="scene" :style="sceneStyle">
-  <div class="element-wrapper" v-for="(element, index) in sceneConfig.elements" :key="index"
+  <vue-draggable-resizable v-for="(element, index) in sceneConfig.elements" :key="index" class="element-wrapper"  :class="[currentIndex===index?'selected':'', element.animationPreview]" 
+    :y="element.dnd.y"
+    :x="element.dnd.x"
+    :w="element.dnd.w"
+    :h="element.dnd.h"
+  >
+    <div v-if="element.type==='image'" class="image" :style="{
+      backgroundImage: element.src
+    }">
+    </div>
+    <div v-if="element.type === 'text'" class="text" :style="{
+      fontSize: element.font
+    }">
+      {{element.content}}
+    </div>
+    <div v-if="element.type === 'circle'" class="circle">
+    </div>
+  </vue-draggable-resizable>
+  <!-- <div class="element-wrapper" v-for="(element, index) in sceneConfig.elements" :key="index"
        @click="onElementClicked(index)"
        :class="[currentIndex===index?'selected':'', element.animationPreview]" :style="element.displayStyle">
     <div v-if="element.type==='image'" class="image" :style="{
@@ -14,17 +32,21 @@
     </div>
     <div v-if="element.type === 'circle'" class="circle">
     </div>
-  </div>
+  </div> -->
 </div>
 </template>
 
 <script>
+  import VueDraggableResizable from 'vue-draggable-resizable'
 import '../animations/entrance.css'
 import '../animations/exits.css'
 import utils from '../utils/util'
 
 export default {
   name: 'Scene',
+  components: {
+    VueDraggableResizable
+  },
   props: {
     checkable: {
       type: Boolean,
@@ -56,7 +78,8 @@ export default {
       }
     },
     sceneConfig () {
-      return utils.generateSceneDisplayStyle(this.scene, this.device, this.coordinate, this.styleName)
+      const sceneConfig = utils.generateSceneDisplayStyle(this.scene, this.device, this.coordinate, this.styleName)
+      return sceneConfig
     }
   },
 

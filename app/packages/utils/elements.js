@@ -26,19 +26,20 @@ const BASE = {
   }
 }
 
-const IMAGE = Object.assign(BASE, {
+const IMAGE = Object.assign({}, BASE, {
   type: 'image',
   clipPath: '',
   sizing: 'cover'
 })
-const TEXT = Object.assign(BASE, {
+const TEXT = Object.assign({}, BASE, {
   type: 'text',
+  content: '请输入文字',
   font: {
     size: '14px',
     color: '#fff'
   }
 })
-const CIRCLE = Object.assign(BASE, {
+const CIRCLE = Object.assign({}, BASE, {
   type: 'circle',
   radius: '20vw'
 })

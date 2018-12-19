@@ -64,6 +64,7 @@ import ChooseAddElement from './ChooseAddElement'
 import ElementEdit from './ElementEdit'
 import SceneEdit from './SceneEdit'
 import utils from '../utils/util'
+import Elements from '../utils/elements'
 
 export default {
   name: 'Designer',
@@ -198,15 +199,7 @@ export default {
 
     addElement (elementName) {
       if (elementName === 'image') {
-        this.currentScene.elements.push({
-          type: elementName,
-          width: '80vw',
-          height: '60vw',
-          x: '10vw',
-          y: '20vh',
-          clipPath: '',
-          animationPreview: {}
-        })
+        this.currentScene.elements.push(utils.clone(Elements.IMAGE))
       }
       if (elementName === 'text') {
         this.currentScene.elements.push({
@@ -266,6 +259,8 @@ export default {
     width: 15vw;
     right: 0;
     display: flex;
+    top: 23%;
+    background: none;
     flex-direction: column;
     .van-icon {
       margin-top: 2vw;
@@ -303,6 +298,7 @@ export default {
           margin: 5px 6px;
           float: left;
           box-sizing: border-box;
+          overflow: hidden;
           &.scene {
             border: 1px solid #eee;
             border-radius: 5px;
