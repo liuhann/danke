@@ -1,6 +1,13 @@
 <template>
 <div class="designer mobile">
-  <van-icon name="arrow-left" v-if="isFullScreen" @click="toggleConfigMode"/>
+  <div class="scene-buttons" v-if="currentElement === null">
+    <van-icon name="plus" @click="tapAddElement"/>
+    <van-icon name="setting-o" @click="toggleConfigMode"/>
+  </div>
+  <!--效果预览区-->
+  <div class="scene-wrapper" :class="[isFullScreen? '': 'preview']" :style="{height: device.height + 'px', width: device.width + 'px'}">
+    <scene v-if="currentScene" :scene="currentScene" :device="device" @element-selected="tapElementOn" @scene-selected="tapSceneOn"></scene>
+  </div>
 
   <!--操作按钮列表-->
   <van-popup v-model="showSettingAside" class="pop-setting-aside" :overlay="false" position="right">
@@ -19,11 +26,6 @@
       <span>资源</span>
     </van-icon>
   </van-popup>
-
-  <!--效果预览区-->
-  <div class="scene-wrapper" :class="[isFullScreen? '': 'preview']" :style="{height: device.height + 'px', width: device.width + 'px'}">
-      <scene v-if="currentScene" :scene="currentScene" :device="device" @element-selected="tapElementEdit"></scene>
-  </div>
 
   <!--底部配置区-->
   <van-popup v-model="showElementConfigPop" class="pop-config-element" :overlay="false" position="bottom">
@@ -54,12 +56,11 @@
       </div>
     </div>
   </van-popup>
-
 </div>
 </template>
 
 <script>
-import Scene from './Scene'
+import Scene from './EditScene'
 import ChooseAddElement from './ChooseAddElement'
 import ElementEdit from './ElementEdit'
 import SceneEdit from './SceneEdit'
@@ -71,7 +72,7 @@ export default {
   components: {
     ElementEdit,
     SceneEdit,
-    Scene,
+    'scene': Scene,
     ChooseAddElement
   },
   data () {
@@ -212,12 +213,14 @@ export default {
         })
       }
     },
-
-    tapElementEdit (index) {
-      this.showElementConfigPop = true
-      this.showWorkConfigPop = false
-      this.isFullScreen = false
+    tapElementOn (index) {
+      // this.showElementConfigPop = true
+      // this.showWorkConfigPop = false
+      // this.isFullScreen = false
       this.currentElement = this.currentScene.elements[index]
+    },
+    tapSceneOn () {
+      this.currentElement = null
     }
   }
 }
@@ -233,14 +236,18 @@ export default {
   height: 100vh;
   background-color: #f2f2f2;
 
-  .van-icon-arrow-left {
+  .scene-buttons {
     position: absolute;
-    top: 16px;
+    bottom: 16px;
     right: 16px;
     font-size: 24px;
     z-index: 101;
+    width: 70px;
+    display: flex;
+    justify-content: space-between;
     color: #666;
   }
+
   .scene-wrapper {
     background-color: #fff;
     border: 1px solid #fefefe;

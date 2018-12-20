@@ -35,7 +35,6 @@
       <edit-animation v-model="element.existence"></edit-animation>
     </div>
     <div v-if="currentTab === '背景'">
-      
     </div>
   </div>
 </div>
