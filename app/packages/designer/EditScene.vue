@@ -18,8 +18,9 @@
     </div>
   </vue-draggable-resizable>
 
-  <vue-draggable-resizable :x="5" :y="device.height - 480" w="320" h="260" v-if="showElementEditBox">
-    <edit-element></edit-element>
+  <vue-draggable-resizable :resizable="false" :parent="true" :x="(device.width-320)/2" :y="device.height - 280" w="320" h="260" v-if="showElementEditBox"
+    class="element-editing-box">
+    <edit-element :element="currentElement"></edit-element>
   </vue-draggable-resizable>
 </div>
 </template>
@@ -92,7 +93,7 @@ export default {
     },
 
     onConfigElement () {
-
+      this.showElementEditBox = true
     },
     onElementClicked (index) {
       this.currentIndex = index
@@ -100,6 +101,7 @@ export default {
       this.currentElement = this.scene.elements[index]
     },
     onSceneClicked () {
+      debugger;
       this.currentIndex = -1
       this.currentElement = null
       this.$emit('scene-selected')
@@ -129,6 +131,10 @@ export default {
       height: 100%;
       background-color: #E4E4E4;
     }
+  }
+
+  .element-editing-box {
+    border: 1px solid #eee;
   }
 }
 </style>

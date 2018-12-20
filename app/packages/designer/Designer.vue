@@ -1,6 +1,6 @@
 <template>
 <div class="designer mobile">
-  <div class="scene-buttons" v-if="currentElement === null">
+  <div class="scene-buttons">
     <van-icon name="plus" @click="tapAddElement"/>
     <van-icon name="setting-o" @click="toggleConfigMode"/>
   </div>
