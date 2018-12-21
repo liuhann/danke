@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import settings from '../utils/animations'
+import settings from '../../utils/animations'
 
 export default {
   name: 'AnimationSelector',

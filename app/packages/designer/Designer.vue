@@ -60,10 +60,10 @@
 </template>
 
 <script>
-import Scene from './EditScene'
+import Scene from './DragableSceneEdit'
 import ChooseAddElement from './ChooseAddElement'
-import ElementEdit from './ElementEdit'
-import SceneEdit from './SceneEdit'
+import ElementEdit from './forms/ConfigElement'
+import SceneEdit from './forms/ConfigScene'
 import utils from '../utils/util'
 import Elements from '../utils/elements'
 

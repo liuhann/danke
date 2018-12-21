@@ -27,7 +27,7 @@
 
 <script>
 import VueDraggableResizable from 'vue-draggable-resizable'
-import EditElement from './ElementEdit'
+import EditElement from './forms/ConfigElement'
 import '../animations/entrance.css'
 import '../animations/exits.css'
 import utils from '../utils/util'

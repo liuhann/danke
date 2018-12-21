@@ -36,7 +36,7 @@
 
 <script>
 import AnimationSelector from './AnimationSelector'
-import utils from '../utils/util'
+import utils from '../../utils/util'
 export default {
   name: 'EditAnimation',
   props: {
