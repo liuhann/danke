@@ -41,6 +41,9 @@ export default {
   },
   name: 'EditLen',
   watch: {
+    value () {
+      this.setDataFromValue()
+    },
     length () {
       this.$emit('input', this.length + this.unit)
     },

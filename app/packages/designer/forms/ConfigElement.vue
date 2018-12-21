@@ -14,8 +14,8 @@
   </div>
   <div class="edit-area">
     <div v-if="currentTab === '定位'">
-      <edit-len v-model="element.x" min="-1000000" label="横向"></edit-len>
-      <edit-len v-model="element.y" min="-1000000" label="纵向"></edit-len>
+      <edit-len v-model="element.x" :min="-1000000" label="横向"></edit-len>
+      <edit-len v-model="element.y" :min="-1000000" label="纵向"></edit-len>
       <edit-len v-model="element.width" label="宽度"></edit-len>
       <edit-len v-model="element.height" label="高度"></edit-len>
     </div>
@@ -56,14 +56,15 @@ export default {
     EditAnimation
   },
   props: {
-    element: {
+    elementConfig: {
       type: Object
     }
   },
   data () {
     return {
+      element: this.elementConfig,
       activeKey: 0,
-      active: '定位',
+      currentTab: '定位',
       position: {
         x: 0,
         xu: 'vw',
@@ -98,6 +99,12 @@ export default {
     }
   },
   watch: {
+    elementConfig: {
+      handler: function (val) {
+        this.element = val
+      },
+      deep: true
+    },
     value () {
       // this.setDataFromValue()
     },

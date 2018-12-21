@@ -15,8 +15,16 @@ const formatNumber = n => {
   n = n.toString()
   return n[1] ? n : '0' + n
 }
+const REG_LEN = /([+-]?[0-9#]+)(%|px|pt|em|rem|in|cm|mm|ex|ch|pc|vw|vh|vmin|vmax|deg|rad|turn)?$/
 
-const REG_LEN = /([+-]?[0-9#\.]+)(%|px|pt|em|rem|in|cm|mm|ex|ch|pc|vw|vh|vmin|vmax|deg|rad|turn)?$/
+function getLenSplits (len) {
+  const splits = REG_LEN.exec(len)
+  return {
+    len: splits[1],
+    unit: splits[2]
+  }
+}
+
 function getLength (len, scale, px) {
   // -15vw ->  [-15vw,-15,vw]
   const splits = REG_LEN.exec(len)
@@ -335,6 +343,8 @@ function checkScene (scene) {
 }
 
 export default {
+  getLenSplits,
+  getLength,
   formatTime,
   getElementStyle,
   clone,

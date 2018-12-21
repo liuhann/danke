@@ -3,34 +3,24 @@
   <div class="scene-buttons">
     <van-icon name="plus" @click="tapAddElement"/>
     <van-icon name="setting-o" @click="toggleConfigMode"/>
+    <van-icon name="apps-o" @click="showPageListPop = true" />
   </div>
   <!--效果预览区-->
-  <div class="scene-wrapper" :class="[isFullScreen? '': 'preview']" :style="{height: device.height + 'px', width: device.width + 'px'}">
-    <scene v-if="currentScene" :scene="currentScene" :device="device" @element-selected="tapElementOn" @scene-selected="tapSceneOn"></scene>
+  <div class="scene-wrapper" :style="{height: device.height + 'px', width: device.width + 'px'}">
+    <dragable-scene-edit :scene="currentScene" :device="device" @element-selected="tapElementOn" @scene-selected="tapSceneOn"></dragable-scene-edit>
   </div>
 
-  <!--操作按钮列表-->
-  <van-popup v-model="showSettingAside" class="pop-setting-aside" :overlay="false" position="right">
-    <van-icon name="arrow" class="return" @click="toggleFullscreenMode"/>
-    <van-icon name="setting-o" class="setting" >
-      <span>配置</span>
-    </van-icon>
-    <van-icon name="apps-o" class="pages" @click="showPageListPop = true" >
-      <span>全部页面</span>
-    </van-icon>
-
-    <van-icon name="add-o" class="add" @click="tapAddElement">
-      <span>新增元素</span>
-    </van-icon>
-    <van-icon name="paid" class="add" @click="tapShowResources">
-      <span>资源</span>
-    </van-icon>
-  </van-popup>
-
-  <!--底部配置区-->
-  <van-popup v-model="showElementConfigPop" class="pop-config-element" :overlay="false" position="bottom">
-    <element-edit v-if="currentElement" :element="currentElement||currentScene"></element-edit>
-  </van-popup>
+  <!--配置区，可以进行元素配置项手动修改 -->
+  <vue-draggable-resizable :resizable="false" :x="20" :y="device.height - 280" :w="device.width - 40" :h="260" v-if="showEditBox"
+                           drag-handle=".drag-handle"
+                           class="element-editing-box">
+    <div class="drag-handle">
+      <van-icon name="cross" @click="closeEditBox"></van-icon>
+      <van-icon name="wap-nav"></van-icon>
+    </div>
+    <config-element v-if="currentElement" :element-config="currentElement"></config-element>
+    <config-scene v-if="!currentElement" :scene-config="currentScene"></config-scene>
+  </vue-draggable-resizable>
 
   <!--新增元素弹出框-->
   <van-popup v-model="showAddElement" class="pop-select-element" position="center" :overlay="true">
@@ -43,7 +33,7 @@
       <van-row type="flex" justify="space-around" class="header">
         <van-col span="21">
           <van-button plain type="primary" @click="addEmptyScene" size="small">新增</van-button>
-          <van-button plain type="primary" @click="cloneCurrentScene" size="small">复制当前页</van-button>
+          <van-button plain type="primary" size="small">复制当前页</van-button>
         </van-col>
         <van-col span="2"><van-icon name="cross" @click="showPageListPop = false"></van-icon></van-col>
       </van-row>
@@ -60,24 +50,25 @@
 </template>
 
 <script>
-import Scene from './DragableSceneEdit'
+import VueDraggableResizable from 'vue-draggable-resizable'
+import DragableSceneEdit from './DragableSceneEdit'
 import ChooseAddElement from './ChooseAddElement'
-import ElementEdit from './forms/ConfigElement'
-import SceneEdit from './forms/ConfigScene'
+import ConfigElement from './forms/ConfigElement'
+import ConfigScene from './forms/ConfigScene'
 import utils from '../utils/util'
 import Elements from '../utils/elements'
 
 export default {
   name: 'Designer',
   components: {
-    ElementEdit,
-    SceneEdit,
-    'scene': Scene,
+    ConfigElement,
+    ConfigScene,
+    VueDraggableResizable,
+    DragableSceneEdit,
     ChooseAddElement
   },
   data () {
     return {
-      isFullScreen: true,
       device: {
         width: window.innerWidth,
         height: window.innerHeight
@@ -86,9 +77,8 @@ export default {
       currentScene: null,
       currentElement: null,
       workConfig: {},
-      showWorkConfigPop: false,
+      showEditBox: false,
       showAddElement: false,
-      showSettingAside: false,
       showPageListPop: false
     }
   },
@@ -135,8 +125,11 @@ export default {
   methods: {
     // 切换到编辑模式
     toggleConfigMode () {
-      this.showSettingAside = true
-      this.isFullScreen = false
+      this.showEditBox = true
+    },
+
+    closeEditBox () {
+      this.showEditBox = false
     },
     // 切换到全屏模式
     toggleFullscreenMode () {
@@ -157,6 +150,7 @@ export default {
 
     tapAddElement () {
       this.showAddElement = true
+      console.log(this.scenes)
     },
 
     tapAddScene () {
@@ -170,6 +164,7 @@ export default {
     addEmptyScene () {
       this.scenes.push({
         'template': 'designed',
+        'play': 'auto',
         'hideDelay': 2000,
         'triggerClose': 3000,
         'elements': []
@@ -242,7 +237,7 @@ export default {
     right: 16px;
     font-size: 24px;
     z-index: 101;
-    width: 70px;
+    width: 100px;
     display: flex;
     justify-content: space-between;
     color: #666;
@@ -259,26 +254,23 @@ export default {
       transform: scaleX(.7) scaleY(.7);
     }
   }
-  .pop-setting-aside {
-    position: absolute;
-    color: #666;
-    z-index: 101;
-    width: 15vw;
-    right: 0;
-    display: flex;
-    top: 23%;
-    background: none;
-    flex-direction: column;
-    .van-icon {
-      margin-top: 2vw;
-      height: 13vw;
-      font-size: 6vw;
+
+  .element-editing-box {
+    border: 1px solid #eee;
+
+    .drag-handle {
+      height: 24px;
       text-align: center;
-      display: flex;
-      flex-direction: column;
-      span {
-        line-height: 20px;
-        font-size: 9px;
+      border-bottom: 1px solid #eee;
+      background-color: #fefefe;
+      .van-icon {
+        color: #ccc;
+        margin: 0 10px;
+        &.van-icon-cross {
+          color: #666;
+          line-height: 24px;
+          float: right;
+        }
       }
     }
   }

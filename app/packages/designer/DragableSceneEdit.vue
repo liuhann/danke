@@ -1,26 +1,22 @@
 <template>
-<div class="scene" :style="sceneStyle">
+<div class="scene" :style="sceneStyle" @click.self="onSceneClicked">
   <vue-draggable-resizable v-for="(element, index) in sceneConfig.elements" :key="index" class="element-wrapper"
+    drag-handle=".drag-handle"
     @activated="onElementClicked(index)"
-    @deactivated="onSceneClicked"
+    @resizing="onElementResizing"
+    @dragging="onElementDraging"
     :class="[element.animationPreview]">
-    <van-icon v-if="currentIndex===index" name="setting-o" @click.stop="onConfigElement(currentElement)"></van-icon>
-    <div v-if="element.type==='image'" class="image" :style="{
+    <div v-if="element.type==='image'" class="image drag-handle" :style="{
       backgroundImage: element.src
     }">
     </div>
-    <div v-if="element.type === 'text'" class="text" :style="{
+    <div v-if="element.type === 'text'" class="text drag-handle" :style="{
       fontSize: element.font
     }">
       {{element.content}}
     </div>
-    <div v-if="element.type === 'circle'" class="circle">
+    <div v-if="element.type === 'circle'" class="circle drag-handle">
     </div>
-  </vue-draggable-resizable>
-
-  <vue-draggable-resizable :resizable="false" :parent="true" :x="(device.width-320)/2" :y="device.height - 280" w="320" h="260" v-if="showElementEditBox"
-    class="element-editing-box">
-    <edit-element :element="currentElement"></edit-element>
   </vue-draggable-resizable>
 </div>
 </template>
@@ -59,8 +55,11 @@ export default {
   },
 
   watch: {
-    scene () {
-      // this.sceneConfig = utils.generateSceneDisplayStyle(this.scene, this.device, this.coordinate, this.styleName)
+    scene: {
+      handler (val) {
+        this.generateEditSceneDataBinding()
+      },
+      deep: true
     }
   },
   computed: {
@@ -69,11 +68,11 @@ export default {
         width: this.device.width + 'px',
         height: this.device.height + 'px'
       }
-    },
-    sceneConfig () {
-      const sceneConfig = utils.generateSceneDisplayStyle(this.scene, this.device, this.coordinate, this.styleName)
-      return sceneConfig
     }
+    // sceneConfig () {
+    //   // const sceneConfig = utils.generateSceneDisplayStyle(this.scene, this.device, this.coordinate, this.styleName)
+    //   return this.generateEditSceneDataBinding(this.scene)
+    // }
   },
 
   created () {
@@ -82,18 +81,33 @@ export default {
 
   data () {
     return {
+      sceneConfig: this.generateEditSceneDataBinding(),
       showElementEditBox: false,
       currentElement: null,
       currentIndex: -1
     }
   },
   methods: {
+    generateEditSceneDataBinding () {
+      for (let element of this.scene.elements) {
+        const converted = this.convertPositionToPx(element, this.coordinate, this.device)
+        element.xpx = converted.xpx
+        element.ypx = converted.ypx
+        element.wpx = converted.wpx
+        element.hpx = converted.hpx
+        // Object.assign(element, converted)
+      }
+      console.log('scene data binding changerd', this.scene)
+      return this.scene
+    },
     computeSceneStyle () {
       return utils.generateSceneDisplayStyle(this.scene, this.device, this.coordinate)
     },
-
     onConfigElement () {
       this.showElementEditBox = true
+    },
+    closeElementConfig () {
+      this.showElementEditBox = false
     },
     onElementClicked (index) {
       this.currentIndex = index
@@ -101,11 +115,83 @@ export default {
       this.currentElement = this.scene.elements[index]
     },
     onSceneClicked () {
-      debugger;
       this.currentIndex = -1
       this.currentElement = null
+      this.showElementEditBox = false
       this.$emit('scene-selected')
+    },
+
+    onElementResizing (left, top, width, height) {
+      if (!this.currentElement) return
+      this.reversePosition(this.currentElement, {
+        left, top, width, height
+      }, this.coordinate, this.device)
+    },
+
+    onElementDraging (left, top) {
+      if (!this.currentElement) return
+      this.reversePosition(this.currentElement, {
+        left, top
+      }, this.coordinate, this.device)
+    },
+
+    // 将vh、vw定位转换为px 定位
+    convertPositionToPx (element, coordinate, device) {
+      const result = {}
+      if (coordinate === 'center') {
+        result.xpx = device.width / 2 + parseInt(utils.getLength(element.x, device))
+      } else {
+        result.xpx = parseInt(utils.getLength(element.x, device))
+      }
+
+      if (coordinate === 'center') {
+        result.ypx = device.height / 2 + parseInt(utils.getLength(element.y, device))
+      } else {
+        result.ypx = parseInt(utils.getLength(element.y, device))
+      }
+      result.wpx = parseInt(utils.getLength(element.width, device))
+      result.hpx = parseInt(utils.getLength(element.height, device))
+      return result
+    },
+
+    reversePosition (element, newPos, coordinate, device) {
+      if (newPos.left) {
+        if (coordinate === 'center') {
+          element.x = this.setLenFromPx(newPos.left - device.width / 2, element.x, device)
+        } else {
+          element.x = this.setLenFromPx(newPos.left, element.x, device)
+        }
+      }
+
+      if (newPos.top) {
+        if (coordinate === 'center') {
+          element.y = this.setLenFromPx(newPos.top - device.height / 2, element.y, device)
+        } else {
+          element.y = this.setLenFromPx(newPos.top, element.y, device)
+        }
+      }
+
+      if (newPos.width) {
+        element.width = this.setLenFromPx(newPos.width, element.width, device)
+      }
+
+      if (newPos.height) {
+        element.height = this.setLenFromPx(newPos.height, element.height, device)
+      }
+    },
+
+    // 将以px为单位的长度转换回vw、 vh等长度格式
+    setLenFromPx (newValue, originalValue, device) {
+      let { unit } = utils.getLenSplits(originalValue)
+      if (unit === 'vw') {
+        return Math.floor(newValue / device.width * 100) + 'vw'
+      } else if (unit === 'vh') {
+        return Math.floor(newValue / device.height * 100) + 'vh'
+      } else {
+        return newValue
+      }
     }
+
   }
 }
 </script>
@@ -131,10 +217,6 @@ export default {
       height: 100%;
       background-color: #E4E4E4;
     }
-  }
-
-  .element-editing-box {
-    border: 1px solid #eee;
   }
 }
 </style>

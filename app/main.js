@@ -8,7 +8,6 @@ import home from './packages/home'
 import designer from './packages/designer'
 
 import './common.css'
-
 const boot = new AsyncBoot({
   vue: {
     rootApp: App,
