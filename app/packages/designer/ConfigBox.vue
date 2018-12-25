@@ -6,8 +6,8 @@
     <van-icon name="cross" @click="closeBox"></van-icon>
     <van-icon name="wap-nav"></van-icon>
   </div>
-  <config-element v-if="element" :element-config="element"></config-element>
-  <config-scene v-if="!scene" :scene-config="scene"></config-scene>
+  <config-element v-if="element" :element="element"></config-element>
+  <config-scene v-if="!scene" :scene="scene"></config-scene>
 </vue-draggable-resizable>
 </template>
 

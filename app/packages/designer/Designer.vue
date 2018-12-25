@@ -6,7 +6,7 @@
     <van-icon name="ellipsis" @click="showSceneList" />
   </div>
   <!--效果预览区-->
-  <dragable-scene-edit :scene="currentScene" :device="device"
+  <dragable-scene-edit ref="sceneEdit" :scene="currentScene" :device="device"
     @element-selected="tapElementOn"
     @scene-selected="tapSceneOn"
     @positioning="elementPositionChange"></dragable-scene-edit>
@@ -108,12 +108,18 @@ export default {
         // on cancel
       })
     },
+
+    // 选择新增一个element
     selectAddElement (elementName) {
+      let newEl = null
       if (elementName === 'image') {
-        this.currentScene.elements.push(utils.clone(Elements.IMAGE))
-      }
+        newEl = utils.clone(Elements.IMAGE)
+      } 
       if (elementName === 'text') {
-        this.currentScene.elements.push(utils.clone(Elements.TEXT))
+        newEl = utils.clone(Elements.TEXT)
+      }
+      if (newEl) {
+        this.$refs.sceneEdit.addElement(newEl)
       }
     },
     tapElementOn (index) {

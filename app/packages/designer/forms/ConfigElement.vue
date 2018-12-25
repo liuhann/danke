@@ -55,61 +55,17 @@ export default {
     EditAnimation
   },
   props: {
-    elementConfig: {
+    element: {
       type: Object
     }
   },
   data () {
     return {
-      element: this.elementConfig,
       activeKey: 0,
-      currentTab: '定位',
-      position: {
-        x: 0,
-        xu: 'vw',
-        y: 0,
-        yu: 'vh',
-        w: 0,
-        wu: 'vw',
-        h: 0,
-        hu: 'vh'
-      },
-      clip: {
-        ax: 0,
-        ay: 0,
-        bx: 100,
-        by: 0,
-        cx: 100,
-        cy: 100,
-        dx: 0,
-        dy: 100
-      },
-      entrance: {
-        animation: '',
-        duration: 400,
-        timing: 'easeOutQuad',
-        delay: 0
-      },
-      exits: {
-        animation: '',
-        duration: 400,
-        delay: 0
-      }
+      currentTab: '定位'
     }
   },
   watch: {
-    // element: {
-    //   handler: function (val) {
-    //     this.element.positioningCallback(val)
-    //   },
-    //   deep: true
-    // },
-    elementConfig: {
-      handler: function (val) {
-        this.element = val
-      },
-      deep: true
-    },
     position1: {
       handler: function (val, oldVal) {
         this.value.x = this.position.x + this.position.xu
@@ -149,6 +105,7 @@ export default {
 
   methods: {
     positionChange () {
+      this.nanobus.emit('position-change', this.element)
     },
 
     onBadgeChange (index) {

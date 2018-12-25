@@ -1,6 +1,6 @@
 <template>
 <div class="scene" :style="sceneStyle" @click.self="onSceneClicked">
-  <vue-draggable-resizable v-for="(element, index) in sceneConfig.elements" :key="index" class="element-wrapper"
+  <vue-draggable-resizable v-for="(element, index) in scene.elements" :key="index" class="element-wrapper"
     drag-handle=".drag-handle"
     @activated="onElementClicked(index)"
     @resizing="onElementResizing"
@@ -24,11 +24,12 @@
 </template>
 
 <script>
-import VueDraggableResizable from 'vue-draggable-resizable'
+import VueDraggableResizable from 'vue\-draggable-resizable'
 import EditElement from './forms/ConfigElement'
 import '../animations/entrance.css'
 import '../animations/exits.css'
 import utils from '../utils/util'
+import positionUtils from '../utils/position'
 
 export default {
   name: 'Scene',
@@ -49,24 +50,7 @@ export default {
   },
 
   watch: {
-    // 增加或者删除element时
-    'scene.elements': {
-      handler (val) {
-        this.generateEditSceneDataBinding()
-      },
-      deep: false
-    }
-    // currentElement: {
-    //   handler (val) {
-    //     const converted = this.convertPositionToPx(val, this.coordinate, this.device)
-    //     this.$refs['element-' + this.currentIndex][0].elmX = converted.xpx
-    //     // val.xpx = converted.xpx
-    //     // val.ypx = converted.ypx
-    //     // val.wpx = converted.wpx
-    //     // val.hpx = converted.hpx
-    //   },
-    //   deep: true
-    // }
+
   },
   computed: {
     sceneStyle () {
@@ -75,24 +59,42 @@ export default {
         height: this.device.height + 'px'
       }
     }
-    // sceneConfig () {
-    //   // const sceneConfig = utils.generateSceneDisplayStyle(this.scene, this.device, this.coordinate, this.styleName)
-    //   return this.generateEditSceneDataBinding(this.scene)
-    // }
   },
 
   created () {
-    // this.sceneConfig = utils.generateSceneDisplayStyle(this.scene, this.device, this.coordinate, this.styleName)
+    this.nanobus.on('position-change', this.updateElementPosition)
   },
 
   data () {
     return {
-      sceneConfig: this.generateEditSceneDataBinding(),
       currentElement: null,
       currentIndex: -1
     }
   },
   methods: {
+
+    // 增加一个element 
+    addElement (element) {
+      this.scene.elements.push(element)
+      this.currentElement = null
+
+      this.$nextTick(() => {
+        this.updateElementPosition(element)
+      })
+    },
+
+    // 更新指定element的位置和大小 创建或者box调整数据时
+    updateElementPosition (element) {
+      const pixels = positionUtils.toPixel(element, this.scene.coordinate, this.device)
+
+      const index = this.scene.elements.indexOf(element)
+      const targetDraggable = this.$refs['element-' + index][0]
+      targetDraggable.top = pixels.x
+      targetDraggable.left = pixels.y
+      targetDraggable.width = pixels.w
+      targetDraggable.height = pixels.h
+    },
+
     generateEditSceneDataBinding () {
       for (let element of this.scene.elements) {
         const converted = this.convertPositionToPx(element, this.coordinate, this.device)
