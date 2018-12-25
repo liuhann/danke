@@ -14,10 +14,10 @@
   </div>
   <div class="edit-area">
     <div v-if="currentTab === '定位'">
-      <edit-len v-model="element.x" :min="-1000000" label="横向"></edit-len>
-      <edit-len v-model="element.y" :min="-1000000" label="纵向"></edit-len>
-      <edit-len v-model="element.width" label="宽度"></edit-len>
-      <edit-len v-model="element.height" label="高度"></edit-len>
+      <edit-len v-model="element.x" @change="positionChange" :min="-1000000" label="横向"></edit-len>
+      <edit-len v-model="element.y" @change="positionChange" :min="-1000000" label="纵向"></edit-len>
+      <edit-len v-model="element.width" @change="positionChange"  label="宽度"></edit-len>
+      <edit-len v-model="element.height" @change="positionChange" label="高度"></edit-len>
     </div>
     <div v-if="currentTab === '字体'">
       <edit-len v-model="element.font.size" label="大小"></edit-len>
@@ -46,7 +46,6 @@ import EditLen from './EditLen'
 import EditClipPath from './EditClipPath'
 import EditAnimation from './EditAnimation'
 
-const REG_LEN = /([+-]?[0-9#]+)(%|px|pt|em|rem|in|cm|mm|ex|ch|pc|vw|vh|vmin|vmax|deg|rad|turn)?$/
 export default {
   name: 'ElementEdit',
   components: {
@@ -99,14 +98,17 @@ export default {
     }
   },
   watch: {
+    // element: {
+    //   handler: function (val) {
+    //     this.element.positioningCallback(val)
+    //   },
+    //   deep: true
+    // },
     elementConfig: {
       handler: function (val) {
         this.element = val
       },
       deep: true
-    },
-    value () {
-      // this.setDataFromValue()
     },
     position1: {
       handler: function (val, oldVal) {
@@ -146,6 +148,10 @@ export default {
   },
 
   methods: {
+    positionChange () {
+      this.element.positionChange()
+    },
+
     onBadgeChange (index) {
       this.currentTab = event.currentTarget.innerText
       this.activeKey = index

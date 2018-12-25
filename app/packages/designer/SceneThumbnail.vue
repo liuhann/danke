@@ -1,6 +1,6 @@
 <template>
 <div class="scene" :style="sceneStyle">
-  <vue-draggable-resizable v-for="(element, index) in sceneConfig.elements" :key="index" class="element-wrapper"  :class="[currentIndex===index?'selected':'', element.animationPreview]">
+  <div v-for="(element, index) in sceneConfig.elements" :key="index" class="element-wrapper"  :class="[currentIndex===index?'selected':'', element.animationPreview]">
     <div v-if="element.type==='image'" class="image" :style="{
       backgroundImage: element.src
     }">
@@ -12,7 +12,7 @@
     </div>
     <div v-if="element.type === 'circle'" class="circle">
     </div>
-  </vue-draggable-resizable>
+  </div>
 </div>
 </template>
 
@@ -23,7 +23,7 @@ import '../animations/exits.css'
 import utils from '../utils/util'
 
 export default {
-  name: 'Scene',
+  name: 'SceneThumbnail',
   components: {
     VueDraggableResizable
   },

@@ -5,7 +5,9 @@
     @activated="onElementClicked(index)"
     @resizing="onElementResizing"
     @dragging="onElementDraging"
-    :class="[element.animationPreview]">
+    :ref="'element-' + index"
+    :style="element.computedStyle"
+    :class="[element.animationPreview, index===currentIndex?'current':'']">
     <div v-if="element.type==='image'" class="image drag-handle" :style="{
       backgroundImage: element.src
     }">
@@ -35,19 +37,11 @@ export default {
     EditElement
   },
   props: {
-    checkable: {
-      type: Boolean,
-      default: false
-    },
     scene: {
       type: Object
     },
     device: {
       type: Object
-    },
-    coordinate: {
-      type: String,
-      default: 'tl'
     },
     styleName: {
       type: String
@@ -55,12 +49,24 @@ export default {
   },
 
   watch: {
-    scene: {
+    // 增加或者删除element时
+    'scene.elements': {
       handler (val) {
         this.generateEditSceneDataBinding()
       },
-      deep: true
+      deep: false
     }
+    // currentElement: {
+    //   handler (val) {
+    //     const converted = this.convertPositionToPx(val, this.coordinate, this.device)
+    //     this.$refs['element-' + this.currentIndex][0].elmX = converted.xpx
+    //     // val.xpx = converted.xpx
+    //     // val.ypx = converted.ypx
+    //     // val.wpx = converted.wpx
+    //     // val.hpx = converted.hpx
+    //   },
+    //   deep: true
+    // }
   },
   computed: {
     sceneStyle () {
@@ -82,7 +88,6 @@ export default {
   data () {
     return {
       sceneConfig: this.generateEditSceneDataBinding(),
-      showElementEditBox: false,
       currentElement: null,
       currentIndex: -1
     }
@@ -103,105 +108,68 @@ export default {
     computeSceneStyle () {
       return utils.generateSceneDisplayStyle(this.scene, this.device, this.coordinate)
     },
-    onConfigElement () {
-      this.showElementEditBox = true
+
+    positioningCallback (val) {
+      const converted = this.convertPositionToPx(val, this.coordinate, this.device)
+      this.currentElement.xpx = converted.xpx
+      this.currentElement.ypx = converted.ypx
+      this.currentElement.wpx = converted.wpx
+      this.currentElement.hpx = converted.hpx
     },
-    closeElementConfig () {
-      this.showElementEditBox = false
-    },
+
     onElementClicked (index) {
       this.currentIndex = index
       this.$emit('element-selected', index)
       this.currentElement = this.scene.elements[index]
+      this.currentElement.positioningCallback = this.positioningCallback
     },
     onSceneClicked () {
       this.currentIndex = -1
       this.currentElement = null
-      this.showElementEditBox = false
       this.$emit('scene-selected')
     },
-
+    /**
+     * element resize时的回调, emit出位置信息
+     */
     onElementResizing (left, top, width, height) {
       if (!this.currentElement) return
-      this.reversePosition(this.currentElement, {
-        left, top, width, height
-      }, this.coordinate, this.device)
+      this.$emit('positioning', {
+        element: this.currentElement,
+        newPos: {
+          left, top, width, height
+        }
+      })
     },
 
+    /**
+     * element拖动时的回调, emit出位置信息
+     */
     onElementDraging (left, top) {
       if (!this.currentElement) return
-      this.reversePosition(this.currentElement, {
-        left, top
-      }, this.coordinate, this.device)
-    },
-
-    // 将vh、vw定位转换为px 定位
-    convertPositionToPx (element, coordinate, device) {
-      const result = {}
-      if (coordinate === 'center') {
-        result.xpx = device.width / 2 + parseInt(utils.getLength(element.x, device))
-      } else {
-        result.xpx = parseInt(utils.getLength(element.x, device))
-      }
-
-      if (coordinate === 'center') {
-        result.ypx = device.height / 2 + parseInt(utils.getLength(element.y, device))
-      } else {
-        result.ypx = parseInt(utils.getLength(element.y, device))
-      }
-      result.wpx = parseInt(utils.getLength(element.width, device))
-      result.hpx = parseInt(utils.getLength(element.height, device))
-      return result
-    },
-
-    reversePosition (element, newPos, coordinate, device) {
-      if (newPos.left) {
-        if (coordinate === 'center') {
-          element.x = this.setLenFromPx(newPos.left - device.width / 2, element.x, device)
-        } else {
-          element.x = this.setLenFromPx(newPos.left, element.x, device)
+      this.$emit('positioning', {
+        element: this.currentElement,
+        newPos: {
+          left, top
         }
-      }
-
-      if (newPos.top) {
-        if (coordinate === 'center') {
-          element.y = this.setLenFromPx(newPos.top - device.height / 2, element.y, device)
-        } else {
-          element.y = this.setLenFromPx(newPos.top, element.y, device)
-        }
-      }
-
-      if (newPos.width) {
-        element.width = this.setLenFromPx(newPos.width, element.width, device)
-      }
-
-      if (newPos.height) {
-        element.height = this.setLenFromPx(newPos.height, element.height, device)
-      }
-    },
-
-    // 将以px为单位的长度转换回vw、 vh等长度格式
-    setLenFromPx (newValue, originalValue, device) {
-      let { unit } = utils.getLenSplits(originalValue)
-      if (unit === 'vw') {
-        return Math.floor(newValue / device.width * 100) + 'vw'
-      } else if (unit === 'vh') {
-        return Math.floor(newValue / device.height * 100) + 'vh'
-      } else {
-        return newValue
-      }
+      })
     }
-
   }
 }
 </script>
 
 <style lang="less">
 .scene {
+  background-color: #fff;
+  border: 1px solid #fefefe;
+  border-radius: 10px;
+  box-sizing: border-box;
   position: relative;
   .element-wrapper {
     position: absolute;
     box-sizing: border-box;
+    &.current {
+      border: 2px solid #4b0;
+    }
     .van-icon-setting-o {
       position: absolute;
       right: 4px;

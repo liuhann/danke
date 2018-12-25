@@ -46,9 +46,11 @@ export default {
     },
     length () {
       this.$emit('input', this.length + this.unit)
+      this.$emit('change')
     },
     unit () {
       this.$emit('input', this.length + this.unit)
+      this.$emit('change')
     }
   },
   data () {
