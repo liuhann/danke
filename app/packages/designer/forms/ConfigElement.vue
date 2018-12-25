@@ -149,7 +149,6 @@ export default {
 
   methods: {
     positionChange () {
-      this.element.positionChange()
     },
 
     onBadgeChange (index) {

@@ -33,6 +33,7 @@ import ConfigBox from './ConfigBox'
 import utils from '../utils/util'
 import position from '../utils/position'
 import Elements from '../utils/elements'
+import Nanobus from '../utils/nanobus'
 
 export default {
   name: 'Designer',
@@ -60,6 +61,7 @@ export default {
 
   created () {
     this.tapAddScene()
+    this.nanobus = new Nanobus()
     this.currentScene = this.scenes[0]
   },
   methods: {

@@ -121,7 +121,7 @@ export default {
       this.currentIndex = index
       this.$emit('element-selected', index)
       this.currentElement = this.scene.elements[index]
-      this.currentElement.positioningCallback = this.positioningCallback
+      this.currentElement.changePosition = this.positioningCallback
     },
     onSceneClicked () {
       this.currentIndex = -1
