@@ -5,8 +5,26 @@ const BASE = {
   width: '90vw',
   height: '39vh',
   animationPreview: {},
-  background: {},
-  border: {},
+  background: {
+    mode: '1',
+    color: '#fff',
+    gradient: ['#fff', '#fff']
+  },
+  border: {
+    width: 0,
+    style: 'solid',
+    color: '#fff',
+    position: [0, 0, 0, 0],
+    radius: [0, 0, 0, 0]
+  },
+  font: {
+    size: 16,
+    lspace: 2,
+    color: '#fff',
+    weight: 'normal',
+    decoration: 'none',
+    style: 'normal'
+  },
   in: {
     animation: '',
     duration: 400,

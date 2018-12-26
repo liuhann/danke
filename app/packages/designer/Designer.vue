@@ -5,6 +5,7 @@
     <van-icon name="edit" @click.stop="showConfigBox"/>
     <van-icon name="ellipsis" @click="showSceneList" />
   </div>
+
   <!--效果预览区-->
   <dragable-scene-edit ref="sceneEdit" :scene="currentScene" :device="device"
     @element-selected="tapElementOn"
@@ -32,7 +33,7 @@ import SceneListPopup from './SceneListPopup'
 import ConfigBox from './ConfigBox'
 import utils from '../utils/util'
 import position from '../utils/position'
-import Elements from '../utils/elements'
+import Elements from '../utils/element-templates'
 import Nanobus from '../utils/nanobus'
 
 export default {
@@ -114,7 +115,7 @@ export default {
       let newEl = null
       if (elementName === 'image') {
         newEl = utils.clone(Elements.IMAGE)
-      } 
+      }
       if (elementName === 'text') {
         newEl = utils.clone(Elements.TEXT)
       }
@@ -130,7 +131,12 @@ export default {
     },
     elementPositionChange (event) {
       const vps = position.toViewPoint(event.element, event.newPos, this.currentScene.coordinate, this.device)
-      this.currentElement.x = vps.x
+      if (this.currentElement) {
+        this.currentElement.x = vps.x
+        this.currentElement.y = vps.y
+        this.currentElement.width = vps.w
+        this.currentElement.height = vps.h
+      }
     }
   }
 }

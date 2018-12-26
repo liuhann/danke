@@ -2,7 +2,7 @@
 <van-row type="flex" justify="space-around">
   <van-col span="4" class="tc label">{{label}}</van-col>
   <van-col span="12">
-    <van-stepper v-model="length" :min="min || 0" :max="max" :step="step || 1"/>
+    <van-stepper @plus="stepChange" @minus="stepChange" v-model="length" :min="min || 0" :max="max" :step="step || 1"/>
   </van-col>
   <van-col span="8">
     <select v-model="unit" v-if="withUnit">
@@ -46,11 +46,9 @@ export default {
     },
     length () {
       this.$emit('input', this.length + this.unit)
-      this.$emit('change')
     },
     unit () {
       this.$emit('input', this.length + this.unit)
-      this.$emit('change')
     }
   },
   data () {
@@ -69,6 +67,9 @@ export default {
       let lu = this.getLengthUnit(this.value)
       this.length = lu.number
       this.unit = lu.unit
+    },
+    stepChange () {
+      this.$emit('change')
     },
     getLengthUnit (len) {
       // -15vw ->  [-15vw,-15,vw]

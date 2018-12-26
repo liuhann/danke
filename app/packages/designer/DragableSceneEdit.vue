@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import VueDraggableResizable from 'vue\-draggable-resizable'
+import VueDraggableResizable from 'vue-draggable-resizable'
 import EditElement from './forms/ConfigElement'
 import '../animations/entrance.css'
 import '../animations/exits.css'
@@ -73,12 +73,15 @@ export default {
   },
   methods: {
 
-    // 增加一个element 
+    // 增加一个element
     addElement (element) {
       this.scene.elements.push(element)
-      this.currentElement = null
+      this.currentElement = element
+      this.currentIndex = this.scene.elements.length - 1
+      this.addingElement = true
 
       this.$nextTick(() => {
+        this.addingElement = false
         this.updateElementPosition(element)
       })
     },
@@ -86,44 +89,22 @@ export default {
     // 更新指定element的位置和大小 创建或者box调整数据时
     updateElementPosition (element) {
       const pixels = positionUtils.toPixel(element, this.scene.coordinate, this.device)
-
-      const index = this.scene.elements.indexOf(element)
-      const targetDraggable = this.$refs['element-' + index][0]
+      // const index = this.scene.elements.indexOf(element)
+      const targetDraggable = this.$refs['element-' + this.currentIndex][0]
       targetDraggable.top = pixels.x
       targetDraggable.left = pixels.y
       targetDraggable.width = pixels.w
       targetDraggable.height = pixels.h
     },
 
-    generateEditSceneDataBinding () {
-      for (let element of this.scene.elements) {
-        const converted = this.convertPositionToPx(element, this.coordinate, this.device)
-        element.xpx = converted.xpx
-        element.ypx = converted.ypx
-        element.wpx = converted.wpx
-        element.hpx = converted.hpx
-        // Object.assign(element, converted)
-      }
-      console.log('scene data binding changerd', this.scene)
-      return this.scene
-    },
     computeSceneStyle () {
       return utils.generateSceneDisplayStyle(this.scene, this.device, this.coordinate)
     },
 
-    positioningCallback (val) {
-      const converted = this.convertPositionToPx(val, this.coordinate, this.device)
-      this.currentElement.xpx = converted.xpx
-      this.currentElement.ypx = converted.ypx
-      this.currentElement.wpx = converted.wpx
-      this.currentElement.hpx = converted.hpx
-    },
-
     onElementClicked (index) {
       this.currentIndex = index
-      this.$emit('element-selected', index)
       this.currentElement = this.scene.elements[index]
-      this.currentElement.changePosition = this.positioningCallback
+      this.$emit('element-selected', index)
     },
     onSceneClicked () {
       this.currentIndex = -1
@@ -134,7 +115,7 @@ export default {
      * element resize时的回调, emit出位置信息
      */
     onElementResizing (left, top, width, height) {
-      if (!this.currentElement) return
+      if (!this.currentElement || this.addingElement) return
       this.$emit('positioning', {
         element: this.currentElement,
         newPos: {
@@ -147,7 +128,7 @@ export default {
      * element拖动时的回调, emit出位置信息
      */
     onElementDraging (left, top) {
-      if (!this.currentElement) return
+      if (!this.currentElement || this.addingElement) return
       this.$emit('positioning', {
         element: this.currentElement,
         newPos: {

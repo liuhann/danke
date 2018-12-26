@@ -35,6 +35,10 @@
       <edit-animation v-model="element.existence"></edit-animation>
     </div>
     <div v-if="currentTab === '背景'">
+      <edit-background :background="element.background"></edit-background>
+    </div>
+    <div v-if="currentTab === '边框'">
+
     </div>
   </div>
 </div>
@@ -42,6 +46,7 @@
 
 <script>
 import AnimationSelector from './AnimationSelector'
+import EditBackground from './EditBackground'
 import EditLen from './EditLen'
 import EditClipPath from './EditClipPath'
 import EditAnimation from './EditAnimation'
@@ -52,7 +57,8 @@ export default {
     AnimationSelector,
     EditClipPath,
     EditLen,
-    EditAnimation
+    EditAnimation,
+    EditBackground
   },
   props: {
     element: {
@@ -61,6 +67,7 @@ export default {
   },
   data () {
     return {
+      colorMode: '1',
       activeKey: 0,
       currentTab: '定位'
     }
@@ -111,6 +118,14 @@ export default {
     onBadgeChange (index) {
       this.currentTab = event.currentTarget.innerText
       this.activeKey = index
+    },
+
+    selectColor () {
+      this.$refs.colorPicker.show()
+    },
+
+    onColorPick () {
+      this.nanobus.emit('bg-color-change', this.element)
     }
   }
 }
