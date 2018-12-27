@@ -1,17 +1,12 @@
 <template>
 <div class="scene" :style="sceneStyle" @click.self="onSceneClicked">
-  <vue-draggable-resizable v-for="(element, index) in scene.elements" :key="index" class="element-wrapper"
-    drag-handle=".drag-handle"
+  <vue-draggable-resizable v-for="(element, index) in currentScene.elements" :key="index" class="element-wrapper"
     @activated="onElementClicked(index)"
     @resizing="onElementResizing"
     @dragging="onElementDraging"
     :ref="'element-' + index"
-    :style="element.computedStyle"
     :class="[element.animationPreview, index===currentIndex?'current':'']">
-    <div v-if="element.type==='image'" class="image drag-handle" :style="{
-      backgroundImage: element.src
-    }">
-    </div>
+    <div v-if="element.type==='image'" class="image" :style="element.computedStyle"></div>
     <div v-if="element.type === 'text'" class="text drag-handle" :style="{
       fontSize: element.font
     }">
@@ -30,6 +25,7 @@ import '../animations/entrance.css'
 import '../animations/exits.css'
 import utils from '../utils/util'
 import positionUtils from '../utils/position'
+import styleUtils from '../utils/styles'
 
 export default {
   name: 'Scene',
@@ -58,11 +54,18 @@ export default {
         width: this.device.width + 'px',
         height: this.device.height + 'px'
       }
+    },
+    currentScene () {
+      for (let element of this.scene.elements) {
+        element.computedStyle = styleUtils.getElementStyle(element)
+      }
+      return this.scene
     }
   },
 
   created () {
     this.nanobus.on('position-change', this.updateElementPosition)
+    this.nanobus.on('element-change', this.updateElementStyle)
   },
 
   data () {
@@ -91,10 +94,16 @@ export default {
       const pixels = positionUtils.toPixel(element, this.scene.coordinate, this.device)
       // const index = this.scene.elements.indexOf(element)
       const targetDraggable = this.$refs['element-' + this.currentIndex][0]
-      targetDraggable.top = pixels.x
-      targetDraggable.left = pixels.y
+      targetDraggable.top = pixels.y
+      targetDraggable.left = pixels.x
       targetDraggable.width = pixels.w
       targetDraggable.height = pixels.h
+    },
+
+    // 更新element的样式信息
+    updateElementStyle (element) {
+      const style = styleUtils.getElementStyle(element)
+      this.currentElement.computedStyle = style
     },
 
     computeSceneStyle () {
@@ -151,7 +160,7 @@ export default {
     position: absolute;
     box-sizing: border-box;
     &.current {
-      border: 2px solid #4b0;
+      border: 1px solid #4B946A;
     }
     .van-icon-setting-o {
       position: absolute;
@@ -159,9 +168,6 @@ export default {
       top: -28px;
       font-size: 24px;
       color: #666;
-    }
-    &.selected {
-      border: 1px solid #4B946A;
     }
     .image {
       width: 100%;

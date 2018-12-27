@@ -8,7 +8,7 @@ const BASE = {
   background: {
     mode: '1',
     color: '#fff',
-    gradient: ['#fff', '#fff'],
+    gradients: ['#fff', '#fff'],
     angle: 'to bottom'
   },
   border: {
