@@ -1,8 +1,8 @@
-import nanobus from './nanobus'
+import nanobus from '../utils/nanobus'
 import Ticker from './Ticker'
 import Scene from './scene'
 import Transition from './transition'
-import utils from './util'
+import utils from '../utils/util'
 /**
  * Loading scenes and  resources then init ticker + views
  */

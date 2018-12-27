@@ -54,6 +54,8 @@ export default {
 
 .element-editing-box {
   border: 1px solid #eee;
+  background-color: #fff;
+  z-index: 1001;
 
   .drag-handle {
     height: 24px;

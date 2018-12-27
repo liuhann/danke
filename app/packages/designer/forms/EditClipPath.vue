@@ -36,12 +36,12 @@ export default {
   name: 'EditClipPath',
   props: {
     value: {
-      type: String
+      type: Object
     }
   },
   data () {
     return {
-      clip: {
+      clip: this.value || {
         ax: 0,
         ay: 0,
         bx: 100,
@@ -59,7 +59,8 @@ export default {
   watch: {
     clip: {
       handler: function (val, oldVal) {
-        this.$emit('input', `polygon(${this.clip.ax}% ${this.clip.ay}%, ${this.clip.bx}% ${this.clip.by}%, ${this.clip.cx}% ${this.clip.cy}%, ${this.clip.dx}% ${this.clip.dy}%)`)
+        this.$emit('input', this.clip)
+        // this.$emit('input', `polygon(${this.clip.ax}% ${this.clip.ay}%, ${this.clip.bx}% ${this.clip.by}%, ${this.clip.cx}% ${this.clip.cy}%, ${this.clip.dx}% ${this.clip.dy}%)`)
       },
       deep: true
     }
@@ -70,7 +71,7 @@ export default {
 <style lang="less">
 .edit-clip-path {
   .van-stepper {
-    float:left;
+
   }
 }
 </style>

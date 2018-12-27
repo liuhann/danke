@@ -23,7 +23,7 @@
       <edit-len v-model="element.font.size" label="大小"></edit-len>
     </div>
     <div v-if="currentTab === '裁切'">
-      <edit-clip-path v-model="element.clipPath"></edit-clip-path>
+      <edit-clip-path v-model="element.clip"></edit-clip-path>
     </div>
     <div v-if="currentTab === '进入'">
       <edit-animation v-model="element.in"></edit-animation>
@@ -73,6 +73,13 @@ export default {
     }
   },
   watch: {
+    element: {
+      handler: function (val, oldVal) {
+        console.log('ConfigElement -> change ', this.element)
+        this.nanobus.emit('element-change', this.element)
+      },
+      deep: true
+    },
     position1: {
       handler: function (val, oldVal) {
         this.value.x = this.position.x + this.position.xu
@@ -133,15 +140,8 @@ export default {
 
 <style lang="less">
 .element-edit {
-  height: 28vh;
+  height: 234px;
   display: flex;
-
-  .edit-area {
-    flex: 4;
-    height: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
   .badges {
     flex: 1;
     height: 100%;
@@ -152,10 +152,19 @@ export default {
       padding: 2vw 1vw;
     }
   }
+  .edit-area {
+    flex: 4;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
   .van-row {
-    height: 7vh;
     box-sizing: border-box;
-    line-height: 7vh;
+    line-height: 44px;
+    .label {
+      font-size: 12px;
+    }
   }
 }
 </style>
