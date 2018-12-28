@@ -12,6 +12,23 @@ function getElementStyle (element) {
   if (element.clip) {
     styles.push(`clip-path: polygon(${element.clip.ax}% ${element.clip.ay}%, ${element.clip.bx}% ${element.clip.by}%, ${element.clip.cx}% ${element.clip.cy}%, ${element.clip.dx}% ${element.clip.dy}%)`)
   }
+
+  if (element.border) {
+    if (parseInt(element.border.width) === 0) {
+      styles.push(`border: none`)
+    } else {
+      if (element.border.sides.length === 4) {
+        styles.push(`border: ${element.border.width}px ${element.border.style} ${element.border.color}`)
+      } else {
+        for (let side of element.border.sides) {
+          styles.push(`border-${side}: ${element.border.width}px ${element.border.style} ${element.border.color}`)
+        }
+      }
+    }
+
+    styles.push(`border-radius: ${element.border.radius[0]}px ${element.border.radius[1]}px ${element.border.radius[2]}px ${element.border.radius[3]}px;`)
+  }
+
   return styles.join(';')
 }
 

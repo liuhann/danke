@@ -4,9 +4,12 @@
     @activated="onElementClicked(index)"
     @resizing="onElementResizing"
     @dragging="onElementDraging"
+    :style="{zIndex: index===currentIndex? 9988 : (100 + index)}"
     :ref="'element-' + index"
     :class="[element.animationPreview, index===currentIndex?'current':'']">
-    <div v-if="element.type==='image'" class="image" :style="element.computedStyle"></div>
+    <div v-if="element.type==='image'" class="image" :style="element.computedStyle">
+      {{element.src?'': '未选择图片'}}
+    </div>
     <div v-if="element.type === 'text'" class="text drag-handle" :style="{
       fontSize: element.font
     }">
@@ -64,8 +67,8 @@ export default {
   },
 
   created () {
-    this.nanobus.on('position-change', this.updateElementPosition)
-    this.nanobus.on('element-change', this.updateElementStyle)
+    this.nanobus.on('position-change', this.updateElementPosition.bind(this))
+    this.nanobus.on('element-change', this.updateElementStyle.bind(this))
   },
 
   data () {
@@ -170,6 +173,10 @@ export default {
       color: #666;
     }
     .image {
+      display: flex;
+      justify-content: center;
+      box-sizing: border-box;
+      align-items: center;
       width: 100%;
       height: 100%;
       background-color: #E4E4E4;

@@ -1,5 +1,5 @@
 <template>
-<vue-draggable-resizable :resizable="false" :x="20" :y="device.height - 280" :w="device.width - 40" :h="260" v-if="showEditBox"
+<vue-draggable-resizable v-if="showEditBox" :resizable="false" :x="20" :y="device.height - 280" :w="device.width - 40" :h="260" :z="9999"
                          drag-handle=".drag-handle"
                          class="element-editing-box">
   <div class="drag-handle">

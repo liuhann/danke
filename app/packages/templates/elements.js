@@ -15,7 +15,7 @@ const BASE = {
     width: 0,
     style: 'solid',
     color: '#fff',
-    position: [0, 0, 0, 0],
+    sides: ['left', 'right', 'top', 'bottom'],
     radius: [0, 0, 0, 0]
   },
   font: {
@@ -47,7 +47,6 @@ const BASE = {
 
 const IMAGE = Object.assign({}, BASE, {
   type: 'image',
-  clipPath: '',
   sizing: 'cover'
 })
 const TEXT = Object.assign({}, BASE, {

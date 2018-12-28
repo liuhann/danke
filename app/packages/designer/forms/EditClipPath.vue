@@ -60,7 +60,6 @@ export default {
     clip: {
       handler: function (val, oldVal) {
         this.$emit('input', this.clip)
-        // this.$emit('input', `polygon(${this.clip.ax}% ${this.clip.ay}%, ${this.clip.bx}% ${this.clip.by}%, ${this.clip.cx}% ${this.clip.cy}%, ${this.clip.dx}% ${this.clip.dy}%)`)
       },
       deep: true
     }

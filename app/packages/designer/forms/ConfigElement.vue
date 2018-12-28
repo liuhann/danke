@@ -26,19 +26,19 @@
       <edit-clip-path v-model="element.clip"></edit-clip-path>
     </div>
     <div v-if="currentTab === '进入'">
-      <edit-animation v-model="element.in"></edit-animation>
+      <edit-animation v-model="element.in" type="in"></edit-animation>
     </div>
     <div v-if="currentTab === '离开'">
-      <edit-animation v-model="element.out"></edit-animation>
+      <edit-animation v-model="element.out" type="out"></edit-animation>
     </div>
     <div v-if="currentTab === '持续'">
-      <edit-animation v-model="element.existence"></edit-animation>
+      <edit-animation v-model="element.existence" type="existence"></edit-animation>
     </div>
     <div v-if="currentTab === '背景'">
       <edit-background :background="element.background"></edit-background>
     </div>
     <div v-if="currentTab === '边框'">
-
+      <edit-border v-model="element.border"></edit-border>
     </div>
   </div>
 </div>
@@ -50,6 +50,7 @@ import EditBackground from './EditBackground'
 import EditLen from './EditLen'
 import EditClipPath from './EditClipPath'
 import EditAnimation from './EditAnimation'
+import EditBorder from './EditBorder'
 
 export default {
   name: 'ElementEdit',
@@ -58,7 +59,8 @@ export default {
     EditClipPath,
     EditLen,
     EditAnimation,
-    EditBackground
+    EditBackground,
+    EditBorder
   },
   props: {
     element: {
@@ -77,21 +79,6 @@ export default {
       handler: function (val, oldVal) {
         console.log('ConfigElement -> change ', this.element)
         this.nanobus.emit('element-change', this.element)
-      },
-      deep: true
-    },
-    position1: {
-      handler: function (val, oldVal) {
-        this.value.x = this.position.x + this.position.xu
-        this.value.y = this.position.y + this.position.yu
-        this.value.width = this.position.w + this.position.wu
-        this.value.height = this.position.h + this.position.hu
-      },
-      deep: true
-    },
-    clip: {
-      handler: function (val, oldVal) {
-        this.value.clipPath = `polygon(${this.clip.ax}% ${this.clip.ay}%, ${this.clip.bx}% ${this.clip.by}%, ${this.clip.cx}% ${this.clip.cy}%, ${this.clip.dx}% ${this.clip.dy}%)`
       },
       deep: true
     }
