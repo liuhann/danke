@@ -1,9 +1,7 @@
 <template>
 <div class="scene" :style="sceneStyle" @click.self="onSceneClicked">
-  <vue-draggable-resizable v-for="(element, index) in currentScene.elements" :key="index" class="element-wrapper"
+  <div v-for="(element, index) in currentScene.elements" :key="index" class="element-wrapper"
     @activated="onElementClicked(index)"
-    @resizing="onElementResizing"
-    @dragging="onElementDraging"
     :style="{zIndex: index===currentIndex? 9988 : (100 + index)}"
     :ref="'element-' + index"
     :class="[element.animationPreview, index===currentIndex?'current':'']">
@@ -17,7 +15,7 @@
     </div>
     <div v-if="element.type === 'circle'" class="circle drag-handle">
     </div>
-  </vue-draggable-resizable>
+  </div>
 </div>
 </template>
 
@@ -49,7 +47,9 @@ export default {
   },
 
   watch: {
-
+    'scene.elements': function(newVal, oldVal) {
+      console.log(newVal, oldVal)
+    }
   },
   computed: {
     sceneStyle () {
@@ -154,10 +154,6 @@ export default {
 
 <style lang="less">
 .scene {
-  background-color: #fff;
-  border: 1px solid #fefefe;
-  border-radius: 10px;
-  box-sizing: border-box;
   position: relative;
   .element-wrapper {
     position: absolute;

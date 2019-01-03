@@ -1,10 +1,16 @@
 const BASE = {
+  version: '1.2',
   type: '',
-  x: '5vw',
-  y: '3vh',
-  width: '90vw',
-  height: '39vh',
-  animationPreview: {},
+  position: {
+    vertical: 'top',
+    align: 'left',
+    top: '',
+    bottom: '',
+    left: '',
+    right: '',
+    width: '',
+    height: ''
+  },
   background: {
     mode: '1',
     color: '#fff',
@@ -47,7 +53,13 @@ const BASE = {
 
 const IMAGE = Object.assign({}, BASE, {
   type: 'image',
-  sizing: 'cover'
+  sizing: 'cover',
+  position: {
+    align: 'center',
+    top: '5vw',
+    width: '90vw',
+    height: '60vw'
+  }
 })
 const TEXT = Object.assign({}, BASE, {
   type: 'text',

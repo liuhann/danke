@@ -15,6 +15,9 @@ function getLenSplits (len) {
 
 function getLength (unitLen, device, px) {
   // -15vw ->  [-15vw,-15,vw]
+  if (unitLen === 0 || unitLen == null || unitLen === '') {
+    return '0'
+  }
   const { len, unit } = getLenSplits(unitLen)
   let number = 0
   if (unit === 'vw') {

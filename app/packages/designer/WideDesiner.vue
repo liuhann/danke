@@ -7,20 +7,16 @@
   </div>
 
   <!--效果预览区-->
-  <dragable-scene-edit ref="sceneEdit" :scene="currentScene" :device="device" class="scene-container"
+  <dragable-scene-edit ref="sceneEdit" :scene="currentScene" :device="device"
     @element-selected="tapElementOn"
     @scene-selected="tapSceneOn"
     @positioning="elementPositionChange"></dragable-scene-edit>
 
   <!--配置区，可以进行元素配置项手动修改 -->
-  <van-popup class="pop-config">
-    <config-box ref="configBox" :element="currentElement" :scene="currentScene" :device="device" @position-change="elementPositionChange"></config-box>
-  </van-popup>
+  <config-box ref="configBox" :element="currentElement" :scene="currentScene" :device="device" @position-change="elementPositionChange"></config-box>
 
   <!--新增元素弹出框-->
-  <van-popup class="pop-select-element" position="center" :overlay="true" v-model="pop.showAddElement">
-    <add-element-popup @selected="selectAddElement"></add-element-popup>
-  </van-popup>
+  <add-element-popup ref="addElementPopUp" @selected="selectAddElement"></add-element-popup>
 
   <!--页面列表、新增按钮-->
   <scene-list-popup ref="sceneListPopup" :scenes="scenes" :current-scene="currentScene"
@@ -36,7 +32,6 @@ import AddElementPopup from './AddElementPopup'
 import SceneListPopup from './SceneListPopup'
 import ConfigBox from './ConfigBox'
 import utils from '../utils/util'
-import styleUtils from '../utils/styles'
 import position from '../utils/position'
 import Elements from '../templates/elements'
 
@@ -50,9 +45,6 @@ export default {
   },
   data () {
     return {
-      pop: {
-        showAddElement: false,
-      },
       device: {
         width: window.innerWidth,
         height: window.innerHeight
@@ -79,7 +71,7 @@ export default {
     },
     // 显示增加元素弹窗
     showAddElement () {
-      this.pop.showAddElement = true
+      this.$refs.addElementPopUp.show()
     },
     // 切换、管理场景
     showSceneList () {
@@ -119,16 +111,14 @@ export default {
     // 选择新增一个element
     selectAddElement (elementName) {
       let newEl = null
-      this.pop.showAddElement = false
       if (elementName === 'image') {
         newEl = utils.clone(Elements.IMAGE)
       }
       if (elementName === 'text') {
         newEl = utils.clone(Elements.TEXT)
       }
-      if (newEl && this.currentScene) {
-        newEl.computedStyle = styleUtils.getElementStyle(newEl, this.device)
-        this.currentScene.elements.push(newEl)
+      if (newEl) {
+        this.$refs.sceneEdit.addElement(newEl)
       }
     },
     tapElementOn (index) {
@@ -158,18 +148,6 @@ export default {
   top: 0;
   width: 100vw;
   height: 100vh;
-
-  .pop-select-element {
-    width: 80vw;
-    height: 80vh;
-    overflow-y: auto;
-  }
-
-  .scene-container {
-    border: 1px solid #fefefe;
-    border-radius: 10px;
-    box-sizing: border-box;
-  }
 
   .scene-buttons {
     position: absolute;

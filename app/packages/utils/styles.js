@@ -1,5 +1,26 @@
-function getElementStyle (element) {
+import positionUtil from './position'
+
+function getElementStyle (element, device) {
   const styles = []
+  if (element.position) {
+    if (element.position.vertical === 'top') {
+      styles.push(`top: ${positionUtil.getLength(element.position.top, device, 'px')}`)
+    } else if (element.position.vertical === 'center') {
+      styles.push(`top: ${device.height / 2 - positionUtil.getLength(element.position.height, device) + positionUtil.getLength(element.position.top, device)}px`)
+    } else if (element.position.vertical === 'bottom') {
+      styles.push(`bottom: ${positionUtil.getLength(element.position.bottom, device)}px`)
+    }
+
+    if (element.position.align === 'left') {
+      styles.push(`left: ${positionUtil.getLength(element.position.left, device, 'px')}`)
+    } else if (element.position.align === 'center') {
+      styles.push(`left: ${device.width / 2 - positionUtil.getLength(element.position.width, device) + positionUtil.getLength(element.position.left, device)}px`)
+    } else if (element.position.vertical === 'right') {
+      styles.push(`right: ${positionUtil.getLength(element.position.right, device)}px`)
+    }
+    styles.push(`width: ${positionUtil.getLength(element.position.width, device, 'px')}`)
+    styles.push(`height: ${positionUtil.getLength(element.position.height, device, 'px')}`)
+  }
 
   if (element.background.mode === '1') {
     styles.push(`background-color: ${element.background.color}`)
@@ -8,11 +29,9 @@ function getElementStyle (element) {
   } else if (element.background.mode === '0') {
     styles.push(`background: transparent`)
   }
-
   if (element.clip) {
     styles.push(`clip-path: polygon(${element.clip.ax}% ${element.clip.ay}%, ${element.clip.bx}% ${element.clip.by}%, ${element.clip.cx}% ${element.clip.cy}%, ${element.clip.dx}% ${element.clip.dy}%)`)
   }
-
   if (element.border) {
     if (parseInt(element.border.width) === 0) {
       styles.push(`border: none`)
@@ -25,10 +44,8 @@ function getElementStyle (element) {
         }
       }
     }
-
     styles.push(`border-radius: ${element.border.radius[0]}px ${element.border.radius[1]}px ${element.border.radius[2]}px ${element.border.radius[3]}px;`)
   }
-
   return styles.join(';')
 }
 
