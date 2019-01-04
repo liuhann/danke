@@ -1,8 +1,8 @@
 <template>
 <div class="config-box">
-  <div class="drag-handle">
+ <!--  <div class="drag-handle">
     <van-icon name="wap-nav"></van-icon>
-  </div>
+  </div> -->
   <config-element v-if="element" :element="element"></config-element>
   <config-scene v-if="!scene" :scene="scene"></config-scene>
 </div>
