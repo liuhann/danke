@@ -1,5 +1,11 @@
 <template>
 <div class="element-edit">
+  <van-panel title="定位" desc="描述信息" status="状态">
+    <div>
+      <edit-position v-model="element.position"></edit-position>
+    </div>
+  </van-panel>
+
   <div class="badges">
     <van-badge-group :active-key="activeKey" @change="onBadgeChange($event)">
       <van-badge title="定位" v-if="positionable"/>
@@ -13,12 +19,6 @@
     </van-badge-group>
   </div>
   <div class="edit-area">
-    <div v-if="currentTab === '定位'">
-      <edit-len v-model="element.x" @change="positionChange" :min="-1000000" label="横向"></edit-len>
-      <edit-len v-model="element.y" @change="positionChange" :min="-1000000" label="纵向"></edit-len>
-      <edit-len v-model="element.width" @change="positionChange"  label="宽度"></edit-len>
-      <edit-len v-model="element.height" @change="positionChange" label="高度"></edit-len>
-    </div>
     <div v-if="currentTab === '字体'">
       <edit-len v-model="element.font.size" label="大小"></edit-len>
     </div>
@@ -51,6 +51,7 @@ import EditLen from './EditLen'
 import EditClipPath from './EditClipPath'
 import EditAnimation from './EditAnimation'
 import EditBorder from './EditBorder'
+import EditPosition from './EditPosition'
 
 export default {
   name: 'ElementEdit',
@@ -60,7 +61,8 @@ export default {
     EditLen,
     EditAnimation,
     EditBackground,
-    EditBorder
+    EditBorder,
+    EditPosition
   },
   props: {
     element: {
@@ -127,8 +129,7 @@ export default {
 
 <style lang="less">
 .element-edit {
-  height: 234px;
-  display: flex;
+  background-color: #fafafa;
   .badges {
     flex: 1;
     height: 100%;

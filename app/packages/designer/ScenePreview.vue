@@ -1,26 +1,25 @@
 <template>
 <div class="scene" :style="sceneStyle" @click.self="onSceneClicked">
-  <div v-for="(element, index) in currentScene.elements" :key="index" class="element-wrapper"
-    @activated="onElementClicked(index)"
-    :style="{zIndex: index===currentIndex? 9988 : (100 + index)}"
+  <div v-for="(element, index) in scene.elements" :key="index" class="element-wrapper"
+    @click="onElementClicked(index)"
+    :style="element.computedStyle"
     :ref="'element-' + index"
     :class="[element.animationPreview, index===currentIndex?'current':'']">
-    <div v-if="element.type==='image'" class="image" :style="element.computedStyle">
+    <div v-if="element.type==='image'" class="image">
       {{element.src?'': '未选择图片'}}
     </div>
-    <div v-if="element.type === 'text'" class="text drag-handle" :style="{
+    <div v-if="element.type === 'text'" class="text" :style="{
       fontSize: element.font
     }">
       {{element.content}}
     </div>
-    <div v-if="element.type === 'circle'" class="circle drag-handle">
+    <div v-if="element.type === 'circle'" class="circle">
     </div>
   </div>
 </div>
 </template>
 
 <script>
-import VueDraggableResizable from 'vue-draggable-resizable'
 import EditElement from './forms/ConfigElement'
 import '../animations/entrance.css'
 import '../animations/exits.css'
@@ -31,7 +30,6 @@ import styleUtils from '../utils/styles'
 export default {
   name: 'Scene',
   components: {
-    VueDraggableResizable,
     EditElement
   },
   props: {
@@ -60,7 +58,7 @@ export default {
     },
     currentScene () {
       for (let element of this.scene.elements) {
-        element.computedStyle = styleUtils.getElementStyle(element)
+        element.computedStyle = styleUtils.getElementStyle(element, this.d)
       }
       return this.scene
     }
@@ -116,7 +114,7 @@ export default {
     onElementClicked (index) {
       this.currentIndex = index
       this.currentElement = this.scene.elements[index]
-      this.$emit('element-selected', index)
+      this.$emit('element-selected', this.currentElement)
     },
     onSceneClicked () {
       this.currentIndex = -1
@@ -175,7 +173,7 @@ export default {
       align-items: center;
       width: 100%;
       height: 100%;
-      background-color: #E4E4E4;
+      background-color: #efefef;
     }
   }
 }

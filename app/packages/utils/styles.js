@@ -1,12 +1,44 @@
 import positionUtil from './position'
 
+const REG_LEN = /([+-]?[0-9#]+)(%|px|pt|em|rem|in|cm|mm|ex|ch|pc|vw|vh|vmin|vmax|deg|rad|turn)?$/
+
+/**
+ * 抽取长度信息  例如 10vw -> {len:10, unit: 'vw'}
+ * @param len
+ * @returns {{len: (*|string), unit: (*|string)}}
+ */
+function getLenSplits (len) {
+  const splits = REG_LEN.exec(len)
+  return {
+    len: parseFloat(splits[1]),
+    unit: splits[2]
+  }
+}
+
+function getLength (unitLen, device, px) {
+  // -15vw ->  [-15vw,-15,vw]
+  if (unitLen === 0 || unitLen == null || unitLen === '') {
+    return 0
+  }
+  const { len, unit } = getLenSplits(unitLen)
+  let number = 0
+  if (unit === 'vw') {
+    number = Math.floor(device.width * len / 100)
+  } else if (unit === 'vh') {
+    number = Math.floor(device.height * len / 100)
+  } else if (unit === 'px') {
+    number = len
+  }
+  return number + (px || '')
+}
+
 function getElementStyle (element, device) {
   const styles = []
   if (element.position) {
     if (element.position.vertical === 'top') {
       styles.push(`top: ${positionUtil.getLength(element.position.top, device, 'px')}`)
     } else if (element.position.vertical === 'center') {
-      styles.push(`top: ${device.height / 2 - positionUtil.getLength(element.position.height, device) + positionUtil.getLength(element.position.top, device)}px`)
+      styles.push(`top: ${device.height / 2 - positionUtil.getLength(element.position.height, device) / 2 + positionUtil.getLength(element.position.top, device)}px`)
     } else if (element.position.vertical === 'bottom') {
       styles.push(`bottom: ${positionUtil.getLength(element.position.bottom, device)}px`)
     }
@@ -14,7 +46,8 @@ function getElementStyle (element, device) {
     if (element.position.align === 'left') {
       styles.push(`left: ${positionUtil.getLength(element.position.left, device, 'px')}`)
     } else if (element.position.align === 'center') {
-      styles.push(`left: ${device.width / 2 - positionUtil.getLength(element.position.width, device) + positionUtil.getLength(element.position.left, device)}px`)
+      console.log((positionUtil.getLength(element.position.width, device) / 2))
+      styles.push(`left: ${(device.width / 2) - (getLength(element.position.width, device) / 2) + getLength(element.position.left, device)}px`)
     } else if (element.position.vertical === 'right') {
       styles.push(`right: ${positionUtil.getLength(element.position.right, device)}px`)
     }

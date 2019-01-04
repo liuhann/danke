@@ -5,7 +5,6 @@
     <van-icon name="edit" @click.stop="showConfigBox"/>
     <van-icon name="ellipsis" @click="showSceneList" />
   </div>
-
   <!--效果预览区-->
   <dragable-scene-edit ref="sceneEdit" :scene="currentScene" :device="device" class="scene-container"
     @element-selected="tapElementOn"
@@ -13,8 +12,8 @@
     @positioning="elementPositionChange"></dragable-scene-edit>
 
   <!--配置区，可以进行元素配置项手动修改 -->
-  <van-popup class="pop-config">
-    <config-box ref="configBox" :element="currentElement" :scene="currentScene" :device="device" @position-change="elementPositionChange"></config-box>
+  <van-popup class="pop-config" position="right" :overlay="false" v-model="pop.showConfig">
+    <config-box :element="currentElement" :scene="currentScene" :device="device" @position-change="elementPositionChange"></config-box>
   </van-popup>
 
   <!--新增元素弹出框-->
@@ -26,7 +25,6 @@
   <scene-list-popup ref="sceneListPopup" :scenes="scenes" :current-scene="currentScene"
     @add-empty-scene="tapAddScene"
     @choose-scene="chooseScene"></scene-list-popup>
-
 </div>
 </template>
 
@@ -51,6 +49,7 @@ export default {
   data () {
     return {
       pop: {
+        showConfig: false,
         showAddElement: false,
       },
       device: {
@@ -72,11 +71,6 @@ export default {
     this.currentScene = this.scenes[0]
   },
   methods: {
-    // 显示配置层
-    showConfigBox () {
-      console.log('show config box')
-      this.$refs.configBox.show()
-    },
     // 显示增加元素弹窗
     showAddElement () {
       this.pop.showAddElement = true
@@ -131,11 +125,13 @@ export default {
         this.currentScene.elements.push(newEl)
       }
     },
-    tapElementOn (index) {
-      this.currentElement = this.currentScene.elements[index]
+    tapElementOn (element) {
+      this.currentElement = element
+      this.pop.showConfig = true
     },
     tapSceneOn () {
       this.currentElement = null
+      this.pop.showConfig = false
     },
     elementPositionChange (event) {
       const vps = position.toViewPoint(event.element, event.newPos, this.currentScene.coordinate, this.device)

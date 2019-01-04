@@ -4,9 +4,7 @@ const BASE = {
   position: {
     vertical: 'top',
     align: 'left',
-    top: '',
-    bottom: '',
-    left: '',
+    verticalMagin: '',
     right: '',
     width: '',
     height: ''

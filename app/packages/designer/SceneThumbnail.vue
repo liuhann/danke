@@ -17,7 +17,6 @@
 </template>
 
 <script>
-import VueDraggableResizable from 'vue-draggable-resizable'
 import '../animations/entrance.css'
 import '../animations/exits.css'
 import utils from '../utils/util'
@@ -25,7 +24,6 @@ import utils from '../utils/util'
 export default {
   name: 'SceneThumbnail',
   components: {
-    VueDraggableResizable
   },
   props: {
     checkable: {
