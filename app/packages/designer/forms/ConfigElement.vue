@@ -9,22 +9,25 @@
     <edit-len label="高度" v-model="element.position.height"></edit-len>
   </div>
 
-  <van-cell title="字体" icon="bars" />
-  <edit-len v-model="element.font.size" label="大小"></edit-len>
+  <van-cell title="字体" icon="bars" v-if="fontable"/>
+  <edit-font v-model="element.font" v-if="fontable"></edit-font>
 
   <van-cell title="背景" icon="expand-o" />
   <edit-background :background="element.background"></edit-background>
 
-  <van-cell title="边框" icon="expand-o" />
-  <edit-border v-model="element.border"></edit-border>
-
-  <van-cell title="裁切" icon="expand-o" />
-  <edit-clip-path v-model="element.clip"></edit-clip-path>
+  <van-cell title="边框" icon="expand-o" v-if="borderable"/>
+  <edit-border v-model="element.border" v-if="borderable"></edit-border>
 
   <van-cell title="进入特效" icon="expand-o" />
   <edit-animation v-model="element.in" type="in"></edit-animation>
   <van-cell title="持续特效" icon="expand-o" />
   <edit-animation v-model="element.existence" type="existence"></edit-animation>
+  <van-cell title="离开特效" icon="expand-o" />
+  <edit-animation v-model="element.existence" type="existence"></edit-animation>
+
+  <van-cell title="裁切" icon="expand-o" v-if="clipable"/>
+  <edit-clip-path v-model="element.clip" v-if="clipable"></edit-clip-path>
+
 
   <div class="badges">
     <van-badge-group :active-key="activeKey" @change="onBadgeChange($event)">
@@ -72,6 +75,7 @@ import EditClipPath from './EditClipPath'
 import EditAnimation from './EditAnimation'
 import EditBorder from './EditBorder'
 import EditPosition from './EditPosition'
+import EditFont from './EditFont'
 
 export default {
   name: 'ElementEdit',
@@ -82,7 +86,8 @@ export default {
     EditAnimation,
     EditBackground,
     EditBorder,
-    EditPosition
+    EditPosition,
+    EditFont
   },
   props: {
     element: {
