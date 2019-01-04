@@ -1,10 +1,30 @@
 <template>
 <div class="element-edit">
-  <van-panel title="定位" desc="描述信息" status="状态">
-    <div>
-      <edit-position v-model="element.position"></edit-position>
-    </div>
-  </van-panel>
+  <van-cell class="group-title" title="定位" icon="aim" />
+  <edit-position v-model="element.position"></edit-position>
+
+  <van-cell title="大小" icon="expand-o" />
+  <div class="group">
+    <edit-len label="宽度" v-model="element.position.width"></edit-len>
+    <edit-len label="高度" v-model="element.position.height"></edit-len>
+  </div>
+
+  <van-cell title="字体" icon="bars" />
+  <edit-len v-model="element.font.size" label="大小"></edit-len>
+
+  <van-cell title="背景" icon="expand-o" />
+  <edit-background :background="element.background"></edit-background>
+
+  <van-cell title="边框" icon="expand-o" />
+  <edit-border v-model="element.border"></edit-border>
+
+  <van-cell title="裁切" icon="expand-o" />
+  <edit-clip-path v-model="element.clip"></edit-clip-path>
+
+  <van-cell title="进入特效" icon="expand-o" />
+  <edit-animation v-model="element.in" type="in"></edit-animation>
+  <van-cell title="持续特效" icon="expand-o" />
+  <edit-animation v-model="element.existence" type="existence"></edit-animation>
 
   <div class="badges">
     <van-badge-group :active-key="activeKey" @change="onBadgeChange($event)">
@@ -130,6 +150,10 @@ export default {
 <style lang="less">
 .element-edit {
   background-color: #fafafa;
+
+  .group-title {
+    margin-top: 8px;
+  }
   .badges {
     flex: 1;
     height: 100%;
@@ -149,10 +173,6 @@ export default {
 
   .van-row {
     box-sizing: border-box;
-    line-height: 44px;
-    .label {
-      font-size: 12px;
-    }
   }
 }
 </style>

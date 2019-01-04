@@ -36,6 +36,9 @@ const BASE = {
     delay: 0,
     timing: 'easeInCubic'
   },
+  existence: {
+    animation: ''
+  },
   out: {
     animation: '',
     duration: 400,

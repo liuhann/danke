@@ -46,28 +46,37 @@ export default {
 </script>
 
 <style lang="less">
-
 .config-box {
   border-left: 1px solid #eee;
   background-color: #fff;
   z-index: 1001;
-  width: 80vw;
+  width: 88vw;
   height: 100vh;
 
+  .van-radio {
+    margin-right: 14px;
+  }
+  .van-radio-group {
+    display: flex;
+  }
+
+  .van-cell-group {
+    margin-bottom: 5px;
+  }
+  .van-row {
+    box-sizing: border-box;
+    height: 44px;
+    align-items: center;
+    background-color: #fff;
+  }
+
+
   .drag-handle {
-    height: 24px;
+    height: 16px;
     text-align: center;
+    font-size: 12px;
     border-bottom: 1px solid #eee;
     background-color: #fefefe;
-    .van-icon {
-      color: #ccc;
-      margin: 0 10px;
-      &.van-icon-cross {
-        color: #666;
-        line-height: 24px;
-        float: right;
-      }
-    }
   }
 }
 

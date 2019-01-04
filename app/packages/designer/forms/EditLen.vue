@@ -1,10 +1,10 @@
 <template>
 <van-row type="flex" justify="space-around">
-  <van-col span="4" class="tc label">{{label}}</van-col>
+  <van-col span="6" class="tc label">{{label}}</van-col>
   <van-col span="12">
     <van-stepper @plus="stepChange" @minus="stepChange" v-model="length" :min="min || 0" :max="max" :step="step || 1"/>
   </van-col>
-  <van-col span="8">
+  <van-col span="6">
     <select v-model="unit" v-if="withUnit">
       <option value="vw">屏宽</option>
       <option value="vh">屏高</option>
