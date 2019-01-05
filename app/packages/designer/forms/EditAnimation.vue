@@ -1,21 +1,21 @@
 <template>
 <div class="edit-animation">
   <van-row type="flex" justify="space-around">
-    <van-col span="6">效果</van-col>
+    <van-col span="6" class="tc label">效果</van-col>
     <van-col span="18">
       <animation-selector v-model="value.animation"></animation-selector>
     </van-col>
   </van-row>
   <van-row type="flex" justify="space-around">
-    <van-col span="6">时长</van-col>
+    <van-col span="6" class="tc label">时长</van-col>
     <van-col span="18"><van-stepper v-model="value.duration" integer disable-input :step="50"/>ms</van-col>
   </van-row>
   <van-row type="flex" justify="space-around">
-    <van-col span="6">延迟</van-col>
+    <van-col span="6" class="tc label">延迟</van-col>
     <van-col span="18"><van-stepper v-model="value.delay" disable-input :step="20"/></van-col>
   </van-row>
   <van-row type="flex" justify="space-around">
-    <van-col span="6">Timing</van-col>
+    <van-col span="6" class="tc label">Timing</van-col>
     <van-col span="18">
       <select v-model="value.timing">
         <option v-for="value in cubicBesizers" :key="value" :value="value">{{value}}</option>
@@ -23,7 +23,7 @@
     </van-col>
   </van-row>
   <van-row type="flex" justify="space-around" v-if="value.infinite">
-    <van-col span="6">次数</van-col>
+    <van-col span="6" class="tc label">次数</van-col>
     <van-col span="18">
       <van-stepper v-model="value.iteration" integer disable-input/>
       <van-switch v-model="value.infinite" size="24px"/> 循环
@@ -70,6 +70,12 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="less">
+
+.edit-animation {
+  .van-stepper {
+
+  }
+}
 
 </style>

@@ -3,7 +3,7 @@
  <!--  <div class="drag-handle">
     <van-icon name="wap-nav"></van-icon>
   </div> -->
-  <config-element v-if="element" :element="element"></config-element>
+  <config-element v-if="element" :element="element" @element-change="elementChange"></config-element>
   <config-scene v-if="!scene" :scene="scene"></config-scene>
 </div>
 </template>
@@ -35,6 +35,9 @@ export default {
   },
 
   methods: {
+    elementChange (element) {
+
+    },
     closeBox () {
       this.showEditBox = false
     },
@@ -65,11 +68,10 @@ export default {
   }
   .van-row {
     box-sizing: border-box;
-    height: 44px;
+    min-height: 44px;
     align-items: center;
     background-color: #fff;
   }
-
 
   .drag-handle {
     height: 16px;

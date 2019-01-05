@@ -1,7 +1,7 @@
 <template>
 <div class="animation-selector">
   <van-button size="small" plain type="primary" @click="isShow = true">选择</van-button>
-  <van-popup v-model="isShow" position="bottom" :overlay="false">
+  <van-popup v-model="isShow" position="right" :overlay="false">
     <van-picker :columns="columns" show-toolbar @change="onChange" @cancel="onCancel" @confirm="onConfirm"/>
   </van-popup>
 </div>

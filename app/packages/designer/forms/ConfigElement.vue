@@ -1,33 +1,32 @@
 <template>
 <div class="element-edit">
-  <van-cell class="group-title" title="定位" icon="aim" />
+  <van-cell title="定位" icon="aim" />
   <edit-position v-model="element.position"></edit-position>
 
-  <van-cell title="大小" icon="expand-o" />
+  <van-cell class="group-title" title="大小" icon="expand-o" />
   <div class="group">
     <edit-len label="宽度" v-model="element.position.width"></edit-len>
     <edit-len label="高度" v-model="element.position.height"></edit-len>
   </div>
 
-  <van-cell title="字体" icon="bars" v-if="fontable"/>
+  <van-cell class="group-title" title="字体" icon="bars" v-if="fontable"/>
   <edit-font v-model="element.font" v-if="fontable"></edit-font>
 
-  <van-cell title="背景" icon="expand-o" />
-  <edit-background :background="element.background"></edit-background>
+  <van-cell class="group-title" title="背景" icon="expand-o" />
+  <edit-background v-model="element.background"></edit-background>
 
-  <van-cell title="边框" icon="expand-o" v-if="borderable"/>
+  <van-cell class="group-title" title="边框" icon="expand-o" v-if="borderable"/>
   <edit-border v-model="element.border" v-if="borderable"></edit-border>
 
-  <van-cell title="进入特效" icon="expand-o" />
+  <van-cell class="group-title" title="进入特效" icon="expand-o" />
   <edit-animation v-model="element.in" type="in"></edit-animation>
-  <van-cell title="持续特效" icon="expand-o" />
+  <van-cell class="group-title" title="持续特效" icon="expand-o" />
   <edit-animation v-model="element.existence" type="existence"></edit-animation>
-  <van-cell title="离开特效" icon="expand-o" />
+  <van-cell class="group-title" title="离开特效" icon="expand-o" />
   <edit-animation v-model="element.existence" type="existence"></edit-animation>
 
-  <van-cell title="裁切" icon="expand-o" v-if="clipable"/>
+  <van-cell class="group-title" title="裁切" icon="expand-o" v-if="clipable"/>
   <edit-clip-path v-model="element.clip" v-if="clipable"></edit-clip-path>
-
 
   <div class="badges">
     <van-badge-group :active-key="activeKey" @change="onBadgeChange($event)">
@@ -56,12 +55,6 @@
     </div>
     <div v-if="currentTab === '持续'">
       <edit-animation v-model="element.existence" type="existence"></edit-animation>
-    </div>
-    <div v-if="currentTab === '背景'">
-      <edit-background :background="element.background"></edit-background>
-    </div>
-    <div v-if="currentTab === '边框'">
-      <edit-border v-model="element.border"></edit-border>
     </div>
   </div>
 </div>
@@ -104,7 +97,8 @@ export default {
   watch: {
     element: {
       handler: function (val, oldVal) {
-        console.log('ConfigElement -> change ', this.element)
+        this.$emit('element-change', this.element)
+        // console.log('ConfigElement -> change ', this.element)
         this.nanobus.emit('element-change', this.element)
       },
       deep: true

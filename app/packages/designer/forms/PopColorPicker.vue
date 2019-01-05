@@ -95,10 +95,9 @@ export default {
   .color-preview {
     box-sizing: border-box;
     border: 1px solid #efefef;
-    width: 10vw;
-    margin: 1vw;
+    width: 40px;
     border-radius: 4px;
-    height: 10vw;
+    height: 40px;
   }
 }
 

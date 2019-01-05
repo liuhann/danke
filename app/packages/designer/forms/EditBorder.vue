@@ -110,6 +110,16 @@ export default {
     justify-content: space-between;
     flex-wrap: wrap;
     .van-checkbox {
+      line-height: 32px;
+      width: 50%;
+    }
+  }
+
+  .radius-setting {
+    display: flex;
+    flex-wrap: wrap;
+    .van-stepper {
+      line-height: 32px;
       width: 50%;
     }
   }

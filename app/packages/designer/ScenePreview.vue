@@ -103,7 +103,7 @@ export default {
 
     // 更新element的样式信息
     updateElementStyle (element) {
-      const style = styleUtils.getElementStyle(element)
+      const style = styleUtils.getElementStyle(element, this.device)
       this.currentElement.computedStyle = style
     },
 

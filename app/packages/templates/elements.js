@@ -1,13 +1,14 @@
+import util from '../utils/util'
 const BASE = {
   version: '1.2',
   type: '',
   position: {
+    horizontal: 'left',
     vertical: 'top',
-    align: 'left',
-    verticalMagin: '',
-    right: '',
-    width: '',
-    height: ''
+    offsetX: '5vw',
+    offsetY: '3vh',
+    width: '90vw',
+    height: '90vh'
   },
   background: {
     mode: '1',
@@ -49,17 +50,19 @@ const BASE = {
   }
 }
 
-const IMAGE = Object.assign({}, BASE, {
+const IMAGE = util.mergeDeep({}, BASE, {
   type: 'image',
   sizing: 'cover',
   position: {
     align: 'center',
-    top: '5vw',
+    offsetX: '5vw',
+    offsetY: '3vh',
     width: '90vw',
     height: '60vw'
   }
 })
-const TEXT = Object.assign({}, BASE, {
+
+const TEXT = util.mergeDeep({}, BASE, {
   type: 'text',
   content: '请输入文字',
   font: {
@@ -67,7 +70,7 @@ const TEXT = Object.assign({}, BASE, {
     color: '#fff'
   }
 })
-const CIRCLE = Object.assign({}, BASE, {
+const CIRCLE = util.mergeDeep({}, BASE, {
   type: 'circle',
   radius: '20vw'
 })

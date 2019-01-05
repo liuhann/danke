@@ -10,7 +10,7 @@
       </van-radio-group>
     </van-col>
   </van-row>
-  <edit-len label="横向偏移" v-model="position.margin"></edit-len>
+  <edit-len label="横向偏移" v-model="position.offsetX"></edit-len>
   <van-row type="flex" justify="space-around">
     <van-col span="6" class="tc label">纵向对齐</van-col>
     <van-col span="18">
@@ -21,7 +21,7 @@
       </van-radio-group>
     </van-col>
   </van-row>
-  <edit-len label="纵向偏移" v-model="position.margin"></edit-len>
+  <edit-len label="纵向偏移" v-model="position.offsetY"></edit-len>
 </div>
 </template>
 

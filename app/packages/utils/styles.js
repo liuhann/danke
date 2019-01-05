@@ -36,20 +36,20 @@ function getElementStyle (element, device) {
   const styles = []
   if (element.position) {
     if (element.position.vertical === 'top') {
-      styles.push(`top: ${positionUtil.getLength(element.position.top, device, 'px')}`)
+      styles.push(`top: ${positionUtil.getLength(element.position.offsetY, device, 'px')}`)
     } else if (element.position.vertical === 'center') {
-      styles.push(`top: ${device.height / 2 - positionUtil.getLength(element.position.height, device) / 2 + positionUtil.getLength(element.position.top, device)}px`)
+      styles.push(`top: ${device.height / 2 - positionUtil.getLength(element.position.height, device) / 2 + positionUtil.getLength(element.position.offsetY, device)}px`)
     } else if (element.position.vertical === 'bottom') {
-      styles.push(`bottom: ${positionUtil.getLength(element.position.bottom, device)}px`)
+      styles.push(`bottom: ${positionUtil.getLength(element.position.offsetY, device)}px`)
     }
 
-    if (element.position.align === 'left') {
-      styles.push(`left: ${positionUtil.getLength(element.position.left, device, 'px')}`)
-    } else if (element.position.align === 'center') {
+    if (element.position.horizontal === 'left') {
+      styles.push(`left: ${positionUtil.getLength(element.position.offsetX, device, 'px')}`)
+    } else if (element.position.horizontal === 'center') {
       console.log((positionUtil.getLength(element.position.width, device) / 2))
-      styles.push(`left: ${(device.width / 2) - (getLength(element.position.width, device) / 2) + getLength(element.position.left, device)}px`)
-    } else if (element.position.vertical === 'right') {
-      styles.push(`right: ${positionUtil.getLength(element.position.right, device)}px`)
+      styles.push(`left: ${(device.width / 2) - (getLength(element.position.width, device) / 2) + getLength(element.position.offsetX, device)}px`)
+    } else if (element.position.horizontal === 'right') {
+      styles.push(`right: ${positionUtil.getLength(element.position.offsetX, device)}px`)
     }
     styles.push(`width: ${positionUtil.getLength(element.position.width, device, 'px')}`)
     styles.push(`height: ${positionUtil.getLength(element.position.height, device, 'px')}`)
