@@ -23,8 +23,8 @@
     </van-col>
   </van-row>
   <van-row v-if="background.mode==='2'" type="flex" justify="space-around">
-    <van-col span="8" class="tc label">渐变模式</van-col>
-    <van-col span="16">
+    <van-col span="6" class="tc label">渐变模式</van-col>
+    <van-col span="18">
       <select v-model="background.angle">
         <option value="to bottom">上下</option>
         <option value="to right">左右</option>

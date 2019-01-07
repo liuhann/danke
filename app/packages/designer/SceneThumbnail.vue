@@ -1,5 +1,5 @@
 <template>
-<div class="scene" :style="sceneStyle">
+<div class="scene-thumbnail" :style="sceneStyle">
   <div v-for="(element, index) in sceneConfig.elements" :key="index" class="element-wrapper"  :class="[currentIndex===index?'selected':'', element.animationPreview]">
     <div v-if="element.type==='image'" class="image" :style="{
       backgroundImage: element.src
@@ -85,7 +85,7 @@ export default {
 </script>
 
 <style lang="less">
-.scene {
+.scene-thumbnail {
   position: relative;
   .element-wrapper {
     position: absolute;

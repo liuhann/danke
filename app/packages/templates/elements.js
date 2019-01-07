@@ -25,7 +25,7 @@ const BASE = {
   },
   font: {
     size: 16,
-    lspace: 2,
+    spacing: 2,
     color: '#fff',
     weight: 'normal',
     decoration: 'none',
@@ -66,8 +66,8 @@ const TEXT = util.mergeDeep({}, BASE, {
   type: 'text',
   content: '请输入文字',
   font: {
-    size: '14px',
-    color: '#fff'
+    size: 14,
+    color: '#000'
   }
 })
 const CIRCLE = util.mergeDeep({}, BASE, {

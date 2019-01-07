@@ -34,7 +34,8 @@ function getLength (unitLen, device, px) {
 
 function getElementStyle (element, device) {
   const styles = []
-  if (element.position) {
+  // position and size
+  if (element.position && device) {
     if (element.position.vertical === 'top') {
       styles.push(`top: ${positionUtil.getLength(element.position.offsetY, device, 'px')}`)
     } else if (element.position.vertical === 'center') {
@@ -55,16 +56,20 @@ function getElementStyle (element, device) {
     styles.push(`height: ${positionUtil.getLength(element.position.height, device, 'px')}`)
   }
 
-  if (element.background.mode === '1') {
-    styles.push(`background-color: ${element.background.color}`)
-  } else if (element.background.mode === '2') {
-    styles.push(getGradientStyle(element.background.gradients, element.background.angle, element.src))
-  } else if (element.background.mode === '0') {
-    styles.push(`background: transparent`)
+  if (element.background) {
+    if (element.background.mode === '1') {
+      styles.push(`background-color: ${element.background.color}`)
+    } else if (element.background.mode === '2') {
+      styles.push(getGradientStyle(element.background.gradients, element.background.angle, element.src))
+    } else if (element.background.mode === '0') {
+      styles.push(`background: transparent`)
+    }
   }
+
   if (element.clip) {
     styles.push(`clip-path: polygon(${element.clip.ax}% ${element.clip.ay}%, ${element.clip.bx}% ${element.clip.by}%, ${element.clip.cx}% ${element.clip.cy}%, ${element.clip.dx}% ${element.clip.dy}%)`)
   }
+  // border
   if (element.border) {
     if (parseInt(element.border.width) === 0) {
       styles.push(`border: none`)
@@ -78,6 +83,15 @@ function getElementStyle (element, device) {
       }
     }
     styles.push(`border-radius: ${element.border.radius[0]}px ${element.border.radius[1]}px ${element.border.radius[2]}px ${element.border.radius[3]}px;`)
+  }
+
+  // font
+  if (element.font) {
+    styles.push(`font: ${element.font.size}px`)
+    styles.push(`color: ${element.font.color}`)
+    styles.push(`font-weight: ${element.font.weight}`)
+    styles.push(`letter-spacing: ${element.font.spacing}px`)
+    styles.push(`text-decoration: ${element.font.decoration}px`)
   }
   return styles.join(';')
 }

@@ -2,18 +2,17 @@
 <div class="designer mobile">
   <div class="scene-buttons">
     <van-icon name="plus" @click="showAddElement"/>
-    <van-icon name="edit" @click.stop="showConfigBox"/>
+    <van-icon name="edit" @click.stop="pop.sceneList = true"/>
     <van-icon name="ellipsis" @click="showSceneList" />
   </div>
   <!--效果预览区-->
-  <dragable-scene-edit ref="sceneEdit" :scene="currentScene" :device="device" class="scene-container"
+  <scene-preview :scene="currentScene" :device="device" class="scene-container"
     @element-selected="tapElementOn"
-    @scene-selected="tapSceneOn"
-    @positioning="elementPositionChange"></dragable-scene-edit>
+    @scene-selected="tapSceneOn"></scene-preview>
 
   <!--配置区，可以进行元素配置项手动修改 -->
   <van-popup class="pop-config" position="right" :overlay="false" v-model="pop.showConfig">
-    <config-box :element="currentElement" :scene="currentScene" :device="device" @position-change="elementPositionChange"></config-box>
+    <config-box :element="currentElement" :scene="currentScene" :device="device" @element-remove="removeCurrentElement"></config-box>
   </van-popup>
 
   <!--新增元素弹出框-->
@@ -22,16 +21,19 @@
   </van-popup>
 
   <!--页面列表、新增按钮-->
-  <scene-list-popup ref="sceneListPopup" :scenes="scenes" :current-scene="currentScene"
-    @add-empty-scene="tapAddScene"
-    @choose-scene="chooseScene"></scene-list-popup>
+  <van-popup v-model="pop.sceneList" class="pop-page-list" position="center" :overlay="true">
+    <scene-list :scenes="scenes" :current-scene="currentScene" :device="device"
+      @close="pop.sceneList = false"
+      @add="tapAddScene"
+      @choose-scene="chooseScene"></scene-list>
+  </van-popup>
 </div>
 </template>
 
 <script>
-import DragableSceneEdit from './ScenePreview'
+import ScenePreview from './ScenePreview'
 import AddElementPopup from './AddElementPopup'
-import SceneListPopup from './SceneListPopup'
+import SceneList from './SceneList'
 import ConfigBox from './ConfigBox'
 import utils from '../utils/util'
 import styleUtils from '../utils/styles'
@@ -41,16 +43,17 @@ import Elements from '../templates/elements'
 export default {
   name: 'Designer',
   components: {
-    DragableSceneEdit,
+    ScenePreview,
     ConfigBox,
     AddElementPopup,
-    SceneListPopup
+    SceneList
   },
   data () {
     return {
       pop: {
         showConfig: false,
         showAddElement: false,
+        sceneList: false
       },
       device: {
         width: window.innerWidth,
@@ -77,7 +80,7 @@ export default {
     },
     // 切换、管理场景
     showSceneList () {
-      this.$refs.sceneListPopup.show()
+      this.pop.sceneList = true
     },
 
     tapAddScene () {
@@ -120,6 +123,7 @@ export default {
       if (elementName === 'text') {
         newEl = utils.clone(Elements.TEXT)
       }
+      newEl.id = utils.shortid()
       if (newEl && this.currentScene) {
         newEl.computedStyle = styleUtils.getElementStyle(newEl, this.device)
         this.currentScene.elements.push(newEl)
@@ -133,14 +137,14 @@ export default {
       this.currentElement = null
       this.pop.showConfig = false
     },
-    elementPositionChange (event) {
-      const vps = position.toViewPoint(event.element, event.newPos, this.currentScene.coordinate, this.device)
-      if (this.currentElement) {
-        this.currentElement.x = vps.x
-        this.currentElement.y = vps.y
-        this.currentElement.width = vps.w
-        this.currentElement.height = vps.h
+    removeCurrentElement () {
+      for (let i = 0; i < this.currentScene.elements.length; i ++) {
+        if (this.currentScene.elements[i].id === this.currentElement.id) {
+          this.currentScene.elements.splice(i, 1)
+        }
       }
+      this.currentElement = null
+      this.pop.showConfig = false
     }
   }
 }

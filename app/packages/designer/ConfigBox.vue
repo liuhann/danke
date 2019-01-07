@@ -1,6 +1,6 @@
 <template>
 <div class="config-box">
-  <config-element v-if="element" :element="element" @element-change="elementChange"></config-element>
+  <config-element v-if="element" :element="element" @element-change="elementChange" @element-remove="elementRemove"></config-element>
   <config-scene v-if="!scene" :scene="scene"></config-scene>
 </div>
 </template>
@@ -32,6 +32,9 @@ export default {
   },
 
   methods: {
+    elementRemove () {
+      this.$emit('element-remove')
+    },
     elementChange (element) {
 
     },
@@ -48,7 +51,7 @@ export default {
 <style lang="less">
 .config-box {
   border-left: 1px solid #eee;
-  background-color: #fff;
+  background-color: #fafafa;
   z-index: 1001;
   width: 88vw;
   height: 100vh;
