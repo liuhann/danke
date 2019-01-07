@@ -1,7 +1,7 @@
 <template>
 <div class="animation-selector">
-  <van-button size="small" plain type="primary" @click="isShow = true">选择</van-button>
-  <van-popup v-model="isShow" position="right" :overlay="false">
+  <van-button size="small" plain type="primary" @click="isShow = true">{{value || '选择'}}</van-button>
+  <van-popup v-model="isShow" position="bottom" :overlay="true" get-container="body">
     <van-picker :columns="columns" show-toolbar @change="onChange" @cancel="onCancel" @confirm="onConfirm"/>
   </van-popup>
 </div>
@@ -27,7 +27,8 @@ export default {
       isShow: false,
       source: defaultSetting['entrance'],
       animationClass: '',
-      columns: []
+      columns: [],
+      choosedValues: null
     }
   },
 
@@ -62,13 +63,17 @@ export default {
     },
     onChange (picker, values) {
       picker.setColumnValues(1, this.source[values[0]])
+      this.choosedValues = values
       // this.animationClass = settings.getAnimationClass(values)
-      this.$emit('input', settings.getAnimationClass(values))
+      // this.$emit('input', settings.getAnimationClass(values))
       // this.changeCallback(this.animationClass)
     },
     onConfirm () {
-      this.show = false
-      this.selectCallback(this.animationClass)
+      this.isShow = false
+      if (this.choosedValues && this.choosedValues.length) {
+        this.$emit('input', settings.getAnimationClass(this.choosedValues))
+      }
+      // this.selectCallback(this.animationClass)
     },
     onCancel () {
       this.isShow = false

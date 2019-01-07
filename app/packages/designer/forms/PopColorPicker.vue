@@ -2,7 +2,7 @@
 <div class="color-picker">
   <div class="color-preview" :style="{backgroundColor: value}" @click="isShow = true">
   </div>
-  <van-popup v-model="isShow" class="pop-color-picker" position="bottom" :overlay="true">
+  <van-popup v-model="isShow" class="pop-color-picker" position="bottom" :overlay="true" get-container="body">
     <van-cell title="颜色选取">
       <van-icon slot="right-icon" name="cross" class="custom-icon" @click="isShow = false"/>
     </van-cell>
@@ -62,13 +62,8 @@ export default {
 </script>
 
 <style lang="less">
-.color-picker {
-  .van-icon {
-    font-size: 20px;
-  }
-  .pop-color-picker {
-    border-top: 1px solid #efefef;
-  }
+.pop-color-picker {
+  border-top: 1px solid #efefef;
   .color-container {
     overflow-y: auto;
     display: flex;
@@ -80,6 +75,15 @@ export default {
       height: 14vw;
     }
   }
+  .van-slider {
+    top: 50%
+  }
+}
+
+.color-picker {
+  .van-icon {
+    font-size: 20px;
+  }
 
   .van-cell__title {
     flex: 1;
@@ -88,10 +92,6 @@ export default {
     padding: 10px;
     flex: 4;
   }
-  .van-slider {
-    top: 50%
-  }
-
   .color-preview {
     box-sizing: border-box;
     border: 1px solid #efefef;

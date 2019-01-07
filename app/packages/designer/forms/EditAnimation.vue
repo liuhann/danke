@@ -3,12 +3,12 @@
   <van-row type="flex" justify="space-around">
     <van-col span="6" class="tc label">效果</van-col>
     <van-col span="18">
-      <animation-selector v-model="value.animation"></animation-selector>
+      <animation-selector v-model="value.animation" :type="type"></animation-selector>
     </van-col>
   </van-row>
   <van-row type="flex" justify="space-around">
     <van-col span="6" class="tc label">时长</van-col>
-    <van-col span="18"><van-stepper v-model="value.duration" integer disable-input :step="50"/>ms</van-col>
+    <van-col span="18"><van-stepper v-model="value.duration" integer disable-input :step="50"/></van-col>
   </van-row>
   <van-row type="flex" justify="space-around">
     <van-col span="6" class="tc label">延迟</van-col>
@@ -18,7 +18,7 @@
     <van-col span="6" class="tc label">Timing</van-col>
     <van-col span="18">
       <select v-model="value.timing">
-        <option v-for="value in cubicBesizers" :key="value" :value="value">{{value}}</option>
+        <option v-for="(value, key) in cubicBesizers" :key="key" :value="key">{{key}}</option>
       </select>
     </van-col>
   </van-row>
@@ -34,7 +34,7 @@
 
 <script>
 import AnimationSelector from './AnimationSelector'
-import utils from '../../utils/util'
+import cubicBesizers from '../../utils/cubic-beziers'
 export default {
   name: 'EditAnimation',
   props: {
@@ -50,7 +50,7 @@ export default {
   },
   computed: {
     cubicBesizers () {
-      return utils.cubicBesizers
+      return cubicBesizers
     }
   },
   methods: {

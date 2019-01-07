@@ -2,7 +2,7 @@
 <div class="gradient-color-picker">
   <div class="color-preview" :style="gradientStyle" @click="isShow = true">
   </div>
-  <van-popup v-model="isShow" class="pop-gradient-picker" position="bottom" :overlay="true">
+  <van-popup v-model="isShow" class="pop-gradient-picker" position="bottom" :overlay="true" get-container="body">
     <van-cell title="过渡颜色选取">
       <van-icon slot="right-icon" name="cross" class="custom-icon" @click="isShow = false"/>
     </van-cell>
@@ -65,8 +65,7 @@ export default {
 </script>
 
 <style lang="less">
-.gradient-color-picker {
-
+.pop-gradient-picker {
   .color-container {
     display: flex;
     flex-wrap: wrap;
@@ -74,14 +73,16 @@ export default {
     height: 60vw;
     overflow-y: auto;
   }
-  .color-preview, .color-box {
-    box-sizing: border-box;
-    border: 1px solid #efefef;
-    width: 10vw;
-    margin: 1vw;
-    border-radius: 4px;
-    height: 10vw;
-  }
 }
+
+.color-preview, .color-box {
+  box-sizing: border-box;
+  border: 1px solid #efefef;
+  width: 10vw;
+  margin: 1vw;
+  border-radius: 4px;
+  height: 10vw;
+}
+
 
 </style>

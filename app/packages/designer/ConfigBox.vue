@@ -1,8 +1,5 @@
 <template>
 <div class="config-box">
- <!--  <div class="drag-handle">
-    <van-icon name="wap-nav"></van-icon>
-  </div> -->
   <config-element v-if="element" :element="element" @element-change="elementChange"></config-element>
   <config-scene v-if="!scene" :scene="scene"></config-scene>
 </div>
@@ -71,14 +68,6 @@ export default {
     min-height: 44px;
     align-items: center;
     background-color: #fff;
-  }
-
-  .drag-handle {
-    height: 16px;
-    text-align: center;
-    font-size: 12px;
-    border-bottom: 1px solid #eee;
-    background-color: #fefefe;
   }
 }
 
