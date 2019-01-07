@@ -84,7 +84,6 @@ function getElementStyle (element, device) {
     }
     styles.push(`border-radius: ${element.border.radius[0]}px ${element.border.radius[1]}px ${element.border.radius[2]}px ${element.border.radius[3]}px;`)
   }
-
   // font
   if (element.font) {
     styles.push(`font: ${element.font.size}px`)

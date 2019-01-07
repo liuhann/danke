@@ -1,13 +1,16 @@
 <template>
 <div class="element-edit">
-  <van-panel title="样式和特效预览" class="element-preview">
+  <van-nav-bar title="元素配置" @click-left="close">
+    <van-icon name="cross" slot="left" />
+  </van-nav-bar>
+  <!--<van-panel title="样式和特效预览" class="element-preview">
     <div class="panel-content">
       <div class="preview-square" :style="previewStyle"></div>
     </div>
     <div slot="footer">
       <van-button size="small" type="primary" plain>应用样式模板</van-button>
     </div>
-  </van-panel>
+  </van-panel>-->
 
   <van-tabs v-model="activeKey">
     <van-tab title="定位与大小">
@@ -112,6 +115,9 @@ export default {
   },
 
   methods: {
+    close () {
+      this.$emit('close')
+    },
     removeElement () {
       this.$emit('element-remove')
     }

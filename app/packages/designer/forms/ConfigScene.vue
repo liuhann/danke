@@ -1,14 +1,9 @@
 <template>
 <div class="scene-edit-wrapper">
-  <van-row type="flex" justify="space-around">
-    <van-col span="4">坐标系</van-col>
-    <van-col span="20">
-      <van-radio-group v-model="config.coordinate">
-        <van-radio name="tl">左上角</van-radio>
-        <van-radio name="center">正中</van-radio>
-      </van-radio-group>
-    </van-col>
-  </van-row>
+  <van-nav-bar title="场景配置" left-text="新增空白场景" @click-right="close" @click-left="addEmptyScene">
+    <van-icon name="cross" slot="right" />
+  </van-nav-bar>
+
   <van-row type="flex" justify="space-around">
     <van-col span="4">播放</van-col>
     <van-col span="20">
