@@ -21,7 +21,7 @@
   </van-popup>
 
   <!--页面列表、新增按钮-->
-  <van-popup v-model="pop.sceneList" class="pop-page-list" position="center" :overlay="true">
+  <van-popup v-model="pop.sceneList" class="pop-page-list" position="left">
     <scene-list :scenes="scenes" :current-scene="currentScene" :device="device"
       @close="pop.sceneList = false"
       @add="tapAddScene"
@@ -98,6 +98,7 @@ export default {
     },
 
     chooseScene (index) {
+      this.pop.sceneList = false
       this.currentScene = this.scenes[index]
       this.currentElement = null
     },

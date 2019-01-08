@@ -1,5 +1,6 @@
 <template>
 <div class="edit-background">
+  <van-cell class="group-title" title="背景" icon="expand-o" />
   <van-row type="flex" justify="space-around">
     <van-col span="6" class="tc label">模式</van-col>
     <van-col span="18">

@@ -26,7 +26,6 @@
       <van-cell class="group-title" title="字体" icon="bars" v-if="fontable"/>
       <edit-font v-model="element.font" v-if="fontable"></edit-font>
 
-      <van-cell class="group-title" title="背景" icon="expand-o" />
       <edit-background v-model="element.background"></edit-background>
 
       <van-cell class="group-title" title="边框" icon="expand-o" v-if="borderable"/>

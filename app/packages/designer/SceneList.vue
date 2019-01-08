@@ -53,7 +53,7 @@ export default {
       this.$emit('add')
     },
     chooseScene (index) {
-      this.$emit('chooseScene', index)
+      this.$emit('choose-scene', index)
     },
     deleteScene (index) {
       this.$emit('deleteScene', index)
@@ -103,11 +103,13 @@ export default {
           position: absolute;
           right: 5px;
           top: 5px;
-          font-size: 18px;
+          font-size: 14px;
           background: rgba(0,0,0,.6);
           color: #fff;
+          line-height: 18px;
+          height: 18px;
           width: 18px;
-          border-radius: 7px;
+          border-radius: 14px;
           text-align: center;
         }
       }

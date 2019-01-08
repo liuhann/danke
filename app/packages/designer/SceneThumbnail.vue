@@ -1,14 +1,9 @@
 <template>
 <div class="scene-thumbnail" :style="sceneStyle">
-  <div v-for="(element, index) in sceneConfig.elements" :key="index" class="element-wrapper"  :class="[currentIndex===index?'selected':'', element.animationPreview]">
+  <div v-for="(element, index) in sceneConfig.elements" :key="index" class="element-wrapper"  :class="[currentIndex===index?'selected':'']" :style="element.thumbnailStyle">
     <div v-if="element.type==='image'" class="image" :style="{
       backgroundImage: element.src
     }">
-    </div>
-    <div v-if="element.type === 'text'" class="text" :style="{
-      fontSize: element.font
-    }">
-      {{element.content}}
     </div>
     <div v-if="element.type === 'circle'" class="circle">
     </div>
@@ -17,36 +12,22 @@
 </template>
 
 <script>
-import '../animations/entrance.css'
-import '../animations/exits.css'
-import utils from '../utils/util'
+import styleUtils from '../utils/styles'
 
 export default {
   name: 'SceneThumbnail',
   components: {
   },
   props: {
-    checkable: {
-      type: Boolean,
-      default: false
-    },
     scene: {
       type: Object
     },
     device: {
       type: Object
-    },
-    coordinate: {
-      type: String,
-      default: 'tl'
-    },
-    styleName: {
-      type: String
     }
   },
 
   watch: {
-    scene () {}
   },
   computed: {
     sceneStyle () {
@@ -56,8 +37,10 @@ export default {
       }
     },
     sceneConfig () {
-      const sceneConfig = utils.generateSceneDisplayStyle(this.scene, this.device, this.coordinate, this.styleName)
-      return sceneConfig
+      for (let i = 0; i < this.scene.elements.length; i++) {
+        this.scene.elements[i].thumbnailStyle = styleUtils.getElementStyle(this.scene.elements[i], this.device)
+      }
+      return this.scene
     }
   },
 

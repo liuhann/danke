@@ -1,8 +1,11 @@
 <template>
-<div class="scene-edit-wrapper">
-  <van-nav-bar title="场景配置" left-text="新增空白场景" @click-right="close" @click-left="addEmptyScene">
+<div class="config-work">
+  <van-nav-bar title="作品配置" @click-right="close" @click-left="addEmptyScene">
     <van-icon name="cross" slot="right" />
   </van-nav-bar>
+
+  <edit-background v-model="work.background"></edit-background>
+
   <van-row type="flex" justify="space-around">
     <van-col span="4">播放</van-col>
     <van-col span="20">
@@ -26,12 +29,16 @@
 </template>
 
 <script>
+import ItemBlock from './ItemBlock'
+import EditBackground from './EditBackground'
 export default {
   name: 'SceneEdit',
   components: {
+    EditBackground,
+    ItemBlock
   },
   props: {
-    sceneConfig: {
+    work: {
       type: Object
     }
   },
