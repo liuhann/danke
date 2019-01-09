@@ -57,13 +57,7 @@ function getElementStyle (element, device) {
   }
 
   if (element.background) {
-    if (element.background.mode === '1') {
-      styles.push(`background-color: ${element.background.color}`)
-    } else if (element.background.mode === '2') {
-      styles.push(getGradientStyle(element.background.gradients, element.background.angle, element.src))
-    } else if (element.background.mode === '0') {
-      styles.push(`background: transparent`)
-    }
+    styles.push(getBackgroundStyle(element.background, element.image && element.image.src))
   }
 
   if (element.clip) {
@@ -103,7 +97,20 @@ function getGradientStyle (colors, angle, blendImage) {
   return style
 }
 
+function getBackgroundStyle (background, blendImage) {
+  const styles = []
+  if (background.mode === '1') {
+    styles.push(`background-color: ${background.color}`)
+  } else if (background.mode === '2') {
+    styles.push(getGradientStyle(background.gradients, background.angle, blendImage))
+  } else if (background.mode === '0') {
+    styles.push(`background: transparent`)
+  }
+  return styles.join(';')
+}
+
 export default {
   getGradientStyle,
+  getBackgroundStyle,
   getElementStyle
 }

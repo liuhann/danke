@@ -50,18 +50,6 @@ export default {
 
 <style lang="less">
 .config-box {
-  border-left: 1px solid #eee;
-  background-color: #fafafa;
-  z-index: 1001;
-  width: 88vw;
-  height: 100vh;
-
-  .van-radio {
-    margin-right: 14px;
-  }
-  .van-radio-group {
-    display: flex;
-  }
 
   .van-cell-group {
     margin-bottom: 5px;

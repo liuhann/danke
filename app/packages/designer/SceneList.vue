@@ -1,7 +1,7 @@
 <template>
 <div class="scene-list-wrapper">
-  <van-nav-bar title="场景列表" left-text="新增空白场景" @click-right="close" @click-left="addEmptyScene">
-    <van-icon name="cross" slot="right" />
+  <van-nav-bar title="场景列表" right-text="新增空白场景" @click-left="close" @click-right="addEmptyScene">
+    <van-icon name="cross" slot="left" />
   </van-nav-bar>
   <div class="list">
     <div class="block scene" v-for="(scene, index) in scenes" :key="index" @click="chooseScene(index)" :class="[currentScene === scene?'current': '']">

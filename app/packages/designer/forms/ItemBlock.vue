@@ -1,8 +1,14 @@
 <template>
   <van-row class="config-block" type="flex" justify="space-around">
     <van-col span="6" class="tc label">{{title}}</van-col>
-    <van-col span="18">
+    <van-col span="18" v-if="!$slots.end">
       <slot></slot>
+    </van-col>
+    <van-col span="12" v-if="$slots.end">
+      <slot></slot>
+    </van-col>
+    <van-col span="6" v-if="$slots.end">
+      <slot name="end"></slot>
     </van-col>
   </van-row>
 </template>
@@ -24,5 +30,14 @@ export default {
   min-height: 44px;
   align-items: center;
   background-color: #fff;
+  .van-col {
+    font-size: 14px;
+  }
+  .van-radio {
+    margin-right: 14px;
+  }
+  .van-radio-group {
+    display: flex;
+  }
 }
 </style>

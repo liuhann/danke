@@ -1,21 +1,21 @@
 <template>
 <div class="edit-font">
+  <van-cell class="group-title" title="字体" icon="bars"/>
   <edit-len v-model="font.size" label="大小"></edit-len>
-  <van-row type="flex" justify="space-around">
-    <van-col span="6" class="tc label">颜色</van-col>
-    <van-col span="18">
-      <pop-color-picker v-model="font.color"></pop-color-picker>
-    </van-col>
-  </van-row>
+  <item-block title="颜色">
+    <pop-color-picker v-model="font.color"></pop-color-picker>
+  </item-block>
 </div>
 </template>
 
 <script>
 import PopColorPicker from './PopColorPicker'
 import EditLen from './EditLen'
+import ItemBlock from './ItemBlock'
 export default {
   name: 'EditFont',
   components: {
+    ItemBlock,
     PopColorPicker,
     EditLen
   },

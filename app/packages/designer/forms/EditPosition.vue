@@ -1,35 +1,34 @@
 <template>
 <div class="edit-position config-group">
-  <van-row type="flex" justify="space-around">
-    <van-col span="6" class="tc label">横向对齐</van-col>
-    <van-col span="18">
-      <van-radio-group v-model="position.align">
-        <van-radio name="left">左</van-radio>
-        <van-radio name="center">居中</van-radio>
-        <van-radio name="right">右</van-radio>
-      </van-radio-group>
-    </van-col>
-  </van-row>
+  <item-block title="横向对齐">
+    <van-radio-group v-model="position.align">
+      <van-radio name="left">左</van-radio>
+      <van-radio name="center">居中</van-radio>
+      <van-radio name="right">右</van-radio>
+    </van-radio-group>
+  </item-block>
+
   <edit-len label="横向偏移" v-model="position.offsetX"></edit-len>
-  <van-row type="flex" justify="space-around">
-    <van-col span="6" class="tc label">纵向对齐</van-col>
-    <van-col span="18">
-      <van-radio-group v-model="position.vertical">
-        <van-radio name="top">上</van-radio>
-        <van-radio name="center">居中</van-radio>
-        <van-radio name="bottom">下</van-radio>
-      </van-radio-group>
-    </van-col>
-  </van-row>
+
+  <item-block title="纵向对齐">
+    <van-radio-group v-model="position.vertical">
+      <van-radio name="top">上</van-radio>
+      <van-radio name="center">居中</van-radio>
+      <van-radio name="bottom">下</van-radio>
+    </van-radio-group>
+  </item-block>
+
   <edit-len label="纵向偏移" v-model="position.offsetY"></edit-len>
 </div>
 </template>
 
 <script>
 import EditLen from './EditLen'
+import ItemBlock from './ItemBlock'
 export default {
   name: 'EditPosition',
   components: {
+    ItemBlock,
     EditLen
   },
   props: {

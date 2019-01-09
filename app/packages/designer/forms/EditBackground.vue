@@ -1,46 +1,39 @@
 <template>
 <div class="edit-background">
   <van-cell class="group-title" title="背景" icon="expand-o" />
-  <van-row type="flex" justify="space-around">
-    <van-col span="6" class="tc label">模式</van-col>
-    <van-col span="18">
-      <select v-model="background.mode">
-        <option value="1">纯色</option>
-        <option value="2">渐变</option>
-        <option value="0">透明</option>
-      </select>
-    </van-col>
-  </van-row>
-  <van-row v-if="background.mode==='1'" type="flex" justify="space-around">
-    <van-col span="6" class="tc label">颜色</van-col>
-    <van-col span="18">
-      <pop-color-picker v-model="background.color"></pop-color-picker>
-    </van-col>
-  </van-row>
-  <van-row v-if="background.mode==='2'" type="flex" justify="space-around">
-    <van-col span="6" class="tc label">渐变颜色</van-col>
-    <van-col span="18">
-      <pop-gradient-picker v-model="background.gradients" :angle="background.angle" ></pop-gradient-picker>
-    </van-col>
-  </van-row>
-  <van-row v-if="background.mode==='2'" type="flex" justify="space-around">
-    <van-col span="6" class="tc label">渐变模式</van-col>
-    <van-col span="18">
-      <select v-model="background.angle">
-        <option value="to bottom">上下</option>
-        <option value="to right">左右</option>
-      </select>
-    </van-col>
-  </van-row>
+  <item-block title="模式">
+    <select v-model="background.mode">
+      <option value="1">纯色</option>
+      <option value="2">渐变</option>
+      <option value="0">透明</option>
+    </select>
+  </item-block>
+
+  <item-block title="颜色" v-if="background.mode==='1'">
+    <pop-color-picker v-model="background.color"></pop-color-picker>
+  </item-block>
+
+  <item-block title="渐变颜色" v-if="background.mode==='2'">
+    <pop-gradient-picker v-model="background.gradients" :angle="background.angle" ></pop-gradient-picker>
+  </item-block>
+
+  <item-block title="渐变模式" v-if="background.mode==='2'">
+    <select v-model="background.angle">
+      <option value="to bottom">上下</option>
+      <option value="to right">左右</option>
+    </select>
+  </item-block>
 </div>
 </template>
 
 <script>
 import PopColorPicker from './PopColorPicker'
+import ItemBlock from './ItemBlock'
 import PopGradientPicker from './PopGradientPicker'
 export default {
   name: 'EditBackground',
   components: {
+    ItemBlock,
     PopColorPicker,
     PopGradientPicker
   },

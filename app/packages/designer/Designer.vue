@@ -1,18 +1,18 @@
 <template>
-<div class="designer mobile">
+<div class="designer mobile" :style="workStyle">
   <div class="scene-buttons">
     <van-icon name="plus" @click="showAddElement"/>
-    <van-icon name="edit" @click.stop="pop.sceneList = true"/>
-    <van-icon name="ellipsis" @click="showSceneList" />
+    <van-icon name="apps-o" @click.stop="pop.sceneList = true"/>
+    <van-icon name="setting-o" @click="pop.appConfig = true" />
   </div>
   <!--效果预览区-->
   <scene-preview :scene="currentScene" :device="device" class="scene-container"
     @element-selected="tapElementOn"
     @scene-selected="tapSceneOn"></scene-preview>
 
-  <!--配置区，可以进行元素配置项手动修改 -->
-  <van-popup class="pop-config" position="right" :overlay="false" v-model="pop.showConfig">
-    <config-box :element="currentElement" :scene="currentScene" :device="device" @element-remove="removeCurrentElement"></config-box>
+  <!--元素配置区，可以进行元素配置项手动修改 -->
+  <van-popup class="pop-element-config" position="right" :overlay="false" v-model="pop.elementConfig">
+    <config-element :element="currentElement" :device="device" @close="pop.elementConfig = false" @element-remove="removeCurrentElement"></config-element>
   </van-popup>
 
   <!--新增元素弹出框-->
@@ -21,11 +21,15 @@
   </van-popup>
 
   <!--页面列表、新增按钮-->
-  <van-popup v-model="pop.sceneList" class="pop-page-list" position="left">
+  <van-popup v-model="pop.sceneList" class="pop-page-list" position="right">
     <scene-list :scenes="scenes" :current-scene="currentScene" :device="device"
       @close="pop.sceneList = false"
       @add="tapAddScene"
       @choose-scene="chooseScene"></scene-list>
+  </van-popup>
+
+  <van-popup v-model="pop.appConfig" class="pop-app-config" position="right">
+    <config-work v-model="work" @close="pop.appConfig = false"></config-work>
   </van-popup>
 </div>
 </template>
@@ -37,12 +41,15 @@ import SceneList from './SceneList'
 import ConfigBox from './ConfigBox'
 import utils from '../utils/util'
 import styleUtils from '../utils/styles'
-import position from '../utils/position'
 import Elements from '../templates/elements'
+import ConfigElement from './forms/ConfigElement'
+import ConfigWork from './forms/ConfigWork'
 
 export default {
   name: 'Designer',
   components: {
+    ConfigWork,
+    ConfigElement,
     ScenePreview,
     ConfigBox,
     AddElementPopup,
@@ -51,9 +58,10 @@ export default {
   data () {
     return {
       pop: {
-        showConfig: false,
+        elementConfig: false,
         showAddElement: false,
-        sceneList: false
+        sceneList: false,
+        appConfig: false
       },
       device: {
         width: window.innerWidth,
@@ -62,11 +70,29 @@ export default {
       scenes: [],
       currentScene: null,
       currentElement: null,
-      workConfig: {}
+      work: {
+        play: {
+          type: 'auto',
+          nextInterval: 3000
+        },
+        bgimage: {
+          src: '',
+          size: 'cover'
+        },
+        background: {
+          mode: '1',
+          color: '#fff',
+          gradients: ['#fff', '#fff'],
+          angle: 'to bottom'
+        }
+      }
     }
   },
 
   computed: {
+    workStyle () {
+      return styleUtils.getBackgroundStyle(this.work.background)
+    }
   },
 
   created () {
@@ -132,7 +158,7 @@ export default {
     },
     tapElementOn (element) {
       this.currentElement = element
-      this.pop.showConfig = true
+      this.pop.elementConfig = true
     },
     tapSceneOn () {
       this.currentElement = null
@@ -160,28 +186,44 @@ export default {
   width: 100vw;
   height: 100vh;
 
+  .pop-element-config {
+    border-left: 1px solid #eee;
+    background-color: #fafafa;
+    z-index: 1001;
+    width: 88vw;
+    height: 100vh;
+  }
+
   .pop-select-element {
     width: 80vw;
     height: 80vh;
     overflow-y: auto;
   }
 
+  .pop-app-config {
+    width: 100vw;
+    height: 100vh;
+  }
+
   .scene-container {
-    border: 1px solid #fefefe;
-    border-radius: 10px;
     box-sizing: border-box;
   }
 
   .scene-buttons {
     position: absolute;
-    bottom: 16px;
-    right: 16px;
+    bottom: 6px;
+    right: 6px;
     font-size: 24px;
     z-index: 101;
-    width: 100px;
+    width: 135px;
     display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
     justify-content: space-between;
     color: #666;
+    background: #fff;
+    padding: 14px;
+    border-radius: 15px;
   }
 }
 

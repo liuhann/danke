@@ -1,22 +1,19 @@
 <template>
-<van-row type="flex" justify="space-around">
-  <van-col span="6" class="tc label">{{label}}</van-col>
-  <van-col span="12">
-    <van-stepper @plus="stepChange" @minus="stepChange" v-model="length" :min="min || 0" :max="max" :step="step || 1"/>
-  </van-col>
-  <van-col span="6">
-    <select v-model="unit" v-if="withUnit">
-      <option value="vw">屏宽</option>
-      <option value="vh">屏高</option>
-      <option value="px">像素</option>
-    </select>
-  </van-col>
-</van-row>
+<item-block :title="label">
+  <van-stepper @plus="stepChange" @minus="stepChange" v-model="length" :min="min || 0" :max="max" :step="step || 1"/>
+  <select v-model="unit" v-if="withUnit" slot="end">
+    <option value="vw">屏宽</option>
+    <option value="vh">屏高</option>
+    <option value="px">像素</option>
+  </select>
+</item-block>
 </template>
 
 <script>
+import ItemBlock from './ItemBlock'
 const REG_LEN = /([+-]?[0-9#]+)(%|px|pt|em|rem|in|cm|mm|ex|ch|pc|vw|vh|vmin|vmax|deg|rad|turn)?$/
 export default {
+  components: {ItemBlock},
   props: {
     label: {
       type: String

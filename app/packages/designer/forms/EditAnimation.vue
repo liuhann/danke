@@ -1,40 +1,30 @@
 <template>
 <div class="edit-animation">
-  <van-row type="flex" justify="space-around">
-    <van-col span="6" class="tc label">效果</van-col>
-    <van-col span="18">
-      <animation-selector v-model="value.animation" :type="type"></animation-selector>
-    </van-col>
-  </van-row>
-  <van-row type="flex" justify="space-around">
-    <van-col span="6" class="tc label">时长</van-col>
-    <van-col span="18"><van-stepper v-model="value.duration" integer disable-input :step="50"/></van-col>
-  </van-row>
-  <van-row type="flex" justify="space-around">
-    <van-col span="6" class="tc label">延迟</van-col>
-    <van-col span="18"><van-stepper v-model="value.delay" disable-input :step="20"/></van-col>
-  </van-row>
-  <van-row type="flex" justify="space-around">
-    <van-col span="6" class="tc label">Timing</van-col>
-    <van-col span="18">
-      <select v-model="value.timing">
-        <option v-for="(value, key) in cubicBesizers" :key="key" :value="key">{{key}}</option>
-      </select>
-    </van-col>
-  </van-row>
-  <van-row type="flex" justify="space-around" v-if="value.infinite">
-    <van-col span="6" class="tc label">次数</van-col>
-    <van-col span="18">
-      <van-stepper v-model="value.iteration" integer disable-input/>
-      <van-switch v-model="value.infinite" size="24px"/> 循环
-    </van-col>
-  </van-row>
+  <item-block title="效果">
+    <animation-selector v-model="value.animation" :type="type"></animation-selector>
+  </item-block>
+  <item-block title="时长">
+    <van-stepper v-model="value.duration" integer disable-input :step="50"/>
+  </item-block>
+  <item-block title="延迟">
+    <van-stepper v-model="value.delay" disable-input :step="20"/>
+  </item-block>
+  <item-block title="速度曲线">
+    <select v-model="value.timing">
+      <option v-for="(value, key) in cubicBesizers" :key="key" :value="key">{{key}}</option>
+    </select>
+  </item-block>
+  <item-block title="重复" v-if="value.infinite">
+    <van-stepper v-model="value.iteration" integer disable-input/>
+    <van-switch v-model="value.infinite" size="24px"/> 循环
+  </item-block>
 </div>
 </template>
 
 <script>
 import AnimationSelector from './AnimationSelector'
 import cubicBesizers from '../../utils/cubic-beziers'
+import ItemBlock from './ItemBlock'
 export default {
   name: 'EditAnimation',
   props: {
@@ -46,6 +36,7 @@ export default {
     }
   },
   components: {
+    ItemBlock,
     AnimationSelector
   },
   computed: {

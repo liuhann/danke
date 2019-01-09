@@ -3,15 +3,6 @@
   <van-nav-bar title="元素配置" @click-left="close">
     <van-icon name="cross" slot="left" />
   </van-nav-bar>
-  <!--<van-panel title="样式和特效预览" class="element-preview">
-    <div class="panel-content">
-      <div class="preview-square" :style="previewStyle"></div>
-    </div>
-    <div slot="footer">
-      <van-button size="small" type="primary" plain>应用样式模板</van-button>
-    </div>
-  </van-panel>-->
-
   <van-tabs v-model="activeKey">
     <van-tab title="定位与大小">
       <van-cell title="位置" icon="aim" />
@@ -23,7 +14,6 @@
       </div>
     </van-tab>
     <van-tab title="显示样式">
-      <van-cell class="group-title" title="字体" icon="bars" v-if="fontable"/>
       <edit-font v-model="element.font" v-if="fontable"></edit-font>
 
       <edit-background v-model="element.background"></edit-background>
@@ -59,7 +49,7 @@ import EditFont from './EditFont'
 import styleUtils  from '../../utils/styles'
 
 export default {
-  name: 'ElementEdit',
+  name: 'ConfigElement',
   components: {
     AnimationSelector,
     EditClipPath,
@@ -78,16 +68,13 @@ export default {
   data () {
     return {
       activeKey: 0,
-      previewStyle: ''
     }
   },
   watch: {
     element: {
       handler: function (val, oldVal) {
         this.$emit('element-change', this.element)
-        // console.log('ConfigElement -> change ', this.element)
         this.nanobus.emit('element-change', this.element)
-        this.previewStyle = styleUtils.getElementStyle(this.element)
       },
       deep: true
     }
