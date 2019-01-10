@@ -1,4 +1,65 @@
-export default ['scale-out-top',
+const outs = {
+  'scale-out': '放大',
+  'flip-out': '翻转',
+  'slide-out': '',
+  'fade-out': '',
+  'bounce-out': '',
+  'rotate-out': '',
+  'slit-out': '',
+  'puff-out': '',
+  'swing-out': ''
+}
+const entrance = {
+  'scale-in': '',
+  'rotate-in': '',
+  'flip-in': '',
+  'slit-in': '',
+  'slide-in': '',
+  'bounce-in': '',
+  'swing-in': '',
+  'fade-in': ''
+}
+const attention = {
+  'vibrate-1': '',
+  'vibrate-2': '',
+  'vibrate-3': '',
+  'flicker-1': '',
+  'flicker-5': '',
+  'flicker-4': '',
+  'flicker-3': '',
+  'flicker-2': '',
+  'jello-horizontal': '',
+  'jello-vertical': '',
+  'jello-diagonal-1': '',
+  'jello-diagonal-2': '',
+  'wobble-hor-bottom': '',
+  'wobble-hor-top': '',
+  'wobble-ver-left': '',
+  'wobble-ver-right': '',
+  'bounce-top': '',
+  'bounce-bottom': '',
+  'bounce-left': '',
+  'bounce-right': '',
+  'ping': '',
+  'pulsate-fwd': '',
+  'pulsate-bck': '',
+  'heartbeat': '',
+  'blink-2': '',
+  'blink-1': ''
+}
+
+const text = {
+  'text-focus-in': '',
+  'text-blur-out': '',
+  'tracking-in': '',
+  'tracking-out': ''
+}
+const background = {
+  'kenburns': '',
+  'bg-pan': ''
+}
+
+const animations = ['scale-out-top',
   'scale-out-center',
   'scale-out-tr',
   'scale-out-right',
@@ -278,3 +339,12 @@ export default ['scale-out-top',
   'heartbeat',
   'blink-2',
   'blink-1']
+
+export default {
+  entrance,
+  outs,
+  animations,
+  background,
+  attention,
+  text
+}
