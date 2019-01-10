@@ -1,5 +1,5 @@
 <template>
-<div class="scene" :style="sceneStyle" @click.self="onSceneClicked">
+<div class="scene" :style="sceneStyle">
   <div v-for="(element, index) in scene.elements" :key="index" class="element-wrapper"
     @click="onElementClicked(index)"
     :style="element.computedStyle"

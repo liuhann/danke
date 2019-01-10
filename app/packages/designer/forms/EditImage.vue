@@ -1,10 +1,9 @@
 <template>
 <div class="edit-image">
-  <van-cell class="group-title" title="编辑图片" icon="expand-o" />
-  <item-block title="选择">
+  <item-block :title="title">
     <van-uploader :after-read="onRead">
       <div class="image-display" :style="displayStyle">
-        {{image.src? '': '点击选择图片'}}
+        {{src? '': '点击选择图片'}}
       </div>
     </van-uploader>
   </item-block>
@@ -17,19 +16,23 @@ export default {
   name: 'EditImage',
   components: {ItemBlock},
   props: {
+    title: {
+      type: String,
+      default: '编辑图片'
+    },
     value: {
-      type: Object
+      type: String
     }
   },
   data () {
     return {
-      image: this.value
+      src: this.value
     }
   },
   computed: {
     displayStyle () {
-      if (this.image.src) {
-        return `background-image: url('${this.image.src}')`
+      if (this.src) {
+        return `background-image: url('${this.src}')`
       } else {
         return ''
       }
@@ -37,8 +40,12 @@ export default {
   },
   methods: {
     onRead ({content, file}) {
-      this.image.file = file
-      this.image.src = URL.createObjectURL(file)
+      const blobUrl = URL.createObjectURL(file)
+      this.nanobus.emit('image-attach', {
+        [blobUrl]: file
+      })
+      this.src = blobUrl
+      this.$emit('input', blobUrl)
     }
   }
 }

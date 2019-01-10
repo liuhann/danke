@@ -101,11 +101,16 @@ function getBackgroundStyle (background, blendImage) {
   const styles = []
   if (background.mode === '1') {
     styles.push(`background-color: ${background.color}`)
+    if (blendImage || background.image) {
+      styles.push(`background-image: url('${blendImage || background.image}')`)
+    }
   } else if (background.mode === '2') {
-    styles.push(getGradientStyle(background.gradients, background.angle, blendImage))
+    styles.push(getGradientStyle(background.gradients, background.angle, blendImage || background.image))
   } else if (background.mode === '0') {
     styles.push(`background: transparent`)
   }
+  styles.push(`background-size: cover`)
+  styles.push(`background-blend-mode: ${background.blend}`)
   return styles.join(';')
 }
 

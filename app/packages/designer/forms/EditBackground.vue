@@ -1,5 +1,5 @@
 <template>
-<div class="edit-background">
+<div class="edit-background section">
   <van-cell class="group-title" title="背景" icon="expand-o" />
   <item-block title="模式">
     <select v-model="background.mode">
@@ -23,6 +23,7 @@
       <option value="to right">左右</option>
     </select>
   </item-block>
+  <edit-image title="图片混合" :background="true" v-model="background.image"></edit-image>
 </div>
 </template>
 
@@ -30,9 +31,11 @@
 import PopColorPicker from './PopColorPicker'
 import ItemBlock from './ItemBlock'
 import PopGradientPicker from './PopGradientPicker'
+import EditImage from './EditImage'
 export default {
   name: 'EditBackground',
   components: {
+    EditImage,
     ItemBlock,
     PopColorPicker,
     PopGradientPicker

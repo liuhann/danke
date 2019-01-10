@@ -14,7 +14,6 @@
   </van-row>
 
   <edit-background v-model="work.background"></edit-background>
-  <edit-image title="背景图片" :background="true" v-model="work.bgimage"></edit-image>
 
   <item-block title="播放">
     <van-radio-group v-model="work.play.type">

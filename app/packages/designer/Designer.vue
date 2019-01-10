@@ -82,6 +82,7 @@ export default {
         background: {
           mode: '1',
           color: '#fff',
+          blend: '',
           gradients: ['#fff', '#fff'],
           angle: 'to bottom'
         }
@@ -91,7 +92,9 @@ export default {
 
   computed: {
     workStyle () {
-      return styleUtils.getBackgroundStyle(this.work.background)
+      const workStyle = styleUtils.getBackgroundStyle(this.work.background)
+      console.log(workStyle)
+      return workStyle
     }
   },
 

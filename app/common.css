@@ -6,6 +6,10 @@ select {
   color: #666;
 }
 
+
+.section {
+  margin-top: 8px;
+}
 .tc {
   text-align: center;
 }

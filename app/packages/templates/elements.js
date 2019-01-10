@@ -14,7 +14,9 @@ const BASE = {
     mode: '1',
     color: '#fff',
     gradients: ['#fff', '#fff'],
-    angle: 'to bottom'
+    angle: 'to bottom',
+    image: '',
+    blend: 'multiply'
   },
   border: {
     width: 0,
