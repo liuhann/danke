@@ -1,203 +1,202 @@
 exports.pause = (ee, ms) => {
-  if (ee.paused) return;
-  ee.paused = true;
+  if (ee.paused) return
+  ee.paused = true
   if (typeof ee._bufferedEvents === 'undefined') {
-    ee._bufferedEvents = [];
+    ee._bufferedEvents = []
   }
-  
-  ee._oldEmit = ee.emit;
-  ee.emit = function() {
-    ee._bufferedEvents.push(arguments);
-  };
+
+  ee._oldEmit = ee.emit
+  ee.emit = function () {
+    ee._bufferedEvents.push(arguments)
+  }
 
   if (ms) {
-    setTimeout(() => { exports.resume(ee); }, ms);
+    setTimeout(() => { exports.resume(ee) }, ms)
   }
-};
+}
 
 exports.resume = (ee, ms) => {
-  if (!ee.paused) return;
-  ee.paused = false;
+  if (!ee.paused) return
+  ee.paused = false
 
-  ee.emit = ee._oldEmit;
+  ee.emit = ee._oldEmit
   for (var i = ee._bufferedEvents.length - 1; i >= 0; i--) {
-    ee.emit.apply(ee, ee._bufferedEvents.pop());
+    ee.emit.apply(ee, ee._bufferedEvents.pop())
   }
 
   if (ms) {
-    setTimeout(() => { exports.pause(ee); }, ms);
+    setTimeout(() => { exports.pause(ee) }, ms)
   }
-};
-
+}
 
 exports.createGroup = () => {
-  var timers = [];
-  var paused = false;
-  var done = false;
+  var timers = []
+  var paused = false
+  var done = false
 
   return {
-    add(id) {
+    add (id) {
       if (typeof id._onDone === 'function') {
         id._onDone(() => {
-          timers.splice(timers.indexOf(id), 1);
+          timers.splice(timers.indexOf(id), 1)
           if (timers.length === 0) {
-            done = true;
+            done = true
           }
-        });
+        })
       }
 
-      timers.push(id);
-      return id;
+      timers.push(id)
+      return id
     },
 
-    setTimeout(fn, ms) {
-      return this.add(exports.setTimeout(fn, ms));
+    setTimeout (fn, ms) {
+      return this.add(exports.setTimeout(fn, ms))
     },
 
-    setInterval(fn, ms) {
-      return this.add(exports.setInterval(fn, ms));
+    setInterval (fn, ms) {
+      return this.add(exports.setInterval(fn, ms))
     },
 
-    pause(resumeIn) {
+    pause (resumeIn) {
       for (var i = 0; i < timers.length; i++) {
-        var id = timers[i];
+        var id = timers[i]
         if (typeof id.emit === 'function') {
-          exports.pause(id, resumeIn);
+          exports.pause(id, resumeIn)
         } else {
-          id.pause(resumeIn);
+          id.pause(resumeIn)
         }
       }
-      paused = true;
+      paused = true
     },
 
-    resume(pauseIn) {
+    resume (pauseIn) {
       for (var i = 0; i < timers.length; i++) {
-        var id = timers[i];
+        var id = timers[i]
         if (typeof id.emit === 'function') {
-          exports.resume(id, pauseIn);
+          exports.resume(id, pauseIn)
         } else {
-          id.resume(pauseIn);
+          id.resume(pauseIn)
         }
       }
-      paused = false;
+      paused = false
     },
 
-    clear() {
+    clear () {
       for (var i = timers.length - 1; i >= 0; i--) {
         if (typeof timers[i].clear === 'function') {
-          timers[i].clear();
+          timers[i].clear()
         }
       }
     },
 
-    isPaused() {
-      return paused;
+    isPaused () {
+      return paused
     },
 
-    isDone() {
-      return done;
+    isDone () {
+      return done
     },
-  
-    timers() {
-      return timers;
+
+    timers () {
+      return timers
     }
-  };
-};
+  }
+}
 
 var timer = (type, clear, fn, ms) => {
   // allow fn and ms arguments to be switchabale
   // let the user decide the syntax
   if (typeof fn !== 'function') {
-    var tmp = fn;
-    fn = ms;
-    ms = tmp;
+    var tmp = fn
+    fn = ms
+    ms = tmp
   }
 
-  var done = false;
-  var countdownStart = Date.now();
-  var nextTime = ms;
-  var paused;
-  var finished;
-  var resumed;
+  var done = false
+  var countdownStart = Date.now()
+  var nextTime = ms
+  var paused
+  var finished
+  var resumed
 
   var wrapper = () => {
-    countdownStart = Date.now();
-    nextTime = ms;
-    fn.apply();
+    countdownStart = Date.now()
+    nextTime = ms
+    fn.apply()
     if (type === setTimeout) {
-      done = true;
+      done = true
       if (typeof finished === 'function') {
-        finished.apply();
+        finished.apply()
       }
     } else if (resumed) {
-      resumed = false;
-      id = setInterval(wrapper, ms);
+      resumed = false
+      id = setInterval(wrapper, ms)
     }
-  };
+  }
 
-  var id = type(wrapper, ms);
+  var id = type(wrapper, ms)
 
   return {
-    pause(resumeIn) {
-      if (done || paused) return;
-      clear(id);
-      paused = true;
+    pause (resumeIn) {
+      if (done || paused) return
+      clear(id)
+      paused = true
       if (resumeIn) {
-        setTimeout(this.resume, resumeIn);
+        setTimeout(this.resume, resumeIn)
       }
-      return nextTime -= Date.now() - countdownStart;
+      return nextTime -= Date.now() - countdownStart
     },
 
-    resume(pauseIn) {
-      if (done || !paused) return;
-      paused = false;
-      resumed = true;
-      countdownStart = Date.now();
+    resume (pauseIn) {
+      if (done || !paused) return
+      paused = false
+      resumed = true
+      countdownStart = Date.now()
       if (pauseIn) {
-        setTimeout(this.pause, pauseIn);
+        setTimeout(this.pause, pauseIn)
       }
 
       // calling setTimeout here and not type because
       // calling setInterval with the remaining time will continue to
       // call setInterval with that lessened time
-      id = setTimeout(wrapper, nextTime);
+      id = setTimeout(wrapper, nextTime)
     },
 
-    next() {
-      return nextTime - (paused ? 0 : Date.now() - countdownStart);
+    next () {
+      return nextTime - (paused ? 0 : Date.now() - countdownStart)
     },
 
-    clear() {
-      if (done) return;
+    clear () {
+      if (done) return
       if (resumed) {
-        clearTimeout(id);
+        clearTimeout(id)
       } else {
-        clear(id);
+        clear(id)
       }
-      done = true;
+      done = true
       if (typeof finished === 'function') {
-        finished.apply();
+        finished.apply()
       }
     },
 
-    isPaused() {
-      return paused;
+    isPaused () {
+      return paused
     },
 
-    isDone() {
-      return done;
+    isDone () {
+      return done
     },
 
-    _onDone(fn) {
-      finished = fn;
+    _onDone (fn) {
+      finished = fn
     }
-  };
-};
+  }
+}
 
 exports.setTimeout = (fn, ms) => {
-  return timer(setTimeout, clearTimeout, fn, ms);
-};
+  return timer(setTimeout, clearTimeout, fn, ms)
+}
 
 exports.setInterval = (fn, ms) => {
-  return timer(setInterval, clearInterval, fn, ms);
-};
+  return timer(setInterval, clearInterval, fn, ms)
+}

@@ -1,5 +1,4 @@
 import AsyncBoot from 'async-boot'
-import config from './config'
 import App from './app.vue'
 import Nanobus from './packages/utils/nanobus'
 
@@ -17,10 +16,11 @@ Vue.use(Vant)
 Vue.use(VueRouter)
 const boot = new AsyncBoot({
   vue: {
+    Vue,
+    VueRouter,
     rootApp: App,
     mount: '#app'
   },
-  servers: config.servers,
   packages: [
     home, designer
   ],

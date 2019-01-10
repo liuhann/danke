@@ -1,7 +1,7 @@
 <template>
 <div class="edit-position config-group">
   <item-block title="横向对齐">
-    <van-radio-group v-model="position.align">
+    <van-radio-group v-model="position.horizontal">
       <van-radio name="left">左</van-radio>
       <van-radio name="center">居中</van-radio>
       <van-radio name="right">右</van-radio>

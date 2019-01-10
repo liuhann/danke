@@ -2,13 +2,16 @@
 <div class="animation-selector">
   <van-button size="small" plain type="primary" @click="isShow = true">{{value || '选择'}}</van-button>
   <van-popup v-model="isShow" position="bottom" :overlay="true" get-container="body">
+    <div class="animation-preview">
+      <div class="square"></div>
+    </div>
     <van-picker :columns="columns" show-toolbar @change="onChange" @cancel="onCancel" @confirm="onConfirm"/>
   </van-popup>
 </div>
 </template>
 
 <script>
-import settings from '../../utils/animations'
+import settings from '../../animations/animations'
 
 export default {
   name: 'AnimationSelector',
