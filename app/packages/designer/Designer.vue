@@ -17,7 +17,7 @@
 
   <!--新增元素弹出框-->
   <van-popup class="pop-select-element" position="center" :overlay="true" v-model="pop.showAddElement">
-    <add-element-popup @selected="selectAddElement"></add-element-popup>
+    <add-element @selected="selectAddElement"></add-element>
   </van-popup>
 
   <!--页面列表、新增按钮-->
@@ -29,30 +29,30 @@
   </van-popup>
 
   <van-popup v-model="pop.appConfig" class="pop-app-config" position="right">
-    <config-work v-model="work" @close="pop.appConfig = false"></config-work>
+    <config-work v-model="work" @close="pop.appConfig = false" @preview="previewPlay"></config-work>
   </van-popup>
 </div>
 </template>
 
 <script>
 import ScenePreview from './ScenePreview'
-import AddElementPopup from './AddElementPopup'
 import SceneList from './SceneList'
-import ConfigBox from './ConfigBox'
 import utils from '../utils/util'
 import styleUtils from '../utils/styles'
 import Elements from '../templates/elements'
 import ConfigElement from './forms/ConfigElement'
 import ConfigWork from './forms/ConfigWork'
+import AddElement from './AddElement'
+
+import saver from './saver'
 
 export default {
   name: 'Designer',
   components: {
+    AddElement,
     ConfigWork,
     ConfigElement,
     ScenePreview,
-    ConfigBox,
-    AddElementPopup,
     SceneList
   },
   data () {
@@ -75,16 +75,12 @@ export default {
           type: 'auto',
           nextInterval: 3000
         },
-        bgimage: {
-          src: '',
-          size: 'cover'
-        },
         background: {
           mode: '1',
           color: '#fff',
           blend: '',
           gradients: ['#fff', '#fff'],
-          angle: 'to bottom'
+          angle: 'to bottom',
         }
       }
     }
@@ -93,7 +89,6 @@ export default {
   computed: {
     workStyle () {
       const workStyle = styleUtils.getBackgroundStyle(this.work.background)
-      console.log(workStyle)
       return workStyle
     }
   },
@@ -101,8 +96,21 @@ export default {
   created () {
     this.tapAddScene()
     this.currentScene = this.scenes[0]
+
+    this.nanobus.on('image-attach', (resource) => {
+      saver.saveResource(resource)
+    })
   },
   methods: {
+    previewPlay () {
+      this.ctx.work = {
+        play: this.work.play,
+        background: this.work.background,
+        scenes: this.scenes
+      }
+      this.$router.push('/')
+    },
+
     // 显示增加元素弹窗
     showAddElement () {
       this.pop.showAddElement = true
@@ -118,6 +126,7 @@ export default {
         'play': 'auto',
         'hideDelay': 2000,
         'triggerClose': 3000,
+
         'elements': []
       })
     },

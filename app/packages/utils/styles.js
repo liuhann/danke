@@ -1,4 +1,5 @@
 import positionUtil from './position'
+import cubicBeziers from './cubic-beziers'
 
 const REG_LEN = /([+-]?[0-9#]+)(%|px|pt|em|rem|in|cm|mm|ex|ch|pc|vw|vh|vmin|vmax|deg|rad|turn)?$/
 
@@ -32,7 +33,7 @@ function getLength (unitLen, device, px) {
   return number + (px || '')
 }
 
-function getElementStyle (element, device) {
+function getElementStyle (element, device, animation) {
   const styles = []
   // position and size
   if (element.position && device) {
@@ -47,7 +48,6 @@ function getElementStyle (element, device) {
     if (element.position.horizontal === 'left') {
       styles.push(`left: ${positionUtil.getLength(element.position.offsetX, device, 'px')}`)
     } else if (element.position.horizontal === 'center') {
-      console.log((positionUtil.getLength(element.position.width, device) / 2))
       styles.push(`left: ${(device.width / 2) - (getLength(element.position.width, device) / 2) + getLength(element.position.offsetX, device)}px`)
     } else if (element.position.horizontal === 'right') {
       styles.push(`right: ${positionUtil.getLength(element.position.offsetX, device)}px`)
@@ -85,6 +85,11 @@ function getElementStyle (element, device) {
     styles.push(`font-weight: ${element.font.weight}`)
     styles.push(`letter-spacing: ${element.font.spacing}px`)
     styles.push(`text-decoration: ${element.font.decoration}px`)
+  }
+
+  if (animation && element[animation]) {
+    const animationDef = element[animation]
+    styles.push(`animation: ${animationDef.animation} ${animationDef.duration}ms ${cubicBeziers[animationDef.timing]} ${animationDef.delay}ms ${animationDef.repeat} normal both running'`)
   }
   return styles.join(';')
 }

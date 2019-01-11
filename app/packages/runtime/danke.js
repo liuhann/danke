@@ -1,20 +1,19 @@
 import nanobus from '../utils/nanobus'
-import Ticker from './Ticker'
 import Scene from './scene'
 import Transition from './transition'
-import utils from '../utils/util'
+import styleUtils from '../utils/styles'
 /**
  * Loading scenes and  resources then init ticker + views
  */
 export default class Danke {
   /**
-   * @param config 播放配置文件
+   * @param work 播放配置文件
    * @param device 设备信息  主要是宽度及高度
    */
-  constructor (config, device) {
-    this.config = config
+  constructor (work, device) {
+    this.work = work
     this.device = device
-    this.ticker = new Ticker()
+    this.timeout = null
     this.loadScenesAndTransition()
     this.initNanobusEvents()
   }
@@ -34,14 +33,14 @@ export default class Danke {
 
   loadScenesAndTransition () {
     this.sceneInstances = []
-    for (var i = 0; i < this.config.scenes.length; i++) {
-      this.config.scenes[i].index = i
-      this.config.scenes[i].display = 'none'
-      const sceneInstance = new Scene(this, this.config.scenes[i])
+    for (var i = 0; i < this.work.scenes.length; i++) {
+      this.work.scenes[i].index = i
+      this.work.scenes[i].display = 'none'
+      const sceneInstance = new Scene(this, this.work.scenes[i])
       this.sceneInstances.push(sceneInstance)
     }
     this.transitionInstances = []
-    for (let transitionConfig of this.config.transitions) {
+    for (let transitionConfig of this.work.transitions) {
       const transitionInstance = new Transition(this, transitionConfig)
       this.transitionInstances.push(transitionInstance)
     }
@@ -63,19 +62,18 @@ export default class Danke {
     this.playEndCallback = cb
   }
 
+  initWorkStyle () {
+    this.work.style = styleUtils.getBackgroundStyle(this.work.background)
+  }
+
   initNanobusEvents () {
     this.nanobus = nanobus()
     this.nanobus.addListener('scene-enter', ({ scene }) => {
       // 处理每个元素的动画
       for (let ei = 0; ei < scene.elements.length; ei++) {
         let element = scene.elements[ei]
-        const elementStyle = utils.getElementStyle(element, this.device, this.config.coordinate, 'in')
+        const elementStyle = styleUtils.getElementStyle(element, this.device, 'in')
         element.elementStyle = elementStyle.join(';')
-        if (element.in) {
-          if (element.in.animation) {
-            element.animation = element.in.animation
-          }
-        }
       }
       scene.display = 'visible'
       if (this.sceneEnterCallback) {
@@ -87,13 +85,8 @@ export default class Danke {
       // 处理每个元素的动画
       for (let ei = 0; ei < scene.elements.length; ei++) {
         let element = scene.elements[ei]
-        const elementStyle = utils.getElementStyle(element, this.device, this.config.coordinate, 'out')
+        const elementStyle = styleUtils.getElementStyle(element, this.device, 'out')
         element.elementStyle = elementStyle.join(';')
-        if (element.out && element.out.animation) {
-          element.animation = element.out.animation
-        } else {
-          element.animation = ''
-        }
       }
       scene.display = 'visible'
       // console.log('scene-leaving  set data', data)

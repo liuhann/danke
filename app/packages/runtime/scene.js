@@ -1,3 +1,4 @@
+import pauseable from 'pauseable'
 export default class Scene {
   constructor (engine, scene) {
     this.engine = engine
@@ -24,6 +25,7 @@ export default class Scene {
       scene: this.scene
     })
     if (this.scene.triggerClose) {
+      pauseable.setTimeout()
       setTimeout(() => {
         const targetTransitions = this.engine.getTransitionsByFrom(this.scene)
         if (targetTransitions.length === 0) {

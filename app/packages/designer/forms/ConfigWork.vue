@@ -6,10 +6,10 @@
 
   <van-row>
     <van-col>
-      <van-button size="normal">播放</van-button>
+      <van-button size="normal" @click="tapPreviewPlay">播放</van-button>
     </van-col>
     <van-col>
-      <van-button size="normal">保存</van-button>
+      <van-button size="normal" @click="saveWorkPlay">保存</van-button>
     </van-col>
   </van-row>
 
@@ -62,6 +62,10 @@ export default {
   methods: {
     close () {
       this.$emit('close')
+    },
+
+    tapPreviewPlay () {
+      this.$emit('preview')
     }
   }
 }

@@ -37,18 +37,21 @@ const BASE = {
     animation: '',
     duration: 400,
     delay: 0,
-    timing: 'easeInCubic'
+    timing: 'easeInCubic',
+    repeat: 1
   },
   out: {
     animation: '',
     duration: 400,
     delay: 0,
-    timing: 'easeInCubic'
+    timing: 'easeInCubic',
+    repeat: 1
   },
   existence: {
     animation: '',
     duration: 400,
-    timing: 'easeInCubic'
+    timing: 'easeInCubic',
+    repeat: -1
   }
 }
 

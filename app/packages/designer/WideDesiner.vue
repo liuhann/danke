@@ -28,7 +28,7 @@
 
 <script>
 import DragableSceneEdit from './ScenePreview'
-import AddElementPopup from './AddElementPopup'
+import AddElementPopup from './AddElement'
 import SceneListPopup from './SceneList'
 import ConfigBox from './ConfigBox'
 import utils from '../utils/util'
@@ -66,7 +66,7 @@ export default {
   methods: {
     // 显示配置层
     showConfigBox () {
-      console.log('show config box')
+      console.log('show work box')
       this.$refs.configBox.show()
     },
     // 显示增加元素弹窗

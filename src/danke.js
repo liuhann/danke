@@ -61,7 +61,7 @@ export default class Danke {
     Vue.component('scene-full-picture', FullPicture)
     Vue.component('scene-designed', DesignedScene)
     this.vm = new Vue(Slider).$mount(this.mount)
-    this.vm.config = this.data
+    this.vm.work = this.data
     this.vm.setScenes(this.data.scenes || [])
     this.vm.setResources(this.data.resources)
     // this.vm.setGrounds(this.data.grounds || [])
