@@ -9,7 +9,7 @@
       <van-button size="normal" @click="tapPreviewPlay">播放</van-button>
     </van-col>
     <van-col>
-      <van-button size="normal" @click="saveWorkPlay">保存</van-button>
+      <van-button size="normal">保存</van-button>
     </van-col>
   </van-row>
 
@@ -23,7 +23,7 @@
   </item-block>
 
   <item-block title="时间" v-if="work.turning.type==='auto'">
-    <van-stepper v-model="work.play.nextInterval" integer disable-input :step="50"/>
+    <van-stepper v-model="work.turning.delay" integer disable-input :step="50"/>
   </item-block>
 
 </div>
