@@ -26,11 +26,11 @@
     </van-tab>
     <van-tab title="动画效果">
       <van-cell class="group-title" title="进入" icon="expand-o" />
-      <edit-animation v-model="element.in" type="entrance"></edit-animation>
+      <edit-animation v-model="element.in" :type="['entrance', 'attention', element.type==='text'?'text': undefined]"></edit-animation>
       <van-cell class="group-title" title="持续" icon="expand-o" />
-      <edit-animation v-model="element.existence" type="existence"></edit-animation>
+      <edit-animation v-model="element.existence" :type="['attention']"></edit-animation>
       <van-cell class="group-title" title="离开" icon="expand-o" />
-      <edit-animation v-model="element.out" type="out"></edit-animation>
+      <edit-animation v-model="element.out" :type="['outs']"></edit-animation>
     </van-tab>
   </van-tabs>
   <van-button size="normal" type="danger" class="btn-delete" @click="removeElement">删除</van-button>

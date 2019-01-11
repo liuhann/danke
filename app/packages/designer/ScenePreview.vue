@@ -21,8 +21,6 @@
 
 <script>
 import EditElement from './forms/ConfigElement'
-import '../animations/entrance.css'
-import '../animations/exits.css'
 import utils from '../utils/util'
 import positionUtils from '../utils/position'
 import styleUtils from '../utils/styles'

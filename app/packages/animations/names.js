@@ -1,52 +1,36 @@
-const outs = {
-  'scale-out': '放大',
-  'flip-out': '翻转',
-  'slide-out': '',
-  'fade-out': '',
-  'bounce-out': '',
-  'rotate-out': '',
-  'slit-out': '',
-  'puff-out': '',
-  'swing-out': ''
-}
-const entrance = {
-  'scale-in': '',
-  'rotate-in': '',
-  'flip-in': '',
-  'slit-in': '',
-  'slide-in': '',
-  'bounce-in': '',
-  'swing-in': '',
-  'fade-in': ''
-}
-const attention = {
-  'vibrate-1': '',
-  'vibrate-2': '',
-  'vibrate-3': '',
-  'flicker-1': '',
-  'flicker-5': '',
-  'flicker-4': '',
-  'flicker-3': '',
-  'flicker-2': '',
-  'jello-horizontal': '',
-  'jello-vertical': '',
-  'jello-diagonal-1': '',
-  'jello-diagonal-2': '',
-  'wobble-hor-bottom': '',
-  'wobble-hor-top': '',
-  'wobble-ver-left': '',
-  'wobble-ver-right': '',
-  'bounce-top': '',
-  'bounce-bottom': '',
-  'bounce-left': '',
-  'bounce-right': '',
-  'ping': '',
-  'pulsate-fwd': '',
-  'pulsate-bck': '',
-  'heartbeat': '',
-  'blink-2': '',
-  'blink-1': ''
-}
+const outs = [
+  'scale-out',
+  'flip-out',
+  'rotate-out',
+  'slide-out',
+  'fade-out',
+  'slit-out',
+  'bounce-out',
+  'swing-out',
+  'puff-out'
+]
+
+const entrance = [
+  'scale-in',
+  'flip-in',
+  'rotate-in',
+  'slide-in',
+  'fade-in',
+  'slit-in',
+  'bounce-in',
+  'swing-in',
+  'puff-in'
+]
+
+const attention = [
+  'vibrate',
+  'flicker',
+  'jello',
+  'wobble',
+  'bounce',
+  'pulsate',
+  'blink'
+]
 
 const text = {
   'text-focus-in': '',
@@ -54,6 +38,7 @@ const text = {
   'tracking-in': '',
   'tracking-out': ''
 }
+
 const background = {
   'kenburns': '',
   'bg-pan': ''
@@ -304,15 +289,15 @@ const animations = ['scale-out-top',
   'tracking-out-expand-fwd-bottom',
   'tracking-out-expand-fwd-top',
   'text-focus-in',
-  'focus-in-expand',
-  'focus-in-expand-fwd',
-  'focus-in-contract',
-  'focus-in-contract-bck',
+  'text-focus-in-expand',
+  'text-focus-in-expand-fwd',
+  'text-focus-in-contract',
+  'text-focus-in-contract-bck',
   'text-blur-out',
-  'blur-out-expand-fwd',
-  'blur-out-expand',
-  'blur-out-contract-bck',
-  'blur-out-contract',
+  'text-blur-out-expand-fwd',
+  'text-blur-out-expand',
+  'text-blur-out-contract-bck',
+  'text-blur-out-contract',
   'vibrate-1',
   'vibrate-2',
   'vibrate-3',
@@ -333,12 +318,34 @@ const animations = ['scale-out-top',
   'bounce-bottom',
   'bounce-left',
   'bounce-right',
-  'ping',
+  'pulsate-ping',
   'pulsate-fwd',
   'pulsate-bck',
-  'heartbeat',
+  'pulsate-heartbeat',
   'blink-2',
-  'blink-1']
+  'blink-1',
+  'puff-in-center',
+  'puff-in-bottom',
+  'puff-in-br',
+  'puff-in-ver',
+  'puff-in-hor',
+  'puff-in-right',
+  'puff-in-tr',
+  'puff-in-tl',
+  'puff-in-top',
+  'puff-in-left',
+  'puff-in-bl'
+]
+
+function getSubAnimations (prefix) {
+  const result = []
+  for (let k of animations) {
+    if (k.startsWith(prefix)) {
+      result.push(k)
+    }
+  }
+  return result
+}
 
 export default {
   entrance,
@@ -346,5 +353,6 @@ export default {
   animations,
   background,
   attention,
-  text
+  text,
+  getSubAnimations
 }

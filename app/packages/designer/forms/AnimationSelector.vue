@@ -2,81 +2,90 @@
 <div class="animation-selector">
   <van-button size="small" plain type="primary" @click="isShow = true">{{value || '选择'}}</van-button>
   <van-popup v-model="isShow" position="bottom" :overlay="true" get-container="body">
+    <van-nav-bar
+      title="选择动画"
+      left-text="返回"
+      right-text="确定"
+      @click-left="onCancel"
+      @click-right="onConfirm"
+    />
     <div class="animation-preview">
-      <div class="square"></div>
+      <div class="square" :style="animationPreviewStyle"></div>
     </div>
-    <van-picker :columns="columns" show-toolbar @change="onChange" @cancel="onCancel" @confirm="onConfirm"/>
+    <van-picker :columns="columns" @change="onChange" />
   </van-popup>
 </div>
 </template>
 
 <script>
-import settings from '../../animations/animations'
-
+import names from '../../animations/names'
 export default {
   name: 'AnimationSelector',
   props: {
     type: {
-      type: String,
-      default: 'entrance'
+      type: Array,
+      default: ['entrance']
     },
     value: {
       type: String
     }
   },
   data () {
-    const defaultSetting = settings['entrance']
+    const defaultSetting = names['entrance']
     return {
       isShow: false,
-      source: defaultSetting['entrance'],
+      source: defaultSetting,
       animationClass: '',
       columns: [],
-      choosedValues: null
+      choosedValues: []
     }
   },
 
   created () {
-    this.source = settings[this.type]
+    let firstColumn = []
+    for (let k of this.type) {
+      if (k) {
+        firstColumn = firstColumn.concat(names[k])
+      }
+    }
     this.columns = [{
-      values: Object.keys(this.source),
+      values: firstColumn,
       className: 'column1',
       defaultIndex: 2
     }, {
-      values: this.source[Object.keys(this.source)[0]],
+      values: names.getSubAnimations(firstColumn[0]),
       className: 'column2',
       defaultIndex: 2
     }]
   },
 
-  methods: {
-    open1 (type, changeCallback, selectCallback) {
-      this.source = settings[type]
-      this.columns = [{
-        values: Object.keys(this.source),
-        className: 'column1',
-        defaultIndex: 2
-      }, {
-        values: this.source[Object.keys(this.source)[0]],
-        className: 'column2',
-        defaultIndex: 2
-      }]
-      this.show = true
-      this.changeCallback = changeCallback
-      this.selectCallback = selectCallback
+  computed: {
+    animationPreviewStyle () {
+      if (this.choosedValues[1]) {
+        return {
+          animation: this.choosedValues[1] + ' 0.8s ease-in-out 0s 1 normal both running'
+        }
+      } else {
+        return  {}
+      }
     },
+  },
+
+  methods: {
     onChange (picker, values) {
-      picker.setColumnValues(1, this.source[values[0]])
+      const subs = names.getSubAnimations(values[0])
+      picker.setColumnValues(1, subs)
+      if (!values[1]) {
+        values[1] = subs[1]
+        picker.setColumnIndex(1, 1)
+      }
       this.choosedValues = values
-      // this.animationClass = settings.getAnimationClass(values)
-      // this.$emit('input', settings.getAnimationClass(values))
-      // this.changeCallback(this.animationClass)
     },
     onConfirm () {
       this.isShow = false
-      if (this.choosedValues && this.choosedValues.length) {
-        this.$emit('input', settings.getAnimationClass(this.choosedValues))
+      if (this.choosedValues && this.choosedValues.length == 2) {
+        this.$emit('input', this.choosedValues[1])
       }
-      // this.selectCallback(this.animationClass)
     },
     onCancel () {
       this.isShow = false
@@ -85,6 +94,19 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="less">
+.animation-preview {
+  height: 40vw;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .square {
+    background-color: #3e3e3e;
+    width: 20vw;
+    height: 20vw;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+}
 </style>

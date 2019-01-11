@@ -32,7 +32,7 @@ export default {
       type: Object
     },
     type: {
-      type: String
+      type: Array
     }
   },
   components: {

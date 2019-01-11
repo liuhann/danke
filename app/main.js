@@ -12,6 +12,7 @@ import home from './packages/home'
 import designer from './packages/designer'
 
 import './common.css'
+import './packages/animations/animista.css'
 Vue.use(Vant)
 Vue.use(VueRouter)
 const boot = new AsyncBoot({
