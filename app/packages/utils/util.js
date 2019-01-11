@@ -101,6 +101,8 @@ function getImageBosUrlBySize (bosKey, width, height) {
     return `http://danke.cdn.bcebos.com/000/empty.png@s_1,w_${width},h_${height},q_100`
   }
 }
+
+// https://stackoverflow.com/questions/27936772/how-to-deep-merge-instead-of-shallow-merge
 /**
  * Simple object check.
  * @param item
@@ -110,7 +112,6 @@ function isObject (item) {
   return (item && typeof item === 'object' && !Array.isArray(item))
 }
 
-// https://stackoverflow.com/questions/27936772/how-to-deep-merge-instead-of-shallow-merge
 /**
  * Deep merge two objects.
  * @param target
@@ -136,7 +137,7 @@ function mergeDeep (target, ...sources) {
 function clone (obj) {
   // Handle the 3 simple types, and null or undefined
   if (obj == null || typeof obj !== 'object') return obj
-
+  return mergeDeep({}, obj)
   // Handle Array
   if (obj instanceof Array) {
     let copy = []

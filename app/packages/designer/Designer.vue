@@ -70,19 +70,7 @@ export default {
       scenes: [],
       currentScene: null,
       currentElement: null,
-      work: {
-        play: {
-          type: 'auto',
-          nextInterval: 3000
-        },
-        background: {
-          mode: '1',
-          color: '#fff',
-          blend: '',
-          gradients: ['#fff', '#fff'],
-          angle: 'to bottom',
-        }
-      }
+      work: utils.mergeDeep({}, Elements.WORK)
     }
   },
 

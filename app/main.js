@@ -10,6 +10,7 @@ import 'vant/lib/index.css'
 
 import home from './packages/home'
 import designer from './packages/designer'
+import runtime from './packages/runtime'
 
 import './common.css'
 import './packages/animations/animista.css'
@@ -23,7 +24,7 @@ const boot = new AsyncBoot({
     mount: '#app'
   },
   packages: [
-    home, designer
+    home, designer, runtime
   ],
   started: async (ctx, next) => {
     Object.assign(ctx.Vue.prototype, {

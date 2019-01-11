@@ -1,7 +1,7 @@
 import Player from './Player.vue'
 export default {
   routes: [{
-    path: '/designer',
+    path: '/play',
     component: Player
   }]
 }

@@ -15,14 +15,14 @@
 
   <edit-background v-model="work.background"></edit-background>
 
-  <item-block title="播放">
-    <van-radio-group v-model="work.play.type">
+  <item-block title="翻页">
+    <van-radio-group v-model="work.turning.type">
       <van-radio name="auto">自动</van-radio>
       <van-radio name="trigger">手动</van-radio>
     </van-radio-group>
   </item-block>
 
-  <item-block title="时间" v-if="work.play.type==='auto'">
+  <item-block title="时间" v-if="work.turning.type==='auto'">
     <van-stepper v-model="work.play.nextInterval" integer disable-input :step="50"/>
   </item-block>
 

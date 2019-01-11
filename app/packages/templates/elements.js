@@ -1,4 +1,28 @@
 import util from '../utils/util'
+
+const BACKGROUND = {
+  mode: '1',
+  color: '#fff',
+  gradients: ['#fff', '#fff'],
+  angle: 'to bottom',
+  image: '',
+  blend: 'multiply'
+}
+
+const FONT = {
+  size: 16,
+  spacing: 2,
+  color: '#fff',
+  weight: 'normal',
+  decoration: 'none',
+  style: 'normal'
+}
+
+const TURNING = {
+  type: 'auto',
+  delay: 3000
+}
+
 const BASE = {
   version: '1.2',
   type: '',
@@ -10,14 +34,7 @@ const BASE = {
     width: '90vw',
     height: '90vh'
   },
-  background: {
-    mode: '1',
-    color: '#fff',
-    gradients: ['#fff', '#fff'],
-    angle: 'to bottom',
-    image: '',
-    blend: 'multiply'
-  },
+  background: BACKGROUND,
   border: {
     width: 0,
     style: 'solid',
@@ -25,14 +42,7 @@ const BASE = {
     sides: ['left', 'right', 'top', 'bottom'],
     radius: [0, 0, 0, 0]
   },
-  font: {
-    size: 16,
-    spacing: 2,
-    color: '#fff',
-    weight: 'normal',
-    decoration: 'none',
-    style: 'normal'
-  },
+  font: FONT,
   in: {
     animation: '',
     duration: 400,
@@ -80,7 +90,18 @@ const CIRCLE = util.mergeDeep({}, BASE, {
   radius: '20vw'
 })
 
+const WORK = util.mergeDeep({}, {
+  turning: TURNING,
+  font: FONT,
+  background: BACKGROUND,
+  scenes: []
+})
+
 export default {
+  WORK,
+  BACKGROUND,
+  FONT,
+  TURNING,
   IMAGE,
   TEXT,
   CIRCLE
