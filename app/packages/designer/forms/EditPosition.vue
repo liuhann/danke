@@ -7,7 +7,6 @@
       <van-radio name="right">右</van-radio>
     </van-radio-group>
   </item-block>
-
   <edit-len label="横向偏移" v-model="position.offsetX"></edit-len>
 
   <item-block title="纵向对齐">

@@ -12,7 +12,9 @@
 
   <!--元素配置区，可以进行元素配置项手动修改 -->
   <van-popup class="pop-element-config" position="right" :overlay="false" v-model="pop.elementConfig">
-    <config-element :element="currentElement" :device="device" @close="pop.elementConfig = false" @element-remove="removeCurrentElement"></config-element>
+    <config-element v-if="currentElement" :element="currentElement" :device="device" @close="pop.elementConfig = false"
+      @element-remove="removeCurrentElement"
+      @change="changeCurrentElement"></config-element>
   </van-popup>
 
   <!--新增元素弹出框-->
@@ -40,9 +42,9 @@ import SceneList from './SceneList'
 import utils from '../utils/util'
 import styleUtils from '../utils/styles'
 import Elements from '../templates/elements'
-import ConfigElement from './forms/ConfigElement'
+import ConfigElement from './dialog/ConfigElement'
 import ConfigWork from './forms/ConfigWork'
-import AddElement from './AddElement'
+import AddElement from './dialog/AddElement'
 
 import saver from './saver'
 
@@ -114,7 +116,6 @@ export default {
         'play': 'auto',
         'hideDelay': 2000,
         'triggerClose': 3000,
-
         'elements': []
       })
     },
@@ -152,14 +153,19 @@ export default {
       }
       newEl.id = utils.shortid()
       if (newEl && this.currentScene) {
-        newEl.computedStyle = styleUtils.getElementStyle(newEl, this.device)
         this.currentScene.elements.push(newEl)
       }
     },
+
+    changeCurrentElement (element) {
+
+    },
+
     tapElementOn (element) {
       this.currentElement = element
       this.pop.elementConfig = true
     },
+
     tapSceneOn () {
       this.currentElement = null
       this.pop.showConfig = false
@@ -171,7 +177,7 @@ export default {
         }
       }
       this.currentElement = null
-      this.pop.showConfig = false
+      this.pop.elementConfig = false
     }
   }
 }

@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import EditElement from './forms/ConfigElement'
+import EditElement from './dialog/ConfigElement'
 import utils from '../utils/util'
 import positionUtils from '../utils/position'
 import styleUtils from '../utils/styles'
@@ -37,12 +37,23 @@ export default {
     device: {
       type: Object
     },
+    currentElement: {
+      type: Object
+    },
     styleName: {
       type: String
     }
   },
 
   watch: {
+    'currentElement': {
+      deep: true,
+      handler () {
+        console.log('current element change')
+        this.renderElement(this.currentElement)
+        // this.currentElement.computedStyle = styleUtils.getElementStyle(this.currentElement, this.device)
+      }
+    },
     'scene.elements': function(newVal, oldVal) {
       console.log(newVal, oldVal)
     }
@@ -63,8 +74,7 @@ export default {
   },
 
   created () {
-    this.nanobus.on('position-change', this.updateElementPosition.bind(this))
-    this.nanobus.on('element-change', this.updateElementStyle.bind(this))
+
   },
 
   data () {
@@ -74,35 +84,16 @@ export default {
     }
   },
   methods: {
-
     // 增加一个element
     addElement (element) {
       this.scene.elements.push(element)
       this.currentElement = element
       this.currentIndex = this.scene.elements.length - 1
-      this.addingElement = true
-
-      this.$nextTick(() => {
-        this.addingElement = false
-        this.updateElementPosition(element)
-      })
+      this.renderElement(element)
     },
 
-    // 更新指定element的位置和大小 创建或者box调整数据时
-    updateElementPosition (element) {
-      const pixels = positionUtils.toPixel(element, this.scene.coordinate, this.device)
-      // const index = this.scene.elements.indexOf(element)
-      const targetDraggable = this.$refs['element-' + this.currentIndex][0]
-      targetDraggable.top = pixels.y
-      targetDraggable.left = pixels.x
-      targetDraggable.width = pixels.w
-      targetDraggable.height = pixels.h
-    },
-
-    // 更新element的样式信息
-    updateElementStyle (element) {
-      const style = styleUtils.getElementStyle(element, this.device)
-      this.currentElement.computedStyle = style
+    renderElement (element) {
+      element.computedStyle = styleUtils.getElementStyle(element, this.device)
     },
 
     computeSceneStyle () {

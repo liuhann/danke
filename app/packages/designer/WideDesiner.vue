@@ -28,7 +28,7 @@
 
 <script>
 import DragableSceneEdit from './ScenePreview'
-import AddElementPopup from './AddElement'
+import AddElementPopup from './dialog/AddElement'
 import SceneListPopup from './SceneList'
 import ConfigBox from './ConfigBox'
 import utils from '../utils/util'

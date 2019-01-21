@@ -1,7 +1,7 @@
 <template>
 <div class="element-edit">
-  <van-nav-bar title="元素配置" @click-left="close">
-    <van-icon name="cross" slot="left" />
+  <van-nav-bar title="元素配置" @click-left="confirmElementEdit" left-text="关闭">
+    <van-button size="small" plain type="danger" class="btn-delete" @click="removeElement" slot="right">删除</van-button>
   </van-nav-bar>
   <van-tabs v-model="activeKey">
     <van-tab title="定位与大小">
@@ -15,12 +15,9 @@
     </van-tab>
     <van-tab title="显示样式">
       <edit-font v-model="element.font" v-if="fontable"></edit-font>
-
       <edit-background v-model="element.background"></edit-background>
-
       <van-cell class="group-title" title="边框" icon="expand-o" v-if="borderable"/>
       <edit-border v-model="element.border" v-if="borderable"></edit-border>
-
       <van-cell class="group-title" title="裁切" icon="expand-o" v-if="clipable"/>
       <edit-clip-path v-model="element.clip" v-if="clipable"></edit-clip-path>
     </van-tab>
@@ -33,19 +30,18 @@
       <edit-animation v-model="element.out" :type="['outs']"></edit-animation>
     </van-tab>
   </van-tabs>
-  <van-button size="normal" type="danger" class="btn-delete" @click="removeElement">删除</van-button>
 </div>
 </template>
 
 <script>
-import AnimationSelector from './AnimationSelector'
-import EditBackground from './EditBackground'
-import EditLen from './EditLen'
-import EditClipPath from './EditClipPath'
-import EditAnimation from './EditAnimation'
-import EditBorder from './EditBorder'
-import EditPosition from './EditPosition'
-import EditFont from './EditFont'
+import AnimationSelector from '../forms/AnimationSelector'
+import EditBackground from '../forms/EditBackground'
+import EditLen from '../forms/EditLen'
+import EditClipPath from '../forms/EditClipPath'
+import EditAnimation from '../forms/EditAnimation'
+import EditBorder from '../forms/EditBorder'
+import EditPosition from '../forms/EditPosition'
+import EditFont from '../forms/EditFont'
 import styleUtils  from '../../utils/styles'
 
 export default {
@@ -71,12 +67,12 @@ export default {
     }
   },
   watch: {
-    element: {
-      handler: function (val, oldVal) {
-        this.$emit('element-change', this.element)
-        this.nanobus.emit('element-change', this.element)
-      },
-      deep: true
+    element1: {
+      deep: true,
+      handler () {
+        this.$emit('change', this.element)
+        console.log('element change', this.element)
+      }
     }
   },
 
@@ -101,6 +97,9 @@ export default {
   },
 
   methods: {
+    confirmElementEdit () {
+      this.$emit('change', this.element)
+    },
     close () {
       this.$emit('close')
     },
@@ -147,9 +146,6 @@ export default {
 
   .van-row {
     box-sizing: border-box;
-  }
-  .btn-delete {
-    margin: 20px;
   }
 }
 </style>
