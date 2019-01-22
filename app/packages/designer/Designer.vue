@@ -14,7 +14,7 @@
   <van-popup class="pop-element-config" position="right" :overlay="false" v-model="pop.elementConfig">
     <config-element v-if="currentElement" :element="currentElement" :device="device" @close="pop.elementConfig = false"
       @element-remove="removeCurrentElement"
-      @change="changeCurrentElement"></config-element>
+    ></config-element>
   </van-popup>
 
   <!--新增元素弹出框-->
@@ -155,10 +155,6 @@ export default {
       if (newEl && this.currentScene) {
         this.currentScene.elements.push(newEl)
       }
-    },
-
-    changeCurrentElement (element) {
-
     },
 
     tapElementOn (element) {

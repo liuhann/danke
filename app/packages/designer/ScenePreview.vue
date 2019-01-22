@@ -1,6 +1,6 @@
 <template>
 <div class="scene" :style="sceneStyle">
-  <div v-for="(element, index) in scene.elements" :key="index" class="element-wrapper"
+  <div v-for="(element, index) in scene.elements" :key="element.id" class="element-wrapper"
     @click="onElementClicked(index)"
     :style="element.computedStyle"
     :ref="'element-' + index"
@@ -37,9 +37,6 @@ export default {
     device: {
       type: Object
     },
-    currentElement: {
-      type: Object
-    },
     styleName: {
       type: String
     }
@@ -49,13 +46,15 @@ export default {
     'currentElement': {
       deep: true,
       handler () {
-        console.log('current element change')
+        console.log('current element change', this.currentElement)
         this.renderElement(this.currentElement)
-        // this.currentElement.computedStyle = styleUtils.getElementStyle(this.currentElement, this.device)
       }
     },
-    'scene.elements': function(newVal, oldVal) {
-      console.log(newVal, oldVal)
+    'currentElementLength': function(newVal, oldVal) {
+      console.log('scene elements change', newVal, oldVal)
+      for (let element of this.scene.elements) {
+        this.renderElement(element)
+      }
     }
   },
   computed: {
@@ -65,11 +64,8 @@ export default {
         height: this.device.height + 'px'
       }
     },
-    currentScene () {
-      for (let element of this.scene.elements) {
-        element.computedStyle = styleUtils.getElementStyle(element, this.d)
-      }
-      return this.scene
+    currentElementLength () {
+      return this.scene.elements.length
     }
   },
 
@@ -84,16 +80,9 @@ export default {
     }
   },
   methods: {
-    // 增加一个element
-    addElement (element) {
-      this.scene.elements.push(element)
-      this.currentElement = element
-      this.currentIndex = this.scene.elements.length - 1
-      this.renderElement(element)
-    },
-
     renderElement (element) {
-      element.computedStyle = styleUtils.getElementStyle(element, this.device)
+      this.$set(element, 'computedStyle', styleUtils.getElementStyle(element, this.device))
+      // element.computedStyle = styleUtils.getElementStyle(element, this.device)
     },
 
     computeSceneStyle () {
@@ -109,31 +98,6 @@ export default {
       this.currentIndex = -1
       this.currentElement = null
       this.$emit('scene-selected')
-    },
-    /**
-     * element resize时的回调, emit出位置信息
-     */
-    onElementResizing (left, top, width, height) {
-      if (!this.currentElement || this.addingElement) return
-      this.$emit('positioning', {
-        element: this.currentElement,
-        newPos: {
-          left, top, width, height
-        }
-      })
-    },
-
-    /**
-     * element拖动时的回调, emit出位置信息
-     */
-    onElementDraging (left, top) {
-      if (!this.currentElement || this.addingElement) return
-      this.$emit('positioning', {
-        element: this.currentElement,
-        newPos: {
-          left, top
-        }
-      })
     }
   }
 }

@@ -16,7 +16,7 @@ function getLenSplits (len) {
   }
 }
 
-function getLength (unitLen, device, px) {
+function getLength (unitLen, device) {
   // -15vw ->  [-15vw,-15,vw]
   if (unitLen === 0 || unitLen == null || unitLen === '') {
     return 0
@@ -30,7 +30,7 @@ function getLength (unitLen, device, px) {
   } else if (unit === 'px') {
     number = len
   }
-  return number + (px || '')
+  return number
 }
 
 function getElementStyle (element, device, animation) {
@@ -38,7 +38,7 @@ function getElementStyle (element, device, animation) {
   // position and size
   if (element.position && device) {
     if (element.position.vertical === 'top') {
-      styles.push(`top: ${positionUtil.getLength(element.position.offsetY, device, 'px')}`)
+      styles.push(`top: ${positionUtil.getLength(element.position.offsetY, device)}px`)
     } else if (element.position.vertical === 'center') {
       styles.push(`top: ${device.height / 2 - positionUtil.getLength(element.position.height, device) / 2 + positionUtil.getLength(element.position.offsetY, device)}px`)
     } else if (element.position.vertical === 'bottom') {
@@ -46,14 +46,14 @@ function getElementStyle (element, device, animation) {
     }
 
     if (element.position.horizontal === 'left') {
-      styles.push(`left: ${positionUtil.getLength(element.position.offsetX, device, 'px')}`)
+      styles.push(`left: ${positionUtil.getLength(element.position.offsetX, device)}px`)
     } else if (element.position.horizontal === 'center') {
       styles.push(`left: ${(device.width / 2) - (getLength(element.position.width, device) / 2) + getLength(element.position.offsetX, device)}px`)
     } else if (element.position.horizontal === 'right') {
       styles.push(`right: ${positionUtil.getLength(element.position.offsetX, device)}px`)
     }
-    styles.push(`width: ${positionUtil.getLength(element.position.width, device, 'px')}`)
-    styles.push(`height: ${positionUtil.getLength(element.position.height, device, 'px')}`)
+    styles.push(`width: ${positionUtil.getLength(element.position.width, device)}px`)
+    styles.push(`height: ${positionUtil.getLength(element.position.height, device)}px`)
   }
 
   if (element.background) {

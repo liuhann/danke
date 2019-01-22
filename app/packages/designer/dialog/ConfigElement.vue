@@ -1,6 +1,7 @@
 <template>
 <div class="element-edit">
-  <van-nav-bar title="元素配置" @click-left="confirmElementEdit" left-text="关闭">
+  {{element.id}}
+  <van-nav-bar title="元素配置" @click-left="close" left-text="关闭">
     <van-button size="small" plain type="danger" class="btn-delete" @click="removeElement" slot="right">删除</van-button>
   </van-nav-bar>
   <van-tabs v-model="activeKey">
@@ -42,7 +43,6 @@ import EditAnimation from '../forms/EditAnimation'
 import EditBorder from '../forms/EditBorder'
 import EditPosition from '../forms/EditPosition'
 import EditFont from '../forms/EditFont'
-import styleUtils  from '../../utils/styles'
 
 export default {
   name: 'ConfigElement',
@@ -67,13 +67,7 @@ export default {
     }
   },
   watch: {
-    element1: {
-      deep: true,
-      handler () {
-        this.$emit('change', this.element)
-        console.log('element change', this.element)
-      }
-    }
+
   },
 
   computed: {
@@ -97,9 +91,6 @@ export default {
   },
 
   methods: {
-    confirmElementEdit () {
-      this.$emit('change', this.element)
-    },
     close () {
       this.$emit('close')
     },
