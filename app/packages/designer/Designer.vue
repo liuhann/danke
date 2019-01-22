@@ -12,7 +12,7 @@
 
   <!--元素配置区，可以进行元素配置项手动修改 -->
   <van-popup class="pop-element-config" position="right" :overlay="false" v-model="pop.elementConfig">
-    <config-element v-if="currentElement" :element="currentElement" :device="device" @close="pop.elementConfig = false"
+    <config-element v-if="currentElement" :edit-element="currentElement" :device="device" @close="pop.elementConfig = false"
       @element-remove="removeCurrentElement"
     ></config-element>
   </van-popup>

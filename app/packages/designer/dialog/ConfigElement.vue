@@ -1,6 +1,5 @@
 <template>
 <div class="element-edit">
-  {{element.id}}
   <van-nav-bar title="元素配置" @click-left="close" left-text="关闭">
     <van-button size="small" plain type="danger" class="btn-delete" @click="removeElement" slot="right">删除</van-button>
   </van-nav-bar>
@@ -57,17 +56,20 @@ export default {
     EditFont
   },
   props: {
-    element: {
+    editElement: {
       type: Object
     }
   },
   data () {
     return {
+      element: this.editElement,
       activeKey: 0,
     }
   },
   watch: {
-
+    editElement () {
+      this.element = this.editElement
+    }
   },
 
   computed: {

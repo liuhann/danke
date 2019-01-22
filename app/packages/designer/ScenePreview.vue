@@ -46,7 +46,7 @@ export default {
     'currentElement': {
       deep: true,
       handler () {
-        console.log('current element change', this.currentElement)
+        console.log('current element change', this.currentElement.id, this.currentElement)
         this.renderElement(this.currentElement)
       }
     },
