@@ -26,7 +26,11 @@ export default {
   },
   data () {
     return {
-      font: this.value
+    }
+  },
+  computed: {
+    font () {
+      return this.value
     }
   },
 

@@ -51,6 +51,12 @@ export default {
     }
   },
 
+  computed: {
+    background () {
+      return this.value
+    }
+  },
+
   watch: {
     background: {
       deep: true,

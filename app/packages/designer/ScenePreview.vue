@@ -6,7 +6,6 @@
     :ref="'element-' + index"
     :class="[element.animationPreview, index===currentIndex?'current':'']">
     <div v-if="element.type==='image'" class="image">
-      {{element.src?'': '未选择图片'}}
     </div>
     <div v-if="element.type === 'text'" class="text" :style="{
       fontSize: element.font
@@ -124,6 +123,7 @@ export default {
       justify-content: center;
       box-sizing: border-box;
       align-items: center;
+      color: #666;
       width: 100%;
       height: 100%;
       background-color: #efefef;

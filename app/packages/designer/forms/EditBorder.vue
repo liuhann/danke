@@ -22,7 +22,6 @@
     </van-checkbox-group>
   </item-block>
   <item-block title="圆角">
-    <pop-color-picker v-model="border.color">
       <van-stepper
         :min="0"
         v-model="border.radius[0]"
@@ -39,7 +38,6 @@
         :min="0"
         v-model="border.radius[3]"
       />
-    </pop-color-picker>
   </item-block>
 </div>
 </template>
@@ -74,15 +72,25 @@ export default {
   },
   data () {
     return {
-      border: this.value
     }
   },
   computed: {
+    border () {
+      return this.value
+    },
     allSides () {
       return allSides
     },
     lineStyles() {
       return lineStyles
+    }
+  },
+  watch: {
+    'border': {
+      handler (val) {
+        this.$emit('input', val)
+      },
+      deep: true
     }
   },
   methods: {

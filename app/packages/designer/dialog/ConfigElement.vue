@@ -67,7 +67,7 @@ export default {
     }
   },
   watch: {
-    editElement () {
+    'editElement': function (val) {
       this.element = this.editElement
     }
   },

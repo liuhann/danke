@@ -7,7 +7,7 @@
       <van-radio name="right">右</van-radio>
     </van-radio-group>
   </item-block>
-  <edit-len label="横向偏移" v-model="position.offsetX"></edit-len>
+  <edit-len label="横向偏移" v-model="position.offsetX" :min="-1000" :max="1000"></edit-len>
 
   <item-block title="纵向对齐">
     <van-radio-group v-model="position.vertical">
@@ -37,19 +37,16 @@ export default {
   },
   data () {
     return {
-      position: this.value
+      // position: this.value
+    }
+  },
+  computed: {
+    position () {
+      return this.value
     }
   },
   created () {
 
-  },
-  watch: {
-    clip: {
-      handler: function (val, oldVal) {
-        this.$emit('input', this.clip)
-      },
-      deep: true
-    }
   }
 }
 </script>

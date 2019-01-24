@@ -137,7 +137,6 @@ function mergeDeep (target, ...sources) {
 function clone (obj) {
   // Handle the 3 simple types, and null or undefined
   if (obj == null || typeof obj !== 'object') return obj
-  return mergeDeep({}, obj)
   // Handle Array
   if (obj instanceof Array) {
     let copy = []

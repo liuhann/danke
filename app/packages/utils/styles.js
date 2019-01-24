@@ -1,4 +1,3 @@
-import positionUtil from './position'
 import cubicBeziers from './cubic-beziers'
 
 const REG_LEN = /([+-]?[0-9#]+)(%|px|pt|em|rem|in|cm|mm|ex|ch|pc|vw|vh|vmin|vmax|deg|rad|turn)?$/
@@ -38,22 +37,22 @@ function getElementStyle (element, device, animation) {
   // position and size
   if (element.position && device) {
     if (element.position.vertical === 'top') {
-      styles.push(`top: ${positionUtil.getLength(element.position.offsetY, device)}px`)
+      styles.push(`top: ${getLength(element.position.offsetY, device)}px`)
     } else if (element.position.vertical === 'center') {
-      styles.push(`top: ${device.height / 2 - positionUtil.getLength(element.position.height, device) / 2 + positionUtil.getLength(element.position.offsetY, device)}px`)
+      styles.push(`top: ${device.height / 2 - getLength(element.position.height, device) / 2 + getLength(element.position.offsetY, device)}px`)
     } else if (element.position.vertical === 'bottom') {
-      styles.push(`bottom: ${positionUtil.getLength(element.position.offsetY, device)}px`)
+      styles.push(`bottom: ${getLength(element.position.offsetY, device)}px`)
     }
 
     if (element.position.horizontal === 'left') {
-      styles.push(`left: ${positionUtil.getLength(element.position.offsetX, device)}px`)
+      styles.push(`left: ${getLength(element.position.offsetX, device)}px`)
     } else if (element.position.horizontal === 'center') {
       styles.push(`left: ${(device.width / 2) - (getLength(element.position.width, device) / 2) + getLength(element.position.offsetX, device)}px`)
     } else if (element.position.horizontal === 'right') {
-      styles.push(`right: ${positionUtil.getLength(element.position.offsetX, device)}px`)
+      styles.push(`right: ${getLength(element.position.offsetX, device)}px`)
     }
-    styles.push(`width: ${positionUtil.getLength(element.position.width, device)}px`)
-    styles.push(`height: ${positionUtil.getLength(element.position.height, device)}px`)
+    styles.push(`width: ${getLength(element.position.width, device)}px`)
+    styles.push(`height: ${getLength(element.position.height, device)}px`)
   }
 
   if (element.background) {
