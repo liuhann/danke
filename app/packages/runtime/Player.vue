@@ -1,6 +1,10 @@
 <template>
 <div class="danke-runtime" :style="work.style">
   <div class="scene" v-for="(scene, index) in work.scenes" :key="index" :style="scene.style">
+    <div v-for="(element, index) in scene.elements" :key="element.id" class="element-wrapper"
+         @click="onElementClicked(index)"
+         :style="element.style">
+    </div>
   </div>
 </div>
 </template>
@@ -9,7 +13,9 @@
 import Danke from './danke'
 export default {
   name: 'Player',
+  props: {
 
+  },
   data () {
     return {
       work: null,
@@ -26,12 +32,23 @@ export default {
     this.$nextTick(() => {
       danke.begin()
     })
+  },
+  methods: {
+    onElementClicked () {
+
+    }
   }
 }
 </script>
 
 <style lang="less">
 .danke-runtime {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 
 }
 </style>

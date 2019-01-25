@@ -12,9 +12,11 @@
 
   <!--元素配置区，可以进行元素配置项手动修改 -->
   <van-popup class="pop-element-config" position="right" :overlay="false" v-model="pop.elementConfig">
-    <config-element :edit-element="currentElement" :device="device" @close="pop.elementConfig = false"
-      @element-remove="removeCurrentElement"
-    ></config-element>
+    <keep-alive>
+      <config-element v-if="currentElement" :edit-element="currentElement" :device="device" @close="pop.elementConfig = false"
+        @element-remove="removeCurrentElement"
+      ></config-element>
+    </keep-alive>
   </van-popup>
 
   <!--新增元素弹出框-->
@@ -92,19 +94,11 @@ export default {
     })
   },
   methods: {
-    previewPlay () {
-      this.ctx.work = {
-        play: this.work.play,
-        background: this.work.background,
-        scenes: this.scenes
-      }
-      this.$router.push('/')
-    },
-
     // 显示增加元素弹窗
     showAddElement () {
       this.pop.showAddElement = true
     },
+
     // 切换、管理场景
     showSceneList () {
       this.pop.sceneList = true
@@ -166,6 +160,7 @@ export default {
       this.currentElement = null
       this.pop.showConfig = false
     },
+
     removeCurrentElement () {
       for (let i = 0; i < this.currentScene.elements.length; i ++) {
         if (this.currentScene.elements[i].id === this.currentElement.id) {
@@ -174,6 +169,24 @@ export default {
       }
       this.currentElement = null
       this.pop.elementConfig = false
+    },
+
+    previewPlay () {
+      const transitions = []
+      for (let i = 1; i < this.scenes.length; i ++) {
+        transitions.push({
+          from: i,
+          to : i + 1
+        })
+      }
+
+      this.ctx.work = {
+        play: this.work.play,
+        background: this.work.background,
+        scenes: this.scenes,
+        transitions
+      }
+      this.$router.push('/play')
     }
   }
 }

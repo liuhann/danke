@@ -1,8 +1,13 @@
 import pauseable from 'pauseable'
+import utils from '../utils/util'
+import styleUtils from '../utils/styles'
+
 export default class Scene {
-  constructor (engine, scene) {
+  constructor (engine, scene, device) {
     this.engine = engine
     this.scene = scene
+    this.device = device
+    this.id = scene.id || utils.shortid()
   }
 
   leave () {
@@ -21,9 +26,7 @@ export default class Scene {
   }
 
   enter () {
-    this.engine.nanobus.emit('scene-enter', {
-      scene: this.scene
-    })
+    this.renderEnter()
     if (this.scene.triggerClose) {
       pauseable.setTimeout()
       setTimeout(() => {
@@ -38,5 +41,13 @@ export default class Scene {
         }
       }, this.scene.triggerClose)
     }
+  }
+
+  renderEnter () {
+    // 处理每个元素的动画
+    for (let element of this.scene.elements) {
+      element.style = styleUtils.getElementStyle(element, this.device, 'in')
+    }
+    this.scene.display = 'visible'
   }
 }

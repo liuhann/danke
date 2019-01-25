@@ -2,6 +2,9 @@ import nanobus from '../utils/nanobus'
 import Scene from './scene'
 import Transition from './transition'
 import styleUtils from '../utils/styles'
+
+import is from '../utils/is'
+
 /**
  * Loading scenes and  resources then init ticker + views
  */
@@ -12,8 +15,11 @@ export default class Danke {
    */
   constructor (work, device) {
     this.work = work
+    this.work.style = styleUtils.getWorkStyle(this.work, device)
     this.device = device
-    this.timeout = null
+    this.scenes = []
+    this.transitions = []
+
     this.loadScenesAndTransition()
     this.initNanobusEvents()
   }
@@ -32,17 +38,18 @@ export default class Danke {
   }
 
   loadScenesAndTransition () {
-    this.sceneInstances = []
     for (var i = 0; i < this.work.scenes.length; i++) {
       this.work.scenes[i].index = i
       this.work.scenes[i].display = 'none'
       const sceneInstance = new Scene(this, this.work.scenes[i])
-      this.sceneInstances.push(sceneInstance)
+      this.scenes.push(sceneInstance)
     }
     this.transitionInstances = []
-    for (let transitionConfig of this.work.transitions) {
-      const transitionInstance = new Transition(this, transitionConfig)
-      this.transitionInstances.push(transitionInstance)
+    if (this.work.transitions) {
+      for (let transition of this.work.transitions) {
+        const transitionInstance = new Transition(this, transition)
+        this.transitions.push(transitionInstance)
+      }
     }
   }
 
@@ -73,7 +80,7 @@ export default class Danke {
       for (let ei = 0; ei < scene.elements.length; ei++) {
         let element = scene.elements[ei]
         const elementStyle = styleUtils.getElementStyle(element, this.device, 'in')
-        element.elementStyle = elementStyle.join(';')
+        element.style = elementStyle.join(';')
       }
       scene.display = 'visible'
       if (this.sceneEnterCallback) {
@@ -120,8 +127,16 @@ export default class Danke {
     })
   }
 
-  getSceneInstanceByIndex (index) {
-    return this.sceneInstances[index]
+  getScene (key) {
+    if (Number.isInteger(key)) {
+      return this.sceneInstances[key]
+    } else if (is.str(key)) {
+      for (let scene of this.scenes) {
+        if (scene.id === key) {
+          return scene
+        }
+      }
+    }
   }
 
   getTransitionsByFrom (from) {

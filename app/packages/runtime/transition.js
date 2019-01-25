@@ -2,10 +2,10 @@ export default class Transition {
   constructor (engine, opts) {
     this.engine = engine
     if (opts.from != null) {
-      this.from = engine.getSceneInstanceByIndex(opts.from)
+      this.from = engine.getScene(opts.from)
     }
     if (opts.to != null) {
-      this.to = engine.getSceneInstanceByIndex(opts.to)
+      this.to = engine.getScene(opts.to)
     }
   }
 

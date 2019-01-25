@@ -56,7 +56,7 @@ function getElementStyle (element, device, animation) {
   }
 
   if (element.background) {
-    styles.push(getBackgroundStyle(element.background, element.image && element.image.src))
+    styles.push(getBackgroundStyle(element.background))
   }
 
   if (element.clip) {
@@ -101,15 +101,15 @@ function getGradientStyle (colors, angle, blendImage) {
   return style
 }
 
-function getBackgroundStyle (background, blendImage) {
+function getBackgroundStyle (background) {
   const styles = []
   if (background.mode === '1') {
     styles.push(`background-color: ${background.color}`)
-    if (blendImage || background.image) {
-      styles.push(`background-image: url('${blendImage || background.image}')`)
+    if (background.image) {
+      styles.push(`background-image: url('${background.image}')`)
     }
   } else if (background.mode === '2') {
-    styles.push(getGradientStyle(background.gradients, background.angle, blendImage || background.image))
+    styles.push(getGradientStyle(background.gradients, background.angle, background.image))
   } else if (background.mode === '0') {
     styles.push(`background: transparent`)
   }
@@ -118,8 +118,13 @@ function getBackgroundStyle (background, blendImage) {
   return styles.join(';')
 }
 
+function getWorkStyle (work, device) {
+  return getBackgroundStyle(work.background)
+}
+
 export default {
   getGradientStyle,
   getBackgroundStyle,
-  getElementStyle
+  getElementStyle,
+  getWorkStyle
 }

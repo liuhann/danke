@@ -1,6 +1,4 @@
 import nanobus from 'nanobus'
-import ImagePreloader from 'image-preloader'
-
 import CenterText from './templates/CenterText'
 import FullPicture from './templates/FullPicture'
 import DesignedScene from './templates/DesignedScene'
@@ -93,6 +91,10 @@ export default class Danke {
   }
 
   getBackgroundById (id) {
+
+  }
+
+  getScene (key) {
 
   }
 
