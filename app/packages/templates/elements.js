@@ -68,6 +68,9 @@ const BASE = {
 const IMAGE = util.mergeDeep({}, BASE, {
   type: 'image',
   sizing: 'cover',
+  background: {
+    color: '#efefef'
+  },
   position: {
     align: 'center',
     offsetX: '5vw',

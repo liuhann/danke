@@ -43,7 +43,7 @@ import utils from '../utils/util'
 import styleUtils from '../utils/styles'
 import Elements from '../templates/elements'
 import ConfigElement from './dialog/ConfigElement'
-import ConfigWork from './forms/ConfigWork'
+import ConfigWork from './dialog/ConfigWork'
 import AddElement from './dialog/AddElement'
 
 import saver from './saver'

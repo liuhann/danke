@@ -30,9 +30,9 @@
 </template>
 
 <script>
-import ItemBlock from './ItemBlock'
-import EditBackground from './EditBackground'
-import EditImage from './EditImage'
+import ItemBlock from '../forms/ItemBlock'
+import EditBackground from '../forms/EditBackground'
+import EditImage from '../forms/EditImage'
 export default {
   name: 'ConfigWork',
   components: {

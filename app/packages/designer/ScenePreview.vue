@@ -5,8 +5,6 @@
     :style="element.computedStyle"
     :ref="'element-' + index"
     :class="[element.animationPreview, index===currentIndex?'current':'']">
-    <div v-if="element.type==='image'" class="image">
-    </div>
     <div v-if="element.type === 'text'" class="text" :style="{
       fontSize: element.font
     }">
@@ -50,7 +48,6 @@ export default {
       }
     },
     'currentElementLength': function(newVal, oldVal) {
-      console.log('scene elements change', newVal, oldVal)
       for (let element of this.scene.elements) {
         this.renderElement(element)
       }
@@ -82,10 +79,6 @@ export default {
     renderElement (element) {
       this.$set(element, 'computedStyle', styleUtils.getElementStyle(element, this.device))
       // element.computedStyle = styleUtils.getElementStyle(element, this.device)
-    },
-
-    computeSceneStyle () {
-      return utils.generateSceneDisplayStyle(this.scene, this.device, this.coordinate)
     },
 
     onElementClicked (index) {

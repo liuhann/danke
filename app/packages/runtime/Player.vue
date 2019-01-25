@@ -1,7 +1,6 @@
 <template>
 <div class="danke-runtime" :style="work.style">
   <div class="scene" v-for="(scene, index) in work.scenes" :key="index" :style="scene.style">
-
   </div>
 </div>
 </template>
