@@ -4,6 +4,7 @@
     <div v-for="(element, index) in scene.elements" :key="element.id" class="element-wrapper"
          @click="onElementClicked(index)"
          :style="element.style">
+      {{element.content}}
     </div>
   </div>
 </div>
@@ -11,6 +12,7 @@
 
 <script>
 import Danke from './danke'
+import utils from '../utils/util'
 export default {
   name: 'Player',
   props: {
@@ -27,7 +29,7 @@ export default {
   },
   created () {
     // assume that work is loaded from loader
-    const danke = new Danke(this.ctx.work, this.device)
+    const danke = new Danke(utils.clone(this.ctx.work), this.device)
     this.work = danke.work
     this.$nextTick(() => {
       danke.begin()

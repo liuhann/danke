@@ -3,7 +3,7 @@
   <div class="scene-buttons">
     <van-icon name="plus" @click="showAddElement"/>
     <van-icon name="apps-o" @click.stop="pop.sceneList = true"/>
-    <van-icon name="setting-o" @click="pop.appConfig = true" />
+    <van-icon name="setting-o" @click="pop.appConfig = true"/>
   </div>
   <!--效果预览区-->
   <scene-preview :scene="currentScene" :device="device" class="scene-container"
@@ -86,12 +86,18 @@ export default {
   },
 
   created () {
-    this.tapAddScene()
-    this.currentScene = this.scenes[0]
+    if (this.ctx.work) {
+      this.scenes = utils.clone(this.ctx.work.scenes)
+      this.currentScene = this.scenes[0]
+      this.work = utils.clone(this.ctx.work)
+    } else {
+      this.tapAddScene()
+      this.currentScene = this.scenes[0]
 
-    this.nanobus.on('image-attach', (resource) => {
-      saver.saveResource(resource)
-    })
+      this.nanobus.on('image-attach', (resource) => {
+        saver.saveResource(resource)
+      })
+    }
   },
   methods: {
     // 显示增加元素弹窗

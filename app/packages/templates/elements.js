@@ -87,6 +87,9 @@ const TEXT = util.mergeDeep({}, BASE, {
     size: 14,
     color: '#000'
   },
+  background: {
+    mode: '0'
+  },
   position: {
     align: 'left',
     offsetX: '5vw',

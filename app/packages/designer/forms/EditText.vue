@@ -1,7 +1,7 @@
 <template>
 <div class="edit-text">
   <van-cell class="group-title" title="编辑文字" icon="expand-o" />
-  <van-field v-model="value" disabled/>
+  <van-field v-model="text" clearable autosize></van-field>
 </div>
 </template>
 
@@ -12,6 +12,41 @@ export default {
     value: {
       type: String
     }
+  },
+  data () {
+    return {
+      text: this.value,
+      showEditBox: false
+    }
+  },
+
+  watch: {
+    value () {
+      this.text = this.value
+    },
+
+    text () {
+      this.$emit('input', this.text)
+    }
   }
+
 }
 </script>
+
+<style lang="less">
+.edit-text {
+  .edit {
+    padding: 10px 15px;
+    background: #fff;
+  }
+}
+
+.text-edit-pop {
+  width: 100%;
+  height: 100%;
+  textarea {
+    font-size: 18px;
+  }
+}
+
+</style>
