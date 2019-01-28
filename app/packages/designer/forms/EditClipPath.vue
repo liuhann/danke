@@ -1,5 +1,6 @@
 <template>
 <div class="edit-clip-path">
+  <van-cell class="group-title" title="裁切" icon="expand-o"/>
   <van-row type="flex" justify="space-around">
     <van-col span="4" class="tc label">左上</van-col>
     <van-col span="20">

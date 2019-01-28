@@ -86,6 +86,13 @@ const TEXT = util.mergeDeep({}, BASE, {
   font: {
     size: 14,
     color: '#000'
+  },
+  position: {
+    align: 'left',
+    offsetX: '5vw',
+    offsetY: '3vh',
+    width: '90vw',
+    height: '20vw'
   }
 })
 const CIRCLE = util.mergeDeep({}, BASE, {

@@ -1,7 +1,7 @@
 <template>
 <div class="edit-font">
   <van-cell class="group-title" title="字体" icon="bars"/>
-  <edit-len v-model="font.size" label="大小"></edit-len>
+  <edit-len v-model="font.size" label="大小" :with-unit="false"></edit-len>
   <item-block title="颜色">
     <pop-color-picker v-model="font.color"></pop-color-picker>
   </item-block>

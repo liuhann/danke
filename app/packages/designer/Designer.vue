@@ -109,7 +109,7 @@ export default {
         'template': 'designed',
         'play': 'auto',
         'hideDelay': 2000,
-        'triggerClose': 3000,
+        'triggerClose': 3000000,
         'elements': []
       })
     },
@@ -173,19 +173,19 @@ export default {
 
     previewPlay () {
       const transitions = []
-      for (let i = 1; i < this.scenes.length; i ++) {
+      for (let i = 0; i < this.scenes.length; i ++) {
         transitions.push({
-          from: i,
-          to : i + 1
+          from: (i === 0) ? null: (i-1),
+          to : i
         })
       }
 
-      this.ctx.work = {
+      this.ctx.work = utils.clone({
         play: this.work.play,
         background: this.work.background,
         scenes: this.scenes,
         transitions
-      }
+      })
       this.$router.push('/play')
     }
   }

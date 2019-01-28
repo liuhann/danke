@@ -4,7 +4,8 @@
     <van-button size="small" plain type="danger" class="btn-delete" @click="removeElement" slot="right">删除</van-button>
   </van-nav-bar>
   <van-tabs v-model="activeKey">
-    <van-tab title="定位与大小">
+    <van-tab title="基础">
+      <edit-text v-model="element.content"></edit-text>
       <van-cell title="位置" icon="aim" />
       <edit-position v-model="element.position"></edit-position>
       <van-cell class="group-title" title="大小" icon="expand-o" />
@@ -15,15 +16,12 @@
     </van-tab>
     <van-tab title="显示样式">
       <edit-font v-model="element.font" v-if="fontable"></edit-font>
-      <edit-background v-model="element.background"></edit-background>
-      <van-cell class="group-title" title="边框" icon="expand-o" v-if="borderable"/>
+      <edit-background v-model="element.background" v-if="backable"></edit-background>
       <edit-border v-model="element.border" v-if="borderable"></edit-border>
-      <van-cell class="group-title" title="裁切" icon="expand-o" v-if="clipable"/>
       <edit-clip-path v-model="element.clip" v-if="clipable"></edit-clip-path>
     </van-tab>
     <van-tab title="动画效果">
-      <van-cell class="group-title" title="进入" icon="expand-o" />
-      <edit-animation v-model="element.in" :type="['entrance', 'attention', element.type==='text'?'text': undefined]"></edit-animation>
+      <edit-animation v-model="element.in" title="进入" :type="['entrance', 'attention', element.type==='text'?'text': undefined]"></edit-animation>
       <van-cell class="group-title" title="持续" icon="expand-o" />
       <edit-animation v-model="element.existence" :type="['attention']"></edit-animation>
       <van-cell class="group-title" title="离开" icon="expand-o" />
@@ -42,10 +40,12 @@ import EditAnimation from '../forms/EditAnimation'
 import EditBorder from '../forms/EditBorder'
 import EditPosition from '../forms/EditPosition'
 import EditFont from '../forms/EditFont'
+import EditText from '../forms/EditText'
 
 export default {
   name: 'ConfigElement',
   components: {
+    EditText,
     AnimationSelector,
     EditClipPath,
     EditLen,
@@ -77,7 +77,7 @@ export default {
       return this.element.type === 'image'
     },
     backable () {
-      return true
+      return this.element.type === 'image'
     },
     fontable () {
       return this.element.type === 'text'

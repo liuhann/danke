@@ -1,5 +1,6 @@
 <template>
 <div class="edit-animation">
+  <van-cell class="group-title" :title="title" icon="expand-o" />
   <item-block title="效果">
     <animation-selector v-model="value.animation" :type="type"></animation-selector>
   </item-block>
@@ -33,6 +34,9 @@ export default {
     },
     type: {
       type: Array
+    },
+    title: {
+      type: String
     }
   },
   components: {

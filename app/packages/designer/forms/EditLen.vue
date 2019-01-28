@@ -1,6 +1,6 @@
 <template>
-<item-block :title="label">
-  <van-stepper @plus="stepChange" @minus="stepChange" v-model="length" :min="min || 0" :max="max" :step="step || 1"/>
+<item-block :title="label" class="item-block">
+  <van-stepper @plus="stepChange" @minus="stepChange"  v-model="length" :min="min || 0" :max="max" :step="step || 1"/>
   <select v-model="unit" v-if="withUnit" slot="end">
     <option value="vw">屏宽</option>
     <option value="vh">屏高</option>
@@ -19,7 +19,7 @@ export default {
       type: String
     },
     value: {
-      type: String
+      type: [String, Number]
     },
     withUnit: {
       type: Boolean,
@@ -42,7 +42,11 @@ export default {
       this.setDataFromValue()
     },
     length () {
-      this.$emit('input', this.length + this.unit)
+      if (this.withUnit) {
+        this.$emit('input', this.length + this.unit)
+      } else {
+        this.$emit('input', this.length)
+      }
     },
     unit () {
       this.$emit('input', this.length + this.unit)
@@ -62,12 +66,16 @@ export default {
 
   methods: {
     setDataFromValue () {
-      let lu = this.getLengthUnit(this.value)
-      this.length = lu.number
-      this.unit = lu.unit
+      if (typeof this.value === 'string' ) {
+        let lu = this.getLengthUnit(this.value)
+        this.length = lu.number
+        this.unit = lu.unit
+      } else {
+        this.length = this.value
+      }
     },
     stepChange () {
-      this.$emit('change')
+      // this.$emit('change')
     },
     getLengthUnit (len) {
       // -15vw ->  [-15vw,-15,vw]

@@ -4,10 +4,10 @@
     <van-col span="18" v-if="!$slots.end">
       <slot></slot>
     </van-col>
-    <van-col span="12" v-if="$slots.end">
+    <van-col span="10" v-if="$slots.end">
       <slot></slot>
     </van-col>
-    <van-col span="6" v-if="$slots.end">
+    <van-col span="8" v-if="$slots.end">
       <slot name="end"></slot>
     </van-col>
   </van-row>

@@ -79,7 +79,7 @@ function getElementStyle (element, device, animation) {
   }
   // font
   if (element.font) {
-    styles.push(`font: ${element.font.size}px`)
+    styles.push(`font-size: ${element.font.size}px`)
     styles.push(`color: ${element.font.color}`)
     styles.push(`font-weight: ${element.font.weight}`)
     styles.push(`letter-spacing: ${element.font.spacing}px`)
@@ -88,7 +88,7 @@ function getElementStyle (element, device, animation) {
 
   if (animation && element[animation]) {
     const animationDef = element[animation]
-    styles.push(`animation: ${animationDef.animation} ${animationDef.duration}ms ${cubicBeziers[animationDef.timing]} ${animationDef.delay}ms ${animationDef.repeat} normal both running'`)
+    styles.push(`animation: ${animationDef.animation} ${animationDef.duration}ms ${cubicBeziers[animationDef.timing]} ${animationDef.delay}ms ${animationDef.repeat} normal both running`)
   }
   return styles.join(';')
 }

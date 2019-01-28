@@ -1,5 +1,6 @@
 <template>
 <div class="edit-border">
+  <van-cell class="group-title" title="边框" icon="expand-o"/>
   <item-block title="宽度">
     <van-stepper v-model="border.width"/>
   </item-block>
