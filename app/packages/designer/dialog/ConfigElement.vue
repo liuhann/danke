@@ -8,6 +8,12 @@
       <edit-text v-model="element.content" v-if="element.content"></edit-text>
       <edit-font v-model="element.font" v-if="element.content"></edit-font>
       <edit-position v-model="element.position" v-if="element.position"></edit-position>
+      <item-block title="层次">
+        <van-button size="small">最下</van-button>
+        <van-button size="small">上一层</van-button>
+        <van-button size="small">下一层</van-button>
+        <van-button size="small" @click="swap('top')">最上</van-button>
+      </item-block>
     </van-tab>
     <van-tab title="显示样式">
       <edit-background v-model="element.background" v-if="element.background"></edit-background>
@@ -33,10 +39,12 @@ import EditBorder from '../forms/EditBorder'
 import EditPosition from '../forms/EditPosition'
 import EditFont from '../forms/EditFont'
 import EditText from '../forms/EditText'
+import ItemBlock from '../forms/ItemBlock'
 
 export default {
   name: 'ConfigElement',
   components: {
+    ItemBlock,
     EditText,
     AnimationSelector,
     EditClipPath,
@@ -85,6 +93,9 @@ export default {
   },
 
   methods: {
+    swap (direction) {
+      this.$emit('swap', direction)
+    },
     close () {
       this.$emit('close')
     },

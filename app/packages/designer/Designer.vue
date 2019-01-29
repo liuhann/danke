@@ -13,6 +13,7 @@
   <van-popup class="pop-element-config" position="right" :overlay="false" v-model="pop.elementConfig">
     <keep-alive>
       <config-element v-if="currentElement" :edit-element="currentElement" :device="device" @close="pop.elementConfig = false"
+        @swap="swapElement"
         @element-remove="removeCurrentElement"
       ></config-element>
     </keep-alive>
@@ -170,6 +171,21 @@ export default {
       }
       this.currentElement = null
       this.pop.elementConfig = false
+    },
+
+    swapElement (direction) {
+      debugger
+      let currentIndex = 0
+      for (let i = 0; i < this.currentScene.elements.length; i++) {
+        if ( this.currentScene.elements[i].id === this.currentElement.id) {
+          currentIndex = i
+          break
+        }
+      }
+      if (direction === 'top') {
+        this.currentScene.elements[currentIndex] = this.currentScene.elements[this.currentScene.elements.length - 1]
+        this.currentScene.elements[this.currentScene.elements.length - 1] = this.currentElement
+      }
     },
 
     previewPlay () {

@@ -10,8 +10,6 @@
     }">
       {{element.content}}
     </div>
-    <div v-if="element.type === 'circle'" class="circle">
-    </div>
   </div>
 </div>
 </template>
