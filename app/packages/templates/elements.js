@@ -5,7 +5,10 @@ const BACKGROUND = {
   color: '#fff',
   gradients: ['#fff', '#fff'],
   angle: 'to bottom',
+  size: 'cover',
+  position: 'center center',
   image: '',
+  repeat: 'no-repeat',
   blend: 'multiply'
 }
 
@@ -110,7 +113,17 @@ const WORK = util.mergeDeep({}, {
   scenes: []
 })
 
+const SCENE = {
+  type: 'slide',
+  play: 'auto',
+  background: BACKGROUND,
+  hideDelay: 2000,
+  'triggerClose': 3000000,
+  'elements': []
+}
+
 export default {
+  SCENE,
   WORK,
   BACKGROUND,
   FONT,

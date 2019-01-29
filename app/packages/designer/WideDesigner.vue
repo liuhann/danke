@@ -29,7 +29,7 @@
 <script>
 import DragableSceneEdit from './ScenePreview'
 import AddElementPopup from './dialog/AddElement'
-import SceneListPopup from './SceneList'
+import SceneListPopup from './dialog/SceneList'
 import ConfigBox from './ConfigBox'
 import utils from '../utils/util'
 import position from '../utils/position'

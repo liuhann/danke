@@ -56,7 +56,7 @@ function getElementStyle (element, device, animation) {
   }
 
   if (element.background) {
-    styles.push(getBackgroundStyle(element.background))
+    styles.push(getBackgroundStyle(element.background, element.position))
   }
 
   if (element.clip) {
@@ -103,17 +103,24 @@ function getGradientStyle (colors, angle, blendImage) {
 
 function getBackgroundStyle (background) {
   const styles = []
-  if (background.mode === '1') {
+  if (background.mode === '1') { // 颜色与图片混合
     styles.push(`background-color: ${background.color}`)
     if (background.image) {
       styles.push(`background-image: url('${background.image}')`)
     }
-  } else if (background.mode === '2') {
+  } else if (background.mode === '2') { // 颜色和渐变混合
     styles.push(getGradientStyle(background.gradients, background.angle, background.image))
   } else if (background.mode === '0') {
-    styles.push(`background: transparent`)
+    if (background.image) {
+      styles.push(`background-image: url('${background.image}')`)
+    } else {
+      styles.push(`background: transparent`)
+    }
   }
-  styles.push(`background-size: cover`)
+
+  styles.push(`background-size: ${background.size}`)
+  styles.push(`background-position: ${background.position}`)
+  styles.push(`background-repeat: ${background.position}`)
   styles.push(`background-blend-mode: ${background.blend}`)
   return styles.join(';')
 }

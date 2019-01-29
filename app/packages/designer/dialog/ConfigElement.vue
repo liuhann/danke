@@ -5,27 +5,19 @@
   </van-nav-bar>
   <van-tabs v-model="activeKey">
     <van-tab title="基础">
-      <edit-text v-model="element.content"></edit-text>
-      <van-cell title="位置" icon="aim" />
-      <edit-position v-model="element.position"></edit-position>
-      <van-cell class="group-title" title="大小" icon="expand-o" />
-      <div class="group">
-        <edit-len label="宽度" v-model="element.position.width"></edit-len>
-        <edit-len label="高度" v-model="element.position.height"></edit-len>
-      </div>
+      <edit-text v-model="element.content" v-if="element.content"></edit-text>
+      <edit-font v-model="element.font" v-if="element.content"></edit-font>
+      <edit-position v-model="element.position" v-if="element.position"></edit-position>
     </van-tab>
     <van-tab title="显示样式">
-      <edit-font v-model="element.font" v-if="fontable"></edit-font>
-      <edit-background v-model="element.background" v-if="backable"></edit-background>
-      <edit-border v-model="element.border" v-if="borderable"></edit-border>
+      <edit-background v-model="element.background" v-if="element.background"></edit-background>
+      <edit-border v-model="element.border" v-if="element.border"></edit-border>
       <edit-clip-path v-model="element.clip" v-if="clipable"></edit-clip-path>
     </van-tab>
     <van-tab title="动画效果">
       <edit-animation v-model="element.in" title="进入" :type="['entrance', 'attention', element.type==='text'?'text': undefined]"></edit-animation>
-      <van-cell class="group-title" title="持续" icon="expand-o" />
-      <edit-animation v-model="element.existence" :type="['attention']"></edit-animation>
-      <van-cell class="group-title" title="离开" icon="expand-o" />
-      <edit-animation v-model="element.out" :type="['outs']"></edit-animation>
+      <edit-animation v-model="element.existence" title="持续" :type="['attention']"></edit-animation>
+      <edit-animation v-model="element.out" title="离开" :type="['outs']"></edit-animation>
     </van-tab>
   </van-tabs>
 </div>

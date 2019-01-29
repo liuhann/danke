@@ -1,47 +1,51 @@
 <template>
 <div class="scene-edit-wrapper">
-  <van-nav-bar title="场景配置" left-text="新增空白场景" @click-right="close" @click-left="addEmptyScene">
+  <van-nav-bar title="场景配置" @click-right="close" @click-left="addEmptyScene">
     <van-icon name="cross" slot="right" />
   </van-nav-bar>
-  <van-row type="flex" justify="space-around">
-    <van-col span="4">播放</van-col>
-    <van-col span="20">
-      <van-radio-group v-model="config.play">
-        <van-radio name="auto">自动</van-radio>
-        <van-radio name="trigger">手动</van-radio>
-      </van-radio-group>
-    </van-col>
-  </van-row>
-  <van-row type="flex" justify="space-around" v-if="config.play==='auto'">
-    <van-col span="4">时间</van-col>
-    <van-col span="20">
-      <van-stepper v-model="config.triggerClose" integer disable-input :step="50"/>
-    </van-col>
-  </van-row>
-  <van-row type="flex" justify="space-around">
-    <van-col span="4">背景</van-col>
-    <van-col span="20"></van-col>
-  </van-row>
+
+  <div class="pop-content">
+    <item-block title="类型">
+      <select v-model="scene.type">
+        <option value="slide">普通</option>
+        <option value="background">背景</option>
+        <option value="forground">前景</option>
+      </select>
+    </item-block>
+    <edit-background v-model="scene.background"></edit-background>
+    <item-block title="类型">
+      <select v-model="scene.type">
+        <option value="slide">普通</option>
+        <option value="background">背景</option>
+        <option value="forground">前景</option>
+      </select>
+    </item-block>
+  </div>
+
 </div>
 </template>
 
 <script>
+import ItemBlock from '../forms/ItemBlock'
+import EditBackground from '../forms/EditBackground'
 export default {
-  name: 'SceneEdit',
+  name: 'ConfigScene',
   components: {
+    EditBackground,
+    ItemBlock
   },
   props: {
-    sceneConfig: {
+    value: {
       type: Object
     }
   },
   data () {
     return {
-      config: this.sceneConfig
+      scene: this.value
     }
   },
   watch: {
-    sceneConfig (val) {
+    config (val) {
       this.config = val
     }
   },

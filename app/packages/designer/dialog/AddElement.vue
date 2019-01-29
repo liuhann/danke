@@ -6,7 +6,10 @@
       <van-cell title="视频" icon="edit" :clickable="true" label="可选择视频内容，设置播放时间" @click="choose('video')"/>
       <van-cell title="音频" icon="edit" :clickable="true" label="可选择音频内容，设置播放时间" @click="choose('video')"/>
     </van-tab>
-    <van-tab title="插件元素">
+    <van-tab title="矢量图" name="svg">
+
+    </van-tab>
+    <van-tab title="插件元素" name="plugin">
       <van-cell title="集成的图层" icon="edit" :clickable="true" label="可选择音频内容，设置播放时间" @click="choose('video')"/>
     </van-tab>
   </van-tabs>

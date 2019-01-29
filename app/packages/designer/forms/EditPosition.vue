@@ -1,5 +1,6 @@
 <template>
 <div class="edit-position config-group">
+  <van-cell title="位置" icon="aim" />
   <item-block title="横向对齐">
     <van-radio-group v-model="position.horizontal">
       <van-radio name="left">左</van-radio>
@@ -18,6 +19,12 @@
   </item-block>
 
   <edit-len label="纵向偏移" v-model="position.offsetY"></edit-len>
+
+  <van-cell class="group-title" title="大小" icon="expand-o" />
+  <div class="group">
+    <edit-len label="宽度" v-model="position.width"></edit-len>
+    <edit-len label="高度" v-model="position.height"></edit-len>
+  </div>
 </div>
 </template>
 

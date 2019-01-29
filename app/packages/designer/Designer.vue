@@ -40,7 +40,7 @@
 
 <script>
 import ScenePreview from './ScenePreview'
-import SceneList from './SceneList'
+import SceneList from './dialog/SceneList'
 import utils from '../utils/util'
 import styleUtils from '../utils/styles'
 import Elements from '../templates/elements'
