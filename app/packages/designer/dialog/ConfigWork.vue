@@ -13,8 +13,6 @@
     </van-col>
   </van-row>
 
-  <edit-background v-model="work.background"></edit-background>
-
   <item-block title="翻页">
     <van-radio-group v-model="work.turning.type">
       <van-radio name="auto">自动</van-radio>

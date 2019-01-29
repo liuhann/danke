@@ -3,7 +3,6 @@
   <div class="scene-buttons">
     <van-icon name="plus" @click="showAddElement"/>
     <van-icon name="apps-o" @click.stop="pop.sceneList = true"/>
-    <van-icon name="setting-o" @click="pop.appConfig = true"/>
   </div>
   <!--效果预览区-->
   <scene-preview :scene="currentScene" :device="device" class="scene-container"
@@ -111,22 +110,18 @@ export default {
     },
 
     tapAddScene () {
-      this.scenes.push({
-        'template': 'designed',
-        'play': 'auto',
-        'hideDelay': 2000,
-        'triggerClose': 3000000,
-        'elements': []
-      })
+      const scene = utils.clone(Elements.SCENE)
+      scene.id = utils.shortid()
+      this.scenes.push(scene)
     },
 
     tapShowResources () {
 
     },
 
-    chooseScene (index) {
+    chooseScene (scene) {
       this.pop.sceneList = false
-      this.currentScene = this.scenes[index]
+      this.currentScene = scene
       this.currentElement = null
     },
 
@@ -232,19 +227,19 @@ export default {
 
   .scene-buttons {
     position: absolute;
-    bottom: 6px;
-    right: 6px;
+    bottom: 15px;
+    right: 15px;
     font-size: 24px;
     z-index: 101;
-    width: 135px;
+    width: 85px;
     display: flex;
     -webkit-box-pack: justify;
     -ms-flex-pack: justify;
     justify-content: space-between;
-    color: #666;
-    background: #fff;
-    padding: 14px;
-    border-radius: 15px;
+    color: #fff;
+    background: rgba(0,0,0, .5);
+    padding: 10px;
+    border-radius: 4px;
   }
 }
 

@@ -55,10 +55,7 @@ export default {
   },
   computed: {
     sceneStyle () {
-      return {
-        width: this.device.width + 'px',
-        height: this.device.height + 'px'
-      }
+      return styleUtils.getSceneStyle(this.scene, this.device)
     },
     currentElementLength () {
       return this.scene.elements.length

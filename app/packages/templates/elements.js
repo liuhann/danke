@@ -118,8 +118,8 @@ const SCENE = {
   play: 'auto',
   background: BACKGROUND,
   hideDelay: 2000,
-  'triggerClose': 3000000,
-  'elements': []
+  duration: 30000,
+  elements: []
 }
 
 export default {

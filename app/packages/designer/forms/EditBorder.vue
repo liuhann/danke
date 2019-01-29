@@ -2,7 +2,7 @@
 <div class="edit-border">
   <van-cell class="group-title" title="边框" icon="expand-o"/>
   <item-block title="宽度">
-    <van-stepper v-model="border.width"/>
+    <van-stepper v-model="border.width" :min="0"/>
   </item-block>
   <item-block title="样式">
     <select v-model="border.style">

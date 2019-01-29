@@ -1,6 +1,6 @@
 <template>
 <div class="scene-edit-wrapper">
-  <van-nav-bar title="场景配置" @click-right="close" @click-left="addEmptyScene">
+  <van-nav-bar title="场景配置" @click-right="close">
     <van-icon name="cross" slot="right" />
   </van-nav-bar>
 
@@ -9,17 +9,13 @@
       <select v-model="scene.type">
         <option value="slide">普通</option>
         <option value="background">背景</option>
-        <option value="forground">前景</option>
+        <option value="foreground">前景</option>
       </select>
+    </item-block>
+    <item-block title="切换时间" v-if="scene.type === 'slide'">
+      <van-stepper v-model="scene.duration" integer disable-input :step="50"/>
     </item-block>
     <edit-background v-model="scene.background"></edit-background>
-    <item-block title="类型">
-      <select v-model="scene.type">
-        <option value="slide">普通</option>
-        <option value="background">背景</option>
-        <option value="forground">前景</option>
-      </select>
-    </item-block>
   </div>
 
 </div>
@@ -45,8 +41,11 @@ export default {
     }
   },
   watch: {
-    config (val) {
-      this.config = val
+    value (val) {
+      this.scene = val
+    },
+    scene () {
+      this.$emit('input', this.scene)
     }
   },
 
@@ -54,13 +53,17 @@ export default {
   },
 
   methods: {
-
+    close () {
+      this.$emit('close')
+    }
   }
 }
 </script>
 
 <style lang="less">
 .scene-edit-wrapper {
-
+  width: 100vw;
+  height: 100vh;
+  background-color: #fff;
 }
 </style>

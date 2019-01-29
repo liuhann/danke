@@ -129,9 +129,18 @@ function getWorkStyle (work, device) {
   return getBackgroundStyle(work.background)
 }
 
+function getSceneStyle (scene, device) {
+  const styles = []
+  styles.push(getBackgroundStyle(scene.background))
+  styles.push(`width: ${device.width}px`)
+  styles.push(`height: ${device.height}px`)
+  return styles.join(';')
+}
+
 export default {
   getGradientStyle,
   getBackgroundStyle,
   getElementStyle,
-  getWorkStyle
+  getWorkStyle,
+  getSceneStyle
 }
