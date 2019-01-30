@@ -33,7 +33,7 @@ import SceneListPopup from './dialog/SceneList'
 import ConfigBox from './ConfigBox'
 import utils from '../utils/util'
 import position from '../utils/position'
-import Elements from '../templates/elements'
+import Elements from './templates/elements'
 
 export default {
   name: 'Designer',

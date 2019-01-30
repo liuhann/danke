@@ -134,6 +134,11 @@ function getSceneStyle (scene, device) {
   styles.push(getBackgroundStyle(scene.background))
   styles.push(`width: ${device.width}px`)
   styles.push(`height: ${device.height}px`)
+  if (scene.type === 'background') {
+    styles.push(`z-index: 10`)
+  } else {
+    styles.push(`z-index: 100`)
+  }
   return styles.join(';')
 }
 

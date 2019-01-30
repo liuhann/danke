@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import gradients from '../../templates/gradients'
+import gradients from '../templates/gradients'
 import styles from '../../utils/styles'
 export default {
   name: 'PopGradientPicker',

@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import materialColors from '../../templates/material-colors'
+import materialColors from '../templates/material-colors'
 
 export default {
   name: 'PopColorPicker',

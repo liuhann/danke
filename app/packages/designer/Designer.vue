@@ -1,9 +1,11 @@
 <template>
-<div class="designer mobile" :style="workStyle">
+<div class="designer mobile">
   <div class="scene-buttons">
     <van-icon name="plus" @click="showAddElement"/>
     <van-icon name="apps-o" @click.stop="pop.sceneList = true"/>
   </div>
+
+  <scene-preview v-if="backgroundScene" :scene="backgroundScene" :device="device"></scene-preview>
   <!--效果预览区-->
   <scene-preview :scene="currentScene" :device="device" class="scene-container"
     @element-selected="tapElementOn"
@@ -28,13 +30,11 @@
   <van-popup v-model="pop.sceneList" class="pop-page-list" position="right">
     <scene-list :scenes="scenes" :current-scene="currentScene" :device="device"
       @close="pop.sceneList = false"
+      @preview="previewPlay"
       @add="tapAddScene"
       @choose-scene="chooseScene"></scene-list>
   </van-popup>
 
-  <van-popup v-model="pop.appConfig" class="pop-app-config" position="right">
-    <config-work v-model="work" @close="pop.appConfig = false" @preview="previewPlay"></config-work>
-  </van-popup>
 </div>
 </template>
 
@@ -42,8 +42,7 @@
 import ScenePreview from './ScenePreview'
 import SceneList from './dialog/SceneList'
 import utils from '../utils/util'
-import styleUtils from '../utils/styles'
-import Elements from '../templates/elements'
+import Elements from './templates/elements'
 import ConfigElement from './dialog/ConfigElement'
 import ConfigWork from './dialog/ConfigWork'
 import AddElement from './dialog/AddElement'
@@ -64,8 +63,7 @@ export default {
       pop: {
         elementConfig: false,
         showAddElement: false,
-        sceneList: false,
-        appConfig: false
+        sceneList: false
       },
       device: {
         width: window.innerWidth,
@@ -79,9 +77,17 @@ export default {
   },
 
   computed: {
-    workStyle () {
-      const workStyle = styleUtils.getBackgroundStyle(this.work.background)
-      return workStyle
+    backgroundScene () {
+      let back = null
+      for (let i=0; i < this.scenes.length; i++) {
+        if (this.currentScene === this.scenes[i]) {
+          break
+        }
+        if (this.scenes[i].type === 'background') {
+          back = this.scenes[i]
+        }
+      }
+      return back
     }
   },
 
@@ -174,7 +180,6 @@ export default {
     },
 
     swapElement (direction) {
-      debugger
       let currentIndex = 0
       for (let i = 0; i < this.currentScene.elements.length; i++) {
         if ( this.currentScene.elements[i].id === this.currentElement.id) {

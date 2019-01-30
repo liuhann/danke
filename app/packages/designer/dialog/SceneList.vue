@@ -1,31 +1,26 @@
 <template>
 <div class="scene-list-wrapper">
-  <van-nav-bar title="场景管理" right-text="新增空白场景" @click-left="close" @click-right="addEmptyScene">
+  <van-nav-bar title="场景管理" @click-left="close">
     <van-icon name="cross" slot="left" />
   </van-nav-bar>
-  <div class="pop-content">
-    <van-panel title="场景列表">
-      <div class="scene-list">
-        <div class="block scene" v-for="(scene, index) in backgroundScenes" :key="scene.id" @click="chooseScene(scene)" :class="[currentScene === scene?'current': '']">
-          <scene-thumbnail :scene="scene" :device="{width: previewWidth, height: previewHeight}"></scene-thumbnail>
-          <div class="setting-container">
-            <van-icon name="setting-o" @click.stop="editScene(scene)"></van-icon>
-          </div>
-          <div class="order">背景</div>
-        </div>
 
-        <div class="block scene" v-for="(scene, index) in slideScenes" :key="scene.id" @click="chooseScene(scene)" :class="[currentScene === scene?'current': '']">
-          <scene-thumbnail :scene="scene" :device="{width: previewWidth, height: previewHeight}"></scene-thumbnail>
-          <div class="setting-container">
-            <van-icon name="setting-o" @click.stop="editScene(scene)"></van-icon>
-          </div>
-          <div class="order">{{index+1}}</div>
+  <div class="pop-content">
+    <van-row type="flex" class="btns">
+      <van-col span="8"><van-button plain type="primary" size="small" @click="addEmptyScene">新增空白场景</van-button></van-col>
+      <van-col span="16" class="ar">
+        <van-button type="primary" size="small" @click="play">播放</van-button>
+        <van-button plain size="small" @click="addEmptyScene">保存</van-button>
+      </van-col>
+    </van-row>
+    <div class="scene-list">
+      <div class="block scene" v-for="(scene, index) in slideScenes" :key="scene.id" @click="chooseScene(scene)" :class="[currentScene === scene?'current': '']">
+        <scene-thumbnail :scene="scene" :device="{width: previewWidth, height: previewHeight}"></scene-thumbnail>
+        <div class="setting-container">
+          <van-icon name="setting-o" @click.stop="editScene(scene)"></van-icon>
         </div>
+        <div v-if="scene.type === 'background'" class="background">背景</div>
       </div>
-      <div slot="footer">
-        <van-button plain type="primary" size="small" @click="addEmptyScene">新增空白场景</van-button>
-      </div>
-    </van-panel>
+    </div>
   </div>
 
   <van-popup v-model="showConfigScene" class="pop-scene-config" :overlay="true" get-container="body">
@@ -74,9 +69,7 @@ export default {
     },
 
     slideScenes () {
-      return this.scenes.filter((scene) => {
-        return scene.type === 'slide'
-      })
+      return this.scenes
     }
   },
   methods: {
@@ -92,7 +85,9 @@ export default {
     deleteScene (index) {
       this.$emit('deleteScene', index)
     },
-
+    play () {
+      this.$emit('preview')
+    },
     editScene (scene) {
       this.showConfigScene = true
       this.currentEditScene = scene
@@ -109,6 +104,12 @@ export default {
 
   .pop-content {
     overflow-y: auto;
+    .btns {
+      margin: 10px;
+      .van-button {
+        margin-right: 10px;
+      }
+    }
     .scene-list {
       overflow-y: auto;
       display: flex;
@@ -137,20 +138,17 @@ export default {
             line-height: 28px;
             .van-icon {
               font-size: 20px;
-              color: #f44;
+              color: #666;
             }
           }
-          .order {
+          .background {
             position: absolute;
-            right: 5px;
-            top: 5px;
-            font-size: 14px;
-            background: rgba(0,0,0,.6);
+            right: 0;
+            top: 0;
+            font-size: 12px;
+            background: rgba(60,187,0,.6);
             color: #fff;
-            line-height: 18px;
-            height: 18px;
-            width: 18px;
-            border-radius: 14px;
+            padding: 5px 10px;
             text-align: center;
           }
         }

@@ -1,4 +1,4 @@
-import util from '../utils/util'
+import util from '../../utils/util'
 
 const BACKGROUND = {
   mode: '1',
@@ -109,18 +109,21 @@ const CIRCLE = util.mergeDeep({}, BASE, {
 const WORK = util.mergeDeep({}, {
   turning: TURNING,
   font: FONT,
-  background: BACKGROUND,
   scenes: []
 })
 
-const SCENE = {
+const SCENE = util.mergeDeep({}, {
   type: 'slide',
   play: 'auto',
   background: BACKGROUND,
   hideDelay: 2000,
   duration: 30000,
   elements: []
-}
+}, {
+  background: {
+    color: 'transparent'
+  }
+})
 
 export default {
   SCENE,

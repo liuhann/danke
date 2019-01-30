@@ -14,7 +14,6 @@ export default class Danke {
    */
   constructor (work, device) {
     this.work = work
-    this.work.style = styleUtils.getWorkStyle(this.work, device)
     this.device = device
     this.scenes = []
     this.transitions = []
