@@ -1,8 +1,5 @@
-import Scene from './scene'
-import Transition from './transition'
+import pauseable from 'pauseable'
 import styleUtils from '../utils/styles'
-
-import is from '../utils/is'
 
 /**
  * Loading scenes and  resources then init ticker + views
@@ -12,38 +9,118 @@ export default class Danke {
    * @param work 播放配置文件
    * @param device 设备信息  主要是宽度及高度
    */
-  constructor (work, device) {
-    this.work = work
+  constructor (scenes, device) {
     this.device = device
-    this.scenes = []
-    this.transitions = []
-
-    this.loadScenesAndTransition()
+    this.scenes = scenes
+    this.displays = {
+      current: null,
+      fore: null,
+      back: null
+    }
+    this.index = -1
+    this.initSceneStyleAttr()
   }
 
   setDevice (device) {
     this.device = device
   }
 
+  hasNext () {
+    return this.scenes.length - 1 > this.index
+  }
+
   /**
-   * Load transitions with null start and trigger them
+   * trigger next display scenes
    */
-  begin () {
-    this.activeTransitions = this.getTransitionsByFrom(null)
-    for (let transition of this.activeTransitions) {
-      transition.active()
+  next () {
+    this.index++
+    this.displays.current = this.scenes[this.index]
+    // 获取下一个显示场景
+    while (this.displays.current.type !== 'slide') {
+      this.index++
+      this.displays.current = this.scenes[this.index]
+    }
+
+    // 获取当前场景需要的背景和前景
+    let previousBack = null
+    let previousFore = null
+    for (let i = this.index; i > -1; i--) {
+      if (!previousBack && this.scenes[i].type === 'background') {
+        previousBack = this.scenes[i]
+      }
+      if (!previousFore && this.scenes[i].type === 'foreground') {
+        previousFore = this.scenes[i]
+      }
+      if (previousBack && previousFore) {
+        break
+      }
+    }
+
+    // 如果新背景则启用， 旧的不做任何处理
+    if (previousBack) {
+      if (previousBack !== this.displays.back) {
+        this.enterScene(previousBack)
+        if (this.displays.back) {
+          this.leaveScene(this.displays.back)
+        }
+      }
+      this.displays.back = previousBack
+    }
+
+    if (previousFore) {
+      if (previousFore !== this.displays.fore) {
+        this.enterScene(previousFore)
+        if (this.displays.fore) {
+          this.leaveScene(this.displays.fore)
+        }
+      }
+      this.displays.fore = previousFore
     }
   }
 
-  loadScenesAndTransition () {
-    for (let i = 0; i < this.work.scenes.length; i++) {
-      const def = this.work.scenes[i]
-      def.index = i
-      this.scenes.push(new Scene(this, def, this.device))
+  initSceneStyleAttr () {
+    for (let i = 0; i < this.scenes.length; i++) {
+      const scene = this.scenes[i]
+      scene.display = 'none'
+      scene.style = ''
+      if (scene.elements) {
+        for (let element of scene.elements) {
+          element.style = ''
+        }
+      }
+      scene.index = i
     }
+  }
 
-    for (let transition of this.work.transitions) {
-      this.transitions.push(new Transition(this, transition))
+  enterScene (scene) {
+    this.renderEnter(scene)
+    this.sceneEnterCallback && this.sceneEnterCallback(this)
+    if (scene.duration && scene.type === 'slide') {
+      this.pauseForLeave = pauseable.setTimeout(this.next, scene.duration)
+    }
+  }
+
+  renderEnter (scene) {
+    // 处理每个元素的入场动画
+    for (let element of scene.elements) {
+      element.style = styleUtils.getElementStyle(element, this.device, 'in')
+    }
+    scene.style = styleUtils.getSceneStyle(scene, this.device)
+    scene.display = 'visible'
+  }
+
+  leaveScene (scene) {
+    this.renderLeave(scene)
+    this.sceneLeaveCallback && this.sceneLeaveCallback(this)
+    pauseable.setTimeout(() => {
+      scene.display = 'none'
+      this.sceneHideCallback(this)
+    }, scene.hideDelay || 3000)
+  }
+
+  renderLeave (scene) {
+    for (let element of scene.elements) {
+      element.style = styleUtils.getElementStyle(element, this.device, 'out')
     }
   }
 
@@ -61,42 +138,5 @@ export default class Danke {
 
   playEnd (cb) {
     this.playEndCallback = cb
-  }
-
-  initWorkStyle () {
-    this.work.style = styleUtils.getBackgroundStyle(this.work.background)
-  }
-
-  listen () {
-    // 触发点击离开scene事件
-    this.nanobus.addEventListener('scene-handy-leave', (event) => {
-      for (let transition of this.transitionInstances) {
-        if (transition.from && transition.from.index === event.index) {
-          transition.trigger()
-        }
-      }
-    })
-  }
-
-  getScene (key) {
-    if (Number.isInteger(key)) {
-      return this.scenes[key]
-    } else if (is.str(key)) {
-      for (let scene of this.scenes) {
-        if (scene.id === key) {
-          return scene
-        }
-      }
-    }
-  }
-
-  getTransitionsByFrom (from) {
-    const transitions = []
-    for (let transition of this.transitions) {
-      if (transition.isFrom(from)) {
-        transitions.push(transition)
-      }
-    }
-    return transitions
   }
 }

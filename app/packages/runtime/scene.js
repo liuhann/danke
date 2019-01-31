@@ -14,7 +14,6 @@ export default class Scene {
   leave () {
     this.renderLeave()
     this.engine.sceneLeaveCallback(this)
-
     pauseable.setTimeout(() => {
       this.renderHide()
       this.engine.sceneHideCallback(this)
@@ -23,24 +22,15 @@ export default class Scene {
 
   enter () {
     this.renderEnter()
-    if (this.scene.triggerClose) {
-      pauseable.setTimeout(() => {
-        const targetTransitions = this.engine.getTransitionsByFrom(this.scene)
-        if (targetTransitions.length === 0) {
-          this.engine.playEndCallback(this)
-        } else {
-          this.leave()
-          for (let transition of targetTransitions) {
-            transition.active()
-          }
-        }
-      }, this.scene.triggerClose)
+    if (this.scene.duration) {
+      this.pauseForLeave = pauseable.setTimeout(this.engine.next.bind(this.engine), this.scene.duration)
     }
   }
 
   // 首先初始化数据，之后的变化vue绑定才能探知
   beforeRender () {
     this.scene.display = 'none'
+    this.scene.style = ''
     for (let element of this.scene.elements) {
       element.style = ''
     }
@@ -51,6 +41,7 @@ export default class Scene {
     for (let element of this.scene.elements) {
       element.style = styleUtils.getElementStyle(element, this.device, 'in')
     }
+    this.scene.style = styleUtils.getSceneStyle(this.scene, this.device)
     this.scene.display = 'visible'
   }
 

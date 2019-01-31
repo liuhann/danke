@@ -1,5 +1,5 @@
 <template>
-<div class="danke-runtime" :style="work.style">
+<div class="danke-runtime">
   <div class="scene" v-for="(scene, index) in work.scenes" :key="index" :style="scene.style">
     <div v-for="(element, index) in scene.elements" :key="element.id" class="element-wrapper"
          @click="onElementClicked(index)"
@@ -20,7 +20,7 @@ export default {
   },
   data () {
     return {
-      work: null,
+      scenes: [],
       device: {
         width: window.innerWidth,
         height: window.innerHeight
@@ -32,7 +32,7 @@ export default {
     const danke = new Danke(utils.clone(this.ctx.work), this.device)
     this.work = danke.work
     this.$nextTick(() => {
-      danke.begin()
+      danke.next()
     })
   },
   methods: {

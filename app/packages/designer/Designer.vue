@@ -194,19 +194,8 @@ export default {
     },
 
     previewPlay () {
-      const transitions = []
-      for (let i = 0; i < this.scenes.length; i ++) {
-        transitions.push({
-          from: (i === 0) ? null: (i-1),
-          to : i
-        })
-      }
-
       this.ctx.work = utils.clone({
-        play: this.work.play,
-        background: this.work.background,
-        scenes: this.scenes,
-        transitions
+        scenes: this.scenes
       })
       this.$router.push('/play')
     }

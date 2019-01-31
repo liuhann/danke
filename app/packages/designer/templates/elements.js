@@ -117,7 +117,7 @@ const SCENE = util.mergeDeep({}, {
   play: 'auto',
   background: BACKGROUND,
   hideDelay: 2000,
-  duration: 30000,
+  duration: 3000,
   elements: []
 }, {
   background: {
