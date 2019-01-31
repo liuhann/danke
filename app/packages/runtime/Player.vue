@@ -1,6 +1,6 @@
 <template>
 <div class="danke-runtime">
-  <div class="scene" v-for="(scene, index) in work.scenes" :key="index" :style="scene.style">
+  <div class="scene" v-for="(scene, index) in scenes" :key="index" :style="scene.style">
     <div v-for="(element, index) in scene.elements" :key="element.id" class="element-wrapper"
          @click="onElementClicked(index)"
          :style="element.style">
@@ -29,8 +29,8 @@ export default {
   },
   created () {
     // assume that work is loaded from loader
-    const danke = new Danke(utils.clone(this.ctx.work), this.device)
-    this.work = danke.work
+    const danke = new Danke(utils.clone(this.ctx.work).scenes, this.device)
+    this.scenes = danke.scenes
     this.$nextTick(() => {
       danke.next()
     })

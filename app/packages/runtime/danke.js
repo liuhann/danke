@@ -34,6 +34,10 @@ export default class Danke {
    */
   next () {
     this.index++
+    if (this.index > this.scenes.length - 1) {
+      this.playEndCallback && this.playEndCallback(this)
+      return
+    }
     this.displays.current = this.scenes[this.index]
     // 获取下一个显示场景
     while (this.displays.current.type !== 'slide') {
@@ -76,13 +80,13 @@ export default class Danke {
       }
       this.displays.fore = previousFore
     }
+    this.enterScene(this.displays.current)
   }
 
   initSceneStyleAttr () {
     for (let i = 0; i < this.scenes.length; i++) {
       const scene = this.scenes[i]
-      scene.display = 'none'
-      scene.style = ''
+      scene.style = `display: none`
       if (scene.elements) {
         for (let element of scene.elements) {
           element.style = ''
@@ -96,7 +100,7 @@ export default class Danke {
     this.renderEnter(scene)
     this.sceneEnterCallback && this.sceneEnterCallback(this)
     if (scene.duration && scene.type === 'slide') {
-      this.pauseForLeave = pauseable.setTimeout(this.next, scene.duration)
+      this.pauseForLeave = pauseable.setTimeout(this.next.bind(this), scene.duration)
     }
   }
 
@@ -105,15 +109,14 @@ export default class Danke {
     for (let element of scene.elements) {
       element.style = styleUtils.getElementStyle(element, this.device, 'in')
     }
-    scene.style = styleUtils.getSceneStyle(scene, this.device)
-    scene.display = 'visible'
+    scene.style = `display: inherit; ${styleUtils.getSceneStyle(scene, this.device)}`
   }
 
   leaveScene (scene) {
     this.renderLeave(scene)
     this.sceneLeaveCallback && this.sceneLeaveCallback(this)
     pauseable.setTimeout(() => {
-      scene.display = 'none'
+      scene.style = `display: none`
       this.sceneHideCallback(this)
     }, scene.hideDelay || 3000)
   }
