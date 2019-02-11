@@ -5,8 +5,8 @@
   </van-nav-bar>
   <van-tabs v-model="activeKey">
     <van-tab title="基础">
-      <edit-text v-model="element.content" v-if="element.content"></edit-text>
-      <edit-font v-model="element.font" v-if="element.content"></edit-font>
+      <edit-text v-model="element.content" v-if="element.content != null"></edit-text>
+      <edit-font v-model="element.font" v-if="element.font"></edit-font>
       <edit-position v-model="element.position" v-if="element.position"></edit-position>
       <item-block title="层次">
         <van-button size="small">最下</van-button>

@@ -5,6 +5,10 @@
     <van-icon name="apps-o" @click.stop="pop.sceneList = true"/>
   </div>
 
+  <div class="tools-bar">
+
+  </div>
+
   <scene-preview v-if="backgroundScene" :scene="backgroundScene" :device="device"></scene-preview>
   <!--效果预览区-->
   <scene-preview :scene="currentScene" :device="device" class="scene-container"
@@ -211,6 +215,17 @@ export default {
   top: 0;
   width: 100vw;
   height: 100vh;
+
+  .tools-bar {
+    position: absolute;
+    z-index: 9999;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    height: 64px;
+    background-color: #fff;
+    border-top: 1px solid #e5e5e5;
+  }
 
   .pop-element-config {
     border-left: 1px solid #eee;

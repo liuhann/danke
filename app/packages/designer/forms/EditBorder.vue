@@ -22,23 +22,24 @@
       </van-checkbox>
     </van-checkbox-group>
   </item-block>
-  <item-block title="圆角">
-      <van-stepper
-        :min="0"
-        v-model="border.radius[0]"
-      />
-      <van-stepper
-        :min="0"
-        v-model="border.radius[1]"
-      />
-      <van-stepper
-        :min="0"
-        v-model="border.radius[2]"
-      />
-      <van-stepper
-        :min="0"
-        v-model="border.radius[3]"
-      />
+  <item-block title="圆角" class="radius-setting">
+    <van-stepper
+      :min="0"
+      v-model="border.radius[0]"
+    />
+    <van-stepper
+      :min="0"
+      v-model="border.radius[1]"
+    />
+    <van-stepper
+      :min="0"
+      v-model="border.radius[2]"
+    />
+    <van-stepper
+      :min="0"
+      v-model="border.radius[3]"
+    />
+    <van-button  plain size="small" @click="setRadiusSame">设为相同</van-button>
   </item-block>
 </div>
 </template>
@@ -95,7 +96,11 @@ export default {
     }
   },
   methods: {
-
+    setRadiusSame () {
+      const val = this.value.radius[0]
+      this.value.radius = [val, val, val, val]
+      this.$emit('input', this.value)
+    }
   }
 }
 </script>
@@ -116,8 +121,8 @@ export default {
     display: flex;
     flex-wrap: wrap;
     .van-stepper {
-      line-height: 32px;
-      width: 50%;
+      float: left;
+      margin: 2px;
     }
   }
 }

@@ -33,18 +33,29 @@ export default class Danke {
    * trigger next display scenes
    */
   next () {
+    // 游标向下
     this.index++
+    // 判断播放结束
     if (this.index > this.scenes.length - 1) {
       this.playEndCallback && this.playEndCallback(this)
       return
     }
-    this.displays.current = this.scenes[this.index]
+    // 当前场景退出
+    if (this.displays.current) {
+      this.leaveScene(this.displays.current)
+    }
     // 获取下一个显示场景
+    this.displays.current = this.scenes[this.index]
     while (this.displays.current.type !== 'slide') {
       this.index++
       this.displays.current = this.scenes[this.index]
     }
+    // 检查更新前景和背景
+    this.checkForBack()
+    this.enterScene(this.displays.current)
+  }
 
+  checkForBack () {
     // 获取当前场景需要的背景和前景
     let previousBack = null
     let previousFore = null
@@ -59,28 +70,22 @@ export default class Danke {
         break
       }
     }
-
     // 如果新背景则启用， 旧的不做任何处理
-    if (previousBack) {
-      if (previousBack !== this.displays.back) {
-        this.enterScene(previousBack)
-        if (this.displays.back) {
-          this.leaveScene(this.displays.back)
-        }
+    if (previousBack && previousBack !== this.displays.back) {
+      this.enterScene(previousBack)
+      if (this.displays.back) {
+        this.leaveScene(this.displays.back)
       }
       this.displays.back = previousBack
     }
 
-    if (previousFore) {
-      if (previousFore !== this.displays.fore) {
-        this.enterScene(previousFore)
-        if (this.displays.fore) {
-          this.leaveScene(this.displays.fore)
-        }
+    if (previousFore && previousFore !== this.displays.fore) {
+      this.enterScene(previousFore)
+      if (this.displays.fore) {
+        this.leaveScene(this.displays.fore)
       }
       this.displays.fore = previousFore
     }
-    this.enterScene(this.displays.current)
   }
 
   initSceneStyleAttr () {
@@ -108,6 +113,11 @@ export default class Danke {
     // 处理每个元素的入场动画
     for (let element of scene.elements) {
       element.style = styleUtils.getElementStyle(element, this.device, 'in')
+      if (element.existence.animation && element.existence.duration) {
+        pauseable.setTimeout(() => {
+          element.style = styleUtils.getElementStyle(element, this.device, 'existence')
+        }, element.in.duration + element.in.delay)
+      }
     }
     scene.style = `display: inherit; ${styleUtils.getSceneStyle(scene, this.device)}`
   }
@@ -117,7 +127,7 @@ export default class Danke {
     this.sceneLeaveCallback && this.sceneLeaveCallback(this)
     pauseable.setTimeout(() => {
       scene.style = `display: none`
-      this.sceneHideCallback(this)
+      this.sceneHideCallback && this.sceneHideCallback(this)
     }, scene.hideDelay || 3000)
   }
 
