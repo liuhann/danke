@@ -15,6 +15,11 @@ module.exports = {
       entry: 'app/main.js',
       template: 'app/index.html',
       filename: 'index.html'
+    },
+    site: {
+      entry: 'site/main.js',
+      template: 'site/index.html',
+      filename: 'site.html'
     }
   }
 }
