@@ -1,9 +1,5 @@
 <template>
 <div class="scene-edit-wrapper">
-  <van-nav-bar title="场景配置" @click-right="close">
-    <van-icon name="cross" slot="right" />
-  </van-nav-bar>
-
   <div class="pop-content">
     <item-block title="类型">
       <select v-model="scene.type">
@@ -62,8 +58,6 @@ export default {
 
 <style lang="less">
 .scene-edit-wrapper {
-  width: 100vw;
-  height: 100vh;
   background-color: #fff;
 }
 </style>

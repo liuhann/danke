@@ -27,19 +27,31 @@
   <!--页面列表、新增按钮-->
   <van-popup v-model="pop.sceneList" class="pop-page-list" position="right">
     <scene-list :scenes="scenes" :current-scene="currentScene" :device="device"
-      @close="pop.sceneList = false"
+      @close="pop.sceneList = false;"
       @preview="previewPlay"
       @add="tapAddScene"
       @choose-scene="chooseScene"></scene-list>
   </van-popup>
 
   <van-popup class="pop-menus" position="right" :overlay="true" v-model="pop.showMenus">
-    <van-cell-group class="menu-group">
-      <van-cell title="播放" icon="play-circle-o" clickable @click="previewPlay"/>
-      <van-cell title="场景列表" icon="bars" clickable @click="pop.sceneList = true"/>
-      <van-cell title="保存场景为" icon="bookmark-o"/>
-      <van-cell title="取消" icon="arrow-left" />
-    </van-cell-group>
+    <van-tabs v-model="tabConfig">
+      <van-tab title="场景配置">
+        <div class="tools-bar">
+          <van-button size="small" @click="pop.sceneList = true">场景列表</van-button>
+          <van-button size="small" @click="togglePreviousScene">上一场景</van-button>
+          <van-button size="small" @click="toggleNextScene">下一场景</van-button>
+        </div>
+        <config-scene v-model="currentScene" v-if="currentScene" class="scene-config"></config-scene>
+        <div class="tools-bar">
+          <van-button size="small" type="danger">删除场景</van-button>
+        </div>
+      </van-tab>
+      <van-tab title="作品配置">
+        <div class="tools-bar">
+          <van-button size="small" type="primary">播放</van-button>
+        </div>
+      </van-tab>
+    </van-tabs>
   </van-popup>
 
 </div>
@@ -55,10 +67,12 @@ import ConfigWork from './dialog/ConfigWork'
 import AddElement from './dialog/AddElement'
 
 import saver from './saver'
+import ConfigScene from './dialog/ConfigScene'
 
 export default {
   name: 'Designer',
   components: {
+    ConfigScene,
     AddElement,
     ConfigWork,
     ConfigElement,
@@ -67,6 +81,7 @@ export default {
   },
   data () {
     return {
+      tabConfig: 0,
       pop: {
         showMenus: false,
         elementConfig: false,
@@ -78,6 +93,7 @@ export default {
         height: window.innerHeight
       },
       scenes: [],
+      currentSceneIndex: 0,
       currentScene: null,
       currentElement: null,
       work: utils.mergeDeep({}, Elements.WORK)
@@ -102,10 +118,12 @@ export default {
   created () {
     if (this.ctx.work) {
       this.scenes = utils.clone(this.ctx.work.scenes)
+      this.currentSceneIndex = 0
       this.currentScene = this.scenes[0]
       this.work = utils.clone(this.ctx.work)
     } else {
       this.tapAddScene()
+      this.currentSceneIndex = 0
       this.currentScene = this.scenes[0]
 
       this.nanobus.on('image-attach', (resource) => {
@@ -134,18 +152,27 @@ export default {
 
     },
 
-    chooseScene (scene) {
+    chooseScene (index) {
       this.pop.sceneList = false
-      this.currentScene = scene
+      this.currentSceneIndex = index
+      this.currentScene = this.scenes[index]
       this.currentElement = null
     },
 
     toggleNextScene () {
-
+      if (this.currentSceneIndex === this.scenes.length -1) {
+        this.tapAddScene()
+      }
+      this.currentSceneIndex ++
+      this.currentScene = this.scenes[this.currentSceneIndex]
     },
 
     togglePreviousScene () {
-
+      if (this.currentSceneIndex === 0) {
+        return
+      }
+      this.currentSceneIndex --
+      this.currentScene = this.scenes[this.currentSceneIndex]
     },
 
     deleteScene (index) {
@@ -272,8 +299,13 @@ export default {
 
   .pop-menus {
     z-index: 9999;
-    width: 60vw;
+    width: 85vw;
     height: 100vh;
+    background-color: #efefef;
+    .tools-bar {
+      display: flex;
+      margin: 8px;
+    }
   }
 }
 

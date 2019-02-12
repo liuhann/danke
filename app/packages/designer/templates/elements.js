@@ -17,6 +17,7 @@ const FONT = {
   spacing: 2,
   color: '#fff',
   weight: 'normal',
+  align: 'left',
   decoration: 'none',
   style: 'normal'
 }
@@ -87,7 +88,7 @@ const TEXT = util.mergeDeep({}, BASE, {
   type: 'text',
   content: '请输入文字',
   font: {
-    size: 14,
+    size: 16,
     color: '#000'
   },
   background: {
@@ -98,7 +99,7 @@ const TEXT = util.mergeDeep({}, BASE, {
     offsetX: '5vw',
     offsetY: '3vh',
     width: '90vw',
-    height: '20vw'
+    height: '6vw'
   }
 })
 const CIRCLE = util.mergeDeep({}, BASE, {

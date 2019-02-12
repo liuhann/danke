@@ -7,13 +7,9 @@
   <div class="pop-content">
     <van-row type="flex" class="btns">
       <van-col span="8"><van-button plain type="primary" size="small" @click="addEmptyScene">新增空白场景</van-button></van-col>
-      <van-col span="16" class="ar">
-        <van-button type="primary" size="small" @click="play">播放</van-button>
-        <van-button plain size="small" @click="addEmptyScene">保存</van-button>
-      </van-col>
     </van-row>
     <div class="scene-list">
-      <div class="block scene" v-for="(scene, index) in slideScenes" :key="scene.id" @click="chooseScene(scene)" :class="[currentScene === scene?'current': '']">
+      <div class="block scene" v-for="(scene, index) in slideScenes" :key="scene.id" @click="chooseScene(index)" :class="[currentScene === scene?'current': '']">
         <scene-thumbnail :scene="scene" :device="{width: previewWidth, height: previewHeight}"></scene-thumbnail>
         <div class="setting-container">
           <van-icon name="setting-o" @click.stop="editScene(scene)"></van-icon>
@@ -79,8 +75,8 @@ export default {
     addEmptyScene () {
       this.$emit('add')
     },
-    chooseScene (scene) {
-      this.$emit('choose-scene', scene)
+    chooseScene (index) {
+      this.$emit('choose-scene', index)
     },
     deleteScene (index) {
       this.$emit('deleteScene', index)

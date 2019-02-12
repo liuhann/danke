@@ -1,7 +1,7 @@
 <template>
 <div class="scene-thumbnail" :style="sceneStyle">
   <div v-for="(element, index) in sceneConfig.elements" :key="index" class="element-wrapper"  :class="[currentIndex===index?'selected':'']" :style="element.thumbnailStyle">
-    <div v-if="element.type==='image'" class="image" :style="{
+    <div class="image" :style="{
       backgroundImage: element.src
     }">
     </div>
