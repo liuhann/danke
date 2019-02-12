@@ -17,12 +17,10 @@ import './packages/animations/animista.css'
 Vue.use(Vant)
 Vue.use(VueRouter)
 const boot = new AsyncBoot({
-  vue: {
-    Vue,
-    VueRouter,
-    rootApp: App,
-    mount: '#app'
-  },
+  Vue,
+  VueRouter,
+  App,
+  mount: '#app',
   packages: [
     home, designer, runtime
   ],

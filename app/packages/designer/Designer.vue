@@ -1,13 +1,7 @@
 <template>
 <div class="designer mobile">
-  <div class="scene-buttons">
-    <van-icon name="plus" @click="showAddElement"/>
-    <van-icon name="apps-o" @click.stop="pop.sceneList = true"/>
-  </div>
-
-  <div class="tools-bar">
-
-  </div>
+  <van-icon class="page-button add" name="plus" @click="showAddElement"/>
+  <van-icon class="page-button menu" name="weapp-nav" @click.stop="pop.showMenus = true"/>
 
   <scene-preview v-if="backgroundScene" :scene="backgroundScene" :device="device"></scene-preview>
   <!--效果预览区-->
@@ -39,6 +33,15 @@
       @choose-scene="chooseScene"></scene-list>
   </van-popup>
 
+  <van-popup class="pop-menus" position="left" :overlay="true" v-model="pop.showMenus">
+    <van-cell-group class="menu-group">
+      <van-cell title="播放" icon="play-circle-o" />
+      <van-cell title="场景列表" icon="play-circle-o"/>
+      <van-cell title="保存场景为" icon="bookmark-o"/>
+      <van-cell title="取消" icon="bookmark-o" />
+    </van-cell-group>
+  </van-popup>
+
 </div>
 </template>
 
@@ -65,6 +68,7 @@ export default {
   data () {
     return {
       pop: {
+        showMenus: false,
         elementConfig: false,
         showAddElement: false,
         sceneList: false
@@ -134,6 +138,14 @@ export default {
       this.pop.sceneList = false
       this.currentScene = scene
       this.currentElement = null
+    },
+
+    toggleNextScene () {
+
+    },
+
+    togglePreviousScene () {
+
     },
 
     deleteScene (index) {
@@ -216,15 +228,20 @@ export default {
   width: 100vw;
   height: 100vh;
 
-  .tools-bar {
+  .page-button {
+    font-size: 20px;
+    padding: 8px;
+    border: 1px solid #efefef;
+    border-radius: 28px;
+    box-shadow: 0px 5px 15px -10px rgba(0,0,0,0.57);
     position: absolute;
-    z-index: 9999;
-    bottom: 0;
-    left: 0;
-    width: 100vw;
-    height: 64px;
-    background-color: #fff;
-    border-top: 1px solid #e5e5e5;
+    right: 8px;
+    &.add {
+      bottom: 8px;
+    }
+    &.menu {
+      top: 8px;
+    }
   }
 
   .pop-element-config {
@@ -265,6 +282,11 @@ export default {
     background: rgba(0,0,0, .5);
     padding: 10px;
     border-radius: 4px;
+  }
+
+  .pop-menus {
+    width: 60vw;
+    height: 100vh;
   }
 }
 
