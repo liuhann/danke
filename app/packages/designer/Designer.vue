@@ -1,7 +1,7 @@
 <template>
 <div class="designer mobile">
   <van-icon class="page-button add" name="plus" @click="showAddElement"/>
-  <van-icon class="page-button menu" name="weapp-nav" @click.stop="pop.showMenus = true"/>
+  <van-icon class="page-button menu" name="wap-nav" @click.stop="pop.showMenus = true"/>
 
   <scene-preview v-if="backgroundScene" :scene="backgroundScene" :device="device"></scene-preview>
   <!--效果预览区-->
@@ -33,12 +33,12 @@
       @choose-scene="chooseScene"></scene-list>
   </van-popup>
 
-  <van-popup class="pop-menus" position="left" :overlay="true" v-model="pop.showMenus">
+  <van-popup class="pop-menus" position="right" :overlay="true" v-model="pop.showMenus">
     <van-cell-group class="menu-group">
-      <van-cell title="播放" icon="play-circle-o" />
-      <van-cell title="场景列表" icon="play-circle-o"/>
+      <van-cell title="播放" icon="play-circle-o" clickable @click="previewPlay"/>
+      <van-cell title="场景列表" icon="bars" clickable @click="pop.sceneList = true"/>
       <van-cell title="保存场景为" icon="bookmark-o"/>
-      <van-cell title="取消" icon="bookmark-o" />
+      <van-cell title="取消" icon="arrow-left" />
     </van-cell-group>
   </van-popup>
 
@@ -235,7 +235,9 @@ export default {
     border-radius: 28px;
     box-shadow: 0px 5px 15px -10px rgba(0,0,0,0.57);
     position: absolute;
+    z-index: 1001;
     right: 8px;
+    background-color: #fff;
     &.add {
       bottom: 8px;
     }
@@ -247,12 +249,13 @@ export default {
   .pop-element-config {
     border-left: 1px solid #eee;
     background-color: #fafafa;
-    z-index: 1001;
+    z-index: 9999;
     width: 88vw;
     height: 100vh;
   }
 
   .pop-select-element {
+    z-index: 9999;
     width: 80vw;
     height: 80vh;
     overflow-y: auto;
@@ -267,24 +270,8 @@ export default {
     box-sizing: border-box;
   }
 
-  .scene-buttons {
-    position: absolute;
-    bottom: 15px;
-    right: 15px;
-    font-size: 24px;
-    z-index: 101;
-    width: 85px;
-    display: flex;
-    -webkit-box-pack: justify;
-    -ms-flex-pack: justify;
-    justify-content: space-between;
-    color: #fff;
-    background: rgba(0,0,0, .5);
-    padding: 10px;
-    border-radius: 4px;
-  }
-
   .pop-menus {
+    z-index: 9999;
     width: 60vw;
     height: 100vh;
   }
