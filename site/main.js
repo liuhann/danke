@@ -17,7 +17,7 @@ const boot = new AsyncBoot({
     // rootApp: {},
     mount: '#app'
   },
-  packages: [   
+  packages: [
   ],
   started: async (ctx, next) => {
     await next()
