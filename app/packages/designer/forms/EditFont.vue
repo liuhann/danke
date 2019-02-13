@@ -5,6 +5,12 @@
   <item-block title="颜色">
     <pop-color-picker v-model="font.color"></pop-color-picker>
   </item-block>
+  <item-block title="粗细">
+    <van-radio-group v-model="font.weight">
+      <van-radio name="normal">细</van-radio>
+      <van-radio name="bold">粗</van-radio>
+    </van-radio-group>
+  </item-block>
   <item-block title="对齐">
     <van-radio-group v-model="font.align">
       <van-radio name="left">左</van-radio>

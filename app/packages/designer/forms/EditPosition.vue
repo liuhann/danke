@@ -18,7 +18,7 @@
     </van-radio-group>
   </item-block>
 
-  <edit-len label="纵向偏移" v-model="position.offsetY"></edit-len>
+  <edit-len label="纵向偏移" v-model="position.offsetY" :min="-1000"></edit-len>
 
   <van-cell class="group-title" title="大小" icon="expand-o" />
   <div class="group">

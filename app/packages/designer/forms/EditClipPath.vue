@@ -1,40 +1,41 @@
 <template>
 <div class="edit-clip-path">
   <van-cell class="group-title" title="裁切" icon="expand-o"/>
-  <van-row type="flex" justify="space-around">
-    <van-col span="4" class="tc label">左上</van-col>
-    <van-col span="20">
-      <van-stepper v-model="clip.ax" :min="-1000" :max="1000"/>
-      <van-stepper v-model="clip.ay" :min="-1000" :max="1000" />
-    </van-col>
-  </van-row>
-  <van-row type="flex" justify="space-around">
-    <van-col span="4" class="tc label">右上</van-col>
-    <van-col span="20">
-      <van-stepper v-model="clip.bx" :min="-1000" :max="1000"/>
-      <van-stepper v-model="clip.by" :min="-1000" :max="1000" />
-    </van-col>
-  </van-row>
-  <van-row type="flex" justify="space-around">
-    <van-col span="4" class="tc label">右下</van-col>
-    <van-col span="20">
-      <van-stepper v-model="clip.cx" :min="-1000" :max="1000"/>
-      <van-stepper v-model="clip.cy" :min="-1000" :max="1000" />
-    </van-col>
-  </van-row>
-  <van-row type="flex" justify="space-around">
-    <van-col span="4" class="tc label">左下</van-col>
-    <van-col span="20">
-      <van-stepper v-model="clip.dx" :min="-1000" :max="1000"/>
-      <van-stepper v-model="clip.dy" :min="-1000" :max="1000" />
-    </van-col>
-  </van-row>
+  <item-block title="裁切类型">
+    <select v-model="clip.type" @change="clipTypeChange">
+      <option value="none">无裁切</option>
+      <option value="polygon">四角裁切</option>
+      <option value="circle">圆形</option>
+      <option value="ellipse">椭圆</option>
+    </select>
+  </item-block>
+
+  <div class="clip-polygon" v-if="clip.type === 'polygon'">
+    <item-block title="左上">
+      <van-stepper v-model="clip.points[0]" :min="-1000" :max="1000"/>
+      <van-stepper v-model="clip.points[1]" :min="-1000" :max="1000"/>
+    </item-block>
+    <item-block title="右上">
+      <van-stepper v-model="clip.points[2]" :min="-1000" :max="1000"/>
+      <van-stepper v-model="clip.points[3]" :min="-1000" :max="1000"/>
+    </item-block>
+    <item-block title="右下">
+      <van-stepper v-model="clip.points[4]" :min="-1000" :max="1000"/>
+      <van-stepper v-model="clip.points[5]" :min="-1000" :max="1000"/>
+    </item-block>
+    <item-block title="左下">
+      <van-stepper v-model="clip.points[6]" :min="-1000" :max="1000"/>
+      <van-stepper v-model="clip.points[7]" :min="-1000" :max="1000"/>
+    </item-block>
+  </div>
 </div>
 </template>
 
 <script>
+import ItemBlock from './ItemBlock'
 export default {
   name: 'EditClipPath',
+  components: {ItemBlock},
   props: {
     value: {
       type: Object
@@ -42,27 +43,30 @@ export default {
   },
   data () {
     return {
-      clip: this.value || {
-        ax: 0,
-        ay: 0,
-        bx: 100,
-        by: 0,
-        cx: 100,
-        cy: 100,
-        dx: 0,
-        dy: 100
-      }
+      clip: this.value
     }
   },
   created () {
 
   },
   watch: {
+    value () {
+      this.clip = this.value
+    },
+
     clip: {
       handler: function (val, oldVal) {
         this.$emit('input', this.clip)
       },
       deep: true
+    }
+  },
+  methods: {
+    clipTypeChange () {
+      if (this.clip.type === 'polygon') {
+        this.$set(this.clip, 'points', [0, 0, 100, 0, 100, 100, 0, 100])
+        // this.clip.points =
+      }
     }
   }
 }

@@ -47,6 +47,9 @@ const BASE = {
     radius: [0, 0, 0, 0]
   },
   font: FONT,
+  clip: {
+    type: 'none'
+  },
   in: {
     animation: '',
     duration: 400,

@@ -60,7 +60,9 @@ function getElementStyle (element, device, animation) {
   }
 
   if (element.clip) {
-    styles.push(`clip-path: polygon(${element.clip.ax}% ${element.clip.ay}%, ${element.clip.bx}% ${element.clip.by}%, ${element.clip.cx}% ${element.clip.cy}%, ${element.clip.dx}% ${element.clip.dy}%)`)
+    if (element.clip.type === 'polygon') {
+      styles.push(`clip-path: polygon(${element.clip.points[0]}% ${element.clip.points[1]}%, ${element.clip.points[2]}% ${element.clip.points[3]}%, ${element.clip.points[4]}% ${element.clip.points[5]}%, ${element.clip.points[6]}% ${element.clip.points[7]}%)`)
+    }
   }
   // border
   if (element.border) {
@@ -81,6 +83,7 @@ function getElementStyle (element, device, animation) {
   if (element.font) {
     styles.push(`font-size: ${element.font.size}px`)
     styles.push(`color: ${element.font.color}`)
+    styles.push(`text-align: ${element.font.align}`)
     styles.push(`font-weight: ${element.font.weight}`)
     styles.push(`letter-spacing: ${element.font.spacing}px`)
     styles.push(`text-decoration: ${element.font.decoration}px`)
