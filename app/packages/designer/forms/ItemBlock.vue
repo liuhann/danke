@@ -1,13 +1,13 @@
 <template>
   <van-row class="config-block" type="flex" justify="space-around">
     <van-col span="6" class="tc label">{{title}}</van-col>
-    <van-col span="18" v-if="!$slots.end">
+    <van-col span="18" class="full" v-if="!$slots.end">
       <slot></slot>
     </van-col>
-    <van-col span="10" v-if="$slots.end">
+    <van-col span="10" class="left" v-if="$slots.end">
       <slot></slot>
     </van-col>
-    <van-col span="8" v-if="$slots.end">
+    <van-col span="8" class="right" v-if="$slots.end">
       <slot name="end"></slot>
     </van-col>
   </van-row>

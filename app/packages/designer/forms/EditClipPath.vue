@@ -28,6 +28,29 @@
       <van-stepper v-model="clip.points[7]" :min="-1000" :max="1000"/>
     </item-block>
   </div>
+
+  <div class="clip-polygon" v-if="clip.type === 'circle'">
+    <item-block title="半径(%)">
+      <van-stepper v-model="clip.points[0]" :min="0" :max="1000"/>
+    </item-block>
+    <item-block title="圆心(%)">
+      <van-stepper v-model="clip.points[1]" :min="-1000" :max="1000"/>
+      <van-stepper v-model="clip.points[2]" :min="-1000" :max="1000"/>
+    </item-block>
+  </div>
+
+  <div class="clip-polygon" v-if="clip.type === 'ellipse'">
+    <item-block title="半径(%)">
+      <van-stepper v-model="clip.points[0]" :min="0" :max="1000"/>
+      <van-stepper v-model="clip.points[1]" :min="0" :max="1000"/>
+    </item-block>
+    <item-block title="圆心(%)">
+      <van-stepper v-model="clip.points[2]" :min="-1000" :max="1000"/>
+      <van-stepper v-model="clip.points[3]" :min="-1000" :max="1000"/>
+    </item-block>
+  </div>
+
+
 </div>
 </template>
 
@@ -66,6 +89,12 @@ export default {
       if (this.clip.type === 'polygon') {
         this.$set(this.clip, 'points', [0, 0, 100, 0, 100, 100, 0, 100])
         // this.clip.points =
+      } else if (this.clip.type === 'circle') {
+        this.$set(this.clip, 'points', [50, 50, 50])
+      } else if  (this.clip.type === 'ellipse') {
+        this.$set(this.clip, 'points', [50, 40, 50, 50])
+      } else {
+        this.$set(this.clip, 'points', undefined)
       }
     }
   }
@@ -75,7 +104,8 @@ export default {
 <style lang="less">
 .edit-clip-path {
   .van-stepper {
-
+    float: left;
+    margin-right: 5px;
   }
 }
 </style>

@@ -62,6 +62,10 @@ function getElementStyle (element, device, animation) {
   if (element.clip) {
     if (element.clip.type === 'polygon') {
       styles.push(`clip-path: polygon(${element.clip.points[0]}% ${element.clip.points[1]}%, ${element.clip.points[2]}% ${element.clip.points[3]}%, ${element.clip.points[4]}% ${element.clip.points[5]}%, ${element.clip.points[6]}% ${element.clip.points[7]}%)`)
+    } else if (element.clip.type === 'circle') {
+      styles.push(`clip-path: circle(${element.clip.points[0]}% at ${element.clip.points[1]}% ${element.clip.points[2]}%)`)
+    } else if (element.clip.type === 'ellipse') {
+      styles.push(`clip-path: ellipse(${element.clip.points[0]}% ${element.clip.points[1]}% at ${element.clip.points[2]}% ${element.clip.points[3]}%)`)
     }
   }
   // border
