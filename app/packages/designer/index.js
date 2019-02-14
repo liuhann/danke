@@ -2,7 +2,7 @@ import Designer from './Designer.vue'
 
 export default {
   routes: [{
-    path: '/designer',
+    path: '/designer/:id?',
     component: Designer
   }]
 }

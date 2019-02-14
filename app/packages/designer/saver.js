@@ -1,11 +1,5 @@
-import config from '../../config'
-import axios from 'axios'
 
 const uploaded = {}
-
-const instance = axios.create({
-  baseURL: config.servers.default.baseURL
-})
 
 function saveWork (work) {
 

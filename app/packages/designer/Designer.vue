@@ -48,7 +48,7 @@
       </van-tab>
       <van-tab title="作品配置">
         <div class="tools-bar">
-          <van-button size="small" type="primary">播放</van-button>
+          <van-button size="small" type="primary" @click="previewPlay">播放</van-button>
         </div>
       </van-tab>
     </van-tabs>
@@ -68,6 +68,7 @@ import AddElement from './dialog/AddElement'
 
 import saver from './saver'
 import ConfigScene from './dialog/ConfigScene'
+import WorkDAO from '../dao/workdao'
 
 export default {
   name: 'Designer',
@@ -240,6 +241,11 @@ export default {
       this.ctx.work = utils.clone({
         scenes: this.scenes
       })
+      if (!this.ctx.work.uid) {
+        this.ctx.work.uid = utils.shortid(6)
+      }
+      this.ctx.work.user = 'test'
+      this.ctx.workdao.addOrUpdateWork(this.ctx.work)
       this.$router.push('/play')
     }
   }

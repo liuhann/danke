@@ -8,13 +8,14 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "async-boot": "^1.1.12",
+    "async-boot": "^1.1.13",
     "axios": "^0.18.0",
     "image-preloader": "^1.1.1",
+    "ky": "^0.8.0",
     "merge": "^1.2.1",
     "nanobus": "^4.4.0",
     "pauseable": "^0.3.1",
-    "vant": "^1.5.8",
+    "vant": "^1.6.2",
     "vue": "^2.6.6",
     "vue-router": "^3.0.2"
   },
