@@ -19,20 +19,24 @@
 </template>
 
 <script>
+import anime from 'animejs'
+
 export default {
   name: 'Hero',
   created () {
+
+  },
+
+  mounted () {
     var tl = anime.timeline({
       easing: 'easeOutExpo',
       duration: 750
     }).add({
-      targets: '#capa path',
+      targets: '#hero path',
       strokeDashoffset: [anime.setDashoffset, 0],
       easing: 'easeInOutSine',
       duration: function(el, i) { return (2-i) * 500 },
       delay: function(el, i) { return i * 1000 },
-      // direction: 'alternate',
-      // loop: true
     }).add({
       targets: '#capa text',
       opacity: 1,
