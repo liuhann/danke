@@ -1,6 +1,6 @@
 import AsyncBoot from 'async-boot'
 import App from './app.vue'
-import Nanobus from './packages/utils/nanobus'
+import Nanobus from '../packages/utils/nanobus'
 
 import Vue from 'vue'
 import VueRouter from 'vue-router'
@@ -13,7 +13,7 @@ import designer from '../packages/designer'
 import runtime from '../packages/runtime'
 
 import './common.css'
-import './packages/animations/animista.css'
+import '../packages/animations/animista.css'
 import WorkDAO from '../packages/dao/workdao'
 Vue.use(Vant)
 Vue.use(VueRouter)
