@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import VueAnimeTyping from 'vue-anime-typing/src/AnimeTyping'
+import VueAnimeTyping from 'vue-anime-typing/oldsrc/AnimeTyping'
 import { VueAnime } from 'vue-anime'
 export default {
   name: 'TextBubble',

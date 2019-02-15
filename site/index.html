@@ -13,6 +13,15 @@
 	<meta name="browsermode" content="application">
 	<meta name="x5-orientation" content="portrait">
 	<title></title>
+	<script>
+    window.onerror = function(message, source, lineno, colno, error) {
+      document.write(message + '<br>')
+      document.write(source + '<br>')
+      document.write(lineno + '<br>')
+      document.write(colno + '<br>')
+      document.write(error + '<br>')
+    }
+	</script>
 </head>
 <body>
 	<div id="app">

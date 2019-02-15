@@ -1,5 +1,5 @@
-import VueAnimeTyping from 'vue-anime-typing/src/AnimeTyping'
-import VueMovingImage from 'vue-moving-image/src/components/MovingImage'
+import VueAnimeTyping from 'vue-anime-typing/oldsrc/AnimeTyping'
+import VueMovingImage from 'vue-moving-image/oldsrc/components/MovingImage'
 import VueTextBubble from './TextBubble'
 
 import { VueAnime } from 'vue-anime'

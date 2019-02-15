@@ -1,6 +1,6 @@
 module.exports = {
   lintOnSave: false,
-  transpileDependencies: ['async-boot'],
+  transpileDependencies: ['async-boot', 'ky'],
   devServer: {
     contentBase: './demo'
   },
@@ -8,8 +8,8 @@ module.exports = {
     ? '/danke/'
     : '/',
   outputDir: process.env.NODE_ENV === 'production'
-    ? '../shopen-bcc/public/danke'
-    : '../shopen-bcc/public/danke',
+    ? '../shopen/public/danke'
+    : '../shopen/public/danke',
   pages: {
     index: {
       entry: 'app/main.js',

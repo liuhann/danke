@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import VueMovingImage from 'vue-moving-image/src/components/MovingImage'
+import VueMovingImage from 'vue-moving-image/oldsrc/components/MovingImage'
 import SizingMixin from './ElementSizingMixin'
 import { VueAnime } from 'vue-anime'
 export default {

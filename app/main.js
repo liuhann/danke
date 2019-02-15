@@ -8,13 +8,13 @@ import VueRouter from 'vue-router'
 import Vant from 'vant/lib/index'
 import 'vant/lib/index.css'
 
-import home from './packages/home'
-import designer from './packages/designer'
-import runtime from './packages/runtime'
+import home from '../packages/home'
+import designer from '../packages/designer'
+import runtime from '../packages/runtime'
 
 import './common.css'
 import './packages/animations/animista.css'
-import WorkDAO from './packages/dao/workdao'
+import WorkDAO from '../packages/dao/workdao'
 Vue.use(Vant)
 Vue.use(VueRouter)
 const boot = new AsyncBoot({

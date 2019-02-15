@@ -2,7 +2,7 @@ import 'normalize.css'
 
 import AsyncBoot from 'async-boot'
 import App from './app.vue'
-import login from './packages/login'
+import login from '../packages/login'
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 Vue.use(VueRouter)
