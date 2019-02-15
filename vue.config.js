@@ -4,7 +4,7 @@ module.exports = {
   devServer: {
     contentBase: './demo'
   },
-  baseUrl: process.env.NODE_ENV === 'production'
+  publicPath: process.env.NODE_ENV === 'production'
     ? '/danke/'
     : '/',
   outputDir: process.env.NODE_ENV === 'production'
