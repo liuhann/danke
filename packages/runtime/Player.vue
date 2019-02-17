@@ -44,7 +44,7 @@ export default {
 </script>
 
 <style lang="less">
-.danke-runtime, .scene {
+.danke-runtime, .danke-runtime .scene {
   position: absolute;
   left: 0;
   top: 0;

@@ -117,6 +117,15 @@ export default {
   },
 
   created () {
+    this.device.width = window.innerWidth
+    this.device.height = window.innerHeight
+    if (this.$route.params) {
+      if (this.$route.params.type === '1x1') {
+        this.device.height = window.innerWidth
+      } else if (this.$route.params.type === '3x2') {
+        this.device.height = Math.floor(window.innerWidth * 3 /2)
+      }
+    }
     if (this.ctx.work) {
       this.scenes = utils.clone(this.ctx.work.scenes)
       this.currentSceneIndex = 0
@@ -258,9 +267,17 @@ export default {
   position: absolute;
   left: 0;
   top: 0;
-  width: 100vw;
-  height: 100vh;
+  right: 0;
+  bottom: 0;
+  background-color: #FBFBFB;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
+  .scene-container {
+    box-shadow: 0 0 8px 0px rgba(65, 106, 166, 0.2);
+    background-color: #fff;
+  }
   .page-button {
     font-size: 20px;
     padding: 8px;

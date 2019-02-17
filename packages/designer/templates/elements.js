@@ -123,10 +123,6 @@ const SCENE = util.mergeDeep({}, {
   hideDelay: 2000,
   duration: 3000,
   elements: []
-}, {
-  background: {
-    color: 'transparent'
-  }
 })
 
 export default {

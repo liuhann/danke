@@ -4,7 +4,7 @@
     <logo-wrapper></logo-wrapper>
     <div class="empty"></div>
     <van-icon name="manager" class="icon-head"></van-icon>
-    <van-icon name="plus" class="icon-add" @click="pop.screenType=true"></van-icon>
+    <van-icon name="plus" class="icon-add" @click="pop.screenType = true"></van-icon>
   </header>
   <div class=""></div>
 
