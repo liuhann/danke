@@ -1,6 +1,10 @@
 <template>
 <div class="edit-position config-group">
-  <van-cell title="位置" icon="aim" />
+  <div class="position-preview">
+    <div class="device" :style="deviceStyle">
+
+    </div>
+  </div>
   <item-block title="横向对齐">
     <van-radio-group v-model="position.horizontal">
       <van-radio name="left">左</van-radio>
@@ -20,7 +24,6 @@
 
   <edit-len label="纵向偏移" v-model="position.offsetY" :min="-1000"></edit-len>
 
-  <van-cell class="group-title" title="大小" icon="expand-o" />
   <div class="group">
     <edit-len label="宽度" v-model="position.width"></edit-len>
     <edit-len label="高度" v-model="position.height"></edit-len>
@@ -40,6 +43,9 @@ export default {
   props: {
     value: {
       type: Object
+    },
+    device: {
+      type: Object
     }
   },
   data () {
@@ -50,6 +56,9 @@ export default {
   computed: {
     position () {
       return this.value
+    },
+    deviceStyle () {
+
     }
   },
   created () {
@@ -59,5 +68,9 @@ export default {
 </script>
 
 <style lang="less">
+.position-preview {
+  width: 80vw;
+  height: 80vw;
+}
 
 </style>

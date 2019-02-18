@@ -1,5 +1,4 @@
-import util from '../../utils/util'
-
+import { mergeDeep } from '../../utils/object.js'
 const BACKGROUND = {
   mode: '1',
   color: '#fff',
@@ -72,7 +71,7 @@ const BASE = {
   }
 }
 
-const IMAGE = util.mergeDeep({}, BASE, {
+const IMAGE = mergeDeep({}, BASE, {
   type: 'image',
   sizing: 'cover',
   background: {
@@ -87,7 +86,7 @@ const IMAGE = util.mergeDeep({}, BASE, {
   }
 })
 
-const TEXT = util.mergeDeep({}, BASE, {
+const TEXT = mergeDeep({}, BASE, {
   type: 'text',
   content: '请输入文字',
   font: {
@@ -105,18 +104,18 @@ const TEXT = util.mergeDeep({}, BASE, {
     height: '6vw'
   }
 })
-const CIRCLE = util.mergeDeep({}, BASE, {
+const CIRCLE = mergeDeep({}, BASE, {
   type: 'circle',
   radius: '20vw'
 })
 
-const WORK = util.mergeDeep({}, {
+const WORK = mergeDeep({}, {
   turning: TURNING,
   font: FONT,
   scenes: []
 })
 
-const SCENE = util.mergeDeep({}, {
+const SCENE = mergeDeep({}, {
   type: 'slide',
   play: 'auto',
   background: BACKGROUND,

@@ -10,7 +10,7 @@
     @scene-selected="tapSceneOn"></scene-preview>
 
   <!--元素配置区，可以进行元素配置项手动修改 -->
-  <van-popup class="pop-element-config" position="right" :overlay="false" v-model="pop.elementConfig">
+  <van-popup class="pop-element-config" position="right" :overlay="true" v-model="pop.elementConfig">
     <keep-alive>
       <config-element v-if="currentElement" :edit-element="currentElement" :device="device" @close="pop.elementConfig = false"
         @swap="swapElement"
@@ -53,14 +53,14 @@
       </van-tab>
     </van-tabs>
   </van-popup>
-
 </div>
 </template>
 
 <script>
 import ScenePreview from './ScenePreview'
 import SceneList from './dialog/SceneList'
-import utils from '../utils/util'
+import { mergeDeep, clone } from '../utils/object'
+import { shortid } from '../utils/string'
 import Elements from './templates/elements'
 import ConfigElement from './dialog/ConfigElement'
 import ConfigWork from './dialog/ConfigWork'
@@ -97,7 +97,7 @@ export default {
       currentSceneIndex: 0,
       currentScene: null,
       currentElement: null,
-      work: utils.mergeDeep({}, Elements.WORK)
+      work: mergeDeep({}, Elements.WORK)
     }
   },
 
@@ -118,10 +118,10 @@ export default {
 
   created () {
     if (this.ctx.work) {
-      this.scenes = utils.clone(this.ctx.work.scenes)
+      this.scenes = clone(this.ctx.work.scenes)
       this.currentSceneIndex = 0
       this.currentScene = this.scenes[0]
-      this.work = utils.clone(this.ctx.work)
+      this.work = clone(this.ctx.work)
     } else {
       this.tapAddScene()
       this.currentSceneIndex = 0
@@ -144,8 +144,8 @@ export default {
     },
 
     tapAddScene () {
-      const scene = utils.clone(Elements.SCENE)
-      scene.id = utils.shortid()
+      const scene = clone(Elements.SCENE)
+      scene.id = shortid()
       this.scenes.push(scene)
     },
 
@@ -192,12 +192,12 @@ export default {
       let newEl = null
       this.pop.showAddElement = false
       if (elementName === 'image') {
-        newEl = utils.clone(Elements.IMAGE)
+        newEl = clone(Elements.IMAGE)
       }
       if (elementName === 'text') {
-        newEl = utils.clone(Elements.TEXT)
+        newEl = clone(Elements.TEXT)
       }
-      newEl.id = utils.shortid()
+      newEl.id = shortid()
       if (newEl && this.currentScene) {
         this.currentScene.elements.push(newEl)
       }
@@ -238,11 +238,11 @@ export default {
     },
 
     previewPlay () {
-      this.ctx.work = utils.clone({
+      this.ctx.work = clone({
         scenes: this.scenes
       })
       if (!this.ctx.work.uid) {
-        this.ctx.work.uid = utils.shortid(6)
+        this.ctx.work.uid = shortid(6)
       }
       this.ctx.work.user = 'test'
       this.ctx.workdao.addOrUpdateWork(this.ctx.work)

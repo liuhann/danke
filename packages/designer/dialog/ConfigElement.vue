@@ -7,7 +7,7 @@
     <van-tab title="基础">
       <edit-text v-model="element.content" v-if="element.content != null"></edit-text>
       <edit-font v-model="element.font" v-if="element.font"></edit-font>
-      <edit-position v-model="element.position" v-if="element.position"></edit-position>
+      <edit-background v-model="element.background" v-if="element.background"></edit-background>
       <item-block title="层次">
         <van-button size="small">最下</van-button>
         <van-button size="small">上一层</van-button>
@@ -15,8 +15,10 @@
         <van-button size="small" @click="swap('top')">最上</van-button>
       </item-block>
     </van-tab>
-    <van-tab title="显示样式">
-      <edit-background v-model="element.background" v-if="element.background"></edit-background>
+    <van-tab title="定位与大小">
+      <edit-position v-model="element.position" v-if="element.position"></edit-position>
+    </van-tab>
+    <van-tab title="边框">
       <edit-border v-model="element.border" v-if="element.border"></edit-border>
       <edit-clip-path v-model="element.clip" v-if="clipable"></edit-clip-path>
     </van-tab>
@@ -57,6 +59,9 @@ export default {
   },
   props: {
     editElement: {
+      type: Object
+    },
+    device: {
       type: Object
     }
   },
