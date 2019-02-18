@@ -1,5 +1,7 @@
 import cubicBesizers from './cubic-beziers'
 import { getLength } from './position'
+import { clone } from './object'
+import { shortid } from './string'
 
 const formatTime = date => {
   const year = date.getFullYear()
@@ -100,76 +102,6 @@ function getImageBosUrlBySize (bosKey, width, height) {
   } else {
     return `http://danke.cdn.bcebos.com/000/empty.png@s_1,w_${width},h_${height},q_100`
   }
-}
-
-// https://stackoverflow.com/questions/27936772/how-to-deep-merge-instead-of-shallow-merge
-/**
- * Simple object check.
- * @param item
- * @returns {boolean}
- */
-function isObject (item) {
-  return (item && typeof item === 'object' && !Array.isArray(item))
-}
-
-/**
- * Deep merge two objects.
- * @param target
- * @param ...sources
- */
-function mergeDeep (target, ...sources) {
-  if (!sources.length) return target
-  const source = sources.shift()
-
-  if (isObject(target) && isObject(source)) {
-    for (const key in source) {
-      if (isObject(source[key])) {
-        if (!target[key]) Object.assign(target, { [key]: {} })
-        mergeDeep(target[key], source[key])
-      } else {
-        Object.assign(target, { [key]: source[key] })
-      }
-    }
-  }
-  return mergeDeep(target, ...sources)
-}
-
-function clone (obj) {
-  // Handle the 3 simple types, and null or undefined
-  if (obj == null || typeof obj !== 'object') return obj
-  // Handle Array
-  if (obj instanceof Array) {
-    let copy = []
-    for (var i = 0, len = obj.length; i < len; i++) {
-      copy[i] = clone(obj[i])
-    }
-    return copy
-  }
-
-  // Handle Object
-  if (obj instanceof Object) {
-    let copy = {}
-    for (let attr in obj) {
-      if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr])
-    }
-    return copy
-  }
-
-  return obj
-}
-
-function randomRangeId (num) {
-  let returnStr = ''
-  const charStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-  for (let i = 0; i < num; i++) {
-    let index = Math.round(Math.random() * (charStr.length - 1))
-    returnStr += charStr.substring(index, index + 1)
-  }
-  return returnStr
-}
-
-function shortid (length) {
-  return randomRangeId(length || 6)
 }
 
 /**
@@ -352,9 +284,6 @@ function checkScene (scene) {
 }
 
 export default {
-  isObject,
-  mergeDeep,
-  clone,
   getLength,
   formatTime,
   getElementStyle,

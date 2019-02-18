@@ -34,5 +34,4 @@ const boot = new AsyncBoot({
     await next()
   }
 })
-
 boot.startUp()
