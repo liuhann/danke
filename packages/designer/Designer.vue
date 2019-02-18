@@ -91,7 +91,7 @@ export default {
       },
       device: {
         width: window.innerWidth,
-        height: window.innerWidth
+        height: window.innerHeight
       },
       scenes: [],
       currentSceneIndex: 0,
