@@ -6,22 +6,21 @@
 
   <div class="pop-content">
     <van-row type="flex" class="btns">
-      <van-col span="8"><van-button plain type="primary" size="small" @click="addEmptyScene">新增空白场景</van-button></van-col>
+      <van-col span="24">
+        <van-button plain type="primary" size="small" @click="addEmptyScene(false)">向前新增</van-button>
+        <van-button plain type="primary" size="small" @click="addEmptyScene(true)">向后新增</van-button>
+      </van-col>
     </van-row>
     <div class="scene-list">
-      <div class="block scene" v-for="(scene, index) in slideScenes" :key="scene.id" @click="chooseScene(index)" :class="[currentScene === scene?'current': '']">
+      <div class="block scene" v-for="(scene, index) in slideScenes" @click="chooseScene(index)" :key="scene.id" :class="[index === chooseIndex?'current': '']">
         <scene-thumbnail :scene="scene" :device="{width: previewWidth, height: previewHeight}"></scene-thumbnail>
         <div class="setting-container">
-          <van-icon name="setting-o" @click.stop="editScene(scene)"></van-icon>
+          <van-icon name="setting-o" @click="chooseScene(index)"></van-icon>
         </div>
         <div v-if="scene.type === 'background'" class="background">背景</div>
       </div>
     </div>
   </div>
-
-  <van-popup v-model="showConfigScene" class="pop-scene-config" :overlay="true" get-container="body">
-    <config-scene v-model="currentEditScene" v-if="currentEditScene" @close="showConfigScene = false"></config-scene>
-  </van-popup>
 </div>
 </template>
 
@@ -47,10 +46,10 @@ export default {
   },
   data () {
     return {
-      showConfigScene: false,
-      currentEditScene: null
+      chooseIndex: 0
     }
   },
+
   computed: {
     previewWidth () {
       return this.device.width * 0.21
@@ -63,7 +62,6 @@ export default {
         return scene.type === 'background'
       })
     },
-
     slideScenes () {
       return this.scenes
     }
@@ -72,10 +70,13 @@ export default {
     close () {
       this.$emit('close')
     },
-    addEmptyScene () {
-      this.$emit('add')
+    addEmptyScene (isBefore) {
+      this.$emit('add', this.chooseIndex, isBefore)
     },
     chooseScene (index) {
+      this.chooseIndex = index
+    },
+    chooseEditScene () {
       this.$emit('choose-scene', index)
     },
     deleteScene (index) {

@@ -152,9 +152,13 @@ export default {
       this.pop.sceneList = true
     },
 
-    tapAddScene () {
+    tapAddScene (index, isAfter) {
       const scene = clone(Elements.SCENE)
       scene.id = shortid()
+
+      if (index != null) {
+
+      }
       this.scenes.push(scene)
     },
 
