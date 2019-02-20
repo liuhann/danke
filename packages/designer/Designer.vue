@@ -68,7 +68,6 @@ import AddElement from './dialog/AddElement'
 
 import saver from './saver'
 import ConfigScene from './dialog/ConfigScene'
-import WorkDAO from '../dao/workdao'
 
 export default {
   name: 'Designer',
@@ -97,7 +96,7 @@ export default {
       currentSceneIndex: 0,
       currentScene: null,
       currentElement: null,
-      work: mergeDeep({}, Elements.WORK)
+      work: null
     }
   },
 
@@ -116,17 +115,22 @@ export default {
     }
   },
 
-  async created () {
-    if (this.$routes.query.id) { // edit exist work
-      const work = await this.ctx.workdao.getWork(this.$routes.query.id)
-      this.initDevice(work.type || 'full')
-      this.initWork(work)
-    } else { // new work
-      this.initDevice(this.$routes.query.type)
-      this.initWork(this.ctx.work)
-    }
+  created () {
+    this.init()
   },
   methods: {
+    async init () {
+      if (this.$route.query.id) { // edit exist work
+        const work = await this.ctx.workdao.getWork(this.$route.query.id)
+        this.initDevice(work.type || 'full')
+        debugger
+        this.initWork(work)
+      } else { // new work
+        this.initDevice(this.$route.query.type)
+        this.initWork(this.ctx.work)
+      }
+    },
+
     initDevice (type) {
       this.device.width = window.innerWidth
       this.device.height = window.innerHeight
@@ -138,11 +142,12 @@ export default {
     },
     initWork (work) {
       if (work) {
-        this.scenes = clone(this.ctx.work.scenes)
+        this.scenes = clone(work.scenes)
         this.currentSceneIndex = 0
         this.currentScene = this.scenes[0]
         this.work = clone(this.ctx.work)
       } else {
+        this.work = clone(Elements.WORK)
         this.tapAddScene()
         this.currentSceneIndex = 0
         this.currentScene = this.scenes[0]
