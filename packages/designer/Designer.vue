@@ -116,7 +116,16 @@ export default {
     }
   },
 
-  created () {
+  async created () {
+    if (this.$routes.query.id) { // edit exist work
+      const work = await this.ctx.workdao.getWork(this.$routes.query.id)
+      this.initDevice(work.type || 'full')
+      this.initWork(work)
+    } else { // new work
+      this.initDevice(this.$routes.query.type)
+      this.initWork(this.ctx.work)
+    }
+
     this.device.width = window.innerWidth
     this.device.height = window.innerHeight
     if (this.$route.params) {
@@ -126,22 +135,32 @@ export default {
         this.device.height = Math.floor(window.innerWidth * 3 /2)
       }
     }
-    if (this.ctx.work) {
-      this.scenes = clone(this.ctx.work.scenes)
-      this.currentSceneIndex = 0
-      this.currentScene = this.scenes[0]
-      this.work = clone(this.ctx.work)
-    } else {
-      this.tapAddScene()
-      this.currentSceneIndex = 0
-      this.currentScene = this.scenes[0]
-
-      this.nanobus.on('image-attach', (resource) => {
-        saver.saveResource(resource)
-      })
-    }
   },
   methods: {
+    initDevice (type) {
+      this.device.width = window.innerWidth
+      this.device.height = window.innerHeight
+      if (type === '1x1') {
+        this.device.height = window.innerWidth
+      } else if (type === '3x2') {
+        this.device.height = Math.floor(window.innerWidth * 3 /2)
+      }
+    },
+    initWork (work) {
+      if (work) {
+        this.scenes = clone(this.ctx.work.scenes)
+        this.currentSceneIndex = 0
+        this.currentScene = this.scenes[0]
+        this.work = clone(this.ctx.work)
+      } else {
+        this.tapAddScene()
+        this.currentSceneIndex = 0
+        this.currentScene = this.scenes[0]
+        this.nanobus.on('image-attach', (resource) => {
+          saver.saveResource(resource)
+        })
+      }
+    },
     // 显示增加元素弹窗
     showAddElement () {
       this.pop.showAddElement = true

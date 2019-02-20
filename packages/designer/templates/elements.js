@@ -1,4 +1,4 @@
-import { mergeDeep } from '../../utils/object.js'
+import { mergeDeep, clone } from '../../utils/object.js'
 const BACKGROUND = {
   mode: '1',
   color: '#fff',
@@ -109,11 +109,12 @@ const CIRCLE = mergeDeep({}, BASE, {
   radius: '20vw'
 })
 
-const WORK = mergeDeep({}, {
+const WORK = {
   turning: TURNING,
   font: FONT,
+  type: 'full',
   scenes: []
-})
+}
 
 const SCENE = mergeDeep({}, {
   type: 'slide',

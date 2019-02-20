@@ -1,7 +1,7 @@
 import ky from 'ky'
 class WorkDAO {
   constructor (baseUrl) {
-    this.baseUrl = baseUrl
+    this.baseUrl = baseUrl + '/api'
   }
 
   async addOrUpdateWork (work) {
@@ -9,6 +9,10 @@ class WorkDAO {
       json: work
     }).json()
     return result
+  }
+
+  async getWork (id) {
+    return ky.get(`${this.baseUrl}/danke/v2/work/${id}`).json()
   }
 
   async listMine () {

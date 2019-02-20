@@ -11,7 +11,7 @@
   <a href="#/designer">Designer</a>
   <ul>
     <li v-for="work in works">
-      <router-link :to="'/designer/' + work.id">{{work.id}} - {{work.scenes}}</router-link>
+      <router-link :to="'/designer?id=' + work.id">{{work.id}} - {{work.scenes}}</router-link>
     </li>
   </ul>
 

@@ -12,7 +12,7 @@
 
 <script>
 import Danke from './danke'
-import utils from '../utils/util'
+import { clone } from '../utils/object'
 export default {
   name: 'Player',
   props: {
@@ -29,11 +29,13 @@ export default {
   },
   created () {
     // assume that work is loaded from loader
-    const danke = new Danke(utils.clone(this.ctx.work).scenes, this.device)
-    this.scenes = danke.scenes
-    this.$nextTick(() => {
-      danke.next()
-    })
+    if (this.ctx.work) {
+      const danke = new Danke(clone(this.ctx.work).scenes, this.device)
+      this.scenes = danke.scenes
+      this.$nextTick(() => {
+        danke.next()
+      })
+    }
   },
   methods: {
     onElementClicked () {
