@@ -41,7 +41,7 @@ export default {
   },
   methods: {
     choose (type) {
-      this.$router.replace('/designer/' + type)
+      this.$router.replace('/designer?type=' + type)
     },
     async listWork () {
       const result = await this.ctx.workdao.listMine()

@@ -125,16 +125,6 @@ export default {
       this.initDevice(this.$routes.query.type)
       this.initWork(this.ctx.work)
     }
-
-    this.device.width = window.innerWidth
-    this.device.height = window.innerHeight
-    if (this.$route.params) {
-      if (this.$route.params.type === '1x1') {
-        this.device.height = window.innerWidth
-      } else if (this.$route.params.type === '3x2') {
-        this.device.height = Math.floor(window.innerWidth * 3 /2)
-      }
-    }
   },
   methods: {
     initDevice (type) {
@@ -156,9 +146,6 @@ export default {
         this.tapAddScene()
         this.currentSceneIndex = 0
         this.currentScene = this.scenes[0]
-        this.nanobus.on('image-attach', (resource) => {
-          saver.saveResource(resource)
-        })
       }
     },
     // 显示增加元素弹窗

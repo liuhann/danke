@@ -38,7 +38,6 @@ export default {
 	},
 	methods: {
     choose (type) {
-      debugger;
       this.$emit('choose', type)
 		}
 	}
