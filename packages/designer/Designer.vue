@@ -123,7 +123,6 @@ export default {
       if (this.$route.query.id) { // edit exist work
         const work = await this.ctx.workdao.getWork(this.$route.query.id)
         this.initDevice(work.type || 'full')
-        debugger
         this.initWork(work)
       } else { // new work
         this.initDevice(this.$route.query.type)
