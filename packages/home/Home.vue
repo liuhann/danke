@@ -6,14 +6,23 @@
     <van-icon name="manager" class="icon-head"></van-icon>
     <van-icon name="plus" class="icon-add" @click="pop.screenType = true"></van-icon>
   </header>
-  <div class=""></div>
+  <van-panel title="我的作品">
+    <van-card v-for="work in works"
+              :key="work.id"
+              :num="work.scenes"
+              :thumb="ImageDefault"
+              :centered="true"
+              :title="work.title || '未命名'"
+              @click="openWork(work.id)"
+    >
+      <div slot="footer">
+        <van-button @click="confirmRemoveWork(work.id)" size="small">删除</van-button>
+        <van-button @click="openWork(work.id)" size="small">编辑</van-button>
+      </div>
+    </van-card>
+  </van-panel>
 
-  <a href="#/designer">Designer</a>
-  <ul>
-    <li v-for="work in works">
-      <router-link :to="'/designer?id=' + work.id">{{work.id}} - {{work.scenes}}</router-link>
-    </li>
-  </ul>
+
 
   <van-popup v-model="pop.screenType" class="choose-screen-type">
     <tab-choose-type @choose="choose"></tab-choose-type>
@@ -24,6 +33,8 @@
 <script>
 import LogoWrapper from '../common/LogoWrapper'
 import TabChooseType from './TabChooseType'
+import ImageDefault from './photo.svg'
+import { Dialog, Toast } from 'vant'
 export default {
   name: 'Home',
   components: {TabChooseType, LogoWrapper},
@@ -36,6 +47,11 @@ export default {
       works: []
     }
   },
+  computed: {
+    ImageDefault () {
+      return ImageDefault
+    }
+  },
   created () {
     this.listWork()
   },
@@ -46,6 +62,24 @@ export default {
     async listWork () {
       const result = await this.ctx.workdao.listMine()
       this.works = result.list
+    },
+    openWork (id) {
+      debugger
+      this.$router.push('/designer?id=' + id)
+    },
+    confirmRemoveWork (id) {
+      Dialog.confirm({
+        message: '是否确认删除此作品'
+      }).then(async () => {
+        const toast = Toast.loading({
+          duration: 0,       // 持续展示 toast
+          forbidClick: true, // 禁用背景点击
+          loadingType: 'spinner'
+        })
+        await this.ctx.workdao.removeWork(id)
+        Toast.clear()
+      }).catch(() => {
+      });
     }
   }
 }

@@ -19,5 +19,17 @@ class WorkDAO {
     const result = await ky.get(this.baseUrl + '/danke/v2/works/mine').json()
     return result
   }
+  async removeWork (id) {
+    return ky.delete(`${this.baseUrl}/danke/v2/work/${id}`).json()
+  }
+
+  async uploadImage (file) {
+    // check file size
+    const formData = new FormData()
+    formData.append('file', file)
+    ky.post(`${this.baseUrl}/danke/v2/image/upload`, {
+      body: formData
+    })
+  }
 }
 export default WorkDAO

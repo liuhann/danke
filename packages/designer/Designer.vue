@@ -47,6 +47,9 @@
         </div>
       </van-tab>
       <van-tab title="作品配置">
+        <item-block title="标题">
+          <van-field v-if="work" v-model="work.title" required clearable/>
+        </item-block>
         <div class="tools-bar">
           <van-button size="small" type="primary" @click="previewPlay">播放</van-button>
         </div>
@@ -68,10 +71,12 @@ import AddElement from './dialog/AddElement'
 
 import saver from './saver'
 import ConfigScene from './dialog/ConfigScene'
+import ItemBlock from './forms/ItemBlock'
 
 export default {
   name: 'Designer',
   components: {
+    ItemBlock,
     ConfigScene,
     AddElement,
     ConfigWork,

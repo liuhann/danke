@@ -110,6 +110,7 @@ const CIRCLE = mergeDeep({}, BASE, {
 })
 
 const WORK = {
+  title: '未命名',
   turning: TURNING,
   font: FONT,
   type: 'full',

@@ -108,7 +108,7 @@ function toPixel (element, coordinate, device) {
   return result
 }
 
-export default {
+export {
   toViewPoint,
   toPixel,
   setLenFromPx,

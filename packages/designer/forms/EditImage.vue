@@ -12,6 +12,7 @@
 
 <script>
 import ItemBlock from './ItemBlock'
+import { Notify } from 'vant'
 export default {
   name: 'EditImage',
   components: {ItemBlock},
@@ -43,12 +44,18 @@ export default {
   },
   methods: {
     onRead ({content, file}) {
+      if (file.size > this.ctx.upload.maxSize) {
+        Notify('图片不能大于2M')
+        return
+      }
       const blobUrl = URL.createObjectURL(file)
-      this.nanobus.emit('image-attach', {
-        [blobUrl]: file
-      })
       this.src = blobUrl
       this.$emit('input', blobUrl)
+
+      this.ctx.workdao.uploadImage(file).then( (result)=> {
+        this.ctx.work.images.push(result.url)
+        this.$emit('input', result.url)
+      })
     }
   }
 }

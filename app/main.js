@@ -32,6 +32,9 @@ const boot = new AsyncBoot({
       nanobus: new Nanobus()
     })
     await next()
+  },
+  upload: {
+    maxSize: 2 * 1024 * 1024
   }
 })
 boot.startUp()
