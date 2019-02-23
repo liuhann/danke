@@ -10,7 +10,7 @@
     <van-card v-for="work in works"
               :key="work.id"
               :num="work.scenes"
-              :thumb="ImageDefault"
+              :thumb="work.image || ImageDefault"
               :centered="true"
               :title="work.title || '未命名'"
               @click="openWork(work.id)"

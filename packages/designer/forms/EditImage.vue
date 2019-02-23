@@ -53,7 +53,7 @@ export default {
       this.$emit('input', blobUrl)
 
       this.ctx.workdao.uploadImage(file).then((result)=> {
-        this.ctx.work.images.push(result.url)
+        debugger
         this.$emit('input', result.url)
       })
     }

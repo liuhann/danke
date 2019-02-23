@@ -17,19 +17,19 @@
     "nanobus": "^4.4.0",
     "normalize.css": "^8.0.1",
     "pauseable": "^0.3.1",
-    "vant": "^1.6.2",
+    "vant": "^1.6.5",
     "vue": "^2.6.6",
     "vue-router": "^3.0.2"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.4.0",
-    "@vue/cli-plugin-eslint": "^3.4.0",
-    "@vue/cli-service": "^3.4.0",
+    "@vue/cli-plugin-babel": "^3.4.1",
+    "@vue/cli-plugin-eslint": "^3.4.1",
+    "@vue/cli-service": "^3.4.1",
     "@vue/eslint-config-standard": "^3.0.5",
     "babel-plugin-import": "^1.11.0",
     "less": "^3.9.0",
     "less-loader": "^4.1.0",
     "standard": "^12.0.1",
-    "vue-template-compiler": "^2.6.6"
+    "vue-template-compiler": "^2.6.7"
   }
 }

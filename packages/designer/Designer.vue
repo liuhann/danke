@@ -5,7 +5,7 @@
 
   <scene-preview v-if="backgroundScene" :scene="backgroundScene" :device="device"></scene-preview>
   <!--效果预览区-->
-  <scene-preview :scene="currentScene" :device="device" class="scene-container"
+  <scene-preview v-if="currentScene" :scene="currentScene" :device="device" class="scene-container"
     @element-selected="tapElementOn"
     @scene-selected="tapSceneOn"></scene-preview>
 
@@ -52,6 +52,7 @@
         </item-block>
         <div class="tools-bar">
           <van-button size="small" type="primary" @click="previewPlay">播放</van-button>
+          <van-button size="small" type="primary" @click="saveDraft">保存草稿</van-button>
         </div>
       </van-tab>
     </van-tabs>
@@ -66,7 +67,6 @@ import { mergeDeep, clone } from '../utils/object'
 import { shortid } from '../utils/string'
 import Elements from './templates/elements'
 import ConfigElement from './dialog/ConfigElement'
-import ConfigWork from './dialog/ConfigWork'
 import AddElement from './dialog/AddElement'
 
 import saver from './saver'
@@ -79,7 +79,6 @@ export default {
     ItemBlock,
     ConfigScene,
     AddElement,
-    ConfigWork,
     ConfigElement,
     ScenePreview,
     SceneList
@@ -125,11 +124,11 @@ export default {
   },
   methods: {
     async init () {
-      if (this.$route.query.id) { // edit exist work
+      if (this.$route.query.id) { // load work
         const work = await this.ctx.workdao.getWork(this.$route.query.id)
         this.initDevice(work.type || 'full')
         this.initWork(work)
-      } else { // new work
+      } else { // new work or load from ctx
         this.initDevice(this.$route.query.type)
         this.initWork(this.ctx.work)
       }
@@ -145,6 +144,7 @@ export default {
       }
     },
     initWork (work) {
+      debugger
       if (work) {
         this.scenes = clone(work.scenes)
         this.currentSceneIndex = 0
@@ -152,6 +152,8 @@ export default {
         this.work = clone(this.ctx.work)
       } else {
         this.work = clone(Elements.WORK)
+        this.work.id = shortid()
+        this.work.type = this.$route.query.type || 'full'
         this.tapAddScene()
         this.currentSceneIndex = 0
         this.currentScene = this.scenes[0]
@@ -263,6 +265,12 @@ export default {
         this.currentScene.elements[currentIndex] = this.currentScene.elements[this.currentScene.elements.length - 1]
         this.currentScene.elements[this.currentScene.elements.length - 1] = this.currentElement
       }
+    },
+
+    saveDraft () {
+      this.ctx.workdao.addOrUpdateWork(Object.assign(this.work, {
+        scenes: this.scenes
+      }))
     },
 
     previewPlay () {
