@@ -21,9 +21,6 @@
       </div>
     </van-card>
   </van-panel>
-
-
-
   <van-popup v-model="pop.screenType" class="choose-screen-type">
     <tab-choose-type @choose="choose"></tab-choose-type>
   </van-popup>
