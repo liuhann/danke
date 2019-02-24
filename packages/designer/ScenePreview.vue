@@ -45,9 +45,7 @@ export default {
       }
     },
     'currentElementLength': function(newVal, oldVal) {
-      for (let element of this.scene.elements) {
-        this.renderElement(element)
-      }
+      this.renderAllElements()
     }
   },
   computed: {
@@ -60,7 +58,7 @@ export default {
   },
 
   created () {
-
+    this.renderAllElements()
   },
 
   data () {
@@ -73,6 +71,12 @@ export default {
     renderElement (element) {
       this.$set(element, 'computedStyle', styleUtils.getElementStyle(element, this.device))
       // element.computedStyle = styleUtils.getElementStyle(element, this.device)
+    },
+
+    renderAllElements () {
+      for (let element of this.scene.elements) {
+        this.renderElement(element)
+      }
     },
 
     onElementClicked (index) {
