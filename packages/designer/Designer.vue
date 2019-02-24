@@ -144,7 +144,6 @@ export default {
       }
     },
     initWork (work) {
-      debugger
       if (work) {
         this.scenes = clone(work.scenes)
         this.currentSceneIndex = 0
