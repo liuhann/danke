@@ -1,10 +1,5 @@
 <template>
 <div class="edit-position config-group">
-  <div class="position-preview">
-    <div class="device" :style="deviceStyle">
-
-    </div>
-  </div>
   <item-block title="横向对齐">
     <van-radio-group v-model="position.horizontal">
       <van-radio name="left">左</van-radio>

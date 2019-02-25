@@ -36,6 +36,7 @@ export default {
   name: 'Home',
   components: {TabChooseType, LogoWrapper},
   data () {
+    debugger;
     return {
       pop: {
         screenType: false

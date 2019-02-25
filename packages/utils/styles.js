@@ -152,6 +152,7 @@ function getSceneStyle (scene, device) {
 }
 
 export default {
+  getLenSplits,
   getGradientStyle,
   getBackgroundStyle,
   getElementStyle,

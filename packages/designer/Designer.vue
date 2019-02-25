@@ -69,9 +69,9 @@ import Elements from './templates/elements'
 import ConfigElement from './dialog/ConfigElement'
 import AddElement from './dialog/AddElement'
 
-import saver from './saver'
 import ConfigScene from './dialog/ConfigScene'
 import ItemBlock from './forms/ItemBlock'
+import 'vant/lib/index.css'
 
 export default {
   name: 'Designer',
