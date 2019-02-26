@@ -6,6 +6,7 @@ class WorkDAO {
 
   async addOrUpdateWork (work) {
     this.mignifyWork(work)
+    work.user = 'test'
     const result = await ky.post(this.baseUrl + '/danke/v2/work', {
       json: work
     }).json()

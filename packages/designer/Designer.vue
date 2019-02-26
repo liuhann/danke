@@ -1,5 +1,6 @@
 <template>
 <div class="designer mobile">
+  <van-icon class="page-button return" name="arrow-left" @click="returnHome"/>
   <van-icon class="page-button add" name="plus" @click="showAddElement"/>
   <van-icon class="page-button menu" name="wap-nav" @click.stop="pop.showMenus = true"/>
 
@@ -36,6 +37,13 @@
   <van-popup class="pop-menus" position="right" :overlay="true" v-model="pop.showMenus">
     <van-tabs v-model="tabConfig">
       <van-tab title="场景配置">
+        <van-pagination
+          v-model="currentSceneIndex"
+          :page-count="scenes.length + 1"
+          prev-text="上一场景"
+          next-text	="下一场景"
+          @change="sceneChange"
+        />
         <div class="tools-bar">
           <van-button size="small" @click="pop.sceneList = true">场景列表</van-button>
           <van-button size="small" @click="togglePreviousScene">上一场景</van-button>
@@ -146,15 +154,15 @@ export default {
     initWork (work) {
       if (work) {
         this.scenes = clone(work.scenes)
-        this.currentSceneIndex = 0
+        this.currentSceneIndex = 1
         this.currentScene = this.scenes[0]
-        this.work = clone(this.ctx.work)
+        this.work = clone(work)
       } else {
         this.work = clone(Elements.WORK)
         this.work.id = shortid()
         this.work.type = this.$route.query.type || 'full'
         this.tapAddScene()
-        this.currentSceneIndex = 0
+        this.currentSceneIndex = 1
         this.currentScene = this.scenes[0]
       }
     },
@@ -203,6 +211,14 @@ export default {
       }
       this.currentSceneIndex --
       this.currentScene = this.scenes[this.currentSceneIndex]
+    },
+
+    sceneChange (page) {
+      if (page - 1 === this.scenes.length) {
+        this.tapAddScene()
+      }
+      this.currentSceneIndex  = page
+      this.currentScene = this.scenes[page - 1]
     },
 
     deleteScene (index) {
@@ -273,15 +289,13 @@ export default {
     },
 
     previewPlay () {
-      this.ctx.work = clone({
-        scenes: this.scenes
-      })
-      if (!this.ctx.work.uid) {
-        this.ctx.work.uid = shortid(6)
-      }
-      this.ctx.work.user = 'test'
-      this.ctx.workdao.addOrUpdateWork(this.ctx.work)
+      debugger
+      this.ctx.work = this.work
       this.$router.push('/play')
+    },
+
+    returnHome () {
+      this.$router.replace('/')
     }
   }
 }
@@ -314,6 +328,11 @@ export default {
     z-index: 1001;
     right: 8px;
     background-color: #fff;
+    &.return {
+      top: 8px;
+      left: 8px;
+      right: unset;
+    }
     &.add {
       bottom: 8px;
     }

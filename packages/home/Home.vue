@@ -13,7 +13,6 @@
               :thumb="work.image || ImageDefault"
               :centered="true"
               :title="work.title || '未命名'"
-              @click="openWork(work.id)"
     >
       <div slot="footer">
         <van-button @click="confirmRemoveWork(work.id)" size="small">删除</van-button>
@@ -36,7 +35,6 @@ export default {
   name: 'Home',
   components: {TabChooseType, LogoWrapper},
   data () {
-    debugger;
     return {
       pop: {
         screenType: false
@@ -62,7 +60,6 @@ export default {
       this.works = result.list
     },
     openWork (id) {
-      debugger
       this.$router.push('/designer?id=' + id)
     },
     confirmRemoveWork (id) {
@@ -75,6 +72,7 @@ export default {
           loadingType: 'spinner'
         })
         await this.ctx.workdao.removeWork(id)
+        this.listWork()
         Toast.clear()
       }).catch(() => {
       });
