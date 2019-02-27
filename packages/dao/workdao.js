@@ -1,13 +1,12 @@
-import ky from 'ky'
 class WorkDAO {
-  constructor (baseUrl) {
-    this.baseUrl = baseUrl + '/api'
+  constructor (ctx) {
+    this.ctx = ctx
   }
 
   async addOrUpdateWork (work) {
     this.mignifyWork(work)
     work.user = 'test'
-    const result = await ky.post(this.baseUrl + '/danke/v2/work', {
+    const result = await this.ctx.post('danke/v2/work', {
       json: work
     }).json()
     return result
@@ -29,22 +28,22 @@ class WorkDAO {
   }
 
   async getWork (id) {
-    return ky.get(`${this.baseUrl}/danke/v2/work/${id}`).json()
+    return this.ctx.ky.get(`danke/v2/work/${id}`).json()
   }
 
   async listMine () {
-    const result = await ky.get(this.baseUrl + '/danke/v2/works/mine').json()
+    const result = await this.ctx.get('danke/v2/works/mine').json()
     return result
   }
   async removeWork (id) {
-    return ky.delete(`${this.baseUrl}/danke/v2/work/${id}`).json()
+    return this.ctx.delete(`danke/v2/work/${id}`).json()
   }
 
   async uploadImage (file) {
     // check file size
     const formData = new FormData()
     formData.append('file', file)
-    return ky.post(`${this.baseUrl}/danke/v2/image/upload`, {
+    return this.ctx.post(`danke/v2/image/upload`, {
       body: formData
     }).json()
   }

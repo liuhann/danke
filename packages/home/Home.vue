@@ -1,11 +1,10 @@
 <template>
 <div class="home">
-  <header>
-    <logo-wrapper></logo-wrapper>
-    <div class="empty"></div>
+  <danke-header>
     <van-icon name="manager" class="icon-head"></van-icon>
     <van-icon name="plus" class="icon-add" @click="pop.screenType = true"></van-icon>
-  </header>
+  </danke-header>
+
   <van-panel title="我的作品">
     <van-card v-for="work in works"
               :key="work.id"
@@ -31,9 +30,10 @@ import LogoWrapper from '../common/LogoWrapper'
 import TabChooseType from './TabChooseType'
 import ImageDefault from './photo.svg'
 import { Dialog, Toast } from 'vant'
+import DankeHeader from '../common/DankeHeader'
 export default {
   name: 'Home',
-  components: {TabChooseType, LogoWrapper},
+  components: {DankeHeader, TabChooseType, LogoWrapper},
   data () {
     return {
       pop: {
@@ -82,49 +82,8 @@ export default {
 </script>
 
 <style lang="less">
-@height: 56px;
-@padding: 10px;
+
 .home {
-  header {
-    display: flex;
-    height: @height;
-    line-height: @height;
-    background: #0B2239;
-    color: #fff;
-    .empty {
-      flex: 1;
-    }
-    .icon-head {
-      margin: 10px;
-      background: #c3c3c3;
-      width: 36px;
-      font-size: 24px;
-      border-radius: 24px;
-      text-align: center;
-      line-height: 36px;
-    }
-    .icon-add {
-      padding: 10px;
-      font-size: 24px;
-      line-height: 36px;
-    }
-
-    .logo-wrapper {
-      padding: @padding 10px;
-      display: flex;
-      justify-content: center;
-      .sf {
-        color: #fff;
-        font-size: @height * 0.4;
-        line-height: @height - 2 * @padding;
-      }
-      svg {
-        width: @height - 2 * @padding;
-        height: @height - 2 * @padding;
-      }
-    }
-  }
-
   .choose-screen-type {
     width: 80%;
     .van-cell {

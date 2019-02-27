@@ -1,5 +1,4 @@
-import Designer from './Designer.vue'
-
+const Designer = () => import('./Designer.vue')
 export default {
   routes: [{
     path: '/designer/:type?',

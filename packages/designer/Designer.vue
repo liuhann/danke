@@ -25,15 +25,6 @@
     <add-element @selected="selectAddElement"></add-element>
   </van-popup>
 
-  <!--页面列表、新增按钮-->
-  <van-popup v-model="pop.sceneList" class="pop-page-list" position="right">
-    <scene-list :scenes="scenes" :current-scene="currentScene" :device="device"
-      @close="pop.sceneList = false;"
-      @preview="previewPlay"
-      @add="tapAddScene"
-      @choose-scene="chooseScene"></scene-list>
-  </van-popup>
-
   <van-popup class="pop-menus" position="right" :overlay="true" v-model="pop.showMenus">
     <van-tabs v-model="tabConfig">
       <van-tab title="场景配置">
@@ -44,13 +35,11 @@
           next-text	="下一场景"
           @change="sceneChange"
         />
-        <div class="tools-bar">
-          <van-button size="small" @click="pop.sceneList = true">场景列表</van-button>
-          <van-button size="small" @click="togglePreviousScene">上一场景</van-button>
-          <van-button size="small" @click="toggleNextScene">下一场景</van-button>
-        </div>
         <config-scene v-model="currentScene" v-if="currentScene" class="scene-config"></config-scene>
         <div class="tools-bar">
+          <van-button size="small" @click="cloneCurrentScene">复制</van-button>
+          <van-button size="small" @click="movePrev">向前移动</van-button>
+          <van-button size="small" @click="moveNext">向后移动</van-button>
           <van-button size="small" type="danger">删除场景</van-button>
         </div>
       </van-tab>
@@ -81,6 +70,7 @@ import ConfigScene from './dialog/ConfigScene'
 import ItemBlock from './forms/ItemBlock'
 import 'vant/lib/index.css'
 
+
 export default {
   name: 'Designer',
   components: {
@@ -97,8 +87,7 @@ export default {
       pop: {
         showMenus: false,
         elementConfig: false,
-        showAddElement: false,
-        sceneList: false
+        showAddElement: false
       },
       device: {
         width: window.innerWidth,
@@ -190,27 +179,22 @@ export default {
 
     },
 
-    chooseScene (index) {
-      this.pop.sceneList = false
-      this.currentSceneIndex = index
-      this.currentScene = this.scenes[index]
-      this.currentElement = null
+    //将当前场景向前移动
+    moveNext () {
+
     },
 
-    toggleNextScene () {
-      if (this.currentSceneIndex === this.scenes.length -1) {
-        this.tapAddScene()
-      }
+    //当前场景向后移动
+    movePrev () {
+
+    },
+
+    // 复制当前场景并在当前场景后创建新的
+    cloneCurrentScene () {
+      const cloned = clone(this.currentScene)
+      this.scenes.splice(this.currentSceneIndex-1, 0, cloned)
       this.currentSceneIndex ++
-      this.currentScene = this.scenes[this.currentSceneIndex]
-    },
-
-    togglePreviousScene () {
-      if (this.currentSceneIndex === 0) {
-        return
-      }
-      this.currentSceneIndex --
-      this.currentScene = this.scenes[this.currentSceneIndex]
+      this.currentScene = cloned
     },
 
     sceneChange (page) {
