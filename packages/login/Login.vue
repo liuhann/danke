@@ -72,6 +72,9 @@ export default {
 
     async login () {
       let result = await this.ctx.userdao.loginWithSms(this.phone, this.sms)
+      if (result.ok === '1') {
+        this.$router.replace('/')
+      }
     }
 
   }

@@ -5,7 +5,6 @@ class WorkDAO {
 
   async addOrUpdateWork (work) {
     this.mignifyWork(work)
-    work.user = 'test'
     const result = await this.ctx.post('danke/v2/work', {
       json: work
     }).json()

@@ -30,6 +30,7 @@
       <van-tab title="场景配置">
         <van-pagination
           v-model="currentSceneIndex"
+          :show-page-size="4"
           :page-count="scenes.length + 1"
           prev-text="上一场景"
           next-text	="下一场景"

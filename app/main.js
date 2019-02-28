@@ -38,8 +38,27 @@ const boot = new AsyncBoot({
     }
     const client = ky.extend({
       prefixUrl: 'http://www.yuanbaogushi.com/api/',
+      throwHttpErrors: false,
       searchParams: {
         'token': token
+      },
+      hooks: {
+        afterResponse: [
+          response => {
+            // You could do something with the response, for example, logging.
+            if (response.status === 200) {
+              return response
+            } else {
+              if (response.status === 401) {
+                ctx._router.replace('/login')
+              } else {
+                throw new Error()
+              }
+            }
+            // Or return a `Response` instance to overwrite the response.
+            // return new Response('A different response', {status: 200});
+          }
+        ]
       }
     })
     ctx.ky = client
