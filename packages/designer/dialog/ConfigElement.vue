@@ -9,20 +9,20 @@
       <edit-font v-model="element.font" v-if="element.font"></edit-font>
       <edit-background v-model="element.background" v-if="element.background"></edit-background>
       <item-block title="层次">
-        <van-button size="small">最下</van-button>
-        <van-button size="small">上一层</van-button>
-        <van-button size="small">下一层</van-button>
+        <van-button size="small" @click="swap('bottom')">最下</van-button>
+        <van-button size="small" @click="swap('up')">上一层</van-button>
+        <van-button size="small" @click="swap('down')">下一层</van-button>
         <van-button size="small" @click="swap('top')">最上</van-button>
       </item-block>
     </van-tab>
-    <van-tab title="定位与大小">
+    <van-tab title="定位">
       <edit-position v-model="element.position" v-if="element.position"></edit-position>
     </van-tab>
     <van-tab title="边框">
       <edit-border v-model="element.border" v-if="element.border"></edit-border>
       <edit-clip-path v-model="element.clip" v-if="clipable"></edit-clip-path>
     </van-tab>
-    <van-tab title="动画效果">
+    <van-tab title="动画">
       <edit-animation v-model="element.in" title="进入" :type="['entrance', 'attention', element.type==='text'?'text': undefined]"></edit-animation>
       <edit-animation v-model="element.existence" title="持续" :type="['attention']"></edit-animation>
       <edit-animation v-model="element.out" title="离开" :type="['outs']"></edit-animation>

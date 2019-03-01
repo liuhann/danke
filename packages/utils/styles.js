@@ -124,7 +124,6 @@ function getBackgroundStyle (background) {
       styles.push(`background: transparent`)
     }
   }
-
   styles.push(`background-size: ${background.size}`)
   styles.push(`background-position: ${background.position}`)
   styles.push(`background-repeat: ${background.position}`)

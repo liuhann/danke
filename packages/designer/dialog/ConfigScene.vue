@@ -1,6 +1,9 @@
 <template>
 <div class="scene-edit-wrapper">
   <div class="pop-content">
+    <item-block title="名称">
+      <van-field v-model="scene.title" clearable autosize></van-field>
+    </item-block>
     <item-block title="类型">
       <select v-model="scene.type">
         <option value="slide">普通</option>
@@ -13,7 +16,6 @@
     </item-block>
     <edit-background v-model="scene.background"></edit-background>
   </div>
-
 </div>
 </template>
 

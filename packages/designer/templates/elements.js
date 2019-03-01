@@ -13,7 +13,7 @@ const BACKGROUND = {
 
 const FONT = {
   size: 16,
-  spacing: 2,
+  spacing: 0,
   color: '#fff',
   weight: 'normal',
   align: 'left',
@@ -120,11 +120,12 @@ const WORK = {
 const SCENE = mergeDeep({}, {
   type: 'slide',
   play: 'auto',
+  title: '',
   background: Object.assign({}, BACKGROUND, {
     mode: '0'
   }),
   hideDelay: 2000,
-  duration: 3000,
+  duration: 5000,
   elements: []
 })
 

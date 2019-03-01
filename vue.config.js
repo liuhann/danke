@@ -6,11 +6,11 @@ module.exports = {
     contentBase: './demo'
   },
   publicPath: process.env.NODE_ENV === 'production'
-    ? '/danke/'
+    ? '/user/'
     : '/',
   outputDir: process.env.NODE_ENV === 'production'
-    ? '../shopen-bcc/public/danke'
-    : '../shopen-bcc/public/danke',
+    ? '../shopen-bcc/public/user'
+    : '../shopen-bcc/public/user',
   pages: {
     index: {
       entry: 'app/main.js',

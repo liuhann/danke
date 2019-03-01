@@ -168,7 +168,7 @@ export default {
     tapAddScene (index, isAfter) {
       const scene = clone(Elements.SCENE)
       scene.id = shortid()
-
+      scene.title = '场景' + (this.scenes.length + 1)
       if (index != null) {
 
       }
@@ -192,6 +192,7 @@ export default {
     // 复制当前场景并在当前场景后创建新的
     cloneCurrentScene () {
       const cloned = clone(this.currentScene)
+      cloned.title = '场景' + (this.scenes.length + 1)
       this.scenes.splice(this.currentSceneIndex-1, 0, cloned)
       this.currentSceneIndex ++
       this.currentScene = cloned
@@ -273,7 +274,7 @@ export default {
     },
 
     previewPlay () {
-      debugger
+      this.saveDraft()
       this.ctx.work = this.work
       this.$router.push('/play')
     },
