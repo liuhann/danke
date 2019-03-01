@@ -1,6 +1,7 @@
 <template>
   <van-row class="config-block" type="flex" justify="space-around">
-    <van-col span="6" class="tc label">{{title}}</van-col>
+    <van-col span="6" class="tc label">
+      <div @touchstart="touchStart" @touchmove="touchMove">{{title}}</div></van-col>
     <van-col span="18" class="full" v-if="!$slots.end">
       <slot></slot>
     </van-col>
@@ -19,6 +20,17 @@ export default {
   props: {
     title: {
       type: String
+    }
+  },
+  methods: {
+    touchStart(e) {
+      this.$emit('touch-start', e)
+      console.log('ts')
+    },
+
+    touchMove (e) {
+      this.$emit('touch-move', e)
+      console.log('tm')
     }
   }
 }

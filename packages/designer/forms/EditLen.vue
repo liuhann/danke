@@ -1,11 +1,11 @@
 <template>
-<item-block :title="label" class="item-block">
-  <van-stepper @plus="stepChange" @minus="stepChange"  v-model="length" :min="min || 0" :max="max" :step="step || 1"/>
-  <select v-model="unit" v-if="withUnit" slot="end">
-    <option value="vw">屏宽</option>
-    <option value="vh">屏高</option>
-    <option value="px">像素</option>
-  </select>
+<item-block :title="label" class="item-block" @touch-start="touchStart" @touch-move="touchMove">
+    <van-stepper @plus="stepChange" @minus="stepChange"  v-model="length" :min="min || 0" :max="max" :step="step || 1"/>
+    <select v-model="unit" v-if="withUnit" slot="end">
+      <option value="vw">屏宽</option>
+      <option value="vh">屏高</option>
+      <option value="px">像素</option>
+    </select>
 </item-block>
 </template>
 
@@ -33,7 +33,8 @@ export default {
       type: Number
     },
     step: {
-      type: Number
+      type: Number,
+      default: 1
     }
   },
   name: 'EditLen',
@@ -55,6 +56,7 @@ export default {
   },
   data () {
     return {
+      lastTouchMoveX: 0,
       length: 0,
       unit: 'vw'
     }
@@ -74,6 +76,22 @@ export default {
         this.length = this.value
       }
     },
+
+    touchStart (e) {
+      this.lastTouchMoveX = e.touches[0].clientX
+      console.log('touch start', this.lastTouchMoveX)
+    },
+
+    touchMove (e) {
+      console.log('touch move', deltaX)
+      const deltaX = e.touches[0].clientX - this.lastTouchMoveX
+
+      if (Math.abs(deltaX) > 5) {
+        this.length = parseInt(this.length) + Math.floor(deltaX/2) * this.step
+        this.lastTouchMoveX = e.touches[0].clientX
+      }
+    },
+
     stepChange () {
       // this.$emit('change')
     },

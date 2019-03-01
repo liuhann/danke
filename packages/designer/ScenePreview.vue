@@ -151,11 +151,6 @@ export default {
       this.currentIndex = index
       this.currentElement = this.scene.elements[index]
       this.$emit('element-selected', this.currentElement)
-    },
-    onSceneClicked () {
-      this.currentIndex = -1
-      this.currentElement = null
-      this.$emit('scene-selected')
     }
   }
 }

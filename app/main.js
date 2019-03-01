@@ -22,7 +22,7 @@ const boot = new AsyncBoot({
   Vue,
   VueRouter,
   App,
-  appServer: 'http://www.yuanbaogushi.com',
+  appServer: 'http://www.danke.fun',
   mount: '#app',
   packages: [
     home, designer, runtime, login
@@ -37,7 +37,7 @@ const boot = new AsyncBoot({
       window.localStorage.setItem('dankeToken', token)
     }
     const client = ky.extend({
-      prefixUrl: 'http://www.yuanbaogushi.com/api/',
+      prefixUrl: 'http://www.danke.fun/api/',
       throwHttpErrors: false,
       searchParams: {
         'token': token

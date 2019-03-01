@@ -120,7 +120,9 @@ const WORK = {
 const SCENE = mergeDeep({}, {
   type: 'slide',
   play: 'auto',
-  background: BACKGROUND,
+  background: Object.assign({}, BACKGROUND, {
+    mode: '0'
+  }),
   hideDelay: 2000,
   duration: 3000,
   elements: []
