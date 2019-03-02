@@ -50,6 +50,7 @@
         <div class="tools-bar">
           <van-button size="small" type="primary" @click="previewPlay">播放</van-button>
           <van-button size="small" type="primary" @click="saveDraft">保存草稿</van-button>
+          <van-button size="small" type="primary" @click="saveOtherDraft">另存</van-button>
         </div>
       </van-tab>
     </van-tabs>
@@ -271,6 +272,18 @@ export default {
       this.ctx.workdao.addOrUpdateWork(Object.assign(this.work, {
         scenes: this.scenes
       }))
+    },
+
+    async saveOtherDraft () {
+      await this.ctx.workdao.addOrUpdateWork(Object.assign(this.work, {
+        id: shortid(),
+        scenes: this.scenes
+      }))
+      this.ctx.vant.Notify({
+        message: '另存成功',
+        duration: 1000,
+        background: '#1989fa'
+      });
     },
 
     previewPlay () {

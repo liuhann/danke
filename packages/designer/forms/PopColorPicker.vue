@@ -2,6 +2,7 @@
 <div class="color-picker">
   <div class="color-preview" :style="{backgroundColor: value}" @click="isShow = true">
   </div>
+  <input type="color"/>
   <van-popup v-model="isShow" class="pop-color-picker" position="bottom" :overlay="true" get-container="body">
     <van-cell title="颜色选取">
       <van-icon slot="right-icon" name="cross" class="custom-icon" @click="isShow = false"/>
