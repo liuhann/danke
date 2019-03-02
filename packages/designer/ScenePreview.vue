@@ -7,8 +7,7 @@
     :class="[element.animationPreview, index===currentIndex?'current':'']">
     <div v-if="element.type === 'text'" class="text" :style="{
       fontSize: element.font
-    }">
-      {{element.content}}
+    }" v-html="element.content ? (element.content.replace(/\n/g, '<br>')): ''">
     </div>
   </div>
 </div>

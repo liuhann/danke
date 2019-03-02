@@ -1,7 +1,7 @@
 <template>
 <div class="edit-text">
   <van-cell class="group-title" title="编辑文字" icon="expand-o" />
-  <van-field v-model="text" clearable autosize></van-field>
+  <van-field v-model="text" clearable autosize type="textarea"></van-field>
 </div>
 </template>
 

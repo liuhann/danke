@@ -51,8 +51,10 @@ function getElementStyle (element, device, animation) {
     } else if (element.position.horizontal === 'right') {
       styles.push(`right: ${getLength(element.position.offsetX, device)}px`)
     }
-    styles.push(`width: ${getLength(element.position.width, device)}px`)
-    styles.push(`height: ${getLength(element.position.height, device)}px`)
+    if (element.type === 'image') {
+      styles.push(`width: ${getLength(element.position.width, device)}px`)
+      styles.push(`height: ${getLength(element.position.height, device)}px`)
+    }
   }
 
   if (element.background) {
