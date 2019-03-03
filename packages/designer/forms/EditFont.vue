@@ -18,6 +18,7 @@
       <van-radio name="right">右</van-radio>
     </van-radio-group>
   </item-block>
+  <edit-len v-model="font.padding" label="边距"></edit-len>
 </div>
 </template>
 

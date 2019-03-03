@@ -79,15 +79,19 @@ export default {
 
     touchStart (e) {
       this.lastTouchMoveX = e.touches[0].clientX
-      console.log('touch start', this.lastTouchMoveX)
     },
 
     touchMove (e) {
-      console.log('touch move', deltaX)
       const deltaX = e.touches[0].clientX - this.lastTouchMoveX
 
       if (Math.abs(deltaX) > 5) {
         this.length = parseInt(this.length) + Math.floor(deltaX/2) * this.step
+        if (this.max && this.length > this.max) {
+          this.length = this.max
+        }
+        if (this.length < this.min) {
+          this.length = this.min
+        }
         this.lastTouchMoveX = e.touches[0].clientX
       }
     },

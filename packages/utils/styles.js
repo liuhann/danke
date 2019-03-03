@@ -93,6 +93,7 @@ function getElementStyle (element, device, animation) {
     styles.push(`font-weight: ${element.font.weight}`)
     styles.push(`letter-spacing: ${element.font.spacing}px`)
     styles.push(`text-decoration: ${element.font.decoration}px`)
+    styles.push(`padding: ${getLength(element.font.padding, device)}px`)
   }
 
   if (animation && element[animation]) {

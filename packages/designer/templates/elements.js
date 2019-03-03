@@ -12,6 +12,7 @@ const BACKGROUND = {
 }
 
 const FONT = {
+  padding: 0,
   size: 16,
   spacing: 0,
   color: '#fff',
