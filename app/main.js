@@ -45,7 +45,6 @@ const boot = new AsyncBoot({
       hooks: {
         afterResponse: [
           response => {
-            alert(response.status)
             // You could do something with the response, for example, logging.
             if (response.status === 200) {
               return response
@@ -55,6 +54,7 @@ const boot = new AsyncBoot({
               } else {
                 throw new Error()
               }
+              throw new Error()
             }
             // Or return a `Response` instance to overwrite the response.
             // return new Response('A different response', {status: 200});

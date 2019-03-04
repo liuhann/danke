@@ -26,6 +26,17 @@
 
   <van-popup class="pop-menus" position="right" :overlay="true" v-model="pop.showMenus">
     <van-tabs v-model="tabConfig">
+      <van-tab title="元素">
+        <van-cell-group v-if="currentScene">
+          <van-cell v-for="(element, index) in currentScene.elements" :key="element.id" :title="element.type" :icon="element.type | icon"
+          @click.self="tapElementOn(element)">
+            <div class="right-icon">
+              <van-button plain size="small" @click="removeElement(index)">删除</van-button>
+              <van-button plain size="small" @click="cloneElement(index)">复制</van-button>
+            </div>
+          </van-cell>
+        </van-cell-group>
+      </van-tab>
       <van-tab title="场景配置">
         <van-pagination
           v-model="currentSceneIndex"
@@ -40,7 +51,7 @@
           <van-button size="small" @click="cloneCurrentScene">复制</van-button>
           <van-button size="small" @click="movePrev">向前移动</van-button>
           <van-button size="small" @click="moveNext">向后移动</van-button>
-          <van-button size="small" type="danger">删除场景</van-button>
+          <van-button size="small" @click="deleteScene" type="danger">删除场景</van-button>
         </div>
       </van-tab>
       <van-tab title="作品配置">
@@ -116,9 +127,20 @@ export default {
       return back
     }
   },
-
   created () {
     this.init()
+  },
+  filters: {
+    icon: function (type) {
+      switch (type) {
+        case 'image':
+          return 'photo'
+        case 'text':
+          return 'edit'
+        default:
+          return 'app'
+      }
+    }
   },
   methods: {
     async init () {
@@ -180,14 +202,20 @@ export default {
 
     },
 
-    //将当前场景向前移动
+    //将当前场景向后移动
     moveNext () {
 
     },
 
-    //当前场景向后移动
+    //当前场景向前移动
     movePrev () {
-
+      if (this.currentSceneIndex === 1) {
+        return
+      }
+      this.scenes[this.currentSceneIndex - 1] = this.scenes[this.currentSceneIndex - 2]
+      this.scenes[this.currentSceneIndex - 2] = this.currentScene
+      this.currentSceneIndex --
+      this.currentScene = this.scenes[this.currentSceneIndex - 1]
     },
 
     // 复制当前场景并在当前场景后创建新的
@@ -207,15 +235,16 @@ export default {
       this.currentScene = this.scenes[page - 1]
     },
 
-    deleteScene (index) {
-      vant.Dialog.confirm({
-        title: '标题',
-        message: '弹窗内容'
-      }).then(() => {
-        // on confirm
-      }).catch(() => {
-        // on cancel
-      })
+    deleteScene () {
+      this.scenes.splice(this.currentSceneIndex-1, 1)
+      if (this.scenes.length === 0) {
+        this.tapAddScene()
+        this.currentSceneIndex = 1
+        this.currentScene = this.scenes[0]
+      } else {
+        this.currentSceneIndex --
+        this.currentScene = this.scenes[this.currentSceneIndex - 1]
+      }
     },
 
     // 选择新增一个element
@@ -234,8 +263,19 @@ export default {
       }
     },
 
+    removeElement (index) {
+      this.currentScene.elements.splice(index, 1)
+    },
+
+    cloneElement (index) {
+      const cloned = clone(this.currentScene.elements[index])
+      cloned.id = shortid()
+      this.currentScene.elements.push(cloned)
+    },
+
     tapElementOn (element) {
       this.currentElement = element
+      this.pop.showMenus = false
       this.pop.elementConfig = true
     },
 
@@ -313,6 +353,7 @@ export default {
   align-items: center;
 
   .scene-container {
+    overflow: hidden;
     position: absolute;
     box-shadow: 0 0 8px 0px rgba(65, 106, 166, 0.2);
   }
