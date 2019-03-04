@@ -45,6 +45,7 @@ const boot = new AsyncBoot({
       hooks: {
         afterResponse: [
           response => {
+            alert(response.status)
             // You could do something with the response, for example, logging.
             if (response.status === 200) {
               return response
