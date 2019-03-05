@@ -64,7 +64,7 @@ export default {
 		},
 		value () {
       var rgb = this.value.match(/\d+/g);
-      if (rgb.length ===4) {
+      if (rgb && rgb.length ===4) {
      		this.rgba.r = rgb[0]
      		this.rgba.g = rgb[1]
      		this.rgba.b = rgb[2]

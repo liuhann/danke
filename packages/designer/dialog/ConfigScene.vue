@@ -20,13 +20,14 @@
         next-text	="下一场景"
         @change="sceneChange"
       />
+
       <div class="tools-bar">
         <van-button size="small" @click="tapAddScene">新增</van-button>
-        <van-button size="small" @click="cloneCurrentScene">复制</van-button>
-        <van-button size="small" @click="movePrev">向前移动</van-button>
-        <van-button size="small" @click="moveNext">向后移动</van-button>
-        <van-button size="small" @click="deleteScene" type="danger">删除场景</van-button>
+        <van-button size="small" @click="addByTemplate">从模板新建</van-button>
+        <van-button size="small" @click="cloneCurrentScene">复制新建</van-button>
+        <van-button size="small" @click="saveAsTemplate">保存为模板</van-button>
       </div>
+
       <item-block title="名称">
         <van-field v-model="scene.title" clearable autosize></van-field>
       </item-block>
@@ -41,6 +42,11 @@
         <van-stepper v-model="scene.duration" integer disable-input :step="50"/>
       </item-block>
       <edit-background v-model="scene.background"></edit-background>
+      <div class="tools-bar">
+        <van-button size="small" @click="deleteScene" type="danger">删除场景</van-button>
+        <van-button size="small" @click="movePrev">向前移动</van-button>
+        <van-button size="small" @click="moveNext">向后移动</van-button>
+      </div>
     </van-tab>
 
     <van-tab title="作品配置">
@@ -126,12 +132,12 @@ export default {
     },
     //将当前场景向后移动
     moveNext () {
-      if (this.currentSceneIndex === this.scenes.length - 1) {
+      if (this.currentSceneIndex === this.scenes.length) {
         return
       }
-      this.scenes[this.currentSceneIndex - 1] = this.scenes[this.currentSceneIndex - 2]
-      this.scenes[this.currentSceneIndex - 2] = this.currentScene
-      this.currentSceneIndex --
+      this.scenes[this.currentSceneIndex - 1] = this.scenes[this.currentSceneIndex]
+      this.scenes[this.currentSceneIndex] = this.scene
+      this.currentSceneIndex ++
       this.sceneChange(this.currentSceneIndex)
     },
 
@@ -141,19 +147,17 @@ export default {
         return
       }
       this.scenes[this.currentSceneIndex - 1] = this.scenes[this.currentSceneIndex - 2]
-      this.scenes[this.currentSceneIndex - 2] = this.currentScene
+      this.scenes[this.currentSceneIndex - 2] = this.scene
       this.currentSceneIndex --
       this.sceneChange(this.currentSceneIndex)
     },
 
     deleteScene () {
-      this.scenes.splice(this.currentSceneIndex - 1, 1)
-      if (this.scenes.length === 0) {
-        this.addScene()
-        this.currentSceneIndex = 1
-      } else {
-        this.currentSceneIndex --
+      if (this.scenes.length === 1) {
+        return
       }
+      this.scenes.splice(this.currentSceneIndex - 1, 1)
+      this.currentSceneIndex --
       this.sceneChange()
     },
 
@@ -191,16 +195,25 @@ export default {
       this.saveDraft()
       this.ctx.work = this.work
       this.$router.push('/play')
+    },
+
+    addByTemplate () {
+
+    },
+
+    saveAsTemplate () {
+
     }
   }
 }
 </script>
 
 <style lang="less">
-.scene-edit-wrapper {
+.config-work-scene {
   background-color: #fff;
   .tools-bar {
     margin: 8px;
+    padding: 5px;
   }
 }
 </style>

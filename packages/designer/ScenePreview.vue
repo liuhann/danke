@@ -43,6 +43,9 @@ export default {
     },
     'currentElementLength': function(newVal, oldVal) {
       this.renderAllElements()
+    },
+    'scene': function() {
+      this.renderAllElements()
     }
   },
   computed: {
