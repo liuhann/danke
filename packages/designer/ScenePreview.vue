@@ -149,7 +149,7 @@ export default {
     onElementClicked (index) {
       this.currentIndex = index
       this.currentElement = this.scene.elements[index]
-      this.$emit('element-selected', this.currentElement)
+      this.$emit('element-selected', index)
     }
   }
 }

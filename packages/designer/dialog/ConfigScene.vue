@@ -88,14 +88,21 @@ export default {
       tabConfig: 0
     }
   },
+  filters: {
+    icon: function (type) {
+      switch (type) {
+        case 'image':
+          return 'photo'
+        case 'text':
+          return 'edit'
+        default:
+          return 'app'
+      }
+    }
+  },
   watch: {
 
   },
-
-  computed: {
-
-  },
-
   created () {
   },
 

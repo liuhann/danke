@@ -39,13 +39,13 @@ import SceneList from './dialog/SceneList'
 import { mergeDeep, clone } from '../utils/object'
 import { shortid } from '../utils/string'
 import Elements from './templates/elements'
+import TPL_SCENE from './templates/scene'
 import ConfigElement from './dialog/ConfigElement'
 import AddElement from './dialog/AddElement'
 
 import ConfigScene from './dialog/ConfigScene'
 import ItemBlock from './forms/ItemBlock'
 import 'vant/lib/index.css'
-
 
 export default {
   name: 'Designer',
@@ -93,18 +93,7 @@ export default {
   created () {
     this.init()
   },
-  filters: {
-    icon: function (type) {
-      switch (type) {
-        case 'image':
-          return 'photo'
-        case 'text':
-          return 'edit'
-        default:
-          return 'app'
-      }
-    }
-  },
+
   methods: {
     async init () {
       if (this.$route.query.id) { // load work
@@ -151,9 +140,8 @@ export default {
       this.pop.sceneList = true
     },
 
-    tapAddScene (index, isAfter) {
-      debugger
-      const scene = clone(Elements.SCENE)
+    tapAddScene () {
+      const scene = clone(TPL_SCENE)
       scene.id = shortid()
       scene.title = '场景' + (this.scenes.length + 1)
       this.scenes.push(scene)
