@@ -25,46 +25,10 @@
   </van-popup>
 
   <van-popup class="pop-menus" position="right" :overlay="true" v-model="pop.showMenus">
-    <van-tabs v-model="tabConfig">
-      <van-tab title="元素">
-        <van-cell-group v-if="currentScene">
-          <van-cell v-for="(element, index) in currentScene.elements" :key="element.id" :title="element.type" :icon="element.type | icon"
-          @click.self="tapElementOn(element)">
-            <div class="right-icon">
-              <van-button plain size="small" @click="removeElement(index)">删除</van-button>
-              <van-button plain size="small" @click="cloneElement(index)">复制</van-button>
-            </div>
-          </van-cell>
-        </van-cell-group>
-      </van-tab>
-      <van-tab title="场景配置">
-        <van-pagination
-          v-model="currentSceneIndex"
-          :show-page-size="4"
-          :page-count="scenes.length + 1"
-          prev-text="上一场景"
-          next-text	="下一场景"
-          @change="sceneChange"
-        />
-        <config-scene v-model="currentScene" v-if="currentScene" class="scene-config"></config-scene>
-        <div class="tools-bar">
-          <van-button size="small" @click="cloneCurrentScene">复制</van-button>
-          <van-button size="small" @click="movePrev">向前移动</van-button>
-          <van-button size="small" @click="moveNext">向后移动</van-button>
-          <van-button size="small" @click="deleteScene" type="danger">删除场景</van-button>
-        </div>
-      </van-tab>
-      <van-tab title="作品配置">
-        <item-block title="标题">
-          <van-field v-if="work" v-model="work.title" required clearable/>
-        </item-block>
-        <div class="tools-bar">
-          <van-button size="small" type="primary" @click="previewPlay">播放</van-button>
-          <van-button size="small" type="primary" @click="saveDraft">保存草稿</van-button>
-          <van-button size="small" type="primary" @click="saveOtherDraft">另存</van-button>
-        </div>
-      </van-tab>
-    </van-tabs>
+    <config-scene :scene="currentScene" :work="work" :scenes="scenes" :scene-index="currentSceneIndex"
+                  @choose-element="tapElementOn"
+                  @scene-change="sceneChange">
+    </config-scene>
   </van-popup>
 </div>
 </template>
@@ -95,7 +59,6 @@ export default {
   },
   data () {
     return {
-      tabConfig: 0,
       pop: {
         showMenus: false,
         elementConfig: false,
@@ -189,12 +152,10 @@ export default {
     },
 
     tapAddScene (index, isAfter) {
+      debugger
       const scene = clone(Elements.SCENE)
       scene.id = shortid()
       scene.title = '场景' + (this.scenes.length + 1)
-      if (index != null) {
-
-      }
       this.scenes.push(scene)
     },
 
@@ -202,49 +163,11 @@ export default {
 
     },
 
-    //将当前场景向后移动
-    moveNext () {
-
-    },
-
-    //当前场景向前移动
-    movePrev () {
-      if (this.currentSceneIndex === 1) {
-        return
-      }
-      this.scenes[this.currentSceneIndex - 1] = this.scenes[this.currentSceneIndex - 2]
-      this.scenes[this.currentSceneIndex - 2] = this.currentScene
-      this.currentSceneIndex --
-      this.currentScene = this.scenes[this.currentSceneIndex - 1]
-    },
-
-    // 复制当前场景并在当前场景后创建新的
-    cloneCurrentScene () {
-      const cloned = clone(this.currentScene)
-      cloned.title = '场景' + (this.scenes.length + 1)
-      this.scenes.splice(this.currentSceneIndex-1, 0, cloned)
-      this.currentSceneIndex ++
-      this.currentScene = cloned
-    },
 
     sceneChange (page) {
-      if (page - 1 === this.scenes.length) {
-        this.tapAddScene()
-      }
-      this.currentSceneIndex  = page
+      this.currentSceneIndex = page
       this.currentScene = this.scenes[page - 1]
-    },
-
-    deleteScene () {
-      this.scenes.splice(this.currentSceneIndex-1, 1)
-      if (this.scenes.length === 0) {
-        this.tapAddScene()
-        this.currentSceneIndex = 1
-        this.currentScene = this.scenes[0]
-      } else {
-        this.currentSceneIndex --
-        this.currentScene = this.scenes[this.currentSceneIndex - 1]
-      }
+      this.currentElement = null
     },
 
     // 选择新增一个element
@@ -273,15 +196,10 @@ export default {
       this.currentScene.elements.push(cloned)
     },
 
-    tapElementOn (element) {
-      this.currentElement = element
+    tapElementOn (index) {
+      this.currentElement = this.currentScene.elements[index]
       this.pop.showMenus = false
       this.pop.elementConfig = true
-    },
-
-    tapSceneOn () {
-      this.currentElement = null
-      this.pop.showConfig = false
     },
 
     removeCurrentElement () {
@@ -306,30 +224,6 @@ export default {
         this.currentScene.elements[currentIndex] = this.currentScene.elements[this.currentScene.elements.length - 1]
         this.currentScene.elements[this.currentScene.elements.length - 1] = this.currentElement
       }
-    },
-
-    saveDraft () {
-      this.ctx.workdao.addOrUpdateWork(Object.assign(this.work, {
-        scenes: this.scenes
-      }))
-    },
-
-    async saveOtherDraft () {
-      await this.ctx.workdao.addOrUpdateWork(Object.assign(this.work, {
-        id: shortid(),
-        scenes: this.scenes
-      }))
-      this.ctx.vant.Notify({
-        message: '另存成功',
-        duration: 1000,
-        background: '#1989fa'
-      });
-    },
-
-    previewPlay () {
-      this.saveDraft()
-      this.ctx.work = this.work
-      this.$router.push('/play')
     },
 
     returnHome () {
@@ -409,10 +303,7 @@ export default {
     width: 85vw;
     height: 100vh;
     background-color: #efefef;
-    .tools-bar {
-      display: flex;
-      margin: 8px;
-    }
+
   }
 }
 
