@@ -9,8 +9,8 @@ module.exports = {
     ? '/user/'
     : '/',
   outputDir: process.env.NODE_ENV === 'production'
-    ? '../shopen-bcc/public/user'
-    : '../shopen-bcc/public/user',
+    ? '../shopen/public/user'
+    : '../shopen/public/user',
   pages: {
     index: {
       entry: 'app/main.js',

@@ -30,9 +30,9 @@ export default {
   created () {
     // assume that work is loaded from loader
     if (this.$route.params.id) {
-      debugger
       this.ctx.workdao.getWork(this.$route.params.id).then((work)=>{
         const danke = new Danke(clone(work).scenes, this.device)
+        document.title = '蛋壳分享:' + work.title
         this.scenes = danke.scenes
         this.$nextTick(() => {
           danke.next()
@@ -41,6 +41,7 @@ export default {
     } else {
       if (this.ctx.work) {
         const danke = new Danke(clone(this.ctx.work).scenes, this.device)
+        document.title = '蛋壳分享:' + work.title
         this.scenes = danke.scenes
         this.$nextTick(() => {
           danke.next()
