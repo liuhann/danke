@@ -29,13 +29,25 @@ export default {
   },
   created () {
     // assume that work is loaded from loader
-    if (this.ctx.work) {
-      const danke = new Danke(clone(this.ctx.work).scenes, this.device)
-      this.scenes = danke.scenes
-      this.$nextTick(() => {
-        danke.next()
+    if (this.$route.params.id) {
+      debugger
+      this.ctx.workdao.getWork(this.$route.params.id).then((work)=>{
+        const danke = new Danke(clone(work).scenes, this.device)
+        this.scenes = danke.scenes
+        this.$nextTick(() => {
+          danke.next()
+        })
       })
+    } else {
+      if (this.ctx.work) {
+        const danke = new Danke(clone(this.ctx.work).scenes, this.device)
+        this.scenes = danke.scenes
+        this.$nextTick(() => {
+          danke.next()
+        })
+      }
     }
+
   },
   methods: {
     onElementClicked () {
@@ -53,6 +65,8 @@ export default {
   width: 100%;
   height: 100%;
   overflow: hidden;
-
+  .element-wrapper {
+    position: absolute;
+  }
 }
 </style>
