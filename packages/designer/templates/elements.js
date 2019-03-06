@@ -74,6 +74,7 @@ const BASE = {
 
 const IMAGE = mergeDeep({}, BASE, {
   type: 'image',
+  name: '形状',
   sizing: 'cover',
   background: {
     color: '#efefef'

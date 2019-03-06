@@ -6,7 +6,7 @@
 
   <scene-preview v-if="backgroundScene" :scene="backgroundScene" :device="device" class="scene-container"></scene-preview>
   <!--效果预览区-->
-  <scene-preview v-if="currentScene" :scene="currentScene" :device="device" class="scene-container"
+  <scene-preview v-if="currentScene" :scene="currentScene" :device="device" class="scene-container" :element="currentElement"
     @element-selected="tapElementOn"></scene-preview>
 
   <!--元素配置区，可以进行元素配置项手动修改 -->

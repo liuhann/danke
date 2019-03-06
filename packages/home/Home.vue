@@ -53,6 +53,7 @@ export default {
   },
   methods: {
     choose (type) {
+      this.ctx.work = null
       this.$router.replace('/designer?type=' + type)
     },
     async listWork () {

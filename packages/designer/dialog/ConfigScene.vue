@@ -2,7 +2,7 @@
   <van-tabs v-model="tabConfig" class="config-work-scene">
     <van-tab title="元素">
       <van-cell-group v-if="scene">
-        <van-cell v-for="(element, index) in scene.elements" :key="element.id" :title="element.type" :icon="element.type | icon"
+        <van-cell v-for="(element, index) in scene.elements" :key="element.id" :title="element.type + element.name" :icon="element.type | icon"
                   @click="tapElementOn(index)">
           <div class="right-icon">
             <van-button plain size="small" @click.stop="removeElement(index)">删除</van-button>

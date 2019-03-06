@@ -37,7 +37,9 @@ class WorkDAO {
   async removeWork (id) {
     return this.ctx.delete(`danke/v2/work/${id}`).json()
   }
-
+  async saveTemplate (element) {
+    await this.ctx.post(`danke/v2/template/element`).json()
+  }
   async uploadImage (file) {
     // check file size
     const formData = new FormData()

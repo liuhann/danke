@@ -23,6 +23,9 @@ export default {
     EditElement
   },
   props: {
+    element: {
+      type: Object
+    },
     scene: {
       type: Object
     },
@@ -46,6 +49,12 @@ export default {
     },
     'scene': function() {
       this.renderAllElements()
+    },
+    'element': function (val) {
+      if (val) {
+        this.currentElement = val
+        this.renderElement(this.currentElement)
+      }
     }
   },
   computed: {

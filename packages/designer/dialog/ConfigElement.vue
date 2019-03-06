@@ -1,10 +1,15 @@
 <template>
 <div class="element-edit">
   <van-nav-bar title="元素配置" @click-left="close" left-text="关闭">
-    <van-button size="small" plain type="danger" class="btn-delete" @click="removeElement" slot="right">删除</van-button>
+    <van-button size="small" plain type="danger" class="btn-delete" @click="saveAsTemplate" slot="right">保存为模板</van-button>
   </van-nav-bar>
   <van-tabs v-model="activeKey">
     <van-tab title="基础">
+      <item-block title="名称">
+        <van-field
+          v-model="element.name"
+        />
+      </item-block>
       <edit-text v-model="element.content" v-if="element.content != null"></edit-text>
       <edit-font v-model="element.font" v-if="element.font"></edit-font>
       <edit-background v-model="element.background" v-if="element.background"></edit-background>
@@ -28,6 +33,17 @@
       <edit-animation v-model="element.out" title="离开" :type="['outs']"></edit-animation>
     </van-tab>
   </van-tabs>
+
+  <van-dialog
+    v-model="showTemplateName"
+    show-cancel-button
+    :before-close="templateNameConfirmed"
+  >
+    <van-field
+      v-model="templateName"
+      label="模板名称"
+    />
+  </van-dialog>
 </div>
 </template>
 
@@ -67,6 +83,8 @@ export default {
   },
   data () {
     return {
+      templateName: '',
+      showTemplateName: false,
       element: this.editElement,
       activeKey: 0,
     }
@@ -106,6 +124,18 @@ export default {
     },
     removeElement () {
       this.$emit('element-remove')
+    },
+    saveAsTemplate () {
+      this.templateName = this.element.name
+      this.showTemplateName = true
+    },
+    templateNameConfirmed (action, done) {
+      if (action === 'confirm') {
+        this.ctx.workdao.saveTemplate(this.element).then(done)
+        setTimeout(done, 1000);
+      } else {
+        done();
+      }
     }
   }
 }
