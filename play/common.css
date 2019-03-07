@@ -1,0 +1,16 @@
+select {
+  padding: 5px;
+  border: 1px solid #ebedf0;
+  border-radius: 2px;
+  color: #666;
+}
+.section {
+  margin-top: 8px;
+}
+.tc {
+  text-align: center;
+}
+
+.ar {
+  text-align: right;
+}
