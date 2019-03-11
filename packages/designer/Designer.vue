@@ -45,7 +45,6 @@ import AddElement from './dialog/AddElement'
 
 import ConfigScene from './dialog/ConfigScene'
 import ItemBlock from './forms/ItemBlock'
-import 'vant/lib/index.css'
 
 export default {
   name: 'Designer',

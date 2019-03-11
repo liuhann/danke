@@ -1,7 +1,6 @@
-const Designer = () => import('./Designer.vue')
 export default {
   routes: [{
     path: '/designer/:type?',
-    component: Designer
+    component: () => import(/* webpackChunkName: "designer" */ './Designer.vue')
   }]
 }

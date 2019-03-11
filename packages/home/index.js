@@ -1,9 +1,7 @@
-import Home from './Home'
-
 export default {
   routes: [{
     path: '/',
-    component: Home
+    component: () => import(/* webpackChunkName: "home" */'./Home')
   }],
   async onload (ctx) {
   }

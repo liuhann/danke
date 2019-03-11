@@ -29,7 +29,6 @@
 import LogoWrapper from '../common/LogoWrapper'
 import TabChooseType from './TabChooseType'
 import ImageDefault from './photo.svg'
-import { Dialog, Toast } from 'vant'
 import DankeHeader from '../common/DankeHeader'
 export default {
   name: 'Home',
@@ -64,7 +63,7 @@ export default {
       this.$router.push('/designer?id=' + id)
     },
     confirmRemoveWork (id) {
-      Dialog.confirm({
+      this.ctx.vant.Dialog.confirm({
         message: '是否确认删除此作品'
       }).then(async () => {
         const toast = Toast.loading({

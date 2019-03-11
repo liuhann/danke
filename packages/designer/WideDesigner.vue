@@ -98,7 +98,7 @@ export default {
     },
 
     deleteScene (index) {
-      vant.Dialog.confirm({
+      this.vant.Dialog.confirm({
         title: '标题',
         message: '弹窗内容'
       }).then(() => {
