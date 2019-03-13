@@ -74,8 +74,7 @@
     <van-dialog
       v-model="showTemplateName"
       show-cancel-button
-      :before-close="templateNameConfirmed"
-    >
+      :before-close="templateNameConfirmed">
       <van-field
         v-model="templateName"
         label="模板名称"
