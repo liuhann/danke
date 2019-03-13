@@ -19,6 +19,13 @@
         <van-button size="small" @click="swap('down')">下一层</van-button>
         <van-button size="small" @click="swap('top')">最上</van-button>
       </item-block>
+      <item-block title="交互动作">
+        <select v-model="element.onclick">
+          <option value="to bottom">下一页</option>
+          <option value="to right">上一页</option>
+          <option value="to right">第一页</option>
+        </select>
+      </item-block>
     </van-tab>
     <van-tab title="定位">
       <edit-position v-model="element.position" v-if="element.position"></edit-position>

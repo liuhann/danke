@@ -49,6 +49,10 @@
       </div>
     </van-tab>
 
+    <van-tab title="资源">
+
+    </van-tab>
+
     <van-tab title="作品配置">
       <item-block title="标题">
         <van-field v-if="work" v-model="work.title" required clearable/>
@@ -59,6 +63,8 @@
         <van-button size="small" type="primary" @click="saveOtherDraft">另存</van-button>
       </div>
     </van-tab>
+
+
   </van-tabs>
 </template>
 

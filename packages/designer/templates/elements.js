@@ -30,6 +30,7 @@ const TURNING = {
 const BASE = {
   version: '1.2',
   type: '',
+  onclick: '',
   position: {
     horizontal: 'left',
     vertical: 'top',
