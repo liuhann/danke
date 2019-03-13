@@ -1,12 +1,19 @@
 <template>
   <van-tabs v-model="tabConfig" class="config-work-scene">
     <van-tab title="元素">
-      <van-cell-group v-if="scene">
-        <van-cell v-for="(element, index) in scene.elements" :key="element.id" :title="element | title" :icon="element.type | icon"
-                  @click="tapElementOn(index)">
+      <div class="tools-bar">
+        <van-button plain size="small" @click.stop="removeSelectedElements">删除</van-button>
+        <van-button plain size="small" @click.stop="cloneSelectedElements">复制</van-button>
+        <van-button plain size="small" @click.stop="clonseSelectedAsTemplate">复制为模板</van-button>
+        <van-button plain size="small" @click.stop="copySelectedElements">粘贴</van-button>
+      </div>
+      <van-cell-group v-if="scene" class="element-list">
+        <van-cell v-for="(element, index) in scene.elements" :key="element.id" :title="element | title" :icon="element.type | icon">
+          <van-checkbox slot="icon" v-model="element.checked"></van-checkbox>
           <div class="right-icon">
-            <van-button plain size="small" @click.stop="removeElement(index)">删除</van-button>
-            <van-button plain size="small" @click.stop="cloneElement(index)">复制</van-button>
+            <van-icon name="arrow-up" @click="elementUp(index)"></van-icon>
+            <van-icon name="arrow-down" @click="elementDown(index)"></van-icon>
+            <van-icon @click.stop="tapElementOn(index)" name="edit"></van-icon>
           </div>
         </van-cell>
       </van-cell-group>
@@ -64,7 +71,16 @@
       </div>
     </van-tab>
 
-
+    <van-dialog
+      v-model="showTemplateName"
+      show-cancel-button
+      :before-close="templateNameConfirmed"
+    >
+      <van-field
+        v-model="templateName"
+        label="模板名称"
+      />
+    </van-dialog>
   </van-tabs>
 </template>
 
@@ -96,7 +112,10 @@ export default {
   },
   data () {
     return {
+      templateName: '',
+      showTemplateName: false,
       currentSceneIndex: this.sceneIndex,
+      selectedIndexs: [],
       tabConfig: 0
     }
   },
@@ -126,6 +145,68 @@ export default {
   },
 
   methods: {
+    cloneSelectedElements () {
+      const clipData = []
+      for (let element of this.scene.elements) {
+        if (element.checked) {
+          clipData.push(element)
+        }
+      }
+      if (clipData.length) {
+        this.ctx.vant.Toast('节点已经复制')
+        this.ctx.copiedElements = clipData
+        console.log(clipData)
+      } else {
+        this.ctx.vant.Toast('未选择任何节点')
+      }
+    },
+
+    clonseSelectedAsTemplate () {
+      this.cloneSelectedElements()
+      if (this.ctx.copiedElements.length) {
+        this.showTemplateName = true
+      }
+    },
+
+    copySelectedElements () {
+      if (this.ctx.copiedElements && this.ctx.copiedElements.length) {
+        for (let element of this.ctx.copiedElements) {
+          const cloned = clone(element)
+          cloned.checked = false
+          cloned.id = shortid()
+          this.scene.elements.push(cloned)
+        }
+        this.ctx.vant.Toast('复制完成')
+      } else {
+        this.ctx.vant.Toast('剪切板上无任何节点')
+      }
+    },
+
+    removeSelectedElements () {
+      const clipData = []
+      for (let element of this.scene.elements) {
+        if (element.checked) {
+          clipData.push(element)
+        }
+      }
+      if (clipData.length) {
+        this.ctx.vant.Toast('节点已经复制')
+        this.ctx.copiedElements = clipData
+        console.log(clipData)
+      } else {
+        this.ctx.vant.Toast('未选择任何节点')
+      }
+    },
+
+    templateNameConfirmed (action, done) {
+      if (action === 'confirm') {
+        this.ctx.workdao.saveTemplate(this.templateName, this.ctx.copiedElements).then(done)
+        setTimeout(done, 1000);
+      } else {
+        done();
+      }
+    },
+
     tapAddScene () {
       const scene = clone(TPL_SCENE)
       scene.id = shortid()
@@ -183,6 +264,26 @@ export default {
     tapElementOn (index) {
       this.$emit('choose-element', index)
     },
+
+    elementUp (index) {
+      if (index === 0) {
+        return
+      }
+      let swap = this.scene.elements[index - 1]
+      this.scene.elements[index - 1] = this.scene.elements[index]
+      this.scene.elements[index] = swap
+      this.scene.elements.splice(0, 0)
+    },
+    elementDown (index) {
+      if (index === this.scene.elements.length - 1) {
+        return
+      }
+      let swap = this.scene.elements[index + 1]
+      this.scene.elements[index + 1] = this.scene.elements[index]
+      this.scene.elements[index] = swap
+      this.scene.elements.splice(0, 0)
+    },
+
     close () {
       this.$emit('close')
     },
@@ -224,13 +325,25 @@ export default {
 <style lang="less">
 .config-work-scene {
   background-color: #fff;
+  .btn-group {
+
+  }
   .tools-bar {
     margin: 8px;
     padding: 5px;
   }
+  .element-list {
+    .right-icon .van-icon {
+      padding: 5px;
+    }
+  }
+  .right-icon {
+
+  }
   .van-cell__title {
     height:24px;
     overflow: hidden;
+    padding-left: 5px;
   }
 }
 </style>

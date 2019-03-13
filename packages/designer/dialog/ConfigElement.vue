@@ -40,17 +40,6 @@
       <edit-animation v-model="element.out" title="离开" :type="['outs']"></edit-animation>
     </van-tab>
   </van-tabs>
-
-  <van-dialog
-    v-model="showTemplateName"
-    show-cancel-button
-    :before-close="templateNameConfirmed"
-  >
-    <van-field
-      v-model="templateName"
-      label="模板名称"
-    />
-  </van-dialog>
 </div>
 </template>
 
@@ -90,8 +79,6 @@ export default {
   },
   data () {
     return {
-      templateName: '',
-      showTemplateName: false,
       element: this.editElement,
       activeKey: 0,
     }
@@ -131,18 +118,6 @@ export default {
     },
     removeElement () {
       this.$emit('element-remove')
-    },
-    saveAsTemplate () {
-      this.templateName = this.element.name
-      this.showTemplateName = true
-    },
-    templateNameConfirmed (action, done) {
-      if (action === 'confirm') {
-        this.ctx.workdao.saveTemplate(this.element).then(done)
-        setTimeout(done, 1000);
-      } else {
-        done();
-      }
     }
   }
 }
