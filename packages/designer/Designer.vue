@@ -1,13 +1,11 @@
 <template>
 <div class="designer mobile">
-  <van-icon class="page-button return" name="arrow-left" @click="returnHome"/>
-
   <div class="bottom-button-bar">
-    <van-icon class="icon-button prev-scene" name="arrow-left" @click="showAddElement"/>
+    <van-icon class="icon-button small prev-scene" name="arrow-left" @click="prevScene"/>
     <van-icon class="icon-button add" name="plus" @click="showAddElement"/>
-    <van-icon class="icon-button next-scene" name="arrow" @click="showAddElement"/>
-    <van-icon class="icon-button menu" name="wap-nav" @click.stop="pop.showMenus = true"/>
+    <van-icon class="icon-button small next-scene" name="arrow" @click="nextScene"/>
   </div>
+  <van-icon class="page-button icon-button menu" name="setting-o" @click.stop="pop.showMenus = true"/>
 
   <scene-preview v-if="backgroundScene" :scene="backgroundScene" :device="device" class="scene-container"></scene-preview>
   <!--效果预览区-->
@@ -155,6 +153,17 @@ export default {
 
     },
 
+    prevScene () {
+      if (this.currentSceneIndex > 1) {
+        this.sceneChange(this.currentSceneIndex - 1)
+      }
+    },
+
+    nextScene () {
+      if (this.currentSceneIndex < this.scenes.length) {
+        this.sceneChange(this.currentSceneIndex + 1)
+      }
+    },
 
     sceneChange (page) {
       this.currentSceneIndex = page
@@ -250,14 +259,19 @@ export default {
     border: 1px solid #efefef;
     border-radius: 28px;
     box-shadow: 0px 5px 15px -10px rgba(0,0,0,0.57);
-    background-color: rgba(255, 255, 255, .2)
+    background-color: rgba(255, 255, 255, .9);
+    &.small {
+      padding: 4px;
+      font-size: 18px;
+    }
   }
 
   .bottom-button-bar {
     position: absolute;
     bottom: 10px;
+    z-index: 1001;
     .icon-button {
-      margin: 0 5px;
+      margin: 0 10px;
     }
   }
 
@@ -274,7 +288,7 @@ export default {
       bottom: 8px;
     }
     &.menu {
-      top: 8px;
+      bottom: 8px;
     }
   }
 

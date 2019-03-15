@@ -19,22 +19,13 @@
       </van-cell-group>
     </van-tab>
     <van-tab title="场景配置">
-      <van-pagination
-        v-model="currentSceneIndex"
-        :show-page-size="4"
-        :page-count="scenes.length"
-        prev-text="上一场景"
-        next-text	="下一场景"
-        @change="sceneChange"
-      />
-
       <div class="tools-bar">
         <van-button size="small" @click="tapAddScene">新增</van-button>
-        <van-button size="small" @click="addByTemplate">从模板新建</van-button>
         <van-button size="small" @click="cloneCurrentScene">复制新建</van-button>
-        <van-button size="small" @click="saveAsTemplate">保存为模板</van-button>
+        <van-button size="small" @click="movePrev">前移</van-button>
+        <van-button size="small" @click="moveNext">后移</van-button>
+        <van-button size="small" @click="deleteScene" type="danger">删除场景</van-button>
       </div>
-
       <item-block title="名称">
         <van-field v-model="scene.title" clearable autosize></van-field>
       </item-block>
@@ -49,11 +40,15 @@
         <van-stepper v-model="scene.duration" integer disable-input :step="50"/>
       </item-block>
       <edit-background v-model="scene.background"></edit-background>
-      <div class="tools-bar">
-        <van-button size="small" @click="deleteScene" type="danger">删除场景</van-button>
-        <van-button size="small" @click="movePrev">向前移动</van-button>
-        <van-button size="small" @click="moveNext">向后移动</van-button>
-      </div>
+      <van-pagination
+        v-model="currentSceneIndex"
+        :show-page-size="4"
+        :page-count="scenes.length"
+        prev-text="上一场景"
+        next-text	="下一场景"
+        @change="sceneChange"
+      />
+
     </van-tab>
 
     <van-tab title="资源">
@@ -61,14 +56,18 @@
     </van-tab>
 
     <van-tab title="作品配置">
-      <item-block title="标题">
-        <van-field v-if="work" v-model="work.title" required clearable/>
-      </item-block>
       <div class="tools-bar">
         <van-button size="small" type="primary" @click="previewPlay">播放</van-button>
         <van-button size="small" type="primary" @click="saveDraft">保存草稿</van-button>
         <van-button size="small" type="primary" @click="saveOtherDraft">另存</van-button>
+        <van-button size="small" type="primary" @click="returnHome">返回首页</van-button>
       </div>
+      <item-block title="标题">
+        <van-field v-if="work" v-model="work.title" required clearable/>
+      </item-block>
+      <item-block title="描述">
+        <van-field v-if="work" v-model="work.desc" type="textarea" clearable/>
+      </item-block>
     </van-tab>
 
     <van-dialog
@@ -138,7 +137,9 @@ export default {
     }
   },
   watch: {
-
+    sceneIndex (val) {
+      this.currentSceneIndex = val
+    }
   },
   created () {
   },
@@ -325,6 +326,10 @@ export default {
 
     saveAsTemplate () {
 
+    },
+
+    returnHome () {
+      this.$router.replace('/')
     }
   }
 }
