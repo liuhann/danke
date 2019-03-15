@@ -29,7 +29,8 @@ const attention = [
   'wobble',
   'bounce',
   'pulsate',
-  'blink'
+  'blink',
+  'bgm'
 ]
 
 const text = {
@@ -334,7 +335,8 @@ const animations = ['scale-out-top',
   'puff-in-tl',
   'puff-in-top',
   'puff-in-left',
-  'puff-in-bl'
+  'puff-in-bl',
+  'bgm-ver'
 ]
 
 function getSubAnimations (prefix) {

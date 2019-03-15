@@ -29,13 +29,16 @@ export default {
   },
   data () {
     return {
+      src: this.value
+    }
+  },
 
+  watch: {
+    'value': function() {
+      this.src = this.value
     }
   },
   computed: {
-    src () {
-      return this.value
-    },
     displayStyle () {
       if (this.src) {
         return `background-image: url('${this.src}')`

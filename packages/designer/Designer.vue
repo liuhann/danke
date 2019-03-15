@@ -1,8 +1,13 @@
 <template>
 <div class="designer mobile">
   <van-icon class="page-button return" name="arrow-left" @click="returnHome"/>
-  <van-icon class="page-button add" name="plus" @click="showAddElement"/>
-  <van-icon class="page-button menu" name="wap-nav" @click.stop="pop.showMenus = true"/>
+
+  <div class="bottom-button-bar">
+    <van-icon class="icon-button prev-scene" name="arrow-left" @click="showAddElement"/>
+    <van-icon class="icon-button add" name="plus" @click="showAddElement"/>
+    <van-icon class="icon-button next-scene" name="arrow" @click="showAddElement"/>
+    <van-icon class="icon-button menu" name="wap-nav" @click.stop="pop.showMenus = true"/>
+  </div>
 
   <scene-preview v-if="backgroundScene" :scene="backgroundScene" :device="device" class="scene-container"></scene-preview>
   <!--效果预览区-->
@@ -238,16 +243,28 @@ export default {
     position: absolute;
     box-shadow: 0 0 8px 0px rgba(65, 106, 166, 0.2);
   }
-  .page-button {
+
+  .icon-button {
     font-size: 20px;
     padding: 8px;
     border: 1px solid #efefef;
     border-radius: 28px;
     box-shadow: 0px 5px 15px -10px rgba(0,0,0,0.57);
+    background-color: rgba(255, 255, 255, .2)
+  }
+
+  .bottom-button-bar {
+    position: absolute;
+    bottom: 10px;
+    .icon-button {
+      margin: 0 5px;
+    }
+  }
+
+  .page-button {
     position: absolute;
     z-index: 1001;
     right: 8px;
-    background-color: #fff;
     &.return {
       top: 8px;
       left: 8px;
@@ -290,7 +307,6 @@ export default {
     width: 85vw;
     height: 100vh;
     background-color: #efefef;
-
   }
 }
 

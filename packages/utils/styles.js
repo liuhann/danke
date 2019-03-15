@@ -55,6 +55,9 @@ function getElementStyle (element, device, animation) {
       styles.push(`width: ${getLength(element.position.width, device)}px`)
       styles.push(`height: ${getLength(element.position.height, device)}px`)
     }
+    if (element.type === 'text') {
+      styles.push(`width: ${getLength(element.position.width, device)}px`)
+    }
   }
 
   if (element.background) {

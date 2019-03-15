@@ -50,8 +50,7 @@ export default {
       materialSlider: 0,
       currentIndex: -1,
       isShow: false,
-      materialColors: materialColors,
-      color: this.value
+      materialColors: materialColors
     }
   },
 
@@ -62,42 +61,46 @@ export default {
         this.color = `rgba(${this.rgba.r}, ${this.rgba.g}, ${this.rgba.b}, ${this.rgba.a/100})`
 			}
 		},
-		value () {
-      var rgb = this.value.match(/\d+/g);
-      if (rgb && rgb.length ===4) {
-     		this.rgba.r = rgb[0]
-     		this.rgba.g = rgb[1]
-     		this.rgba.b = rgb[2]
-     		this.rgba.a = Math.floor(rgb[3] * 100)
-			} else if (this.value.indexOf('#') > -1) {
-        const  { r, g, b } = this.hexToRgb(this.value)
-        this.rgba.r = r
-        this.rgba.g = g
-        this.rgba.b = b
-        this.rgba.a = 100
+    isShow () {
+      this.valueToRgba(this.value)
+    }
+	},
+	computed: {
+		color: {
+		  get () {
+				return `rgba(${this.rgba.r}, ${this.rgba.g}, ${this.rgba.b}, ${this.rgba.a/100})`
+			},
+			set (value) {
+				this.valueToRgba(value)
 			}
 		}
 	},
   created () {
 
   },
-	mounted () {
 
-	},
-  computed: {
-    materialSteps () {
-      return ['900', '800', '700', '600', '500', '400', '300', '200', '100', '50', 'a700', 'a400', 'a200', 'a100']
-    },
-
-    step () {
-      return Math.floor(100 / this.materialSteps.length)
-    },
-
-    stepKey () {
-      return this.materialSteps[Math.floor(this.materialSteps.length * (this.materialSlider / 100))]
-    }
-  },
   methods: {
+    valueToRgba(value) {
+      var rgb = value.match(/\d+/g);
+      if (rgb && rgb.length ===4) {
+        this.rgba.r = rgb[0]
+        this.rgba.g = rgb[1]
+        this.rgba.b = rgb[2]
+        this.rgba.a = Math.floor(rgb[3] * 100)
+      } else if (rgb && rgb.length ===3) {
+        this.rgba.r = rgb[0]
+        this.rgba.g = rgb[1]
+        this.rgba.b = rgb[2]
+        this.rgba.a = 100
+      } else if (this.value.indexOf('#') > -1) {
+        const  { r, g, b } = this.hexToRgb(this.value)
+        this.rgba.r = r
+        this.rgba.g = g
+        this.rgba.b = b
+        this.rgba.a = 100
+      }
+		},
+
 		hexToRgb (hex) {
   		var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
 			hex = hex.replace(shorthandRegex, function(m, r, g, b) {
@@ -129,6 +132,7 @@ export default {
 		height: 100%;
 		background: currentColor;
 	}
+	margin-top: 8px;
 	height: 28px;
 	position: relative;
 	width: 60px;

@@ -1,6 +1,7 @@
 <template>
 <div class="animation-selector">
   <van-button size="small" plain type="primary" @click="isShow = true">{{value || '选择'}}</van-button>
+  <van-icon v-if="value" name="clear" @click="clear"></van-icon>
   <van-popup v-model="isShow" position="bottom" :overlay="true" get-container="body">
     <van-nav-bar
       title="选择动画"
@@ -87,6 +88,10 @@ export default {
         this.$emit('input', this.choosedValues[1])
       }
     },
+
+    clear () {
+      this.$emit('input', '')
+    },
     onCancel () {
       this.isShow = false
     }
@@ -95,6 +100,13 @@ export default {
 </script>
 
 <style lang="less">
+.animation-selector {
+  .van-icon-clear {
+    line-height: 20px;
+    margin-left: 6px;
+    color: #07c160;
+  }
+}
 .animation-preview {
   height: 40vw;
   background: #fff;

@@ -146,15 +146,16 @@ export default {
   methods: {
     cloneSelectedElements () {
       const clipData = []
-      for (let element of this.scene.elements) {
+      for (let i = 0; i < this.scene.elements.length; i ++) {
+        let element = this.scene.elements[i]
         if (element.checked) {
+          element.index = i
           clipData.push(element)
         }
       }
       if (clipData.length) {
         this.ctx.vant.Toast('节点已经复制')
         this.ctx.copiedElements = clipData
-        console.log(clipData)
       } else {
         this.ctx.vant.Toast('未选择任何节点')
       }
@@ -173,7 +174,13 @@ export default {
           const cloned = clone(element)
           cloned.checked = false
           cloned.id = shortid()
-          this.scene.elements.push(cloned)
+          if (cloned.index != null && this.scene.elements.length > cloned.index) {
+            const index = cloned.index
+            delete cloned.index
+            this.scene.elements.splice(index, 0, cloned)
+          } else {
+            this.scene.elements.push(cloned)
+          }
         }
         this.ctx.vant.Toast('复制完成')
       } else {
@@ -250,7 +257,9 @@ export default {
         return
       }
       this.scenes.splice(this.currentSceneIndex - 1, 1)
-      this.currentSceneIndex --
+      if (this.currentSceneIndex > 1) {
+        this.currentSceneIndex --
+      }
       this.sceneChange()
     },
 

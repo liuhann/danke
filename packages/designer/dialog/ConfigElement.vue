@@ -1,7 +1,7 @@
 <template>
 <div class="element-edit">
   <van-nav-bar title="元素配置" @click-left="close" left-text="关闭">
-    <van-button size="small" plain type="danger" class="btn-delete" @click="saveAsTemplate" slot="right">保存为模板</van-button>
+    <van-button size="small" plain @click="cloneElement" slot="right">复制</van-button>
   </van-nav-bar>
   <van-tabs v-model="activeKey">
     <van-tab title="基础">
@@ -118,6 +118,9 @@ export default {
     },
     removeElement () {
       this.$emit('element-remove')
+    },
+    cloneElement () {
+      this.ctx.copiedElements = [this.element]
     }
   }
 }
