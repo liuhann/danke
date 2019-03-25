@@ -6,6 +6,6 @@ export default {
   size: 'cover',
   position: 'center center',
   image: '',
-  repeat: 'no-repeat',
+  repeat: false,
   blend: 'multiply'
 }

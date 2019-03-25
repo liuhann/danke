@@ -132,7 +132,11 @@ function getBackgroundStyle (background) {
   }
   styles.push(`background-size: ${background.size}`)
   styles.push(`background-position: ${background.position}`)
-  styles.push(`background-repeat: ${background.position}`)
+  if (background.repeat) {
+    styles.push(`background-repeat: repeat`)
+  } else {
+    styles.push(`background-repeat: no-repeat`)
+  }
   styles.push(`background-blend-mode: ${background.blend}`)
   return styles.join(';')
 }

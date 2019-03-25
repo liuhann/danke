@@ -34,6 +34,11 @@
       <option value="100% auto">匹配宽度</option>
     </select>
   </item-block>
+
+  <item-block title="背景重复">
+    <van-checkbox v-model="background.repeat">是</van-checkbox>
+  </item-block>
+
   <item-block title="背景位置">
     <select v-model="background.position">
       <option value="top left">左上</option>
