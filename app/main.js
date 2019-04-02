@@ -9,26 +9,12 @@ import designer from '../packages/designer'
 import runtime from '../packages/runtime'
 import login from '../packages/login'
 
-import './common.css'
-import '../packages/animations/animista.css'
-
 import WorkDAO from '../packages/dao/workdao'
 import UserDAO from '../packages/dao/userdao'
 import { shortid } from '../packages/utils/string'
 
 Vue.use(VueRouter)
 window.Vue = Vue
-//
-// async function loadVant (ctx) {
-//   if (ctx.vanLoaded) return
-//   console.log('loading vant')
-//   await import(/* webpackChunkName: "vant" */ 'vant/lib/index.css')
-//   const vant = await import(/* webpackChunkName: "vant" */ 'vant')
-//   const Vant = vant.default
-//   Vue.use(Vant)
-//   ctx.vant = vant
-//   ctx.vanLoaded = true
-// }
 
 const boot = new AsyncBoot({
   Vue,
@@ -40,16 +26,6 @@ const boot = new AsyncBoot({
     home, designer, runtime, login
   ],
   started: async (ctx, next) => {
-    ctx.vanLoaded = false
-    ctx._router.beforeEach((to, from, next) => {
-      if (to.path === '/' || to.path === '/designer') {
-        // loadVant(ctx).then(() => {
-          next()
-        // })
-      } else {
-        next()
-      }
-    })
     ctx.workdao = new WorkDAO(ctx)
     ctx.userdao = new UserDAO(ctx)
 
@@ -88,8 +64,6 @@ const boot = new AsyncBoot({
     ctx.get = client.get
     ctx.post = client.post
     ctx.delete = client.delete
-
-
     await next()
   },
   upload: {
