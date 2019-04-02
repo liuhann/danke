@@ -18,17 +18,17 @@ import { shortid } from '../packages/utils/string'
 
 Vue.use(VueRouter)
 window.Vue = Vue
-
-async function loadVant (ctx) {
-  if (ctx.vanLoaded) return
-  console.log('loading vant')
-  await import(/* webpackChunkName: "vant" */ 'vant/lib/index.css')
-  const vant = await import(/* webpackChunkName: "vant" */ 'vant')
-  const Vant = vant.default
-  Vue.use(Vant)
-  ctx.vant = vant
-  ctx.vanLoaded = true
-}
+//
+// async function loadVant (ctx) {
+//   if (ctx.vanLoaded) return
+//   console.log('loading vant')
+//   await import(/* webpackChunkName: "vant" */ 'vant/lib/index.css')
+//   const vant = await import(/* webpackChunkName: "vant" */ 'vant')
+//   const Vant = vant.default
+//   Vue.use(Vant)
+//   ctx.vant = vant
+//   ctx.vanLoaded = true
+// }
 
 const boot = new AsyncBoot({
   Vue,
@@ -43,9 +43,9 @@ const boot = new AsyncBoot({
     ctx.vanLoaded = false
     ctx._router.beforeEach((to, from, next) => {
       if (to.path === '/' || to.path === '/designer') {
-        loadVant(ctx).then(() => {
+        // loadVant(ctx).then(() => {
           next()
-        })
+        // })
       } else {
         next()
       }

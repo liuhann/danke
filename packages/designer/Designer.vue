@@ -1,11 +1,13 @@
 <template>
 <div class="designer mobile">
   <div class="bottom-button-bar">
-    <van-icon class="icon-button small prev-scene" name="arrow-left" @click="prevScene"/>
-    <van-icon class="icon-button add" name="plus" @click="showAddElement"/>
-    <van-icon class="icon-button small next-scene" name="arrow" @click="nextScene"/>
+    <el-button icon="el-icon-arrow-left" size="mini" circle @click="prevScene"></el-button>
+    <el-button type="primary" icon="el-icon-plus" circle @click="showAddElement"></el-button>
+    <el-button icon="el-icon-arrow-right" size="mini" circle @click="nextScene"></el-button>
   </div>
-  <van-icon class="page-button icon-button menu" name="setting-o" @click.stop="pop.showMenus = true"/>
+  <div class="rb-button-bar">
+    <el-button icon="el-icon-setting" size="mini" circle @click="pop.showMenus = true"></el-button>
+  </div>
 
   <scene-preview v-if="backgroundScene" :scene="backgroundScene" :device="device" class="scene-container"></scene-preview>
   <!--效果预览区-->
@@ -13,26 +15,22 @@
     @element-selected="tapElementOn"></scene-preview>
 
   <!--元素配置区，可以进行元素配置项手动修改 -->
-  <van-popup class="pop-element-config" position="right" :overlay="true" v-model="pop.elementConfig">
-    <keep-alive>
-      <config-element v-if="currentElement" :edit-element="currentElement" :device="device" @close="pop.elementConfig = false"
-        @swap="swapElement"
-        @element-remove="removeCurrentElement"
-      ></config-element>
-    </keep-alive>
-  </van-popup>
+  <el-dialog class="pop-element-config" title="元素配置" :visible.sync="pop.elementConfig" fullscreen>
+    <prop-config v-if="currentElement" :element="currentElement" fontable></prop-config>
+  </el-dialog>
 
   <!--新增元素弹出框-->
-  <van-popup class="pop-select-element" position="center" :overlay="true" v-model="pop.showAddElement">
+  <el-dialog class="pop-select-element" title="新增元素" :visible.sync="pop.showAddElement" :fullscreen="true">
     <add-element @selected="selectAddElement"></add-element>
-  </van-popup>
+  </el-dialog>
 
-  <van-popup class="pop-menus" position="right" :overlay="true" v-model="pop.showMenus">
+  <!--新增元素弹出框-->
+  <el-dialog class="pop-menus" title="作品配置" :visible.sync="pop.showMenus" :fullscreen="true">
     <config-scene :scene="currentScene" :work="work" :scenes="scenes" :scene-index="currentSceneIndex"
                   @choose-element="tapElementOn"
                   @scene-change="sceneChange">
     </config-scene>
-  </van-popup>
+  </el-dialog>
 </div>
 </template>
 
@@ -43,19 +41,27 @@ import { mergeDeep, clone } from '../utils/object'
 import { shortid } from '../utils/string'
 import Elements from './templates/elements'
 import TPL_SCENE from './templates/scene'
-import ConfigElement from './dialog/ConfigElement'
 import AddElement from './dialog/AddElement'
 
+import TPL_ELEMENT from 'style-editor/src/model/element'
 import ConfigScene from './dialog/ConfigScene'
-import ItemBlock from './forms/ItemBlock'
+import PropConfig from 'style-editor/src/components/PropConfig'
+
+import { Dialog, Button, Tabs, TabPane, Table, TableColumn} from 'element-ui'
+Vue.use(Dialog)
+Vue.use(Button)
+Vue.use(Tabs)
+Vue.use(TabPane)
+Vue.use(Table)
+Vue.use(TableColumn)
+// import 'style-editor/lib/prop-config.css'
 
 export default {
   name: 'Designer',
   components: {
-    ItemBlock,
+    PropConfig,
     ConfigScene,
     AddElement,
-    ConfigElement,
     ScenePreview,
     SceneList
   },
@@ -176,12 +182,16 @@ export default {
       let newEl = null
       this.pop.showAddElement = false
       if (elementName === 'image') {
-        newEl = clone(Elements.IMAGE)
+        newEl = clone(TPL_ELEMENT)
+        newEl.title = '形状'
       }
       if (elementName === 'text') {
-        newEl = clone(Elements.TEXT)
+        newEl = clone(TPL_ELEMENT)
+        newEl.title = '文字'
+        newEl.content = '输入文字'
       }
       newEl.id = shortid()
+
       if (newEl && this.currentScene) {
         this.currentScene.elements.push(newEl)
       }
@@ -253,58 +263,23 @@ export default {
     box-shadow: 0 0 8px 0px rgba(65, 106, 166, 0.2);
   }
 
-  .icon-button {
-    font-size: 20px;
-    padding: 8px;
-    border: 1px solid #efefef;
-    border-radius: 28px;
-    box-shadow: 0px 5px 15px -10px rgba(0,0,0,0.57);
-    background-color: rgba(255, 255, 255, .9);
-    &.small {
-      padding: 4px;
-      font-size: 18px;
-    }
-  }
-
   .bottom-button-bar {
     position: absolute;
     bottom: 10px;
-    z-index: 1001;
+    z-index: 101;
     .icon-button {
       margin: 0 10px;
     }
   }
-
-  .page-button {
+  .rb-button-bar {
     position: absolute;
-    z-index: 1001;
-    right: 8px;
-    &.return {
-      top: 8px;
-      left: 8px;
-      right: unset;
-    }
-    &.add {
-      bottom: 8px;
-    }
-    &.menu {
-      bottom: 8px;
-    }
+    bottom: 15px;
+    right: 15px;
+    z-index: 101;
   }
 
   .pop-element-config {
-    border-left: 1px solid #eee;
     background-color: #fafafa;
-    z-index: 9999;
-    width: 88vw;
-    height: 100vh;
-  }
-
-  .pop-select-element {
-    z-index: 9999;
-    width: 80vw;
-    height: 80vh;
-    overflow-y: auto;
   }
 
   .pop-app-config {
@@ -315,13 +290,11 @@ export default {
   .scene-container {
     box-sizing: border-box;
   }
-
-  .pop-menus {
-    z-index: 9999;
-    width: 85vw;
-    height: 100vh;
-    background-color: #efefef;
-  }
 }
-
+.el-dialog__header {
+  padding: 10px;
+}
+.el-dialog__body {
+  padding: 0 10px;
+}
 </style>

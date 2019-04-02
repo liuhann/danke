@@ -14,13 +14,12 @@
 </template>
 
 <script>
-import EditElement from './dialog/ConfigElement'
 import styleUtils from '../utils/styles'
+import { getElementStyle } from 'style-editor/src/utils/styles'
 
 export default {
   name: 'Scene',
   components: {
-    EditElement
   },
   props: {
     element: {
@@ -59,7 +58,10 @@ export default {
   },
   computed: {
     sceneStyle () {
-      return styleUtils.getSceneStyle(this.scene, this.device)
+      return {
+        width: this.device.width + 'px',
+        height: this.device.height + 'px'
+      }
     },
     currentElementLength () {
       return this.scene.elements.length
@@ -81,7 +83,7 @@ export default {
   },
   methods: {
     renderElement (element) {
-      this.$set(element, 'computedStyle', styleUtils.getElementStyle(element, this.device))
+      this.$set(element, 'computedStyle', getElementStyle(element, this.device))
       // element.computedStyle = styleUtils.getElementStyle(element, this.device)
     },
 
@@ -173,26 +175,6 @@ export default {
   .element-wrapper {
     position: absolute;
     box-sizing: border-box;
-    &.current {
-      border: 1px solid #4B946A;
-    }
-    .van-icon-setting-o {
-      position: absolute;
-      right: 4px;
-      top: -28px;
-      font-size: 24px;
-      color: #666;
-    }
-    .image {
-      display: flex;
-      justify-content: center;
-      box-sizing: border-box;
-      align-items: center;
-      color: #666;
-      width: 100%;
-      height: 100%;
-      background-color: #efefef;
-    }
   }
 }
 </style>

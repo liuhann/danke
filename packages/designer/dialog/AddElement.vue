@@ -1,31 +1,39 @@
 <template>
-  <van-tabs v-model="elementCollapseName" class="tabs-select-element">
-    <van-tab title="基本元素" name="basic">
-      <van-cell title="形状" icon="photo" :clickable="true" label="可选择图片、设置形状及背景" @click="choose('image')"/>
-      <van-cell title="文字" icon="edit" :clickable="true" label="可编辑的文字" @click="choose('text')"/>
-      <van-cell title="视频" icon="edit" :clickable="true" label="可选择视频内容，设置播放时间" @click="choose('video')"/>
-      <van-cell title="音频" icon="edit" :clickable="true" label="可选择音频内容，设置播放时间" @click="choose('video')"/>
-    </van-tab>
-    <van-tab title="矢量图" name="svg">
+  <el-tabs class="tabs-select-element">
+    <el-tab-pane label="基本元素">
+      <div v-for="basic of TYPES" :key="basic.type" class="list-type">
+        <i :class="basic.icon"></i>
+        <div class="info">
+          <div class="title">{{basic.title}}</div>
+          <div class="label">{{basic.label}}</div>
+        </div>
+        <el-button size="mini" type="text" @click="choose(basic.type)">新增</el-button>
+      </div>
+    </el-tab-pane>
+    <el-tab-pane label="插件元素">
 
-    </van-tab>
-    <van-tab title="插件元素" name="plugin">
-      <van-cell title="集成的图层" icon="edit" :clickable="true" label="可选择音频内容，设置播放时间" @click="choose('video')"/>
-    </van-tab>
-  </van-tabs>
+    </el-tab-pane>
+  </el-tabs>
 </template>
 
 <script>
-const URLS = {
-  picture: 'http://danke.cdn.bcebos.com/000/empty.png'
-}
 export default {
   name: 'AddElement',
-  components: {},
+  components: {
+  },
   data () {
     return {
-      URLS,
-      elementCollapseName: 'basic'
+      TYPES: [{
+        icon: 'el-icon-picture',
+        title: '形状',
+        type: 'image',
+        label: '可选择图片、设置形状及背景'
+      }, {
+        icon: 'el-icon-document',
+        title: '文字',
+        type: 'text',
+        label: '可编辑的文字'
+      }],
     }
   },
   methods: {
@@ -38,6 +46,22 @@ export default {
 
 <style lang="less">
 .tabs-select-element {
+  .list-type {
+    display: flex;
+    border-bottom: 1px solid #eee;
+    padding: 8px;
+    i {
+      font-size: 24px;
+      line-height: 36px;
+      margin-right: 10px;
+    }
+    .info {
+      flex: 1;
+    }
+    .label {
+      font-size: 12px;
+    }
 
+  }
 }
 </style>
