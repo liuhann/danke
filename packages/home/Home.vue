@@ -1,9 +1,6 @@
 <template>
 <div class="home">
-  <danke-header>
-    <van-icon name="manager" class="icon-head"></van-icon>
-    <van-icon name="plus" class="icon-add" @click="pop.screenType = true"></van-icon>
-  </danke-header>
+  <logo-wrapper></logo-wrapper>
 
   <van-panel title="我的作品">
     <van-card v-for="work in works"
@@ -80,6 +77,7 @@ export default {
   }
 }
 </script>
+
 
 <style lang="less">
 
