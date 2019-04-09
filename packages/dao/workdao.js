@@ -30,6 +30,10 @@ class WorkDAO {
     return this.ctx.ky.get(`danke/v2/work/${id}`).json()
   }
 
+  async getPickedWorks () {
+    return this.ctx.ky.get(`danke/work/picks`).json()
+  }
+
   async listMine () {
     const result = await this.ctx.get('danke/v2/works/mine').json()
     return result

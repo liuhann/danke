@@ -15,9 +15,11 @@
     "image-preloader": "^1.1.1",
     "ky": "^0.8.0",
     "merge": "^1.2.1",
+    "node-polyglot": "^2.3.0",
     "pauseable": "^0.3.1",
     "style-editor": "^1.0.1",
     "vue": "^2.6.6",
+    "vue-i18n": "^8.10.0",
     "vue-router": "^3.0.2"
   },
   "devDependencies": {

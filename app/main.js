@@ -12,6 +12,7 @@ import runtime from '../packages/runtime'
 import login from '../packages/login'
 
 import initClient from './middlewares/initClient'
+import initLang from './middlewares/i18n'
 
 // import WorkDAO from '../packages/dao/workdao'
 // import UserDAO from '../packages/dao/userdao'
@@ -29,9 +30,8 @@ const boot = new AsyncBoot({
     site, designer, runtime, login
   ],
   started: async (ctx, next) => {
-    // ctx.workdao = new WorkDAO(ctx)
-    // ctx.userdao = new UserDAO(ctx)
     initClient(ctx)
+    initLang(ctx)
     await next()
   },
   upload: {

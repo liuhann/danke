@@ -16,11 +16,6 @@ module.exports = {
       entry: 'app/main.js',
       template: 'app/index.html',
       filename: 'index.html'
-    },
-    runtime: {
-      entry: 'play/main.js',
-      template: 'play/index.html',
-      filename: 'play.html'
     }
   }
 }
