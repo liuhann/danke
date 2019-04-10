@@ -1,8 +1,8 @@
 <template>
-  <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
+  <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <a class="navbar-item" href="https://bulma.io">
-        <!--<img src="https://bulma.io/images/bulma-logo.png" width="112" height="28">-->
+        <img src="http://www.danke.fun/res/logo.png" >
       </a>
       <a
         role="button"
@@ -27,21 +27,17 @@
         </a>
         <div class="navbar-item has-dropdown is-hoverable">
           <a class="navbar-link">
-            Tools
+            工具
           </a>
           <div class="navbar-dropdown">
             <a class="navbar-item">
-              PPT
+              样式元素
+            </a>
+            <a class="navbar-item" href="#/frame-tool">
+              动画
             </a>
             <a class="navbar-item">
-              Jobs
-            </a>
-            <a class="navbar-item">
-              Contact
-            </a>
-            <hr class="navbar-divider" />
-            <a class="navbar-item">
-              Report an issue
+              轮播图
             </a>
           </div>
         </div>
@@ -55,16 +51,6 @@
             </a>
             <a class="button is-link">
               注册
-            </a>
-          </div>
-        </div>
-        <div class="navbar-item has-dropdown is-hoverable">
-          <a class="navbar-link">
-            {{lang}}
-          </a>
-          <div class="navbar-dropdown">
-            <a class="navbar-item" @click="switchLang">
-              {{lang==='zh-CN'? 'en': '中文'}}
             </a>
           </div>
         </div>
@@ -116,5 +102,4 @@ export default {
 </script>
 
 <style lang="scss">
-$navbar-background-color:#0B2239
 </style>

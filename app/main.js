@@ -1,4 +1,4 @@
-import './common.sass'
+import './common.scss'
 
 import AsyncBoot from 'async-boot'
 import App from './app.vue'
@@ -10,6 +10,7 @@ import site from '../packages/site'
 import designer from '../packages/designer'
 import runtime from '../packages/runtime'
 import login from '../packages/login'
+import frameTool from '../packages/frame-tool'
 
 import initClient from './middlewares/initClient'
 import initLang from './middlewares/i18n'
@@ -27,7 +28,7 @@ const boot = new AsyncBoot({
   appServer: 'http://www.danke.fun',
   mount: '#app',
   packages: [
-    site, designer, runtime, login
+    site, designer, runtime, login, frameTool
   ],
   started: async (ctx, next) => {
     initClient(ctx)

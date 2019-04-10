@@ -12,6 +12,7 @@
     "async-boot": "^1.1.13",
     "axios": "^0.18.0",
     "bulma": "^0.7.4",
+    "frame-editor": "^0.1.2",
     "image-preloader": "^1.1.1",
     "ky": "^0.8.0",
     "merge": "^1.2.1",
