@@ -81,7 +81,7 @@
 import { shortid } from '../../utils/string'
 import { clone } from '../../utils/object'
 import TPL_SCENE from '../templates/scene'
-import ItemBlock from 'style-editor/src/components/forms/ItemBlock.vue'
+import ItemBlock from 'style-editor/src/components/ItemBlock'
 export default {
   name: 'ConfigScene',
   components: {

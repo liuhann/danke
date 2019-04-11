@@ -1,10 +1,13 @@
-import Login from './Login'
-
+import UserDAO from './userdao'
 export default {
   routes: [{
     path: '/login',
-    component: Login
+    component: () => import(/* webpackChunkName: "login" */'./Login.vue')
+  }, {
+    path: '/register',
+    component: () => import(/* webpackChunkName: "login" */'./Register.vue')
   }],
   async onload (ctx) {
+    ctx.userdao = new UserDAO()
   }
 }

@@ -9,8 +9,8 @@
         <div v-if="previewType==='图片'" class="preview-box" :class="boxClass" :style="frameStyle">
           <img src="http://cdn.danke.fun/res/sample1.jpg" width="160" height="160">
         </div>
-        <div class="btns">
-          <div class="tabs is-toggle">
+        <div class="btns columns">
+          <div class="column tabs is-toggle is-8">
             <ul>
               <li v-for="ptype of previewTypes" :key="ptype" :class="previewType === ptype? 'is-active': ''" @click="previewType = ptype">
                 <a>
@@ -19,8 +19,10 @@
               </li>
             </ul>
           </div>
-          <el-button @click="play" type="text" size="medium" icon="el-icon-caret-right"></el-button>
-          <el-button @click="share" type="text" icon="el-icon-share"></el-button>
+          <div class="column is-4">
+            <el-button @click="play" type="text" size="medium" icon="el-icon-caret-right"></el-button>
+            <el-button @click="share" type="text" icon="el-icon-share"></el-button>
+          </div>
         </div>
       </div>
     </div>
@@ -115,6 +117,7 @@ export default {
     },
 
     frameChange (index) {
+      console.log('frame change ', index)
       if (index != null) {
         this.frameIndex = index
       }
@@ -139,6 +142,20 @@ export default {
     width: 320px;
     padding-right: 10px;
     background-color: #F5F5F5;
+
+    ::-webkit-scrollbar {
+      width: 6px;
+      background-color: #F5F5F5;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-color: #0ae;
+      background-image: -webkit-gradient(linear, 0 0, 0 100%, color-stop(.5, rgba(255, 255, 255, .2)), color-stop(.5, transparent), to(transparent));
+    }
+    ::-webkit-scrollbar-track {
+      -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+      background-color: #F5F5F5;
+    }
   }
 
   #preview {
@@ -167,6 +184,7 @@ export default {
       position: absolute;
       right: 10px;
       top: 10px;
+      width: 320px;
       .el-button--text {
         color: #F6F4F2;
         font-size: 20px;

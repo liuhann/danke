@@ -1,43 +1,58 @@
 <template>
 <div class="login">
-  <danke-header></danke-header>
-  <van-panel title="用户登陆">
-    <van-cell-group>
-      <van-field
-        v-model="phone"
-        clearable
-        label="手机号"
-        placeholder="请输入手机号"
-      />
-      <van-field
-        v-model="sms"
-        center
-        clearable
-        label="短信验证码"
-        placeholder="请输入短信验证码"
-      >
-        <van-button v-if="countDown === 0" slot="button" size="small" type="primary" @click="sendSmsCode">发送验证码</van-button>
-        <van-button v-else slot="button" size="small" type="primary" plain>{{countDown}}秒后再次发送</van-button>
-      </van-field>
-      <van-cell>
-        <van-button type="primary" @click="login">登录</van-button>
-      </van-cell>
-    </van-cell-group>
-  </van-panel>
+  <nav-bar></nav-bar>
+
+  <section class="login-panel box">
+    <div class="field">
+      <label class="label">用户名</label>
+      <div class="control">
+        <input class="input is-danger" v-model="username" type="text" placeholder="输入手机号码">
+      </div>
+      <p class="help is-danger">This username is available</p>
+    </div>
+
+    <div class="field">
+      <label class="label">密码</label>
+      <div class="control">
+        <input class="input is-danger" v-model="password" type="password" placeholder="输入密码">
+      </div>
+      <p class="help is-danger">This username is available</p>
+    </div>
+
+    <div class="field">
+      <div class="control">
+        <label class="checkbox">
+          <input type="checkbox">
+          同意<a href="#">danke.fun 使用条款</a>
+        </label>
+      </div>
+    </div>
+    <div class="field is-grouped">
+      <div class="control">
+        <button class="button is-link">登录</button>
+      </div>
+      <div class="control">
+        <button class="button is-text">取消</button>
+      </div>
+      <div class="control">
+        <button class="button is-text">注册</button>
+      </div>
+    </div>
+  </section>
+
 </div>
 </template>
 
 <script>
-import DankeHeader from '../common/DankeHeader'
 
+import NavBar from '../common/NavBar'
 export default {
   name: 'Home',
-  components: { DankeHeader },
+  components: { NavBar },
   data () {
     return {
-      phone: '',
-      sms: '',
-      countDown: 0
+      username: '',
+      password: '',
     }
   },
 
@@ -82,7 +97,10 @@ export default {
 </script>
 
 <style lang="less">
-.login {
-  font-size: 20px;
+.login-panel {
+  width: 320px;
+  margin: 40px auto;
+  padding: 20px;
+  border-radius: 10px;
 }
 </style>
