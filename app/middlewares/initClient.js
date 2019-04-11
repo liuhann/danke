@@ -1,36 +1,12 @@
-import { shortid } from '../../packages/utils/string'
-import ky from 'ky/index'
+import ky from 'ky'
 
 export default function initClient (ctx) {
-  let token = window.localStorage.getItem('dankeToken')
-  if (!token) {
-    token = shortid(12)
-    window.localStorage.setItem('dankeToken', token)
-  }
+  let token = window.localStorage.getItem('token')
   const client = ky.extend({
     prefixUrl: 'http://www.danke.fun/api/',
     throwHttpErrors: false,
     searchParams: {
       'token': token
-    },
-    hooks: {
-      afterResponse: [
-        response => {
-          // You could do something with the response, for example, logging.
-          if (response.status === 200) {
-            return response
-          } else {
-            if (response.status === 401) {
-              ctx._router.replace('/login')
-            } else {
-              throw new Error()
-            }
-            throw new Error()
-          }
-          // Or return a `Response` instance to overwrite the response.
-          // return new Response('A different response', {status: 200});
-        }
-      ]
     }
   })
   ctx.ky = client

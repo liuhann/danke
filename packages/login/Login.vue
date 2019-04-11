@@ -3,6 +3,7 @@
   <nav-bar></nav-bar>
 
   <section class="login-panel box">
+    <h1 class="title">登录</h1>
     <div class="field">
       <label class="label">用户名</label>
       <div class="control">
@@ -18,24 +19,12 @@
       </div>
       <p class="help is-danger">This username is available</p>
     </div>
-
-    <div class="field">
-      <div class="control">
-        <label class="checkbox">
-          <input type="checkbox">
-          同意<a href="#">danke.fun 使用条款</a>
-        </label>
-      </div>
-    </div>
     <div class="field is-grouped">
       <div class="control">
-        <button class="button is-link">登录</button>
+        <button class="button is-primary">登录</button>
       </div>
       <div class="control">
-        <button class="button is-text">取消</button>
-      </div>
-      <div class="control">
-        <button class="button is-text">注册</button>
+        <button class="button is-text" @click="register">注册</button>
       </div>
     </div>
   </section>
@@ -66,6 +55,9 @@ export default {
   },
 
   methods: {
+    register () {
+      this.$router.go('/register')
+    },
     sendSmsCode () {
       if (this.countDown === 0 && this.isPoneAvailable(this.phone)) {
         this.ctx.userdao.sendSmsCode(this.phone)

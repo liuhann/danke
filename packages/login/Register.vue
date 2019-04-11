@@ -1,90 +1,64 @@
 <template>
-<div class="login">
-  <nav-bar></nav-bar>
+  <div class="login">
+    <nav-bar></nav-bar>
 
-  <div class="field">
-    <label class="label">用户名</label>
-    <div class="control">
-      <input class="input" type="text" placeholder="输入手机号码">
-    </div>
-    <p class="help is-success">This username is available</p>
-  </div>
-
-  <div class="field">
-    <label class="label">Email</label>
-    <div class="control has-icons-left has-icons-right">
-      <input class="input is-danger" type="email" placeholder="Email input" value="hello@">
-      <span class="icon is-small is-left">
-      <i class="fas fa-envelope"></i>
-    </span>
-      <span class="icon is-small is-right">
-      <i class="fas fa-exclamation-triangle"></i>
-    </span>
-    </div>
-    <p class="help is-danger">This email is invalid</p>
-  </div>
-
-  <div class="field">
-    <label class="label">Subject</label>
-    <div class="control">
-      <div class="select">
-        <select>
-          <option>Select dropdown</option>
-          <option>With options</option>
-        </select>
+    <section class="login-panel box">
+      <h1 class="title">注册</h1>
+      <div class="field">
+        <label class="label">用户名</label>
+        <div class="control">
+          <input class="input" :class="error.username? 'is-danger': ''" v-model="username" type="text" placeholder="输入手机号码">
+        </div>
+        <p v-if="error.username" class="help is-danger">{{error.username}}</p>
       </div>
-    </div>
-  </div>
 
-  <div class="field">
-    <label class="label">Message</label>
-    <div class="control">
-      <textarea class="textarea" placeholder="Textarea"></textarea>
-    </div>
-  </div>
+      <div class="field">
+        <label class="label">密码</label>
+        <div class="control">
+          <input class="input" :class="error.password? 'is-danger': ''" v-model="password" type="password" placeholder="输入密码">
+        </div>
+        <p v-if="error.password" class="help is-danger">{{error.password}}</p>
+      </div>
 
-  <div class="field">
-    <div class="control">
-      <label class="checkbox">
-        <input type="checkbox">
-        I agree to the <a href="#">terms and conditions</a>
-      </label>
-    </div>
-  </div>
+      <div class="field">
+        <div class="control">
+          <label class="checkbox">
+            <input type="checkbox">
+            同意<a href="#">danke.fun 使用条款</a>
+          </label>
+        </div>
+      </div>
+      <div class="field is-grouped">
+        <div class="control">
+          <button class="button is-link" @click="doRegister">注册</button>
+        </div>
+        <div class="control">
+          <button class="button is-text">忘记密码</button>
+        </div>
+      </div>
+      <div class="field is-grouped">
+        <div class="control">
+          前往<button class="button is-text">登录</button>
+        </div>
+      </div>
+    </section>
 
-  <div class="field">
-    <div class="control">
-      <label class="radio">
-        <input type="radio" name="question">
-        Yes
-      </label>
-      <label class="radio">
-        <input type="radio" name="question">
-        No
-      </label>
-    </div>
   </div>
-
-  <div class="field is-grouped">
-    <div class="control">
-      <button class="button is-link">Submit</button>
-    </div>
-    <div class="control">
-      <button class="button is-text">Cancel</button>
-    </div>
-  </div>
-</div>
 </template>
 
 <script>
 
 import NavBar from '../common/NavBar'
 export default {
-  name: 'Home',
+  name: 'Register',
   components: { NavBar },
   data () {
     return {
       username: '',
+      error: {
+        username: '',
+        password: ''
+      },
       password: '',
     }
   },
@@ -99,38 +73,42 @@ export default {
   },
 
   methods: {
-    sendSmsCode () {
-      if (this.countDown === 0 && this.isPoneAvailable(this.phone)) {
-        this.ctx.userdao.sendSmsCode(this.phone)
-        this.countDown = 90
-      } else {
-        this.ctx.vant.Dialog.alert({
-          message: '错误的手机号码'
-        })
+    async doRegister () {
+      if (this.username === '') {
+        this.error.username = '请输入用户名'
+        return
       }
-    },
+      if (this.password === '') {
+        this.error.password = '请输入密码'
+        return
+      }
 
-    isPoneAvailable(phone) {
-      if (!/^[1][3,4,5,7,8][0-9]{9}$/.test(phone)) {
-        return false
-      } else {
-        return true
+      const result = await this.ctx.userdao.register(this.username, this.password)
+      if (result.code === 400) {
+        this.error.username = '手机号码格式不正确'
+        return
       }
-    },
 
-    async login () {
-      let result = await this.ctx.userdao.loginWithSms(this.phone, this.sms)
-      if (result.ok === '1') {
-        this.$router.replace('/')
+      if (result.code === 409) {
+        this.error.username = '手机号码已经注册过'
+        return
       }
+
+      if (result.token) {
+        localStorage.setItem('token', result.token)
+      }
+
+      this.$router.replace('/')
     }
-
   }
 }
 </script>
 
 <style lang="less">
-.login {
-  font-size: 20px;
+.login-panel {
+  width: 320px;
+  margin: 40px auto;
+  padding: 20px;
+  border-radius: 10px;
 }
 </style>
