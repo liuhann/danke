@@ -21,11 +21,26 @@
 
 
     <div class="timeline">
-      <div class="timeline-item">
+      <div class="timeline-item"
+           v-for="(frame, index) in animation.frames" :key="index">
         <div class="timeline-marker"></div>
         <div class="timeline-content">
-          <p class="heading">January 2016</p>
-          <p>Timeline content - Can include any HTML element</p>
+          <div class="heading level">
+            <div class="level-left is-small">{{frame.percent}}%</div>
+            <div class="level-right">
+              <button v-if="frame.percent !== 100" class="button is-plain is-small" @click="appendFrame(index)">新增</button>
+              <button v-if="!(frame.percent === 100 || frame.percent === 0)" class="button is-plain is-small" @click="removeFrame(index)">删除</button>
+              <button v-if="currentFrameIndex === index" class="button is-plain is-small" @click="closeFrame">关闭</button>
+              <button v-if="currentFrameIndex !== index" class="button is-plain is-small" @click="editFrame(index)">展开</button>
+            </div>
+          </div>
+          <div class="frame-dialog-content" v-if="currentFrameIndex === index">
+            <item-block label="进度">
+              <el-input-number :disabled="frame.percent === 100 || frame.percent === 0" size="mini" v-model="frame.percent" :step="5" :max="100" :min="0"></el-input-number>
+            </item-block>
+            <edit-transform v-model="frame.transform"></edit-transform>
+            <edit-clip-path v-model="frame.clip"></edit-clip-path>
+          </div>
         </div>
       </div>
       <header class="timeline-header">
