@@ -6,11 +6,12 @@ class UserDAO {
     return this.ctx.get(`user/current`).json()
   }
 
-  register (username, password) {
+  register (username, password, nickname) {
     return this.ctx.post(`user/register`, {
       json: {
         name: username,
-        password: password
+        password: password,
+        nickname
       }
     }).json()
   }

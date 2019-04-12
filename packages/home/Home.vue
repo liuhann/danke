@@ -1,7 +1,10 @@
 <template>
 <div class="home">
-  <logo-wrapper></logo-wrapper>
+  <nav-bar></nav-bar>
 
+  <div class="section">
+
+  </div>
   <van-panel title="我的作品">
     <van-card v-for="work in works"
               :key="work.id"
@@ -27,9 +30,10 @@ import LogoWrapper from '../common/LogoWrapper'
 import TabChooseType from './TabChooseType'
 import ImageDefault from './photo.svg'
 import DankeHeader from '../common/DankeHeader'
+import NavBar from '../common/NavBar'
 export default {
   name: 'Home',
-  components: {DankeHeader, TabChooseType, LogoWrapper},
+  components: {NavBar, DankeHeader, TabChooseType, LogoWrapper},
   data () {
     return {
       pop: {

@@ -14,6 +14,8 @@ import frameTool from '../packages/frame-tool'
 
 import initClient from './middlewares/initClient'
 import initLang from './middlewares/i18n'
+import UserDAO from '../packages/login/userdao'
+import AnimationDAO from '../packages/dao/animationdao'
 
 // import WorkDAO from '../packages/dao/workdao'
 // import UserDAO from '../packages/dao/userdao'
@@ -26,6 +28,7 @@ const boot = new AsyncBoot({
   VueRouter,
   App,
   appServer: 'http://www.danke.fun',
+  cdn: 'http://cdn.danke.fun',
   mount: '#app',
   packages: [
     site, designer, runtime, login, frameTool
@@ -33,6 +36,9 @@ const boot = new AsyncBoot({
   started: async (ctx, next) => {
     initClient(ctx)
     initLang(ctx)
+    ctx.userdao = new UserDAO(ctx)
+    ctx.animdao = new AnimationDAO(ctx)
+    ctx.user = await ctx.userdao.getCurrentUser()
     await next()
   },
   upload: {

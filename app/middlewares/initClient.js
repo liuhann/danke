@@ -11,6 +11,7 @@ export default function initClient (ctx) {
   })
   ctx.ky = client
   ctx.get = client.get
+  ctx.put = client.put
   ctx.post = client.post
   ctx.delete = client.delete
 }

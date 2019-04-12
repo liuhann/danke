@@ -56,7 +56,7 @@ export default {
 
   methods: {
     register () {
-      this.$router.go('/register')
+      this.$router.push('/register')
     },
     sendSmsCode () {
       if (this.countDown === 0 && this.isPoneAvailable(this.phone)) {

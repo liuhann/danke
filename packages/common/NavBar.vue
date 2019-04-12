@@ -45,14 +45,14 @@
 
       <div class="navbar-end">
         <div class="navbar-item">
-          <div class="buttons">
+          <div v-if="!avatar" class="buttons">
             <a class="button is-primary" @click="getStarted">
               <strong>开始使用</strong>
             </a>
-            <a class="button is-link">
-              注册
-            </a>
           </div>
+          <figure v-else class="image is-48x48" @click="goUserHome">
+            <img :src="avatar" style="max-height: 48px!important;" width="48" height="48">
+          </figure>
         </div>
       </div>
     </div>
@@ -63,8 +63,12 @@
 
 export default {
   name: 'NavBar',
+  props: {
+
+  },
   data () {
     return {
+      user: this.ctx.user,
       isMobileOpened: false
     }
   },
@@ -74,6 +78,13 @@ export default {
   computed: {
     burgerOpen () {
       return this.isMobileOpened ? 'is-active' : ''
+    },
+    avatar () {
+      if (this.user && this.user.id) {
+        return this.user.avatar || this.ctx.cdn + '/res/user.png'
+      } else {
+        return null
+      }
     }
   },
 
@@ -88,15 +99,12 @@ export default {
     toggleOpen () {
       this.isMobileOpened = !this.isMobileOpened
     },
-    t (v) {
-      return this.polyglot.t(v)
-    },
     getStarted () {
-      location.href = 'https://github.com/login/oauth/authorize?scope=user:email&client_id=9b1eec30dbf5235a78b3'
-      //this.$router.push('/designer/full')
+      //location.href = 'https://github.com/login/oauth/authorize?scope=user:email&client_id=9b1eec30dbf5235a78b3'
+      this.$router.push('/login')
     },
-    switchLang() {
-
+    goUserHome () {
+      this.$router.push('/user')
     }
   }
 }

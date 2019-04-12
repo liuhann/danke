@@ -5,12 +5,21 @@
     <section class="login-panel box">
       <h1 class="title">注册</h1>
       <div class="field">
-        <label class="label">用户名</label>
+        <label class="label">手机号</label>
         <div class="control">
           <input class="input" :class="error.username? 'is-danger': ''" v-model="username" type="text" placeholder="输入手机号码">
         </div>
         <p v-if="error.username" class="help is-danger">{{error.username}}</p>
       </div>
+
+      <div class="field">
+        <label class="label">用户名 <span class="is-small">(可选)</span></label>
+        <div class="control">
+          <input class="input" v-model="nickname" type="text">
+        </div>
+
+      </div>
+
 
       <div class="field">
         <label class="label">密码</label>
@@ -23,22 +32,17 @@
       <div class="field">
         <div class="control">
           <label class="checkbox">
-            <input type="checkbox">
+            <input type="checkbox" v-model="checked">
             同意<a href="#">danke.fun 使用条款</a>
           </label>
         </div>
       </div>
       <div class="field is-grouped">
         <div class="control">
-          <button class="button is-link" @click="doRegister">注册</button>
+          <button class="button is-success" :disabled="!checked" @click="doRegister">注册</button>
         </div>
         <div class="control">
           <button class="button is-text">忘记密码</button>
-        </div>
-      </div>
-      <div class="field is-grouped">
-        <div class="control">
-          前往<button class="button is-text">登录</button>
         </div>
       </div>
     </section>
@@ -55,7 +59,9 @@ export default {
   data () {
     return {
       username: '',
+      checked: true,
       error: {
+        nickname: '',
         username: '',
         password: ''
       },
@@ -83,7 +89,7 @@ export default {
         return
       }
 
-      const result = await this.ctx.userdao.register(this.username, this.password)
+      const result = await this.ctx.userdao.register(this.username, this.password, this.nickname)
       if (result.code === 400) {
         this.error.username = '手机号码格式不正确'
         return
