@@ -9,29 +9,19 @@
       <div v-if="previewType==='图片'" class="preview-box" :class="boxClass" :style="frameStyle">
         <img src="http://cdn.danke.fun/res/sample1.jpg" width="160" height="160">
       </div>
-      <div class="btns">
-        <div class="buttons has-addons">
-          <span class="button">Yes</span>
-          <span class="button is-info is-selected">Maybe</span>
-          <span class="button">No</span>
+
+      <div class="columns toolbar">
+        <div class="column">
+          <div class="buttons has-addons">
+            <span class="button" v-for="ptype of previewTypes" :key="ptype" :class="previewType === ptype? 'is-selected is-info': ''" @click="previewType = ptype">{{ptype}}</span>
+          </div>
         </div>
-
-
-        <ul class="tabs is-toggle">
-          <li v-for="ptype of previewTypes" :key="ptype" :class="previewType === ptype? 'is-active': ''" @click="previewType = ptype">
-            <a>
-              <span>{{ptype}}</span>
-            </a>
-          </li>
-          <li class="">
-            <a  @click="share">
-              <span class="icon-floppy">11</span>
-            </a>
-          </li>
-        </ul>
-        <div class="column is-4">
-          <i class="button icon-floppy"></i>
-          <a class="button  icon-right-open is-text" @click="play"></a>
+        <div class="column">
+          <div class="buttons has-addons is-right">
+            <span class="button icon-floppy" @click="share"></span>
+            <span class="button icon-code" @click="viewCode"></span>
+            <span class="button icon-play" @click="play"></span>
+          </div>
         </div>
       </div>
     </div>
@@ -110,6 +100,10 @@ export default {
       setTimeout(() => {
         this.boxClass = this.animation.name
       }, 300)
+    },
+
+    viewCode () {
+
     },
 
     async share () {
@@ -192,38 +186,12 @@ export default {
       font-size: 2.5rem;
     }
 
-    .btns {
+    .toolbar {
       position: absolute;
-      right: 10px;
-      top: 10px;
-      width: 400px;
-      .el-button--text {
-        color: #F6F4F2;
-        font-size: 20px;
-      }
-    }
-  }
-
-}
-
-@media screen and (max-width: 600px) {
-  #app {
-    flex-direction: column-reverse;
-    .animation-config {
-      overflow-y: auto;
+      top: 15px;
       width: 100%;
-      padding-right: 10px;
-      background-color: #F5F5F5;
-      flex: 1;
-    }
-    #preview {
-      height: 240px;
     }
   }
-}
-
-.hidden {
-  display: none;
 }
 
 </style>

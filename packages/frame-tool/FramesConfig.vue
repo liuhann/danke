@@ -7,18 +7,17 @@
     <form-field v-model="animation.type" label="动画类型" type="select" :options="animationTypes">
     </form-field>
 
-    <form-field v-model="animation.duration" label="时长" placeholder="动画时长" unit="毫秒" type="number">
+    <form-field v-model="animation.duration" width="70px" label="时长" placeholder="动画时长" unit="毫秒" type="number">
     </form-field>
 
     <form-field v-model="animation.timing" label="曲线" type="select" :options="cubicBeziers">
     </form-field>
 
-    <form-field v-model="animation.delay" label="延迟" placeholder="动画时长" unit="毫秒" type="number">
+    <form-field v-model="animation.delay" width="70px" label="延迟" placeholder="动画时长" unit="毫秒" type="number">
     </form-field>
 
-    <form-field v-model="animation.iteration" label="次数"  unit="次" type="number">
+    <form-field v-model="animation.iteration" width="80px" label="次数"  unit="次" type="number">
     </form-field>
-
 
     <div class="timeline">
       <div class="timeline-item"
@@ -27,9 +26,15 @@
         <div class="timeline-content">
           <div class="heading level">
             <div class="level-left is-small">{{frame.percent}}%</div>
+            <div class="level-right is-small">
+              <a v-if="frame.percent !== 100" class="icon-plus" @click="appendFrame(index)"></a>
+              <a v-if="!(frame.percent === 100 || frame.percent === 0)" class="icon-trash-empty" @click="removeFrame(index)"></a>
+              <a v-if="currentFrameIndex === index" class="icon-down-open" @click="closeFrame"></a>
+              <a v-if="currentFrameIndex !== index" class="icon-right-open" @click="editFrame(index)"></a>
+            </div>
           </div>
           <div class="frame-dialog-content" v-if="currentFrameIndex === index">
-            <form-field label="进度" :disabled="frame.percent === 100 || frame.percent === 0" v-model="frame.percent" unit="%" type="number">
+            <form-field label="进度" width="70px" :disabled="frame.percent === 100 || frame.percent === 0" v-model="frame.percent" unit="%" type="number">
             </form-field>
             <edit-transform v-model="frame.transform"></edit-transform>
             <edit-clip-path v-model="frame.clip"></edit-clip-path>

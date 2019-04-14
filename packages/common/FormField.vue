@@ -11,7 +11,7 @@
               <option v-for="option in optionsArray" :value="option.key" :key="option.key">{{option.value}}</option>
             </select>
           </div>
-          <input v-if="isInput" class="input" :class="size" :type="type" v-model="fieldValue" :placeholder="placehoder">
+          <input v-if="isInput" class="input" :style="inputWidth" :class="size" :type="type" v-model="fieldValue" :placeholder="placehoder">
         </p>
         <p class="control" v-if="unit">
           <a class="button is-static" :class="size">
@@ -52,6 +52,9 @@ export default {
     },
     options: {
       type: [Array, Object]
+    },
+    width: {
+      type: String
     }
   },
   data () {
@@ -87,8 +90,17 @@ export default {
       set: function (newValue) {
         this.$emit('input', newValue)
       }
+    },
+    inputWidth () {
+      if (this.width) {
+        return {
+          width: this.width
+        }
+      } else {
+          return {}
+        }
+      }
     }
-  }
 }
 </script>
 

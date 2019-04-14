@@ -2,8 +2,12 @@
 .icon-floppy:before { content: '\e800'; } /* '' */
 .icon-edit:before { content: '\e801'; } /* '' */
 .icon-right-open:before { content: '\e802'; } /* '' */
+.icon-play:before { content: '\e803'; } /* '' */
+.icon-cog:before { content: '\e804'; } /* '' */
 .icon-power:before { content: '\e805'; } /* '' */
+.icon-plus:before { content: '\e806'; } /* '' */
 .icon-down-open:before { content: '\e807'; } /* '' */
 .icon-up-open:before { content: '\e808'; } /* '' */
+.icon-trash-empty:before { content: '\e809'; } /* '' */
 .icon-left-open:before { content: '\e80c'; } /* '' */
 .icon-code:before { content: '\f121'; } /* '' */

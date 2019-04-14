@@ -40,7 +40,6 @@
   display: -webkit-flex;
   position: relative;
   margin-left: 5px;
-  padding-bottom: 2em
 }
 
 .timeline .timeline-item::before {
