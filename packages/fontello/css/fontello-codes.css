@@ -1,0 +1,9 @@
+
+.icon-floppy:before { content: '\e800'; } /* '' */
+.icon-edit:before { content: '\e801'; } /* '' */
+.icon-right-open:before { content: '\e802'; } /* '' */
+.icon-power:before { content: '\e805'; } /* '' */
+.icon-down-open:before { content: '\e807'; } /* '' */
+.icon-up-open:before { content: '\e808'; } /* '' */
+.icon-left-open:before { content: '\e80c'; } /* '' */
+.icon-code:before { content: '\f121'; } /* '' */

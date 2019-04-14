@@ -27,17 +27,10 @@
         <div class="timeline-content">
           <div class="heading level">
             <div class="level-left is-small">{{frame.percent}}%</div>
-            <div class="level-right">
-              <button v-if="frame.percent !== 100" class="button is-plain is-small" @click="appendFrame(index)">新增</button>
-              <button v-if="!(frame.percent === 100 || frame.percent === 0)" class="button is-plain is-small" @click="removeFrame(index)">删除</button>
-              <button v-if="currentFrameIndex === index" class="button is-plain is-small" @click="closeFrame">关闭</button>
-              <button v-if="currentFrameIndex !== index" class="button is-plain is-small" @click="editFrame(index)">展开</button>
-            </div>
           </div>
           <div class="frame-dialog-content" v-if="currentFrameIndex === index">
-            <item-block label="进度">
-              <el-input-number :disabled="frame.percent === 100 || frame.percent === 0" size="mini" v-model="frame.percent" :step="5" :max="100" :min="0"></el-input-number>
-            </item-block>
+            <form-field label="进度" :disabled="frame.percent === 100 || frame.percent === 0" v-model="frame.percent" unit="%" type="number">
+            </form-field>
             <edit-transform v-model="frame.transform"></edit-transform>
             <edit-clip-path v-model="frame.clip"></edit-clip-path>
           </div>
@@ -96,7 +89,7 @@
 import './bulma-timeline.css'
 import Vue from 'vue'
 import { Button, ButtonGroup, InputNumber, Timeline, TimelineItem } from 'element-ui'
-import { EditTransform, EditClipPath, ItemBlock, EditLen } from 'style-editor'
+import { EditTransform, EditClipPath, ItemBlock, EditLen } from '../style-editor'
 import clone from 'clone'
 import FRAME from './model/frame'
 import cubicBeziers from './model/cubic-beziers'

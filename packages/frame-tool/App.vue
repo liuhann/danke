@@ -5,7 +5,7 @@
       <div id="box" class="box" :class="boxClass" :style="frameStyle"></div>
       <div class="btns">
         <el-button @click="play" type="text" size="medium" icon="el-icon-caret-right"></el-button>
-        <el-button @click="share" type="text" icon="el-icon-share"></el-button>
+        <el-button @click="share" type="text" icon=" icon-floppy"></el-button>
       </div>
     </div>
   </div>

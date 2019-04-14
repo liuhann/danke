@@ -1,6 +1,6 @@
 <template>
   <div class="field is-horizontal">
-    <div class="field-label" :class="size">
+    <div class="field-label" :class="size" v-if="label">
       <label class="label">{{label}}</label>
     </div>
     <div class="field-body" :class="size">

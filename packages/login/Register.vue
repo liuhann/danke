@@ -17,9 +17,7 @@
         <div class="control">
           <input class="input" v-model="nickname" type="text">
         </div>
-
       </div>
-
 
       <div class="field">
         <label class="label">密码</label>

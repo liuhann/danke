@@ -490,7 +490,8 @@
 }
 
 .timeline .timeline-item .timeline-content {
-  padding: 1em 0 0 2em
+  padding: 1em 0 0 .8em;
+  width: 100%;
 }
 
 .timeline .timeline-item .timeline-content .heading {
