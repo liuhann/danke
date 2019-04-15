@@ -1,12 +1,28 @@
 <template>
   <div class="edit-clip-path">
-    <item-block title="裁切类型">
-      <el-select v-model="clip.type" @change="clipTypeChange" size="mini" :style="{width: '120px'}">
-        <el-option value="none" label="无裁切"></el-option>
-        <el-option value="polygon" label="多边形"></el-option>
-        <el-option value="ellipse" label="椭圆"></el-option>
-      </el-select>
-    </item-block>
+    <form-field v-model="clip.type" label="裁切类型" type="select" :options="clipTypes"></form-field>
+    <div class="field is-horizontal" v-for="(point, index) of clip.points" :key="index">
+      <div class="field-label is-small">
+        <label class="label">{{index+1}}</label>
+      </div>
+      <div class="field-body">
+        <div class="field">
+          <p class="control is-small">
+            <input class="input is-small" v-model.number="point[0]" type="number">
+          </p>
+        </div>
+        <div class="field">
+          <p class="control is-small">
+            <input class="input is-small" v-model.number="point[1]" type="number">
+          </p>
+        </div>
+        <div class="field">
+          <p class="control is-small">
+            <button>close</button>
+          </p>
+        </div>
+      </div>
+    </div>
 
     <div class="clip-polygon">
       <item-block :title="`点${(index+1)}`" v-for="(point, index) of clip.points" :key="index" :label-width="60">
@@ -21,9 +37,10 @@
 
 <script>
 import ItemBlock from './ItemBlock'
+import FormField from '../../common/FormField'
 export default {
   name: 'EditClipPath',
-  components: { ItemBlock },
+  components: {FormField, ItemBlock },
   props: {
     value: {
       type: Object
@@ -31,6 +48,16 @@ export default {
   },
   data () {
     return {
+      clipTypes: [{
+        key: 'none',
+        value: '无'
+      }, {
+        key: 'polygon',
+        value: '多边形'
+      }, {
+        key: 'ellipse',
+        value: '圆'
+      }],
       clip: this.value
     }
   },

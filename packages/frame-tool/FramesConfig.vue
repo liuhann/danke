@@ -92,19 +92,12 @@
 
 <script>
 import './bulma-timeline.css'
-import Vue from 'vue'
-import { Button, ButtonGroup, InputNumber, Timeline, TimelineItem } from 'element-ui'
 import { EditTransform, EditClipPath, ItemBlock, EditLen } from '../style-editor'
 import clone from 'clone'
 import FRAME from './model/frame'
 import cubicBeziers from './model/cubic-beziers'
 import FormField from '../common/FormField'
 
-Vue.use(Button)
-Vue.use(ButtonGroup)
-Vue.use(InputNumber)
-Vue.use(Timeline)
-Vue.use(TimelineItem)
 export default {
   name: 'FramesConfig',
   props: {
