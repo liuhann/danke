@@ -110,7 +110,7 @@ function getElementStyle (element, device, animation) {
   if (element.transform) {
     styles.push(getTransformStyle(element.transform))
     if (element.transform.opacity != null) {
-      styles.push(`opacity: ${element.transform.opacity}`)
+      styles.push(`opacity: ${element.transform.opacity / 100}`)
     }
   }
 
@@ -156,17 +156,18 @@ function getTransformStyle (transform) {
   const styles = []
   if (transform) {
     if (transform.translate) {
-      styles.push(`translate3d(${transform.translate[0]}, ${transform.translate[1]}, ${transform.translate[2]})`)
+      styles.push(`translate3d(${transform.translate[0]}%, ${transform.translate[1]}%, ${transform.translate[2]}px)`)
     }
     if (transform.rotate) {
-      styles.push(`rotateX(${transform.rotate[0]})`)
-      styles.push(`rotateY(${transform.rotate[1]})`)
-      styles.push(`rotateZ(${transform.rotate[2]})`)
+      styles.push(`rotateX(${transform.rotate[0]}deg)`)
+      styles.push(`rotateY(${transform.rotate[1]}deg)`)
+      styles.push(`rotateZ(${transform.rotate[2]}deg)`)
     }
   }
   if (transform.scale) {
-    styles.push(`scale(${transform.scale})`)
+    styles.push(`scale(${transform.scale / 100})`)
   }
+  console.log(`transform: ${styles.join(' ')}`)
   return `transform: ${styles.join(' ')}`
 }
 function getWorkStyle (work, device) {

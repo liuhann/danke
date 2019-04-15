@@ -2,12 +2,12 @@
   <div class="edit-transform">
     <div class="field is-horizontal">
       <div class="field-label is-small">
-        <label class="label">移动</label>
+        <label class="label">移动(%)</label>
       </div>
       <div class="field-body">
         <div class="field">
           <p class="control is-small">
-            <input class="input is-small" v-model="transform.translate[0]" type="number" placeholder="x">
+            <input class="input is-small" v-model.number="transform.translate[0]" type="number" placeholder="x">
           </p>
         </div>
         <div class="field">
@@ -22,19 +22,40 @@
         </div>
       </div>
     </div>
-  <edit-len label="缩放" v-model="transform.scale" :with-unit="false"></edit-len>
-  <edit-len label="透明度" v-model="transform.opacity" :with-unit="false" :step="0.1"></edit-len>
-  <edit-len label="旋转X" v-model="transform.rotate[0]" :units="rotateUnit" :step="10"></edit-len>
-  <edit-len label="旋转Y" v-model="transform.rotate[1]" :units="rotateUnit" :step="10"></edit-len>
-  <edit-len label="旋转Z" v-model="transform.rotate[2]" :units="rotateUnit" :step="10"></edit-len>
+		<div class="field is-horizontal">
+			<div class="field-label is-small">
+				<label class="label">旋转</label>
+			</div>
+			<div class="field-body">
+				<div class="field">
+					<p class="control is-small">
+						<input class="input is-small" v-model.number="transform.rotate[0]" type="number" placeholder="x">
+					</p>
+				</div>
+				<div class="field">
+					<p class="control is-small">
+						<input class="input is-small" v-model="transform.rotate[1]" type="number" placeholder="y">
+					</p>
+				</div>
+				<div class="field">
+					<p class="control is-small">
+						<input class="input is-small" v-model="transform.rotate[2]" type="number" placeholder="z">
+					</p>
+				</div>
+			</div>
+		</div>
+		<form-field v-model.number="transform.opacity" label="透明度" type="number" width="70px" unit="%"></form-field>
+		<form-field v-model.number="transform.scale" label="缩放" type="number" width="70px" unit="%">
+		</form-field>
 </div>
 </template>
 
 <script>
 import EditLen from './EditLen'
+import FormField from '../../common/FormField'
 export default {
   name: 'EditTransform',
-  components: { EditLen },
+  components: {FormField, EditLen },
   props: {
     value: {
       type: Object

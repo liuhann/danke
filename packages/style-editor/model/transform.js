@@ -1,6 +1,6 @@
 export default {
-  translate: ['0px', '0px', '0px'],
-  scale: 1,
-  opacity: 1,
-  rotate: ['0deg', '0deg', '0deg']
+  translate: ['0', '0', '0'],
+  scale: 100,
+  opacity: 100,
+  rotate: ['0', '0', '0']
 }
