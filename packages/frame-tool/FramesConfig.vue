@@ -41,51 +41,7 @@
           </div>
         </div>
       </div>
-      <header class="timeline-header">
-        <span class="tag is-primary">2017</span>
-      </header>
-      <div class="timeline-item">
-        <div class="timeline-marker is-icon">
-          <i class="fa fa-flag"></i>
-        </div>
-        <div class="timeline-content">
-          <p class="heading">March 2017</p>
-          <p>Timeline content - Can include any HTML element</p>
-        </div>
-      </div>
     </div>
-
-
-    <el-timeline>
-      <el-timeline-item
-        class="time-line-item"
-        placement="top"
-        v-for="(frame, index) in animation.frames"
-        :key="index"
-        :hide-timestamp="true"
-        :timestamp="frame.percent + '%'">
-        <div class="button-percent">
-          {{frame.percent}}%
-          <div class="btns" style="float:right;margin-top: -7px;">
-            <el-button v-if="frame.percent !== 100" size="mini" icon="el-icon-plus"
-            type="text" @click="appendFrame(index)"></el-button>
-            <el-button v-if="!(frame.percent === 100 || frame.percent === 0)" size="mini" icon="el-icon-delete"
-            type="text" @click="removeFrame(index)"></el-button>
-            <el-button v-if="currentFrameIndex === index" size="mini" icon="el-icon-arrow-down"
-            type="text" @click="closeFrame"></el-button>
-            <el-button v-if="currentFrameIndex !== index" size="mini" icon="el-icon-arrow-right"
-            type="text" @click="editFrame(index)"></el-button>
-          </div>
-        </div>
-        <div class="frame-dialog-content" v-if="currentFrameIndex === index">
-          <item-block label="进度">
-            <el-input-number :disabled="frame.percent === 100 || frame.percent === 0" size="mini" v-model="frame.percent" :step="5" :max="100" :min="0"></el-input-number>
-          </item-block>
-          <edit-transform v-model="frame.transform"></edit-transform>
-          <edit-clip-path v-model="frame.clip"></edit-clip-path>
-        </div>
-      </el-timeline-item>
-    </el-timeline>
   </div>
 </div>
 </template>

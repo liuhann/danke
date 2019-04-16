@@ -18,29 +18,31 @@
         </div>
         <div class="field">
           <p class="control is-small">
-            <button>close</button>
+            <a class="icon-trash-empty" @click="removePoint(index)"></a>
           </p>
         </div>
       </div>
     </div>
 
-    <div class="clip-polygon">
-      <item-block :title="`点${(index+1)}`" v-for="(point, index) of clip.points" :key="index" :label-width="60">
-        <el-input-number size="mini" v-model="point[0]" :style="{marginRight: '5px'}" :step="5"></el-input-number>
-        <el-input-number size="mini" v-model="point[1]" :style="{marginRight: '5px'}" :step="5"></el-input-number>
-        <el-button type="text" icon="el-icon-delete" @click="removePoint(index)"></el-button>
-      </item-block>
-      <el-button icon="el-icon-plus" type="text" v-if="clip.type !== 'none'" @click="addPoint">增加</el-button>
+    <div class="field is-horizontal" v-if="clip.type === 'polygon'">
+      <div class="field-label is-small">
+      </div>
+      <div class="field-body">
+        <div class="field">
+          <p class="control is-small">
+            <a class="icon-plus" @click="addPoint"></a>
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import ItemBlock from './ItemBlock'
 import FormField from '../../common/FormField'
 export default {
   name: 'EditClipPath',
-  components: {FormField, ItemBlock },
+  components: { FormField },
   props: {
     value: {
       type: Object
@@ -66,7 +68,9 @@ export default {
     value () {
       this.clip = this.value
     },
-
+    'clip.type': function () {
+      this.clipTypeChange()
+    },
     clip: {
       handler: function (val, oldVal) {
         this.$emit('input', this.clip)
@@ -99,6 +103,7 @@ export default {
 
 <style lang="scss">
 .edit-clip-path {
+  margin-top: 1.5rem;
   .van-stepper {
     float: left;
     margin-right: 5px;

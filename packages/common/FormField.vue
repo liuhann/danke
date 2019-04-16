@@ -7,7 +7,7 @@
       <div class="field has-addons">
         <p class="control">
           <div class="select is-small" v-if="isSelect">
-            <select v-model="fieldValue">
+            <select v-model="fieldValue" @change="selectChange">
               <option v-for="option in optionsArray" :value="option.key" :key="option.key">{{option.value}}</option>
             </select>
           </div>

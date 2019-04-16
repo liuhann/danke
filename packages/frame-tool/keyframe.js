@@ -19,7 +19,6 @@ function addKeyFrames (sheet, name, frames) {
   let pos = sheet.length
   const rule = '@keyframes ' + name + '{' + frames + '}'
   sheet.insertRule(rule, pos)
-  console.log(sheet)
 }
 
 /**
