@@ -26,13 +26,23 @@
       </div>
     </div>
   </div>
+
+  <div class="modal" :class="errorMessage && 'is-active'">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+      <div class="box">
+        {{errorMessage}}
+      </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close" @click="errorMessage = ''"></button>
+  </div>
+
 </div>
 </template>
 
 <script>
 import FramesConfig from './FramesConfig'
 import clone from 'clone'
-import { toast } from 'bulma-toast'
 import FRAME from './model/frame'
 import { createSheet, addAnimationStyle, clearAnimation } from './keyframe'
 import { getElementStyle } from '../style-editor/utils/styles'
@@ -58,6 +68,7 @@ export default {
     p100.percent = 100
     frames.push(p100)
     return {
+      errorMessage: '',
       previewType: '方块',
       boxClass: '',
       frameStyle: '',
@@ -109,13 +120,7 @@ export default {
     async share () {
       const result = await this.ctx.animdao.addAnimation(this.animation)
       if (result.code === 409) {
-        toast({
-          duration: 4000,
-          position: 'top-center',
-          message: '动画名称和现有的冲突',
-          type: 'is-danger',
-          dismissible: true
-        })
+        this.errorMessage = '动画名称和现有的冲突'
       } else {
         toast({
           position: 'top-center',

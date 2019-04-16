@@ -15,7 +15,7 @@
 
 <script>
 import styleUtils from '../utils/styles'
-import { getElementStyle } from 'style-editor/src/utils/styles'
+import { getElementStyle } from '../style-editor/utils/styles'
 
 export default {
   name: 'Scene',

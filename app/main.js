@@ -13,7 +13,6 @@ import login from '../packages/login'
 import frameTool from '../packages/frame-tool'
 
 import initClient from './middlewares/initClient'
-import initLang from './middlewares/i18n'
 import UserDAO from '../packages/login/userdao'
 import AnimationDAO from '../packages/dao/animationdao'
 
@@ -35,7 +34,6 @@ const boot = new AsyncBoot({
   ],
   started: async (ctx, next) => {
     initClient(ctx)
-    initLang(ctx)
     ctx.userdao = new UserDAO(ctx)
     ctx.animdao = new AnimationDAO(ctx)
     ctx.user = await ctx.userdao.getCurrentUser()

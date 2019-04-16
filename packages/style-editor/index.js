@@ -10,6 +10,7 @@ import EditLen from './components/EditLen.vue'
 import EditPosition from './components/EditPosition.vue'
 import EditSize from './components/EditSize.vue'
 import ItemBlock from './components/ItemBlock.vue'
+import { getElementStyle } from './utils/styles'
 
 export default PropConfig
 
@@ -25,5 +26,6 @@ export {
   EditLen,
   EditPosition,
   EditSize,
-  ItemBlock
+  ItemBlock,
+  getElementStyle
 }
