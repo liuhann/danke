@@ -1,44 +1,77 @@
 <template>
   <div class="style-config">
-    <el-collapse v-model="activeNames">
-      <el-collapse-item title="基础" size="mini" name="basic" class="config-basic">
-        <item-block title="名称">
-          <el-input size="mini" v-model="element.name"></el-input>
-        </item-block>
-        <item-block title="内容">
-          <el-input size="mini" v-model="element.text"></el-input>
-        </item-block>
-        <item-block title="描述" class="desc">
-          <el-input size="mini" type="textarea" v-model="element.desc"></el-input>
-        </item-block>
-        <item-block title="图片" class="upload">
-          <edit-image v-model="element.url" @file-add="$emit('file-add', $event)" @file-remove="$emit('file-remove', $event)"></edit-image>
-        </item-block>
-      </el-collapse-item>
-      <el-collapse-item title="动画" size="mini" name="animation">
-        <edit-animation :animation="element.in" label="进入" :animations="animations"></edit-animation>
-        <edit-animation :animation="element.dura" label="持续" :animations="animations"></edit-animation>
-        <edit-animation :animation="element.out" label="离开" :animations="animations"></edit-animation>
-      </el-collapse-item>
-      <el-collapse-item title="字体" size="mini" name="font">
-        <edit-font v-model="element.font" ></edit-font>
-      </el-collapse-item>
-      <el-collapse-item title="大小" size="mini" name="size">
-        <edit-size v-model="element.size"></edit-size>
-      </el-collapse-item>
-      <el-collapse-item title="位置" size="mini" name="position">
-        <edit-position v-model="element.position"></edit-position>
-      </el-collapse-item>
-      <el-collapse-item title="背景" size="mini" name="background">
-        <edit-background v-model="element.background" @file-add="$emit('file-add', $event)" @file-remove="$emit('file-remove', $event)"></edit-background>
-      </el-collapse-item>
-      <el-collapse-item title="边框" size="mini" name="border">
-        <edit-border v-model="element.border"></edit-border>
-      </el-collapse-item>
-      <el-collapse-item title="裁剪" size="mini" name="clip">
-        <edit-clip-path v-model="element.clip"></edit-clip-path>
-      </el-collapse-item>
-    </el-collapse>
+    <div class="tabs">
+      <ul>
+        <li v-for="tab in tabsName" :key="tab" @click="currentTab = tab" :class="currentTab===tab? 'is-active': ''"><a>{{tab}}</a></li>
+      </ul>
+    </div>
+    <div class="tabContent">
+      <div class="basic" v-show="currentTab=== '内容'"></div>
+      <form-field label="名称" v-model="element.name"></form-field>
+      <form-field label="内容" v-model="element.text"></form-field>
+      <form-field label="描述" v-model="element.desc"></form-field>
+
+        <div class="field">
+          <div class="file is-boxed">
+            <label class="file-label">
+              <input class="file-input" type="file" name="resume">
+              <span class="file-cta">
+                <span class="file-icon">
+                  <i class="fas fa-cloud-upload-alt"></i>
+                </span>
+                <span class="file-label">
+                  选择文件
+                </span>
+              </span>
+            </label>
+          </div>
+          <p class="control" v-if="$slots.default">
+            aa
+          </p>
+        </div>
+
+
+      <el-collapse v-model="activeNames">
+        <el-collapse-item title="基础" size="mini" name="basic" class="config-basic">
+          <item-block title="名称">
+            <el-input size="mini" v-model="element.name"></el-input>
+          </item-block>
+          <item-block title="内容">
+            <el-input size="mini" v-model="element.text"></el-input>
+          </item-block>
+          <item-block title="描述" class="desc">
+            <el-input size="mini" type="textarea" v-model="element.desc"></el-input>
+          </item-block>
+          <item-block title="图片" class="upload">
+            <edit-image v-model="element.url" @file-add="$emit('file-add', $event)" @file-remove="$emit('file-remove', $event)"></edit-image>
+          </item-block>
+        </el-collapse-item>
+        <el-collapse-item title="动画" size="mini" name="animation">
+          <edit-animation :animation="element.in" label="进入" :animations="animations"></edit-animation>
+          <edit-animation :animation="element.dura" label="持续" :animations="animations"></edit-animation>
+          <edit-animation :animation="element.out" label="离开" :animations="animations"></edit-animation>
+        </el-collapse-item>
+        <el-collapse-item title="字体" size="mini" name="font">
+          <edit-font v-model="element.font" ></edit-font>
+        </el-collapse-item>
+        <el-collapse-item title="大小" size="mini" name="size">
+          <edit-size v-model="element.size"></edit-size>
+        </el-collapse-item>
+        <el-collapse-item title="位置" size="mini" name="position">
+          <edit-position v-model="element.position"></edit-position>
+        </el-collapse-item>
+        <el-collapse-item title="背景" size="mini" name="background">
+          <edit-background v-model="element.background" @file-add="$emit('file-add', $event)" @file-remove="$emit('file-remove', $event)"></edit-background>
+        </el-collapse-item>
+        <el-collapse-item title="边框" size="mini" name="border">
+          <edit-border v-model="element.border"></edit-border>
+        </el-collapse-item>
+        <el-collapse-item title="裁剪" size="mini" name="clip">
+          <edit-clip-path v-model="element.clip"></edit-clip-path>
+        </el-collapse-item>
+      </el-collapse>
+    </div>
+
   </div>
 </template>
 
@@ -55,6 +88,7 @@ import EditSize from './EditSize'
 import EditTransform from './EditTransform'
 import ItemBlock from './ItemBlock'
 import EditAnimation from './EditAnimation'
+import FormField from '../../common/FormField'
 
 Vue.use(Button)
 Vue.use(ButtonGroup)
@@ -82,6 +116,7 @@ export default {
     }
   },
   components: {
+    FormField,
     EditAnimation,
     ItemBlock,
     EditTransform,
@@ -95,7 +130,13 @@ export default {
   },
   data () {
     return {
+      currentTab: '内容',
       activeNames: []
+    }
+  },
+  computed: {
+    tabsName () {
+      return ['内容', '样式', '位置', '动画']
     }
   }
 }

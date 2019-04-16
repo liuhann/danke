@@ -1,7 +1,7 @@
 <template>
 <div>
   <nav-bar></nav-bar>
-  <div class="columns is-mobile is-desktop is-multiline is-1" style="margin: 5px;">
+  <div class="columns is-mobile is-multiline" style="margin: 5px;">
     <div class="column is-full-mobile">
       <div id="preview" :style="{background: previewType==='文字'? 'none': ''}">
         <div v-if="previewType==='方块'" class="preview-box" :class="boxClass" :style="frameStyle"></div>
@@ -9,7 +9,6 @@
         <div v-if="previewType==='图片'" class="preview-box" :class="boxClass" :style="frameStyle">
           <img src="http://cdn.danke.fun/res/sample1.jpg" width="160" height="160">
         </div>
-
         <div class="columns toolbar">
           <div class="column">
             <div class="buttons has-addons">

@@ -11,6 +11,7 @@ import designer from '../packages/designer'
 import runtime from '../packages/runtime'
 import login from '../packages/login'
 import frameTool from '../packages/frame-tool'
+import styleTool from '../packages/style-editor/module'
 
 import initClient from './middlewares/initClient'
 import UserDAO from '../packages/login/userdao'
@@ -30,7 +31,7 @@ const boot = new AsyncBoot({
   cdn: 'http://cdn.danke.fun',
   mount: '#app',
   packages: [
-    site, designer, runtime, login, frameTool
+    site, designer, runtime, login, frameTool, styleTool
   ],
   started: async (ctx, next) => {
     initClient(ctx)
