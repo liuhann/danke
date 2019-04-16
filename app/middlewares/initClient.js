@@ -1,7 +1,7 @@
 import ky from 'ky'
 
 export default function initClient (ctx) {
-  let token = window.localStorage.getItem('token')
+  let token = window.localStorage.getItem('token') || 'none'
   const client = ky.extend({
     prefixUrl: 'http://www.danke.fun/api/',
     throwHttpErrors: false,

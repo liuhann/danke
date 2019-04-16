@@ -1,15 +1,15 @@
 module.exports = {
   lintOnSave: false,
-  productionSourceMap: false,
+  productionSourceMap: true,
   transpileDependencies: ['async-boot', 'ky'],
   devServer: {
     contentBase: './demo'
   },
   publicPath: process.env.NODE_ENV === 'production'
-    ? '/user/'
+    ? '/'
     : '/',
   outputDir: process.env.NODE_ENV === 'production'
-    ? '../shopen/public/user'
+    ? '../shopen/public'
     : '../shopen/public/user',
   pages: {
     index: {
@@ -17,5 +17,9 @@ module.exports = {
       template: 'app/index.html',
       filename: 'index.html'
     }
+  },
+  chainWebpack: config => {
+    // remove the prefetch plugin
+    config.plugins.delete('prefetch-index')
   }
 }

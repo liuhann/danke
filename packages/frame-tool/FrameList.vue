@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <nav-bar></nav-bar>
-    <div class="section columns is-multiline">
-        <div class="column is-one-fifth" v-for="animation in animations">
+    <div class="section columns is-multiline is-mobile is-tablet">
+        <div class="column is-one-fifth-widescreen is-three-quarters-tablet is-half-mobile" v-for="animation in animations">
           <div class="card">
             <div class="card-image play-area" @click="replay(animation)">
               <div class="preview-box" :class="animation.name"></div>

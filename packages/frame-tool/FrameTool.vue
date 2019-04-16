@@ -1,31 +1,39 @@
 <template>
 <div>
   <nav-bar></nav-bar>
-  <div class="tools-container">
-    <frames-config :animation="animation" class="config" @frame-change="frameChange"></frames-config>
-    <div id="preview" :style="{background: previewType==='文字'? 'none': ''}">
-      <div v-if="previewType==='方块'" class="preview-box" :class="boxClass" :style="frameStyle"></div>
-      <div v-if="previewType==='文字'" class="preview-text" :class="boxClass" :style="frameStyle">danke.fun</div>
-      <div v-if="previewType==='图片'" class="preview-box" :class="boxClass" :style="frameStyle">
-        <img src="http://cdn.danke.fun/res/sample1.jpg" width="160" height="160">
-      </div>
-
-      <div class="columns toolbar">
-        <div class="column">
-          <div class="buttons has-addons">
-            <span class="button" v-for="ptype of previewTypes" :key="ptype" :class="previewType === ptype? 'is-selected is-info': ''" @click="previewType = ptype">{{ptype}}</span>
-          </div>
+  <div class="columns is-mobile is-desktop">
+    <div class="column is-narrow is-one-fourth-widescreen">
+      <frames-config :animation="animation" class="config" @frame-change="frameChange"></frames-config>
+    </div>
+    <div class="column">
+      <div id="preview" :style="{background: previewType==='文字'? 'none': ''}">
+        <div v-if="previewType==='方块'" class="preview-box" :class="boxClass" :style="frameStyle"></div>
+        <div v-if="previewType==='文字'" class="preview-text" :class="boxClass" :style="frameStyle">danke.fun</div>
+        <div v-if="previewType==='图片'" class="preview-box" :class="boxClass" :style="frameStyle">
+          <img src="http://cdn.danke.fun/res/sample1.jpg" width="160" height="160">
         </div>
-        <div class="column">
-          <div class="buttons has-addons is-right">
-            <span class="button icon-floppy" @click="share"></span>
-            <span class="button icon-code" @click="viewCode"></span>
-            <span class="button icon-play" @click="play"></span>
+
+        <div class="columns toolbar">
+          <div class="column">
+            <div class="buttons has-addons">
+              <span class="button" v-for="ptype of previewTypes" :key="ptype" :class="previewType === ptype? 'is-selected is-info': ''" @click="previewType = ptype">{{ptype}}</span>
+            </div>
+          </div>
+          <div class="column">
+            <div class="buttons has-addons is-right">
+              <span class="button icon-floppy" @click="share"></span>
+              <span class="button icon-code" @click="viewCode"></span>
+              <span class="button icon-play" @click="play"></span>
+            </div>
           </div>
         </div>
       </div>
     </div>
+
   </div>
+  <section class="hero is-large">
+
+  </section>
 
   <div class="modal" :class="errorMessage && 'is-active'">
     <div class="modal-background"></div>

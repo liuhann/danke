@@ -1,7 +1,7 @@
 export default {
   routes: [{
     path: '/',
-    component: () => import(/* webpackChunkName: "site" */'./Main.vue')
+    component: () => import(/* webpackPrefetch: true; webpackChunkName: "site" */'./Main.vue')
   }],
   async onload (ctx) {
   }
