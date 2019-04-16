@@ -1,7 +1,7 @@
 <template>
   <div class="edit-clip-path">
     <form-field v-model="clip.type" label="裁切类型" type="select" :options="clipTypes"></form-field>
-    <div class="field is-horizontal" v-for="(point, index) of clip.points" :key="index">
+    <div class="field is-horizontal clip-path-point" v-for="(point, index) of clip.points" :key="index">
       <div class="field-label is-small">
         <label class="label">{{index+1}}</label>
       </div>
@@ -103,10 +103,19 @@ export default {
 
 <style lang="scss">
 .edit-clip-path {
-  margin-top: 1.5rem;
-  .van-stepper {
-    float: left;
-    margin-right: 5px;
-  }
+  margin-top: .5rem;
+  .clip-path-point {
+		flex: 1;
+		.field-body {
+			display: flex;
+			.field {
+				margin: 0;
+			}
+			input {
+				width: 80px;
+				margin-right: 5px;
+			}
+		}
+	}
 }
 </style>

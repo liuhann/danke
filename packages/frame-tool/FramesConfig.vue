@@ -133,5 +133,11 @@ export default {
     font-size: 12px;
     line-height: 20px;
   }
+  .level {
+    display: flex;
+    .level-right {
+      margin: 0;
+    }
+  }
 }
 </style>

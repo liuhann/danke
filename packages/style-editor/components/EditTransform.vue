@@ -4,7 +4,7 @@
       <div class="field-label is-small">
         <label class="label">移动(%)</label>
       </div>
-      <div class="field-body">
+      <div class="field-body transform-xyz">
         <div class="field">
           <p class="control is-small">
             <input class="input is-small" v-model.number="transform.translate[0]" type="number" placeholder="x">
@@ -26,7 +26,7 @@
 			<div class="field-label is-small">
 				<label class="label">旋转</label>
 			</div>
-			<div class="field-body">
+			<div class="field-body transform-xyz">
 				<div class="field">
 					<p class="control is-small">
 						<input class="input is-small" v-model.number="transform.rotate[0]" type="number" placeholder="x">
@@ -98,5 +98,14 @@ export default {
 </script>
 
 <style lang="scss">
-
+.transform-xyz {
+	display: flex;
+	.field {
+		margin: 0;
+	}
+	input {
+		margin-right: 5px;
+		width: 70px;
+	}
+}
 </style>

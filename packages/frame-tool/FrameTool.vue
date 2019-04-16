@@ -1,11 +1,8 @@
 <template>
 <div>
   <nav-bar></nav-bar>
-  <div class="columns is-mobile is-desktop">
-    <div class="column is-narrow is-one-fourth-widescreen">
-      <frames-config :animation="animation" class="config" @frame-change="frameChange"></frames-config>
-    </div>
-    <div class="column">
+  <div class="columns is-mobile is-desktop is-multiline is-1" style="margin: 5px;">
+    <div class="column is-full-mobile">
       <div id="preview" :style="{background: previewType==='文字'? 'none': ''}">
         <div v-if="previewType==='方块'" class="preview-box" :class="boxClass" :style="frameStyle"></div>
         <div v-if="previewType==='文字'" class="preview-text" :class="boxClass" :style="frameStyle">danke.fun</div>
@@ -29,7 +26,9 @@
         </div>
       </div>
     </div>
-
+    <div class="column is-one-third-widescreen is-two-fifths-tablet is-full-mobile">
+      <frames-config :animation="animation" class="config" @frame-change="frameChange"></frames-config>
+    </div>
   </div>
   <section class="hero is-large">
 
@@ -150,61 +149,60 @@ export default {
 </script>
 
 <style lang="scss">
-.tools-container {
+
+.container {
+  margin: 10px;
+}
+#preview {
+  position: relative;
+  background-image: linear-gradient(90deg, #592D2D, #592D2D);
+  flex: 1;
   display: flex;
-  height: calc( 100vh - 4rem );
-  width: 100%;
-  overflow: hidden;
-  .animation-config {
-    margin: 20px;
-    overflow-y: auto;
-    width: 320px;
-    padding-right: 10px;
+  justify-content: center;
+  align-items: center;
+  background-size: 160px 160px;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: calc(100vh - 8rem);
+  .preview-box {
+    background-color: #FF4B4B;
+    width: 160px;
+    height: 160px;
+    overflow: hidden;
+    box-sizing: border-box;
   }
-
-  ::-webkit-scrollbar {
-    width: 6px;
-    background-color: #F5F5F5;
+  .preview-text {
+    text-transform: uppercase;
+    font-size: 2.5rem;
   }
-
-  ::-webkit-scrollbar-thumb {
-    background-color: #0ae;
-    background-image: -webkit-gradient(linear, 0 0, 0 100%, color-stop(.5, rgba(255, 255, 255, .2)), color-stop(.5, transparent), to(transparent));
-  }
-  ::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-    background-color: #F5F5F5;
-  }
-
-
-  #preview {
-    position: relative;
-    background-image: linear-gradient(90deg, #592D2D, #592D2D);
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-size: 160px 160px;
-    background-position: center;
-    background-repeat: no-repeat;
-    .preview-box {
-      background-color: #FF4B4B;
-      width: 160px;
-      height: 160px;
-      overflow: hidden;
-      box-sizing: border-box;
-    }
-    .preview-text {
-      text-transform: uppercase;
-      font-size: 2.5rem;
-    }
-
-    .toolbar {
-      position: absolute;
-      top: 15px;
-      width: 100%;
-    }
+  .toolbar {
+    position: absolute;
+    top: 15px;
+    width: 100%;
   }
 }
 
+@media screen and (max-width: 768px) {
+  #preview {
+    height: 320px;
+    .toolbar {
+      display: flex;
+      margin: 0;
+    }
+  }
+  .column {
+    padding: 0;
+  }
+  .box {
+    padding: 10px;
+  }
+  .field {
+    display: flex;
+  }
+  .field-label {
+    margin-bottom: 0;
+    margin-right: 10px;
+    width: 65px;
+  }
+}
 </style>
