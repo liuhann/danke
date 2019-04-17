@@ -8,12 +8,13 @@
 					<div class="columns">
 						<div class="column">
 							<div class="buttons has-addons">
-								<span class="button" v-for="ratio of ratios" :key="ratio.ratio" :class="previewRatio === ratio.ratio? 'is-selected is-info': ''" @click="previewRatio = ratio.ratio">{{ratio.ratio}}</span>
+								<span class="button is-small" v-for="ratio of ratios" :key="ratio.ratio" :class="previewRatio === ratio.ratio? 'is-selected is-info': ''" @click="previewRatio = ratio.ratio">{{ratio.ratio}}</span>
 							</div>
 						</div>
 						<div class="column">
 							<div class="buttons has-addons">
-								<span class="button" v-for="ratio of ratios" :key="ratio.ratio" :class="previewRatio === ratio.ratio? 'is-selected is-info': ''" @click="previewRatio = ratio.ratio">{{ratio.ratio}}</span>
+								<span class="button icon-mobile is-small" :class="vertical? 'is-selected is-info': ''" @click="vertical = true"></span>
+								<span class="button icon-laptop is-small" :class="vertical? '': 'is-selected is-info'" @click="vertical = false"></span>
 							</div>
 						</div>
 					</div>
@@ -47,7 +48,7 @@
         element: clone(template),
         previewRatio: '16:9',
         ratios,
-				directions: ['横', '竖']
+				vertical: true
 			}
 		},
 		computed: {
@@ -72,7 +73,6 @@
 <style>
 #stylePreview {
 	position: relative;
-	flex: 1;
 	display: flex;
 	justify-content: center;
 	-webkit-box-align: center;
@@ -84,4 +84,13 @@
 	top: 1em;
 	width: 100%;
 }
+
+
+@media screen and (max-width: 768px) {
+	#stylePreview {
+		height: 100vw;
+	}
+}
+
+
 </style>

@@ -138,25 +138,4 @@ html, body {
   }
 }
 
-.panel:not(:last-child) {
-  margin-bottom: 1rem;
-}
-
-@media screen and (max-width: 768px) {
-  .column {
-    padding: 0;
-  }
-  .box {
-    padding: 10px;
-  }
-  .field {
-    display: flex;
-  }
-  .field-label {
-    font-size: 14px;
-    font-weight: 200;
-    margin-bottom: 0;
-    margin-right: 6px;
-    width: 65px;
-  }
-}
+@import "./overrides.css";
