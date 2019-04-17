@@ -10,7 +10,7 @@
     <form-field v-model="animation.duration" width="70px" label="时长" placeholder="动画时长" unit="毫秒" type="number">
     </form-field>
 
-    <form-field v-model="animation.timing" label="曲线" type="select" :options="cubicBeziers">
+    <form-field v-model="animation.timing" label="曲线1" type="select" :options="cubicBeziers">
     </form-field>
 
     <form-field v-model="animation.delay" width="70px" label="延迟" placeholder="动画时长" unit="毫秒" type="number">
@@ -49,7 +49,7 @@
 <script>
 import './bulma-timeline.css'
 import { EditTransform, EditClipPath, ItemBlock, EditLen } from '../style-editor'
-import clone from 'clone'
+import { clone } from '../utils/object'
 import FRAME from './model/frame'
 import cubicBeziers from './model/cubic-beziers'
 import FormField from '../common/FormField'

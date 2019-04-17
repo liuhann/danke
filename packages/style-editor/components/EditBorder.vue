@@ -1,33 +1,19 @@
 <template>
-<div class="edit-border">
-  <item-block title="宽度">
-    <el-input-number size="mini" v-model="border.width" :step="1" :min="0"></el-input-number>
-  </item-block>
-  <item-block title="样式">
-    <el-select size="mini" v-model="border.style" placeholder="请选择">
-      <el-option
-        v-for="(item, key) in lineStyles"
-        :key="key"
-        :label="item"
-        :value="key">
-      </el-option>
-    </el-select>
-  </item-block>
-  <item-block title="颜色">
-    <el-color-picker v-model="border.color"></el-color-picker>
-  </item-block>
-  <item-block title="四边">
-    <el-checkbox  v-for="(value, key) of allSides" v-model="border.sides[key]" :key="key"
-                  :name="key">{{value}}</el-checkbox>
-  </item-block>
-  <item-block title="圆角" class="radius-setting">
-    <el-input-number size="mini" v-model="border.radius" :step="1" :min="0"></el-input-number>
-  </item-block>
+<div class="edit-border panel">
+  <edit-len v-model="border.width" label="边框宽度" :with-unit="false"></edit-len>
+  <form-field label="样式" v-model="border.style" type="select" :options="lineStyles"></form-field>
+  <form-field label="颜色">
+    <color-pickr v-model="border.color"></color-pickr>
+  </form-field>
+  <edit-len v-model="border.radius" label="圆角" :with-unit="false"></edit-len>
 </div>
 </template>
 
 <script>
 import ItemBlock from './ItemBlock'
+import FormField from '../../common/FormField'
+import EditLen from './EditLen'
+import ColorPickr from '../../common/ColorPickr'
 const lineStyles = {
   solid: '实线',
   dotted: '虚点线',
@@ -45,6 +31,9 @@ const allSides = {
 export default {
   name: 'EditBorder',
   components: {
+    ColorPickr,
+    EditLen,
+    FormField,
     ItemBlock
   },
   props: {
@@ -64,7 +53,25 @@ export default {
       return allSides
     },
     lineStyles () {
-      return lineStyles
+      return [{
+        key: 'solid',
+        value: '实线'
+      }, {
+        key: 'dotted',
+        value: '虚点线'
+      }, {
+        key: 'dashed',
+        value: '虚划线'
+      }, {
+        key: 'double',
+        value: '双层'
+      }, {
+        key: 'none',
+        value: '无边框'
+      }, {
+        key: 'inset',
+        value: '嵌入线'
+      },]
     }
   },
   watch: {

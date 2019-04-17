@@ -1,18 +1,29 @@
 <template>
-<item-block :title="label" class="item-block" @touch-start="touchStart" @touch-move="touchMove">
-  <el-input-number @change="stepChange" size="mini" v-model="length" :step="step || 1"></el-input-number>
-  <el-select v-model="unit" size="mini" style="width: 75px;margin-left: 5px" v-if="withUnit">
-    <el-option v-for="u of units" :key="u.value" :value="u.value" :label="u.label"></el-option>
-  </el-select>
-  <slot></slot>
-</item-block>
+<div class="field is-horizontal">
+  <div class="field-label is-small">
+    <label class="label">{{label}}</label>
+  </div>
+  <div class="field-body">
+    <div class="field has-addons">
+      <p class="control">
+        <input class="input is-small" style="width: 80px;" type="number" v-model.number="length">
+      </p>
+      <p class="control">
+    <span class="select is-small" v-if="withUnit">
+      <select v-model="unit" class="is-small">
+        <option v-for="u of units" :key="u.value" :value="u.value" :label="u.label">{{u.label}}</option>
+      </select>
+    </span>
+      </p>
+    </div>
+  </div>
+</div>
 </template>
 
 <script>
-import ItemBlock from './ItemBlock'
 const REG_LEN = /([+-]?[0-9#]+)(%|px|pt|em|rem|in|cm|mm|ex|ch|pc|vw|vh|vmin|vmax|deg|rad|turn)?$/
 export default {
-  components: { ItemBlock },
+  components: { },
   props: {
     label: {
       type: String

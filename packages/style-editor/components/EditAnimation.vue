@@ -1,42 +1,23 @@
 <template>
-<div class="edit-animation-option">
+<div class="edit-animation-option panel">
   {{label}}
-  <item-block label="动画">
-    <el-select size="mini" v-model="animation.name" placeholder="请选择" clearable>
-      <el-option
-        v-for="(value, index) in animations"
-        :key="index"
-        :label="value.name"
-        :value="value.name">
-      </el-option>
-    </el-select>
-  </item-block>
-
+  <form-field label="动画" type="select" v-model="animation.name" clearable :options="animations"></form-field>
   <edit-len label="时长" v-model="animation.duration" :with-unit="false"></edit-len>
-  <item-block label="曲线">
-    <el-select size="mini" v-model="animation.timing" placeholder="请选择">
-      <el-option
-        v-for="(value, key) in cubicBeziers"
-        :key="key"
-        :label="key"
-        :value="value">
-      </el-option>
-    </el-select>
-  </item-block>
+  <form-field label="曲线" type="select" v-model="animation.timing" :options="cubicBeziers"></form-field>
   <edit-len label="延迟" v-model="animation.delay" :with-unit="false"></edit-len>
-  <edit-len label="次数" v-model="animation.iteration" :with-unit="false">
-    <el-checkbox v-model="animation.infinite">循环</el-checkbox>
-  </edit-len>
+  <edit-len label="次数" v-model="animation.iteration" :with-unit="false"></edit-len>
 </div>
 </template>
 
 <script>
 import EditLen from './EditLen'
 import ItemBlock from './ItemBlock'
-import cubicBeziers from '../model/cubic-beziers'
+import cubicBeziers from '../../frame-tool/model/cubic-beziers'
+import FormField from '../../common/FormField'
 export default {
   name: 'EditAnimation',
   components: {
+    FormField,
     ItemBlock,
     EditLen
   },

@@ -1,4 +1,5 @@
 import './common.scss'
+import '../packages/webfont/karla/font.css'
 import '../packages/fontello/css/fontello.css'
 import AsyncBoot from 'async-boot'
 import App from './app.vue'

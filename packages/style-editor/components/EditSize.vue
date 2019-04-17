@@ -1,29 +1,19 @@
 <template>
 <div class="edit-size">
   <edit-len label="宽度" v-model="value.width" :min="1" @step-change="widthChanged"></edit-len>
-  <item-block title="锁定比例">
-    <el-button-group size="mini">
-      <el-button v-for="(relate, index) of relates"
-                 :class="index === relatedIndex ? 'current': ''"
-                 @click="chooseIndex(index)"
-                 size="mini"
-                 :key="index"
-                 :icon="relate.icon"
-                 round>{{relate.value}}</el-button>
-    </el-button-group>
-  </item-block>
+  <form-field label="锁定比例" type="radio" :options="relates" v-model="customRatio"></form-field>
   <edit-len label="高度" v-model="value.height" :min="1" @step-change="heightChanged"></edit-len>
 </div>
 </template>
 
 <script>
 import EditLen from './EditLen'
-import ItemBlock from './ItemBlock'
 import { getLenSplits } from '../utils/styles'
+import FormField from '../../common/FormField'
 export default {
   name: 'EditSize',
   components: {
-    ItemBlock,
+    FormField,
     EditLen
   },
   props: {
@@ -37,23 +27,23 @@ export default {
   data () {
     return {
       relatedIndex: -1,
-      customRatio: 1
+      customRatio: ''
     }
   },
   computed: {
     relates () {
       return [{
-        icon: 'el-icon-sort',
-        value: ''
+        key: '无',
+        value: '无'
       }, {
-        value: '4:3',
-        ratio: 4 / 3
+        key: '3:2',
+        value: '3:2'
       }, {
-        value: '3:2',
-        ratio: 3 / 2
+        key: '4:3',
+        value: '4:3'
       }, {
-        value: '2:1',
-        ratio: 2 / 1
+        key: '16:9',
+        value: '16:9'
       }]
     }
   },

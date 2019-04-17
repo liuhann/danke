@@ -189,19 +189,7 @@ export default {
       margin: 0;
     }
   }
-  .column {
-    padding: 0;
-  }
-  .box {
-    padding: 10px;
-  }
-  .field {
-    display: flex;
-  }
-  .field-label {
-    margin-bottom: 0;
-    margin-right: 10px;
-    width: 65px;
-  }
 }
+
+
 </style>

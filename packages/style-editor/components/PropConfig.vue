@@ -1,17 +1,16 @@
 <template>
-  <div class="style-config">
+  <div class="prop-config box">
     <div class="tabs">
       <ul>
-        <li v-for="tab in tabsName" :key="tab" @click="currentTab = tab" :class="currentTab===tab? 'is-active': ''"><a>{{tab}}</a></li>
+        <li v-for="tab in tabsName" :key="tab" :class="currentTab===tab? 'is-active': ''"><a @click="setTab(tab)">{{tab}}</a></li>
       </ul>
     </div>
     <div class="tabContent">
-      <div class="basic" v-show="currentTab=== '内容'"></div>
-      <form-field label="名称" v-model="element.name"></form-field>
-      <form-field label="内容" v-model="element.text"></form-field>
-      <form-field label="描述" v-model="element.desc"></form-field>
-
-        <div class="field">
+      <div class="basic panel" v-show="currentTab === '内容'">
+        <form-field label="名称" v-model="element.name"></form-field>
+        <form-field label="内容" v-model="element.text"></form-field>
+        <form-field label="描述" v-model="element.desc"></form-field>
+        <form-field label="图片">
           <div class="file is-boxed">
             <label class="file-label">
               <input class="file-input" type="file" name="resume">
@@ -25,61 +24,33 @@
               </span>
             </label>
           </div>
-          <p class="control" v-if="$slots.default">
-            aa
-          </p>
-        </div>
+        </form-field>
+      </div>
 
+      <div class="position-config" v-show="currentTab==='位置'">
+        <edit-position v-model="element.position"></edit-position>
+        <edit-size v-model="element.size"></edit-size>
+      </div>
 
-      <el-collapse v-model="activeNames">
-        <el-collapse-item title="基础" size="mini" name="basic" class="config-basic">
-          <item-block title="名称">
-            <el-input size="mini" v-model="element.name"></el-input>
-          </item-block>
-          <item-block title="内容">
-            <el-input size="mini" v-model="element.text"></el-input>
-          </item-block>
-          <item-block title="描述" class="desc">
-            <el-input size="mini" type="textarea" v-model="element.desc"></el-input>
-          </item-block>
-          <item-block title="图片" class="upload">
-            <edit-image v-model="element.url" @file-add="$emit('file-add', $event)" @file-remove="$emit('file-remove', $event)"></edit-image>
-          </item-block>
-        </el-collapse-item>
-        <el-collapse-item title="动画" size="mini" name="animation">
-          <edit-animation :animation="element.in" label="进入" :animations="animations"></edit-animation>
-          <edit-animation :animation="element.dura" label="持续" :animations="animations"></edit-animation>
-          <edit-animation :animation="element.out" label="离开" :animations="animations"></edit-animation>
-        </el-collapse-item>
-        <el-collapse-item title="字体" size="mini" name="font">
-          <edit-font v-model="element.font" ></edit-font>
-        </el-collapse-item>
-        <el-collapse-item title="大小" size="mini" name="size">
-          <edit-size v-model="element.size"></edit-size>
-        </el-collapse-item>
-        <el-collapse-item title="位置" size="mini" name="position">
-          <edit-position v-model="element.position"></edit-position>
-        </el-collapse-item>
-        <el-collapse-item title="背景" size="mini" name="background">
-          <edit-background v-model="element.background" @file-add="$emit('file-add', $event)" @file-remove="$emit('file-remove', $event)"></edit-background>
-        </el-collapse-item>
-        <el-collapse-item title="边框" size="mini" name="border">
-          <edit-border v-model="element.border"></edit-border>
-        </el-collapse-item>
-        <el-collapse-item title="裁剪" size="mini" name="clip">
-          <edit-clip-path v-model="element.clip"></edit-clip-path>
-        </el-collapse-item>
-      </el-collapse>
+      <div class="style-config" v-show="currentTab==='样式'">
+        <edit-font v-model="element.font" ></edit-font>
+        <edit-background v-model="element.background"></edit-background>
+        <edit-border v-model="element.border"></edit-border>
+        <edit-clip-path v-model="element.clip"></edit-clip-path>
+      </div>
+
+      <div class="animation-config" v-show="currentTab==='动画'">
+        <edit-animation :animation="element.in" label="进入" :animations="animations"></edit-animation>
+        <edit-animation :animation="element.dura" label="持续" :animations="animations"></edit-animation>
+        <edit-animation :animation="element.out" label="离开" :animations="animations"></edit-animation>
+      </div>
     </div>
-
   </div>
 </template>
 
 <script>
-import Vue from 'vue'
 import EditFont from './EditFont'
 import EditPosition from './EditPosition'
-import { Button, ButtonGroup, InputNumber, ColorPicker, Radio, Select, Option, Checkbox, Collapse, CollapseItem, Upload, Input, Tabs, TabPane } from 'element-ui'
 import EditBackground from './EditBackground'
 import EditImage from './EditImage'
 import EditBorder from './EditBorder'
@@ -90,20 +61,6 @@ import ItemBlock from './ItemBlock'
 import EditAnimation from './EditAnimation'
 import FormField from '../../common/FormField'
 
-Vue.use(Button)
-Vue.use(ButtonGroup)
-Vue.use(InputNumber)
-Vue.use(ColorPicker)
-Vue.use(Radio)
-Vue.use(Select)
-Vue.use(Option)
-Vue.use(Checkbox)
-Vue.use(Collapse)
-Vue.use(CollapseItem)
-Vue.use(Upload)
-Vue.use(Input)
-Vue.use(Tabs)
-Vue.use(TabPane)
 
 export default {
   name: 'PropConfig',
@@ -137,6 +94,11 @@ export default {
   computed: {
     tabsName () {
       return ['内容', '样式', '位置', '动画']
+    }
+  },
+  methods: {
+    setTab(tab) {
+      this.currentTab = tab
     }
   }
 }

@@ -1,30 +1,24 @@
 <template>
-<div class="edit-font">
-  <edit-len v-model="font.size" label="大小" :with-unit="false"></edit-len>
-  <item-block title="颜色">
-    <el-color-picker v-model="font.color"></el-color-picker>
-  </item-block>
-  <item-block title="粗细">
-    <el-radio v-model="font.weight" label="normal">细</el-radio>
-    <el-radio v-model="font.weight" label="bold">粗</el-radio>
-  </item-block>
-
-  <item-block title="对齐">
-    <el-radio v-model="font.align" label="left">左</el-radio>
-    <el-radio v-model="font.align" label="center">居中</el-radio>
-    <el-radio v-model="font.align" label="right">右</el-radio>
-  </item-block>
-  <edit-len v-model="font.padding" label="边距"></edit-len>
+<div class="edit-font panel">
+  <edit-len v-model="font.size" label="字体大小" :with-unit="false"></edit-len>
+  <form-field label="颜色">
+    <color-pickr v-model="font.color"></color-pickr>
+  </form-field>
+  <form-field label="粗细" type="radio" v-model="font.weight" :options="weights"></form-field>
+  <form-field label="对齐" type="radio" v-model="font.align" :options="aligns"></form-field>
+  <edit-len v-model="font.padding" label="边距" :with-unit="false"></edit-len>
 </div>
 </template>
 
 <script>
 import EditLen from './EditLen'
-import ItemBlock from './ItemBlock'
+import FormField from '../../common/FormField'
+import ColorPickr from '../../common/ColorPickr'
 export default {
   name: 'EditFont',
   components: {
-    ItemBlock,
+    ColorPickr,
+    FormField,
     EditLen
   },
   props: {
@@ -34,6 +28,23 @@ export default {
   },
   data () {
     return {
+      weights: [{
+        key: 'bold',
+        value: '粗'
+      }, {
+        key: 'normal',
+        value: '细'
+      }],
+      aligns: [{
+        key: 'left',
+        value: '左'
+      }, {
+        key: 'center',
+        value: '居中'
+      }, {
+        key: 'right',
+        value: '右'
+      }]
     }
   },
   computed: {

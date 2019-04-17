@@ -1,55 +1,25 @@
 <template>
-<div class="edit-background section">
-  <item-block title="颜色">
-    <span  v-for="(color, index) of background.colors" :key="index">
-      <el-color-picker v-model="background.colors[index]"></el-color-picker>
+<div class="edit-background panel">
+  <form-field label="背景颜色">
+    <span v-for="(color, index) of background.colors" :key="index">
+      <color-pickr v-model="background.colors[index]"></color-pickr>
     </span>
-    <el-button icon="el-icon-plus" type="text" @click="addColor"></el-button>
-  </item-block>
-
-  <item-block title="渐变模式">
-    <el-select v-model="background.angle" size="mini">
-      <el-option value="to bottom" label="上下"></el-option>
-      <el-option value="to right" label="左右"></el-option>
-    </el-select>
-  </item-block>
-
-  <item-block title="背景大小">
-    <el-select size="mini" v-model="background.size" placeholder="请选择">
-      <el-option
-        v-for="item in backgroundSizeOptions"
-        :key="item.value"
-        :label="item.label"
-        :value="item.value">
-      </el-option>
-    </el-select>
-  </item-block>
-
-  <item-block title="背景重复">
-    <el-checkbox v-model="background.repeat">是</el-checkbox>
-  </item-block>
-
-  <item-block title="背景位置">
-    <el-select size="mini" v-model="background.position">
-      <el-option
-        v-for="item in backgroundPositions"
-        :key="item.value"
-        :label="item.label"
-        :value="item.value"></el-option>
-    </el-select>
-  </item-block>
-
+    <a class="icon-plus" @click="addColor"></a>
+  </form-field>
+  <form-field label="渐变方向" type="radio" v-model="background.angle" :options="gredientAngle"></form-field>
+  <form-field label="背景大小" type="select" v-model="background.size" :options="backgroundSizeOptions"></form-field>
+  <form-field label="背景位置" type="select" v-model="background.position" :options="backgroundPositions"></form-field>
 </div>
 </template>
 
 <script>
-import ItemBlock from './ItemBlock'
-import EditImage from './EditImage'
+import FormField from '../../common/FormField'
+import ColorPickr from '../../common/ColorPickr'
 export default {
   name: 'EditBackground',
   components: {
-    EditImage,
-    ItemBlock
+    ColorPickr,
+    FormField
   },
   props: {
     value: {
@@ -75,57 +45,60 @@ export default {
       return this.value
     },
 
-    imagePreview () {
-      if (this.file) {
-        return `background-image: url('${this.src}')`
-      } else {
-        return ''
-      }
+    gredientAngle () {
+      return [{
+        key: 'to bottom',
+        value: '上下'
+      }, {
+        key: 'to right',
+        value: '左右'
+      }]
+
     },
 
     backgroundSizeOptions () {
       return [{
-        value: 'auto',
-        label: '原始大小'
+        key: 'auto',
+        value: '原始大小'
       }, {
-        value: 'cover',
-        label: '覆盖'
+        key: 'cover',
+        value: '覆盖'
       }, {
-        value: 'contain',
-        label: '包含'
+        key: 'contain',
+        value: '包含'
       }, {
-        value: 'auto 100%',
-        label: '匹配高度'
+        key: 'auto 100%',
+        value: '匹配高度'
       }, {
-        value: '100% auto',
-        label: '匹配宽度'
+        key: '100% auto',
+        value: '匹配宽度'
       }]
     },
     backgroundPositions () {
       return [{
-        value: 'top left',
-        label: '左上'
+        key: 'top left',
+        value: '左上'
       }, {
-        value: 'top center',
-        label: '中上'
+        key: 'top center',
+        value: '中上'
       }, {
-        value: 'center left',
-        label: '左中'
+        key: 'center left',
+        value: '左中'
       }, {
-        value: 'center center',
-        label: '正中'
+        key: 'center center',
+        value: '正中'
       }, {
-        value: 'bottom left',
-        label: '左下'
+        key: 'bottom left',
+        value: '左下'
       }, {
-        value: 'bottom center',
-        label: '中下'
+        key: 'bottom center',
+        value: '中下'
       }, {
-        value: 'bottom right',
-        label: '右下'
+        key: 'bottom right',
+        value: '右下'
       }, {
-        value: 'center right',
-        label: '右中'
+        key: 'center right',
+        value: '右中'
       }]
     }
   },
@@ -156,20 +129,6 @@ export default {
 
 <style lang="scss">
 .edit-background {
-  .image-display {
-    width: 220px;
-    height: 90px;
-    background-color: #efefef;
-  }
-  .upload {
-    height: 100px;
-    .el-upload {
-      display: inherit;
-      text-align: center;
-      cursor: pointer;
-      outline: 0;
-      padding: 25px;
-    }
-  }
+
 }
 </style>
