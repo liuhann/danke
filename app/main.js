@@ -15,11 +15,7 @@ import frameTool from '../packages/frame-tool'
 import styleTool from '../packages/style-editor/module'
 
 import initClient from './middlewares/initClient'
-import UserDAO from '../packages/login/userdao'
 import AnimationDAO from '../packages/dao/animationdao'
-
-// import WorkDAO from '../packages/dao/workdao'
-// import UserDAO from '../packages/dao/userdao'
 
 Vue.use(VueRouter)
 window.Vue = Vue
@@ -36,9 +32,8 @@ const boot = new AsyncBoot({
   ],
   started: async (ctx, next) => {
     initClient(ctx)
-    ctx.userdao = new UserDAO(ctx)
+    ctx.user = ctx.userdao.getCurrentUser()
     ctx.animdao = new AnimationDAO(ctx)
-    ctx.user = await ctx.userdao.getCurrentUser()
     await next()
   },
   upload: {

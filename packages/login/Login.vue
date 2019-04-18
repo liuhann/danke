@@ -7,21 +7,31 @@
     <div class="field">
       <label class="label">用户名</label>
       <div class="control">
-        <input class="input is-danger" v-model="username" type="text" placeholder="输入手机号码">
+        <input class="input" v-model="username" type="text" placeholder="输入用户名">
       </div>
-      <p class="help is-danger">This username is available</p>
+      <p v-if="error.username" class="help is-danger">用户名或密码不正确</p>
     </div>
 
     <div class="field">
       <label class="label">密码</label>
       <div class="control">
-        <input class="input is-danger" v-model="password" type="password" placeholder="输入密码">
+        <input class="input" v-model="password" type="password" placeholder="输入密码">
       </div>
-      <p class="help is-danger">This username is available</p>
+    </div>
+
+    <div class="field">
+      <label class="label">验证码</label>
+      <div class="control">
+        <span @click="refreshCaptcha" v-html="svg"></span>
+      </div>
+      <div class="control">
+        <input class="input" v-model="captcha">
+      </div>
+      <p v-if="error.captcha" class="help is-danger">{{error.captcha}}</p>
     </div>
     <div class="field is-grouped">
       <div class="control">
-        <button class="button is-primary">登录</button>
+        <button class="button is-primary" @click="login">登录</button>
       </div>
       <div class="control">
         <button class="button is-text" @click="register">注册</button>
@@ -40,6 +50,12 @@ export default {
   components: { NavBar },
   data () {
     return {
+      error: {
+        captcha: '',
+        username: '',
+      },
+      captcha: '',
+      svg: '',
       username: '',
       password: '',
     }
@@ -54,7 +70,16 @@ export default {
     }, 1000)
   },
 
+  mounted () {
+    this.refreshCaptcha()
+  },
+
   methods: {
+    async refreshCaptcha () {
+      const result = await this.ctx.userdao.getCaptcha()
+      this.svg = result.svg
+    },
+
     register () {
       this.$router.push('/register')
     },
@@ -69,19 +94,13 @@ export default {
       }
     },
 
-    isPoneAvailable(phone) {
-      if (!/^[1][3,4,5,7,8][0-9]{9}$/.test(phone)) {
-        return false
-      } else {
-        return true
-      }
-    },
-
     async login () {
-      let result = await this.ctx.userdao.loginWithSms(this.phone, this.sms)
-      if (result.ok === '1') {
-        this.$router.replace('/')
+      let result = await this.ctx.userdao.login(this.username, this.password, this.captcha)
+      if (result.code === 400) {
+        this.error.captcha = '验证码不正确'
+        this.refreshCaptcha()
       }
+      debugger
     }
 
   }

@@ -15,14 +15,17 @@ class UserDAO {
       }
     }).json()
   }
-
-  login (username, password) {
+  login (name, password, captcha) {
     return this.ctx.post(`user/login`, {
       json: {
-        name: username,
-        password: password
+        name,
+        password,
+        captcha
       }
     }).json()
+  }
+  async getCaptcha () {
+    return this.ctx.get(`captcha`).json()
   }
 
   async sendSmsCode (phone) {

@@ -8,6 +8,6 @@ export default {
     component: () => import(/* webpackChunkName: "login" */'./Register.vue')
   }],
   async onload (ctx) {
-
+    ctx.userdao = new UserDAO(ctx)
   }
 }
