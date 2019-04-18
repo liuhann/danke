@@ -1,23 +1,24 @@
 <template>
-  <div id="app">
+  <div>
     <nav-bar></nav-bar>
-    <div class="section columns is-multiline is-mobile is-tablet">
-        <div class="column is-one-fifth-widescreen is-three-quarters-tablet is-half-mobile" v-for="animation in animations">
-          <div class="card">
-            <div class="card-image play-area" @click="replay(animation)">
-              <div class="preview-box" :class="animation.name"></div>
-            </div>
-            <div class="card-content box">
-              <div class="level">
-                <div class="right-item">
-                  <a class="icon-play" @click="replay(animation)"></a>
-                  <a class="icon-plus"></a>
-                  <a class="icon-trash-empty" v-if="!animation.userid || animation.userid === userid" @click="removeAnimation(animation._id)"></a>
-                </div>
+    <div class="section">
+      <span class="button icon-mobile" @click="goFrameTool">创建动画</span>
+      <div class="columns is-multiline is-mobile is-tablet">
+          <div class="column is-one-fifth-widescreen is-three-quarters-tablet is-half-mobile" v-for="animation in animations">
+            <div class="">
+              <div class="card-image play-area" @click="replay(animation)">
+                <div class="preview-box" :class="animation.name"></div>
+              </div>
+              <div class="card-content">
+                <div>{{animation.desc}}</div>
+                <a class="icon-play" @click="replay(animation)"></a>
+                <a class="icon-edit" v-if="!animation.userid || animation.userid === userid" @click="edit(animation)"></a>
+                <a class="icon-plus" v-if="!animation.userid || animation.userid === userid" @click="addToMine"></a>
+                <a class="icon-trash-empty" v-if="!animation.userid || animation.userid === userid" @click="removeAnimation(animation._id)"></a>
               </div>
             </div>
           </div>
-        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -63,9 +64,18 @@ export default {
       }
     },
 
+    goFrameTool () {
+      this.$router.push('/frame-tool')
+    },
+
     async removeAnimation (_id) {
       await this.ctx.animdao.removeAnimation(_id)
       this.getFrames()
+    },
+
+    edit (animation) {
+      this.ctx.editAnimation = animation
+      this.$router.push('/frame-tool')
     },
 
     replay (animation) {
@@ -89,6 +99,7 @@ export default {
   justify-content: center;
   align-items: center;
   overflow: hidden;
+  background-color: rgba(0, 0, 0, .2);
   .preview-box {
     background-color: #FF4B4B;
     width: 80px;
@@ -101,17 +112,10 @@ export default {
       align-items: center;
     }
   }
-  .run-button1 {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    margin-left: -20px;
-    margin-top: -20px;
-    border-radius: 40px;
-    font-size: 28px;
-    width: 40px;
-    height: 40px
-  }
+}
+.card-content {
+  padding: .5em;
+  background-color: rgba(0, 0, 0, .4);
 }
 .play-area:before {
   content: "";

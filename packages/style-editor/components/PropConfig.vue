@@ -10,21 +10,12 @@
         <form-field label="名称" v-model="element.name"></form-field>
         <form-field label="内容" v-model="element.text"></form-field>
         <form-field label="描述" v-model="element.desc"></form-field>
-        <form-field label="图片">
-          <div class="file is-boxed">
-            <label class="file-label">
-              <input class="file-input" type="file" name="resume">
-              <span class="file-cta">
-                <span class="file-icon">
-                  <i class="fas fa-cloud-upload-alt"></i>
-                </span>
-                <span class="file-label">
-                  选择文件
-                </span>
-              </span>
-            </label>
-          </div>
-        </form-field>
+        <image-upload v-model="element.url"></image-upload>
+        <div class="buttons">
+          <span class="button icon-mobile is-small">保存为模板</span>
+          <span class="button icon-laptop is-small">复制创建</span>
+          <span class="button icon-laptop is-small is-danger">删除</span>
+        </div>
       </div>
 
       <div class="position-config" v-show="currentTab==='位置'">
@@ -60,6 +51,7 @@ import EditTransform from './EditTransform'
 import ItemBlock from './ItemBlock'
 import EditAnimation from './EditAnimation'
 import FormField from '../../common/FormField'
+import ImageUpload from './ImageUpload'
 
 
 export default {
@@ -73,6 +65,7 @@ export default {
     }
   },
   components: {
+    ImageUpload,
     FormField,
     EditAnimation,
     ItemBlock,
@@ -87,6 +80,7 @@ export default {
   },
   data () {
     return {
+      fileUrl: '',
       currentTab: '内容',
       activeNames: []
     }

@@ -29,10 +29,6 @@
       <frames-config :animation="animation" class="config" @frame-change="frameChange"></frames-config>
     </div>
   </div>
-  <section class="hero is-large">
-
-  </section>
-
   <div class="modal" :class="errorMessage && 'is-active'">
     <div class="modal-background"></div>
     <div class="modal-content">
@@ -42,13 +38,12 @@
     </div>
     <button class="modal-close is-large" aria-label="close" @click="errorMessage = ''"></button>
   </div>
-
 </div>
 </template>
 
 <script>
 import FramesConfig from './FramesConfig'
-import clone from 'clone'
+import { clone } from '../utils/object'
 import FRAME from './model/frame'
 import { createSheet, addAnimationStyle, clearAnimation } from './keyframe'
 import { getElementStyle } from '../style-editor/utils/styles'
@@ -81,7 +76,8 @@ export default {
       animationName: '',
       frameIndex: -1,
       animation: {
-        name: 'myAnimation',
+        name: 'my-animation',
+        desc: '',
         type: '1',
         duration: 600,
         iteration: 1,
@@ -93,6 +89,7 @@ export default {
     }
   },
   watch: {
+
   },
   created () {
     this.client = ky.extend({
@@ -102,6 +99,10 @@ export default {
   },
 
   mounted () {
+    if (this.ctx.editAnimation) {
+      this.animation = this.ctx.editAnimation
+      this.ctx.editAnimation = null
+    }
   },
 
   methods: {

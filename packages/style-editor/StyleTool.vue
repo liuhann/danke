@@ -13,10 +13,11 @@
 					</div>
 					<div class="buttons has-addons f-right">
 						<span class="button icon-floppy" @click="share"></span>
+						<span class="button icon-plus" @click="addElement"></span>
 					</div>
 			</div>
-			<div class="device" :style="deviceStyle">
-				<div class="element"></div>
+			<div class="device" :style="{width: device.width + 'px', height: device.height + 'px'}">
+				<div class="element" :style="elementStyle">{{element.text}}</div>
 			</div>
 		</div>
 		<div class="column is-one-third-widescreen is-two-fifths-tablet is-full-mobile">
@@ -32,6 +33,7 @@
   import NavBar from '../common/NavBar'
   import PropConfig from './components/PropConfig'
   import template, { simplify } from './model/element'
+  import { getElementStyle } from './utils/styles'
   export default {
     name: 'StyleTool',
     components: {PropConfig, NavBar},
@@ -44,20 +46,23 @@
 			}
 		},
 		computed: {
+      elementStyle () {
+        return getElementStyle(this.element, this.device)
+      },
       containerSize () {
         if (screen.width > 768) {
           return {
-            width: window.clientWidth / 5 * 3,
-						height: window.clientHeight - 150
+            width: window.innerWidth / 5 * 3,
+						height: window.innerHeight - 150
 					}
 				} else {
           return {
-            width: window.clientWidth,
-						height: window.clientWidth* 0.8
+            width: window.innerWidth,
+						height: window.innerWidth * 0.8
 					}
 				}
 			},
-      deviceStyle () {
+      device () {
         let [w, h] = this.previewRatio.split(':')
 				let rw = parseInt(w)
 				let rh = parseInt(h)
@@ -71,18 +76,21 @@
           const height2 = this.containerSize.height * 0.9
           const width2 = height2 / rh * rw
 					return {
-            width: width2 + 'px',
-						height: height2 + 'px'
+            width: width2,
+						height: height2
 					}
         } else {
           return {
-            width: width1 + 'px',
-            height: height1 + 'px'
+            width: width1,
+            height: height1
           }
 				}
 			}
 		},
 		methods: {
+      addElement () {
+
+			},
       share () {
 
 			},
@@ -106,7 +114,7 @@
 	height: calc(100vh - 4rem);
 
 	.device {
-		background-color: #efefef;
+		background-color: rgba(0, 0, 0, .3);
 		overflow: hidden;
 		position: relative;
 	}

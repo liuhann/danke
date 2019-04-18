@@ -3,19 +3,16 @@
   <div class="frames">
     <form-field v-model="animation.name" label="动画名称" type="text">
     </form-field>
-
+    <form-field v-model="animation.desc" label="描述" type="text">
+    </form-field>
     <form-field v-model="animation.type" label="动画类型" type="select" :options="animationTypes">
     </form-field>
-
     <form-field v-model="animation.duration" width="70px" label="时长" placeholder="动画时长" unit="毫秒" type="number">
     </form-field>
-
     <form-field v-model="animation.timing" label="曲线1" type="select" :options="cubicBeziers">
     </form-field>
-
     <form-field v-model="animation.delay" width="70px" label="延迟" placeholder="动画时长" unit="毫秒" type="number">
     </form-field>
-
     <form-field v-model="animation.iteration" width="80px" label="次数"  unit="次" type="number">
     </form-field>
 
