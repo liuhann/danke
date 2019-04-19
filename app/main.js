@@ -10,12 +10,12 @@ import VueRouter from 'vue-router'
 import site from '../packages/site'
 import designer from '../packages/designer'
 import runtime from '../packages/runtime'
-import login from '../packages/login'
+import user from '../packages/user'
 import frameTool from '../packages/frame-tool'
 import styleTool from '../packages/style-editor/module'
 
 import initClient from './middlewares/initClient'
-import AnimationDAO from '../packages/dao/animationdao'
+import AnimationDAO from '../packages/frame-tool/animationdao'
 
 Vue.use(VueRouter)
 window.Vue = Vue
@@ -28,12 +28,11 @@ const boot = new AsyncBoot({
   cdn: 'http://cdn.danke.fun',
   mount: '#app',
   packages: [
-    site, designer, runtime, login, frameTool, styleTool
+    site, designer, runtime, user, frameTool, styleTool
   ],
   started: async (ctx, next) => {
     initClient(ctx)
     ctx.user = ctx.userdao.getCurrentUser()
-    ctx.animdao = new AnimationDAO(ctx)
     await next()
   },
   upload: {

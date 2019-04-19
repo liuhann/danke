@@ -101,7 +101,7 @@ export default {
     },
     getStarted () {
       //location.href = 'https://github.com/login/oauth/authorize?scope=user:email&client_id=9b1eec30dbf5235a78b3'
-      this.$router.push('/login')
+      this.$router.push('/user')
     },
     goUserHome () {
       this.$router.push('/user')

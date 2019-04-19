@@ -9,9 +9,10 @@ export default class AnimationDAO {
     }).json()
   }
 
-  async getAnimationList (skip, limit) {
-    return this.ctx.get(`animation/list?skip=${skip}&limit=${limit}`, {
+  async getAnimationList (type, skip, limit) {
+    return this.ctx.get(`animation/list`, {
       searchParams: {
+        type,
         skip,
         limit
       }

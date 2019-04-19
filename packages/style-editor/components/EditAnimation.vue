@@ -1,24 +1,23 @@
 <template>
 <div class="edit-animation-option panel">
-  {{label}}
-  <form-field label="动画" type="select" v-model="animation.name" clearable :options="animations"></form-field>
+  <nav class="level">{{label}}</nav>
+  <form-field label="进入">
+    <span class="button is-small" @click="chooseAnimation(animationType)">{{animation.desc || '选择'}}</span>
+    <span v-if="animation.name" class="button is-small" @click="clearAnimation"></span>
+  </form-field>
   <edit-len label="时长" v-model="animation.duration" :with-unit="false"></edit-len>
-  <form-field label="曲线" type="select" v-model="animation.timing" :options="cubicBeziers"></form-field>
   <edit-len label="延迟" v-model="animation.delay" :with-unit="false"></edit-len>
-  <edit-len label="次数" v-model="animation.iteration" :with-unit="false"></edit-len>
 </div>
 </template>
 
 <script>
 import EditLen from './EditLen'
-import ItemBlock from './ItemBlock'
-import cubicBeziers from '../../frame-tool/model/cubic-beziers'
 import FormField from '../../common/FormField'
+import frameModel from '../../frame-tool/frameChooseDialog'
 export default {
   name: 'EditAnimation',
   components: {
     FormField,
-    ItemBlock,
     EditLen
   },
   props: {
@@ -33,11 +32,13 @@ export default {
     },
     animations: {
       type: Array
+    },
+    animationType: {
+      type: String
     }
   },
   data () {
     return {
-      cubicBeziers
     }
   },
   computed: {
@@ -52,7 +53,15 @@ export default {
     }
   },
   methods: {
-
+    clearAnimation () {
+      this.animation.name = ''
+      this.animation.desc = ''
+    },
+    chooseAnimation (type) {
+      frameModel.choose(type, (animation) => {
+        this.animation = animation
+      })
+    }
   }
 }
 </script>

@@ -167,7 +167,6 @@ function getTransformStyle (transform) {
   if (transform.scale) {
     styles.push(`scale(${transform.scale / 100})`)
   }
-  console.log(`transform: ${styles.join(' ')}`)
   return `transform: ${styles.join(' ')}`
 }
 function getWorkStyle (work, device) {

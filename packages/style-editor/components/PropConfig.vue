@@ -31,9 +31,9 @@
       </div>
 
       <div class="animation-config" v-show="currentTab==='动画'">
-        <edit-animation :animation="element.in" label="进入" :animations="animations"></edit-animation>
-        <edit-animation :animation="element.dura" label="持续" :animations="animations"></edit-animation>
-        <edit-animation :animation="element.out" label="离开" :animations="animations"></edit-animation>
+        <edit-animation :animation="element.in" label="进入" animation-type="1"></edit-animation>
+        <edit-animation :animation="element.dura" label="持续" animation-type="2"></edit-animation>
+        <edit-animation :animation="element.out" label="离开" animation-type="3"></edit-animation>
       </div>
     </div>
   </div>
@@ -52,7 +52,6 @@ import ItemBlock from './ItemBlock'
 import EditAnimation from './EditAnimation'
 import FormField from '../../common/FormField'
 import ImageUpload from './ImageUpload'
-
 
 export default {
   name: 'PropConfig',

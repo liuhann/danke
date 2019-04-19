@@ -43,7 +43,6 @@
 </template>
 
 <script>
-
 import NavBar from '../common/NavBar'
 export default {
   name: 'Home',
@@ -100,7 +99,15 @@ export default {
         this.error.captcha = '验证码不正确'
         this.refreshCaptcha()
       }
-      debugger
+      if (result.code === 401) {
+        this.error.captcha = ''
+        this.error.username = result.message
+        this.captcha = ''
+        this.refreshCaptcha()
+      }
+      if (result.code === 200) {
+
+      }
     }
 
   }

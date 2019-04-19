@@ -12,16 +12,17 @@
 						<span class="button icon-laptop" :class="vertical? '': 'is-selected is-info'" @click="vertical = false"></span>
 					</div>
 					<div class="buttons has-addons f-right">
-						<span class="button icon-floppy" @click="share"></span>
 						<span class="button icon-plus" @click="addElement"></span>
+						<span class="button icon-play" @click="play"></span>
+						<span class="button icon-floppy" @click="share"></span>
 					</div>
 			</div>
 			<div class="device" :style="{width: device.width + 'px', height: device.height + 'px'}">
-				<div class="element" :style="elementStyle">{{element.text}}</div>
+				<div class="element" :style="elementStyle">{{currentElement.text}}</div>
 			</div>
 		</div>
 		<div class="column is-one-third-widescreen is-two-fifths-tablet is-full-mobile">
-			<prop-config :element="element" :animations="[]" fontable @file-add="fileAdded" @file-remove="fileRemoved"></prop-config>
+			<prop-config v-if="currentElement" :element="currentElement" :animations="[]" fontable @file-add="fileAdded" @file-remove="fileRemoved"></prop-config>
 		</div>
 	</div>
 </div>
@@ -32,22 +33,29 @@
 	import { ratios } from './build-in'
   import NavBar from '../common/NavBar'
   import PropConfig from './components/PropConfig'
-  import template, { simplify } from './model/element'
+  import ELEMENT_TPL, { simplify } from './model/element'
   import { getElementStyle } from './utils/styles'
   export default {
     name: 'StyleTool',
     components: {PropConfig, NavBar},
 		data () {
       return {
-        element: clone(template),
+        currentElement: null,
+				elements: [],
         previewRatio: '16:9',
         ratios,
 				vertical: true
 			}
 		},
+
+		created () {
+      if (this.elements.length === 0) {
+        this.currentElement = this.addElement()
+			}
+		},
 		computed: {
       elementStyle () {
-        return getElementStyle(this.element, this.device)
+        return getElementStyle(this.currentElement, this.device)
       },
       containerSize () {
         if (screen.width > 768) {
@@ -89,6 +97,11 @@
 		},
 		methods: {
       addElement () {
+        const cloned = clone(ELEMENT_TPL)
+				this.elements.push(cloned)
+				return cloned
+			},
+			play () {
 
 			},
       share () {

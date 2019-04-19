@@ -1,5 +1,7 @@
 $family-primary: 'Karla', sans-serif;
 @import '~bulmaswatch/superhero/variables';
+
+$section-padding: 1em;
 @import '~bulma';
 html, body {
   overflow-y: auto;

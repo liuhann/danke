@@ -1,5 +1,6 @@
 export default {
   name: '',
+  desc: '',
   duration: 800,
   timing: 'linear',
   delay: 0,
