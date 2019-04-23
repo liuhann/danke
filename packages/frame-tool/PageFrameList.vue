@@ -13,15 +13,21 @@
       </nav>
       <div class="columns is-multiline is-mobile is-tablet">
         <div class="column is-one-fifth-widescreen is-three-quarters-tablet is-half-mobile" v-for="animation in animations">
-          <div class="card-image play-area" @click="replay(animation)">
+          <div class="card-image play-area" @click="replay(animation)" @mouseover="replay(animation)">
             <div class="preview-box" :class="animation.name"></div>
           </div>
           <div class="card-content">
-            <div>{{animation.desc}}</div>
-            <a class="icon-play" @click="replay(animation)"></a>
-            <a class="icon-edit" v-if="!animation.userid || animation.userid === userid" @click="edit(animation)"></a>
-            <a class="icon-heart-empty" @click="addToMine"></a>
-            <a class="icon-trash-empty" v-if="!animation.userid || animation.userid === userid" @click="removeAnimation(animation._id)"></a>
+            <div class="media">
+              <div class="media-left">
+                <p class="title is-6">{{animation.desc}}</p>
+                <p class="subtitle is-7">{{animation.name}}</p>
+              </div>
+              <div class="media-right">
+                <a class="icon-edit" v-if="!animation.userid || animation.userid === userid" @click="edit(animation)"></a>
+                <a class="icon-heart-empty" @click="addToMine"></a>
+                <a class="icon-trash-empty" v-if="!animation.userid || animation.userid === userid" @click="removeAnimation(animation._id)"></a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -107,11 +113,13 @@ export default {
     },
 
     replay (animation) {
-      const name = animation.name
+      if (!animation.nameCache) {
+        animation.nameCache = animation.name
+      }
       animation.name = 'none'
       setTimeout( () => {
-        animation.name = name
-      }, 300)
+        animation.name = animation.nameCache
+      }, 20)
     },
 
     addToMine () {
@@ -145,6 +153,9 @@ export default {
         justify-content: center;
         align-items: center;
       }
+    }
+    &:hover {
+      background-color: rgba(0, 0, 0, .5);
     }
   }
   .card-content {

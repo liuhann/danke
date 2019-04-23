@@ -119,6 +119,12 @@
       "css": "heart",
       "code": 59406,
       "src": "fontawesome"
+    },
+    {
+      "uid": "68eb56470b836f19335231578515153e",
+      "css": "address-card-o",
+      "code": 62140,
+      "src": "fontawesome"
     }
   ]
 }

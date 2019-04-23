@@ -33,35 +33,7 @@ function getLength (unitLen, device) {
 function getElementStyle (element, device, animation) {
   const styles = []
   // position and size
-  if (element.position && device) {
-    styles.push(`position: absolute`)
-    if (element.position.vertical === 'top') {
-      styles.push(`top: ${getLength(element.position.offsetY, device)}px`)
-    } else if (element.position.vertical === 'center') {
-      styles.push(`top: ${device.height / 2 - getLength(element.size.height, device) / 2 + getLength(element.position.offsetY, device)}px`)
-    } else if (element.position.vertical === 'bottom') {
-      styles.push(`bottom: ${getLength(element.position.offsetY, device)}px`)
-    }
-
-    if (element.position.horizontal === 'left') {
-      styles.push(`left: ${getLength(element.position.offsetX, device)}px`)
-    } else if (element.position.horizontal === 'center') {
-      styles.push(`left: ${(device.width / 2) - (getLength(element.size.width, device) / 2) + getLength(element.position.offsetX, device)}px`)
-    } else if (element.position.horizontal === 'right') {
-      styles.push(`right: ${getLength(element.position.offsetX, device)}px`)
-    }
-    if (element.type === 'image') {
-
-    }
-    if (element.type === 'text') {
-      styles.push(`width: ${getLength(element.size.width, device)}px`)
-    }
-  }
-
-  if (element.size && device) {
-    styles.push(`width: ${getLength(element.size.width, device)}px`)
-    styles.push(`height: ${getLength(element.size.height, device)}px`)
-  }
+  styles.push(getPositionSizingStyle(element, device))
 
   if (element.background) {
     styles.push(getBackgroundStyle(element.background, element.url))
@@ -113,7 +85,34 @@ function getElementStyle (element, device, animation) {
       styles.push(`opacity: ${element.transform.opacity / 100}`)
     }
   }
+  return styles.join(';')
+}
 
+function getPositionSizingStyle (element, device) {
+  const styles = []
+  if (element.position && device) {
+    styles.push(`position: absolute`)
+    if (element.position.vertical === 'top') {
+      styles.push(`top: ${getLength(element.position.offsetY, device)}px`)
+    } else if (element.position.vertical === 'center') {
+      styles.push(`top: ${device.height / 2 - getLength(element.size.height, device) / 2 + getLength(element.position.offsetY, device)}px`)
+    } else if (element.position.vertical === 'bottom') {
+      styles.push(`bottom: ${getLength(element.position.offsetY, device)}px`)
+    }
+
+    if (element.position.horizontal === 'left') {
+      styles.push(`left: ${getLength(element.position.offsetX, device)}px`)
+    } else if (element.position.horizontal === 'center') {
+      styles.push(`left: ${(device.width / 2) - (getLength(element.size.width, device) / 2) + getLength(element.position.offsetX, device)}px`)
+    } else if (element.position.horizontal === 'right') {
+      styles.push(`right: ${getLength(element.position.offsetX, device)}px`)
+    }
+  }
+
+  if (element.size && device) {
+    styles.push(`width: ${getLength(element.size.width, device)}px`)
+    styles.push(`height: ${getLength(element.size.height, device)}px`)
+  }
   return styles.join(';')
 }
 
@@ -154,6 +153,9 @@ function getBackgroundStyle (background, url) {
 
 function getTransformStyle (transform) {
   const styles = []
+  if (transform.psp) {
+    styles.push(`perspective(${transform.psp}px)`)
+  }
   if (transform) {
     if (transform.translate) {
       styles.push(`translate3d(${transform.translate[0]}%, ${transform.translate[1]}%, ${transform.translate[2]}px)`)
@@ -189,10 +191,12 @@ function getSceneStyle (scene, device) {
 }
 
 export {
+  getLength,
   getLenSplits,
   getGradientStyle,
   getBackgroundStyle,
   getElementStyle,
   getWorkStyle,
-  getSceneStyle
+  getSceneStyle,
+  getPositionSizingStyle
 }

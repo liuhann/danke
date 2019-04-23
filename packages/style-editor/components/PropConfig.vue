@@ -84,6 +84,14 @@ export default {
       activeNames: []
     }
   },
+  watch: {
+    element: {
+      deep: true,
+      handler () {
+        this.$emit('element-change')
+      }
+    }
+  },
   computed: {
     tabsName () {
       return ['内容', '样式', '位置', '动画']
@@ -98,50 +106,6 @@ export default {
 </script>
 
 <style lang="scss">
-.el-radio {
-  margin-right: 2px;
-}
-
-.config-basic {
-  .el-input__inner, .el-textarea__inner {
-    width: 200px;
-  }
-}
-
-.el-input--mini {
-  .el-input__inner {
-    padding: 0 5px;
-  }
-  .el-textarea__inner {
-    padding: 5px;
-  }
-}
-
-.el-select  {
-  .el-input__inner {
-    padding-left: 5px;
-    padding-right: 25px;
-  }
-}
-
-.el-checkbox {
-  margin-right: 2px;
-}
-.el-input-number--mini {
-  width: 100px;
-}
-.el-collapse-item__header {
-  padding-left: 10px;
-  font-size: 13px;
-  text-align: left;
-  color: #585858;
-  font-weight: bold;
-  height: 36px;
-  line-height: 36px;
-}
-.el-collapse-item__content {
-  padding-bottom: 5px;
-}
 .style-config {
   .desc {
     height: 60px;

@@ -45,6 +45,7 @@
 			</div>
 		</div>
 		<form-field v-model.number="transform.opacity" label="透明度" type="number" width="70px" unit="%"></form-field>
+		<form-field v-model.number="transform.psp" label="视角" type="number" width="70px" unit="像素"></form-field>
 		<form-field v-model.number="transform.scale" label="缩放" type="number" width="70px" unit="%">
 		</form-field>
 </div>
