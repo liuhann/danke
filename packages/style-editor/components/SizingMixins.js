@@ -3,7 +3,7 @@ import { getLength, revertLength, getPositionSizingStyle } from '../utils/styles
 export default {
   data () {
     return {
-      draggingRect: null,
+      draggingRect: false, // if resizing or dragging the mask is moved
       cornerPosition: {},
       maskStyle: ''
     }
@@ -19,7 +19,11 @@ export default {
         this.resizeDraggie.destroy()
       }
       this.resizeDraggie = new Draggabilly('.corner-point', {})
+      this.resizeDraggie.on('dragEnd', function (event, pointer, moveVector) {
+        vi.draggingRect = false
+      })
       this.resizeDraggie.on('dragMove', function (event, pointer, moveVector) {
+        vi.draggingRect = true
         vi.maskStyle = getPositionSizingStyle(vi.currentElement, vi.device)
         vi.setNewSize(vi.resizeDraggie.position)
       })
@@ -31,14 +35,10 @@ export default {
         handle: '.handler'
       })
       this.draggie.on('dragEnd', function (event, pointer, moveVector) {
-        vi.draggingRect = null
+        vi.draggingRect = false
       })
       this.draggie.on('dragMove', function (event, pointer, moveVector) {
-        vi.draggingRect = {
-          left: vi.draggie.position.x + 'px',
-          top: vi.draggie.position.y + 'px'
-        }
-        console.log('drag move', vi.draggie.position.x, vi.draggie.position.y)
+        vi.draggingRect = true
         vi.setNewPosition(vi.draggie.position)
       })
     },
@@ -47,14 +47,14 @@ export default {
       if (element.position.vertical === 'top') {
         element.position.offsetY = revertLength(y, element.position.offsetY, this.device)
       } else if (element.position.vertical === 'center') {
-        element.position.offsetY = revertLength(y - this.device.height / 2, element.position.offsetY, this.device)
+        element.position.offsetY = revertLength(y + getLength(element.size.height, this.device) / 2 - this.device.height / 2, element.position.offsetY, this.device)
       } else if (element.position.vertical === 'bottom') {
         element.position.offsetY = revertLength(this.device.height - y, element.position.offsetY, this.device)
       }
       if (element.position.horizontal === 'left') {
         element.position.offsetX = revertLength(x, element.position.offsetX, this.device)
       } else if (element.position.horizontal === 'center') {
-        element.position.offsetX = revertLength(x - this.device.width / 2, element.position.offsetX, this.device)
+        element.position.offsetX = revertLength(x + getLength(element.size.width, this.device) / 2 - this.device.width / 2, element.position.offsetX, this.device)
       } else if (element.position.horizontal === 'right') {
         element.position.offsetX = revertLength(this.device.width - x, element.position.offsetX, this.device)
       }
@@ -63,7 +63,6 @@ export default {
       x += 10
       y += 10
       if (this.currentElement.size.width.indexOf('vw') > -1) {
-        console.log((x * 100 / this.device.width) + 'vw')
         this.currentElement.size.width = Math.floor(x * 100 / this.device.width) + 'vw'
       } else if (this.currentElement.size.width.indexOf('vh') > -1) {
         this.currentElement.size.width = x * 100 / this.device.height + 'vh'

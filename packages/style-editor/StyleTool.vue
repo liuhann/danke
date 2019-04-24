@@ -12,14 +12,17 @@
 				<div class="level-right">
 					<div class="buttons has-addons f-right">
 						<span class="button icon-plus" @click="addElement"></span>
-						<span class="button icon-play" @click="play"></span>
+						<span v-if="!isPlaying" class="button icon-play" @click="play"></span>
+						<span v-if="isPlaying" class="button icon-stop" @click="stop"></span>
+						<span v-if="isPlaying" class="button icon-to-end" @click="finish"></span>
 						<span class="button icon-floppy" @click="share"></span>
 					</div>
 				</div>
 			</div>
 			<div id="stylePreview">
-				<div class="device" :style="{width: device.width + 'px', height: device.height + 'px'}">
-					<div v-for="element of elements" class="element" :style="element===currentElement? currentStyle: element.style">{{element.text}}</div>
+				<div class="device" :style="{width: device.width + 'px', height: device.height + 'px'}" @click.self="sceneClick">
+					<div v-for="element of elements" class="element" :style="element===currentElement? currentStyle: element.style"
+					  @click="currentElement = element">{{element.text}}</div>
 					<div v-if="currentElement" ref="draggabily" class="draggabily" :style="maskStyle">
 						<div class="handler"><span class="icon-menu"></span></div>
 						<div class="rb corner-point" :style="cornerPosition"></div>
@@ -61,18 +64,22 @@
         previewRatio: '9:16',
         ratios,
         currentElement: null,
+        isPlaying: false,
 				elements: []
 			}
 		},
 		created () {
       if (this.elements.length === 0) {
-        this.currentElement = this.addElement()
-        this.initMaskPosition()
+        this.addElement()
+        this.updateMaskPosition()
 			}
 		},
 		computed: {
       currentStyle () {
 				const style = getElementStyle(this.currentElement, this.device)
+				if (!this.draggingRect) {
+          this.updateMaskPosition()
+				}
 				this.currentElement.style = style
 				return style
 			},
@@ -114,21 +121,46 @@
       addElement () {
         const cloned = clone(ELEMENT_TPL)
 				this.elements.push(cloned)
-				cloned.elementStyle = getElementStyle(cloned, this.device)
-				return cloned
+				cloned.style = getElementStyle(cloned, this.device)
+				this.currentElement = cloned
 			},
 
-			initMaskPosition () {
+			updateMaskPosition () {
         this.cornerPosition = {
-          left: getLength(this.currentElement.size.width, this.device) + 'px',
-          top: getLength(this.currentElement.size.height, this.device) + 'px'
+          left: getLength(this.currentElement.size.width, this.device) - 12 + 'px',
+          top: getLength(this.currentElement.size.height, this.device) - 12 + 'px'
         }
         this.maskStyle = getPositionSizingStyle(this.currentElement, this.device)
 			},
 
-			play () {
+      sceneClick () {
+        this.currentElement = null
+      },
 
+			play () {
+        this.currentElement = null
+        const clonedElements = clone(this.elements)
+        this.elements = []
+        this.$nextTick( () => {
+          for (let element of clonedElements) {
+            element.style = getElementStyle(element, this.device, 'in')
+            this.elements = clonedElements
+          }
+        }, 20)
+        this.isPlaying = true
 			},
+
+      stop () {
+        this.isPlaying = false
+      },
+
+      finish () {
+				for (let element of clonedElements) {
+					element.style = getElementStyle(element, this.device, 'out')
+					this.elements = clonedElements
+				}
+      },
+
       share () {
 
 			},
@@ -163,18 +195,18 @@
 		.handler {
 			position: absolute;
 			height: 24px;
+			width: 24px;
 			background-color: rgba(255,255,255, .2);
+			color: #00d1b2;
 			text-align: center;
-			left: 0;
-			top: -24px;
-			right: 0;
+			left: 5px;
+			top: 5px;
 		}
 		.corner-point {
 			position: absolute;
 			width: $pointWidth;
 			height: $pointWidth;
 			background-color: #00d1b2;
-			border-radius: $pointWidth;
 		}
 		.lt {
 			left: -$pointWidth/2;

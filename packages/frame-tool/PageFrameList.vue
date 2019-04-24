@@ -72,6 +72,7 @@ export default {
     }
   },
   watch: {
+
   },
   created () {
     this.getFrames()
@@ -79,6 +80,7 @@ export default {
   },
 
   mounted () {
+
   },
 
   methods: {
@@ -104,6 +106,7 @@ export default {
 
     async removeAnimation (_id) {
       await this.ctx.animdao.removeAnimation(_id)
+      this.animations = []
       this.getFrames()
     },
 

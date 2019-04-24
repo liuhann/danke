@@ -59,7 +59,11 @@ export default {
     },
     chooseAnimation (type) {
       frameModel.choose(type, (animation) => {
-        this.animation = animation
+        this.animation.name = animation.name
+        this.animation.desc = animation.desc
+        this.animation.duration = animation.duration
+        this.animation.delay = animation.delay
+        this.animation.timing = animation.timing
       })
     }
   }

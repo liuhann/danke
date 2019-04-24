@@ -32,7 +32,7 @@ const boot = new AsyncBoot({
   ],
   started: async (ctx, next) => {
     initClient(ctx)
-    ctx.user = ctx.userdao.getCurrentUser()
+    ctx.user = await ctx.userdao.getCurrentUser()
     await next()
   },
   upload: {

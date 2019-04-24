@@ -129,11 +129,7 @@ export default {
       if (result.code === 409) {
         this.errorMessage = '动画名称和现有的冲突'
       } else {
-        toast({
-          position: 'top-center',
-          message: '保存成功',
-          type: "is-success"
-        })
+        this.errorMessage = '保存成功'
       }
     },
 
