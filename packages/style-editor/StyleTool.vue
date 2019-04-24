@@ -20,7 +20,8 @@
 			<div id="stylePreview">
 				<div class="device" :style="{width: device.width + 'px', height: device.height + 'px'}">
 					<div v-for="element of elements" class="element" :style="element===currentElement? currentStyle: element.style">{{element.text}}</div>
-					<div v-if="currentElement" class="draggabily" :style="maskStyle">
+					<div v-if="currentElement" ref="draggabily" class="draggabily" :style="maskStyle">
+						<div class="handler"><span class="icon-menu"></span></div>
 						<div class="rb corner-point" :style="cornerPosition"></div>
 					</div>
 				</div>
@@ -28,7 +29,7 @@
 		</div>
 		<div class="column is-one-third-widescreen is-two-fifths-tablet is-full-mobile">
 			<prop-config v-if="currentElement" :element="currentElement" :animations="[]"
-									 fontable @file-add="fileAdded" @file-remove="fileRemoved"></prop-config>
+				fontable @file-add="fileAdded" @file-remove="fileRemoved"></prop-config>
 		</div>
 	</div>
 </div>
@@ -66,6 +67,7 @@
 		created () {
       if (this.elements.length === 0) {
         this.currentElement = this.addElement()
+        this.initMaskPosition()
 			}
 		},
 		computed: {
@@ -73,10 +75,6 @@
 				const style = getElementStyle(this.currentElement, this.device)
 				this.currentElement.style = style
 				return style
-			},
-      maskStyle () {
-        const maskStyle = getPositionSizingStyle(this.currentElement, this.device)
-				return maskStyle
 			},
       containerSize () {
         if (screen.width > 768) {
@@ -117,11 +115,15 @@
         const cloned = clone(ELEMENT_TPL)
 				this.elements.push(cloned)
 				cloned.elementStyle = getElementStyle(cloned, this.device)
-				this.cornerPosition = {
-          left: getLength(cloned.size.width, this.device) + 'px',
-          top: getLength(cloned.size.height, this.device) + 'px'
-				}
 				return cloned
+			},
+
+			initMaskPosition () {
+        this.cornerPosition = {
+          left: getLength(this.currentElement.size.width, this.device) + 'px',
+          top: getLength(this.currentElement.size.height, this.device) + 'px'
+        }
+        this.maskStyle = getPositionSizingStyle(this.currentElement, this.device)
 			},
 
 			play () {
@@ -151,7 +153,6 @@
 
 	.device {
 		background-color: rgba(0, 0, 0, .3);
-		overflow: hidden;
 		position: relative;
 	}
 	$pointWidth: 12px;
@@ -159,7 +160,16 @@
 		border: 1px dashed #404040;
 		position: relative;
 		z-index: 10001;
-		>div {
+		.handler {
+			position: absolute;
+			height: 24px;
+			background-color: rgba(255,255,255, .2);
+			text-align: center;
+			left: 0;
+			top: -24px;
+			right: 0;
+		}
+		.corner-point {
 			position: absolute;
 			width: $pointWidth;
 			height: $pointWidth;

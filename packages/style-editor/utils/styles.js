@@ -30,6 +30,17 @@ function getLength (unitLen, device) {
   return number
 }
 
+function revertLength (value, currentLen, device) {
+  const { unit } = getLenSplits(currentLen)
+  if (unit === 'vw') {
+    return Math.floor(100 * value / device.width) + 'vw'
+  } else if (unit === 'vh') {
+    return Math.floor(100 * value / device.height) + 'vh'
+  } else if (unit === 'px') {
+    return value + 'px'
+  }
+}
+
 function getElementStyle (element, device, animation) {
   const styles = []
   // position and size
@@ -198,5 +209,6 @@ export {
   getElementStyle,
   getWorkStyle,
   getSceneStyle,
-  getPositionSizingStyle
+  getPositionSizingStyle,
+  revertLength
 }
