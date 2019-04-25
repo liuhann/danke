@@ -1,5 +1,3 @@
-import cubicBeziers from '../../utils/cubic-beziers'
-
 const REG_LEN = /([+-]?[0-9#]+)(%|px|pt|em|rem|in|cm|mm|ex|ch|pc|vw|vh|vmin|vmax|deg|rad|turn)?$/
 
 /**
@@ -100,7 +98,7 @@ function getElementStyle (element, device, animation) {
   }
   if (animation && element[animation]) {
     const animationDef = element[animation]
-    styles.push(`animation: ${animationDef.name} ${animationDef.duration}ms ${cubicBeziers[animationDef.timing]} ${animationDef.delay}ms ${animationDef.iteration} normal both running`)
+    styles.push(`animation: ${animationDef.name} ${animationDef.duration}ms ${animationDef.timing} ${animationDef.delay}ms ${animationDef.iteration} normal both running`)
   }
   return styles.join(';')
 }

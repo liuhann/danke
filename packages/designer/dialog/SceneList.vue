@@ -25,13 +25,11 @@
 </template>
 
 <script>
-import SceneThumbnail from '../SceneThumbnail'
 import ConfigScene from './ConfigScene'
 export default {
   name: 'SceneList',
   components: {
-    ConfigScene,
-    SceneThumbnail
+    ConfigScene
   },
   props: {
     device: {

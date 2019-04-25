@@ -3,6 +3,7 @@
 	<nav-bar></nav-bar>
 	<div class="columns is-mobile is-multiline" style="margin: 5px;">
 		<div class="column is-full-mobile">
+			<!--operation level-->
 			<div class="level is-mobile">
 				<div class="level-left">
 					<div class="buttons has-addons">
@@ -10,21 +11,28 @@
 					</div>
 				</div>
 				<div class="level-right">
-					<div class="buttons has-addons f-right">
-						<span class="button icon-plus" @click="addElement"></span>
+					<div class="buttons has-addons">
+						<div class="file">
+							<label class="file-label">
+								<input class="file-input" type="file" name="resume"  @input="fileChoosed">
+								<span class="button icon-picture">
+    						</span>
+							</label>
+						</div>
+						<span class="button icon-font" @click="addText"></span>
 						<span v-if="!isPlaying" class="button icon-play" @click="play"></span>
 						<span v-if="isPlaying" class="button icon-stop" @click="stop"></span>
-						<span v-if="isPlaying" class="button icon-to-end" @click="finish"></span>
-						<span class="button icon-floppy" @click="share"></span>
 					</div>
 				</div>
 			</div>
+			<!--preview-->
 			<div id="stylePreview">
 				<div class="device" :style="{width: device.width + 'px', height: device.height + 'px'}" @click.self="sceneClick">
 					<div v-for="element of elements" class="element" :style="element===currentElement? currentStyle: element.style"
-					  @click="currentElement = element">{{element.text}}</div>
+					  @click="chooseElement(element)">{{element.text}}</div>
+					<!-- resize and dragging -->
 					<div v-if="currentElement" ref="draggabily" class="draggabily" :style="maskStyle">
-						<div class="handler"><span class="icon-menu"></span></div>
+						<div class="handler"><span class="icon-move"></span></div>
 						<div class="rb corner-point" :style="cornerPosition"></div>
 					</div>
 				</div>
@@ -35,6 +43,7 @@
 				fontable @file-add="fileAdded" @file-remove="fileRemoved"></prop-config>
 		</div>
 	</div>
+	<image-cropper ref="cropper"></image-cropper>
 </div>
 </template>
 
@@ -45,6 +54,7 @@
   import ELEMENT_TPL, { simplify } from './model/element'
 	import SizingMixin from './components/SizingMixins'
   import { getElementStyle, getPositionSizingStyle, getLength } from './utils/styles'
+  import ImageCropper from './components/ImageCropper'
 	const ratios = [{
     ratio: '9:16',
     icon: 'icon-mobile'
@@ -57,11 +67,12 @@
   }]
   export default {
     name: 'StyleTool',
-    components: {PropConfig, NavBar},
+    components: {ImageCropper, PropConfig, NavBar},
 		mixins: [SizingMixin],
 		data () {
       return {
         previewRatio: '9:16',
+        cornerPosition: {},
         ratios,
         currentElement: null,
         isPlaying: false,
@@ -69,10 +80,10 @@
 			}
 		},
 		created () {
-      if (this.elements.length === 0) {
-        this.addElement()
-        this.updateMaskPosition()
-			}
+      // if (this.elements.length === 0) {
+       //  this.addElement()
+       //  this.updateMaskPosition()
+			// }
 		},
 		computed: {
       currentStyle () {
@@ -118,6 +129,9 @@
 			}
 		},
 		methods: {
+      addText () {
+
+			},
       addElement () {
         const cloned = clone(ELEMENT_TPL)
 				this.elements.push(cloned)
@@ -125,16 +139,27 @@
 				this.currentElement = cloned
 			},
 
+      fileChoosed (e) {
+        if (e.currentTarget.files.length) {
+          const file = e.currentTarget.files[0]
+          if (file.size > this.ctx.upload.maxSize) {
+            this.error = '文件最大为' + this.ctx.upload.maxSize
+          }
+          this.$refs.cropper.open(URL.createObjectURL(file))
+        }
+      },
+
 			updateMaskPosition () {
         this.cornerPosition = {
           left: getLength(this.currentElement.size.width, this.device) - 12 + 'px',
           top: getLength(this.currentElement.size.height, this.device) - 12 + 'px'
         }
         this.maskStyle = getPositionSizingStyle(this.currentElement, this.device)
+				console.log('update mask', this.cornerPosition, this.maskStyle)
 			},
 
       sceneClick () {
-        this.currentElement = null
+        // this.currentElement = null
       },
 
 			play () {
@@ -148,6 +173,14 @@
           }
         }, 20)
         this.isPlaying = true
+			},
+
+      chooseElement (element) {
+        this.currentElement = element
+				// this.$nextTick(() => {
+				// 	// this.updateMaskPosition()
+				// 	this.initDraggie()
+				// })
 			},
 
       stop () {
@@ -189,24 +222,27 @@
 	}
 	$pointWidth: 12px;
 	.draggabily {
-		border: 1px dashed #404040;
+		border: 2px solid #00d1b2;
 		position: relative;
-		z-index: 10001;
+		z-index: 999;
 		.handler {
 			position: absolute;
 			height: 24px;
 			width: 24px;
-			background-color: rgba(255,255,255, .2);
-			color: #00d1b2;
+			font-size: 20px;
+			color: rgba(0, 0, 0, .8);
 			text-align: center;
-			left: 5px;
-			top: 5px;
+			margin: -12px 0 0 -12px;
+			left: 50%;
+			top: 50%;
+			cursor: pointer;
 		}
 		.corner-point {
+			cursor: nw-resize;
 			position: absolute;
 			width: $pointWidth;
 			height: $pointWidth;
-			background-color: #00d1b2;
+			background-color: rgba(0, 0, 0, .8);
 		}
 		.lt {
 			left: -$pointWidth/2;

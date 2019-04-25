@@ -14,7 +14,6 @@
 </template>
 
 <script>
-import styleUtils from '../utils/styles'
 import { getElementStyle } from '../style-editor/utils/styles'
 
 export default {

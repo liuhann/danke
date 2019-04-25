@@ -1,6 +1,4 @@
 import pauseable from 'pauseable'
-import styleUtils from '../utils/styles'
-
 /**
  * Loading scenes and  resources then init ticker + views
  */

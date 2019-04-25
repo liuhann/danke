@@ -11,6 +11,7 @@
         <form-field label="内容" v-model="element.text"></form-field>
         <form-field label="描述" v-model="element.desc"></form-field>
         <image-upload v-model="element.url"></image-upload>
+        <!--<form-field label="背景大小" type="select" v-model="element.background.size" :options="backgroundSizeOptions"></form-field>-->
         <div class="buttons">
           <span class="button icon-mobile is-small">保存为模板</span>
           <span class="button icon-laptop is-small">复制创建</span>

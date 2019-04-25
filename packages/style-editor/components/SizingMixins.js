@@ -4,7 +4,6 @@ export default {
   data () {
     return {
       draggingRect: false, // if resizing or dragging the mask is moved
-      cornerPosition: {},
       maskStyle: ''
     }
   },
