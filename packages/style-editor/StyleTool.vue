@@ -43,7 +43,7 @@
 				fontable @file-add="fileAdded" @file-remove="fileRemoved"></prop-config>
 		</div>
 	</div>
-	<image-cropper ref="cropper"></image-cropper>
+	<image-cropper ref="cropper" @complete="cropComplete"></image-cropper>
 </div>
 </template>
 
@@ -193,6 +193,26 @@
 					this.elements = clonedElements
 				}
       },
+      cropComplete (pngBase64, cropbox) {
+        const clonedElement = clone(ELEMENT_TPL)
+				const wider = (cropbox.width / cropbox.height) > (this.device.width / this.device.height)
+
+				if (wider) {
+          // width first
+					if (cropbox.width > this.device.width) {
+						clonedElement.size.width = '100vw'
+            clonedElement.size.height =  (cropbox.width / cropbox.height) * 100 + 'vw'
+					} else {
+            clonedElement.size.width = Math.floor(100 * cropbox.width/this.device.width) + 'vw'
+            clonedElement.size.height = Math.floor(100 * cropbox.height/this.device.width) + 'vw'
+					}
+				} else {
+
+				}
+				clonedElement.url = pngBase64
+				this.elements.push(clonedElement)
+				this.currentElement = clonedElement
+			},
 
       share () {
 

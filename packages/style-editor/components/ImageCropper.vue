@@ -10,7 +10,7 @@
         <div class="level-left">
           <div class="buttons has-addons">
           <span class="button" v-for="ratio of imageRatios" :key="ratio"
-                :class="currentRatio===ratio? 'is-primary' + buttonSize: buttonSize"
+                :class="currentRatio===ratio? 'is-primary ' + buttonSize: buttonSize"
                 @click="setRatio(ratio)">{{ratio}}</span>
             <span class="button icon-up" :class="isRotate? 'is-primary' + buttonSize: buttonSize" @click="setRotate"></span>
             <span class="button icon-cw" :class="buttonSize" style="margin-left: .5rem;" @click="rotate(-5)"></span>
@@ -123,7 +123,10 @@ export default {
       this.imageUrl = null
     },
     cropComplete () {
-
+      const pngBase64 = this.cropper.getCroppedCanvas().toDataURL('image/png')
+      const cropboxData = this.cropper.getCropBoxData()
+      this.$emit('complete', pngBase64, cropboxData)
+      this.close()
     }
   }
 }
