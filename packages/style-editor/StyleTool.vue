@@ -38,6 +38,7 @@
 		<div class="column is-one-third-widescreen is-two-fifths-tablet is-full-mobile">
 			<prop-config v-if="currentElement" :element="currentElement" :animations="[]"
 				fontable @file-add="fileAdded" @file-remove="fileRemoved"></prop-config>
+			<scene-config v-if="!currentElement" :elements="elements"></scene-config>
 		</div>
 	</div>
 	<image-cropper ref="cropper" @complete="cropComplete"></image-cropper>
@@ -45,174 +46,175 @@
 </template>
 
 <script>
-	import { clone } from '../utils/object'
-  import NavBar from '../common/NavBar'
-  import PropConfig from './components/PropConfig.vue'
-  import ELEMENT_TPL, { simplify } from './model/element'
-  import { getElementStyle, getPositionSizingStyle, getLength } from './utils/styles'
-  import ImageCropper from './components/ImageCropper.vue'
-	const ratios = [{
-    ratio: '9:16',
-    icon: 'icon-mobile'
-  }, {
-    ratio: '16:9',
-    icon: 'icon-laptop'
-  }, {
-    ratio: '4:3',
-    icon: 'icon-address-card-o'
-  }]
-  export default {
-    name: 'StyleTool',
-    components: {ImageCropper, PropConfig, NavBar},
-		mixins: [],
-		data () {
-      return {
-        previewRatio: '9:16',
-        cornerPosition: {},
-        ratios,
-        currentElement: null,
-        isPlaying: false,
-				elements: []
-			}
+import SceneConfig from './components/SceneConfig.vue'
+import { clone } from '../utils/object'
+import NavBar from '../common/NavBar'
+import PropConfig from './components/PropConfig.vue'
+import ELEMENT_TPL, { simplify } from './model/element'
+import { getElementStyle, getPositionSizingStyle, getLength } from './utils/styles'
+import ImageCropper from './components/ImageCropper.vue'
+const ratios = [{
+	ratio: '9:16',
+	icon: 'icon-mobile'
+}, {
+	ratio: '16:9',
+	icon: 'icon-laptop'
+}, {
+	ratio: '4:3',
+	icon: 'icon-address-card-o'
+}]
+export default {
+	name: 'StyleTool',
+	components: {ImageCropper, PropConfig, NavBar, SceneConfig},
+	mixins: [],
+	data () {
+		return {
+			previewRatio: '9:16',
+			cornerPosition: {},
+			ratios,
+			currentElement: null,
+			isPlaying: false,
+			elements: []
+		}
+	},
+	created () {
+		// if (this.elements.length === 0) {
+			//  this.addElement()
+			//  this.updateMaskPosition()
+		// }
+	},
+	computed: {
+		currentStyle () {
+			const style = getElementStyle(this.currentElement, this.device)
+			this.currentElement.style = style
+			return style
 		},
-		created () {
-      // if (this.elements.length === 0) {
-       //  this.addElement()
-       //  this.updateMaskPosition()
-			// }
-		},
-		computed: {
-      currentStyle () {
-				const style = getElementStyle(this.currentElement, this.device)
-				this.currentElement.style = style
-				return style
-			},
-      containerSize () {
-        if (screen.width > 768) {
-          return {
-            width: window.innerWidth / 5 * 3,
-						height: window.innerHeight - 150
-					}
-				} else {
-          return {
-            width: window.innerWidth,
-						height: window.innerWidth - 20
-					}
+		containerSize () {
+			if (screen.width > 768) {
+				return {
+					width: window.innerWidth / 5 * 3,
+					height: window.innerHeight - 150
 				}
-			},
-      device () {
-        let [w, h] = this.previewRatio.split(':')
-				let rw = parseInt(w)
-				let rh = parseInt(h)
-				const width1 = this.containerSize.width
-				const height1 = width1 / rw * rh
-				if (height1 > this.containerSize.height) {
-          const height2 = this.containerSize.height
-          const width2 = this.containerSize.height / rh * rw
-					return {
-            width: Math.floor(width2),
-						height: Math.floor(height2)
-					}
-        } else {
-          return {
-            width: Math.floor(width1),
-            height: Math.floor(height1)
-          }
+			} else {
+				return {
+					width: window.innerWidth,
+					height: window.innerWidth - 20
 				}
 			}
 		},
-		methods: {
-      addText () {
-
-			},
-
-      fileChoosed (e) {
-        if (e.currentTarget.files.length) {
-          const file = e.currentTarget.files[0]
-          if (file.size > this.ctx.upload.maxSize) {
-            this.error = '文件最大为' + this.ctx.upload.maxSize
-          }
-          this.$refs.cropper.open(URL.createObjectURL(file))
-        }
-      },
-
-			updateMaskPosition () {
-        this.cornerPosition = {
-          left: getLength(this.currentElement.size.width, this.device) - 12 + 'px',
-          top: getLength(this.currentElement.size.height, this.device) - 12 + 'px'
-        }
-        this.maskStyle = getPositionSizingStyle(this.currentElement, this.device)
-				console.log('update mask', this.cornerPosition, this.maskStyle)
-			},
-
-      sceneClick () {
-
-      },
-
-			play () {
-        this.currentElement = null
-        const clonedElements = clone(this.elements)
-        this.elements = []
-        this.$nextTick( () => {
-          for (let element of clonedElements) {
-            element.style = getElementStyle(element, this.device, 'in')
-            this.elements = clonedElements
-          }
-        }, 20)
-        this.isPlaying = true
-			},
-
-      chooseElement (element) {
-        this.currentElement = element
-			},
-
-      stop () {
-        this.isPlaying = false
-      },
-
-      finish () {
-				for (let element of clonedElements) {
-					element.style = getElementStyle(element, this.device, 'out')
-					this.elements = clonedElements
+		device () {
+			let [w, h] = this.previewRatio.split(':')
+			let rw = parseInt(w)
+			let rh = parseInt(h)
+			const width1 = this.containerSize.width
+			const height1 = width1 / rw * rh
+			if (height1 > this.containerSize.height) {
+				const height2 = this.containerSize.height
+				const width2 = this.containerSize.height / rh * rw
+				return {
+					width: Math.floor(width2),
+					height: Math.floor(height2)
 				}
-      },
-      cropComplete (blob, cropbox) {
-        const clonedElement = clone(ELEMENT_TPL)
-				const wider = (cropbox.width / cropbox.height) > (this.device.width / this.device.height)
-				if (wider) { // 宽度优先
-					if (cropbox.width > this.device.width) {
-						clonedElement.size.width = '100vw'
-            clonedElement.size.height =  Math.floor((cropbox.height / cropbox.width) * 100) + 'vw'
-					} else {
-            clonedElement.size.width = Math.floor(100 * cropbox.width/this.device.width) + 'vw'
-            clonedElement.size.height = Math.floor(100 * cropbox.height/this.device.width) + 'vw'
-					}
-				} else { // 高度优先
-					if (cropbox.height > this.device.height) {
-						clonedElement.size.height = '100vh'
-            clonedElement.size.width =  Math.floor((cropbox.width / cropbox.height) * 100) + 'vh'
-					} else {
-						clonedElement.size.width = Math.floor(100 * cropbox.width/this.device.height) + 'vh'
-            clonedElement.size.height = Math.floor(100 * cropbox.height/this.device.height) + 'vh'
-					}
+			} else {
+				return {
+					width: Math.floor(width1),
+					height: Math.floor(height1)
 				}
-				clonedElement.size.fix = true
-				clonedElement.url = URL.createObjectURL(blob)
-				this.elements.push(clonedElement)
-				this.currentElement = clonedElement
-			},
-
-      share () {
-
-			},
-      fileAdded () {
-
-			},
-			fileRemoved () {
-
 			}
 		}
-  }
+	},
+	methods: {
+		addText () {
+
+		},
+
+		fileChoosed (e) {
+			if (e.currentTarget.files.length) {
+				const file = e.currentTarget.files[0]
+				if (file.size > this.ctx.upload.maxSize) {
+					this.error = '文件最大为' + this.ctx.upload.maxSize
+				}
+				this.$refs.cropper.open(URL.createObjectURL(file))
+			}
+		},
+
+		updateMaskPosition () {
+			this.cornerPosition = {
+				left: getLength(this.currentElement.size.width, this.device) - 12 + 'px',
+				top: getLength(this.currentElement.size.height, this.device) - 12 + 'px'
+			}
+			this.maskStyle = getPositionSizingStyle(this.currentElement, this.device)
+			console.log('update mask', this.cornerPosition, this.maskStyle)
+		},
+
+		sceneClick () {
+
+		},
+
+		play () {
+			this.currentElement = null
+			const clonedElements = clone(this.elements)
+			this.elements = []
+			this.$nextTick( () => {
+				for (let element of clonedElements) {
+					element.style = getElementStyle(element, this.device, 'in')
+					this.elements = clonedElements
+				}
+			}, 20)
+			this.isPlaying = true
+		},
+
+		chooseElement (element) {
+			this.currentElement = element
+		},
+
+		stop () {
+			this.isPlaying = false
+		},
+
+		finish () {
+			for (let element of clonedElements) {
+				element.style = getElementStyle(element, this.device, 'out')
+				this.elements = clonedElements
+			}
+		},
+		cropComplete (blob, cropbox) {
+			const clonedElement = clone(ELEMENT_TPL)
+			const wider = (cropbox.width / cropbox.height) > (this.device.width / this.device.height)
+			if (wider) { // 宽度优先
+				if (cropbox.width > this.device.width) {
+					clonedElement.size.width = '100vw'
+					clonedElement.size.height =  Math.floor((cropbox.height / cropbox.width) * 100) + 'vw'
+				} else {
+					clonedElement.size.width = Math.floor(100 * cropbox.width/this.device.width) + 'vw'
+					clonedElement.size.height = Math.floor(100 * cropbox.height/this.device.width) + 'vw'
+				}
+			} else { // 高度优先
+				if (cropbox.height > this.device.height) {
+					clonedElement.size.height = '100vh'
+					clonedElement.size.width =  Math.floor((cropbox.width / cropbox.height) * 100) + 'vh'
+				} else {
+					clonedElement.size.width = Math.floor(100 * cropbox.width/this.device.height) + 'vh'
+					clonedElement.size.height = Math.floor(100 * cropbox.height/this.device.height) + 'vh'
+				}
+			}
+			clonedElement.size.fix = true
+			clonedElement.url = URL.createObjectURL(blob)
+			this.elements.push(clonedElement)
+			this.currentElement = clonedElement
+		},
+
+		share () {
+
+		},
+		fileAdded () {
+
+		},
+		fileRemoved () {
+
+		}
+	}
+}
 </script>
 
 <style lang="scss">
