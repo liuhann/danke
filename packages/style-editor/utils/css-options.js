@@ -14,5 +14,14 @@ export const backgroundSizeOptions = [{
   key: '100% auto',
   value: '匹配宽度'
 }]
-
+export const lenUnit = [{
+  value: 'vw',
+  label: '屏宽'
+}, {
+  value: 'vh',
+  label: '屏高'
+}, {
+  value: 'px',
+  label: '像素'
+}]
 export const imageRatios = ['1:1', '4:3', '16:9', '3:2']

@@ -28,13 +28,10 @@
 			<!--preview-->
 			<div id="stylePreview">
 				<div class="device" :style="{width: device.width + 'px', height: device.height + 'px'}" @click.self="sceneClick">
-					<div v-for="element of elements" class="element" :style="element===currentElement? currentStyle: element.style"
+					<div v-for="element of elements" :key="element.id" 
+						class="element" :style="element===currentElement? currentStyle: element.style"
 					  @click="chooseElement(element)">{{element.text}}</div>
 					<!-- resize and dragging -->
-					<div v-if="currentElement" ref="draggabily" class="draggabily" :style="maskStyle">
-						<div class="handler"><span class="icon-move"></span></div>
-						<div class="rb corner-point" :style="cornerPosition"></div>
-					</div>
 				</div>
 			</div>
 		</div>
@@ -50,11 +47,10 @@
 <script>
 	import { clone } from '../utils/object'
   import NavBar from '../common/NavBar'
-  import PropConfig from './components/PropConfig'
+  import PropConfig from './components/PropConfig.vue'
   import ELEMENT_TPL, { simplify } from './model/element'
-	import SizingMixin from './components/SizingMixins'
   import { getElementStyle, getPositionSizingStyle, getLength } from './utils/styles'
-  import ImageCropper from './components/ImageCropper'
+  import ImageCropper from './components/ImageCropper.vue'
 	const ratios = [{
     ratio: '9:16',
     icon: 'icon-mobile'
@@ -68,7 +64,7 @@
   export default {
     name: 'StyleTool',
     components: {ImageCropper, PropConfig, NavBar},
-		mixins: [SizingMixin],
+		mixins: [],
 		data () {
       return {
         previewRatio: '9:16',
@@ -88,9 +84,6 @@
 		computed: {
       currentStyle () {
 				const style = getElementStyle(this.currentElement, this.device)
-				if (!this.draggingRect) {
-          this.updateMaskPosition()
-				}
 				this.currentElement.style = style
 				return style
 			},
@@ -117,13 +110,13 @@
           const height2 = this.containerSize.height
           const width2 = this.containerSize.height / rh * rw
 					return {
-            width: width2,
-						height: height2
+            width: Math.floor(width2),
+						height: Math.floor(height2)
 					}
         } else {
           return {
-            width: width1,
-            height: height1
+            width: Math.floor(width1),
+            height: Math.floor(height1)
           }
 				}
 			}
@@ -131,12 +124,6 @@
 		methods: {
       addText () {
 
-			},
-      addElement () {
-        const cloned = clone(ELEMENT_TPL)
-				this.elements.push(cloned)
-				cloned.style = getElementStyle(cloned, this.device)
-				this.currentElement = cloned
 			},
 
       fileChoosed (e) {
@@ -159,7 +146,7 @@
 			},
 
       sceneClick () {
-        // this.currentElement = null
+
       },
 
 			play () {
@@ -177,10 +164,6 @@
 
       chooseElement (element) {
         this.currentElement = element
-				// this.$nextTick(() => {
-				// 	// this.updateMaskPosition()
-				// 	this.initDraggie()
-				// })
 			},
 
       stop () {
@@ -193,23 +176,28 @@
 					this.elements = clonedElements
 				}
       },
-      cropComplete (pngBase64, cropbox) {
+      cropComplete (blob, cropbox) {
         const clonedElement = clone(ELEMENT_TPL)
 				const wider = (cropbox.width / cropbox.height) > (this.device.width / this.device.height)
-
-				if (wider) {
-          // width first
+				if (wider) { // 宽度优先
 					if (cropbox.width > this.device.width) {
 						clonedElement.size.width = '100vw'
-            clonedElement.size.height =  (cropbox.width / cropbox.height) * 100 + 'vw'
+            clonedElement.size.height =  Math.floor((cropbox.height / cropbox.width) * 100) + 'vw'
 					} else {
             clonedElement.size.width = Math.floor(100 * cropbox.width/this.device.width) + 'vw'
             clonedElement.size.height = Math.floor(100 * cropbox.height/this.device.width) + 'vw'
 					}
-				} else {
-
+				} else { // 高度优先
+					if (cropbox.height > this.device.height) {
+						clonedElement.size.height = '100vh'
+            clonedElement.size.width =  Math.floor((cropbox.width / cropbox.height) * 100) + 'vh'
+					} else {
+						clonedElement.size.width = Math.floor(100 * cropbox.width/this.device.height) + 'vh'
+            clonedElement.size.height = Math.floor(100 * cropbox.height/this.device.height) + 'vh'
+					}
 				}
-				clonedElement.url = pngBase64
+				clonedElement.size.fix = true
+				clonedElement.url = URL.createObjectURL(blob)
 				this.elements.push(clonedElement)
 				this.currentElement = clonedElement
 			},
@@ -235,7 +223,6 @@
 	-webkit-box-align: center;
 	align-items: center;
 	height: calc(100vh - 10rem);
-
 	.device {
 		background-color: rgba(0, 0, 0, .3);
 		position: relative;

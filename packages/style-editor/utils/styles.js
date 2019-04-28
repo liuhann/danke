@@ -8,7 +8,7 @@ const REG_LEN = /([+-]?[0-9#]+)(%|px|pt|em|rem|in|cm|mm|ex|ch|pc|vw|vh|vmin|vmax
 function getLenSplits (len) {
   const splits = REG_LEN.exec(len)
   return {
-    len: parseFloat(splits[1]) || 1,
+    len: parseFloat(splits[1]) || 0,
     unit: splits[2]
   }
 }

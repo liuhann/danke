@@ -123,10 +123,13 @@ export default {
       this.imageUrl = null
     },
     cropComplete () {
-      const pngBase64 = this.cropper.getCroppedCanvas().toDataURL('image/png')
+      const ic = this
       const cropboxData = this.cropper.getCropBoxData()
-      this.$emit('complete', pngBase64, cropboxData)
-      this.close()
+      const pngBase64 = this.cropper.getCroppedCanvas().toBlob(blob => {
+        this.$emit('complete', blob, cropboxData)
+        this.close()
+        ic.cropper.destroy()
+      })
     }
   }
 }

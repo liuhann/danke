@@ -10,20 +10,19 @@
         <form-field label="名称" v-model="element.name"></form-field>
         <form-field label="内容" v-model="element.text"></form-field>
         <form-field label="描述" v-model="element.desc"></form-field>
-        <image-upload v-model="element.url"></image-upload>
+        <edit-position v-model="element.position"></edit-position>
+        <edit-size v-model="element.size" :ratioFixed="true"></edit-size>
         <!--<form-field label="背景大小" type="select" v-model="element.background.size" :options="backgroundSizeOptions"></form-field>-->
         <div class="buttons">
           <span class="button icon-mobile is-small">保存为模板</span>
           <span class="button icon-laptop is-small">复制创建</span>
-          <span class="button icon-laptop is-small is-danger">删除</span>
+          <span class="button icon-laptop is-small is-danger" @click="removeElement">删除</span>
         </div>
       </div>
 
       <div class="position-config" v-show="currentTab==='位置'">
-        <edit-position v-model="element.position"></edit-position>
-        <edit-size v-model="element.size"></edit-size>
       </div>
-
+      
       <div class="style-config" v-show="currentTab==='样式'">
         <edit-font v-model="element.font" ></edit-font>
         <edit-background v-model="element.background"></edit-background>
@@ -46,8 +45,8 @@ import EditPosition from './EditPosition'
 import EditBackground from './EditBackground'
 import EditImage from './EditImage'
 import EditBorder from './EditBorder'
-import EditClipPath from './EditClipPath'
-import EditSize from './EditSize'
+import EditClipPath from './EditClipPath.vue'
+import EditSize from './EditSize.vue'
 import EditTransform from './EditTransform'
 import ItemBlock from './ItemBlock'
 import EditAnimation from './EditAnimation'
@@ -101,6 +100,9 @@ export default {
   methods: {
     setTab(tab) {
       this.currentTab = tab
+    },
+    removeElement () {
+      this.$emit('remove')
     }
   }
 }

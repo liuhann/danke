@@ -9,11 +9,11 @@
         <input class="input is-small" style="width: 80px;" type="number" v-model.number="length">
       </p>
       <p class="control">
-    <span class="select is-small" v-if="withUnit">
-      <select v-model="unit" class="is-small">
-        <option v-for="u of units" :key="u.value" :value="u.value" :label="u.label">{{u.label}}</option>
-      </select>
-    </span>
+        <span class="select is-small" v-if="withUnit">
+          <select v-model="unit" class="is-small">
+            <option v-for="u of units" :key="u.value" :value="u.value" :label="u.label">{{u.label}}</option>
+          </select>
+        </span>
       </p>
     </div>
   </div>

@@ -1,6 +1,5 @@
 $family-primary: 'Karla', sans-serif;
 @import '~bulmaswatch/superhero/variables';
-
 $section-padding: 1em;
 @import '~bulma';
 html, body {
@@ -138,6 +137,10 @@ html, body {
       }
     }
   }
+}
+
+.panel:not(:last-child) {
+  margin-bottom: .75rem;
 }
 
 @import "./overrides.css";

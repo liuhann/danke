@@ -12,7 +12,7 @@
         </div>
       </nav>
       <div class="columns is-multiline is-mobile is-tablet">
-        <div class="column is-one-fifth-widescreen is-three-quarters-tablet is-half-mobile" v-for="animation in animations">
+        <div class="column is-one-fifth-widescreen is-three-quarters-tablet is-half-mobile" v-for="animation in animations" :key="animation.name">
           <div class="card-image play-area" @click="replay(animation)" @mouseover="replay(animation)">
             <div class="preview-box" :class="animation.name"></div>
           </div>

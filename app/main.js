@@ -15,7 +15,6 @@ import frameTool from '../packages/frame-tool'
 import styleTool from '../packages/style-editor/module'
 
 import initClient from './middlewares/initClient'
-import AnimationDAO from '../packages/frame-tool/animationdao'
 
 Vue.use(VueRouter)
 window.Vue = Vue

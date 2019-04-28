@@ -1,9 +1,7 @@
 .tabs a {
   padding: 4px;
 }
-.panel:not(:last-child) {
-  margin-bottom: 1rem;
-}
+
 .field-label .label {
   font-size: 14px;
   font-weight: 200;
