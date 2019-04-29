@@ -40,8 +40,8 @@
 </template>
 
 <script>
-import EditFont from './EditFont'
-import EditPosition from './EditPosition'
+import EditFont from './EditFont.vue'
+import EditPosition from './EditPosition.vue'
 import EditBackground from './EditBackground'
 import EditImage from './EditImage'
 import EditBorder from './EditBorder'
@@ -94,7 +94,7 @@ export default {
   },
   computed: {
     tabsName () {
-      return ['内容', '样式', '位置', '动画']
+      return ['内容', '样式', '动画']
     }
   },
   methods: {

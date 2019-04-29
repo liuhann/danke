@@ -4,7 +4,7 @@
   <div class="modal-content">
     <section class="modal-card-body">
       <div class="columns is-multiline is-mobile">
-        <div class="column is-half" v-for="animation in animations">
+        <div class="column is-half" v-for="animation in animations" :key="animations.name">
           <div class="card-image play-area" @click="choose(animation)">
             <div class="preview-box" :class="animation.name"></div>
           </div>
@@ -67,6 +67,7 @@ export default {
 
 <style lang="scss">
 .modal-frame-choose {
+  z-index: 10001;
   .play-area {
     position: relative;
     display: flex;

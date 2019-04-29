@@ -7,13 +7,25 @@
     <a class="icon-plus" @click="addColor"></a>
   </form-field>
   <form-field label="渐变方向" type="radio" v-model="background.angle" :options="gredientAngle"></form-field>
+  <form-field label="背景图片">
+    <div class="file">
+      <label class="file-label">
+        <input class="file-input" type="file" name="resume" @input="fileChoosed">
+        <span class="button icon-picture">
+        </span>
+      </label>
+    </div>
+  </form-field>
+  <form-field label="背景大小" v-model.number="background.size" unit="像素">
+  </form-field>
   <!--<form-field label="背景位置" type="select" v-model="background.position" :options="backgroundPositions"></form-field>-->
 </div>
 </template>
 
 <script>
-import FormField from '../../common/FormField'
+import FormField from '../../common/FormField.vue'
 import ColorPickr from '../../common/ColorPickr'
+import { backgroundSize } from '../utils/css-options.js'
 export default {
   name: 'EditBackground',
   components: {
@@ -52,22 +64,7 @@ export default {
     },
 
     backgroundSizeOptions () {
-      return [{
-        key: 'auto',
-        value: '原始大小'
-      }, {
-        key: 'cover',
-        value: '覆盖'
-      }, {
-        key: 'contain',
-        value: '包含'
-      }, {
-        key: 'auto 100%',
-        value: '匹配高度'
-      }, {
-        key: '100% auto',
-        value: '匹配宽度'
-      }]
+      return backgroundSize
     },
     backgroundPositions () {
       return [{
@@ -110,6 +107,18 @@ export default {
   methods: {
     addColor () {
       this.background.colors.push('')
+    },
+
+    fileChoosed (e) {
+      if (e.currentTarget.files.length) {
+        const file = e.currentTarget.files[0]
+				this.ctx.crop(file, this.cropComplete)
+				// this.$refs.cropper.open(URL.createObjectURL(file))
+      }
+    },
+
+    cropComplete (blob) {
+      this.background.url = URL.createObjectURL(blob)
     },
 
     addFile (file) {

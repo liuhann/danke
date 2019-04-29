@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import EditLen from './EditLen'
+import EditLen from './EditLen.vue'
 import FormField from '../../common/FormField'
 import ColorPickr from '../../common/ColorPickr'
 export default {

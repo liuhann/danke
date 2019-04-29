@@ -1,8 +1,9 @@
 export default {
   colors: ['#fafafa'],
   angle: 'to bottom',
+  url: '',
   size: 'cover',
   position: 'center center',
-  repeat: false,
+  repeat: true,
   blend: 'multiply'
 }

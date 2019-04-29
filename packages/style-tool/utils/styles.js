@@ -142,8 +142,9 @@ function getGradientStyle (colors, angle, blendImage) {
 function getBackgroundStyle (background, url) {
   const styles = []
   const backgroundImages = []
-  if (url) {
-    backgroundImages.push(`url('${url}')`)
+  let bgUrl = url || background.url
+  if (bgUrl) {
+    backgroundImages.push(`url('${bgUrl}')`)
   }
   if (background.colors.length > 1) {
     backgroundImages.push(`linear-gradient(${background.angle}, ${background.colors.join(',')})`)
@@ -153,7 +154,7 @@ function getBackgroundStyle (background, url) {
   if (backgroundImages.length) {
     styles.push(`background-image: ${backgroundImages.join(' ')}`)
   }
-  if (url) {
+  if (bgUrl) {
     styles.push(`background-size: ${background.size}`)
     styles.push(`background-position: ${background.position}`)
     if (background.repeat) {

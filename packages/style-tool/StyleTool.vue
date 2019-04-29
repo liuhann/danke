@@ -14,7 +14,7 @@
 					<div class="buttons has-addons">
 						<div class="file">
 							<label class="file-label">
-								<input class="file-input" type="file" name="resume"  @input="fileChoosed">
+								<input class="file-input" type="file" name="resume" @input="fileChoosed">
 								<span class="button icon-picture">
     						</span>
 							</label>
@@ -37,8 +37,8 @@
 			</div>
 		</div>
 		<div class="column is-one-third-widescreen is-two-fifths-tablet is-full-mobile">
-			<prop-config v-if="currentElement" :element="currentElement" :animations="[]"
-				fontable @file-add="fileAdded" @file-remove="fileRemoved"></prop-config>
+			<prop-config v-if="currentElement" :element="currentElement" 
+				@remove="removeCurrentElement"></prop-config>
 			<scene-config v-if="!currentElement" :elements="elements" :scene="scene" @choose="chooseElement"></scene-config>
 		</div>
 	</div>
@@ -70,6 +70,8 @@ export default {
 	components: {ImageCropper, PropConfig, NavBar, SceneConfig},
 	mixins: [],
 	data () {
+		const background = clone(TPL_BACKGROUND)
+		background.size = 40
 		return {
 			previewRatio: '9:16',
 			maskStyle: '',
@@ -79,15 +81,15 @@ export default {
 			isPlaying: false,
 			elements: [],
 			scene: {
-				background: clone(TPL_BACKGROUND)
+				background
 			}
 		}
 	},
 	created () {
-		// if (this.elements.length === 0) {
-			//  this.addElement()
-			//  this.updateMaskPosition()
-		// }
+		this.ctx.crop = (file, callback) => {
+			this.$refs.cropper.open(URL.createObjectURL(file))
+			this.$refs.cropper.cropCompleteCallback = callback
+		}
 	},
 	computed: {
 		currentStyle () {
@@ -136,7 +138,15 @@ export default {
 	},
 	methods: {
 		addText () {
+		},
 
+		removeCurrentElement () {
+			for (let i = 0; i < this.elements.length; i++) {
+				if (this.elements[i] === this.currentElement) {
+					this.elements.splice(i, 1)
+					break
+				}
+			}
 		},
 
 		fileChoosed (e) {
@@ -145,19 +155,11 @@ export default {
 				if (file.size > this.ctx.upload.maxSize) {
 					this.error = '文件最大为' + this.ctx.upload.maxSize
 				}
-				this.$refs.cropper.open(URL.createObjectURL(file))
+				this.ctx.crop(file, this.cropComplete)
+				e.currentTarget.value = ''
 			}
 		},
-
-		updateMaskPosition () {
-			this.cornerPosition = {
-				left: getLength(this.currentElement.size.width, this.device) - 12 + 'px',
-				top: getLength(this.currentElement.size.height, this.device) - 12 + 'px'
-			}
-			this.maskStyle = getPositionSizingStyle(this.currentElement, this.device)
-			console.log('update mask', this.cornerPosition, this.maskStyle)
-		},
-
+		
 		sceneClick () {
 			this.currentElement = null
 		},

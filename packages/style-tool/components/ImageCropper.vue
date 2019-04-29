@@ -126,7 +126,8 @@ export default {
       const ic = this
       const cropboxData = this.cropper.getCropBoxData()
       const pngBase64 = this.cropper.getCroppedCanvas().toBlob(blob => {
-        this.$emit('complete', blob, cropboxData)
+        this.cropCompleteCallback(blob, cropboxData)
+        //this.$emit('complete', blob, cropboxData)
         this.close()
         ic.cropper.destroy()
       })
@@ -146,7 +147,7 @@ export default {
     width: 100%;
     left: 0;
     position: absolute;
-    bottom: 40px;
+    bottom: 10px;
     .level {
       max-width: 640px;
       margin: 0 auto;
