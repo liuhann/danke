@@ -26,19 +26,20 @@
 				</div>
 			</div>
 			<!--preview-->
-			<div id="stylePreview">
-				<div class="device" :style="{width: device.width + 'px', height: device.height + 'px'}" @click.self="sceneClick">
+			<div id="stylePreview" @click.self="sceneClick">
+				<div class="device" :style="deviceStyle" @click.self="sceneClick">
 					<div v-for="element of elements" :key="element.id" 
 						class="element" :style="element===currentElement? currentStyle: element.style"
-					  @click="chooseElement(element)">{{element.text}}</div>
+					  @click.self="chooseElement(element)">{{element.text}}</div>
 					<!-- resize and dragging -->
+					<div class="draggabily" v-if="currentElement" :style="maskStyle"></div>
 				</div>
 			</div>
 		</div>
 		<div class="column is-one-third-widescreen is-two-fifths-tablet is-full-mobile">
 			<prop-config v-if="currentElement" :element="currentElement" :animations="[]"
 				fontable @file-add="fileAdded" @file-remove="fileRemoved"></prop-config>
-			<scene-config v-if="!currentElement" :elements="elements"></scene-config>
+			<scene-config v-if="!currentElement" :elements="elements" :scene="scene" @choose="chooseElement"></scene-config>
 		</div>
 	</div>
 	<image-cropper ref="cropper" @complete="cropComplete"></image-cropper>
@@ -51,7 +52,8 @@ import { clone } from '../utils/object'
 import NavBar from '../common/NavBar'
 import PropConfig from './components/PropConfig.vue'
 import ELEMENT_TPL, { simplify } from './model/element'
-import { getElementStyle, getPositionSizingStyle, getLength } from './utils/styles'
+import TPL_BACKGROUND from './model/background.js'
+import { getElementStyle, getPositionSizingStyle, getLength, getSceneStyle } from './utils/styles'
 import ImageCropper from './components/ImageCropper.vue'
 const ratios = [{
 	ratio: '9:16',
@@ -70,11 +72,15 @@ export default {
 	data () {
 		return {
 			previewRatio: '9:16',
+			maskStyle: '',
 			cornerPosition: {},
 			ratios,
 			currentElement: null,
 			isPlaying: false,
-			elements: []
+			elements: [],
+			scene: {
+				background: clone(TPL_BACKGROUND)
+			}
 		}
 	},
 	created () {
@@ -86,8 +92,13 @@ export default {
 	computed: {
 		currentStyle () {
 			const style = getElementStyle(this.currentElement, this.device)
+			this.maskStyle = getPositionSizingStyle(this.currentElement, this.device)
 			this.currentElement.style = style
 			return style
+		},
+
+		deviceStyle () {
+			return getSceneStyle(this.scene, this.device)
 		},
 		containerSize () {
 			if (screen.width > 768) {
@@ -148,7 +159,7 @@ export default {
 		},
 
 		sceneClick () {
-
+			this.currentElement = null
 		},
 
 		play () {
@@ -231,8 +242,8 @@ export default {
 	}
 	$pointWidth: 12px;
 	.draggabily {
-		border: 2px solid #00d1b2;
-		position: relative;
+		box-shadow: 0px 0px 0px 3px #0384da;
+		// border: 2px outset #209cee;
 		z-index: 999;
 		.handler {
 			position: absolute;
@@ -252,18 +263,6 @@ export default {
 			width: $pointWidth;
 			height: $pointWidth;
 			background-color: rgba(0, 0, 0, .8);
-		}
-		.lt {
-			left: -$pointWidth/2;
-			top: -$pointWidth/2;
-		}
-		.rt {
-			right: -$pointWidth/2;
-			top: -$pointWidth/2;
-		}
-		.lb {
-			left: -$pointWidth/2;
-			bottom: -$pointWidth/2;
 		}
 	}
 }

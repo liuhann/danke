@@ -23,10 +23,6 @@ export default {
   props: {
     value: {
       type: Object
-    },
-    maxSize: {
-      type: Number,
-      default: 800000
     }
   },
   data () {
