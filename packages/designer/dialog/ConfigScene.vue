@@ -81,7 +81,7 @@
 import { shortid } from '../../utils/string'
 import { clone } from '../../utils/object'
 import TPL_SCENE from '../templates/scene'
-import { ItemBlock } from '../../style-editor'
+import { ItemBlock } from '../../style-tool/exports.js'
 export default {
   name: 'ConfigScene',
   components: {

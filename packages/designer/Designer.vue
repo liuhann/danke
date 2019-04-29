@@ -43,9 +43,9 @@ import Elements from './templates/elements'
 import TPL_SCENE from './templates/scene'
 import AddElement from './dialog/AddElement'
 
-import TPL_ELEMENT from '../style-editor/model/element'
+import TPL_ELEMENT from '../style-tool/model/element'
 import ConfigScene from './dialog/ConfigScene'
-import { PropConfig } from '../style-editor'
+import { PropConfig } from '../style-tool/exports.js'
 
 import { Dialog, Button, Tabs, TabPane, Table, TableColumn} from 'element-ui'
 Vue.use(Dialog)

@@ -1,5 +1,5 @@
-import CLIPPATH from '../../style-editor/model/clippath'
-import TRANSFORM from '../../style-editor/model/transform'
+import CLIPPATH from '../../style-tool/model/clippath'
+import TRANSFORM from '../../style-tool/model/transform'
 
 export default {
   percent: 0,

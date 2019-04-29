@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { getElementStyle } from '../style-editor/utils/styles'
+import { getElementStyle } from '../style-tool/utils/styles'
 
 export default {
   name: 'Scene',

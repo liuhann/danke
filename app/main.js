@@ -12,7 +12,7 @@ import designer from '../packages/designer'
 import runtime from '../packages/runtime'
 import user from '../packages/user'
 import frameTool from '../packages/frame-tool'
-import styleTool from '../packages/style-editor/module'
+import styleTool from '../packages/style-tool'
 
 import initClient from './middlewares/initClient'
 
