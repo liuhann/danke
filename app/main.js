@@ -23,6 +23,7 @@ const boot = new AsyncBoot({
   Vue,
   VueRouter,
   App,
+  mode: 'history',
   appServer: 'http://www.danke.fun',
   cdn: 'http://cdn.danke.fun',
   mount: '#app',

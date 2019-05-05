@@ -10,7 +10,7 @@ module.exports = {
     : '/',
   outputDir: process.env.NODE_ENV === 'production'
     ? '../shopen/public'
-    : '../shopen/public/user',
+    : '../shopen/public',
   pages: {
     index: {
       entry: 'app/main.js',

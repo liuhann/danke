@@ -30,10 +30,10 @@
             工具
           </a>
           <div class="navbar-dropdown">
-            <a class="navbar-item" href="#/style-tool">
+            <a class="navbar-item" href="/style-tool">
               样式元素
             </a>
-            <a class="navbar-item" href="#/frame-list">
+            <a class="navbar-item" href="/frame-list">
               动画
             </a>
             <a class="navbar-item">
