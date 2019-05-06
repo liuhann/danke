@@ -22,9 +22,6 @@
     <div id="navbarBasicExample" class="navbar-menu" :class="burgerOpen">
       <div class="navbar-start">
         <router-link to="/" class="navbar-item">首页</router-link>
-        <a class="navbar-item">
-          桌面
-        </a>
         <div class="navbar-item has-dropdown is-hoverable">
           <a class="navbar-link">
             工具
@@ -41,6 +38,9 @@
             </a>
           </div>
         </div>
+        <a class="navbar-item" href="/story">
+          元宝故事
+        </a>
       </div>
 
       <div class="navbar-end">

@@ -5,7 +5,6 @@
   <nav-footer></nav-footer>
 </div>
 </template>
-
 <script>
 import NavBar from '../common/NavBar'
 import WorkList from '../common/WorkList'
@@ -14,7 +13,7 @@ export default {
   name: 'view.vue',
   components: {NavFooter, WorkList, NavBar },
   created () {
-    this.ctx.workdao
+    
   }
 }
 </script>

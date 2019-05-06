@@ -1,22 +1,17 @@
 import './common.scss'
-import AsyncBoot from 'async-boot'
 import App from './app.vue'
 import Vue from 'vue'
-import VueRouter from 'vue-router'
-
-Vue.use(VueRouter)
-window.Vue = Vue
+import AsyncBoot from 'async-boot'
 
 const boot = new AsyncBoot({
   Vue,
-  VueRouter,
   App,
+  router: false,
   mode: 'history',
   appServer: 'http://www.danke.fun',
   cdn: 'http://cdn.danke.fun',
   mount: '#app',
-  packages: [
-  ],
+  packages: [],
   started: async (ctx, next) => {
     await next()
   }

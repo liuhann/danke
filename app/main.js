@@ -13,8 +13,9 @@ import runtime from '../packages/runtime'
 import user from '../packages/user'
 import frameTool from '../packages/frame-tool'
 import styleTool from '../packages/style-tool'
+import ybstory from '../packages/story'
 
-import initClient from './middlewares/initClient'
+import initClient from '../packages/common/initClient'
 
 Vue.use(VueRouter)
 window.Vue = Vue
@@ -28,7 +29,7 @@ const boot = new AsyncBoot({
   cdn: 'http://cdn.danke.fun',
   mount: '#app',
   packages: [
-    site, designer, runtime, user, frameTool, styleTool
+    site, designer, runtime, user, frameTool, styleTool, ybstory
   ],
   started: async (ctx, next) => {
     initClient(ctx)

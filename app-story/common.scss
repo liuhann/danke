@@ -1,49 +1,69 @@
 $family-primary: 'Karla', sans-serif;
-@import '~bulmaswatch/superhero/variables';
+@import '~bulmaswatch/minty/_variables.scss';
 $section-padding: 1em;
 @import '~bulma';
 html, body {
   overflow-y: auto;
   font-family: 'Karla',Microsoft YaHei,tahoma,arial,Hiragino Sans GB,sans-serif;
 }
-
-.section {
-  background-color: $body-background-color;
+.modal-card-title,
+.subtitle,
+.title,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+  font-family: $family-heading;
 }
 
-.hero {
-  background-color: $body-background-color;
-}
-
-.box {
-  background-color: $background;
-  padding: 10px;
+.button,
+.control.has-icons-left .icon,
+.control.has-icons-right .icon,
+.input,
+.pagination-ellipsis,
+.pagination-link,
+.pagination-next,
+.pagination-previous,
+.select,
+.select select,
+.textarea {
+  height: 2.534em;
 }
 
 .button {
-  &.is-hovered,
-  &:hover {
-    background-color: darken($button-background-color, 3%);
+  transition: all 200ms ease;
+  font-weight: 500;
+  font-family: $family-heading;
+
+  &.is-active,
+  &.is-focused,
+  &:active,
+  &:focus {
+    box-shadow: 0 0 0 2px rgba($button-focus-border-color, 0.25);
   }
   @each $name, $pair in $colors {
     $color: nth($pair, 1);
     $color-invert: nth($pair, 2);
 
     &.is-#{$name} {
-      &.is-hovered,
-      &:hover {
-        background-color: darken($color, 3%);
+      &.is-active,
+      &.is-focused,
+      &:active,
+      &:focus {
+        border-color: $color;
+        box-shadow: 0 0 0 2px rgba($color, 0.25);
       }
     }
   }
-
-  &.is-loading:after {
-    border-color: transparent transparent $grey-light $grey-light;
-  }
 }
 
-.label {
-  color: $grey-lighter;
+.input,
+.textarea {
+  transition: all 200ms ease;
+  box-shadow: none;
 }
 
 .notification {
@@ -62,8 +82,7 @@ html, body {
 
 .card {
   box-shadow: none;
-  border: 1px solid $border;
-  background-color: darken($body-background-color, 1);
+  border: 1px solid $grey-lighter;
   border-radius: $radius;
 
   .card-image {
@@ -74,33 +93,58 @@ html, body {
 
   .card-header {
     box-shadow: none;
-    background-color: darken($body-background-color, 3);
+    border-bottom: 1px solid $grey-lighter;
     border-radius: $radius $radius 0 0;
-  }
-
-  .card-footer {
-    background-color: darken($body-background-color, 3);
-  }
-
-  .card-footer,
-  .card-footer-item {
-    border-width: 1px;
-    border-color: $border;
   }
 }
 
-.modal-card-body {
-  background-color: $body-background-color;
+.card-header-title,
+.menu-label,
+.message-header,
+.panel-heading {
+  font-family: $family-heading;
+  font-weight: normal;
+}
+
+.menu-list a {
+  border-radius: $radius;
 }
 
 .navbar {
-  &.is-transparent {
-    background-color: transparent;
+  border-radius: $radius;
+
+  .navbar-item,
+  .navbar-link {
+    font-family: $family-heading;
+    transition: all 300ms;
   }
 
   @include touch {
     .navbar-menu {
-      background-color: transparent;
+      background-color: inherit;
+      border-radius: inherit;
+    }
+  }
+
+  .navbar-dropdown .navbar-item {
+    @include desktop {
+      color: $text;
+    }
+  }
+
+  &.is-transparent {
+    background-color: transparent;
+    .navbar-item,
+    .navbar-link {
+      color: rgba($text, 0.75);
+
+      &.is-active {
+        color: $text;
+      }
+
+      &:after {
+        border-color: inherit;
+      }
     }
   }
 
@@ -109,19 +153,24 @@ html, body {
     $color-invert: nth($pair, 2);
 
     &.is-#{$name} {
+      .navbar-start,
+      .navbar-end {
+        > .navbar-item,
+        .navbar-link {
+          color: rgba($color-invert, 0.75);
+
+          &.is-active {
+            color: $color-invert;
+          }
+        }
+      }
       @include touch {
         .navbar-item,
         .navbar-link {
-          color: $color-invert;
+          color: rgba($color-invert, 0.75);
 
           &.is-active {
-            color: rgba($color-invert, 0.7);
-          }
-        }
-
-        .navbar-burger {
-          span {
-            background-color: $color-invert;
+            color: $color-invert;
           }
         }
       }
@@ -130,17 +179,24 @@ html, body {
 }
 
 .hero {
+  // Colors
   .navbar {
-    .navbar-dropdown {
-      .navbar-item {
-        color: $grey-lighter;
+    background-color: $primary;
+  }
+  @each $name, $pair in $colors {
+    $color: nth($pair, 1);
+    $color-invert: nth($pair, 2);
+
+    &.is-#{$name} {
+      .navbar {
+        background: none;
       }
     }
   }
 }
 
-.panel:not(:last-child) {
-  margin-bottom: .75rem;
+.panel-block.is-active {
+  color: $primary;
 }
 
 @import "./overrides.css";
