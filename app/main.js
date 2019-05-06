@@ -1,3 +1,4 @@
+// styles
 import './common.scss'
 import '../packages/webfont/karla/font.css'
 import '../packages/webfont/fontello/css/fontello.css'
