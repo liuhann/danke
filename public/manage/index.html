@@ -49,9 +49,10 @@
                 :tag="story.u?formateMill(story.u): ''"
                 :desc="story.path"
                 :title="story.title"
-                :thumb="story.cover? ('/api/story/cover/480/480/' + story.cover + '.png') : ''"
+                :thumb="story.cover ? (CDN_IMG + '/' + story.cover + '.png@!w80') : ''"
                 origin-price="10.00">
             <div slot="footer">
+                {{story.label && story.label.join(' ')}}
                 <van-button @click="showQueryBox(story)"  size="mini">查找</van-button>
                 <van-button @click="playStory(story)" size="mini">播放</van-button>
                 <van-button @click="removeStory(story)" size="mini">删除</van-button>
@@ -102,12 +103,11 @@
 </div>
 
 <script type="module">
-import ky from './js/ky.js'
-
 const app = new Vue({
     el: '#app',
     data() {
       return {
+        CDN_IMG: 'http://imagek.cdn.bcebos.com',
         pageToGo: '',
         queryText: '',
         showRelatedStory: false,
@@ -203,7 +203,7 @@ const app = new Vue({
       },
 
       async removeStory (story, notRefresh) {
-        const json = await ky.get('/api/story/delete/mark/' + story._id).json();
+        const json = await axios.get('/api/story/delete/mark/' + story._id).json();
         //vant.Toast('删除成功');
         if (notRefresh) {
           for (let i = 0; i < this.tableData.length; i++) {
@@ -219,12 +219,11 @@ const app = new Vue({
       },
 
       async deleteMarked () {
-        let json = await ky.get('/api/story/delete/one').json();
-
+        let json = (await axios.get('/api/story/delete/one')).data
         while (json.path) {
           vant.Notify(json.path)
           await this.sleep(500)
-          json = await ky.get('/api/story/delete/one').json();
+          json = (await axios.get('/api/story/delete/one')).data
         }
       },
 

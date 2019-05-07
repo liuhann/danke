@@ -1,17 +1,24 @@
 <template>
 <div id="app">
   <story-nav></story-nav>
-  
+  <story-home></story-home>
 </div>
 </template>
 
 <script>
 import StoryNav from './libs/NavBar.vue'
+import StoryHome from './libs/StoryHome.vue'
 export default {
   name: 'view.vue',
-  components: { StoryNav },
+  components: { StoryNav, StoryHome },
+  data () {
+    return {
+    }
+  },
   created () {
-    this.ctx.workdao
+  },
+  methods: {
+    
   }
 }
 </script>

@@ -3,7 +3,7 @@ export default class StoryDAO {
     this.ctx = ctx
   }
   async listHome () {
-    const result = await this.ctx.get(`/home?labels=今日推荐,凯迪克大奖,睡前故事,绘本故事`)
+    const result = await this.ctx.get(`story/home`).json()
     return result
   }
 
@@ -13,33 +13,17 @@ export default class StoryDAO {
   }
 
   async getAllAlbums () {
-    const result = await this.ctx.get(`${this.root}/album/list`)
+    const result = await this.ctx.get(`/story/album/list`)
     return result
   }
 
   async getAlbumDetail (album) {
-    const result = await this.ctx.get(`${this.root}/album/info?album=` + album.name)
+    const result = await this.ctx.get(`/story/album/info?album=` + album.name)
     return result
   }
 
   async filterStory (filter, skip, limit) {
-    const result = await this.ctx.get(`${this.root}/story/list`, Object.assign(filter, { skip, limit }))
-    return result
-  }
-
-  async register (user, pwd) {
-    const result = await this.ctx.post(`${this.root}/user/register`, {
-      user,
-      pwd
-    })
-    return result
-  }
-
-  async login (user, pwd) {
-    const result = await this.ctx.post(`${this.root}/user/login`, {
-      user,
-      pwd
-    })
+    const result = await this.ctx.get(`/story/story/list`, Object.assign(filter, { skip, limit }))
     return result
   }
 
