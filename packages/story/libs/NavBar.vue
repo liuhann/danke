@@ -1,31 +1,14 @@
 <template>
-  <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand">
-      <a class="navbar-item" href="https://bulma.io">
-        <img src="http://www.danke.fun/res/logo.png" >
+  <div class="nav-top-fixed">
+    <div class="centered">
+      <a v-for="(nav, index) in navs" :key="nav" class="nav-item" :class="currentNav===index? 'selected': ''" @click='go(index)'>
+        {{nav}}
       </a>
     </div>
-
-    <div id="navbarBasicExample" class="navbar-menu" :class="burgerOpen">
-      <div class="navbar-start">
-        <a class="navbar-item">
-          推荐
-        </a>
-        <a class="navbar-item">
-          分类
-        </a>
-        <a class="navbar-item">
-          我的
-        </a>
-      </div>
-
-      <div class="navbar-end">
-        <div class="navbar-item">
-          
-        </div>
-      </div>
+    <div class="right-search">
+      <i class="icon-search" @click="search"></i>
     </div>
-  </nav>
+  </div>
 </template>
 
 <script>
@@ -36,12 +19,11 @@ export default {
   },
   data () {
     return {
+      navs: ['推荐', '发现', '我的'],
+      currentNav: 0
     }
   },
   created () {
-
-  },
-  computed: {
 
   },
 
@@ -50,18 +32,43 @@ export default {
   },
 
   methods: {
-    toggleOpen () {
-
+    go (n) {
+      this.currentNav = n
+      this.$emit('go', n)
     },
-    getStarted () {
-      
-    },
-    goUserHome () {
-      
+    search () {
+      this.$emit('search')
     }
   }
 }
 </script>
 
 <style lang="scss">
+.nav-top-fixed {
+  position: fixed;
+  height: 3.25rem;
+  top: 0;
+  z-index: 9999;
+  background: #fff;
+  width: 100%;
+  font-size: 1.5rem;
+  line-height: 3.25rem;
+  color: #999;
+  font-weight: 400;
+  text-align: center;
+  .centered {
+    margin: 0 auto;
+    display: inline-block;
+    .nav-item {
+      padding: 0 .4rem;
+      &.selected {
+        color: #444;
+        font-weight: 600;
+      }
+    }
+  }
+  .right-search {
+    float: right;
+  }
+}
 </style>

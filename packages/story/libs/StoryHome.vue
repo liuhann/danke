@@ -6,10 +6,9 @@
       <story-grids :stories="samples"></story-grids>
     </div>
     <div class="column is-full-mobile is-one-third-desktop">
-      <h2 class="subtitle">{{teller.name}}</h2>
+      <h2 class="subtitle">今日主播: {{teller.name}}</h2>
       <story-list :stories="teller.list"></story-list>
     </div>
-
     <div v-for="labelStories in labels" :key="labelStories.name" class="column is-full-mobile is-one-third-desktop">
       <h2 class="subtitle">{{labelStories.name}}</h2>
       <story-list :stories="labelStories.stories.list"></story-list>
@@ -41,7 +40,6 @@ export default {
   methods: {
     async loadHome () {
       const home = await this.storydao.listHome()
-      debugger
       this.samples = home.samples
       this.teller = home.teller
       this.labels = home.labels
@@ -51,5 +49,12 @@ export default {
 </script>
 
 <style lang="scss">
-
+.section {
+  >.columns>.column {
+    margin-top: 1rem;
+  }
+  .subtitle {
+    padding: .2rem .5rem;
+  }
+}
 </style>

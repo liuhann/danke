@@ -1,42 +1,27 @@
 <template>
 <div class="story-list">
-  <article class="media" v-for="(story, index) in stories" :key="index">
+  <article class="media" v-for="(story, index) in stories" :key="index" @click="playStory(story)">
     <figure class="media-left">
       <p class="image is-64x64">
-        <img src="https://bulma.io/images/placeholders/128x128.png">
+        <img :src="CDN_IMG + '/' + story.cover + '.png@w_64,h_64,s_2,q_100'" :alt="story.title">
       </p>
     </figure>
     <div class="media-content">
       <div class="content">
         <p>
-          <strong>John Smith</strong>
-          <small>@johnsmith</small>
-          <small>31m</small>
-          <br>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ornare magna eros, eu pellentesque tortor vestibulum ut. Maecenas non massa sem. Etiam finibus odio quis feugiat facilisis.
+          <strong>{{story.title}}</strong>
         </p>
       </div>
       <nav class="level is-mobile">
         <div class="level-left">
-          <a class="level-item">
-            <span class="icon is-small">
-              <i class="fas fa-reply"></i>
-            </span>
+          <a class="level-item" v-if="story.artist">
+            {{story.artist}}
           </a>
           <a class="level-item">
-            <span class="icon is-small">
-              <i class="fas fa-retweet"></i>
-            </span>
-          </a>
-          <a class="level-item">
-            <span class="icon is-small">
-              <i class="fas fa-heart"></i>
-            </span>
+            时长: {{story.duration | timeFormat}}
           </a>
         </div>
       </nav>
-    </div>
-    <div class="media-right">
-      <button class="delete"></button>
     </div>
   </article>
 </div>
@@ -50,9 +35,25 @@ export default {
     }
   },
   data() {
-    return {}
+    return {
+      CDN_IMG: this.ctx.CDN_IMG
+    }
   },
-  methods: {}
+  filters: {
+    timeFormat: function (t) {
+      try {
+        const i = parseInt(t)
+        return Math.floor(i / 60) + '分' + i%60 + '秒'
+      } catch (e) {
+        return '未知'
+      }
+    }
+  },
+  methods: {
+     playStory (story) {
+      this.ctx.playStory(story)
+    }
+  }
 };
 </script>
 
