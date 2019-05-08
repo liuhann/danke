@@ -1,5 +1,5 @@
 <template>
-<div class="player-bar box">
+<div class="player-bar box" @click="showFull">
    <figure class="image is-64x64">
       <img :src="CDN_IMG + '/' + story.cover + '.png@w_240,h_240,s_2,q_100'" :alt="story.title">
     </figure>
@@ -11,7 +11,7 @@
     </div>
   </div>
   <div class="pause">
-    <i class="icon-pause"></i>
+    <i class="icon-pause" @click.self="pause"></i>
   </div>
 </div>
 </template>
@@ -35,8 +35,12 @@ export default {
   created () {
   },
   methods: {
-    returnHome () {
-      this.$emit('return')
+    showFull () {
+      this.$emit('show-full')
+    },
+
+    pause () {
+      this.$emit('pause')
     }
   }
 }

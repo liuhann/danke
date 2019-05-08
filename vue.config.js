@@ -3,7 +3,8 @@ module.exports = {
   productionSourceMap: true,
   transpileDependencies: ['async-boot', 'ky'],
   devServer: {
-    contentBase: './demo'
+    contentBase: './demo',
+    port: 80
   },
   publicPath: process.env.NODE_ENV === 'production'
     ? '/'

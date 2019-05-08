@@ -1,12 +1,12 @@
-import { Howl, Howler } from 'howler'
-
 export default {
   data () {
     return {
-      currentPlayStory: null,
-      isPlaying: false,
-      seconds: 0
+      CDN_STORY: 'http://chuchu.cdn.bcebos.com',
+      CDN_IMG: 'http://imagek.cdn.bcebos.com'
     }
+  },
+  created () {
+
   },
   filters: {
     timeFormat: function (t) {
@@ -18,20 +18,5 @@ export default {
       }
     }
   },
-
-  computed: {
-  },
-  methods: {
-    playStory (story) {
-      this.ctx.playStory(story)
-    },
-    play (story) {
-      this.currentPlayStory = story
-      this.playingOpen = true
-      this.ctx.howl = new Howl({
-        src: ['sound.mp3']
-      })
-      this.howl.play()
-    },
-  }
+  methods: {}
 }

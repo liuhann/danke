@@ -57,8 +57,11 @@
 </template>
 
 <script>
+import { setInterval } from 'timers'
+import mixins from './mixins.js'
 export default {
   name: 'Playing.vue',
+  mixins: [ mixins ],
   props: {
     story: {
       type: Object
@@ -71,6 +74,9 @@ export default {
     }
   },
   created () {
+    this.tick = setInterval( () => {
+      
+    })
   },
   methods: {
     returnHome () {
