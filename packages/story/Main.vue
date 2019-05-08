@@ -8,17 +8,26 @@
 <script>
 import StoryNav from './libs/NavBar.vue'
 import StoryHome from './libs/StoryHome.vue'
+import {Howl, Howler} from 'howler'
+
 export default {
   name: 'view.vue',
   components: { StoryNav, StoryHome },
   data () {
     return {
+      currentPlayStory: null,
+      playList: []
     }
   },
   created () {
   },
   methods: {
-    
+    play (story) {
+      this.howl = new Howl({
+        src: ['sound.mp3']
+      })
+      this.howl.play()
+    }
   }
 }
 </script>
