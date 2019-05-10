@@ -1,8 +1,8 @@
 <template>
 <div class="columns is-mobile is-multiline story-grids">
   <div class="column is-one-third-mobile is-one-six-desktop" v-for="(story, index) in stories" :key="index" @click="playStory(story)">
-      <figure class="image is-4by3">
-        <img :src="CDN_IMG + '/' + story.cover + '.png@w_200,h_180,s_2,q_100'" :alt="story.title">
+      <figure class="image is-square">
+        <img :src="CDN_IMG + '/' + story.cover + '.png@w_240,h_240,s_2,q_100'" :alt="story.title">
       </figure>
       <div class="media">
         <div class="media-content">
@@ -13,8 +13,10 @@
 </div>
 </template>
 <script>
+import mixins from './mixins.js'
 export default {
   name: 'StoryGrids',
+  mixins: [ mixins ],
   props: {
     stories: {
       type: Array
@@ -22,7 +24,6 @@ export default {
   },
   data() {
     return {
-      CDN_IMG: this.ctx.CDN_IMG
     }
   },
   methods: {

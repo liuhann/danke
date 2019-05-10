@@ -7,6 +7,11 @@ export default class StoryDAO {
     return result
   }
 
+  async getStoryRelated (story) {
+    const result = await this.ctx.get(`story/related/${story._id}`).json()
+    return result
+  }
+
   async listAllLabels () {
     const result = await this.ctx.get(`/story/labels`)
     return result

@@ -29,6 +29,13 @@
       <i class="icon-download-outline"></i>
       <i class="icon-bookmark"></i>
     </div>
+    <h2 class="subtitle"><i class="icon-thumbs-up" style="color: #41C4FF;"></i> 故事推荐</h2>
+    <div class="related" v-if="teller">
+       <story-grids :stories="teller.list"></story-grids>
+    </div>
+    <div class="related" v-if="album">
+       <story-grids :stories="album.list"></story-grids>
+    </div>
   </div>
 </div>
 </template>
@@ -37,9 +44,13 @@
 import './slider.scss'
 import { setInterval } from 'timers'
 import mixins from './mixins.js'
+import StoryGrids from './StoryGrids.vue'
 export default {
   name: 'Playing.vue',
   mixins: [ mixins ],
+  components: {
+    StoryGrids
+  },
   props: {
     story: {
       type: Object
@@ -52,18 +63,28 @@ export default {
       default: false
     }
   },
-  components: {  },
   data () {
     return {
-      CDN_IMG: this.ctx.CDN_IMG
+      teller: {},
+      album: {}
+    }
+  },
+  watch: {
+    story () {
+      this.getRelatedStories()
     }
   },
   created () {
-    this.tick = setInterval( () => {
-      
-    })
+    this.getRelatedStories()
   },
   methods: {
+    async getRelatedStories () {
+      if (this.story) {
+        const result = await this.ctx.storydao.getStoryRelated(this.story)
+        this.teller = result.teller
+        this.album = result.album
+      }
+    },
     pause () {
       this.$emit('pause')
     },
@@ -130,7 +151,6 @@ export default {
     .teller {
       font-size: 1.25rem;
       padding: 0 1rem;
-      border-bottom: 1px solid #ccc;
     }
     .shares {
       padding: 0 1rem;
@@ -139,6 +159,8 @@ export default {
       display: flex;
       height: 3.5rem;
       color: #7B7B7B;
+      border-bottom: 1px solid #ccc;
+      margin-bottom: 2rem;
       >i {
         text-align: center;
         flex: 1;
