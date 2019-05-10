@@ -37,7 +37,7 @@ function addAnimation (sheet, animation) {
 function generateKeyFrames (frames) {
   const framesInline = []
   for (let frame of frames) {
-    framesInline.push(`${frame.percent}%{${getElementStyle(frame)}}`)
+    framesInline.push(`${frame.percent}%{${getElementStyle(frame)}}\n`)
   }
   return framesInline.join('')
 }
@@ -51,8 +51,19 @@ function addAnimationStyle (sheet, animation) {
   addAnimation(sheet, animation)
 }
 
+function getAnimationSourceCode (sheet, animation) {
+  const frames = generateKeyFrames(animation.frames)
+  return `.${animation.name} {
+    animation: ${animation.name} ${animation.duration}ms ${animation.timing} ${animation.infinite ? 'infinite' : animation.iteration} both
+  }
+  @keyframes ${animation.name} {
+    ${frames}
+  }`
+}
+
 export {
   createSheet,
   clearAnimation,
-  addAnimationStyle
+  addAnimationStyle,
+  getAnimationSourceCode
 }

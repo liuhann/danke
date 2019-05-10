@@ -38,6 +38,18 @@
     </div>
     <button class="modal-close is-large" aria-label="close" @click="errorMessage = ''"></button>
   </div>
+
+  <div class="modal" :class="showCode && 'is-active'">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+      <div class="box">
+        <pre>
+          {{sourceCode}}
+        </pre>
+      </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close" @click="showCode = false"></button>
+  </div>
 </div>
 </template>
 
@@ -45,7 +57,7 @@
 import FramesConfig from './FramesConfig'
 import { clone } from '../utils/object'
 import FRAME from './model/frame'
-import { createSheet, addAnimationStyle, clearAnimation } from './keyframe'
+import { createSheet, addAnimationStyle, clearAnimation, getAnimationSourceCode } from './keyframe'
 import { getElementStyle } from '../style-tool/utils/styles'
 import { setTimeout } from 'timers'
 import ky from 'ky'
@@ -69,6 +81,8 @@ export default {
     p100.percent = 100
     frames.push(p100)
     return {
+      showCode: false,  // source code model
+      sourceCode: '',
       errorMessage: '',
       previewType: '方块',
       boxClass: '',
@@ -121,7 +135,8 @@ export default {
     },
 
     viewCode () {
-
+      this.sourceCode = getAnimationSourceCode(this.sheet, this.animation)
+      this.showCode = true
     },
 
     async share () {

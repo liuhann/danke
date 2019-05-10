@@ -1,14 +1,16 @@
 <template>
-<div>
+<div class="story-main">
   <story-nav @go="go" v-show="!playingOpen"></story-nav>
   <story-home v-show="currentNav === 0 && !playingOpen"></story-home>
-  <playing v-if="currentPlayStory" v-show="playingOpen" :story="currentPlayStory" @return="hidePlayer"></playing>
-  <playing-bar v-if="currentPlayStory" :story="currentPlayStory" 
-    @pause="pause" @show-full="showPlayer"></playing-bar>
+  <playing v-if="currentPlayStory" class="animate-out" v-show="playingOpen" :story="currentPlayStory" @return="hidePlayer"
+    :progress="progress" :is-playing="isPlaying" @pause="pause" @resume="resume" ></playing>
+  <playing-bar v-if="currentPlayStory" v-show="!playingOpen" :story="currentPlayStory" :progress="progress" :is-playing="isPlaying"
+    @pause="pause" @resume="resume" @show-full="showPlayer"></playing-bar>
 </div>
 </template>
 
 <script>
+import './fontello/css/fontello.css'
 import { Howl, Howler } from 'howler'
 import StoryNav from './libs/NavBar.vue'
 import StoryHome from './libs/StoryHome.vue'
@@ -45,11 +47,34 @@ export default {
     },
 
     pause () {
-      
+      if (this.ctx.howl) {
+        this.ctx.howl.pause()
+      }
+      this.isPlaying = false
+      if (this.inteval) {
+        clearInterval(this.inteval)
+      }
     },
 
     resume () {
+      if (this.ctx.howl) {
+        this.ctx.howl.resume()
+      }
+      this.isPlaying = true
+      this.startTick()
+    },
 
+    startTick () {
+      const _this = this
+      if (this.inteval) {
+        clearInterval(this.inteval)
+      }
+      this.inteval = setInterval(() => {
+        if (_this.ctx.howl) {
+          _this.isPlaying = _this.ctx.howl.playing()
+          _this.progress = _this.ctx.howl.seek()
+        }
+      }, 1000)
     },
     play (story) {
       const _this = this
@@ -58,26 +83,20 @@ export default {
       if (this.ctx.howl) {
         this.ctx.howl.unload()
       }
-      if (this.inteval) {
-        clearInterval(this.inteval)
-      }
-
       this.ctx.howl = new Howl({
         src: [`${this.CDN_STORY}/${encodeURIComponent(story.path)}`],
         html5: true,
+        autoplay: true,
         format: ['mp3']
       });
-      this.ctx.howl.play();
-
-      this.inteval = setInterval(() => {
-        debugger
-        if (_this.ctx.howl) {
-          _this.isPlaying = _this.ctx.howl.isPlaying
-        }
-      }, 1000)
+      this.startTick()
     }
   }
 }
 </script>
 <style lang="scss">
+html {
+  background: linear-gradient(to right, #FD8735, #FF6735);
+  background-size: 100% 100%;
+}
 </style>

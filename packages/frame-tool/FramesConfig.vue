@@ -27,7 +27,7 @@
               <a v-if="frame.percent !== 100" class="icon-plus" @click="appendFrame(index)"></a>
               <a v-if="!(frame.percent === 100 || frame.percent === 0)" class="icon-trash-empty" @click="removeFrame(index)"></a>
               <a v-if="currentFrameIndex === index" class="icon-down-open" @click="closeFrame"></a>
-              <a v-if="currentFrameIndex !== index" class="icon-right-open" @click="editFrame(index)"></a>
+              <a v-if="currentFrameIndex !== index" class="icon-right-open" @click="editFrame(index)">编辑</a>
             </div>
           </div>
           <div class="frame-dialog-content" v-if="currentFrameIndex === index">

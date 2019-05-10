@@ -9,12 +9,12 @@
     <div class="media-content">
       <div class="content">
         <p>
-          <strong>{{story.title}}</strong>
+          {{story.title}}
         </p>
       </div>
       <nav class="level is-mobile">
         <div class="level-left">
-          <a class="level-item" v-if="story.artist">
+          <a class="level-item tag is-primary" v-if="story.artist">
             {{story.artist}}
           </a>
           <a class="level-item">
@@ -27,8 +27,10 @@
 </div>
 </template>
 <script>
+import mixins from './mixins.js'
 export default {
   name: "StoryList",
+  mixins: [ mixins ],
   props: {
     stories: {
       type: Array
@@ -36,17 +38,6 @@ export default {
   },
   data() {
     return {
-      CDN_IMG: this.ctx.CDN_IMG
-    }
-  },
-  filters: {
-    timeFormat: function (t) {
-      try {
-        const i = parseInt(t)
-        return Math.floor(i / 60) + '分' + i%60 + '秒'
-      } catch (e) {
-        return '未知'
-      }
     }
   },
   methods: {
@@ -58,6 +49,11 @@ export default {
 </script>
 
 <style lang="scss">
+.story-list {
+  .media-content {
+    color: #2E2E2E;
+  }
+}
 </style>
 
 

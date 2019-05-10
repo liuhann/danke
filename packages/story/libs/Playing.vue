@@ -2,61 +2,39 @@
 <div class="player">
   <div class="cover-container">
     <figure class="image is-240x240">
-        <img class="is-rounded" :src="CDN_IMG + '/' + story.cover + '.png@w_240,h_240,s_2,q_100'" :alt="story.title">
+      <img class="is-rounded" :class="isPlaying? 'rotating': ''" :src="CDN_IMG + '/' + story.cover + '.png@w_240,h_240,s_2,q_100'" :alt="story.title">
     </figure>
-    <i class="icon-left-open" @click="returnHome"></i>
+    <i class="icon-left-outline" @click="returnHome"></i>
   </div>
-  <div class="body">
-    <div class="media-content">
-      <div class="content">
-        <p>
-          <strong>{{story.title}}</strong>
-        </p>
-      </div>
-      <nav class="level is-mobile">
-        <div class="level-left">
-          <a class="level-item" v-if="story.artist">
-            {{story.artist}}
-          </a>
-          <a class="level-item">
-            时长: {{story.duration | timeFormat}}
-          </a>
-        </div>
-      </nav>
-    </div>
+  <div class="ctrl">
+    <i v-if="isPlaying" class="btn-ctrl icon-pause-outline" @click.stop="pause"></i>
+    <i v-if="!isPlaying" class="btn-ctrl icon-play-outline" @click.stop="resume"></i>
+    <span class="tell-progress">{{progress | timeFormat}}/{{story.duration | timeFormat}}</span>
+  </div>
 
-    <nav class="level buttons is-mobile">
-      <div class="level-item has-text-centered">
-        <div>
-          <i class=""></i>
-        </div>
-      </div>
-      <div class="level-item has-text-centered">
-        <div>
-          <p class="title-1 icon-heart-empty"></p>
-          <p class="sub-title">122</p>
-        </div>
-      </div>
-      <div class="level-item has-text-centered">
-        <div>
-          <p class="title-1 icon-heart-empty"></p>
-          <p class="sub-title">122</p>
-        </div>
-      </div>
-      <div class="level-item has-text-centered">
-        <div>
-          <p class="icon-heart-empty"></p>
-          <p class="title">122</p>
-        </div>
-      </div>
-    </nav>
+  <div class="body">
+    <p class="story-name">
+      {{story.title}}
+    </p>
     <div class="teller">
+      <a class="name" v-if="story.artist">
+        {{story.artist}}
+      </a>
+      <a class="duration">
+        时长: {{story.duration | timeFormat}}
+      </a>
+    </div>
+    <div class="shares">
+      <i class="icon-heart-1"></i>
+      <i class="icon-download-outline"></i>
+      <i class="icon-bookmark"></i>
     </div>
   </div>
 </div>
 </template>
 
 <script>
+import './slider.scss'
 import { setInterval } from 'timers'
 import mixins from './mixins.js'
 export default {
@@ -65,6 +43,13 @@ export default {
   props: {
     story: {
       type: Object
+    },
+    progress: {
+      type: Number
+    },
+    isPlaying: {
+      type: Boolean,
+      default: false
     }
   },
   components: {  },
@@ -79,6 +64,12 @@ export default {
     })
   },
   methods: {
+    pause () {
+      this.$emit('pause')
+    },
+    resume () {
+      this.$emit('resume')
+    },
     returnHome () {
       this.$emit('return')
     }
@@ -86,16 +77,21 @@ export default {
 }
 </script>
 <style lang="scss">
+
+.rotating {
+
+}
+
 .cover-container {
   width: 100vw;
   height: 100vw;
   position: relative;
-  .icon-left-open {
+  .icon-left-outline {
     position: absolute;
-    left: 1rem;
-    top: 1rem;
+    left: .8rem;
+    top: .8rem;
     font-size: 1.5rem;
-    color: #eee;
+    color: #fff;
   }
   .image {
     img {
@@ -109,6 +105,45 @@ export default {
   }
 }
 .player {
-  margin: -3.5rem 0;
+  margin-top: -3.5rem;
+  .ctrl {
+    margin-top: -2rem;
+    padding: .5rem 1rem;
+    padding-left: 50%;
+    margin-left: -2rem;
+    font-size: 2rem;
+    color: #fff;
+    height: 4rem;
+    .tell-progress {
+      font-size: 1rem;
+      float: right;
+      line-height: 4rem;
+    }
+  }
+  .body {
+    background-color: #fff;
+    color: #383838;
+    .story-name {
+      font-size: 1.25rem;
+      padding: .5rem 1rem;
+    }
+    .teller {
+      font-size: 1.25rem;
+      padding: 0 1rem;
+      border-bottom: 1px solid #ccc;
+    }
+    .shares {
+      padding: 0 1rem;
+      font-size: 1.5rem;
+      line-height: 3.5rem;
+      display: flex;
+      height: 3.5rem;
+      color: #7B7B7B;
+      >i {
+        text-align: center;
+        flex: 1;
+      }
+    }
+  }
 }
 </style>

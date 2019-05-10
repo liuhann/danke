@@ -6,7 +6,7 @@
       </a>
     </div>
     <div class="right-search">
-      <i class="icon-search" @click="search"></i>
+      <i class="icon-search-outline" @click="search"></i>
     </div>
   </div>
 </template>
@@ -49,11 +49,11 @@ export default {
   height: 3.25rem;
   top: 0;
   z-index: 9999;
-  background: #fff;
   width: 100%;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   line-height: 3.25rem;
-  color: #999;
+  color: #fff;
+  background: linear-gradient(to right, #FD8735, #FF6735);
   font-weight: 400;
   text-align: center;
   .centered {
@@ -61,14 +61,16 @@ export default {
     display: inline-block;
     .nav-item {
       padding: 0 .4rem;
+      color: #fff;
       &.selected {
-        color: #444;
-        font-weight: 600;
+        font-size: 1.5rem;
       }
     }
   }
   .right-search {
     float: right;
+    width: 3.25rem;
+    text-align: center;
   }
 }
 </style>

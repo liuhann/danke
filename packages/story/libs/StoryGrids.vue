@@ -45,6 +45,7 @@ export default {
     .title {
       line-height: 2rem;
       text-overflow: ellipsis;
+      color: #7B7B7B;
       overflow: hidden;
       height: 1.5rem;
     }
