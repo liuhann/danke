@@ -27,7 +27,7 @@
           <td><input v-model="story.album"></td>
           <td><input v-model="story.label"></td>
           <td><input v-model="story.teller"></td>
-          <td>{{story.path}}</td>
+          <td>{{story.deleted}}-{{story.path}}</td>
           <td>
             <a @click="saveStory(story)">更新</a>
             <a @click="playStory(story)">播放</a>
@@ -130,6 +130,12 @@ body {
 .story-list {
   a {
     margin: 0 5px;
+  }
+  tr:hover {
+    background-color: #bbb;
+    input {
+      background: transparent;
+    }
   }
 }
 </style>

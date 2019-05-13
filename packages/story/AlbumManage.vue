@@ -31,14 +31,14 @@ export default {
     }
   },
   mounted () {
-    this.albumdao = new RestDAO (this.ctx, 'ybstory/album')
+    this.albumdao = new RestDAO(this.ctx, 'ybstory/album')
     this.loadCurrentPage()
   },
   methods: {
     async loadCurrentPage () {
       const result = await this.albumdao.list({}, 1, 1000)
       this.albums = result.list
-    }, 
+    },
     async saveAlbum (album) {
       try {
         await this.albumdao.patch(album._id, {
