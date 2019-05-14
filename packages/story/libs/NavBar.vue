@@ -34,6 +34,7 @@ export default {
   methods: {
     go (n) {
       this.currentNav = n
+      window.scrollTo(0, 0)
       this.$emit('go', n)
     },
     search () {
@@ -50,7 +51,7 @@ export default {
   top: 0;
   z-index: 9999;
   width: 100%;
-  font-size: 1.25rem;
+  font-size: 1rem;
   line-height: 3.25rem;
   color: #fff;
   background: linear-gradient(to right, #FD8735, #FF6735);
@@ -63,12 +64,15 @@ export default {
       padding: 0 .4rem;
       color: #fff;
       &.selected {
-        font-size: 1.5rem;
+        font-size: 1.25rem;
+        font-weight: 600;
       }
     }
   }
   .right-search {
-    float: right;
+    position: absolute;
+    right: 0;
+    top: 0;
     width: 3.25rem;
     text-align: center;
   }

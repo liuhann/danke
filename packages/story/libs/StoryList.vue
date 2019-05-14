@@ -1,27 +1,25 @@
 <template>
 <div class="story-list">
-  <article class="media" v-for="(story, index) in stories" :key="index" @click="playStory(story)">
-    <figure class="media-left">
+  <article v-for="(story, index) in stories" :key="index" @click="playStory(story)">
+    <figure>
       <p class="image is-64x64">
         <img :src="CDN_IMG + '/' + story.cover + '.png@w_64,h_64,s_2,q_100'" :alt="story.title">
       </p>
     </figure>
-    <div class="media-content">
+    <div>
       <div class="content">
-        <p>
+        <p class="story-title">
           {{story.title}}
         </p>
-      </div>
-      <nav class="level is-mobile">
-        <div class="level-left">
-          <a class="level-item tag is-primary" v-if="story.artist">
+        <p>
+          <a v-if="story.artist">
             {{story.artist}}
           </a>
-          <a class="level-item">
+          <a>
             时长: {{story.duration | timeFormat}}
           </a>
-        </div>
-      </nav>
+        </p>
+      </div>
     </div>
   </article>
 </div>
@@ -42,6 +40,7 @@ export default {
   },
   methods: {
      playStory (story) {
+       this.$emit('play')
       this.ctx.playStory(story)
     }
   }
@@ -50,7 +49,16 @@ export default {
 
 <style lang="scss">
 .story-list {
+  background: #fff;
   .media-content {
+    color: #2E2E2E;
+  }
+  article {
+    display: flex;
+    padding: .5rem;
+    border-bottom: 1px solid #ddd;    
+  }
+  .story-title {
     color: #2E2E2E;
   }
 }

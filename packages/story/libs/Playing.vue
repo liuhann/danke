@@ -26,7 +26,7 @@
     </div>
     <div class="shares">
       <i class="icon-heart-1"></i>
-      <i class="icon-download-outline"></i>
+      <a class="icon-download-outline" :href="CDN_STORY + '/' + encodeURIComponent(story.path)" :download="story.title + '.mp3'"></a>
       <i class="icon-bookmark"></i>
     </div>
     <h2 class="subtitle"><i class="icon-thumbs-up" style="color: #41C4FF;"></i> 故事推荐</h2>
@@ -111,7 +111,7 @@ export default {
     position: absolute;
     left: .8rem;
     top: .8rem;
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     color: #fff;
   }
   .image {
@@ -154,7 +154,7 @@ export default {
     }
     .shares {
       padding: 0 1rem;
-      font-size: 1.5rem;
+      font-size: 1.25rem;
       line-height: 3.5rem;
       display: flex;
       height: 3.5rem;

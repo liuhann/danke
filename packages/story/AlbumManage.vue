@@ -11,8 +11,8 @@
         <tr class="one-album" v-for="album in albums" :key="album._id">
           <td><input style="width: 300px;" v-model="album.name"></td>
           <td><textarea v-model="album.cover"></textarea></td>
-          <td><textarea v-model="album.desc"></textarea></td>
-          <td><input type="checkbox" v-model="album.today"></td>
+          <td><textarea style="width: 300px;" v-model="album.desc"></textarea></td>
+          <td>{{album.stories}}<input type="checkbox" v-model="album.today"></td>
           <td>
             <a @click="saveAlbum(album)">更新</a>
             <a @click="deleteAlbum(album)">删除</a>
@@ -32,18 +32,24 @@ export default {
   },
   mounted () {
     this.albumdao = new RestDAO(this.ctx, 'ybstory/album')
+    this.storydao = new RestDAO(this.ctx, 'ybstory/story')
     this.loadCurrentPage()
   },
   methods: {
     async loadCurrentPage () {
-      const result = await this.albumdao.list({}, 1, 1000)
+      const result = await this.albumdao.list({
+        sort: 'u',
+        order: '-1'
+      }, 1, 1000)
       this.albums = result.list
     },
     async saveAlbum (album) {
       try {
+        const stories = await this.storydao.regex('album', album.name)
         await this.albumdao.patch(album._id, {
           cover: album.cover,
-          desc: album.desc
+          desc: album.desc,
+          stories: stories.result.length
         })
       } catch (e) {
       }

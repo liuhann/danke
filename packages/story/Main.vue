@@ -1,9 +1,13 @@
 <template>
 <div class="story-main">
-  <story-nav @go="go" v-show="!playingOpen"></story-nav>
-  <story-home v-show="currentNav === 0 && !playingOpen"></story-home>
-  <playing v-if="currentPlayStory" class="animate-out" v-show="playingOpen" :story="currentPlayStory" @return="hidePlayer"
-    :progress="progress" :is-playing="isPlaying" @pause="pause" @resume="resume" ></playing>
+  <story-nav @go="go" @search="isSearching = true" v-show="!playingOpen && !isSearching"></story-nav>
+  <story-home v-show="currentNav === 0 && !playingOpen && !isSearching"></story-home>
+  <story-search v-if="isSearching" @close="closeSearch"></story-search>
+  <album-discover v-show="currentNav === 1 && !playingOpen && !isSearching"></album-discover>
+  <transition name="bounce">
+    <playing v-if="currentPlayStory" v-show="playingOpen" :story="currentPlayStory" @return="hidePlayer"
+      :progress="progress" :is-playing="isPlaying" @pause="pause" @resume="resume" ></playing>
+  </transition>
   <playing-bar v-if="currentPlayStory" v-show="!playingOpen" :story="currentPlayStory" :progress="progress" :is-playing="isPlaying"
     @pause="pause" @resume="resume" @show-full="showPlayer"></playing-bar>
 </div>
@@ -17,14 +21,17 @@ import StoryHome from './libs/StoryHome.vue'
 import Playing from './libs/Playing.vue'
 import PlayingBar from './libs/PlayingBar.vue'
 import mixins from './libs/mixins.js'
-import { setInterval } from 'timers';
+import { setInterval } from 'timers'
+import StorySearch from './libs/StorySearch.vue'
+import AlbumDiscover from './libs/AlbumDiscover.vue'
 export default {
   name: 'Main.vue',
   mixins: [ mixins ],
-  components: { StoryNav, StoryHome, Playing, PlayingBar },
+  components: { StoryNav, StoryHome, Playing, PlayingBar, StorySearch, AlbumDiscover},
   data () {
     return {
       isPlaying: false,
+      isSearching: false,
       progress: 0,
       playingOpen: false,
       currentNav: 0,
@@ -39,10 +46,14 @@ export default {
     go (n) {
       this.currentNav = n
     },
+    closeSearch () {
+      this.isSearching = false
+    },
     hidePlayer () {
       this.playingOpen = false
     },
     showPlayer () {
+      window.scrollTo(0, 0)
       this.playingOpen = true
     },
 
@@ -79,6 +90,7 @@ export default {
     play (story) {
       const _this = this
       this.currentPlayStory = story
+      window.scrollTo(0, 0)
       this.playingOpen = true
       if (this.ctx.howl) {
         this.ctx.howl.unload()
@@ -95,8 +107,24 @@ export default {
 }
 </script>
 <style lang="scss">
-html {
+html, body {
   background: linear-gradient(to right, #FD8735, #FF6735);
   background-size: 100% 100%;
+  overflow-x: hidden;
 }
+.bounce-enter-active {
+  animation: bounce-in .4s;
+}
+.bounce-leave-active {
+  animation: bounce-in .4s reverse;
+}
+@keyframes bounce-in {
+  0% {
+    transform: translateY(700px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
 </style>

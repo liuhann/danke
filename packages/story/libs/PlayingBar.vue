@@ -21,7 +21,7 @@
 import mixins from './mixins.js'
 export default {
   name: 'PlayingBar.vue',
-  mixins: [mixins],
+  mixins: [ mixins ],
   props: {
     story: {
       type: Object
@@ -37,7 +37,6 @@ export default {
   components: {  },
   data () {
     return {
-      CDN_IMG: this.ctx.CDN_IMG
     }
   },
   created () {
@@ -60,7 +59,7 @@ export default {
 </script>
 <style lang="scss">
 .player-bar {
-  border-top: 1px solid #ccc;
+  border: 1px solid #FD8735;
   background: #fff;
   position: fixed;
   display: flex;

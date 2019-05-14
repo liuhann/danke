@@ -4,13 +4,18 @@
       <audio :src="currentPlaying" controls="controls" loop="loop" autoplay="autoplay"></audio>
     </div>
     <div class="query">
-      <div >标题 <input v-model="titleSearch"> <a @click="searchStory">搜索</a></div>
+      <div>
+        标题 <input v-model="titleSearch"> <a @click="searchStory">搜索</a>
+        专辑 <input v-model="albumSearch"> <a @click="searchByAlbum">按标题</a>
+        路径 <input v-model="pathSearch"> <a @click="searchByPath">按路径</a>
+      </div>
     </div>
     <div class="pager">
       <a @click="jumpPage(-1)">上页</a>
       <a @click="jumpPage(1)">下页</a>
       <input v-model.number="currentPage">
       <a @click="jumpPage(0)">跳转</a>
+      <a @click="deleteRemoved">删除标记故事</a>
     </div>
     <div class="story-list">
       <table>
@@ -51,10 +56,9 @@ export default {
   data: function () {
     return {
       CDN_IMG: 'http://imagek.cdn.bcebos.com',
-      search: {
-        path: ''
-      },
       titleSearch: '',
+      albumSearch: '',
+      pathSearch: '',
       pageToGo: '',
       queryText: '',
       showRelatedStory: false,
@@ -79,6 +83,14 @@ export default {
   methods: {
     async searchStory () {
       const result = await this.storydao.regex('title', this.titleSearch)
+      this.tableData = result.result
+    },
+    async searchByAlbum () {
+      const result = await this.storydao.regex('album', this.albumSearch)
+      this.tableData = result.result
+    },
+    async searchByPath () {
+      const result = await this.storydao.regex('path', this.pathSearch)
       this.tableData = result.result
     },
     jumpPage (inc) {
@@ -110,7 +122,22 @@ export default {
       await this.storydao.patch(story._id, {
         deleted: true
       })
-    }
+    },
+
+    async deleteRemoved () {
+      let json = await this.ctx.ky.get('story/delete/one').json()
+      while (json.path) {
+        await this.sleep(500)
+        json = await this.ctx.ky.get('story/delete/one').json()
+      }
+    },
+    async sleep(mill) {
+      return new Promise((resolve, reject) => {
+        setTimeout(()=>{
+          resolve()
+        }, mill)
+      })
+    },
   }
 }
 </script>
