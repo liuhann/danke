@@ -7,10 +7,9 @@ module.exports = {
     port: 80
   },
   publicPath: process.env.NODE_ENV === 'production'
-    ? '/'
+    ? './'
     : '/',
-  outputDir: process.env.NODE_ENV === 'production'
-    ? '../shopen/public'
+  outputDir: process.env.NODE_ENV === 'production' ? '../pwa-ybstory/cordova-story-v3/www'
     : '../shopen/public',
   pages: {
     index: {

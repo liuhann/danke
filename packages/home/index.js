@@ -1,6 +1,6 @@
 export default {
   routes: [{
-    path: '/',
+    path: '/home',
     component: () => import(/* webpackPrefetch: true; webpackChunkName: "home" */'./user')
   }],
   async onload (ctx) {

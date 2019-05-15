@@ -6,8 +6,8 @@
     <div class="query">
       <div>
         标题 <input v-model="titleSearch"> <a @click="searchStory">搜索</a>
-        专辑 <input v-model="albumSearch"> <a @click="searchByAlbum">按标题</a>
-        路径 <input v-model="pathSearch"> <a @click="searchByPath">按路径</a>
+        专辑 <input v-model="albumSearch"> <a @click="searchByAlbum">搜索</a>
+        路径 <input v-model="pathSearch"> <a @click="searchByPath">搜索</a>
       </div>
     </div>
     <div class="pager">
@@ -15,29 +15,30 @@
       <a @click="jumpPage(1)">下页</a>
       <input v-model.number="currentPage">
       <a @click="jumpPage(0)">跳转</a>
+      <a @click="deleteAll">全部删除</a>
       <a @click="deleteRemoved">删除标记故事</a>
     </div>
     <div class="story-list">
       <table>
         <tr>
+          <th style="width: 160px">操作</th>
           <th>标题</th>
           <th>专辑</th>
           <th>标签</th>
           <th>主播</th>
           <th style="">路径</th>
-          <th style="width: 160px">操作</th>
         </tr>
         <tr class="one-story" v-for="story in tableData" :key="story._id">
-          <td><input style="width: 300px;" v-model="story.title"></td>
-          <td><input v-model="story.album"></td>
-          <td><input v-model="story.label"></td>
-          <td><input v-model="story.teller"></td>
-          <td>{{story.deleted}}-{{story.path}}</td>
           <td>
             <a @click="saveStory(story)">更新</a>
             <a @click="playStory(story)">播放</a>
             <a @click="deleteStory(story)">删除</a>
           </td>
+          <td><input style="width: 300px;" v-model="story.title"></td>
+          <td><input v-model="story.album"></td>
+          <td><input v-model="story.label"></td>
+          <td><input v-model="story.teller"></td>
+          <td>{{story.deleted}}-{{story.path}}</td>
         </tr>
       </table>
     </div>
@@ -122,6 +123,13 @@ export default {
       await this.storydao.patch(story._id, {
         deleted: true
       })
+    },
+
+    async deleteAll () {
+      for (let story of this.tableData) {
+        await this.deleteStory(story)
+        await this.sleep(100)
+      }
     },
 
     async deleteRemoved () {

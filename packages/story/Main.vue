@@ -3,10 +3,11 @@
   <story-nav @go="go" @search="isSearching = true" v-show="!playingOpen && !isSearching"></story-nav>
   <story-home v-show="currentNav === 0 && !playingOpen && !isSearching"></story-home>
   <story-search v-if="isSearching" @close="closeSearch"></story-search>
-  <album-discover v-show="currentNav === 1 && !playingOpen && !isSearching"></album-discover>
+  <album-discover v-if="currentNav === 1 && !playingOpen && !isSearching"></album-discover>
+  <user-home v-if="currentNav === 2 && !playingOpen && !isSearching"></user-home>
   <transition name="bounce">
-    <playing v-if="currentPlayStory" v-show="playingOpen" :story="currentPlayStory" @return="hidePlayer"
-      :progress="progress" :is-playing="isPlaying" @pause="pause" @resume="resume" ></playing>
+  <playing v-if="currentPlayStory && playingOpen" :story="currentPlayStory" @return="hidePlayer"
+    :progress="progress" :is-playing="isPlaying" @pause="pause" @resume="resume" ></playing>
   </transition>
   <playing-bar v-if="currentPlayStory" v-show="!playingOpen" :story="currentPlayStory" :progress="progress" :is-playing="isPlaying"
     @pause="pause" @resume="resume" @show-full="showPlayer"></playing-bar>
@@ -15,6 +16,7 @@
 
 <script>
 import './fontello/css/fontello.css'
+import LocalDAO from './libs/localdao.js'
 import { Howl, Howler } from 'howler'
 import StoryNav from './libs/NavBar.vue'
 import StoryHome from './libs/StoryHome.vue'
@@ -24,10 +26,11 @@ import mixins from './libs/mixins.js'
 import { setInterval } from 'timers'
 import StorySearch from './libs/StorySearch.vue'
 import AlbumDiscover from './libs/AlbumDiscover.vue'
+import UserHome from './libs/UserHome.vue'
 export default {
   name: 'Main.vue',
   mixins: [ mixins ],
-  components: { StoryNav, StoryHome, Playing, PlayingBar, StorySearch, AlbumDiscover},
+  components: { StoryNav, StoryHome, Playing, PlayingBar, StorySearch, AlbumDiscover, UserHome },
   data () {
     return {
       isPlaying: false,
@@ -41,6 +44,7 @@ export default {
   },
   created () {
     this.ctx.playStory = this.play
+    this.ctx.localdao = new LocalDAO()
   },
   methods: {
     go (n) {
@@ -102,6 +106,7 @@ export default {
         format: ['mp3']
       });
       this.startTick()
+      this.ctx.localdao.addPlayHistory(story)
     }
   }
 }

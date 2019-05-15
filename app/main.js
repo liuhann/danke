@@ -25,7 +25,7 @@ const boot = new AsyncBoot({
   Vue,
   VueRouter,
   App,
-  mode: 'history',
+  // mode: 'history',
   appServer: 'http://www.danke.fun',
   cdn: 'http://cdn.danke.fun',
   mount: '#app',
@@ -36,6 +36,8 @@ const boot = new AsyncBoot({
     initClient(ctx)
     // ctx.user = await ctx.userdao.getCurrentUser()
     await next()
+    // yb mobile only
+    ctx._router.replace('/story')
   },
   upload: {
     maxSize: 2 * 1024 * 1024

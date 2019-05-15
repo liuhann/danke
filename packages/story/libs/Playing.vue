@@ -25,7 +25,7 @@
       </a>
     </div>
     <div class="shares">
-      <i class="icon-heart-1"></i>
+      <i :class="isFavorite? 'icon-heart-filled': 'icon-heart-1'" @click="addToFavorite"></i>
       <a class="icon-download-outline" :href="CDN_STORY + '/' + encodeURIComponent(story.path)" :download="story.title + '.mp3'"></a>
       <i class="icon-bookmark"></i>
     </div>
@@ -65,6 +65,7 @@ export default {
   },
   data () {
     return {
+      isFavorite: false,
       teller: {},
       album: {}
     }
@@ -72,12 +73,18 @@ export default {
   watch: {
     story () {
       this.getRelatedStories()
+      this.isFavorite = this.ctx.localdao.isFavorite(this.story)
     }
   },
   created () {
     this.getRelatedStories()
   },
   methods: {
+    addToFavorite () {
+      this.ctx.localdao.addFavorite(this.story)
+      this.isFavorite = true
+    },
+
     async getRelatedStories () {
       if (this.story) {
         const result = await this.ctx.storydao.getStoryRelated(this.story)
