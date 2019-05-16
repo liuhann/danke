@@ -6,7 +6,7 @@
       </ul>
     </div>
      <div class="tabContent">
-      <div class="basic panel" v-show="currentTab === '背景'">
+      <div class="basic panel" v-show="currentTab === '页面配置'">
         <edit-background v-model="scene.background"></edit-background>
       </div>
       <div class="element-list panel" v-show="currentTab==='元素列表'">
@@ -27,8 +27,7 @@
 import EditBackground from './EditBackground.vue'
 export default {
   name: 'SceneConfig',
-  components: { EditBackground
-  },
+  components: { EditBackground },
   props: {
     trigger: {
       type: String
@@ -42,8 +41,8 @@ export default {
   },
   data () {
     return {
-      currentTab: '背景',
-      tabsName: ['背景', '元素列表']
+      currentTab: '页面配置',
+      tabsName: ['页面配置', '元素列表']
     }
   },
   filters: {
