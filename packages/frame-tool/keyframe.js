@@ -1,4 +1,4 @@
-import { getElementStyle } from '../style-tool/utils/styles'
+import { getElementStyle } from '../page-tool/utils/styles'
 
 function createSheet () {
   // Create the <style> tag

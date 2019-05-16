@@ -27,15 +27,9 @@
             工具
           </a>
           <div class="navbar-dropdown">
-            <a class="navbar-item" href="/style-tool">
-              样式元素
-            </a>
-            <a class="navbar-item" href="/frame-list">
-              动画
-            </a>
-            <a class="navbar-item">
-              轮播图
-            </a>
+            <router-link class="navbar-item" to="/frame-list" >动画</router-link>
+            <router-link class="navbar-item" to="/page-tool" >页面</router-link>
+            <router-link class="navbar-item" to="/slide-tool" >展示</router-link>
           </div>
         </div>
         <a class="navbar-item" href="/story">

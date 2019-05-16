@@ -45,7 +45,7 @@
 
 <script>
 import './bulma-timeline.css'
-import { EditTransform, EditClipPath, ItemBlock, EditLen } from '../style-tool/exports.js'
+import { EditTransform, EditClipPath, ItemBlock, EditLen } from '../page-tool/exports.js'
 import { clone } from '../utils/object'
 import FRAME from './model/frame'
 import cubicBeziers from './model/cubic-beziers'
