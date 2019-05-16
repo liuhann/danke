@@ -1,4 +1,4 @@
-import { getElementStyle } from '../page-tool/utils/styles'
+import { getElementStyle } from '../danke-core/utils/styles'
 
 function createSheet () {
   // Create the <style> tag

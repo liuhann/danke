@@ -1,5 +1,5 @@
 import Draggabilly from 'draggabilly'
-import { getLength, revertLength, getPositionSizingStyle } from '../utils/styles'
+import { getLength, revertLength, getPositionSizingStyle } from '../../danke-core/utils/styles'
 export default {
   data () {
     return {

@@ -52,9 +52,9 @@ import SceneConfig from './components/SceneConfig.vue'
 import { clone } from '../utils/object'
 import NavBar from '../common/NavBar'
 import PropConfig from './components/PropConfig.vue'
-import ELEMENT_TPL, { simplify } from './model/element'
-import TPL_BACKGROUND from './model/background.js'
-import { getElementStyle, getPositionSizingStyle, getLength, getSceneStyle } from './utils/styles'
+import ELEMENT_TPL, { simplify } from '../danke-core/model/element'
+import TPL_BACKGROUND from '../danke-core/model/background.js'
+import { getElementStyle, getPositionSizingStyle, getLength, getSceneStyle } from '../danke-core/utils/styles'
 import ImageCropper from './components/ImageCropper.vue'
 const ratios = [{
 	ratio: '9:16',

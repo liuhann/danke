@@ -7,6 +7,8 @@
 </template>
 
 <script>
+import { getElementStyle, getPositionSizingStyle, getLength, getSceneStyle } from '../danke-core/utils/styles'
+
 export default {
   name: 'PagePlay',
   props: {

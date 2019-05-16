@@ -29,7 +29,7 @@
 
 <script>
 import 'cropperjs/dist/cropper.css'
-import { imageRatios } from '../utils/css-options'
+import { imageRatios } from '../../danke-core/utils/css-options'
 import Cropper from 'cropperjs'
 import FormField from '../../common/FormField'
 export default {

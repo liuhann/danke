@@ -39,8 +39,8 @@
 
 <script>
 import EditLen from './EditLen.vue'
-import { getLenSplits } from '../utils/styles'
-import { lenUnit } from '../utils/css-options'
+import { getLenSplits } from '../../danke-core/utils/styles'
+import { lenUnit } from '../../danke-core/utils/css-options'
 import FormField from '../../common/FormField.vue'
 export default {
   name: 'EditSize',
@@ -107,13 +107,13 @@ export default {
     'size.width': function () {
       if (this.ratio > 0) {
         this.size.height = Math.floor(this.size.width / this.ratio)
-      } 
+      }
       this.emitValue()
     },
     'size.height': function () {
       if (this.ratio > 0) {
         this.size.width = Math.floor(this.size.height * this.ratio)
-      } 
+      }
       this.emitValue()
     },
     'size.wu': function () {
@@ -132,7 +132,7 @@ export default {
       this.emitValue()
     }
   },
-  
+
   methods: {
     emitValue () {
       this.$emit('input', {
