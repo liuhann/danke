@@ -1,12 +1,29 @@
 <template>
-<div class="page scene">
-
+<div class="page scene device" :style="sceneStyle">
+  <div v-for="element of scene.elements" :key="element.id"
+       class="element" :style="element.style"
+       @click.self="elementClick(element)">{{element.text}}</div>
 </div>
 </template>
 
 <script>
 export default {
-  name: 'PagePlay'
+  name: 'PagePlay',
+  props: {
+    scene: {
+      type: Object
+    }
+  },
+  computed: {
+    deviceStyle () {
+      return getSceneStyle(this.scene, this.device)
+    }
+  },
+  methods: {
+    elementClick (element) {
+      this.$emit('element-click', element)
+    }
+  }
 }
 </script>
 

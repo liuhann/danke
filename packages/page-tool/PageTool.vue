@@ -20,7 +20,7 @@
 							</label>
 						</div>
 						<span class="button icon-font" @click="addText"></span>
-						<span v-if="!isPlaying" class="button icon-play" @click="play"></span>
+						<span v-if="!isPlaying" class="button icon-" @click="play"></span>
 						<span v-if="isPlaying" class="button icon-stop" @click="stop"></span>
 					</div>
 				</div>
@@ -28,7 +28,7 @@
 			<!--preview-->
 			<div id="stylePreview" @click.self="sceneClick">
 				<div class="device" :style="deviceStyle" @click.self="sceneClick">
-					<div v-for="element of elements" :key="element.id" 
+					<div v-for="element of elements" :key="element.id"
 						class="element" :style="element===currentElement? currentStyle: element.style"
 					  @click.self="chooseElement(element)">{{element.text}}</div>
 					<!-- resize and dragging -->
@@ -37,7 +37,7 @@
 			</div>
 		</div>
 		<div class="column is-one-third-widescreen is-two-fifths-tablet is-full-mobile">
-			<prop-config v-if="currentElement" :element="currentElement" 
+			<prop-config v-if="currentElement" :element="currentElement"
 				@remove="removeCurrentElement"></prop-config>
 			<scene-config v-if="!currentElement" :elements="elements" :scene="scene" @choose="chooseElement"></scene-config>
 		</div>
@@ -47,6 +47,7 @@
 </template>
 
 <script>
+import './fontello/css/fontello.css'
 import SceneConfig from './components/SceneConfig.vue'
 import { clone } from '../utils/object'
 import NavBar from '../common/NavBar'
@@ -61,9 +62,6 @@ const ratios = [{
 }, {
 	ratio: '16:9',
 	icon: 'icon-laptop'
-}, {
-	ratio: '4:3',
-	icon: 'icon-address-card-o'
 }]
 export default {
 	name: 'StyleTool',
@@ -159,7 +157,7 @@ export default {
 				e.currentTarget.value = ''
 			}
 		},
-		
+
 		sceneClick () {
 			this.currentElement = null
 		},
