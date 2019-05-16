@@ -197,11 +197,11 @@ function getSceneStyle (scene, device) {
   styles.push(`width: ${device.width}px`)
   styles.push(`height: ${device.height}px`)
   if (scene.type === 'background') {
-    styles.push(`z-index: 10`)
+    styles.push(`z-index: 1`)
   } else if (scene.type === 'foreground') {
-    styles.push(`z-index: 500`)
+    styles.push(`z-index: 10`)
   } else {
-    styles.push(`z-index: 100`)
+    styles.push(`z-index: 5`)
   }
   return styles.join(';')
 }

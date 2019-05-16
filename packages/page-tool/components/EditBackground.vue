@@ -1,9 +1,7 @@
 <template>
 <div class="edit-background panel">
   <form-field label="背景颜色">
-    <span v-for="(color, index) of background.colors" :key="index">
-      <color-pickr v-model="background.colors[index]"></color-pickr>
-    </span>
+    <color-pickr v-for="(color, index) of background.colors" :key="index" v-model="background.colors[index]"></color-pickr>
     <a class="icon-plus" @click="addColor"></a>
   </form-field>
   <form-field label="渐变方向" type="radio" v-model="background.angle" :options="gredientAngle"></form-field>

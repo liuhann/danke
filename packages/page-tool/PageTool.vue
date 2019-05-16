@@ -1,48 +1,59 @@
 <template>
 <div>
-	<nav-bar></nav-bar>
-	<div class="columns is-mobile is-multiline" style="margin: 5px;">
-		<div class="column is-full-mobile">
-			<!--operation level-->
-			<div class="level is-mobile">
-				<div class="level-left">
-					<div class="buttons has-addons">
-						<span class="button" v-for="ratio of ratios" :key="ratio.ratio" :class="previewRatio === ratio.ratio? 'is-selected is-info ' + ratio.icon : ratio.icon" @click="previewRatio = ratio.ratio"></span>
-					</div>
-				</div>
-				<div class="level-right">
-					<div class="buttons has-addons">
-						<div class="file">
-							<label class="file-label">
-								<input class="file-input" type="file" name="resume" @input="fileChoosed">
-								<span class="button icon-picture">
-    						</span>
-							</label>
-						</div>
-						<span class="button icon-font" @click="addText"></span>
-						<span v-if="!isPlaying" class="button icon-" @click="play"></span>
-						<span v-if="isPlaying" class="button icon-stop" @click="stop"></span>
-					</div>
+<nav-bar></nav-bar>
+<div class="columns is-mobile is-multiline" style="margin: 5px;">
+  <div class="column is-full-mobile">
+		<!--operation level-->
+		<div class="level is-mobile">
+			<div class="level-left">
+				<div class="buttons has-addons">
+					<span class="button" v-for="ratio of ratios" :key="ratio.ratio" :class="previewRatio === ratio.ratio? 'is-selected is-info ' + ratio.icon : ratio.icon" @click="previewRatio = ratio.ratio"></span>
 				</div>
 			</div>
-			<!--preview-->
-			<div id="stylePreview" @click.self="sceneClick">
-				<div class="device" :style="deviceStyle" @click.self="sceneClick">
-					<div v-for="element of elements" :key="element.id"
-						class="element" :style="element===currentElement? currentStyle: element.style"
-					  @click.self="chooseElement(element)">{{element.text}}</div>
-					<!-- resize and dragging -->
-					<div class="draggabily" v-if="currentElement" :style="maskStyle"></div>
+			<div class="level-right">
+				<div class="dropdown is-hoverable is-right">
+					<div class="dropdown-trigger">
+						<span class="button icon-plus"></span>
+					</div>
+					<div class="dropdown-menu" role="menu">
+						<div class="dropdown-content">
+							<a class="file dropdown-item button">
+								<label class="file-label">
+									<input class="file-input" type="file" name="resume" @input="fileChoosed">
+									<span class="icon-picture">
+										增加图片
+								</span>
+								</label>
+							</a>
+							<a class="dropdown-item button">
+								<label class="icon-font" @click="addText">增加文字</label>
+							</a>
+							<a class="dropdown-item button">
+								<label class="icon-font" @click="addText">保存</label>
+							</a>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
-		<div class="column is-one-third-widescreen is-two-fifths-tablet is-full-mobile">
-			<prop-config v-if="currentElement" :element="currentElement"
-				@remove="removeCurrentElement"></prop-config>
-			<scene-config v-if="!currentElement" :elements="elements" :scene="scene" @choose="chooseElement"></scene-config>
+		<!--preview-->
+		<div id="stylePreview" @click.self="sceneClick">
+			<div class="device" :style="deviceStyle" @click.self="sceneClick">
+				<div v-for="element of elements" :key="element.id"
+					class="element" :style="element===currentElement? currentStyle: element.style"
+					@click.self="chooseElement(element)">{{element.text}}</div>
+				<!-- resize and dragging -->
+				<div class="draggabily" v-if="currentElement" :style="maskStyle"></div>
+			</div>
 		</div>
 	</div>
-	<image-cropper ref="cropper" @complete="cropComplete"></image-cropper>
+	<div class="column is-one-third-widescreen is-two-fifths-tablet is-full-mobile">
+		<prop-config v-if="currentElement" :element="currentElement"
+			@remove="removeCurrentElement"></prop-config>
+		<scene-config v-if="!currentElement" :elements="elements" :scene="scene" @choose="chooseElement"></scene-config>
+	</div>
+</div>
+<image-cropper ref="cropper" @complete="cropComplete"></image-cropper>
 </div>
 </template>
 
