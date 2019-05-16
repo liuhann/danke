@@ -49,16 +49,17 @@ export default {
 
   methods: {
     async loadAlbums () {
-      alert('on load')
       try {
         const result = await this.albumdao.list({
           sort: 'u',
-          order: '-1'
-        }, 1, 100)
+          order: '-1',
+          page: 1,
+          count: 100
+        })
+        this.albums = result.list
       } catch (err) {
         alert(err.message)
       }
-      this.albums = result.list
     },
 
     returnAlbumList () {

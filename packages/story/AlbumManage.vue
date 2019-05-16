@@ -39,8 +39,10 @@ export default {
     async loadCurrentPage () {
       const result = await this.albumdao.list({
         sort: 'u',
-        order: '-1'
-      }, 1, 1000)
+        order: '-1',
+        page: 1,
+        count: 10000
+      })
       this.albums = result.list
     },
     async saveAlbum (album) {

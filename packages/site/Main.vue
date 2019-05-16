@@ -11,7 +11,7 @@ import WorkList from '../common/WorkList'
 import NavFooter from '../common/NavFooter'
 export default {
   name: 'view.vue',
-  components: {NavFooter, WorkList, NavBar },
+  components: { NavFooter, WorkList, NavBar },
   created () {
     
   }

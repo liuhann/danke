@@ -100,7 +100,10 @@ export default {
     },
     async loadCurrentPage () {
       this.loading = true
-      const result = await this.storydao.list({}, this.currentPage, this.pageSize)
+      const result = await this.storydao.list({
+        page: this.currentPage,
+        count: this.pageSize
+      })
       this.loading = false
       this.tableData = result.list
       this.total = result.total

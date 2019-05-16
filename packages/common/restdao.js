@@ -4,10 +4,18 @@ export default class RestDAO {
     this.path = path
   }
 
-  async list (filter, page, count) {
-    const result = await this.ctx.get(`${this.path}/list`, {
-      searchParams: Object.assign(filter, { page, count })
-    }).json()
+  serialize (obj) {
+    var str = []
+    for (var p in obj) {
+      if (obj.hasOwnProperty(p)) {
+        str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]))
+      }
+    }
+    return str.join('&')
+  }
+
+  async list (filter) {
+    const result = await this.ctx.get(`${this.path}/list?${this.serialize(filter)}`).json()
     return result
   }
 

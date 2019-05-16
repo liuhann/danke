@@ -18,7 +18,7 @@ export default function initClient (ctx) {
   const client = ky.extend({
     prefixUrl: 'http://www.danke.fun/api/',
     throwHttpErrors: false,
-    searchParams: {
+    headers: {
       'token': token
     }
   })
