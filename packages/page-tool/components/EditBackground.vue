@@ -21,8 +21,8 @@
 </template>
 
 <script>
-import FormField from '../../common/FormField.vue'
-import ColorPickr from '../../common/ColorPickr'
+import FormField from '../../common/components/FormField.vue'
+import ColorPickr from '../../common/components/ColorPickr'
 import { backgroundSize } from '../../danke-core/utils/css-options.js'
 export default {
   name: 'EditBackground',

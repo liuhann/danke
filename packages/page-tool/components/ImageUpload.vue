@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import FormField from '../../common/FormField'
+import FormField from '../../common/components/FormField'
 export default {
   name: 'ImageUpload',
   components: {FormField},

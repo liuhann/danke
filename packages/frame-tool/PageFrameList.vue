@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import NavBar from '../common/NavBar'
+import NavBar from '../common/site/NavBar'
 import { createSheet, addAnimationStyle, clearAnimation } from './keyframe'
 import userContextMixin from '../common/user-context-mixin'
 export default {

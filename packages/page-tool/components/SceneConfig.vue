@@ -46,10 +46,10 @@ export default {
     }
   },
   filters: {
-    
+
   },
   watch: {
-   
+
   },
   created () {
   },
@@ -67,6 +67,6 @@ export default {
 
 <style lang="scss">
 .scene-config {
-  
+
 }
 </style>

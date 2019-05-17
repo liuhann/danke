@@ -22,7 +22,7 @@
 
 <script>
 import StoryList from './StoryList.vue'
-import RestDAO from '../../common/restdao.js'
+import RestDAO from '../../common/utils/restdao.js'
 export default {
   components: {
     StoryList

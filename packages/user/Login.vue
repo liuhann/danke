@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import NavBar from '../common/NavBar'
+import NavBar from '../common/site/NavBar'
 export default {
   name: 'Home',
   components: { NavBar },

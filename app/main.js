@@ -15,7 +15,7 @@ import frameTool from '../packages/frame-tool'
 import pageTool from '../packages/page-tool'
 import ybstory from '../packages/story'
 
-import initClient from '../packages/common/initClient'
+import initClient from '../packages/common/utils/initClient'
 
 Vue.use(VueRouter)
 window.Vue = Vue

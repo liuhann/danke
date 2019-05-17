@@ -43,7 +43,7 @@
 					class="element" :style="element===currentElement? currentStyle: element.style"
 					@click.self="chooseElement(element)">{{element.text}}</div>
 				<!-- resize and dragging -->
-				<div class="draggabily" v-if="currentElement" :style="maskStyle"></div>
+				<div class="draggabily" v-if="currentElement" :style="maskStyle">&nbsp;</div>
 			</div>
 		</div>
 	</div>
@@ -61,9 +61,9 @@
 import './fontello/css/fontello.css'
 import SceneConfig from './components/SceneConfig.vue'
 import { clone } from '../utils/object'
-import NavBar from '../common/NavBar'
+import NavBar from '../common/site/NavBar'
 import PropConfig from './components/PropConfig.vue'
-import ELEMENT_TPL, { simplify } from '../danke-core/model/element'
+import ELEMENT_TPL, { simplify, TypeEnum } from '../danke-core/model/element'
 import TPL_BACKGROUND from '../danke-core/model/background.js'
 import { getElementStyle, getPositionSizingStyle, getLength, getSceneStyle } from '../danke-core/utils/styles'
 import ImageCropper from './components/ImageCropper.vue'
@@ -82,6 +82,7 @@ export default {
 		const background = clone(TPL_BACKGROUND)
 		background.size = 40
 		return {
+		  inc: 1,
 			previewRatio: '9:16',
 			maskStyle: '',
 			cornerPosition: {},
@@ -115,7 +116,7 @@ export default {
 			if (screen.width > 768) {
 				return {
 					width: window.innerWidth / 5 * 3,
-					height: window.innerHeight - 150
+					height: window.innerHeight - 70
 				}
 			} else {
 				return {
@@ -147,7 +148,44 @@ export default {
 	},
 	methods: {
 		addText () {
+      const clonedElement = clone(ELEMENT_TPL)
+      clonedElement.text = '请输入文本内容'
+      clonedElement.type = TypeEnum.TEXT
+      clonedElement.name = '文本' + this.inc
+      clonedElement.size.width = '80vw'
+      this.inc ++
+      this.elements.push(clonedElement)
+      this.currentElement = clonedElement
 		},
+
+    cropComplete (blob, cropbox) {
+      const clonedElement = clone(ELEMENT_TPL)
+      const wider = (cropbox.width / cropbox.height) > (this.device.width / this.device.height)
+      if (wider) { // 宽度优先
+        if (cropbox.width > this.device.width) {
+          clonedElement.size.width = '100vw'
+          clonedElement.size.height =  Math.floor((cropbox.height / cropbox.width) * 100) + 'vw'
+        } else {
+          clonedElement.size.width = Math.floor(100 * cropbox.width/this.device.width) + 'vw'
+          clonedElement.size.height = Math.floor(100 * cropbox.height/this.device.width) + 'vw'
+        }
+      } else { // 高度优先
+        if (cropbox.height > this.device.height) {
+          clonedElement.size.height = '100vh'
+          clonedElement.size.width =  Math.floor((cropbox.width / cropbox.height) * 100) + 'vh'
+        } else {
+          clonedElement.size.width = Math.floor(100 * cropbox.width/this.device.height) + 'vh'
+          clonedElement.size.height = Math.floor(100 * cropbox.height/this.device.height) + 'vh'
+        }
+      }
+      clonedElement.size.fix = true
+      clonedElement.url = URL.createObjectURL(blob)
+      clonedElement.name = '图片' + this.inc
+      clonedElement.type = TypeEnum.IMAGE
+      this.inc ++
+      this.elements.push(clonedElement)
+      this.currentElement = clonedElement
+    },
 
 		removeCurrentElement () {
 			for (let i = 0; i < this.elements.length; i++) {
@@ -199,31 +237,6 @@ export default {
 				element.style = getElementStyle(element, this.device, 'out')
 				this.elements = clonedElements
 			}
-		},
-		cropComplete (blob, cropbox) {
-			const clonedElement = clone(ELEMENT_TPL)
-			const wider = (cropbox.width / cropbox.height) > (this.device.width / this.device.height)
-			if (wider) { // 宽度优先
-				if (cropbox.width > this.device.width) {
-					clonedElement.size.width = '100vw'
-					clonedElement.size.height =  Math.floor((cropbox.height / cropbox.width) * 100) + 'vw'
-				} else {
-					clonedElement.size.width = Math.floor(100 * cropbox.width/this.device.width) + 'vw'
-					clonedElement.size.height = Math.floor(100 * cropbox.height/this.device.width) + 'vw'
-				}
-			} else { // 高度优先
-				if (cropbox.height > this.device.height) {
-					clonedElement.size.height = '100vh'
-					clonedElement.size.width =  Math.floor((cropbox.width / cropbox.height) * 100) + 'vh'
-				} else {
-					clonedElement.size.width = Math.floor(100 * cropbox.width/this.device.height) + 'vh'
-					clonedElement.size.height = Math.floor(100 * cropbox.height/this.device.height) + 'vh'
-				}
-			}
-			clonedElement.size.fix = true
-			clonedElement.url = URL.createObjectURL(blob)
-			this.elements.push(clonedElement)
-			this.currentElement = clonedElement
 		},
 
 		share () {

@@ -61,7 +61,7 @@ import { createSheet, addAnimationStyle, clearAnimation, getAnimationSourceCode 
 import { getElementStyle } from '../danke-core/utils/styles'
 import { setTimeout } from 'timers'
 import ky from 'ky'
-import NavBar from '../common/NavBar'
+import NavBar from '../common/site/NavBar'
 
 export default {
   name: 'FrameTool',

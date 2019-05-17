@@ -1,6 +1,6 @@
-import initClient from './initClient'
+import initClient from './utils/initClient'
 export default {
-    async onload (ctx) {
-        initClient(ctx)
-    }
+  async onload (ctx) {
+    initClient(ctx)
+  }
 }

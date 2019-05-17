@@ -9,7 +9,8 @@ module.exports = {
   publicPath: process.env.NODE_ENV === 'production'
     ? './'
     : '/',
-  outputDir: process.env.NODE_ENV === 'production' ? '../pwa-ybstory/cordova-story-v3/www'
+  outputDir: process.env.NODE_ENV === 'production'
+    ? '../shopen/public' //'../pwa-ybstory/cordova-story-v3/www'
     : '../shopen/public',
   pages: {
     index: {

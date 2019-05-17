@@ -31,7 +31,7 @@
 import 'cropperjs/dist/cropper.css'
 import { imageRatios } from '../../danke-core/utils/css-options'
 import Cropper from 'cropperjs'
-import FormField from '../../common/FormField'
+import FormField from '../../common/components/FormField'
 export default {
   name: 'ImageCropper',
   components: {FormField},

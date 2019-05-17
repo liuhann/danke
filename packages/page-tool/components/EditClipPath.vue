@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import FormField from '../../common/FormField'
+import FormField from '../../common/components/FormField'
 export default {
   name: 'EditClipPath',
   components: { FormField },

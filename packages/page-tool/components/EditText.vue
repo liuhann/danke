@@ -1,13 +1,14 @@
 <template>
 <div class="edit-text">
-  <van-cell class="group-title" title="编辑文字" icon="expand-o" />
-  <van-field v-model="text" clearable autosize type="textarea"></van-field>
+  <form-field label="编辑文本" v-model=""></form-field>
 </div>
 </template>
 
 <script>
+import FormField from '../../common/components/FormField'
 export default {
   name: 'EditText',
+  components: {FormField},
   props: {
     value: {
       type: String

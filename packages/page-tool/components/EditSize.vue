@@ -1,12 +1,12 @@
 <template>
 <div class="field is-horizontal edit-size">
   <div class="field-label is-small">
-    <label class="label">大小</label>
+    <label class="label">宽-高</label>
   </div>
   <div class="field-body">
     <div class="field has-addons">
       <p class="control">
-        <input class="input is-small" style="width: 55px;" type="number" v-model.number="size.width">
+        <input class="input is-small" type="number" v-model.number="size.width">
       </p>
       <p class="control">
         <span class="select is-small">
@@ -16,15 +16,9 @@
         </span>
       </p>
     </div>
-    <div class="field">
-      <p class="control">
-        <a v-if="ratio > 0" class="icon-link has-text-success" @click="ratio = -1"></a>
-        <a v-if="ratio < 0" class="icon-unlink" @click="ratio = this.size.width / this.size.height"></a>
-      </p>
-    </div>
     <div class="field has-addons">
       <p class="control">
-        <input class="input is-small" style="width: 55px;" type="number" v-model.number="size.height">
+        <input class="input is-small" type="number" v-model.number="size.height">
       </p>
       <p class="control">
         <span class="select is-small">
@@ -41,7 +35,7 @@
 import EditLen from './EditLen.vue'
 import { getLenSplits } from '../../danke-core/utils/styles'
 import { lenUnit } from '../../danke-core/utils/css-options'
-import FormField from '../../common/FormField.vue'
+import FormField from '../../common/components/FormField.vue'
 export default {
   name: 'EditSize',
   components: {
@@ -65,22 +59,10 @@ export default {
         hu: 'px'
       },
       oldSize: {},
-      ratio: -1,
       units: lenUnit,
-      relatedIndex: -1,
-      customRatio: ''
     }
   },
   computed: {
-    fixedRatio () {
-      const wsp = getLenSplits(this.value.width)
-      const hsp = getLenSplits(this.value.height)
-      if (wsp.unit === hsp.unit) {
-        return wsp.len / hsp.len
-      } else {
-        return -1
-      }
-    },
     relates () {
       return [{
         key: '无',
@@ -104,32 +86,11 @@ export default {
     value () {
       this.setSize()
     },
-    'size.width': function () {
-      if (this.ratio > 0) {
-        this.size.height = Math.floor(this.size.width / this.ratio)
+    size: {
+      deep: true,
+      handler () {
+        this.emitValue()
       }
-      this.emitValue()
-    },
-    'size.height': function () {
-      if (this.ratio > 0) {
-        this.size.width = Math.floor(this.size.height * this.ratio)
-      }
-      this.emitValue()
-    },
-    'size.wu': function () {
-      if (this.ratio > 0) {
-        this.size.hu = this.size.wu
-      }
-      this.emitValue()
-    },
-    'size.hu': function () {
-      if (this.ratio > 0) {
-        this.size.wu = this.size.hu
-      }
-      this.emitValue()
-    },
-    'ratio': function () {
-      this.emitValue()
     }
   },
 
@@ -137,8 +98,7 @@ export default {
     emitValue () {
       this.$emit('input', {
         width: this.size.width + this.size.wu,
-        height: this.size.height + this.size.hu,
-        fix: this.ratio > 0 ? true : false
+        height: this.size.height + this.size.hu
       })
     },
     setSize () {
@@ -148,39 +108,6 @@ export default {
       this.size.wu = wsp.unit
       this.size.height = hsp.len
       this.size.hu = hsp.unit
-      if (this.value.fix) {
-        this.ratio = this.size.width / this.size.height
-      } else {
-        this.ratio = -1
-      }
-    },
-    widthChanged () {
-      if (this.relatedIndex > -1) {
-        this.value.height = Math.round(getLenSplits(this.value.width).len / this.customRatio) + getLenSplits(this.value.height).unit
-      }
-    },
-
-    heightChanged () {
-      if (this.relatedIndex > -1) {
-        this.value.width = Math.round(getLenSplits(this.value.height).len * this.customRatio) + getLenSplits(this.value.width).unit
-      }
-    },
-
-    chooseIndex (index) {
-      if (this.relatedIndex === index) {
-        this.relatedIndex = -1
-        this.customRatio = 1
-      } else {
-        this.relatedIndex = index
-        const relate = this.relates[this.relatedIndex]
-        // 计算新的比例
-        if (relate.ratio) {
-          this.customRatio = relate.ratio
-          this.widthChanged()
-        } else {
-          this.customRatio = getLenSplits(this.value.width).len / getLenSplits(this.value.height).len
-        }
-      }
     }
   }
 }
@@ -188,8 +115,6 @@ export default {
 
 <style lang="scss">
 .edit-size {
-  .field-body {
-    display: flex;
-  }
+
 }
 </style>

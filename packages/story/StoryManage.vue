@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import RestDAO from '../common/restdao.js'
+import RestDAO from '../common/utils/restdao.js'
 export default {
   data: function () {
     return {
@@ -107,7 +107,7 @@ export default {
       this.loading = false
       this.tableData = result.list
       this.total = result.total
-    }, 
+    },
     async saveStory (story) {
       try {
         await this.storydao.patch(story._id, {

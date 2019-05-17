@@ -26,11 +26,11 @@
 </template>
 
 <script>
-import LogoWrapper from '../common/LogoWrapper'
+import LogoWrapper from '../common/site/LogoWrapper'
 import TabChooseType from './TabChooseType'
 import ImageDefault from './photo.svg'
-import DankeHeader from '../common/DankeHeader'
-import NavBar from '../common/NavBar'
+import DankeHeader from '../common/site/DankeHeader'
+import NavBar from '../common/site/NavBar'
 export default {
   name: 'Home',
   components: {NavBar, DankeHeader, TabChooseType, LogoWrapper},

@@ -6,14 +6,14 @@
 </div>
 </template>
 <script>
-import NavBar from '../common/NavBar'
-import WorkList from '../common/WorkList'
-import NavFooter from '../common/NavFooter'
+import NavBar from '../common/site/NavBar'
+import WorkList from '../common/site/WorkList'
+import NavFooter from '../common/site/NavFooter'
 export default {
   name: 'view.vue',
   components: { NavFooter, WorkList, NavBar },
   created () {
-    
+
   }
 }
 </script>

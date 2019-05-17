@@ -49,7 +49,7 @@ import { EditTransform, EditClipPath, ItemBlock, EditLen } from '../page-tool/ex
 import { clone } from '../utils/object'
 import FRAME from './model/frame'
 import cubicBeziers from './model/cubic-beziers'
-import FormField from '../common/FormField'
+import FormField from '../common/components/FormField'
 
 export default {
   name: 'FramesConfig',

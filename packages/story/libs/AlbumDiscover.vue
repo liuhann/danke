@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import RestDAO from '../../common/restdao.js'
+import RestDAO from '../../common/utils/restdao.js'
 import StoryList from './StoryList.vue'
 export default {
   components: { StoryList },
@@ -43,7 +43,7 @@ export default {
 
   filters: {
     albumCover (url) {
-      
+
     }
   },
 

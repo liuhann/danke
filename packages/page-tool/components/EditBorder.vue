@@ -11,9 +11,9 @@
 
 <script>
 import ItemBlock from './ItemBlock'
-import FormField from '../../common/FormField'
+import FormField from '../../common/components/FormField'
 import EditLen from './EditLen'
-import ColorPickr from '../../common/ColorPickr'
+import ColorPickr from '../../common/components/ColorPickr'
 const lineStyles = {
   solid: '实线',
   dotted: '虚点线',

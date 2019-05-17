@@ -38,7 +38,7 @@ export default {
     },
 
     updateValue (v) {
-      this.$emit('input', v.hex8)
+      this.$emit('input', `rgba(${v.rgba.r}, ${v.rgba.g}, ${v.rgba.b}, ${v.rgba.a})`)
     }
   }
 }

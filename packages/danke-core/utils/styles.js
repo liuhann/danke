@@ -1,5 +1,7 @@
 const REG_LEN = /([+-]?[0-9#]+)(%|px|pt|em|rem|in|cm|mm|ex|ch|pc|vw|vh|vmin|vmax|deg|rad|turn)?$/
 
+import { TypeEnum } from '../model/element'
+
 /**
  * 抽取长度信息  例如 10vw -> {len:10, unit: 'vw'}
  * @param len
@@ -50,7 +52,8 @@ function getElementStyle (element, device, animation) {
     styles.push(getBackgroundStyle(element.background, element.url))
   }
 
-  if (element.clip) {
+  // clip path only for image
+  if (element.clip && element.type === TypeEnum.IMAGE) {
     const points = []
     for (let point of element.clip.points) {
       points.push(`${point[0]}% ${point[1]}%`)
@@ -126,7 +129,9 @@ function getPositionSizingStyle (element, device) {
 
   if (element.size && device) {
     styles.push(`width: ${getLength(element.size.width, device)}px`)
-    styles.push(`height: ${getLength(element.size.height, device)}px`)
+    if (element.type !== TypeEnum.TEXT) {
+      styles.push(`height: ${getLength(element.size.height, device)}px`)
+    }
   }
   return styles.join(';')
 }

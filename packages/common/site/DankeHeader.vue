@@ -5,7 +5,7 @@
     <slot></slot>
   </header>
 </template>
-
+#
 <script>
 import LogoWrapper from './LogoWrapper'
 export default {

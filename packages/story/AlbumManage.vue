@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import RestDAO from '../common/restdao.js'
+import RestDAO from '../common/utils/restdao.js'
 export default {
   data () {
     return {

@@ -6,9 +6,17 @@ import POSITION from './position'
 import SIZE from './size'
 import ANIMATION from './animation'
 
+const TypeEnum = {
+  IMAGE: 1,
+  TEXT: 2,
+  AUDIO: 3,
+  VIDEO: 4
+}
+
 const BASE = {
   version: '1.2',
-  name: '元素',
+  type: 1,
+  name: '',
   text: '',
   desc: '',
   url: '',
@@ -48,4 +56,4 @@ function simplify (element, template) {
 }
 export default BASE
 
-export { simplify }
+export { simplify, TypeEnum }
