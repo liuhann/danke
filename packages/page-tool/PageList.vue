@@ -4,7 +4,6 @@
   <div class="section">
     <nav class="level">
       <div class="level-left">
-        <router-link to="/"></router-link>
         <span class="button icon-mobile" @click="goPageTool">创建页面</span>
       </div>
     </nav>
@@ -33,9 +32,16 @@
 </template>
 
 <script>
-  export default {
-    name: 'PageList'
+import NavBar from '../common/site/NavBar'
+export default {
+  name: 'PageList',
+  components: { NavBar },
+  methods: {
+    goPageTool () {
+
+    }
   }
+}
 </script>
 
 <style scoped>

@@ -1,8 +1,8 @@
 <template>
   <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-      <a class="navbar-item" href="https://bulma.io">
-        <img src="http://www.danke.fun/res/logo.png" >
+      <a class="navbar-item" href="/">
+        <img src="//cdn.danke.fun/res/logo.png" >
       </a>
       <a
         role="button"
@@ -28,7 +28,7 @@
           </a>
           <div class="navbar-dropdown">
             <router-link class="navbar-item" to="/frame-list">动画</router-link>
-            <router-link class="navbar-item" to="/page-tool">页面</router-link>
+            <router-link class="navbar-item" to="/page-list">页面</router-link>
             <router-link class="navbar-item" to="/slide-tool">展示</router-link>
           </div>
         </div>
