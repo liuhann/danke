@@ -161,6 +161,12 @@
       "css": "arrows-cw",
       "code": 59400,
       "src": "fontawesome"
+    },
+    {
+      "uid": "f001fc3d4daa7da078e8c971e4f36977",
+      "css": "tablet",
+      "code": 61706,
+      "src": "fontawesome"
     }
   ]
 }

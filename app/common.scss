@@ -74,7 +74,8 @@ $navbar-dropdown-arrow: currentColor;
 
 $dropdown-content-background-color: $background;
 $dropdown-item-color: $text;
-$dropdown-item-hover-color: $text-light;
+$dropdown-item-hover-color: $text;
+$dropdown-item-hover-background-color: rgba($grey-darker, 3);
 
 $tabs-toggle-link-active-background-color: $background;
 $tabs-toggle-link-active-border-color: $border;
@@ -85,12 +86,12 @@ $pagination-color: $link;
 $pagination-border-color: $border;
 
 $bulmaswatch-import-font: true !default;
-
-$section-padding: 1em;
+$section-padding: .5em;
 @import '~bulma';
 html, body {
   overflow-y: auto;
   font-family: 'Karla',Microsoft YaHei,tahoma,arial,Hiragino Sans GB,sans-serif;
+  height: 100%;
 }
 
 .section {

@@ -129,4 +129,26 @@ export default {
     }
   }
 }
+
+@media screen and (max-width: 768px) {
+  /*.style-config {
+    .column {
+      padding: 0!important;
+    }
+    .box {
+      padding: 10px;
+    }
+    .field {
+      display: flex;
+    }
+    .field-label {
+      font-size: 14px;
+      font-weight: 200;
+      margin-bottom: 0;
+      margin-right: 6px;
+      width: 65px;
+    }
+  }*/
+}
+
 </style>

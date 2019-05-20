@@ -125,11 +125,13 @@ export default {
     cropComplete () {
       const ic = this
       const cropboxData = this.cropper.getCropBoxData()
-      const pngBase64 = this.cropper.getCroppedCanvas().toBlob(blob => {
+      this.cropper.getCroppedCanvas({
+        width: cropboxData.width,
+        height: cropboxData.height,
+      }).toBlob((blob) => {
         this.cropCompleteCallback(blob, cropboxData)
         //this.$emit('complete', blob, cropboxData)
         this.close()
-        ic.cropper.destroy()
       })
     }
   }

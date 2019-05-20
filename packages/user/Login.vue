@@ -22,10 +22,10 @@
     <div class="field">
       <label class="label">验证码</label>
       <div class="control">
+        <input class="input captcha" v-model="captcha">
         <span @click="refreshCaptcha" v-html="svg"></span>
       </div>
       <div class="control">
-        <input class="input" v-model="captcha">
       </div>
       <p v-if="error.captcha" class="help is-danger">{{error.captcha}}</p>
     </div>
@@ -82,16 +82,6 @@ export default {
     register () {
       this.$router.push('/register')
     },
-    sendSmsCode () {
-      if (this.countDown === 0 && this.isPoneAvailable(this.phone)) {
-        this.ctx.userdao.sendSmsCode(this.phone)
-        this.countDown = 90
-      } else {
-        this.ctx.vant.Dialog.alert({
-          message: '错误的手机号码'
-        })
-      }
-    },
 
     async login () {
       let result = await this.ctx.userdao.login(this.username, this.password, this.captcha)
@@ -120,5 +110,11 @@ export default {
   margin: 40px auto;
   padding: 20px;
   border-radius: 10px;
+  .captcha {
+    width: 100px;
+  }
+  svg {
+    height: 2.25rem;
+  }
 }
 </style>

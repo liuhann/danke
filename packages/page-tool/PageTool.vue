@@ -1,59 +1,42 @@
 <template>
 <div>
-<nav-bar></nav-bar>
-<div class="columns is-mobile is-multiline" style="margin: 5px;">
-  <div class="column is-full-mobile">
-		<!--operation level-->
-		<div class="level is-mobile">
-			<div class="level-left">
-				<div class="buttons has-addons">
-					<span class="button" v-for="ratio of ratios" :key="ratio.ratio" :class="previewRatio === ratio.ratio? 'is-selected is-info ' + ratio.icon : ratio.icon" @click="previewRatio = ratio.ratio"></span>
-				</div>
-			</div>
-			<div class="level-right">
-				<div class="dropdown is-hoverable is-right">
-					<div class="dropdown-trigger">
-						<span class="button icon-plus"></span>
-					</div>
-					<div class="dropdown-menu" role="menu">
-						<div class="dropdown-content">
-							<a class="file dropdown-item button">
-								<label class="file-label">
-									<input class="file-input" type="file" name="resume" @input="fileChoosed">
-									<span class="icon-picture">
-										增加图片
-								</span>
-								</label>
-							</a>
-							<a class="dropdown-item button">
-								<label class="icon-font" @click="addText">增加文字</label>
-							</a>
-							<a class="dropdown-item button">
-								<label class="icon-font" @click="addText">保存</label>
-							</a>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!--preview-->
-		<div id="stylePreview" @click.self="sceneClick">
-			<div class="device" :style="deviceStyle" @click.self="sceneClick">
-				<div v-for="element of elements" :key="element.id"
-					class="element" :style="element===currentElement? currentStyle: element.style"
-					@click.self="chooseElement(element)">{{element.text}}</div>
-				<!-- resize and dragging -->
-				<div class="draggabily" v-if="currentElement" :style="maskStyle">&nbsp;</div>
-			</div>
-		</div>
-	</div>
-	<div class="column is-one-third-widescreen is-two-fifths-tablet is-full-mobile">
-		<prop-config v-if="currentElement" :element="currentElement"
-			@remove="removeCurrentElement"></prop-config>
-		<scene-config v-if="!currentElement" :elements="elements" :scene="scene" @choose="chooseElement"></scene-config>
-	</div>
-</div>
-<image-cropper ref="cropper" @complete="cropComplete"></image-cropper>
+  <nav-bar></nav-bar>
+  <div class="columns is-mobile is-multiline" style="margin: 5px;">
+    <div class="column is-full-mobile">
+      <!--operation level-->
+      <div class="level is-mobile">
+        <div class="level-left">
+          <drop-down-menu :menus="addElementType" @menu-clicked="addMenuClicked">
+            <span class="button icon-plus">增加</span>
+          </drop-down-menu>
+        </div>
+        <div class="level-right">
+          <a class="button is-primary" @click="savePage">
+            <span class="icon">
+              <i class="icon-floppy"></i>
+            </span>
+            <span>保存</span>
+          </a>
+        </div>
+      </div>
+      <!--preview-->
+      <div id="stylePreview" @click.self="sceneClick">
+        <div class="device" :style="deviceStyle" @click.self="sceneClick">
+          <div v-for="element of elements" :key="element.id"
+            class="element" :style="element===currentElement? currentStyle: element.style"
+            @click.self="chooseElement(element)">{{element.text}}</div>
+          <!-- resize and dragging -->
+          <div class="draggabily" v-if="currentElement" :style="maskStyle">&nbsp;</div>
+        </div>
+      </div>
+    </div>
+    <div class="column is-one-third-widescreen is-two-fifths-tablet is-full-mobile">
+      <prop-config v-if="currentElement" :element="currentElement"
+        @remove="removeCurrentElement"></prop-config>
+      <scene-config v-if="!currentElement" :elements="elements" :scene="scene" @choose="chooseElement"></scene-config>
+    </div>
+  </div>
+  <image-cropper ref="cropper" @complete="cropComplete"></image-cropper>
 </div>
 </template>
 
@@ -67,26 +50,18 @@ import ELEMENT_TPL, { simplify, TypeEnum } from '../danke-core/model/element'
 import TPL_BACKGROUND from '../danke-core/model/background.js'
 import { getElementStyle, getPositionSizingStyle, getLength, getSceneStyle } from '../danke-core/utils/styles'
 import ImageCropper from './components/ImageCropper.vue'
-const ratios = [{
-	ratio: '9:16',
-	icon: 'icon-mobile'
-}, {
-	ratio: '16:9',
-	icon: 'icon-laptop'
-}]
+import DropDownMenu from '../common/components/DropDownMenu'
 export default {
 	name: 'StyleTool',
-	components: {ImageCropper, PropConfig, NavBar, SceneConfig},
+	components: {DropDownMenu, ImageCropper, PropConfig, NavBar, SceneConfig},
 	mixins: [],
 	data () {
 		const background = clone(TPL_BACKGROUND)
 		background.size = 40
 		return {
 		  inc: 1,
-			previewRatio: '9:16',
 			maskStyle: '',
 			cornerPosition: {},
-			ratios,
 			currentElement: null,
 			isPlaying: false,
 			elements: [],
@@ -102,6 +77,22 @@ export default {
 		}
 	},
 	computed: {
+    previewRatio () {
+      return this.$route.params.screen
+		},
+    addElementType () {
+      return [{
+        type: 'file',
+        label: '图片',
+        icon: 'icon-picture'
+      }, {
+        label: '形状',
+        icon: 'icon-mobile'
+      }, {
+        label: '文字',
+        icon: 'icon-font'
+      }]
+    },
 		currentStyle () {
 			const style = getElementStyle(this.currentElement, this.device)
 			this.maskStyle = getPositionSizingStyle(this.currentElement, this.device)
@@ -147,6 +138,13 @@ export default {
 		}
 	},
 	methods: {
+    addMenuClicked (menu, event) {
+      if (menu.type === 'file') {
+        this.fileChoosed(event)
+      } else if (menu.label === '文字') {
+        this.addText()
+      }
+    },
 		addText () {
       const clonedElement = clone(ELEMENT_TPL)
       clonedElement.text = '请输入文本内容'
@@ -239,15 +237,13 @@ export default {
 			}
 		},
 
-		share () {
+    async savePage () {
+      await this.saveImages()
+    },
 
-		},
-		fileAdded () {
+    async saveImages () {
 
-		},
-		fileRemoved () {
-
-		}
+    }
 	}
 }
 </script>
