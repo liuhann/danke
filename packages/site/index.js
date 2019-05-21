@@ -4,5 +4,6 @@ export default {
     component: () => import(/*webpackChunkName: "site" */'./Main.vue')
   }],
   async onload (ctx) {
+    console.log('entering site')
   }
 }

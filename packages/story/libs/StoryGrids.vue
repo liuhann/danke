@@ -41,7 +41,6 @@ export default {
   .column {
     padding: .4rem!important;
   }
-
   .media-content {
     .title {
       line-height: 2rem;

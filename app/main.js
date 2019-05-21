@@ -7,8 +7,9 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 // import home from '../packages/home'
-import site from '../packages/site'
 // import designer from '../packages/designer'
+
+import site from '../packages/site'
 import runtime from '../packages/runtime'
 import user from '../packages/user'
 import frameTool from '../packages/frame-tool'
@@ -16,6 +17,7 @@ import pageTool from '../packages/page-tool'
 import ybstory from '../packages/story'
 
 import initClient from '../packages/common/utils/initClient'
+import initEventEmitter from '../packages/common/utils/initEventEmitter'
 
 Vue.use(VueRouter)
 window.Vue = Vue
@@ -32,11 +34,15 @@ const boot = new AsyncBoot({
     site, runtime, user, frameTool, pageTool, ybstory
   ],
   started: async (ctx, next) => {
-    initClient(ctx)
     await next()
   },
   upload: {
     maxSize: 2 * 1024 * 1024
   }
 })
+
+// attach some global ctx services
+initClient(boot.ctx, 'http://www.danke.fun/api/')
+initEventEmitter(boot.ctx)
+
 boot.startUp()

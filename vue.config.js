@@ -3,14 +3,14 @@ module.exports = {
   productionSourceMap: true,
   transpileDependencies: ['async-boot', 'ky'],
   devServer: {
-    contentBase: './demo',
+    contentBase: './public',
     port: 80
   },
   publicPath: process.env.NODE_ENV === 'production'
     ? './'
     : '/',
   outputDir: process.env.NODE_ENV === 'production'
-    ? '../shopen/public' //'../pwa-ybstory/cordova-story-v3/www'
+    ? '../shopen/public' // '../pwa-ybstory/cordova-story-v3/www'
     : '../shopen/public',
   pages: {
     index: {

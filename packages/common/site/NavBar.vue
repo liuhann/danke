@@ -1,52 +1,71 @@
 <template>
   <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand">
-      <a class="navbar-item" href="/">
-        <img src="//cdn.danke.fun/res/logo.png" >
-      </a>
-      <a
-        role="button"
-        class="navbar-burger burger"
-        :class="burgerOpen"
-        @click="toggleOpen"
-        aria-label="menu"
-        aria-expanded="false"
-        data-target="navbarBasicExample"
-      >
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-      </a>
-    </div>
-
-    <div id="navbarBasicExample" class="navbar-menu" :class="burgerOpen">
-      <div class="navbar-start">
-        <router-link to="/" class="navbar-item">首页</router-link>
-        <div class="navbar-item has-dropdown is-hoverable">
-          <a class="navbar-link">
-            工具
-          </a>
-          <div class="navbar-dropdown">
-            <router-link class="navbar-item" to="/frame-list">动画</router-link>
-            <router-link class="navbar-item" to="/page-list">页面</router-link>
-            <router-link class="navbar-item" to="/slide-tool">展示</router-link>
-          </div>
-        </div>
-        <a class="navbar-item" href="/story">
-          元宝故事
+    <div class="container is-fluid">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="/">
+          <img src="//cdn.danke.fun/res/logo.png" >
+        </a>
+        <a
+          role="button"
+          class="navbar-burger burger"
+          :class="burgerOpen"
+          @click="toggleOpen"
+          aria-label="menu"
+          aria-expanded="false"
+          data-target="navbarBasicExample"
+        >
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
         </a>
       </div>
 
-      <div class="navbar-end">
-        <div class="navbar-item">
-          <div v-if="!avatar" class="buttons">
-            <a class="button is-primary" @click="getStarted">
-              <strong>开始使用</strong>
+      <div id="navbarBasicExample" class="navbar-menu" :class="burgerOpen">
+        <div class="navbar-start">
+          <router-link to="/" class="navbar-item">首页</router-link>
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-link">
+              工具
             </a>
+            <div class="navbar-dropdown">
+              <router-link class="navbar-item" to="/frame-list">动画</router-link>
+              <router-link class="navbar-item" to="/page-list">页面</router-link>
+              <router-link class="navbar-item" to="/slide-tool">展示</router-link>
+            </div>
           </div>
-          <figure v-else class="image is-48x48" @click="goUserHome">
-            <img :src="avatar" style="max-height: 48px!important;" width="48" height="48">
-          </figure>
+          <a class="navbar-item" href="/story">
+            元宝故事
+          </a>
+        </div>
+
+        <div class="navbar-end">
+          <div class="navbar-item has-dropdown is-hoverable">
+            <div v-if="!avatar" class="buttons">
+              <a class="button is-primary" @click="getStarted">
+                <strong>开始使用</strong>
+              </a>
+            </div>
+            <a class="navbar-link is-arrowless" v-else>
+              <figure class="image is-32x32" @click="goUserHome">
+                <img :src="avatar" style="max-height: 48px!important;" width="48" height="48">
+              </figure>
+            </a>
+            <div class="navbar-dropdown is-right">
+              <a class="navbar-item">
+                个人信息
+              </a>
+              <a class="navbar-item">
+                我的页面
+              </a>
+              <a class="navbar-item">
+
+              </a>
+              <hr class="navbar-divider">
+              <div class="navbar-item" @click="logout">
+                退出
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -54,6 +73,7 @@
 </template>
 
 <script>
+import { resetToken } from '../../user/token'
 
 export default {
   name: 'NavBar',
@@ -67,7 +87,9 @@ export default {
     }
   },
   created () {
-
+    this.ctx.on && this.ctx.on('user-updated', (user) => {
+      this.user = user
+    })
   },
   computed: {
     burgerOpen () {
@@ -75,7 +97,7 @@ export default {
     },
     avatar () {
       if (this.user && this.user.id) {
-        return this.user.avatar || this.ctx.cdn + '/res/user.png'
+        return this.user.avatar || this.ctx.cdn + '/res/head.svg'
       } else {
         return null
       }
@@ -90,6 +112,10 @@ export default {
   },
 
   methods: {
+    logout () {
+      this.ctx.token = resetToken()
+      this.$router.push('/')
+    },
     toggleOpen () {
       this.isMobileOpened = !this.isMobileOpened
     },
