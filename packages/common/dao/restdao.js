@@ -19,6 +19,12 @@ export default class RestDAO {
     return result
   }
 
+  async create (o) {
+    await this.ctx.post(`${this.path}`, {
+      json: o
+    })
+  }
+
   async regex (prop, value, limit) {
     const result = await this.ctx.get(`${this.path}/regex/${prop}/${value}?limit=${limit || 1000}`, {}).json()
     return result

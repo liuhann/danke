@@ -9,9 +9,16 @@ import { TypeEnum } from '../model/element'
  */
 function getLenSplits (len) {
   const splits = REG_LEN.exec(len)
-  return {
-    len: parseFloat(splits[1]) || 0,
-    unit: splits[2]
+  if (splits == null) {
+    return {
+      len: 0,
+      unit: len
+    }
+  } else {
+    return {
+      len: parseFloat(splits[1]) || 0,
+      unit: splits[2]
+    }
   }
 }
 

@@ -96,7 +96,12 @@ export default {
         this.refreshCaptcha()
       }
       if (result.code === 200) {
-
+        if (this.ctx.toPath) {
+          this.$router.replace(this.ctx.toPath)
+          this.ctx.toPath = null
+        } else {
+          this.$router.replace('/')
+        }
       }
     }
 

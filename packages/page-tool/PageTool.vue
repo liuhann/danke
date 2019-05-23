@@ -42,6 +42,7 @@
 
 <script>
 import './fontello/css/fontello.css'
+import mixinLoginRequired from '../user/guardLoginRequired'
 import SceneConfig from './components/SceneConfig.vue'
 import { clone } from '../utils/object'
 import NavBar from '../common/site/NavBar'
@@ -51,10 +52,11 @@ import TPL_BACKGROUND from '../danke-core/model/background.js'
 import { getElementStyle, getPositionSizingStyle, getLength, getSceneStyle } from '../danke-core/utils/styles'
 import ImageCropper from './components/ImageCropper.vue'
 import DropDownMenu from '../common/components/DropDownMenu'
+import ImageDAO from '../common/dao/imagedao'
 export default {
 	name: 'StyleTool',
 	components: {DropDownMenu, ImageCropper, PropConfig, NavBar, SceneConfig},
-	mixins: [],
+	mixins: [ mixinLoginRequired ],
 	data () {
 		const background = clone(TPL_BACKGROUND)
 		background.size = 40
@@ -67,11 +69,15 @@ export default {
 			elements: [],
 			scene: {
 				background
-			}
+			},
+      resources: {}
 		}
 	},
 	created () {
+	  this.imagedao = new ImageDAO(this.ctx)
 		this.ctx.crop = (file, callback) => {
+	    debugger
+	    this.croppingFileName = file.name
 			this.$refs.cropper.open(URL.createObjectURL(file))
 			this.$refs.cropper.cropCompleteCallback = callback
 		}
@@ -107,7 +113,7 @@ export default {
 			if (screen.width > 768) {
 				return {
 					width: window.innerWidth / 5 * 3,
-					height: window.innerHeight - 70
+					height: window.innerHeight - 100
 				}
 			} else {
 				return {
@@ -183,12 +189,18 @@ export default {
       this.inc ++
       this.elements.push(clonedElement)
       this.currentElement = clonedElement
+      blob.filename = this.croppingFileName
+      this.resources[clonedElement.url] = blob
     },
 
 		removeCurrentElement () {
 			for (let i = 0; i < this.elements.length; i++) {
 				if (this.elements[i] === this.currentElement) {
 					this.elements.splice(i, 1)
+          if (this.currentElement.url) {
+            this.resources[url] = null
+					  delete this.resources[url]
+          }
 					break
 				}
 			}
@@ -242,7 +254,15 @@ export default {
     },
 
     async saveImages () {
-
+      for (let url in this.resources) {
+        const result = await this.imagedao.uploadBlob(this.resources[url])
+        for (let element of this.elements) {
+          if (element.url === url) {
+            element.url = result.url
+          }
+        }
+      }
+      await this.workdao.saveScene()
     }
 	}
 }
@@ -256,6 +276,7 @@ export default {
 	-webkit-box-align: center;
 	align-items: center;
 	height: calc(100vh - 10rem);
+  margin-top: -1.5rem;
 	.device {
 		background-color: rgba(0, 0, 0, .3);
 		position: relative;

@@ -3,23 +3,16 @@
   <div class="modal-background"></div>
   <div class="modal-content" :style="fullSize">
     <div class="crop-container" :style="fullSize">
-      <img id="crop-img" :src="imageUrl">
+      <img ref="crop" :src="imageUrl">
     </div>
     <div class="level-buttons">
-      <div class="level is-mobile">
-        <div class="level-left">
-          <div class="buttons has-addons">
-          <span class="button" v-for="ratio of imageRatios" :key="ratio"
-                :class="currentRatio===ratio? 'is-primary ' + buttonSize: buttonSize"
-                @click="setRatio(ratio)">{{ratio}}</span>
-            <span class="button icon-up" :class="isRotate? 'is-primary' + buttonSize: buttonSize" @click="setRotate"></span>
-            <span class="button icon-cw" :class="buttonSize" style="margin-left: .5rem;" @click="rotate(-5)"></span>
-            <span class="button icon-ccw" :class="buttonSize" @click="rotate(5)"></span>
-          </div>
-        </div>
-        <div class="level-right">
-          <span class="button icon-ok is-success" :class="buttonSize" @click="cropComplete"></span>
-        </div>
+      <div class="buttons has-addons">
+        <span class="button" v-for="ratio of imageRatios" :key="ratio"
+              :class="currentRatio===ratio? 'is-primary ' + buttonSize: buttonSize"
+              @click="setRatio(ratio)">{{ratio}}</span>
+        <span class="button icon-cw" :class="buttonSize" style="margin-left: .5rem;" @click="rotate(-5)"></span>
+        <span class="button icon-ccw" :class="buttonSize" @click="rotate(5)"></span>
+        <span class="button icon-ok is-success" :class="buttonSize" @click="cropComplete"></span>
       </div>
     </div>
   </div>
@@ -77,7 +70,6 @@ export default {
   mounted () {
     this.client.width = window.innerWidth
     this.client.height = window.innerHeight
-    this.open()
   },
   methods: {
     setRatio (ratio) {
@@ -109,7 +101,7 @@ export default {
     open (url) {
       const ic = this
       this.imageUrl = url
-      const image = document.getElementById('crop-img');
+      const image = this.$refs.crop
       image.onload = function () {
         ic.cropper = new Cropper(image, {
           crop(event) {
@@ -150,7 +142,9 @@ export default {
     left: 0;
     position: absolute;
     bottom: 0;
-    .level {
+    margin: 0 auto;
+    .buttons {
+      text-align: center;
       max-width: 640px;
       margin: 0 auto;
     }

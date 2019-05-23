@@ -3,9 +3,8 @@
   <nav-bar></nav-bar>
   <div class="section">
     <drop-down-menu :menus="createMenus" @menu-clicked="menuClicked">
-      <span class="button icon-plus">增加页面</span>
+      <span class="button icon-plus">增加</span>
     </drop-down-menu>
-
     <div class="columns is-multiline is-mobile is-tablet">
 
     </div>

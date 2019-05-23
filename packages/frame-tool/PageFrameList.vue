@@ -38,18 +38,18 @@
 <script>
 import NavBar from '../common/site/NavBar'
 import { createSheet, addAnimationStyle, clearAnimation } from './keyframe'
-import userContextMixin from '../common/user-context-mixin'
 export default {
   name: 'PageFrameList',
   components: {
     NavBar
   },
-  mixins: [userContextMixin],
+  mixins: [ ],
   data () {
     return {
       animationType: '',
       skip: 0,
       total: 10000,
+      userid: this.ctx.user.id,
       animations: []
     }
   },

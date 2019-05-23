@@ -1,70 +1,69 @@
 <template>
   <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
-    <div class="container is-fluid">
-      <div class="navbar-brand">
-        <a class="navbar-item" href="/">
-          <img src="//cdn.danke.fun/res/logo.png" >
-        </a>
-        <a
-          role="button"
-          class="navbar-burger burger"
-          :class="burgerOpen"
-          @click="toggleOpen"
-          aria-label="menu"
-          aria-expanded="false"
-          data-target="navbarBasicExample"
-        >
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
+    <div class="navbar-brand">
+      <a class="navbar-item" href="/">
+        <img src="//cdn.danke.fun/res/logo.png" >
+      </a>
+      <a
+        role="button"
+        class="navbar-burger burger"
+        :class="burgerOpen"
+        @click="toggleOpen"
+        aria-label="menu"
+        aria-expanded="false"
+        data-target="navbarBasicExample"
+      >
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+
+    <div id="navbarBasicExample" class="navbar-menu" :class="burgerOpen">
+      <div class="navbar-start">
+        <router-link to="/" class="navbar-item">首页</router-link>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link">
+            工具
+          </a>
+          <div class="navbar-dropdown">
+            <router-link class="navbar-item" to="/frame-list">动画</router-link>
+            <router-link class="navbar-item" to="/page-list">页面</router-link>
+            <router-link class="navbar-item" to="/slide-tool">展示</router-link>
+          </div>
+        </div>
+        <a class="navbar-item" href="/story">
+          元宝故事
         </a>
       </div>
 
-      <div id="navbarBasicExample" class="navbar-menu" :class="burgerOpen">
-        <div class="navbar-start">
-          <router-link to="/" class="navbar-item">首页</router-link>
-          <div class="navbar-item has-dropdown is-hoverable">
-            <a class="navbar-link">
-              工具
-            </a>
-            <div class="navbar-dropdown">
-              <router-link class="navbar-item" to="/frame-list">动画</router-link>
-              <router-link class="navbar-item" to="/page-list">页面</router-link>
-              <router-link class="navbar-item" to="/slide-tool">展示</router-link>
-            </div>
+      <div class="navbar-end">
+        <div class="navbar-item" v-if="!avatar">
+          <div class="buttons">
+            <router-link class="button is-primary" to="/register"><strong>注册</strong></router-link>
+            <router-link class="button is-light" to="/login">登录</router-link>
           </div>
-          <a class="navbar-item" href="/story">
-            元宝故事
-          </a>
         </div>
-
-        <div class="navbar-end">
-          <div class="navbar-item has-dropdown is-hoverable">
-            <div v-if="!avatar" class="buttons">
-              <a class="button is-primary" @click="getStarted">
-                <strong>开始使用</strong>
-              </a>
-            </div>
-            <a class="navbar-link is-arrowless" v-else>
-              <figure class="image is-32x32" @click="goUserHome">
-                <img :src="avatar" style="max-height: 48px!important;" width="48" height="48">
-              </figure>
+        <div v-if="avatar" class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link is-arrowless">
+            <figure class="image is-32x32" @click="goUserHome">
+              <img :src="avatar" style="max-height: 48px!important;" width="48" height="48">
+            </figure>
+          </a>
+          <div class="navbar-dropdown is-right">
+            <a class="navbar-item">
+              个人信息
             </a>
-            <div class="navbar-dropdown is-right">
-              <a class="navbar-item">
-                个人信息
-              </a>
-              <a class="navbar-item">
-                我的页面
-              </a>
-              <a class="navbar-item">
-
-              </a>
-              <hr class="navbar-divider">
-              <div class="navbar-item" @click="logout">
-                退出
-              </div>
-            </div>
+            <a class="navbar-item">
+              我的页面
+            </a>
+            <a class="navbar-item">
+              我的展示
+            </a>
+            <hr class="navbar-divider">
+            <a class="navbar-item" @click="logout">
+              退出
+            </a>
           </div>
         </div>
       </div>
@@ -114,6 +113,8 @@ export default {
   methods: {
     logout () {
       this.ctx.token = resetToken()
+      this.ctx.user = null
+      this.ctx.emit('user-updated', null)
       this.$router.push('/')
     },
     toggleOpen () {

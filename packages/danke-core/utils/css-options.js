@@ -25,6 +25,17 @@ export const lenUnit = [{
   label: '像素'
 }]
 
+export const backgroundType = [{
+  key: 1,
+  value: '纯色'
+}, {
+  key: 2,
+  value: '渐变色'
+}, {
+  key: 3,
+  value: '渐变色'
+}]
+
 export const backgroundSize = [{
   key: 'auto',
   value: '原始大小'
