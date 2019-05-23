@@ -53,6 +53,7 @@ import { getElementStyle, getPositionSizingStyle, getLength, getSceneStyle } fro
 import ImageCropper from './components/ImageCropper.vue'
 import DropDownMenu from '../common/components/DropDownMenu'
 import ImageDAO from '../common/dao/imagedao'
+import RestDAO from '../common/dao/restdao'
 export default {
 	name: 'StyleTool',
 	components: {DropDownMenu, ImageCropper, PropConfig, NavBar, SceneConfig},
@@ -68,6 +69,7 @@ export default {
 			isPlaying: false,
 			elements: [],
 			scene: {
+				name: '我的场景',
 				background
 			},
       resources: {}
@@ -75,6 +77,7 @@ export default {
 	},
 	created () {
 	  this.imagedao = new ImageDAO(this.ctx)
+		this.scenedao = new RestDAO(this.ctx, 'scenes')
 		this.ctx.crop = (file, callback) => {
 	    debugger
 	    this.croppingFileName = file.name
@@ -249,6 +252,15 @@ export default {
 			}
 		},
 
+		// extract scene info
+		getSceneConfig () {
+			return {
+				name: this.scene.name,
+				background: this.scene.background,
+				elements: this.elements
+			}
+		},
+
     async savePage () {
       await this.saveImages()
     },
@@ -262,7 +274,11 @@ export default {
           }
         }
       }
-      await this.workdao.saveScene()
+      if (this.$route.params.id === 'new') {
+				this.scenedao.create(this.getSceneConfig())
+			} else {
+				this.scenedao.update(this.$route.params.id, this.getSceneConfig())
+			}
     }
 	}
 }

@@ -17,6 +17,7 @@ import './fontello/css/fontello.css'
 import NavBar from '../common/site/NavBar'
 import ratios from './utils/ratios'
 import DropDownMenu from '../common/components/DropDownMenu'
+import RestDAO from '../common/dao/restdao'
 export default {
   name: 'PageList',
   components: {DropDownMenu, NavBar },
@@ -25,7 +26,21 @@ export default {
       createMenus: ratios
     }
   },
+
+  created () {
+    this.scenedao = new RestDAO(this.ctx, 'scenes')
+  },
+
+  mounted () {
+    
+  },
+
   methods: {
+    async loadMoreScenes () {
+      const result = await this.scenedao.list({
+        
+      })
+    },
     menuClicked (menu) {
       this.$router.push('/page-tool/new/' + menu.ratio)
     }

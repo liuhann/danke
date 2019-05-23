@@ -6,7 +6,9 @@
       </ul>
     </div>
      <div class="tabContent">
-      <div class="basic panel" v-show="currentTab === '页面配置'">
+      <div class="basic panel" v-show="currentTab === '场景配置'">
+        <form-field label="名称" v-mode="scene.name">
+        </form-field>
         <edit-background v-model="scene.background"></edit-background>
       </div>
       <div class="element-list panel" v-show="currentTab==='元素列表'">
