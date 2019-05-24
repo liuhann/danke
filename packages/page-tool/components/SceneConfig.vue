@@ -7,7 +7,7 @@
     </div>
      <div class="tabContent">
       <div class="basic panel" v-show="currentTab === '场景配置'">
-        <form-field label="名称" v-mode="scene.name">
+        <form-field label="名称" v-model="scene.name">
         </form-field>
         <edit-background v-model="scene.background"></edit-background>
       </div>
@@ -27,9 +27,10 @@
 
 <script>
 import EditBackground from './EditBackground.vue'
+import FormField from '../../common/components/FormField'
 export default {
   name: 'SceneConfig',
-  components: { EditBackground },
+  components: { FormField, EditBackground },
   props: {
     trigger: {
       type: String
@@ -43,8 +44,8 @@ export default {
   },
   data () {
     return {
-      currentTab: '页面配置',
-      tabsName: ['页面配置', '元素列表']
+      currentTab: '场景配置',
+      tabsName: ['场景配置', '元素列表']
     }
   },
   filters: {

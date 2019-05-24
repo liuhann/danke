@@ -1,5 +1,5 @@
 <template>
-<div class="page scene device" :style="sceneStyle">
+<div class="scene" :style="sceneStyle">
   <div v-for="element of scene.elements" :key="element.id"
        class="element" :style="element.style"
        @click.self="elementClick(element)">{{element.text}}</div>
@@ -12,12 +12,19 @@ import { getElementStyle, getPositionSizingStyle, getLength, getSceneStyle } fro
 export default {
   name: 'PagePlay',
   props: {
+    device: {
+      type: Object
+    },
     scene: {
       type: Object
     }
   },
+  created () {
+
+  },
   computed: {
-    deviceStyle () {
+    sceneStyle () {
+      debugger;
       return getSceneStyle(this.scene, this.device)
     }
   },

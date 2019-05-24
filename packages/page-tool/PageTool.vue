@@ -77,9 +77,8 @@ export default {
 	},
 	created () {
 	  this.imagedao = new ImageDAO(this.ctx)
-		this.scenedao = new RestDAO(this.ctx, 'scenes')
+		this.scenedao = new RestDAO(this.ctx, 'danke/scene')
 		this.ctx.crop = (file, callback) => {
-	    debugger
 	    this.croppingFileName = file.name
 			this.$refs.cropper.open(URL.createObjectURL(file))
 			this.$refs.cropper.cropCompleteCallback = callback
@@ -185,6 +184,7 @@ export default {
           clonedElement.size.height = Math.floor(100 * cropbox.height/this.device.height) + 'vh'
         }
       }
+      delete clonedElement.font
       clonedElement.size.fix = true
       clonedElement.url = URL.createObjectURL(blob)
       clonedElement.name = '图片' + this.inc
@@ -241,28 +241,30 @@ export default {
 			this.currentElement = element
 		},
 
-		stop () {
-			this.isPlaying = false
-		},
-
-		finish () {
-			for (let element of clonedElements) {
-				element.style = getElementStyle(element, this.device, 'out')
-				this.elements = clonedElements
-			}
-		},
-
 		// extract scene info
 		getSceneConfig () {
+      const elements = []
+      for (let element of this.elements) {
+        let cloned = clone(element)
+        delete cloned.style
+        elements.push(cloned)
+      }
 			return {
 				name: this.scene.name,
+        screen: this.$route.params.screen,
 				background: this.scene.background,
-				elements: this.elements
+				elements: elements
 			}
 		},
 
     async savePage () {
       await this.saveImages()
+      const scene = this.getSceneConfig()
+      if (this.$route.params.id === 'new') {
+        this.scenedao.create(scene)
+      } else {
+        this.scenedao.update(this.$route.params.id, scene)
+      }
     },
 
     async saveImages () {
@@ -274,11 +276,6 @@ export default {
           }
         }
       }
-      if (this.$route.params.id === 'new') {
-				this.scenedao.create(this.getSceneConfig())
-			} else {
-				this.scenedao.update(this.$route.params.id, this.getSceneConfig())
-			}
     }
 	}
 }

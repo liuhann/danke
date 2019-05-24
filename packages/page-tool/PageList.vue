@@ -2,11 +2,26 @@
 <div class="page-page-list">
   <nav-bar></nav-bar>
   <div class="section">
-    <drop-down-menu :menus="createMenus" @menu-clicked="menuClicked">
-      <span class="button icon-plus">增加</span>
-    </drop-down-menu>
+    <nav class="level">
+      <div class="level-left">
+        <drop-down-menu :menus="createMenus" @menu-clicked="menuClicked">
+          <span class="button icon-plus">增加</span>
+        </drop-down-menu>
+      </div>
+      <div class="level-right buttons has-addons">
+          <span v-for="type in createMenus" :key="type.ratio" class="button" :class="[screenType===type.ratio? 'is-selected is-info':'', type.icon]"
+                @click="setScreenType(type.ratio)"></span>
+      </div>
+    </nav>
     <div class="columns is-multiline is-mobile is-tablet">
-
+      <div class="column is-one-fifth-widescreen is-three-quarters-tablet is-half-mobile" v-for="(scene, index) in scenes" :key="index">
+        <div class="preview-container">
+          <div class="device">
+            <page-play :device="getDevice(scene.screen)" :scene="scene"></page-play>
+          </div>
+        </div>
+        <div class="intro"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -18,28 +33,55 @@ import NavBar from '../common/site/NavBar'
 import ratios from './utils/ratios'
 import DropDownMenu from '../common/components/DropDownMenu'
 import RestDAO from '../common/dao/restdao'
+import PagePlay from './PagePlay'
 export default {
   name: 'PageList',
-  components: {DropDownMenu, NavBar },
+  components: {PagePlay, DropDownMenu, NavBar },
   data () {
     return {
+      screenType: '',
+      total: 0,
+      page: 1,
+      count: 20,
+      scenes: [],
       createMenus: ratios
     }
   },
 
+  computed: {
+    device () {
+
+    }
+  },
+
   created () {
-    this.scenedao = new RestDAO(this.ctx, 'scenes')
+    this.scenedao = new RestDAO(this.ctx, 'danke/scene')
   },
 
   mounted () {
-    
+    this.loadMoreScenes()
   },
 
   methods: {
+    getDevice (type) {
+      return {
+        width: 200,
+        height: 400
+      }
+    },
     async loadMoreScenes () {
       const result = await this.scenedao.list({
-        
+        page: this.page,
+        count: this.count
       })
+      this.scenes = result.list
+      this.total = result.total
+    },
+
+    setScreenType (type) {
+      this.screenType = type
+      this.scenes = []
+
     },
     menuClicked (menu) {
       this.$router.push('/page-tool/new/' + menu.ratio)
