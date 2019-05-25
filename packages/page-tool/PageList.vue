@@ -1,5 +1,5 @@
 <template>
-<div class="page-page-list">
+<div class="page-scene-list">
   <nav-bar></nav-bar>
   <div class="section">
     <nav class="level">
@@ -9,6 +9,7 @@
         </drop-down-menu>
       </div>
       <div class="level-right buttons has-addons">
+        <span class="button" @click="setScreenType('')">全部</span>
           <span v-for="type in createMenus" :key="type.ratio" class="button" :class="[screenType===type.ratio? 'is-selected is-info':'', type.icon]"
                 @click="setScreenType(type.ratio)"></span>
       </div>
@@ -81,6 +82,9 @@ export default {
     setScreenType (type) {
       this.screenType = type
       this.scenes = []
+      this.total = 0
+      this.page = 1
+      this.loadMoreScenes()
 
     },
     menuClicked (menu) {
@@ -90,6 +94,15 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+.page-scene-list {
+  .columns {
+    .preview-container {
+      position: relative;
+      .device {
 
+      }
+    }
+  }
+}
 </style>

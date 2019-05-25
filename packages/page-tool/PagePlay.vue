@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { getElementStyle, getPositionSizingStyle, getLength, getSceneStyle } from '../danke-core/utils/styles'
+  import { getElementStyle, getSceneStyle, getLength } from '../danke-core/utils/styles'
 
 export default {
   name: 'PagePlay',
@@ -20,11 +20,15 @@ export default {
     }
   },
   created () {
-
+    for (let element of this.scene.elements) {
+      let w = getLength(element.size.width, this.device)
+      let h = getLength(element.size.height, this.device)
+      element.url = 'http://image.danke.fun' + element.url.replace(/http[s]*:\/\/[^/]+/g, '') + '?x-oss-process=image/resize,m_fixed,h_' + h + ',w_' + w
+      element.style = getElementStyle(element, this.device)
+    }
   },
   computed: {
     sceneStyle () {
-      debugger;
       return getSceneStyle(this.scene, this.device)
     }
   },

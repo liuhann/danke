@@ -272,7 +272,7 @@ export default {
         const result = await this.imagedao.uploadBlob(this.resources[url])
         for (let element of this.elements) {
           if (element.url === url) {
-            element.url = result.url
+            element.url = result.url.replace(/http[s]*:\/\/[^/]+/g, '')
           }
         }
       }
