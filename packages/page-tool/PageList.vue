@@ -63,10 +63,23 @@ export default {
 
   methods: {
     getDevice (type) {
-      return {
-        width: 200,
-        height: 400
+      if (type === '9:16') {
+        return {
+          width: 200,
+          height: 400
+        }
+      } else if (type === '4:3') {
+        return {
+          width: (window.innerWidth - 60)/ 3,
+          height: (window.innerWidth - 60 )/4
+        }
+      } else {
+        return {
+          width: 200,
+          height: 400
+        }
       }
+
     },
     async loadMoreScenes () {
       const result = await this.scenedao.list({
