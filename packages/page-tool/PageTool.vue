@@ -1,9 +1,8 @@
 <template>
 <div>
   <nav-bar></nav-bar>
-  <div class="columns is-mobile is-multiline" style="margin: 5px;">
-    <div class="column is-full-mobile">
-      <!--operation level-->
+  <div class="section">
+    <div class="container">
       <div class="level is-mobile">
         <div class="level-left">
           <drop-down-menu :menus="addElementType" @menu-clicked="addMenuClicked">
@@ -19,6 +18,13 @@
           </a>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div class="columns is-mobile is-multiline" style="margin: 5px;">
+    <div class="column is-full-mobile">
+      <!--operation level-->
+
       <!--preview-->
       <div id="stylePreview" @click.self="sceneClick">
         <div class="device" :style="deviceStyle" @click.self="sceneClick">
@@ -83,6 +89,9 @@ export default {
 			this.$refs.cropper.open(URL.createObjectURL(file))
 			this.$refs.cropper.cropCompleteCallback = callback
 		}
+		if (this.$route.params.id !== 'new') {
+		  this.loadScene(this.$route.params.id)
+    }
 	},
 	computed: {
     previewRatio () {
@@ -256,6 +265,11 @@ export default {
 				elements: elements
 			}
 		},
+
+    async loadScene (id) {
+      const scene = await this.scenedao.getOne(id)
+
+    },
 
     async savePage () {
       await this.saveImages()

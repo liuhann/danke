@@ -204,7 +204,6 @@ function getWorkStyle (work, device) {
 }
 
 function getSceneStyle (scene, device) {
-  debugger
   const styles = []
   styles.push(getBackgroundStyle(scene.background))
   styles.push(`width: ${device.width}px`)

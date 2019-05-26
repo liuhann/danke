@@ -20,7 +20,9 @@
           <page-play :device="getDevice(scene.screen)" :scene="scene"></page-play>
         </div>
       </div>
-      <div class="intro"></div>
+      <div class="intro">
+        <span class="button icon-plus" @click="editScene(scene)">编辑</span>
+      </div>
     </div>
   </div>
 </section>
@@ -96,8 +98,12 @@ export default {
       this.total = 0
       this.page = 1
       this.loadMoreScenes()
-
     },
+
+    editScene (scene) {
+      this.$router.push(`/page-tool/${scene._id}/${scene.screen}`)
+    },
+
     menuClicked (menu) {
       this.$router.push('/page-tool/new/' + menu.ratio)
     }

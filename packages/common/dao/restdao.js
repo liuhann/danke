@@ -13,6 +13,10 @@ export default class RestDAO {
     }
     return str.join('&')
   }
+  async getOne (id) {
+    const result = await this.ctx.get(`${this.path}/${id}`).json()
+    return result
+  }
 
   async list (filter) {
     const result = await this.ctx.get(`${this.path}/list?${this.serialize(filter)}`).json()
