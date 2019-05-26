@@ -1,31 +1,29 @@
 <template>
-<div class="page-scene-list">
+<section class="section page-scene-list">
   <nav-bar></nav-bar>
-  <div class="section">
-    <nav class="level">
-      <div class="level-left">
-        <drop-down-menu :menus="createMenus" @menu-clicked="menuClicked">
-          <span class="button icon-plus">增加</span>
-        </drop-down-menu>
-      </div>
-      <div class="level-right buttons has-addons">
-        <span class="button" @click="setScreenType('')">全部</span>
-          <span v-for="type in createMenus" :key="type.ratio" class="button" :class="[screenType===type.ratio? 'is-selected is-info':'', type.icon]"
-                @click="setScreenType(type.ratio)"></span>
-      </div>
-    </nav>
-    <div class="columns is-multiline is-mobile is-tablet">
-      <div class="column is-one-fifth-widescreen is-three-quarters-tablet is-half-mobile" v-for="(scene, index) in scenes" :key="index">
-        <div class="preview-container">
-          <div class="device">
-            <page-play :device="getDevice(scene.screen)" :scene="scene"></page-play>
-          </div>
+  <nav class="level">
+    <div class="level-left">
+      <drop-down-menu :menus="createMenus" @menu-clicked="menuClicked">
+        <span class="button icon-plus">增加</span>
+      </drop-down-menu>
+    </div>
+    <div class="level-right buttons has-addons">
+      <span class="button" @click="setScreenType('')">全部</span>
+        <span v-for="type in createMenus" :key="type.ratio" class="button" :class="[screenType===type.ratio? 'is-selected is-info':'', type.icon]"
+              @click="setScreenType(type.ratio)"></span>
+    </div>
+  </nav>
+  <div class="columns is-variable is-1 is-multiline is-mobile is-tablet">
+    <div class="column scene-item is-one-third-widescreen is-one-third-tablet is-half-mobile" v-for="(scene, index) in scenes" :key="index">
+      <div class="preview-container">
+        <div class="device">
+          <page-play :device="getDevice(scene.screen)" :scene="scene"></page-play>
         </div>
-        <div class="intro"></div>
       </div>
+      <div class="intro"></div>
     </div>
   </div>
-</div>
+</section>
 </template>
 
 <script>
@@ -97,8 +95,19 @@ export default {
 <style lang="scss">
 .page-scene-list {
   .columns {
+    margin: 0;
+    .column {
+      padding: 0;
+    }
+
+    .scene-item {
+      background-color: rgba(0,0,0,.05);
+    }
     .preview-container {
       position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       .device {
 
       }

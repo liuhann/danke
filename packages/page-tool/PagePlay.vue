@@ -41,5 +41,7 @@ export default {
 </script>
 
 <style lang="scss">
-
+.scene {
+	position: relative;
+}
 </style>
