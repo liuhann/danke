@@ -19,13 +19,19 @@ export default class RestDAO {
   }
 
   async list (filter) {
-    const result = await this.ctx.get(`${this.path}/list?${this.serialize(filter)}`).json()
+    const result = await this.ctx.get(`${this.path}?${this.serialize(filter)}`).json()
     return result
   }
 
   async create (o) {
     await this.ctx.post(`${this.path}`, {
       json: o
+    })
+  }
+
+  async update (id, json) {
+    await this.ctx.ky.put(`${this.path}/${id}`, {
+      json
     })
   }
 

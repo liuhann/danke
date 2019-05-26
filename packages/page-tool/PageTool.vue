@@ -268,16 +268,28 @@ export default {
 
     async loadScene (id) {
       const scene = await this.scenedao.getOne(id)
-
+      for (let element of scene.elements) {
+        if (element.url.indexOf('http') === -1) {
+          element.url = 'http://image.danke.fun' + element.url
+        }
+      }
+      this.scene = {
+        name: scene.name,
+        background: scene.background
+      }
+      this.elements = scene.elements
+      for (let element of this.elements) {
+        element.style = getElementStyle(element, this.device)
+      }
     },
 
     async savePage () {
       await this.saveImages()
       const scene = this.getSceneConfig()
       if (this.$route.params.id === 'new') {
-        this.scenedao.create(scene)
+        await this.scenedao.create(scene)
       } else {
-        this.scenedao.update(this.$route.params.id, scene)
+        await this.scenedao.patch(this.$route.params.id, scene)
       }
     },
 

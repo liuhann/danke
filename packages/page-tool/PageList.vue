@@ -1,31 +1,42 @@
 <template>
-<section class="section page-scene-list">
+<div id="page-scene-list">
   <nav-bar></nav-bar>
-  <nav class="level">
-    <div class="level-left">
-      <drop-down-menu :menus="createMenus" @menu-clicked="menuClicked">
-        <span class="button icon-plus">增加</span>
-      </drop-down-menu>
+  <section class="section">
+    <div class="container is-fluid">
+      <nav class="level">
+        <div class="level-left">
+          <drop-down-menu :menus="createMenus" @menu-clicked="menuClicked">
+            <span class="button icon-plus is-small is-rounded"></span>
+          </drop-down-menu>
+        </div>
+        <div class="level-right buttons has-addons">
+          <span class="button is-small" :class="screenType===''?'is-selected is-info':''" @click="setScreenType('')">全部</span>
+          <span v-for="type in createMenus" :key="type.ratio" class="button is-small" :class="[screenType===type.ratio? 'is-selected is-info':'', type.icon]"
+                @click="setScreenType(type.ratio)"></span>
+        </div>
+      </nav>
     </div>
-    <div class="level-right buttons has-addons">
-      <span class="button" @click="setScreenType('')">全部</span>
-        <span v-for="type in createMenus" :key="type.ratio" class="button" :class="[screenType===type.ratio? 'is-selected is-info':'', type.icon]"
-              @click="setScreenType(type.ratio)"></span>
-    </div>
-  </nav>
-  <div class="columns is-variable is-1 is-multiline is-mobile is-tablet">
-    <div class="column scene-item is-one-third-widescreen is-one-third-tablet is-half-mobile" v-for="(scene, index) in scenes" :key="index">
-      <div class="preview-container">
-        <div class="device">
-          <page-play :device="getDevice(scene.screen)" :scene="scene"></page-play>
+  </section>
+  <section class="section">
+    <div class="container is-fluid">
+      <div class="columns is-variable is-4 is-multiline is-mobile is-tablet">
+        <div class="column scene-item is-one-third-desktop is-half-tablet is-full-mobile" v-for="(scene, index) in scenes" :key="index">
+          <div class="box">
+            <div class="preview-container" :style="containerStyle">
+              <div class="device">
+                <page-play :device="getDevice(scene.screen)" :scene="scene"></page-play>
+              </div>
+            </div>
+            <div class="intro">
+              <span class="button icon-plus" @click="editScene(scene)">编辑</span>
+              <span class="button icon-plus" @click="deleteScene(scene)">编辑</span>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="intro">
-        <span class="button icon-plus" @click="editScene(scene)">编辑</span>
-      </div>
     </div>
-  </div>
-</section>
+  </section>
+</div>
 </template>
 
 <script>
@@ -45,44 +56,39 @@ export default {
       page: 1,
       count: 20,
       scenes: [],
-      createMenus: ratios
+      createMenus: ratios,
+      screenDevices: {}
     }
   },
 
   computed: {
-    device () {
-
+    boxHeight () {
+      if (window.innerWidth > 1088) {
+        return ((window.innerWidth - 128) / 3) - 64
+      } else {
+        return window.innerWidth - 64
+      }
+    },
+    containerStyle () {
+      return {
+        height: this.boxHeight + 'px'
+      }
     }
   },
-
   created () {
     this.scenedao = new RestDAO(this.ctx, 'danke/scene')
   },
 
   mounted () {
+    this.screenDevices = this.loadDeviceType()
     this.loadMoreScenes()
   },
 
   methods: {
-    getDevice (type) {
-      if (type === '9:16') {
-        return {
-          width: 200,
-          height: 400
-        }
-      } else if (type === '4:3') {
-        return {
-          width: (window.innerWidth - 60)/ 3,
-          height: (window.innerWidth - 60 )/4
-        }
-      } else {
-        return {
-          width: 200,
-          height: 400
-        }
-      }
-
+    getDevice (ratioStr) {
+      return this.screenDevices[ratioStr]
     },
+
     async loadMoreScenes () {
       const result = await this.scenedao.list({
         page: this.page,
@@ -90,6 +96,20 @@ export default {
       })
       this.scenes = result.list
       this.total = result.total
+    },
+
+    loadDeviceType () {
+      let h = this.boxHeight
+      return {
+        '9:16': {
+          width: h / 16 * 9,
+          height: h
+        },
+        '4:3': {
+          width: h - 20,
+          height: (h - 20) /4 * 3
+        }
+      }
     },
 
     setScreenType (type) {
@@ -102,6 +122,10 @@ export default {
 
     editScene (scene) {
       this.$router.push(`/page-tool/${scene._id}/${scene.screen}`)
+    },
+
+    deleteScene (scene) {
+
     },
 
     menuClicked (menu) {
