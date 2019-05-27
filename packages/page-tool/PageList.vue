@@ -12,7 +12,7 @@
         <div class="level-right buttons has-addons">
           <span class="button is-small" :class="screenType===''?'is-selected is-info':''" @click="setScreenType('')">全部</span>
           <span v-for="type in createMenus" :key="type.ratio" class="button is-small" :class="[screenType===type.ratio? 'is-selected is-info':'', type.icon]"
-                @click="setScreenType(type.ratio)"></span>
+            @click="setScreenType(type.ratio)"></span>
         </div>
       </nav>
     </div>
@@ -29,7 +29,7 @@
             </div>
             <div class="intro">
               <span class="button icon-plus" @click="editScene(scene)">编辑</span>
-              <span class="button icon-plus" @click="deleteScene(scene)">编辑</span>
+              <span class="button icon-trash-empty" @click="deleteScene(scene)">删除</span>
             </div>
           </div>
         </div>
@@ -125,7 +125,7 @@ export default {
     },
 
     deleteScene (scene) {
-
+      this.scenedao.delete(scene)
     },
 
     menuClicked (menu) {
@@ -136,7 +136,7 @@ export default {
 </script>
 
 <style lang="scss">
-.page-scene-list {
+#page-scene-list {
   .columns {
     margin: 0;
     .column {
