@@ -7,13 +7,13 @@
           <div class="level is-mobile">
             <div class="level-left">
               <drop-down-menu :menus="addElementType" @menu-clicked="addMenuClicked">
-                <span class="button icon-plus">增加</span>
+                <span class="button icon-plus is-small">增加</span>
               </drop-down-menu>
             </div>
             <div class="level-right">
-              <a class="button is-primary" @click="savePage">
+              <a class="button is-primary is-small" @click="savePage">
             <span class="icon">
-              <i class="icon-floppy"></i>
+              <i class="icon-floppy is-small"></i>
             </span>
                 <span>保存</span>
               </a>
