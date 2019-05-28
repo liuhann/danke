@@ -2,7 +2,7 @@ export default {
   padding: 0,
   size: 1,
   spacing: 0,
-  color: '#888',
+  color: '#333',
   weight: 'normal',
   align: 'left',
   decoration: 'none',

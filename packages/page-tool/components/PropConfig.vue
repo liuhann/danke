@@ -20,7 +20,7 @@
       <div class="style-config" v-show="currentTab==='样式'">
         <edit-font v-model="element.font" v-if="element.type === TypeEnum.TEXT"></edit-font>
         <edit-background v-model="element.background" v-if="element.type === TypeEnum.IMAGE"></edit-background>
-        <edit-border v-model="element.border"></edit-border>
+        <edit-border v-model="element.border" v-if="element.type !== TypeEnum.TEXT"></edit-border>
         <edit-clip-path v-model="element.clip" v-if="element.type !== TypeEnum.TEXT"></edit-clip-path>
       </div>
       <div class="animation-config" v-show="currentTab==='动画'">

@@ -51,11 +51,11 @@ function revertLength (value, currentLen, device) {
 }
 
 function getElementStyle (element, device, animation) {
-  const styles = []
+  let styles = []
   // position and size
-  styles.push(getPositionSizingStyle(element, device))
+  styles = styles.concat(getPositionSizingStyle(element, device))
 
-  if (element.background) {
+  if (element.background && element.type !== TypeEnum.TEXT) {
     styles.push(getBackgroundStyle(element.background, element.url))
   }
 
@@ -91,7 +91,7 @@ function getElementStyle (element, device, animation) {
   }
   // font
   if (element.font) {
-    styles.push(`font-size: ${element.font.size}px`)
+    styles.push(`font-size: ${element.font.size}em`)
     styles.push(`color: ${element.font.color}`)
     styles.push(`text-align: ${element.font.align}`)
     styles.push(`font-weight: ${element.font.weight}`)
@@ -140,7 +140,7 @@ function getPositionSizingStyle (element, device) {
       styles.push(`height: ${getLength(element.size.height, device)}px`)
     }
   }
-  return styles.join(';')
+  return styles
 }
 
 function getGradientStyle (colors, angle, blendImage) {

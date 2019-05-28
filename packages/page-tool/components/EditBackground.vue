@@ -2,7 +2,7 @@
 <div class="edit-background panel">
   <form-field label="背景"></form-field>
   <form-field label="背景颜色">
-    <color-pickr v-for="(color, index) of background.colors" :key="index" v-model="background.colors[index]"></color-pickr>
+    <color-pickr v-for="(color, index) of background.colors" :key="index" v-model="background.colors[index]" @remove="removeColor(index)"></color-pickr>
     <a class="icon-plus" @click="addColor"></a>
   </form-field>
   <form-field label="渐变方向" type="radio" v-model="background.angle" :options="gredientAngle"></form-field>
@@ -94,7 +94,11 @@ export default {
 
   methods: {
     addColor () {
-      this.background.colors.push('')
+      this.background.colors.push('#fff')
+    },
+
+    removeColor (index) {
+      this.background.colors.splice(index, 1)
     },
 
     fileChoosed (e) {

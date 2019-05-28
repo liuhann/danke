@@ -2,7 +2,7 @@
 <div id="page-scene-list">
   <nav-bar></nav-bar>
   <section class="section">
-    <div class="container is-fluid">
+    <div class="container">
       <nav class="level">
         <div class="level-left">
           <drop-down-menu :menus="createMenus" @menu-clicked="menuClicked">
@@ -10,7 +10,6 @@
           </drop-down-menu>
         </div>
         <div class="level-right buttons has-addons">
-          <span class="button is-small" :class="screenType===''?'is-selected is-info':''" @click="setScreenType('')">全部</span>
           <span v-for="type in createMenus" :key="type.ratio" class="button is-small" :class="[screenType===type.ratio? 'is-selected is-info':'', type.icon]"
             @click="setScreenType(type.ratio)"></span>
         </div>
@@ -18,28 +17,19 @@
     </div>
   </section>
   <section class="section scene-list">
-    <div class="container is-fluid">
-      <waterfall :line-gap="260" :watch="scenes">
-        <waterfall-slot
-          v-for="(scene, index) in scenes"
-          align="center"
-          :width="260"
-          :height="sizes[scene.screen]"
-          :order="index"
-          :key="scene._id"
-        >
+    <div class="container">
+      <div class="columns is-mobile is-multiline">
+        <div class="column is-one-fifth-fullhd is-one-quarter-widescreen is-one-quarter-desktop is-one-third-tablet is-half-mobile is-vcentered"
+             v-for="(scene, index) in scenes" :key="scene._id">
           <div class="device">
             <page-play :device="getDevice(scene.screen)" :scene="scene"></page-play>
-            <div class="info">
-              <i class="icon-heart-empty"></i>
-              <i class="icon-edit"></i>
-            </div>
+            <span class="button icon-edit is-small is-primary" @click="editScene(scene)"></span>
+            <span class="button icon-trash-empty is-small is-danger" @click="deleteScene(scene)"></span>
           </div>
-        </waterfall-slot>
-      </waterfall>
+        </div>
+      </div>
       <div class="scene-box" v-for="(scene, index) in scenes" :key="index">
         <div class="preview-container" :style="containerStyle">
-
         </div>
         <div class="intro">
           <span class="button icon-plus" @click="editScene(scene)">编辑</span>
@@ -69,7 +59,7 @@ const sizes = {
 const screenDevices = {
   '9:16': {
     width: 240,
-    height: 420
+    height: 450
   },
   '4:3': {
     width: 240,
@@ -86,7 +76,7 @@ export default {
   components: {PagePlay, DropDownMenu, NavBar,  Waterfall, WaterfallSlot },
   data () {
     return {
-      screenType: '',
+      screenType: '9:16',
       total: 0,
       page: 1,
       count: 20,
@@ -126,6 +116,7 @@ export default {
 
     async loadMoreScenes () {
       const result = await this.scenedao.list({
+        screen: this.screenType,
         page: this.page,
         count: this.count
       })
@@ -162,16 +153,29 @@ export default {
     .device {
       background-color: white;
       width: 240px;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+      border: 1px solid #efefef;
       overflow: hidden;
-    }
-    .preview-container {
       position: relative;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 420px;
+      cursor: pointer;
 
+      .button {
+        position: absolute;
+        bottom: 10px;
+        z-index: 11111;
+        display: none;
+      }
+      .icon-edit {
+        right: 60px;
+      }
+      .icon-trash-empty {
+        right: 10px;
+      }
+      &:hover {
+        .button {
+          display: initial;
+        }
+        box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+      }
     }
   }
 }

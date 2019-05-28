@@ -1,21 +1,39 @@
 <template>
 <div>
-  <nav-bar></nav-bar>
   <div class="section">
     <div class="container">
-      <div class="level is-mobile">
-        <div class="level-left">
-          <drop-down-menu :menus="addElementType" @menu-clicked="addMenuClicked">
-            <span class="button icon-plus">增加</span>
-          </drop-down-menu>
-        </div>
-        <div class="level-right">
-          <a class="button is-primary" @click="savePage">
+      <div class="columns">
+        <div class="column is-full-mobile">
+          <div class="level is-mobile">
+            <div class="level-left">
+              <drop-down-menu :menus="addElementType" @menu-clicked="addMenuClicked">
+                <span class="button icon-plus">增加</span>
+              </drop-down-menu>
+            </div>
+            <div class="level-right">
+              <a class="button is-primary" @click="savePage">
             <span class="icon">
               <i class="icon-floppy"></i>
             </span>
-            <span>保存</span>
-          </a>
+                <span>保存</span>
+              </a>
+            </div>
+          </div>
+          <div id="stylePreview" @click.self="sceneClick">
+            <div class="device" :style="deviceStyle" @click.self="sceneClick">
+              <div v-for="element of elements" :key="element.id"
+                   class="element" :class="element===currentElement? 'current': ''" :style="element===currentElement? currentStyle: element.style"
+                   @click.self="chooseElement(element)">
+                <textarea autoHeight="true" :style="{fontSize: '1em', color: element.font.color}" v-if="element.type === TypeEnum.TEXT && element===currentElement" v-model="element.text"></textarea>
+                <span @click.self="chooseElement(element)" v-if="element.type === TypeEnum.TEXT && element!==currentElement" v-html="$options.filters.newline(element.text)"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="column is-one-third-widescreen is-one-quarter-fullhd is-two-fifths-tablet is-full-mobile">
+          <prop-config v-if="currentElement" :element="currentElement"
+                       @remove="removeCurrentElement"></prop-config>
+          <scene-config v-if="!currentElement" :elements="elements" :scene="scene" @choose="chooseElement"></scene-config>
         </div>
       </div>
     </div>
@@ -24,22 +42,10 @@
   <div class="columns is-mobile is-multiline" style="margin: 5px;">
     <div class="column is-full-mobile">
       <!--operation level-->
-
       <!--preview-->
-      <div id="stylePreview" @click.self="sceneClick">
-        <div class="device" :style="deviceStyle" @click.self="sceneClick">
-          <div v-for="element of elements" :key="element.id"
-            class="element" :style="element===currentElement? currentStyle: element.style"
-            @click.self="chooseElement(element)">{{element.text}}</div>
-          <!-- resize and dragging -->
-          <div class="draggabily" v-if="currentElement" :style="maskStyle">&nbsp;</div>
-        </div>
-      </div>
     </div>
     <div class="column is-one-third-widescreen is-two-fifths-tablet is-full-mobile">
-      <prop-config v-if="currentElement" :element="currentElement"
-        @remove="removeCurrentElement"></prop-config>
-      <scene-config v-if="!currentElement" :elements="elements" :scene="scene" @choose="chooseElement"></scene-config>
+
     </div>
   </div>
   <image-cropper ref="cropper" @complete="cropComplete"></image-cropper>
@@ -68,6 +74,7 @@ export default {
 		const background = clone(TPL_BACKGROUND)
 		background.size = 40
 		return {
+      TypeEnum,
 		  inc: 1,
 			maskStyle: '',
 			cornerPosition: {},
@@ -120,11 +127,12 @@ export default {
 		deviceStyle () {
 			return getSceneStyle(this.scene, this.device)
 		},
+
 		containerSize () {
 			if (screen.width > 768) {
 				return {
-					width: window.innerWidth / 5 * 3,
-					height: window.innerHeight - 100
+					width: 800,
+					height: 600
 				}
 			} else {
 				return {
@@ -154,6 +162,13 @@ export default {
 			}
 		}
 	},
+
+  filters: {
+    newline (v) {
+      return v.replace(/\n/g, '<br>')
+    }
+  },
+
 	methods: {
     addMenuClicked (menu, event) {
       if (menu.type === 'file') {
@@ -168,6 +183,7 @@ export default {
       clonedElement.type = TypeEnum.TEXT
       clonedElement.name = '文本' + this.inc
       clonedElement.size.width = '80vw'
+      clonedElement.size.height = '0px'
       this.inc ++
       this.elements.push(clonedElement)
       this.currentElement = clonedElement
@@ -308,43 +324,45 @@ export default {
 </script>
 
 <style lang="scss">
+html.has-navbar-fixed-top, body.has-navbar-fixed-top {
+  padding-top: 0;
+}
+
+.section {
+  padding: 1rem;
+}
+
+.level {
+  margin-bottom: .5rem!important;
+}
 #stylePreview {
 	position: relative;
 	display: flex;
 	justify-content: center;
 	-webkit-box-align: center;
 	align-items: center;
-	height: calc(100vh - 10rem);
-  margin-top: -1.5rem;
+  overflow: hidden;
+  padding: 2rem 0;
+  background: #fafafa;
 	.device {
-		background-color: rgba(0, 0, 0, .3);
+		background-color: #fff;
+    border: 1px solid #efefef;
 		position: relative;
+    .element.current {
+      outline: 1px dashed #87b1f1;
+      outline-offset: 0;
+    }
+    textarea {
+      width: 100%;
+      border: none;
+      background: transparent;
+      -webkit-appearance: none;
+    }
+    textarea:focus, input:focus{
+      outline: none;
+    }
 	}
 	$pointWidth: 12px;
-	.draggabily {
-		box-shadow: 0px 0px 0px 3px #0384da;
-		// border: 2px outset #209cee;
-		z-index: 999;
-		.handler {
-			position: absolute;
-			height: 24px;
-			width: 24px;
-			font-size: 20px;
-			color: rgba(0, 0, 0, .8);
-			text-align: center;
-			margin: -12px 0 0 -12px;
-			left: 50%;
-			top: 50%;
-			cursor: pointer;
-		}
-		.corner-point {
-			cursor: nw-resize;
-			position: absolute;
-			width: $pointWidth;
-			height: $pointWidth;
-			background-color: rgba(0, 0, 0, .8);
-		}
-	}
 }
 .toolbar {
 	position: absolute;
