@@ -17,21 +17,33 @@
       </nav>
     </div>
   </section>
-  <section class="section">
+  <section class="section scene-list">
     <div class="container is-fluid">
-      <div class="columns is-variable is-4 is-multiline is-mobile is-tablet">
-        <div class="column scene-item is-one-third-desktop is-half-tablet is-full-mobile" v-for="(scene, index) in scenes" :key="index">
-          <div class="box">
-            <div class="preview-container" :style="containerStyle">
-              <div class="device">
-                <page-play :device="getDevice(scene.screen)" :scene="scene"></page-play>
-              </div>
-            </div>
-            <div class="intro">
-              <span class="button icon-plus" @click="editScene(scene)">编辑</span>
-              <span class="button icon-trash-empty" @click="deleteScene(scene)">删除</span>
+      <waterfall :line-gap="260" :watch="scenes">
+        <waterfall-slot
+          v-for="(scene, index) in scenes"
+          align="center"
+          :width="260"
+          :height="sizes[scene.screen]"
+          :order="index"
+          :key="scene._id"
+        >
+          <div class="device">
+            <page-play :device="getDevice(scene.screen)" :scene="scene"></page-play>
+            <div class="info">
+              <i class="icon-heart-empty"></i>
+              <i class="icon-edit"></i>
             </div>
           </div>
+        </waterfall-slot>
+      </waterfall>
+      <div class="scene-box" v-for="(scene, index) in scenes" :key="index">
+        <div class="preview-container" :style="containerStyle">
+
+        </div>
+        <div class="intro">
+          <span class="button icon-plus" @click="editScene(scene)">编辑</span>
+          <span class="button icon-trash-empty" @click="deleteScene(scene)">删除</span>
         </div>
       </div>
     </div>
@@ -46,18 +58,42 @@ import ratios from './utils/ratios'
 import DropDownMenu from '../common/components/DropDownMenu'
 import RestDAO from '../common/dao/restdao'
 import PagePlay from './PagePlay'
+import Waterfall from 'vue-waterfall/lib/waterfall'
+import WaterfallSlot from 'vue-waterfall/lib/waterfall-slot'
+
+const sizes = {
+  '9:16': 480,
+  '16:9': 240,
+  '4:3': 320
+}
+const screenDevices = {
+  '9:16': {
+    width: 240,
+    height: 420
+  },
+  '4:3': {
+    width: 240,
+    height: 180
+  },
+  '16:9': {
+    width: 240,
+    height: 180
+  }
+}
+
 export default {
   name: 'PageList',
-  components: {PagePlay, DropDownMenu, NavBar },
+  components: {PagePlay, DropDownMenu, NavBar,  Waterfall, WaterfallSlot },
   data () {
     return {
       screenType: '',
       total: 0,
       page: 1,
       count: 20,
+      sizes,
       scenes: [],
       createMenus: ratios,
-      screenDevices: {}
+      screenDevices
     }
   },
 
@@ -80,7 +116,6 @@ export default {
   },
 
   mounted () {
-    this.screenDevices = this.loadDeviceType()
     this.loadMoreScenes()
   },
 
@@ -96,20 +131,6 @@ export default {
       })
       this.scenes = result.list
       this.total = result.total
-    },
-
-    loadDeviceType () {
-      let h = this.boxHeight
-      return {
-        '9:16': {
-          width: h / 16 * 9,
-          height: h
-        },
-        '4:3': {
-          width: h - 20,
-          height: (h - 20) /4 * 3
-        }
-      }
     },
 
     setScreenType (type) {
@@ -137,23 +158,20 @@ export default {
 
 <style lang="scss">
 #page-scene-list {
-  .columns {
-    margin: 0;
-    .column {
-      padding: 0;
-    }
-
-    .scene-item {
-      background-color: rgba(0,0,0,.05);
+  .scene-list {
+    .device {
+      background-color: white;
+      width: 240px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+      overflow: hidden;
     }
     .preview-container {
       position: relative;
       display: flex;
       justify-content: center;
       align-items: center;
-      .device {
+      height: 420px;
 
-      }
     }
   }
 }
