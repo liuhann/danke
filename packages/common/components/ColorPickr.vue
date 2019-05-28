@@ -1,6 +1,6 @@
 <template>
   <div class="color-picker">
-    <el-color-picker v-model="psColor" @change="colorChange" size="mini" show-alpha="true"></el-color-picker>
+    <el-color-picker v-model="psColor" @change="colorChange" size="mini" :show-alpha="true"></el-color-picker>
     <i class="icon-trash-empty" @click="removeColor"></i>
   </div>
 </template>

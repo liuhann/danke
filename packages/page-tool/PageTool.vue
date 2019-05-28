@@ -24,8 +24,8 @@
               <div v-for="element of elements" :key="element.id"
                    class="element" :class="element===currentElement? 'current': ''" :style="element===currentElement? currentStyle: element.style"
                    @click.self="chooseElement(element)">
-                <textarea autoHeight="true" :style="{fontSize: '1em', color: element.font.color}" v-if="element.type === TypeEnum.TEXT && element===currentElement" v-model="element.text"></textarea>
-                <span @click.self="chooseElement(element)" v-if="element.type === TypeEnum.TEXT && element!==currentElement" v-html="$options.filters.newline(element.text)"></span>
+                <!--<textarea autoHeight="true" :style="{fontSize: '1em', color: element.font.color}" v-if="element.type === TypeEnum.TEXT && element===currentElement" v-model="element.text"></textarea>-->
+                <span @click.self="chooseElement(element)" @input="contentChange" :contenteditable="element===currentElement" v-if="element.type === TypeEnum.TEXT /*&& element!==currentElement*/" v-html="$options.filters.newline(element.text)"></span>
               </div>
             </div>
           </div>
@@ -66,6 +66,7 @@ import ImageCropper from './components/ImageCropper.vue'
 import DropDownMenu from '../common/components/DropDownMenu'
 import ImageDAO from '../common/dao/imagedao'
 import RestDAO from '../common/dao/restdao'
+import { Loading, Message } from 'element-ui'
 export default {
 	name: 'StyleTool',
 	components: {DropDownMenu, ImageCropper, PropConfig, NavBar, SceneConfig},
@@ -246,11 +247,11 @@ export default {
 		},
 
 		sceneClick () {
-			this.currentElement = null
+      this.chooseElement(null)
 		},
 
 		play () {
-			this.currentElement = null
+      this.chooseElement(null)
 			const clonedElements = clone(this.elements)
 			this.elements = []
 			this.$nextTick( () => {
@@ -263,8 +264,17 @@ export default {
 		},
 
 		chooseElement (element) {
+      // save cache of content editable text
+      if (this.currentElement && this.currentElement.type === TypeEnum.TEXT && this.editedText) {
+        this.currentElement.text = this.editedText
+        this.editedText = null
+      }
 			this.currentElement = element
 		},
+
+    contentChange (e) {
+      this.editedText = e.target.innerHTML.replace(/<br>/g, '\n')
+    },
 
 		// extract scene info
 		getSceneConfig () {
@@ -300,6 +310,13 @@ export default {
     },
 
     async savePage () {
+      const loading = Loading.service({
+        lock: true,
+        text: '正在保存中',
+        spinner: 'el-icon-loading',
+        background: 'rgba(255, 255, 255, 0.4)'
+      })
+
       await this.saveImages()
       const scene = this.getSceneConfig()
       if (this.$route.params.id === 'new') {
@@ -307,6 +324,9 @@ export default {
       } else {
         await this.scenedao.patch(this.$route.params.id, scene)
       }
+      loading.close()
+
+      Message.success('保存完成')
     },
 
     async saveImages () {

@@ -2,13 +2,15 @@
 <div class="scene" :style="sceneStyle">
   <div v-for="element of scene.elements" :key="element.id"
        class="element" :style="element.style"
-       @click.self="elementClick(element)">{{element.text}}</div>
+       @click.self="elementClick(element)">
+    <span v-if="element.type === TypeEnum.TEXT" v-html="$options.filters.newline(element.text)"></span>
+  </div>
 </div>
 </template>
 
 <script>
-  import { getElementStyle, getSceneStyle, getLength } from '../danke-core/utils/styles'
-
+import { getElementStyle, getSceneStyle, getLength } from '../danke-core/utils/styles'
+import ELEMENT_TPL, { simplify, TypeEnum } from '../danke-core/model/element'
 export default {
   name: 'PagePlay',
   props: {
@@ -19,12 +21,22 @@ export default {
       type: Object
     }
   },
+  filters: {
+    newline (v) {
+      return v.replace(/\n/g, '<br>')
+    }
+  },
   created () {
     for (let element of this.scene.elements) {
       let w = getLength(element.size.width, this.device)
       let h = getLength(element.size.height, this.device)
       element.url = 'http://image.danke.fun' + element.url.replace(/http[s]*:\/\/[^/]+/g, '') + '?x-oss-process=image/resize,m_fixed,h_' + h + ',w_' + w
       element.style = getElementStyle(element, this.device)
+    }
+  },
+  data () {
+    return {
+      TypeEnum
     }
   },
   computed: {
@@ -41,7 +53,11 @@ export default {
 </script>
 
 <style lang="scss">
+.field-label {
+  margin-right: .75rem;
+}
 .scene {
 	position: relative;
+  font-size: 12px;
 }
 </style>
