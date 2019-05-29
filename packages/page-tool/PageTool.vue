@@ -24,28 +24,18 @@
               <div v-for="element of elements" :key="element.id"
                    class="element" :class="element===currentElement? 'current': ''" :style="element===currentElement? currentStyle: element.style"
                    @click.self="chooseElement(element)">
-                <!--<textarea autoHeight="true" :style="{fontSize: '1em', color: element.font.color}" v-if="element.type === TypeEnum.TEXT && element===currentElement" v-model="element.text"></textarea>-->
+                <!--<textarea autoHeight="true" :style="{fontSize: '1em', color: element.font.color}" v-if="element.type === TypeEnum.TEXT && element===currentElement" v-css-model="element.text"></textarea>-->
                 <span @click.self="chooseElement(element)" @input="contentChange" :contenteditable="element===currentElement" v-if="element.type === TypeEnum.TEXT /*&& element!==currentElement*/" v-html="$options.filters.newline(element.text)"></span>
               </div>
             </div>
           </div>
         </div>
-        <div class="column is-one-third-widescreen is-one-quarter-fullhd is-two-fifths-tablet is-full-mobile">
+        <div class="column is-one-third-widescreen is-one-third-fullhd is-two-fifths-tablet is-full-mobile">
           <prop-config v-if="currentElement" :element="currentElement"
                        @remove="removeCurrentElement"></prop-config>
           <scene-config v-if="!currentElement" :elements="elements" :scene="scene" @choose="chooseElement"></scene-config>
         </div>
       </div>
-    </div>
-  </div>
-
-  <div class="columns is-mobile is-multiline" style="margin: 5px;">
-    <div class="column is-full-mobile">
-      <!--operation level-->
-      <!--preview-->
-    </div>
-    <div class="column is-one-third-widescreen is-two-fifths-tablet is-full-mobile">
-
     </div>
   </div>
   <image-cropper ref="cropper" @complete="cropComplete"></image-cropper>
@@ -59,14 +49,16 @@ import SceneConfig from './components/SceneConfig.vue'
 import { clone } from '../utils/object'
 import NavBar from '../common/site/NavBar'
 import PropConfig from './components/PropConfig.vue'
-import ELEMENT_TPL, { simplify, TypeEnum } from '../danke-core/model/element'
-import TPL_BACKGROUND from '../danke-core/model/background.js'
+import { IMAGE, SHAPE, TEXT, TypeEnum } from '../danke-core/elements/index'
+import TPL_BACKGROUND from '../danke-core/css-model/background.js'
 import { getElementStyle, getPositionSizingStyle, getLength, getSceneStyle } from '../danke-core/utils/styles'
 import ImageCropper from './components/ImageCropper.vue'
 import DropDownMenu from '../common/components/DropDownMenu'
 import ImageDAO from '../common/dao/imagedao'
 import RestDAO from '../common/dao/restdao'
 import { Loading, Message } from 'element-ui'
+
+
 export default {
 	name: 'StyleTool',
 	components: {DropDownMenu, ImageCropper, PropConfig, NavBar, SceneConfig},
@@ -176,13 +168,21 @@ export default {
         this.fileChoosed(event)
       } else if (menu.label === '文字') {
         this.addText()
+      } else if (menu.label === '形状') {
+        this.addShape()
       }
     },
+
+    addShape () {
+      const clonedElement = clone(SHAPE)
+      this.inc ++
+      this.elements.push(clonedElement)
+      this.currentElement = clonedElement
+    },
+
 		addText () {
-      const clonedElement = clone(ELEMENT_TPL)
+      const clonedElement = clone(TEXT)
       clonedElement.text = '请输入文本内容'
-      clonedElement.type = TypeEnum.TEXT
-      clonedElement.name = '文本' + this.inc
       clonedElement.size.width = '80vw'
       clonedElement.size.height = '0px'
       this.inc ++

@@ -3,5 +3,6 @@ export default {
   horizontal: 'center',
   vertical: 'center',
   offsetX: '0vw',
-  offsetY: '0vw'
+  offsetY: '0vw',
+  z: 0
 }

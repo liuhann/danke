@@ -1,5 +1,5 @@
-import CLIPPATH from '../../danke-core/model/clippath'
-import TRANSFORM from '../../danke-core/model/transform'
+import CLIPPATH from '../../danke-core/css-model/clippath'
+import TRANSFORM from '../../danke-core/css-model/transform'
 
 export default {
   percent: 0,

@@ -81,7 +81,7 @@ export default {
     p100.percent = 100
     frames.push(p100)
     return {
-      showCode: false,  // source code model
+      showCode: false,  // source code css-model
       sourceCode: '',
       errorMessage: '',
       previewType: '方块',

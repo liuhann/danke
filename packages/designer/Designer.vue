@@ -43,7 +43,7 @@ import Elements from './templates/elements'
 import TPL_SCENE from './templates/scene'
 import AddElement from './dialog/AddElement'
 
-import TPL_ELEMENT from '../style-tool/model/element'
+import TPL_ELEMENT from '../style-tool/css-model/element'
 import ConfigScene from './dialog/ConfigScene'
 import { PropConfig } from '../style-tool/exports.js'
 

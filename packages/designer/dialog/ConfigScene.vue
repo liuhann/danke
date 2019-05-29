@@ -66,11 +66,11 @@
     </el-tab-pane>
 
     <!--<van-dialog
-      v-model="showTemplateName"
+      v-css-model="showTemplateName"
       show-cancel-button
       :before-close="templateNameConfirmed">
       <van-field
-        v-model="templateName"
+        v-css-model="templateName"
         label="模板名称"
       />
     </van-dialog>-->

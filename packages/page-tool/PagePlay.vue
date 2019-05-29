@@ -10,7 +10,7 @@
 
 <script>
 import { getElementStyle, getSceneStyle, getLength } from '../danke-core/utils/styles'
-import ELEMENT_TPL, { simplify, TypeEnum } from '../danke-core/model/element'
+import ELEMENT_TPL, { simplify, TypeEnum } from '../danke-core/css-model/element'
 export default {
   name: 'PagePlay',
   props: {
@@ -30,7 +30,7 @@ export default {
     for (let element of this.scene.elements) {
       let w = getLength(element.size.width, this.device)
       let h = getLength(element.size.height, this.device)
-      element.url = 'http://image.danke.fun' + element.url.replace(/http[s]*:\/\/[^/]+/g, '') + '?x-oss-process=image/resize,m_fixed,h_' + h + ',w_' + w
+      element.url = 'http://image.danke.fun' + element.url.replace(/http[s]*:\/\/[^/]+/g, '') + '?x-oss-process=image/format,jpg/quality,Q_80/resize,m_fixed,h_' + h + ',w_' + w
       element.style = getElementStyle(element, this.device)
     }
   },

@@ -6,22 +6,21 @@
       </ul>
     </div>
     <div class="tabContent">
-      <div class="basic panel" v-show="currentTab === '内容'">
-        <form-field label="名称" v-model="element.name"></form-field>
-        <form-field label="内容" v-if="element.type === TypeEnum.TEXT" v-model="element.text"></form-field>
-        <form-field label="说明" v-model="element.desc"></form-field>
+      <div class="basic panel" v-show="currentTab === '样式'">
+        <edit-font v-if="element.type === TypeEnum.TEXT" v-model="element.font"></edit-font>
+        <form-field v-if="element.type === TypeEnum.SHAPE" v-model="element.shape" label="形状" :options="shapeOptions"></form-field>
         <edit-position v-model="element.position"></edit-position>
-        <edit-size v-model="element.size" :ratioFixed="true"></edit-size>
-        <!--<form-field label="背景大小" type="select" v-model="element.background.size" :options="backgroundSizeOptions"></form-field>-->
-        <div class="buttons">
-          <span class="button icon-laptop is-small is-danger" @click="removeElement">删除</span>
+        <edit-size v-model="element.size"></edit-size>
+        <a class="button is-text" v-if="!showMore" @click="showMore = !showMore">更多配置</a>
+        <div class="show-more" v-if="showMore">
+          <edit-background v-model="element.background" v-if="element.type !== TypeEnum.TEXT"></edit-background>
+          <edit-border v-model="element.border" v-if="element.type !== TypeEnum.TEXT"></edit-border>
+          <edit-clip-path v-model="element.clip" v-if="element.type !== TypeEnum.TEXT"></edit-clip-path>
+          <!--<form-field label="背景大小" type="select" v-css-model="element.background.size" :options="backgroundSizeOptions"></form-field>-->
+          <div class="buttons">
+            <span class="button icon-laptop is-small is-danger" @click="removeElement">删除</span>
+          </div>
         </div>
-      </div>
-      <div class="style-config" v-show="currentTab==='样式'">
-        <edit-font v-model="element.font" v-if="element.type === TypeEnum.TEXT"></edit-font>
-        <edit-background v-model="element.background" v-if="element.type === TypeEnum.IMAGE"></edit-background>
-        <edit-border v-model="element.border" v-if="element.type !== TypeEnum.TEXT"></edit-border>
-        <edit-clip-path v-model="element.clip" v-if="element.type !== TypeEnum.TEXT"></edit-clip-path>
       </div>
       <div class="animation-config" v-show="currentTab==='动画'">
         <edit-animation :animation="element.in" label="进入" animation-type="1"></edit-animation>
@@ -45,7 +44,7 @@ import ItemBlock from './ItemBlock'
 import EditAnimation from './EditAnimation'
 import FormField from '../../common/components/FormField'
 import ImageUpload from './ImageUpload'
-import { TypeEnum } from '../../danke-core/model/element'
+import { TypeEnum } from '../../danke-core/css-model/element'
 
 export default {
   name: 'PropConfig',
@@ -74,8 +73,9 @@ export default {
   data () {
     return {
       TypeEnum,
+      showMore: false,
       fileUrl: '',
-      currentTab: '内容',
+      currentTab: '样式',
       activeNames: []
     }
   },
@@ -89,8 +89,15 @@ export default {
   },
   computed: {
     tabsName () {
-      return ['内容', '样式', '动画']
+      return ['样式', '动画']
+    },
+    shapeOptions () {
+      return {
+        'rect': '方形',
+        'circle': '圆形'
+      }
     }
+
   },
   methods: {
     setTab(tab) {

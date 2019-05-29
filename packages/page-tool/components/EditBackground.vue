@@ -6,7 +6,7 @@
     <a class="icon-plus" @click="addColor"></a>
   </form-field>
   <form-field label="渐变方向" type="radio" v-model="background.angle" :options="gredientAngle"></form-field>
-  <!--<form-field label="背景位置" type="select" v-model="background.position" :options="backgroundPositions"></form-field>-->
+  <!--<form-field label="背景位置" type="select" v-css-model="background.position" :options="backgroundPositions"></form-field>-->
 </div>
 </template>
 

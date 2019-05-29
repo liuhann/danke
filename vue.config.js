@@ -3,6 +3,7 @@ module.exports = {
   productionSourceMap: true,
   transpileDependencies: ['async-boot', 'ky'],
   devServer: {
+    host: 'localhost',
     contentBase: './public',
     port: 80
   },

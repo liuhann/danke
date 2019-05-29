@@ -1,6 +1,6 @@
 const REG_LEN = /([+-]?[0-9#]+)(%|px|pt|em|rem|in|cm|mm|ex|ch|pc|vw|vh|vmin|vmax|deg|rad|turn)?$/
 
-import { TypeEnum } from '../model/element'
+import { TypeEnum } from '../css-model/element'
 
 /**
  * 抽取长度信息  例如 10vw -> {len:10, unit: 'vw'}
@@ -22,6 +22,12 @@ function getLenSplits (len) {
   }
 }
 
+/**
+ *
+ * @param {String} unitLen
+ * @param {Object} device
+ * @returns {number}
+ */
 function getLength (unitLen, device) {
   // -15vw ->  [-15vw,-15,vw]
   if (unitLen === 0 || unitLen == null || unitLen === '') {
@@ -55,7 +61,7 @@ function getElementStyle (element, device, animation) {
   // position and size
   styles = styles.concat(getPositionSizingStyle(element, device))
 
-  if (element.background && element.type !== TypeEnum.TEXT) {
+  if (element.background) {
     styles.push(getBackgroundStyle(element.background, element.url))
   }
 
@@ -158,10 +164,13 @@ function getBackgroundStyle (background, url) {
   if (bgUrl) {
     backgroundImages.push(`url('${bgUrl}')`)
   }
-  if (background.colors.length > 1) {
-    backgroundImages.push(`linear-gradient(${background.angle}, ${background.colors.join(',')})`)
-  } else if (background.colors.length === 1) {
-    styles.push(`background-color: ${background.colors[0]}`)
+  if (background.colors) {
+    let colors = background.colors.filter(e => e === 0 || e)
+    if (colors.length > 1) {
+      backgroundImages.push(`linear-gradient(${background.angle | 'to bottom'}, ${background.colors.join(',')})`)
+    } else if (colors.length === 1) {
+      styles.push(`background-color: ${colors[0]}`)
+    }
   }
   if (backgroundImages.length) {
     styles.push(`background-image: ${backgroundImages.join(' ')}`)
