@@ -19,4 +19,10 @@ const shape = {
     out: ANIMATION
   }
 }
+
+export const ShapeType = {
+  'rect': '圆形',
+
+}
 export default shape
+
