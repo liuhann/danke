@@ -58,7 +58,6 @@ import ImageDAO from '../common/dao/imagedao'
 import RestDAO from '../common/dao/restdao'
 import { Loading, Message } from 'element-ui'
 
-
 export default {
 	name: 'StyleTool',
 	components: {DropDownMenu, ImageCropper, PropConfig, NavBar, SceneConfig},
@@ -191,7 +190,7 @@ export default {
 		},
 
     cropComplete (blob, cropbox) {
-      const clonedElement = clone(ELEMENT_TPL)
+      const clonedElement = clone(IMAGE)
       const wider = (cropbox.width / cropbox.height) > (this.device.width / this.device.height)
       if (wider) { // 宽度优先
         if (cropbox.width > this.device.width) {
@@ -210,12 +209,7 @@ export default {
           clonedElement.size.height = Math.floor(100 * cropbox.height/this.device.height) + 'vh'
         }
       }
-      delete clonedElement.font
-      clonedElement.size.fix = true
       clonedElement.url = URL.createObjectURL(blob)
-      clonedElement.name = '图片' + this.inc
-      clonedElement.type = TypeEnum.IMAGE
-      this.inc ++
       this.elements.push(clonedElement)
       this.currentElement = clonedElement
       blob.filename = this.croppingFileName

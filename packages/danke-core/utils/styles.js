@@ -1,49 +1,11 @@
-const REG_LEN = /([+-]?[0-9#]+)(%|px|pt|em|rem|in|cm|mm|ex|ch|pc|vw|vh|vmin|vmax|deg|rad|turn)?$/
+import { TypeEnum } from '../elements/index'
+import { getLenSplits, getLength } from './common'
 
-import { TypeEnum } from '../css-model/element'
-
-/**
- * 抽取长度信息  例如 10vw -> {len:10, unit: 'vw'}
- * @param len
- * @returns {{len: (*|string), unit: (*|string)}}
- */
-function getLenSplits (len) {
-  const splits = REG_LEN.exec(len)
-  if (splits == null) {
-    return {
-      len: 0,
-      unit: len
-    }
-  } else {
-    return {
-      len: parseFloat(splits[1]) || 0,
-      unit: splits[2]
-    }
-  }
-}
-
-/**
- *
- * @param {String} unitLen
- * @param {Object} device
- * @returns {number}
- */
-function getLength (unitLen, device) {
-  // -15vw ->  [-15vw,-15,vw]
-  if (unitLen === 0 || unitLen == null || unitLen === '') {
-    return 0
-  }
-  const { len, unit } = getLenSplits(unitLen)
-  let number = 0
-  if (unit === 'vw') {
-    number = Math.floor(device.width * len / 100)
-  } else if (unit === 'vh') {
-    number = Math.floor(device.height * len / 100)
-  } else if (unit === 'px') {
-    number = len
-  }
-  return number
-}
+import { getShadowStyle } from '../css-model/boxshadow'
+import { getFontStyle } from '../css-model/font'
+import { getBackgroundStyle } from '../css-model/background'
+import { getBorderStyle } from '../css-model/border'
+import { getClipPathStyle } from '../css-model/clippath'
 
 function revertLength (value, currentLen, device) {
   const { unit } = getLenSplits(currentLen)
@@ -60,50 +22,15 @@ function getElementStyle (element, device, animation) {
   let styles = []
   // position and size
   styles = styles.concat(getPositionSizingStyle(element, device))
+    .concat(getShadowStyle(element, device))
+    .concat(getFontStyle(element, device))
+    .concat(getBorderStyle(element, device))
+    .concat(getShadowStyle(element, device))
+    .concat(getBackgroundStyle(element, device))
+    .concat(getClipPathStyle(element, device))
 
   if (element.background) {
     styles.push(getBackgroundStyle(element.background, element.url))
-  }
-
-  // clip path only for image
-  if (element.clip && element.type === TypeEnum.IMAGE) {
-    const points = []
-    for (let point of element.clip.points) {
-      points.push(`${point[0]}% ${point[1]}%`)
-    }
-    if (element.clip.type === 'polygon') {
-      styles.push(`clip-path: polygon(${points.join(',')})`)
-    } else if (element.clip.type === 'circle') {
-      styles.push(`clip-path: circle(${element.clip.points[0]}% at ${element.clip.points[1]}% ${element.clip.points[2]}%)`)
-    } else if (element.clip.type === 'ellipse') {
-      if (points.length === 2) {
-        styles.push(`clip-path: ellipse(${points[0]} at ${points[1]})`)
-      }
-    }
-  }
-  // border
-  if (element.border) {
-    if (parseInt(element.border.width) === 0) {
-    } else {
-      if (element.border.sides.length === 4) {
-        styles.push(`border: ${element.border.width}px ${element.border.style} ${element.border.color}`)
-      } else {
-        for (let side of element.border.sides) {
-          styles.push(`border-${side}: ${element.border.width}px ${element.border.style} ${element.border.color}`)
-        }
-      }
-    }
-    styles.push(`border-radius: ${element.border.radius}px`)
-  }
-  // font
-  if (element.font) {
-    styles.push(`font-size: ${element.font.size}em`)
-    styles.push(`color: ${element.font.color}`)
-    styles.push(`text-align: ${element.font.align}`)
-    styles.push(`font-weight: ${element.font.weight}`)
-    styles.push(`letter-spacing: ${element.font.spacing}px`)
-    styles.push(`text-decoration: ${element.font.decoration}px`)
-    styles.push(`padding: ${getLength(element.font.padding, device)}px`)
   }
 
   if (element.transform) {
@@ -116,7 +43,7 @@ function getElementStyle (element, device, animation) {
     const animationDef = element[animation]
     styles.push(`animation: ${animationDef.name} ${animationDef.duration}ms ${animationDef.timing} ${animationDef.delay}ms ${animationDef.iteration} normal both running`)
   }
-  return styles.join(';')
+  return styles.filter(n => n).join(';')
 }
 
 function getPositionSizingStyle (element, device) {
@@ -147,45 +74,6 @@ function getPositionSizingStyle (element, device) {
     }
   }
   return styles
-}
-
-function getGradientStyle (colors, angle, blendImage) {
-  let style = `background-image: linear-gradient(${angle}, ${colors.join(',')})`
-  if (blendImage) {
-    style = style + `, url('${blendImage}')`
-  }
-  return style
-}
-
-function getBackgroundStyle (background, url) {
-  const styles = []
-  const backgroundImages = []
-  let bgUrl = url || background.url
-  if (bgUrl) {
-    backgroundImages.push(`url('${bgUrl}')`)
-  }
-  if (background.colors) {
-    let colors = background.colors.filter(e => e === 0 || e)
-    if (colors.length > 1) {
-      backgroundImages.push(`linear-gradient(${background.angle | 'to bottom'}, ${background.colors.join(',')})`)
-    } else if (colors.length === 1) {
-      styles.push(`background-color: ${colors[0]}`)
-    }
-  }
-  if (backgroundImages.length) {
-    styles.push(`background-image: ${backgroundImages.join(' ')}`)
-  }
-  if (bgUrl) {
-    styles.push(`background-size: ${background.size}`)
-    styles.push(`background-position: ${background.position}`)
-    if (background.repeat) {
-      styles.push(`background-repeat: repeat`)
-    } else {
-      styles.push(`background-repeat: no-repeat`)
-    }
-    styles.push(`background-blend-mode: ${background.blend}`)
-  }
-  return styles.join(';')
 }
 
 function getTransformStyle (transform) {
@@ -230,8 +118,6 @@ function getSceneStyle (scene, device) {
 export {
   getLength,
   getLenSplits,
-  getGradientStyle,
-  getBackgroundStyle,
   getElementStyle,
   getWorkStyle,
   getSceneStyle,

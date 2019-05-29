@@ -14,9 +14,7 @@ export default {
   async onload (ctx) {
     ctx.token = getToken()
     ctx.userdao = new UserDAO(ctx)
-    ctx.userdao.getCurrentUser().then((data) => {
-      ctx.user = data
-      ctx.emit && ctx.emit('user-updated', data)
-    })
+    const user = await ctx.userdao.getCurrentUser()
+    ctx.user = user
   }
 }

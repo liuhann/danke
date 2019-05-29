@@ -1,11 +1,10 @@
 <template>
 <div class="edit-background panel">
-  <form-field label="背景"></form-field>
   <form-field label="背景颜色">
     <color-pickr v-for="(color, index) of background.colors" :key="index" v-model="background.colors[index]" @remove="removeColor(index)"></color-pickr>
     <a class="icon-plus" @click="addColor"></a>
   </form-field>
-  <form-field label="渐变方向" type="radio" v-model="background.angle" :options="gredientAngle"></form-field>
+  <form-field v-if="multipleColor" label="渐变方向" type="radio" v-model="background.angle" :options="gradientAngle"></form-field>
   <!--<form-field label="背景位置" type="select" v-css-model="background.position" :options="backgroundPositions"></form-field>-->
 </div>
 </template>
@@ -36,17 +35,27 @@ export default {
   },
 
   computed: {
+    multipleColor () {
+      return this.background.colors.filter(n => n).length > 1
+    },
+
     background () {
       return this.value
     },
 
-    gredientAngle () {
+    gradientAngle () {
       return [{
         key: 'to bottom',
         value: '上下'
       }, {
         key: 'to right',
         value: '左右'
+      }, {
+        key: 'to left top',
+        value: '左上'
+      }, {
+        key: 'to right top',
+        value: '右上'
       }]
 
     },
@@ -98,6 +107,7 @@ export default {
     },
 
     removeColor (index) {
+      debugger
       this.background.colors.splice(index, 1)
     },
 

@@ -1,7 +1,6 @@
 <template>
   <div class="color-picker">
-    <el-color-picker v-model="psColor" @change="colorChange" size="mini" :show-alpha="true"></el-color-picker>
-    <i class="icon-trash-empty" @click="removeColor"></i>
+    <el-color-picker v-model="psColor" @change="colorChange" size="mini" :show-alpha="true" :predefine="predefineColors"></el-color-picker>
   </div>
 </template>
 
@@ -23,25 +22,29 @@ export default {
     }
   },
   computed: {
-    btnStyle () {
-      return {
-        backgroundColor: this.value
-      }
+    predefineColors () {
+      return [
+        '#ff4500',
+        '#ff8c00',
+        '#ffd700',
+        '#90ee90',
+        '#00ced1',
+        '#1e90ff',
+        '#c71585',
+        'rgba(255, 69, 0, 0.68)',
+        'rgb(255, 120, 0)',
+        'hsl(181, 100%, 37%)',
+        'hsla(209, 100%, 56%, 0.73)',
+      ]
     }
   },
   methods: {
     colorChange () {
-      this.$emit('input', this.psColor)
-    },
-    toggleShowPicker () {
-      this.pickerShow = !this.pickerShow
-    },
-    removeColor () {
-      this.$emit('remove')
-    },
-
-    updateValue (v) {
-      this.$emit('input', `rgba(${v.rgba.r}, ${v.rgba.g}, ${v.rgba.b}, ${v.rgba.a})`)
+      if (!this.psColor) {
+        this.$emit('remove')
+      } else {
+        this.$emit('input', this.psColor)
+      }
     }
   }
 }
@@ -61,6 +64,7 @@ export default {
   font-size: 12px;
 }
 .color-picker {
+  display: inline-block;
   position: relative;
   z-index: 1111;
   margin-bottom: .3rem;

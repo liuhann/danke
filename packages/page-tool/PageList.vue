@@ -28,14 +28,6 @@
           </div>
         </div>
       </div>
-      <div class="scene-box" v-for="(scene, index) in scenes" :key="index">
-        <div class="preview-container" :style="containerStyle">
-        </div>
-        <div class="intro">
-          <span class="button icon-plus" @click="editScene(scene)">编辑</span>
-          <span class="button icon-trash-empty" @click="deleteScene(scene)">删除</span>
-        </div>
-      </div>
     </div>
   </section>
 </div>
