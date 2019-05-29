@@ -6,6 +6,7 @@ import { getFontStyle } from '../css-model/font'
 import { getBackgroundStyle } from '../css-model/background'
 import { getBorderStyle } from '../css-model/border'
 import { getClipPathStyle } from '../css-model/clippath'
+import { getTransformStyle } from '../css-model/transform'
 
 function revertLength (value, currentLen, device) {
   const { unit } = getLenSplits(currentLen)
@@ -28,17 +29,8 @@ function getElementStyle (element, device, animation) {
     .concat(getShadowStyle(element, device))
     .concat(getBackgroundStyle(element, device))
     .concat(getClipPathStyle(element, device))
+    .concat(getTransformStyle(element, device))
 
-  if (element.background) {
-    styles.push(getBackgroundStyle(element.background, element.url))
-  }
-
-  if (element.transform) {
-    styles.push(getTransformStyle(element.transform))
-    if (element.transform.opacity != null) {
-      styles.push(`opacity: ${element.transform.opacity / 100}`)
-    }
-  }
   if (animation && element[animation]) {
     const animationDef = element[animation]
     styles.push(`animation: ${animationDef.name} ${animationDef.duration}ms ${animationDef.timing} ${animationDef.delay}ms ${animationDef.iteration} normal both running`)
@@ -76,33 +68,15 @@ function getPositionSizingStyle (element, device) {
   return styles
 }
 
-function getTransformStyle (transform) {
-  const styles = []
-  if (transform.psp) {
-    styles.push(`perspective(${transform.psp}px)`)
-  }
-  if (transform) {
-    if (transform.translate) {
-      styles.push(`translate3d(${transform.translate[0]}%, ${transform.translate[1]}%, ${transform.translate[2]}px)`)
-    }
-    if (transform.rotate) {
-      styles.push(`rotateX(${transform.rotate[0]}deg)`)
-      styles.push(`rotateY(${transform.rotate[1]}deg)`)
-      styles.push(`rotateZ(${transform.rotate[2]}deg)`)
-    }
-  }
-  if (transform.scale) {
-    styles.push(`scale(${transform.scale / 100})`)
-  }
-  return `transform: ${styles.join(' ')}`
-}
 function getWorkStyle (work, device) {
   return getBackgroundStyle(work.background)
 }
 
 function getSceneStyle (scene, device) {
   const styles = []
-  styles.push(getBackgroundStyle(scene.background))
+  styles.push(getBackgroundStyle({
+    background: scene.background
+  }))
   styles.push(`width: ${device.width}px`)
   styles.push(`height: ${device.height}px`)
   if (scene.type === 'background') {

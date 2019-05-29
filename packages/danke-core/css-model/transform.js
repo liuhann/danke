@@ -9,22 +9,27 @@ export default {
 export function getTransformStyle ({ transform }) {
   const styles = []
   if (transform) {
+    const transforms = []
     if (transform.psp) {
-      styles.push(`perspective(${transform.psp}px)`)
+      transforms.push(`perspective(${transform.psp}px)`)
     }
     if (transform) {
       if (transform.translate) {
-        styles.push(`translate3d(${transform.translate[0]}%, ${transform.translate[1]}%, ${transform.translate[2]}px)`)
+        transforms.push(`translate3d(${transform.translate[0]}%, ${transform.translate[1]}%, ${transform.translate[2]}px)`)
       }
       if (transform.rotate) {
-        styles.push(`rotateX(${transform.rotate[0]}deg)`)
-        styles.push(`rotateY(${transform.rotate[1]}deg)`)
-        styles.push(`rotateZ(${transform.rotate[2]}deg)`)
+        transforms.push(`rotateX(${transform.rotate[0]}deg)`)
+        transforms.push(`rotateY(${transform.rotate[1]}deg)`)
+        transforms.push(`rotateZ(${transform.rotate[2]}deg)`)
       }
     }
     if (transform.scale) {
-      styles.push(`scale(${transform.scale / 100})`)
+      transforms.push(`scale(${transform.scale / 100})`)
+    }
+    styles.push(`transform: ${styles.join(' ')}`)
+    if (transform.opacity != null) {
+      styles.push(`opacity: ${transform.opacity / 100}`)
     }
   }
-  return [`transform: ${styles.join(' ')}`]
+  return styles
 }

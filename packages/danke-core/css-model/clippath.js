@@ -20,4 +20,5 @@ export function getClipPathStyle ({ clip }, device) {
       }
     }
   }
+  return styles
 }
