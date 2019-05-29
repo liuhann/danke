@@ -37,6 +37,8 @@ export function getBackgroundStyle ({ background, url }) {
       }
       styles.push(`background-blend-mode: ${background.blend}`)
     }
+  } else {
+    styles.push(`background: transparent`)
   }
   return styles
 }

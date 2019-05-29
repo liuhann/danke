@@ -11,6 +11,7 @@
         <form-field v-if="element.type === TypeEnum.SHAPE" v-model="element.shape" label="形状" :options="shapeOptions"></form-field>
         <edit-position v-model="element.position"></edit-position>
         <edit-size v-model="element.size"></edit-size>
+        <edit-len v-model="element.position.z" label="Z" :with-unit="false"></edit-len>
         <a class="button is-text" v-if="!showMore" @click="showMore = !showMore">更多配置</a>
         <div class="show-more" v-if="showMore">
           <edit-background v-model="element.background" v-if="element.type !== TypeEnum.TEXT"></edit-background>
@@ -23,9 +24,9 @@
         </div>
       </div>
       <div class="animation-config" v-show="currentTab==='动画'">
-        <edit-animation :animation="element.in" label="进入" animation-type="1"></edit-animation>
-        <edit-animation :animation="element.dura" label="持续" animation-type="2"></edit-animation>
-        <edit-animation :animation="element.out" label="离开" animation-type="3"></edit-animation>
+        <edit-animation :animation="element.animation.in" label="进入" animation-type="1"></edit-animation>
+        <edit-animation :animation="element.animation.dura" label="持续" animation-type="2"></edit-animation>
+        <edit-animation :animation="element.animation.out" label="离开" animation-type="3"></edit-animation>
       </div>
     </div>
   </div>
@@ -45,6 +46,7 @@ import EditAnimation from './EditAnimation'
 import FormField from '../../common/components/FormField'
 import ImageUpload from './ImageUpload'
 import { TypeEnum } from '../../danke-core/css-model/element'
+import EditLen from './EditLen'
 
 export default {
   name: 'PropConfig',
@@ -57,6 +59,7 @@ export default {
     }
   },
   components: {
+    EditLen,
     ImageUpload,
     FormField,
     EditAnimation,

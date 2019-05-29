@@ -1,5 +1,5 @@
 <template>
-<div class="edit-font panel">
+<div class="edit-font">
   <edit-len v-model="font.size" label="字体大小" :with-unit="false"></edit-len>
   <form-field label="颜色">
     <color-pickr v-model="font.color"></color-pickr>

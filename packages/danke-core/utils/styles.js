@@ -57,6 +57,7 @@ function getPositionSizingStyle (element, device) {
     } else if (element.position.horizontal === 'right') {
       styles.push(`right: ${getLength(element.position.offsetX, device)}px`)
     }
+    styles.push(`z-index: ${element.position.z}`)
   }
 
   if (element.size && device) {

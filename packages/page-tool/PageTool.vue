@@ -13,7 +13,7 @@
             <div class="level-right">
               <a class="button is-primary is-small" @click="savePage">
             <span class="icon">
-              <i class="icon-floppy is-small"></i>
+              <i class="icon-ok is-small"></i>
             </span>
                 <span>保存</span>
               </a>
@@ -103,10 +103,10 @@ export default {
         icon: 'icon-picture'
       }, {
         label: '形状',
-        icon: 'icon-mobile'
+        icon: 'icon-popup'
       }, {
         label: '文字',
-        icon: 'icon-font'
+        icon: 'icon-sort-alphabet'
       }]
     },
 		currentStyle () {
@@ -227,6 +227,7 @@ export default {
 					break
 				}
 			}
+			this.currentElement = null
 		},
 
 		fileChoosed (e) {
@@ -263,6 +264,9 @@ export default {
         this.currentElement.text = this.editedText
         this.editedText = null
       }
+      if (this.currentElement && this.currentElement.type === TypeEnum.TEXT && this.currentElement.text === '') {
+        this.currentElement.text === ' '
+      }
 			this.currentElement = element
 		},
 
@@ -289,9 +293,10 @@ export default {
     async loadScene (id) {
       const scene = await this.scenedao.getOne(id)
       for (let element of scene.elements) {
-        if (element.url.indexOf('http') === -1) {
+        if (element.type === TypeEnum.IMAGE && element.url.indexOf('http') === -1) {
           element.url = 'http://image.danke.fun' + element.url
         }
+        element.visible = true
       }
       this.scene = {
         name: scene.name,
@@ -341,11 +346,20 @@ export default {
 html.has-navbar-fixed-top, body.has-navbar-fixed-top {
   padding-top: 0;
 }
-
+.panel {
+  margin-bottom: 0;
+}
 .section {
   padding: 1rem;
 }
-
+.field:not(:last-child) {
+  height: 2rem;
+  margin-bottom: .5rem;
+}
+.field:last-child {
+  height: 2rem;
+  margin-bottom: .5rem;
+}
 .level {
   margin-bottom: .5rem!important;
 }
@@ -366,14 +380,12 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
       outline: 1px dashed #87b1f1;
       outline-offset: 0;
     }
-    textarea {
-      width: 100%;
-      border: none;
-      background: transparent;
-      -webkit-appearance: none;
-    }
-    textarea:focus, input:focus{
-      outline: none;
+    .element {
+      span {
+        min-height: 12px;
+        display: inline-block;
+        min-width: 50px;
+      }
     }
 	}
 	$pointWidth: 12px;

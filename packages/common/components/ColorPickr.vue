@@ -67,13 +67,6 @@ export default {
   display: inline-block;
   position: relative;
   z-index: 1111;
-  margin-bottom: .3rem;
-  .icon-trash-empty {
-    margin-left: 1rem;
-    color: #999;
-    display: inline-block;
-    vertical-align: top;
-  }
   .picker-container {
     position: absolute;
   }

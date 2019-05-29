@@ -135,6 +135,11 @@ export default {
 
 <style lang="scss">
 .edit-background {
-
+  .icon-plus {
+    vertical-align: top;
+    line-height: 1.8rem;
+    display: inline-block;
+    color: #888;
+  }
 }
 </style>

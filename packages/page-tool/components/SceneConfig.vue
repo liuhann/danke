@@ -13,12 +13,9 @@
       </div>
       <div class="element-list panel" v-show="currentTab==='元素列表'">
          <a class="panel-block" v-for="element of elements" :key="element.id" @click="toggleElement(element)">
-          <span class="panel-icon">
-            <figure class="image is-16x16">
-              <img :src="element.url">
-            </figure>
-          </span>
-          {{element.name}}
+          <div v-if="element.type === TypeEnum.IMAGE" class="image" :style="'background-image: url(' + element.url + ')'"></div>
+           <i :class="element.visible? 'icon-eye-1': 'icon-eye-outline'" @click="toggleElementVisible(element)"></i>
+           <i :class="icon-trash" @click="deleteElement(element)"></i>
         </a>
       </div>
     </div>
@@ -28,6 +25,8 @@
 <script>
 import EditBackground from './EditBackground.vue'
 import FormField from '../../common/components/FormField'
+import { TypeEnum } from '../../danke-core/elements/index'
+
 export default {
   name: 'SceneConfig',
   components: { FormField, EditBackground },
@@ -44,6 +43,7 @@ export default {
   },
   data () {
     return {
+      TypeEnum,
       currentTab: '场景配置',
       tabsName: ['场景配置', '元素列表']
     }
@@ -58,11 +58,23 @@ export default {
   },
 
   methods: {
+
+    toggleElementVisible (element) {
+      debugger
+      if (element.visible) {
+        element.visible = false
+      } else {
+        element.visible = true
+      }
+    },
+    deleteElement (element) {
+      this.$emit('remove', element)
+    },
     setTab(tab) {
       this.currentTab = tab
     },
     toggleElement (element) {
-      this.$emit('choose', element)
+      // this.$emit('choose', element)
     }
   }
 }
@@ -70,6 +82,16 @@ export default {
 
 <style lang="scss">
 .scene-config {
-
+  .panel-block {
+    padding: 5px;
+    height: 31px;
+    box-sizing: border-box;
+  }
+  .image {
+    margin: 0 10px;
+    width: 20px;
+    height: 20px;
+    background-size: cover;
+  }
 }
 </style>

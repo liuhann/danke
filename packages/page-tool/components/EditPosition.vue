@@ -1,5 +1,5 @@
 <template>
-<div class="edit-position panel">
+<div class="edit-position">
   <form-field label="横向对齐" type="radio" v-model="position.horizontal" :options="horizontalOptions"></form-field>
   <edit-len label="横向偏移" v-model="position.offsetX" :min="-1000" :max="1000"></edit-len>
   <form-field label="纵向对齐" type="radio" v-model="position.vertical" :options="verticalOptions"></form-field>
