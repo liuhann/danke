@@ -13,16 +13,11 @@ const shape = {
   background: BACKGROUND,
   border: BORDER,
   size: SIZE,
+  shadow: '',
   animation: {
     in: ANIMATION,
     dura: ANIMATION,
     out: ANIMATION
   }
 }
-
-export const ShapeType = {
-  'rect': '圆形',
-
-}
 export default shape
-

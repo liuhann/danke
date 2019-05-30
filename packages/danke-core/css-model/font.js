@@ -1,4 +1,10 @@
 import { getLength } from '../utils/styles'
+export const TextShadows = {
+  'inset': 'rgba(255,255,255,0.5) 0px 3px 3px',
+  'glowing': '0px 0px 6px rgba(255,255,255,0.7)',
+  'hard': '6px 6px 0px rgba(0,0,0,0.2)',
+  'double': '4px 3px 0px #fff, 9px 8px 0px rgba(0,0,0,0.15)'
+}
 
 export default {
   padding: 0,
@@ -8,7 +14,8 @@ export default {
   weight: 'normal',
   align: 'left',
   decoration: 'none',
-  style: 'normal'
+  style: 'normal',
+  shadow: ''
 }
 
 export function getFontStyle ({ font }, device) {
@@ -21,6 +28,9 @@ export function getFontStyle ({ font }, device) {
     styles.push(`letter-spacing: ${font.spacing}px`)
     styles.push(`text-decoration: ${font.decoration}px`)
     styles.push(`padding: ${getLength(font.padding, device)}px`)
+    if (font.shadow) {
+      styles.push(TextShadows[font.shadow])
+    }
   }
   return styles
 }

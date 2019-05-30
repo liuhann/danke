@@ -1,5 +1,6 @@
 <template>
 <div>
+  <nav-bar></nav-bar>
   <div class="section">
     <div class="container">
       <div class="columns">
@@ -22,7 +23,7 @@
           <div id="stylePreview" @click.self="sceneClick">
             <div class="device" :style="deviceStyle" @click.self="sceneClick">
               <div v-for="element of elements" :key="element.id"
-                   class="element" :class="element===currentElement? 'current': ''" :style="element===currentElement? currentStyle: element.style"
+                   class="element" :class="[element===currentElement? 'current': '', element.visible?'':'hidden']" :style="element===currentElement? currentStyle: element.style"
                    @click.self="chooseElement(element)">
                 <!--<textarea autoHeight="true" :style="{fontSize: '1em', color: element.font.color}" v-if="element.type === TypeEnum.TEXT && element===currentElement" v-css-model="element.text"></textarea>-->
                 <span @click.self="chooseElement(element)" @input="contentChange" :contenteditable="element===currentElement" v-if="element.type === TypeEnum.TEXT /*&& element!==currentElement*/" v-html="$options.filters.newline(element.text)"></span>
@@ -174,6 +175,7 @@ export default {
 
     addShape () {
       const clonedElement = clone(SHAPE)
+      clonedElement.visible = true
       this.inc ++
       this.elements.push(clonedElement)
       this.currentElement = clonedElement
@@ -181,6 +183,7 @@ export default {
 
 		addText () {
       const clonedElement = clone(TEXT)
+      clonedElement.visible = true
       clonedElement.text = '请输入文本内容'
       clonedElement.size.width = '80vw'
       clonedElement.size.height = '0px'
@@ -191,6 +194,7 @@ export default {
 
     cropComplete (blob, cropbox) {
       const clonedElement = clone(IMAGE)
+      clonedElement.visible = true
       const wider = (cropbox.width / cropbox.height) > (this.device.width / this.device.height)
       if (wider) { // 宽度优先
         if (cropbox.width > this.device.width) {
@@ -343,9 +347,6 @@ export default {
 </script>
 
 <style lang="scss">
-html.has-navbar-fixed-top, body.has-navbar-fixed-top {
-  padding-top: 0;
-}
 .panel {
   margin-bottom: 0;
 }
@@ -377,8 +378,11 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
     border: 1px solid #efefef;
 		position: relative;
     .element.current {
-      outline: 1px dashed #87b1f1;
+      outline: 3px dashed #87b1f1;
       outline-offset: 0;
+    }
+    .element.hidden {
+      display: none;
     }
     .element {
       span {

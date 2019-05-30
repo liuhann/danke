@@ -14,6 +14,7 @@
         <edit-len v-model="element.position.z" label="Z" :with-unit="false"></edit-len>
         <a class="button is-text" v-if="!showMore" @click="showMore = !showMore">更多配置</a>
         <div class="show-more" v-if="showMore">
+          <form-field v-if="element.type === TypeEnum.SHAPE || element.type === TypeEnum.IMAGE" label="阴影" v-model="element.shadow" :options="shadowType"></form-field>
           <edit-background v-model="element.background" v-if="element.type !== TypeEnum.TEXT"></edit-background>
           <edit-border v-model="element.border" v-if="element.type !== TypeEnum.TEXT"></edit-border>
           <edit-clip-path v-model="element.clip" v-if="element.type !== TypeEnum.TEXT"></edit-clip-path>
@@ -47,6 +48,7 @@ import FormField from '../../common/components/FormField'
 import ImageUpload from './ImageUpload'
 import { TypeEnum } from '../../danke-core/css-model/element'
 import EditLen from './EditLen'
+import { boxShadows } from '../../danke-core/css-model/boxshadow'
 
 export default {
   name: 'PropConfig',
@@ -75,6 +77,7 @@ export default {
   },
   data () {
     return {
+      shadowType: boxShadows,
       TypeEnum,
       showMore: false,
       fileUrl: '',

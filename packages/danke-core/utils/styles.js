@@ -1,7 +1,7 @@
 import { TypeEnum } from '../elements/index'
 import { getLenSplits, getLength } from './common'
 
-import { getShadowStyle } from '../css-model/boxshadow'
+import { getBoxShadowStyle } from '../css-model/boxshadow'
 import { getFontStyle } from '../css-model/font'
 import { getBackgroundStyle } from '../css-model/background'
 import { getBorderStyle } from '../css-model/border'
@@ -23,13 +23,14 @@ function getElementStyle (element, device, animation) {
   let styles = []
   // position and size
   styles = styles.concat(getPositionSizingStyle(element, device))
-    .concat(getShadowStyle(element, device))
+    .concat(getBoxShadowStyle(element, device))
     .concat(getFontStyle(element, device))
     .concat(getBorderStyle(element, device))
-    .concat(getShadowStyle(element, device))
+    .concat(getBoxShadowStyle(element, device))
     .concat(getBackgroundStyle(element, device))
     .concat(getClipPathStyle(element, device))
     .concat(getTransformStyle(element, device))
+    .concat(getBoxShadowStyle(element, device))
 
   if (animation && element[animation]) {
     const animationDef = element[animation]

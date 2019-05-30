@@ -14,8 +14,6 @@
       </div>
     </div>
   </div>
-
-
   <section class="section scene-list">
     <div class="container">
       <div class="columns is-mobile is-multiline">
@@ -29,7 +27,7 @@
           <div class="device">
             <page-play :device="getDevice(scene.screen)" :scene="scene"></page-play>
             <span class="button icon-edit is-small is-primary" @click="editScene(scene)"></span>
-            <span class="button icon-trash-empty is-small is-danger" @click="deleteScene(scene)"></span>
+            <span class="button icon-trash is-small is-danger" @click="deleteScene(scene)"></span>
           </div>
         </div>
       </div>
@@ -133,8 +131,8 @@ export default {
       this.$router.push(`/page-tool/${scene._id}/${scene.screen}`)
     },
 
-    deleteScene (scene) {
-      this.scenedao.delete(scene)
+    async deleteScene (scene) {
+      await this.scenedao.delete(scene)
     },
 
     addSceneClicked () {
@@ -182,7 +180,7 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
       .icon-edit {
         right: 60px;
       }
-      .icon-trash-empty {
+      .icon-trash {
         right: 10px;
       }
       &:hover {

@@ -14,8 +14,10 @@
       <div class="element-list panel" v-show="currentTab==='元素列表'">
          <a class="panel-block" v-for="element of elements" :key="element.id" @click="toggleElement(element)">
           <div v-if="element.type === TypeEnum.IMAGE" class="image" :style="'background-image: url(' + element.url + ')'"></div>
+          <div v-if="element.type !== TypeEnum.IMAGE" class="image" :class="iconSet[element.type]"></div>
            <i :class="element.visible? 'icon-eye-1': 'icon-eye-outline'" @click="toggleElementVisible(element)"></i>
-           <i :class="icon-trash" @click="deleteElement(element)"></i>
+           <div class="element-content"></div>
+           <i class=" icon-trash" @click="deleteElement(element)"></i>
         </a>
       </div>
     </div>
@@ -44,6 +46,10 @@ export default {
   data () {
     return {
       TypeEnum,
+      iconSet: {
+        [TypeEnum.SHAPE]: 'icon-popup',
+        [TypeEnum.TEXT]: 'icon-sort-alphabet'
+      },
       currentTab: '场景配置',
       tabsName: ['场景配置', '元素列表']
     }
@@ -58,14 +64,10 @@ export default {
   },
 
   methods: {
-
     toggleElementVisible (element) {
-      debugger
-      if (element.visible) {
-        element.visible = false
-      } else {
-        element.visible = true
-      }
+      console.log('set element visible', element.visible)
+      this.$set(element, 'visible', !element.visible)
+      // element.visible = !element.visible
     },
     deleteElement (element) {
       this.$emit('remove', element)
@@ -86,6 +88,9 @@ export default {
     padding: 5px;
     height: 31px;
     box-sizing: border-box;
+  }
+  .element-content {
+    flex: 1;
   }
   .image {
     margin: 0 10px;

@@ -4,7 +4,6 @@ import CLIPPATH from '../css-model/clippath'
 import POSITION from '../css-model/position'
 import SIZE from '../css-model/size'
 import ANIMATION from '../css-model/animation'
-import BOXSHADOW from '../css-model/boxshadow'
 const image = {
   version: '1.2',
   type: 1,
@@ -16,7 +15,7 @@ const image = {
   border: BORDER,
   clip: CLIPPATH,
   size: SIZE,
-  shadow: BOXSHADOW,
+  shadow: '',
   animation: {
     in: ANIMATION,
     dura: ANIMATION,
