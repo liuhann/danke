@@ -3,7 +3,7 @@
     <div class="container">
       <div class="navbar-brand">
         <a class="navbar-item" href="/">
-          <img src="//cdn.danke.fun/res/logo.png" >
+          <img src="//cdn.danke.fun/res/logo-light.png" >
         </a>
         <a
           role="button"
