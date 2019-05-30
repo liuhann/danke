@@ -11,6 +11,7 @@
 <script>
 import { getElementStyle, getSceneStyle, getLength } from '../danke-core/utils/styles'
 import ELEMENT_TPL, { simplify, TypeEnum } from '../danke-core/css-model/element'
+import { createSheet, addAnimationStyle } from '../frame-tool/keyframe'
 export default {
   name: 'PagePlay',
   props: {
@@ -33,7 +34,7 @@ export default {
       if (element.url) {
         element.url = 'http://image.danke.fun' + element.url.replace(/http[s]*:\/\/[^/]+/g, '') + '?x-oss-process=image/format,jpg/quality,Q_80/resize,m_fixed,h_' + h + ',w_' + w
       }
-      element.style = getElementStyle(element, this.device)
+      element.style = getElementStyle(element, this.device, 'in')
     }
   },
   data () {

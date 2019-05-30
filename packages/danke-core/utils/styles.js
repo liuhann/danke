@@ -7,6 +7,7 @@ import { getBackgroundStyle } from '../css-model/background'
 import { getBorderStyle } from '../css-model/border'
 import { getClipPathStyle } from '../css-model/clippath'
 import { getTransformStyle } from '../css-model/transform'
+import { createSheet, addAnimationStyle } from '../../frame-tool/keyframe'
 
 function revertLength (value, currentLen, device) {
   const { unit } = getLenSplits(currentLen)
@@ -18,6 +19,8 @@ function revertLength (value, currentLen, device) {
     return value + 'px'
   }
 }
+
+let sheet = createSheet()
 
 function getElementStyle (element, device, animation) {
   let styles = []
@@ -32,9 +35,10 @@ function getElementStyle (element, device, animation) {
     .concat(getTransformStyle(element, device))
     .concat(getBoxShadowStyle(element, device))
 
-  if (animation && element[animation]) {
-    const animationDef = element[animation]
+  if (animation && element.animation[animation] && element.animation[animation].name) {
+    const animationDef = element.animation[animation]
     styles.push(`animation: ${animationDef.name} ${animationDef.duration}ms ${animationDef.timing} ${animationDef.delay}ms ${animationDef.iteration} normal both running`)
+    addAnimationStyle(sheet, animationDef)
   }
   return styles.filter(n => n).join(';')
 }

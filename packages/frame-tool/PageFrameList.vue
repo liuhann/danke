@@ -5,10 +5,10 @@
       <div class="container">
       <nav class="level">
         <div class="level-left">
-          <span class="button icon-mobile" @click="goFrameTool">创建动画</span>
+          <span class="button icon-mobile is-small" @click="goFrameTool">创建动画</span>
         </div>
         <div class="level-right buttons has-addons">
-          <span v-for="type in animationTypes" :key="type.key" class="button" :class="animationType===type.key? 'is-selected is-info':''"
+          <span v-for="type in animationTypes" :key="type.key" class="button is-small" :class="animationType===type.key? 'is-selected is-info':''"
                 @click="setAnimationType(type.key)">{{type.value}}</span>
         </div>
       </nav>
@@ -18,7 +18,7 @@
       <div class="container">
         <div class="columns is-multiline is-mobile is-tablet">
           <div class="column is-one-fifth-widescreen is-three-quarters-tablet is-half-mobile" v-for="animation in animations" :key="animation.name">
-            <div class="card-image play-area" @click="replay(animation)" @mouseover="replay(animation)">
+            <div class="card-image play-area" @click="replay(animation)" @mouseenter.once="replay(animation)">
               <div class="preview-box" :class="animation.name"></div>
             </div>
             <div class="card-content">
@@ -106,6 +106,21 @@ export default {
       }
     },
 
+    debounce(func, wait, immediate) {
+      var timeout;
+      return function() {
+        var context = this, args = arguments;
+        var later = function() {
+          timeout = null;
+          if (!immediate) func.apply(context, args);
+        };
+        var callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) func.apply(context, args);
+      };
+    },
+
     goFrameTool () {
       this.$router.push('/frame-tool')
     },
@@ -122,13 +137,20 @@ export default {
     },
 
     replay (animation) {
-      if (!animation.nameCache) {
-        animation.nameCache = animation.name
-      }
-      animation.name = 'none'
-      setTimeout( () => {
-        animation.name = animation.nameCache
-      }, 20)
+      this.debounce(() => {
+        if (!animation.nameCache) {
+          animation.nameCache = animation.name
+        }
+        animation.name = 'none'
+        setTimeout( ()=> {
+          animation.name = animation.nameCache
+        }, 300)
+      }, 1000)()
+
+      //
+      // setTimeout( () => {
+      //   animation.name = animation.nameCache
+      // }, 20)
     },
 
     addToMine () {
