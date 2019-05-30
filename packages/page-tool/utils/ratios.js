@@ -5,7 +5,7 @@ export default [{
 }, {
   label: 'PC页面',
   ratio: '16:9',
-  icon: 'icon-laptop'
+  icon: 'icon-desktop'
 }, {
   ratio: '4:3',
   label: 'Pad页面',

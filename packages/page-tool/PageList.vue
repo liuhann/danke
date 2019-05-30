@@ -1,24 +1,29 @@
 <template>
 <div id="page-scene-list">
   <nav-bar></nav-bar>
-  <section class="section">
+  <div class="section">
     <div class="container">
-      <nav class="level">
-        <div class="level-left">
-          <drop-down-menu :menus="createMenus" @menu-clicked="menuClicked">
-            <span class="button icon-plus is-small is-rounded"></span>
-          </drop-down-menu>
-        </div>
-        <div class="level-right buttons has-addons">
-          <span v-for="type in createMenus" :key="type.ratio" class="button is-small" :class="[screenType===type.ratio? 'is-selected is-info':'', type.icon]"
-            @click="setScreenType(type.ratio)"></span>
-        </div>
-      </nav>
+      <div class="buttons has-addons group-btn-type">
+        <a v-for="type in createMenus" :key="type.ratio" class="button is-small" :class="[screenType===type.ratio? 'is-selected is-info':'']"
+              @click="setScreenType(type.ratio)">
+          <span class="icon">
+            <i :class="type.icon"></i>
+          </span>
+          <span>{{type.label}}</span>
+        </a>
+      </div>
     </div>
-  </section>
+  </div>
+
+
   <section class="section scene-list">
     <div class="container">
       <div class="columns is-mobile is-multiline">
+        <div class="column is-one-fifth-fullhd is-one-quarter-widescreen is-one-quarter-desktop is-one-third-tablet is-half-mobile is-vcentered" @click="addSceneClicked">
+          <div class="add-empty">
+            <i class="icon-plus"></i>
+          </div>
+        </div>
         <div class="column is-one-fifth-fullhd is-one-quarter-widescreen is-one-quarter-desktop is-one-third-tablet is-half-mobile is-vcentered"
              v-for="(scene, index) in scenes" :key="scene._id">
           <div class="device">
@@ -132,16 +137,34 @@ export default {
       this.scenedao.delete(scene)
     },
 
-    menuClicked (menu) {
-      this.$router.push('/page-tool/new/' + menu.ratio)
+    addSceneClicked () {
+      this.$router.push('/page-tool/new/' + this.screenType)
     }
   }
 }
 </script>
 
 <style lang="scss">
+html.has-navbar-fixed-top, body.has-navbar-fixed-top {
+  padding-top: 3.5rem;
+}
 #page-scene-list {
   .scene-list {
+    .add-empty {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 2px dashed #ddd;
+      border-radius: 20px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #ddd;
+      &:hover {
+        color: #666;
+      }
+    }
     .device {
       background-color: white;
       width: 240px;
