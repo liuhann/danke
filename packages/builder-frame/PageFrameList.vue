@@ -97,7 +97,7 @@ export default {
     },
 
     goFrameTool () {
-      this.$router.push('/frame-tool')
+      this.$router.push('/builder-frame')
     },
 
     async removeAnimation (_id) {
@@ -108,7 +108,7 @@ export default {
 
     edit (animation) {
       this.ctx.editAnimation = animation
-      this.$router.push('/frame-tool')
+      this.$router.push('/builder-frame')
     },
 
     replay (animation) {

@@ -2,7 +2,7 @@ import AnimationDAO from './animationdao'
 
 export default {
   routes: [{
-    path: '/frame-tool',
+    path: '/builder-frame',
     component: () => import(/* webpackChunkName: "tool" */'./FrameTool.vue')
   }, {
     path: '/frame-list',

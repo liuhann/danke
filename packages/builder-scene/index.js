@@ -1,7 +1,7 @@
 import './fontello/css/fontello.css'
 export default {
   routes: [{
-    path: '/page-tool/:id?/:screen?',
+    path: '/builder-scene/:id?/:screen?',
     component: () => import(/* webpackChunkName: "tool" */'./PageTool.vue')
   }, {
     path: '/page-list',

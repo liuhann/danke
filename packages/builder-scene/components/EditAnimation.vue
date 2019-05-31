@@ -13,7 +13,7 @@
 <script>
 import EditLen from './EditLen'
 import FormField from '../../common/components/FormField'
-import frameModel from '../../frame-tool/frameChooseDialog'
+import frameModel from '../../builder-frame/frameChooseDialog'
 export default {
   name: 'EditAnimation',
   components: {

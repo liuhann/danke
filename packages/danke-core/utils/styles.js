@@ -7,7 +7,7 @@ import { getBackgroundStyle } from '../css-model/background'
 import { getBorderStyle } from '../css-model/border'
 import { getClipPathStyle } from '../css-model/clippath'
 import { getTransformStyle } from '../css-model/transform'
-import { createSheet, addAnimationStyle } from '../../frame-tool/keyframe'
+import { createSheet, addAnimationStyle } from '../../builder-frame/keyframe'
 
 function revertLength (value, currentLen, device) {
   const { unit } = getLenSplits(currentLen)

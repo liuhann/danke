@@ -134,7 +134,7 @@ export default {
     },
 
     addSceneClicked () {
-      this.$router.push('/page-tool/new/' + this.screenType)
+      this.$router.push('/builder-scene/new/' + this.screenType)
     }
   }
 }
