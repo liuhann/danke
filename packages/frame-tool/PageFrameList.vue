@@ -3,39 +3,12 @@
     <nav-bar></nav-bar>
     <div class="section">
       <div class="container">
-      <nav class="level">
-        <div class="level-left">
           <span class="button icon-mobile is-small" @click="goFrameTool">创建动画</span>
-        </div>
-        <div class="level-right buttons has-addons">
-          <span v-for="type in animationTypes" :key="type.key" class="button is-small" :class="animationType===type.key? 'is-selected is-info':''"
-                @click="setAnimationType(type.key)">{{type.value}}</span>
-        </div>
-      </nav>
       </div>
     </div>
     <div class="section">
       <div class="container">
-        <div class="columns is-multiline is-mobile is-tablet">
-          <div class="column is-one-fifth-widescreen is-three-quarters-tablet is-half-mobile" v-for="animation in animations" :key="animation.name">
-            <div class="card-image play-area" @click="replay(animation)" @mouseenter.once="replay(animation)">
-              <div class="preview-box" :class="animation.name"></div>
-            </div>
-            <div class="card-content">
-              <div class="media">
-                <div class="media-left">
-                  <p class="title is-6">{{animation.desc}}</p>
-                  <p class="subtitle is-7">{{animation.name}}</p>
-                </div>
-                <div class="media-right">
-                  <a class="icon-edit" v-if="!animation.userid || animation.userid === userid" @click="edit(animation)"></a>
-                  <a class="icon-heart-empty" @click="addToMine"></a>
-                  <a class="icon-trash-empty" v-if="!animation.userid || animation.userid === userid" @click="removeAnimation(animation._id)"></a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <frame-box></frame-box>
       </div>
     </div>
   </div>
@@ -44,9 +17,11 @@
 <script>
 import NavBar from '../common/site/NavBar'
 import { createSheet, addAnimationStyle, clearAnimation } from './keyframe'
+import FrameBox from './FrameBox'
 export default {
   name: 'PageFrameList',
   components: {
+    FrameBox,
     NavBar
   },
   mixins: [ ],

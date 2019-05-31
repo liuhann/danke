@@ -1,54 +1,58 @@
 <template>
 <div>
   <nav-bar></nav-bar>
-  <div class="columns is-mobile is-multiline" style="margin: 5px;">
-    <div class="column is-full-mobile">
-      <div id="preview" :style="{background: previewType==='文字'? 'none': ''}">
-        <div v-if="previewType==='方块'" class="preview-box" :class="boxClass" :style="frameStyle"></div>
-        <div v-if="previewType==='文字'" class="preview-text" :class="boxClass" :style="frameStyle">danke.fun</div>
-        <div v-if="previewType==='图片'" class="preview-box" :class="boxClass" :style="frameStyle">
-          <img src="http://cdn.danke.fun/res/sample1.jpg" width="160" height="160">
-        </div>
-        <div class="columns toolbar">
-          <div class="column">
-            <div class="buttons has-addons">
-              <span class="button" v-for="ptype of previewTypes" :key="ptype" :class="previewType === ptype? 'is-selected is-info': ''" @click="previewType = ptype">{{ptype}}</span>
-            </div>
-          </div>
-          <div class="column">
-            <div class="buttons has-addons is-right">
-              <span class="button icon-floppy" @click="share"></span>
-              <span class="button icon-code" @click="viewCode"></span>
-              <span class="button icon-play" @click="play"></span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="column is-one-third-widescreen is-two-fifths-tablet is-full-mobile">
-      <frames-config :animation="animation" class="config" @frame-change="frameChange"></frames-config>
-    </div>
-  </div>
-  <div class="modal" :class="errorMessage && 'is-active'">
-    <div class="modal-background"></div>
-    <div class="modal-content">
-      <div class="box">
-        {{errorMessage}}
-      </div>
-    </div>
-    <button class="modal-close is-large" aria-label="close" @click="errorMessage = ''"></button>
-  </div>
+  <div class="section">
+    <div class="container">
 
-  <div class="modal" :class="showCode && 'is-active'">
-    <div class="modal-background"></div>
-    <div class="modal-content">
-      <div class="box">
-        <pre>
-          {{sourceCode}}
-        </pre>
+      <div class="columns is-mobile is-multiline" style="margin: 5px;">
+        <div class="column is-full-mobile">
+          <div id="preview" :style="{background: previewType==='文字'? 'none': ''}">
+            <div v-if="previewType==='方块'" class="preview-box" :class="boxClass" :style="frameStyle"></div>
+            <div v-if="previewType==='文字'" class="preview-text" :class="boxClass" :style="frameStyle">danke.fun</div>
+            <div v-if="previewType==='图片'" class="preview-box" :class="boxClass" :style="frameStyle">
+              <img src="http://cdn.danke.fun/res/sample1.jpg" width="160" height="160">
+            </div>
+            <div class="columns toolbar">
+              <div class="column">
+                <div class="buttons has-addons">
+                  <span class="button" v-for="ptype of previewTypes" :key="ptype" :class="previewType === ptype? 'is-selected is-info': ''" @click="previewType = ptype">{{ptype}}</span>
+                </div>
+              </div>
+              <div class="column">
+                <div class="buttons has-addons is-right">
+                  <span class="button icon-code" @click="viewCode"></span>
+                  <span class="button icon-play" @click="play"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="column is-one-third-widescreen is-two-fifths-tablet is-full-mobile">
+          <frames-config :animation="animation" class="config" @frame-change="frameChange"></frames-config>
+        </div>
+      </div>
+      <div class="modal" :class="errorMessage && 'is-active'">
+        <div class="modal-background"></div>
+        <div class="modal-content">
+          <div class="box">
+            {{errorMessage}}
+          </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close" @click="errorMessage = ''"></button>
+      </div>
+
+      <div class="modal" :class="showCode && 'is-active'">
+        <div class="modal-background"></div>
+        <div class="modal-content">
+          <div class="box">
+            <pre>
+              {{sourceCode}}
+            </pre>
+          </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close" @click="showCode = false"></button>
       </div>
     </div>
-    <button class="modal-close is-large" aria-label="close" @click="showCode = false"></button>
   </div>
 </div>
 </template>
