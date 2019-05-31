@@ -1,5 +1,5 @@
 <template>
-<div>
+<div id="scene-builder">
   <nav-bar></nav-bar>
   <div class="section">
     <div class="container">
@@ -44,7 +44,6 @@
 </template>
 
 <script>
-import './fontello/css/fontello.css'
 import mixinLoginRequired from '../user/guardLoginRequired'
 import SceneConfig from './components/SceneConfig.vue'
 import { clone } from '../utils/object'
@@ -347,70 +346,73 @@ export default {
 </script>
 
 <style lang="scss">
-.panel {
-  margin-bottom: 0;
-}
-.section {
-  padding: 1rem;
-}
-.field:not(:last-child) {
-  height: 2rem;
-  margin-bottom: .5rem;
-}
-.field:last-child {
-  height: 2rem;
-  margin-bottom: .5rem;
-}
-.level {
-  margin-bottom: .5rem!important;
-}
-#stylePreview {
-	position: relative;
-	display: flex;
-	justify-content: center;
-	-webkit-box-align: center;
-	align-items: center;
-  overflow: hidden;
-  padding: 2rem 0;
-  background: #fafafa;
-	.device {
-		background-color: #fff;
-    border: 1px solid #efefef;
-		position: relative;
-    .element.current {
-      outline: 3px dashed #87b1f1;
-      outline-offset: 0;
-    }
-    .element.hidden {
-      display: none;
-    }
-    .element {
-      span {
-        min-height: 12px;
-        display: inline-block;
-        min-width: 50px;
+#scene-builder {
+  .panel {
+    margin-bottom: 0;
+  }
+  .section {
+    padding: 1rem;
+  }
+  .field:not(:last-child) {
+    height: 2rem;
+    margin-bottom: .5rem;
+  }
+  .field:last-child {
+    height: 2rem;
+    margin-bottom: .5rem;
+  }
+  .level {
+    margin-bottom: .5rem!important;
+  }
+  #stylePreview {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    -webkit-box-align: center;
+    align-items: center;
+    overflow: hidden;
+    padding: 2rem 0;
+    background: #fafafa;
+    .device {
+      background-color: #fff;
+      border: 1px solid #efefef;
+      position: relative;
+      .element.current {
+        outline: 3px dashed #87b1f1;
+        outline-offset: 0;
+      }
+      .element.hidden {
+        display: none;
+      }
+      .element {
+        span {
+          min-height: 12px;
+          display: inline-block;
+          min-width: 50px;
+        }
       }
     }
-	}
-	$pointWidth: 12px;
-}
-.toolbar {
-	position: absolute;
-	top: 1em;
-	width: 100%;
+    $pointWidth: 12px;
+  }
+  .toolbar {
+    position: absolute;
+    top: 1em;
+    width: 100%;
+  }
+
+  .f-left {
+    float: left;
+  }
+  .f-right {
+    float: right;
+  }
+  @media screen and (max-width: 768px) {
+    #stylePreview {
+      height: 100vw;
+    }
+  }
 }
 
-.f-left {
-	float: left;
-}
-.f-right {
-	float: right;
-}
-@media screen and (max-width: 768px) {
-	#stylePreview {
-		height: 100vw;
-	}
-}
 
 
 </style>

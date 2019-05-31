@@ -15,13 +15,26 @@
             <div class="columns toolbar">
               <div class="column">
                 <div class="buttons has-addons">
-                  <span class="button" v-for="ptype of previewTypes" :key="ptype" :class="previewType === ptype? 'is-selected is-info': ''" @click="previewType = ptype">{{ptype}}</span>
+                  <span class="button is-small" v-for="ptype of previewTypes" :key="ptype" :class="previewType === ptype? 'is-selected is-info': ''" @click="previewType = ptype">{{ptype}}</span>
                 </div>
               </div>
               <div class="column">
                 <div class="buttons has-addons is-right">
-                  <span class="button icon-code" @click="viewCode"></span>
-                  <span class="button icon-play" @click="play"></span>
+                  <a class="button is-small" @click="share">
+                    <span class="icon">
+                      <i class="icon-ok"></i>
+                    </span>
+                  </a>
+                  <a class="button is-small" @click="viewCode">
+                    <span class="icon">
+                      <i class="icon-code"></i>
+                    </span>
+                  </a>
+                  <a class="button is-small" @click="play">
+                    <span class="icon">
+                      <i class="icon-play-outline"></i>
+                    </span>
+                  </a>
                 </div>
               </div>
             </div>
@@ -164,10 +177,6 @@ export default {
 </script>
 
 <style lang="scss">
-
-.container {
-  margin: 10px;
-}
 #preview {
   position: relative;
   background-image: linear-gradient(90deg, #592D2D, #592D2D);

@@ -8,10 +8,10 @@
   <div class="column is-one-third-tablet">
     <nav class="panel">
       <div class="panel-block">
-        <p class="control">
+        <p class="control has-icons-right">
           <input class="input is-small" type="text" placeholder="按名称查找" v-model="searchFilter">
-          <span class="icon is-small is-left">
-            <i class="fas fa-search" aria-hidden="true"></i>
+          <span class="icon is-small is-right">
+            <i class="icon-search" aria-hidden="true"></i>
           </span>
         </p>
       </div>
@@ -26,13 +26,9 @@
       </span>
       {{animation.name}} ({{animation.desc}})
     </a>
-      <label class="panel-block">
-        <input type="checkbox">
-        remember me
-      </label>
-      <div class="panel-block">
+      <div class="panel-block" v-if="select">
         <button class="button is-link is-outlined is-fullwidth">
-          reset all filters
+          选择
         </button>
       </div>
     </nav>
@@ -45,6 +41,12 @@ import RestDAO from '../common/dao/restdao'
 
 export default {
   name: 'FrameBox',
+  props: {
+    select: {
+      type: Boolean,
+      default: false
+    }
+  },
   data () {
     return {
       currentType: '',

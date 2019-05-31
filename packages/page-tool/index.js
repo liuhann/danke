@@ -1,3 +1,4 @@
+import './fontello/css/fontello.css'
 export default {
   routes: [{
     path: '/page-tool/:id?/:screen?',

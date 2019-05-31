@@ -56,9 +56,6 @@ export default {
 </script>
 
 <style lang="scss">
-.field-label {
-  margin-right: .75rem;
-}
 .scene {
 	position: relative;
   font-size: 12px;

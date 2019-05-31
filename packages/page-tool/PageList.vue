@@ -43,8 +43,6 @@ import ratios from './utils/ratios'
 import DropDownMenu from '../common/components/DropDownMenu'
 import RestDAO from '../common/dao/restdao'
 import PagePlay from './PagePlay'
-import Waterfall from 'vue-waterfall/lib/waterfall'
-import WaterfallSlot from 'vue-waterfall/lib/waterfall-slot'
 
 const sizes = {
   '9:16': 480,
@@ -68,7 +66,7 @@ const screenDevices = {
 
 export default {
   name: 'PageList',
-  components: {PagePlay, DropDownMenu, NavBar,  Waterfall, WaterfallSlot },
+  components: { PagePlay, DropDownMenu, NavBar },
   data () {
     return {
       screenType: '9:16',
@@ -143,9 +141,6 @@ export default {
 </script>
 
 <style lang="scss">
-html.has-navbar-fixed-top, body.has-navbar-fixed-top {
-  padding-top: 3.5rem;
-}
 #page-scene-list {
   .scene-list {
     .add-empty {
