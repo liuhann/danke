@@ -10,8 +10,6 @@
         <span class="button" v-for="ratio of imageRatios" :key="ratio"
               :class="currentRatio===ratio? 'is-primary ' + buttonSize: buttonSize"
               @click="setRatio(ratio)">{{ratio}}</span>
-        <span class="button icon-cw" :class="buttonSize" style="margin-left: .5rem;" @click="rotate(-5)"></span>
-        <span class="button icon-ccw" :class="buttonSize" @click="rotate(5)"></span>
         <span class="button icon-ok is-success" :class="buttonSize" @click="cropComplete"></span>
       </div>
     </div>
