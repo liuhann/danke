@@ -1,10 +1,10 @@
 import './fontello/css/fontello.css'
 export default {
   routes: [{
-    path: '/builder-scene/:id?/:screen?',
+    path: '/builder/scene/:id?/:screen?',
     component: () => import(/* webpackChunkName: "tool" */'./PageTool.vue')
   }, {
-    path: '/page-list',
+    path: '/scenes',
     component: () => import(/* webpackChunkName: "tool" */'./PageList.vue')
   }],
   async onload (ctx) {

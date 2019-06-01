@@ -119,6 +119,18 @@
       "css": "down-open",
       "code": 59410,
       "src": "fontawesome"
+    },
+    {
+      "uid": "8782cc70184b33096ae927590d1fadc4",
+      "css": "doc-landscape",
+      "code": 59411,
+      "src": "entypo"
+    },
+    {
+      "uid": "5qynhqqaenby227l5kogqj8sdk5s4e7h",
+      "css": "cw",
+      "code": 59412,
+      "src": "typicons"
     }
   ]
 }

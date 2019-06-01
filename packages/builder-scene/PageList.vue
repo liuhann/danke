@@ -126,7 +126,7 @@ export default {
     },
 
     editScene (scene) {
-      this.$router.push(`/page-tool/${scene._id}/${scene.screen}`)
+      this.$router.push(`/builder/scene/${scene._id}/${scene.screen}`)
     },
 
     async deleteScene (scene) {
@@ -134,7 +134,7 @@ export default {
     },
 
     addSceneClicked () {
-      this.$router.push('/builder-scene/new/' + this.screenType)
+      this.$router.push('/builder/scene/new/' + this.screenType)
     }
   }
 }

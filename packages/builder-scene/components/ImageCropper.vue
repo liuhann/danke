@@ -5,12 +5,34 @@
     <div class="crop-container" :style="fullSize">
       <img ref="crop" :src="imageUrl">
     </div>
+    <div class="crop-info">
+      <p>x: {{cropInfo.x}}</p>
+      <p>y: {{cropInfo.y}}</p>
+      <p>w: {{cropInfo.w}}</p>
+      <p>h: {{cropInfo.h}}</p>
+    </div>
     <div class="level-buttons">
-      <div class="buttons has-addons">
-        <span class="button" v-for="ratio of imageRatios" :key="ratio"
-              :class="currentRatio===ratio? 'is-primary ' + buttonSize: buttonSize"
-              @click="setRatio(ratio)">{{ratio}}</span>
-        <span class="button icon-ok is-success" :class="buttonSize" @click="cropComplete"></span>
+      <div class="container">
+        <nav class="level is-mobile">
+          <!-- Left side -->
+          <div class="level-left">
+            <div class="level-item">
+              <div class="buttons has-addons">
+                <span class="button is-small" v-for="ratio of imageRatios" :key="ratio"
+                  :class="currentRatio===ratio? 'is-primary ': ''"
+                  @click="setRatio(ratio)">{{ratio}}</span>
+                <span class="button is-small icon-cw" :class="isRotate?'is-primary':''" @click="setRotate"></span>
+              </div>
+            </div>
+          </div>
+          <!-- Right side -->
+          <div class="level-right">
+            <div class="buttons has-addons">
+              <p class="level-item"><span class="button is-small icon-plus" @click="cropAdd">0</span></p>
+              <p class="level-item"><a><span class="button is-small icon-ok is-success" @click="cropComplete"></span></a></p>
+            </div>
+          </div>
+        </nav>
       </div>
     </div>
   </div>
@@ -27,11 +49,18 @@ export default {
   name: 'ImageCropper',
   components: {FormField},
   data () {
+    this.croppedData = []
     return {
       imageRatios,
       imageUrl: null,
       currentRatio: null,
       isRotate: false,
+      cropInfo: {
+        x: 0,
+        y: 0,
+        w: 0,
+        h: 0
+      },
       client: {
         width: 0,
         height: 0
@@ -39,13 +68,6 @@ export default {
     }
   },
   computed: {
-    buttonSize () {
-      if (this.client.width > 400) {
-        return 'is-normal'
-      } else {
-        return 'is-small'
-      }
-    },
     fullSize () {
       return {
         width: this.client.width + 'px',
@@ -103,7 +125,11 @@ export default {
       image.onload = function () {
         ic.cropper = new Cropper(image, {
           crop(event) {
-
+            const cropboxData = ic.cropper.getCropBoxData()
+            ic.cropInfo.x = Math.floor(cropboxData.left)
+            ic.cropInfo.y = Math.floor(cropboxData.top)
+            ic.cropInfo.w = Math.floor(cropboxData.width)
+            ic.cropInfo.h = Math.floor(cropboxData.height)
           }
         })
       }
@@ -111,6 +137,18 @@ export default {
     close () {
       this.cropper.destroy()
       this.imageUrl = null
+    },
+    cropAdd () {
+      const cropboxData = this.cropper.getCropBoxData()
+      this.cropper.getCroppedCanvas({
+        width: cropboxData.width,
+        height: cropboxData.height,
+      }).toBlob((blob) => {
+        this.croppedData.push({
+          blob,
+          cropboxData
+        })
+      })
     },
     cropComplete () {
       const ic = this
@@ -146,6 +184,15 @@ export default {
       max-width: 640px;
       margin: 0 auto;
     }
+  }
+  .crop-info {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-color: rgba(0,0,0, .6);
+    color: #fff;
+    font-size: 10px;
+    padding: 0 5px;
   }
 }
 
