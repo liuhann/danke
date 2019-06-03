@@ -26,7 +26,7 @@
              v-for="(scene, index) in scenes" :key="scene._id">
           <div class="device">
             <page-play :device="getDevice(scene.screen)" :scene="scene" ref="pagePlay"></page-play>
-						<span class="button is-small is-primary" @click="replay(scene, index)"></span>
+						<span class="button icon-cw" @click="replay(scene, index)"></span>
             <span class="button icon-edit is-small is-primary" @click="editScene(scene)"></span>
             <span class="button icon-trash is-small is-danger" @click="deleteScene(scene)"></span>
           </div>
@@ -181,6 +181,10 @@ export default {
       }
       .icon-trash {
         right: 10px;
+      }
+      .icon-cw {
+        right: 10px;
+        top: 10px;
       }
       &:hover {
         .button {
