@@ -1,5 +1,6 @@
 <template>
 <div class="scene" :style="sceneStyle">
+  {{device}}
   <div v-for="element of scene.elements" :key="element.id"
        class="element" :style="element.style"
        @click.self="elementClick(element)">
@@ -47,7 +48,7 @@ export default {
         let h = getLength(element.size.height, this.device)
         element.baseUrl = element.baseUrl || element.url
         if (element.baseUrl) {
-          element.url = 'http://image.danke.fun' + element.baseUrl.replace(/http[s]*:\/\/[^/]+/g, '') + '?x-oss-process=image/format,jpg/quality,Q_80/resize,m_fixed,h_' + h + ',w_' + w
+          element.url = 'http://image.danke.fun' + element.baseUrl.replace(/http[s]*:\/\/[^/]+/g, '') + '?x-oss-process=image/format,webp/quality,Q_80/resize,m_fixed,h_' + h + ',w_' + w
         }
         element.style = getElementStyle(element, this.device, stage)
       }

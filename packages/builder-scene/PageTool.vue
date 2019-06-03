@@ -191,32 +191,37 @@ export default {
       this.currentElement = clonedElement
 		},
 
-    cropComplete (blob, cropbox) {
-      const clonedElement = clone(IMAGE)
-      clonedElement.visible = true
-      const wider = (cropbox.width / cropbox.height) > (this.device.width / this.device.height)
-      if (wider) { // 宽度优先
-        if (cropbox.width > this.device.width) {
-          clonedElement.size.width = '100vw'
-          clonedElement.size.height =  Math.floor((cropbox.height / cropbox.width) * 100) + 'vw'
-        } else {
-          clonedElement.size.width = Math.floor(100 * cropbox.width/this.device.width) + 'vw'
-          clonedElement.size.height = Math.floor(100 * cropbox.height/this.device.width) + 'vw'
+
+    cropComplete (croppedList) {
+      for (let {blob, cropbox} of croppedList) {
+        const clonedElement = clone(IMAGE)
+        clonedElement.visible = true
+        const wider = (cropbox.width / cropbox.height) > (this.device.width / this.device.height)
+        if (wider) { // 宽度优先
+          if (cropbox.width > this.device.width) {
+            clonedElement.size.width = '100vw'
+            clonedElement.size.height =  Math.floor((cropbox.height / cropbox.width) * 100) + 'vw'
+          } else {
+            clonedElement.size.width = Math.floor(100 * cropbox.width/this.device.width) + 'vw'
+            clonedElement.size.height = Math.floor(100 * cropbox.height/this.device.width) + 'vw'
+          }
+        } else { // 高度优先
+          if (cropbox.height > this.device.height) {
+            clonedElement.size.height = '100vh'
+            clonedElement.size.width =  Math.floor((cropbox.width / cropbox.height) * 100) + 'vh'
+          } else {
+            clonedElement.size.width = Math.floor(100 * cropbox.width/this.device.height) + 'vh'
+            clonedElement.size.height = Math.floor(100 * cropbox.height/this.device.height) + 'vh'
+          }
         }
-      } else { // 高度优先
-        if (cropbox.height > this.device.height) {
-          clonedElement.size.height = '100vh'
-          clonedElement.size.width =  Math.floor((cropbox.width / cropbox.height) * 100) + 'vh'
-        } else {
-          clonedElement.size.width = Math.floor(100 * cropbox.width/this.device.height) + 'vh'
-          clonedElement.size.height = Math.floor(100 * cropbox.height/this.device.height) + 'vh'
-        }
+        clonedElement.url = URL.createObjectURL(blob)
+        const style = getElementStyle(clonedElement, this.device)
+        clonedElement.style = style
+
+        this.elements.push(clonedElement)
+        blob.filename = this.croppingFileName
+        this.resources[clonedElement.url] = blob
       }
-      clonedElement.url = URL.createObjectURL(blob)
-      this.elements.push(clonedElement)
-      this.currentElement = clonedElement
-      blob.filename = this.croppingFileName
-      this.resources[clonedElement.url] = blob
     },
 
 		removeCurrentElement () {

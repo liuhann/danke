@@ -28,7 +28,7 @@
           <!-- Right side -->
           <div class="level-right">
             <div class="buttons has-addons">
-              <p class="level-item"><span class="button is-small icon-plus" @click="cropAdd">0</span></p>
+              <p class="level-item"><span class="button is-small icon-plus" @click="cropAdd()">{{croppedData.length}}</span></p>
               <p class="level-item"><a><span class="button is-small icon-ok is-success" @click="cropComplete"></span></a></p>
             </div>
           </div>
@@ -138,7 +138,7 @@ export default {
       this.cropper.destroy()
       this.imageUrl = null
     },
-    cropAdd () {
+    cropAdd (addComplete) {
       const cropboxData = this.cropper.getCropBoxData()
       this.cropper.getCroppedCanvas({
         width: cropboxData.width,
@@ -146,21 +146,21 @@ export default {
       }).toBlob((blob) => {
         this.croppedData.push({
           blob,
-          cropboxData
+          cropbox: cropboxData
         })
+        addComplete && addComplete()
       })
     },
     cropComplete () {
-      const ic = this
-      const cropboxData = this.cropper.getCropBoxData()
-      this.cropper.getCroppedCanvas({
-        width: cropboxData.width,
-        height: cropboxData.height,
-      }).toBlob((blob) => {
-        this.cropCompleteCallback(blob, cropboxData)
-        //this.$emit('complete', blob, cropboxData)
+      if (this.croppedData.length) {
+        this.cropCompleteCallback(this.croppedData)
         this.close()
-      })
+      } else {
+        this.cropAdd(() => {
+          this.cropCompleteCallback(this.croppedData)
+          this.close()
+        })
+      }
     }
   }
 }
