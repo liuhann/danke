@@ -25,7 +25,8 @@
         <div class="column is-one-fifth-fullhd is-one-quarter-widescreen is-one-quarter-desktop is-one-third-tablet is-half-mobile is-vcentered"
              v-for="(scene, index) in scenes" :key="scene._id">
           <div class="device">
-            <page-play :device="getDevice(scene.screen)" :scene="scene"></page-play>
+            <page-play :device="getDevice(scene.screen)" :scene="scene" ref="pagePlay"></page-play>
+						<span class="button is-small is-primary" @click="replay(scene, index)"></span>
             <span class="button icon-edit is-small is-primary" @click="editScene(scene)"></span>
             <span class="button icon-trash is-small is-danger" @click="deleteScene(scene)"></span>
           </div>
@@ -129,6 +130,9 @@ export default {
       this.$router.push(`/builder/scene/${scene._id}/${scene.screen}`)
     },
 
+    replay (scene, index) {
+			this.$refs.pagePlay[index].replay()
+		},
     async deleteScene (scene) {
       await this.scenedao.delete(scene)
     },

@@ -28,14 +28,7 @@ export default {
     }
   },
   created () {
-    for (let element of this.scene.elements) {
-      let w = getLength(element.size.width, this.device)
-      let h = getLength(element.size.height, this.device)
-      if (element.url) {
-        element.url = 'http://image.danke.fun' + element.url.replace(/http[s]*:\/\/[^/]+/g, '') + '?x-oss-process=image/format,jpg/quality,Q_80/resize,m_fixed,h_' + h + ',w_' + w
-      }
-      element.style = getElementStyle(element, this.device, 'in')
-    }
+    this.renderStage('in')
   },
   data () {
     return {
@@ -48,6 +41,25 @@ export default {
     }
   },
   methods: {
+    renderStage (stage) {
+      for (let element of this.scene.elements) {
+        let w = getLength(element.size.width, this.device)
+        let h = getLength(element.size.height, this.device)
+        element.baseUrl = element.baseUrl || element.url
+        if (element.baseUrl) {
+          element.url = 'http://image.danke.fun' + element.baseUrl.replace(/http[s]*:\/\/[^/]+/g, '') + '?x-oss-process=image/format,jpg/quality,Q_80/resize,m_fixed,h_' + h + ',w_' + w
+        }
+        element.style = getElementStyle(element, this.device, stage)
+      }
+    },
+    replay () {
+      const elements = this.scene.elements
+      this.scene.elements = []
+      setTimeout( ()=> {
+        this.scene.elements = elements
+        this.renderStage('in')
+      }, 300)
+    },
     elementClick (element) {
       this.$emit('element-click', element)
     }
