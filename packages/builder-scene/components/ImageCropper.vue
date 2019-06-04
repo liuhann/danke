@@ -1,40 +1,42 @@
 <template>
 <div id="image-cropper" class="modal" :class="imageUrl? 'is-active': ''">
   <div class="modal-background"></div>
-  <div class="modal-content" :style="fullSize">
-    <div class="crop-container" :style="fullSize">
+  <div class="modal-content" :style="fullSizeStyle">
+    <div class="crop-container" :style="fullSizeStyle">
       <img ref="crop" :src="imageUrl">
     </div>
-    <div class="crop-info">
-      <p>x: {{cropInfo.x}}</p>
-      <p>y: {{cropInfo.y}}</p>
-      <p>w: {{cropInfo.w}}</p>
-      <p>h: {{cropInfo.h}}</p>
+    <div class="cropped-boxes">
     </div>
-    <div class="level-buttons">
-      <div class="container">
-        <nav class="level is-mobile">
-          <!-- Left side -->
-          <div class="level-left">
-            <div class="level-item">
-              <div class="buttons has-addons">
-                <span class="button is-small" v-for="ratio of imageRatios" :key="ratio"
-                  :class="currentRatio===ratio? 'is-primary ': ''"
-                  @click="setRatio(ratio)">{{ratio}}</span>
-                <span class="button is-small icon-cw" :class="isRotate?'is-primary':''" @click="setRotate"></span>
-              </div>
-            </div>
-          </div>
-          <!-- Right side -->
-          <div class="level-right">
+  </div>
+  <div class="level-buttons">
+    <div class="container">
+      <nav class="level is-mobile">
+        <!-- Left side -->
+        <div class="level-left">
+          <div class="level-item">
             <div class="buttons has-addons">
-              <p class="level-item"><span class="button is-small icon-plus" @click="cropAdd()">{{croppedData.length}}</span></p>
-              <p class="level-item"><a><span class="button is-small icon-ok is-success" @click="cropComplete"></span></a></p>
+                <span class="button is-small" v-for="ratio of imageRatios" :key="ratio"
+                      :class="currentRatio===ratio? 'is-primary ': ''"
+                      @click="setRatio(ratio)">{{ratio}}</span>
+              <span class="button is-small icon-cw" :class="isRotate?'is-primary':''" @click="setRotate"></span>
             </div>
           </div>
-        </nav>
-      </div>
+        </div>
+        <!-- Right side -->
+        <div class="level-right">
+          <div class="buttons has-addons">
+            <p class="level-item"><span class="button is-small icon-plus" @click="cropAdd()">{{croppedData.length}}</span></p>
+            <p class="level-item"><a><span class="button is-small icon-ok is-success" @click="cropComplete"></span></a></p>
+          </div>
+        </div>
+      </nav>
     </div>
+  </div>
+  <div class="crop-info">
+    <p>x: {{cropInfo.x}}</p>
+    <p>y: {{cropInfo.y}}</p>
+    <p>w: {{cropInfo.w}}</p>
+    <p>h: {{cropInfo.h}}</p>
   </div>
   <button class="modal-close is-large" aria-label="close" @click="close"></button>
 </div>
@@ -48,6 +50,11 @@ import FormField from '../../common/components/FormField'
 export default {
   name: 'ImageCropper',
   components: {FormField},
+  props: {
+    ratio: {
+      type: String
+    }
+  },
   data () {
     this.croppedData = []
     return {
@@ -62,29 +69,35 @@ export default {
         h: 0
       },
       client: {
-        width: 0,
-        height: 0
+        width: 1,
+        height: 1
       }
     }
   },
   computed: {
     fullSize () {
-      return {
-        width: this.client.width + 'px',
-        height: this.client.height + 'px'
+      const builderRatio = this.client.width / this.client.height
+      let [w, h] = this.ratio.split(':')
+      const sceneRatio =  parseInt(w) / parseInt(h)
+
+      if (builderRatio > sceneRatio) {
+        return {
+          height: this.client.height,
+          width: this.client.height * sceneRatio
+        }
+      } else {
+        return {
+          height: this.client.width / sceneRatio,
+          width: this.client.width
+        }
       }
     },
 
-    cropContainerSize () {
-      const size = {}
-      if (this.client.width > this.client.height) {
-        size.height = (this.client.height - 80) + 'px'
-        size.width = (this.client.height - 80) * 1.5 + 'px'
-      } else {
-        size.width = size.width + 'px'
-        size.height = size.width + 'px'
+    fullSizeStyle () {
+      return {
+        width: this.fullSize.width + 'px',
+        height: this.fullSize.height + 'px'
       }
-      return size
     }
   },
   mounted () {
@@ -121,6 +134,7 @@ export default {
     open (url) {
       const ic = this
       this.imageUrl = url
+      this.croppedData = []
       const image = this.$refs.crop
       image.onload = function () {
         ic.cropper = new Cropper(image, {
@@ -153,11 +167,11 @@ export default {
     },
     cropComplete () {
       if (this.croppedData.length) {
-        this.cropCompleteCallback(this.croppedData)
+        this.cropCompleteCallback(this.croppedData, this.fullSize)
         this.close()
       } else {
         this.cropAdd(() => {
-          this.cropCompleteCallback(this.croppedData)
+          this.cropCompleteCallback(this.croppedData, this.fullSize)
           this.close()
         })
       }
