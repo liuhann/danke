@@ -6,6 +6,13 @@
       <img ref="crop" :src="imageUrl">
     </div>
     <div class="cropped-boxes">
+      <div v-for="(crop, index) in croppedData" :key="index" :style="{
+        left: crop.cropbox.left + 'px',
+        top: crop.cropbox.top + 'px',
+        width: crop.cropbox.width + 'px',
+        height: crop.cropbox.height + 'px'
+      }">
+      </div>
     </div>
   </div>
   <div class="level-buttons">
@@ -56,7 +63,6 @@ export default {
     }
   },
   data () {
-    this.croppedData = []
     return {
       imageRatios,
       imageUrl: null,
@@ -71,8 +77,10 @@ export default {
       client: {
         width: 1,
         height: 1
-      }
+      },
+      croppedData : []
     }
+
   },
   computed: {
     fullSize () {
@@ -207,6 +215,12 @@ export default {
     color: #fff;
     font-size: 10px;
     padding: 0 5px;
+  }
+  .cropped-boxes {
+    >div {
+      position: absolute;
+      border: 1px solid #fff;
+    }
   }
 }
 
