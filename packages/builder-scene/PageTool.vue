@@ -39,7 +39,7 @@
       </div>
     </div>
   </div>
-  <image-cropper ref="cropper" @complete="cropComplete"></image-cropper>
+  <image-cropper ref="cropper" @complete="cropComplete" :ratio="previewRatio"></image-cropper>
 </div>
 </template>
 
@@ -192,11 +192,18 @@ export default {
 		},
 
 
-    cropComplete (croppedList) {
+    cropComplete (croppedList, cropScreenSize) {
       for (let {blob, cropbox} of croppedList) {
         const clonedElement = clone(IMAGE)
         clonedElement.visible = true
-        const wider = (cropbox.width / cropbox.height) > (this.device.width / this.device.height)
+        clonedElement.size.width = Math.floor(100 * cropbox.width / cropScreenSize.width) + 'vw'
+        clonedElement.size.height = Math.floor(100 * cropbox.height / cropScreenSize.height) + 'vh'
+        clonedElement.position.horizontal = 'left'
+        clonedElement.position.vertical = 'top'
+        clonedElement.position.offsetX = Math.floor(100 * cropbox.left / cropScreenSize.width) + 'vw'
+        clonedElement.position.offsetY = Math.floor(100 * cropbox.top / cropScreenSize.height) + 'vh'
+
+       /* const wider = (cropbox.width / cropbox.height) > (this.device.width / this.device.height)
         if (wider) { // 宽度优先
           if (cropbox.width > this.device.width) {
             clonedElement.size.width = '100vw'
@@ -213,7 +220,7 @@ export default {
             clonedElement.size.width = Math.floor(100 * cropbox.width/this.device.height) + 'vh'
             clonedElement.size.height = Math.floor(100 * cropbox.height/this.device.height) + 'vh'
           }
-        }
+        }*/
         clonedElement.url = URL.createObjectURL(blob)
         const style = getElementStyle(clonedElement, this.device)
         clonedElement.style = style
