@@ -3,7 +3,7 @@
   <nav class="level">{{label}}</nav>
   <form-field label="进入">
     <span class="button is-small" @click="chooseAnimation(animationType)">{{animation.desc || '选择'}}</span>
-    <span v-if="animation.name" class="button is-small" @click="clearAnimation"></span>
+    <span v-if="animation.name" class="button is-small is-trash-empty" @click="clearAnimation"></span>
   </form-field>
   <edit-len label="时长" v-model="animation.duration" :with-unit="false"></edit-len>
   <edit-len label="延迟" v-model="animation.delay" :with-unit="false"></edit-len>
@@ -59,7 +59,6 @@ export default {
     },
     chooseAnimation (type) {
       frameModel.choose(type, (animation) => {
-        debugger
         this.animation.name = animation.name
         this.animation.desc = animation.desc
         this.animation.duration = animation.duration

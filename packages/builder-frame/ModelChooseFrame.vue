@@ -1,19 +1,8 @@
 <template>
 <div class="modal modal-frame-choose" :class="isShow? 'is-active': ''">
   <div class="modal-background"></div>
-  <div class="modal-content">
-    <section class="modal-card-body">
-      <div class="columns is-multiline is-mobile">
-        <div class="column is-half" v-for="animation in animations" :key="animations.name">
-          <div class="card-image play-area" @click="choose(animation)">
-            <div class="preview-box" :class="animation.name"></div>
-          </div>
-          <div class="card-content">
-            <div>{{animation.desc}}</div>
-          </div>
-        </div>
-      </div>
-    </section>
+  <div class="modal-content frame-box-model">
+    <frame-box></frame-box>
   </div>
   <button class="modal-close is-large" aria-label="close" @click="isShow = false"></button>
 </div>
@@ -21,8 +10,10 @@
 
 <script>
 import { createSheet, addAnimationStyle, clearAnimation } from './keyframe'
+import FrameBox from './FrameBox.vue'
 export default {
   name: 'ModelChooseFrame',
+  components: { FrameBox },
   props: {
 
   },
@@ -68,6 +59,18 @@ export default {
 <style lang="scss">
 .modal-frame-choose {
   z-index: 10001;
+
+  .modal-content {
+    background-color: #fff;
+  }
+
+  .frame-box-columns {
+    overflow: hidden;
+    .column-list {
+      overflow-y: auto;
+    }
+  }
+
   .play-area {
     position: relative;
     display: flex;

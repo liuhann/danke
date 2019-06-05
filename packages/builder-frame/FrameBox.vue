@@ -1,11 +1,11 @@
 <template>
-<div class="columns">
+<div class="columns frame-box-columns">
   <div class="column is-two-thirds-tablet">
     <div class="frame-preview">
       <div v-if="currentAnimation" class="preview-box" :class="currentAnimation.name"></div>
     </div>
   </div>
-  <div class="column is-one-third-tablet">
+  <div class="column is-one-third-tablet column-list">
     <nav class="panel">
       <div class="panel-block">
         <p class="control has-icons-right">
@@ -16,15 +16,12 @@
         </p>
       </div>
     <p class="panel-tabs">
-      <a v-for="(type, index) in animationTypes" @click="changeType(type)" :class="currentType === type.key? 'is-active': ''">
+      <a v-for="(type, index) in animationTypes" :key="index" @click="changeType(type)" :class="currentType === type.key? 'is-active': ''">
         {{type.value}}
       </a>
     </p>
-    <a v-for="animation in animations" class="panel-block" @click="setAnimation(animation)" :class="currentAnimation.name === animation.name? 'is-active': ''">
-      <span class="panel-icon">
-        <i class="fas fa-book" aria-hidden="true"></i>
-      </span>
-      {{animation.name}} ({{animation.desc}})
+    <a v-for="animation in animations" :key="animation.name" class="panel-block" @click="setAnimation(animation)" :class="currentAnimation.name === animation.name? 'is-active': ''">
+       {{animation.desc}}
     </a>
       <div class="panel-block" v-if="select">
         <button class="button is-link is-outlined is-fullwidth">
@@ -109,6 +106,11 @@ export default {
     width: 160px;
     height: 160px;
     background-color: #FF4B4B;
+  }
+}
+.frame-box-columns {
+  .panel {
+    font-size: 12px;
   }
 }
 @media screen and (max-width: 640px) {
