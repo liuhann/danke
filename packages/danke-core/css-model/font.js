@@ -15,7 +15,8 @@ export default {
   align: 'left',
   decoration: 'none',
   style: 'normal',
-  shadow: ''
+  shadow: '',
+  vertical: false
 }
 
 export function getFontStyle ({ font }, device) {
@@ -26,8 +27,15 @@ export function getFontStyle ({ font }, device) {
     styles.push(`text-align: ${font.align}`)
     styles.push(`font-weight: ${font.weight}`)
     styles.push(`letter-spacing: ${font.spacing}px`)
-    styles.push(`text-decoration: ${font.decoration}px`)
-    styles.push(`padding: ${getLength(font.padding, device)}px`)
+    if (font.decoration) {
+      styles.push(`text-decoration: ${font.decoration}`)
+    }
+    if (font.padding) {
+      styles.push(`padding: ${getLength(font.padding, device)}px`)
+    }
+    if (font.vertical) {
+      styles.push(`writing-mode: vertical-lr`)
+    }
     if (font.shadow) {
       styles.push(TextShadows[font.shadow])
     }
