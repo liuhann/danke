@@ -1,10 +1,5 @@
 <template>
   <div class="prop-config box">
-    <div class="tabs">
-      <ul>
-        <li v-for="tab in tabsName" :key="tab" :class="currentTab===tab? 'is-active': ''"><a @click="setTab(tab)">{{tab}}</a></li>
-      </ul>
-    </div>
     <div class="tabContent">
       <div class="basic panel" v-show="currentTab === '样式'">
         <edit-font v-if="element.type === TypeEnum.TEXT" v-model="element.font"></edit-font>
@@ -12,9 +7,12 @@
         <edit-position v-model="element.position"></edit-position>
         <edit-size v-model="element.size"></edit-size>
         <edit-len v-model="element.position.z" label="Z" :with-unit="false"></edit-len>
+        <edit-animation :animation="element.animation.in" label="进入" animation-type="1"></edit-animation>
         <a class="button is-text" v-if="!showMore" @click="showMore = !showMore">更多配置</a>
         <div class="show-more" v-if="showMore">
           <form-field v-if="element.type === TypeEnum.SHAPE || element.type === TypeEnum.IMAGE" label="阴影" v-model="element.shadow" :options="shadowType"></form-field>
+          <edit-animation :animation="element.animation.dura" label="持续" animation-type="2"></edit-animation>
+          <edit-animation :animation="element.animation.out" label="离开" animation-type="3"></edit-animation>
           <edit-background v-model="element.background" v-if="element.type !== TypeEnum.TEXT"></edit-background>
           <edit-border v-model="element.border" v-if="element.type !== TypeEnum.TEXT"></edit-border>
           <edit-clip-path v-model="element.clip" v-if="element.clip"></edit-clip-path>
@@ -26,9 +24,7 @@
         </div>
       </div>
       <div class="animation-config" v-show="currentTab==='动画'">
-        <edit-animation :animation="element.animation.in" label="进入" animation-type="1"></edit-animation>
-        <edit-animation :animation="element.animation.dura" label="持续" animation-type="2"></edit-animation>
-        <edit-animation :animation="element.animation.out" label="离开" animation-type="3"></edit-animation>
+        
       </div>
     </div>
   </div>
@@ -37,16 +33,15 @@
 <script>
 import EditFont from './EditFont.vue'
 import EditPosition from './EditPosition.vue'
-import EditBackground from './EditBackground'
-import EditImage from './EditImage'
-import EditBorder from './EditBorder'
+import EditBackground from './EditBackground.vue'
+import EditImage from './EditImage.vue'
+import EditBorder from './EditBorder.vue'
 import EditClipPath from './EditClipPath.vue'
 import EditSize from './EditSize.vue'
-import EditTransform from './EditTransform'
-import ItemBlock from './ItemBlock'
-import EditAnimation from './EditAnimation'
-import FormField from '../../common/components/FormField'
-import ImageUpload from './ImageUpload'
+import EditTransform from './EditTransform.vue'
+import ItemBlock from './ItemBlock.vue'
+import EditAnimation from './EditAnimation.vue'
+import FormField from '../../common/components/FormField.vue'
 import { TypeEnum } from '../../danke-core/css-model/element'
 import EditLen from './EditLen'
 import { boxShadows } from '../../danke-core/css-model/boxshadow'
@@ -63,7 +58,6 @@ export default {
   },
   components: {
     EditLen,
-    ImageUpload,
     FormField,
     EditAnimation,
     ItemBlock,

@@ -54,7 +54,8 @@ import NavBar from '../common/site/NavBar'
 import PropConfig from './components/PropConfig.vue'
 import { IMAGE, SHAPE, TEXT, TypeEnum } from '../danke-core/elements/index'
 import TPL_BACKGROUND from '../danke-core/css-model/background.js'
-import { getElementStyle, getPositionSizingStyle, getLength, getSceneStyle } from '../danke-core/utils/styles'
+import { getElementStyle, getPositionSizingStyle, getSceneStyle } from '../danke-core/utils/styles'
+import { getLength, getLengthDelta } from '../danke-core/utils/common.js'
 import ImageCropper from './components/ImageCropper.vue'
 import DropDownMenu from '../common/components/DropDownMenu'
 import ImageDAO from '../common/dao/imagedao'
@@ -292,6 +293,8 @@ export default {
       if (this.currentElement) {
         const clonedElement = clone(this.currentElement)
         clonedElement.visible = true
+        clonedElement.position.offsetX = getLengthDelta(clonedElement.position.offsetX, 5)
+        clonedElement.position.offsetY = getLengthDelta(clonedElement.position.offsetY, 5)
         this.inc ++
         this.elements.push(clonedElement)
         this.currentElement = clonedElement
