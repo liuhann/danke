@@ -11,5 +11,4 @@ export default {
   async onload (ctx) {
     ctx.animdao = new AnimationDAO(ctx)
   }
-
 }

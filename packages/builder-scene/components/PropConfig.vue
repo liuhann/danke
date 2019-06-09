@@ -17,10 +17,11 @@
           <form-field v-if="element.type === TypeEnum.SHAPE || element.type === TypeEnum.IMAGE" label="阴影" v-model="element.shadow" :options="shadowType"></form-field>
           <edit-background v-model="element.background" v-if="element.type !== TypeEnum.TEXT"></edit-background>
           <edit-border v-model="element.border" v-if="element.type !== TypeEnum.TEXT"></edit-border>
-          <edit-clip-path v-model="element.clip" v-if="element.type !== TypeEnum.TEXT"></edit-clip-path>
+          <edit-clip-path v-model="element.clip" v-if="element.clip"></edit-clip-path>
           <!--<form-field label="背景大小" type="select" v-css-model="element.background.size" :options="backgroundSizeOptions"></form-field>-->
           <div class="buttons">
-            <span class="button icon-laptop is-small is-danger" @click="removeElement">删除</span>
+            <span class="button is-small is-danger" @click="removeElement">删除</span>
+            <span class="button is-small is-primary" @click="cloneElement">复制</span>
           </div>
         </div>
       </div>
@@ -111,6 +112,9 @@ export default {
     },
     removeElement () {
       this.$emit('remove')
+    },
+    cloneElement () {
+      this.$emit('clone')
     }
   }
 }

@@ -33,8 +33,11 @@
         </div>
         <div class="column is-one-third-widescreen is-one-third-fullhd is-two-fifths-tablet is-full-mobile">
           <prop-config v-if="currentElement" :element="currentElement"
-                       @remove="removeCurrentElement"></prop-config>
-          <scene-config v-if="!currentElement" :elements="elements" :scene="scene" @choose="chooseElement"></scene-config>
+            @remove="removeCurrentElement"
+            @clone="cloneElement"></prop-config>
+          <scene-config v-if="!currentElement" :elements="elements" :scene="scene" 
+            @choose="chooseElement" 
+            @clone="cloneElement"></scene-config>
         </div>
       </div>
     </div>
@@ -283,7 +286,17 @@ export default {
         this.currentElement.text === ' '
       }
 			this.currentElement = element
-		},
+    },
+    
+    cloneElement (element) {
+      if (this.currentElement) {
+        const clonedElement = clone(this.currentElement)
+        clonedElement.visible = true
+        this.inc ++
+        this.elements.push(clonedElement)
+        this.currentElement = clonedElement
+      }
+    },
 
     contentChange (e) {
       this.editedText = e.target.innerHTML.replace(/<br>/g, '\n')

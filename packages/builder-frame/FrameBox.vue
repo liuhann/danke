@@ -98,7 +98,7 @@ export default {
 
 <style lang="scss">
 .frame-preview {
-  height: 600px;
+  height: 480px;
   display: flex;
   justify-content: center;
   align-items: center;

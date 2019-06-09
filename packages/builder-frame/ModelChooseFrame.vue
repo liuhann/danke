@@ -1,19 +1,24 @@
 <template>
-<div class="modal modal-frame-choose" :class="isShow? 'is-active': ''">
-  <div class="modal-background"></div>
-  <div class="modal-content frame-box-model">
-    <frame-box></frame-box>
-  </div>
-  <button class="modal-close is-large" aria-label="close" @click="isShow = false"></button>
-</div>
+<el-dialog
+  title="选择动画效果"
+  :visible.sync="centerDialogVisible"
+  width="80%">
+  <frame-box ref="frameBox"></frame-box>
+  <span slot="footer" class="dialog-footer">
+    <button class="button is-link is-small is-outlined" @click="choose">选择</button>
+  </span>
+</el-dialog>
 </template>
 
 <script>
 import { createSheet, addAnimationStyle, clearAnimation } from './keyframe'
+import { Dialog } from 'element-ui'
 import FrameBox from './FrameBox.vue'
+import Vue from 'vue'
+Vue.use(Dialog)
 export default {
   name: 'ModelChooseFrame',
-  components: { FrameBox },
+  components: { FrameBox, Dialog },
   props: {
 
   },
@@ -22,6 +27,7 @@ export default {
   },
   data() {
     return {
+      centerDialogVisible: false,
       isShow: false,
       type: '',
       skip: 0,
@@ -35,7 +41,7 @@ export default {
       this.skip = 0
       this.animations = []
       this.total = 0
-      this.isShow = true
+      this.centerDialogVisible = true
       this.getFrames()
       this.choosedCallback = choosedCallback
     },
@@ -48,8 +54,9 @@ export default {
         addAnimationStyle(this.sheet, animation)
       }
     },
-    choose (animation) {
-      this.isShow = false
+    choose () {
+      this.centerDialogVisible = false
+      let animation = this.$refs.frameBox.currentAnimation
       this.choosedCallback(animation)
     }
   }

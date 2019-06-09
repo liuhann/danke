@@ -22,7 +22,7 @@
             <i class="icon-plus"></i>
           </div>
         </div>
-        <div class="column is-one-fifth-fullhd is-one-quarter-widescreen is-one-quarter-desktop is-one-third-tablet is-half-mobile is-vcentered"
+        <div class="column is-one-quarter-fullhd is-one-third-widescreen is-one-third-desktop is-one-third-tablet is-half-mobile is-vcentered"
              v-for="(scene, index) in scenes" :key="scene._id">
           <div class="device">
             <page-play :device="getDevice(scene.screen)" :scene="scene" ref="pagePlay"></page-play>
@@ -43,7 +43,7 @@ import NavBar from '../common/site/NavBar'
 import ratios from './utils/ratios'
 import DropDownMenu from '../common/components/DropDownMenu'
 import RestDAO from '../common/dao/restdao'
-import PagePlay from './PagePlay'
+import PagePlay from './PagePlay.vue'
 
 const sizes = {
   '9:16': 480,

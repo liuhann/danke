@@ -93,7 +93,7 @@ export default {
     flex: 1;
   }
   .image {
-    margin: 0 10px;
+    margin-right: 5px;
     width: 20px;
     height: 20px;
     background-size: cover;

@@ -1,6 +1,5 @@
 <template>
 <div class="scene" :style="sceneStyle">
-  {{device}}
   <div v-for="element of scene.elements" :key="element.id"
        class="element" :style="element.style"
        @click.self="elementClick(element)">
