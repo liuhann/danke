@@ -9,3 +9,14 @@ export default {
   direction: 'normal',
   fillMode: 'both'
 }
+export function getMaxDuration (elements, type) {
+  let max = 0
+  for (let element of elements) {
+    if (element.animation[type]) {
+      if (element.animation[type].delay + element.animation[type].duration > max) {
+        max = element.animation[type].delay + element.animation[type].duration
+      }
+    }
+  }
+  return max
+}

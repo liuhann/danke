@@ -1,4 +1,4 @@
-import PropConfig from './components/PropConfig.vue'
+import PropConfig from './tabs/PropConfig.vue'
 import EditTransform from './components/EditTransform.vue'
 import EditClipPath from './components/EditClipPath.vue'
 import EditAnimation from './components/EditAnimation.vue'

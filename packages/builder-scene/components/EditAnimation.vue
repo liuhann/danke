@@ -1,6 +1,6 @@
 <template>
 <div class="edit-animation-option panel">
-  <form-field :label="label + '动画'">
+  <form-field :label="label + '动画'" type="empty">
     <span class="button is-small" @click="chooseAnimation(animationType)">{{animation.desc || '选择'}}</span>
     <span v-if="animation.name" class="button is-small icon-trash" @click="clearAnimation"></span>
   </form-field>

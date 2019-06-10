@@ -89,7 +89,6 @@ export default {
       return this.$slots && this.$slots.default && this.$slots.default.length
     },
     isInput () {
-      if (this.hasSlot) return false
       return this.type === 'text' || this.type === 'number'
     },
     isSelect () {
@@ -97,7 +96,6 @@ export default {
       return this.type === 'select'
     },
     isRadio () {
-      if (this.hasSlot) return false
       return this.type === 'radio'
     },
     fieldValue: {

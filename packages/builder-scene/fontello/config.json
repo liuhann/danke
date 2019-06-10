@@ -13,18 +13,6 @@
       "src": "typicons"
     },
     {
-      "uid": "366c3c56b79031deacc953d7f92085e5",
-      "css": "eye-outline",
-      "code": 59394,
-      "src": "typicons"
-    },
-    {
-      "uid": "k7sao112253txym1egnte7822irbyphe",
-      "css": "eye-1",
-      "code": 59396,
-      "src": "typicons"
-    },
-    {
       "uid": "1gf923f9wvaezxmfon515dglxa3drf0e",
       "css": "plus",
       "code": 59392,
@@ -85,51 +73,39 @@
       "src": "typicons"
     },
     {
-      "uid": "7yekfd0qlkgp6emwfbo10sjdmf8pewli",
-      "css": "download",
-      "code": 59405,
-      "src": "typicons"
+      "uid": "c5fd349cbd3d23e4ade333789c29c729",
+      "css": "eye",
+      "code": 59394,
+      "src": "fontawesome"
     },
     {
-      "uid": "6zhrgcf3co77hnljttd3b2mrc8z5fiq5",
-      "css": "right-open",
+      "uid": "7fd683b2c518ceb9e5fa6757f2276faa",
+      "css": "eye-off",
+      "code": 59396,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "dd6c6b221a1088ff8a9b9cd32d0b3dd5",
+      "css": "check",
+      "code": 59405,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "4b900d04e8ab8c82f080c1cfbac5772c",
+      "css": "check-empty",
+      "code": 61590,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "xq9z5jujkqhrf97s70hjek6otohmhr1y",
+      "css": "down",
       "code": 59406,
       "src": "typicons"
     },
     {
-      "uid": "8d2b91edcad12992a96fc5eac674700d",
-      "css": "play-outline",
+      "uid": "mj2pxhfj0eumtbzirpdokhtzk00480uo",
+      "css": "up",
       "code": 59407,
-      "src": "typicons"
-    },
-    {
-      "uid": "8b202d3dd1fd0541ed0d47d1279ec8f3",
-      "css": "code",
-      "code": 59408,
-      "src": "typicons"
-    },
-    {
-      "uid": "t6cy82vd3t5piy0j3uknrlrzpg1ld8y3",
-      "css": "search",
-      "code": 59409,
-      "src": "typicons"
-    },
-    {
-      "uid": "ccddff8e8670dcd130e3cb55fdfc2fd0",
-      "css": "down-open",
-      "code": 59410,
-      "src": "fontawesome"
-    },
-    {
-      "uid": "8782cc70184b33096ae927590d1fadc4",
-      "css": "doc-landscape",
-      "code": 59411,
-      "src": "entypo"
-    },
-    {
-      "uid": "5qynhqqaenby227l5kogqj8sdk5s4e7h",
-      "css": "cw",
-      "code": 59412,
       "src": "typicons"
     }
   ]

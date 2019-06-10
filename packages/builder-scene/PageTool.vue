@@ -23,7 +23,7 @@
           <div id="stylePreview" @click.self="sceneClick">
             <div class="device" :style="deviceStyle" @click.self="sceneClick">
               <div v-for="element of elements" :key="element.id"
-                   class="element" :class="[element===currentElement? 'current': '', element.visible?'':'hidden']" :style="element===currentElement? currentStyle: element.style"
+                   class="element" :class="[element===currentElement? 'current': '', element.visible?'':'hidden']" :style="element.style"
                    @click.self="chooseElement(element)">
                 <!--<textarea autoHeight="true" :style="{fontSize: '1em', color: element.font.color}" v-if="element.type === TypeEnum.TEXT && element===currentElement" v-css-model="element.text"></textarea>-->
                 <span @click.self="chooseElement(element)" @input="contentChange" :contenteditable="element===currentElement" v-if="element.type === TypeEnum.TEXT /*&& element!==currentElement*/" v-html="$options.filters.newline(element.text)"></span>
@@ -32,12 +32,21 @@
           </div>
         </div>
         <div class="column is-one-third-widescreen is-one-third-fullhd is-two-fifths-tablet is-full-mobile">
-          <prop-config v-if="currentElement" :element="currentElement"
+          <div class="tabs">
+            <ul>
+              <li :class="currentTab===0?'is-active':''"><a @click="setTab(0)">元素配置</a></li>
+              <li :class="currentTab===1?'is-active':''"><a @click="setTab(1)">列表</a></li>
+              <li :class="currentTab===2?'is-active':''"><a @click="setTab(2)">批量配置{{multipleElementsIndicator}}</a></li>
+            </ul>
+          </div>
+          <prop-config v-if="currentTab===0" :element="currentElement"
             @remove="removeCurrentElement"
             @clone="cloneElement"></prop-config>
-          <scene-config v-if="!currentElement" :elements="elements" :scene="scene" 
-            @choose="chooseElement" 
-            @clone="cloneElement"></scene-config>
+          <element-list-config v-if="currentTab===1" :elements="elements" :scene="scene" @choose="chooseElement"
+             @clone="cloneElement"></element-list-config>
+          <multi-element-config v-if="currentTab===2"
+            :elements="multipleElements"
+            :device="device"></multi-element-config>
         </div>
       </div>
     </div>
@@ -48,10 +57,10 @@
 
 <script>
 import mixinLoginRequired from '../user/guardLoginRequired'
-import SceneConfig from './components/SceneConfig.vue'
+import ElementListConfig from './tabs/ElementListConfig.vue'
 import { clone } from '../utils/object'
 import NavBar from '../common/site/NavBar'
-import PropConfig from './components/PropConfig.vue'
+import PropConfig from './tabs/PropConfig.vue'
 import { IMAGE, SHAPE, TEXT, TypeEnum } from '../danke-core/elements/index'
 import TPL_BACKGROUND from '../danke-core/css-model/background.js'
 import { getElementStyle, getPositionSizingStyle, getSceneStyle } from '../danke-core/utils/styles'
@@ -61,10 +70,11 @@ import DropDownMenu from '../common/components/DropDownMenu'
 import ImageDAO from '../common/dao/imagedao'
 import RestDAO from '../common/dao/restdao'
 import { Loading, Message } from 'element-ui'
+import MultiElementConfig from './tabs/MultiElementConfig'
 
 export default {
 	name: 'StyleTool',
-	components: {DropDownMenu, ImageCropper, PropConfig, NavBar, SceneConfig},
+	components: {MultiElementConfig, DropDownMenu, ImageCropper, PropConfig, NavBar, ElementListConfig},
 	mixins: [ mixinLoginRequired ],
 	data () {
 		const background = clone(TPL_BACKGROUND)
@@ -81,6 +91,7 @@ export default {
 				name: '我的场景',
 				background
 			},
+      currentTab: 1,
       resources: {}
 		}
 	},
@@ -97,6 +108,22 @@ export default {
     }
 	},
 	computed: {
+    multipleElements () {
+      const elements = []
+      for (let element of this.elements) {
+        if (element.checked) {
+          elements.push(element)
+        }
+      }
+      return elements
+    },
+    multipleElementsIndicator () {
+      if (this.multipleElements.length) {
+        return `(${this.multipleElements.length})`
+      } else {
+        return ``
+      }
+    },
     previewRatio () {
       return this.$route.params.screen
 		},
@@ -166,6 +193,9 @@ export default {
   },
 
 	methods: {
+    setTab (index) {
+      this.currentTab = index
+    },
     addMenuClicked (menu, event) {
       if (menu.type === 'file') {
         this.fileChoosed(event)
@@ -288,7 +318,7 @@ export default {
       }
 			this.currentElement = element
     },
-    
+
     cloneElement (element) {
       if (this.currentElement) {
         const clonedElement = clone(this.currentElement)
@@ -333,10 +363,10 @@ export default {
         name: scene.name,
         background: scene.background
       }
-      this.elements = scene.elements
-      for (let element of this.elements) {
+      for (let element of scene.elements) {
         element.style = getElementStyle(element, this.device)
       }
+      this.elements = scene.elements
     },
 
     async savePage () {

@@ -10,6 +10,7 @@
 <script>
 import EditLen from './EditLen'
 import FormField from '../../common/components/FormField'
+import { horizontalOptions, verticalOptions } from '../../danke-core/css-model/position'
 export default {
   name: 'EditPosition',
   components: {
@@ -26,36 +27,13 @@ export default {
   },
   data () {
     return {
-      // position: this.value
+      horizontalOptions,
+      verticalOptions
     }
   },
   computed: {
     position () {
       return this.value
-    },
-    verticalOptions () {
-      return [{
-        key: 'top',
-        value: '上'
-      }, {
-        key: 'center',
-        value: '居中'
-      }, {
-        key: 'bottom',
-        value: '下'
-      }]
-    },
-    horizontalOptions () {
-      return [{
-        key: 'left',
-        value: '左'
-      }, {
-        key: 'center',
-        value: '居中'
-      }, {
-        key: 'right',
-        value: '右'
-      }]
     }
   },
   created () {
