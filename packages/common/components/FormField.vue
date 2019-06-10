@@ -55,8 +55,7 @@ export default {
       type: [String, Number]
     },
     type: {
-      type: String,
-      default: 'text'
+      type: String
     },
     options: {
       type: [Array, Object]

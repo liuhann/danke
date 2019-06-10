@@ -1,5 +1,5 @@
 <template>
-<div class="prop-config box">
+<div class="prop-config">
   <form-field label="横向对齐" type="radio" v-model="horizontal" :options="horizontalOptions">
   </form-field>
   <edit-len label="横向偏移" v-model="offsetX"></edit-len>

@@ -97,16 +97,28 @@
       "src": "fontawesome"
     },
     {
-      "uid": "xq9z5jujkqhrf97s70hjek6otohmhr1y",
-      "css": "down",
-      "code": 59406,
-      "src": "typicons"
+      "uid": "63b3012c8cbe3654ba5bea598235aa3a",
+      "css": "angle-double-up",
+      "code": 61698,
+      "src": "fontawesome"
     },
     {
-      "uid": "mj2pxhfj0eumtbzirpdokhtzk00480uo",
-      "css": "up",
-      "code": 59407,
-      "src": "typicons"
+      "uid": "dfec4ffa849d8594c2e4b86f6320b8a6",
+      "css": "angle-double-down",
+      "code": 61699,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "5de9370846a26947e03f63142a3f1c07",
+      "css": "angle-up",
+      "code": 61702,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "e4dde1992f787163e2e2b534b8c8067d",
+      "css": "angle-down",
+      "code": 61703,
+      "src": "fontawesome"
     }
   ]
 }

@@ -1,4 +1,3 @@
-import BORDER from '../css-model/border'
 import POSITION from '../css-model/position'
 import BACKGROUND from '../css-model/background'
 import SIZE from '../css-model/size'
@@ -10,8 +9,8 @@ const shape = {
   shape: 'rect',
   name: '',
   position: POSITION,
-  background: BACKGROUND,
   size: SIZE,
+  background: BACKGROUND,
   shadow: '',
   animation: {
     in: ANIMATION,

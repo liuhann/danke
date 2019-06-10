@@ -9,6 +9,8 @@ import { getClipPathStyle } from '../css-model/clippath'
 import { getTransformStyle } from '../css-model/transform'
 import { getShapeStyle } from '../css-model/shapeclip'
 import { createSheet, addAnimationStyle } from '../../builder-frame/keyframe'
+import { getPositionStyle } from '../css-model/position'
+import { getSizingStyle } from '../css-model/size'
 
 function revertLength (value, currentLen, device) {
   const { unit } = getLenSplits(currentLen)
@@ -26,15 +28,14 @@ let sheet = createSheet()
 function getElementStyle (element, device, animation) {
   let styles = []
   // position and size
-  styles = styles.concat(getPositionSizingStyle(element, device))
+  styles = styles.concat(getPositionStyle(element, device))
+    .concat(getSizingStyle(element, device))
     .concat(getBoxShadowStyle(element, device))
     .concat(getFontStyle(element, device))
     .concat(getBorderStyle(element, device))
-    .concat(getBoxShadowStyle(element, device))
     .concat(getBackgroundStyle(element, device))
     .concat(getClipPathStyle(element, device))
     .concat(getTransformStyle(element, device))
-    .concat(getBoxShadowStyle(element, device))
     .concat(getShapeStyle(element, device))
 
   if (animation && element.animation[animation] && element.animation[animation].name) {
@@ -43,37 +44,6 @@ function getElementStyle (element, device, animation) {
     addAnimationStyle(sheet, animationDef)
   }
   return styles.filter(n => n).join(';')
-}
-
-function getPositionSizingStyle (element, device) {
-  const styles = []
-  if (element.position && device) {
-    styles.push(`position: absolute`)
-    if (element.position.vertical === 'top') {
-      styles.push(`top: ${getLength(element.position.offsetY, device)}px`)
-    } else if (element.position.vertical === 'center') {
-      styles.push(`top: ${device.height / 2 - getLength(element.size.height, device) / 2 + getLength(element.position.offsetY, device)}px`)
-    } else if (element.position.vertical === 'bottom') {
-      styles.push(`bottom: ${getLength(element.position.offsetY, device)}px`)
-    }
-
-    if (element.position.horizontal === 'left') {
-      styles.push(`left: ${getLength(element.position.offsetX, device)}px`)
-    } else if (element.position.horizontal === 'center') {
-      styles.push(`left: ${(device.width / 2) - (getLength(element.size.width, device) / 2) + getLength(element.position.offsetX, device)}px`)
-    } else if (element.position.horizontal === 'right') {
-      styles.push(`right: ${getLength(element.position.offsetX, device)}px`)
-    }
-    styles.push(`z-index: ${element.position.z}`)
-  }
-
-  if (element.size && device) {
-    styles.push(`width: ${getLength(element.size.width, device)}px`)
-    if (element.type !== TypeEnum.TEXT) {
-      styles.push(`height: ${getLength(element.size.height, device)}px`)
-    }
-  }
-  return styles
 }
 
 function getWorkStyle (work, device) {
@@ -103,6 +73,5 @@ export {
   getElementStyle,
   getWorkStyle,
   getSceneStyle,
-  getPositionSizingStyle,
   revertLength
 }

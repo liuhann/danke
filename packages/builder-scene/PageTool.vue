@@ -32,18 +32,17 @@
           </div>
         </div>
         <div class="column is-one-third-widescreen is-one-third-fullhd is-two-fifths-tablet is-full-mobile">
-          <div class="tabs">
+          <div class="tabs is-small config-tabs">
             <ul>
               <li :class="currentTab===0?'is-active':''"><a @click="setTab(0)">元素配置</a></li>
               <li :class="currentTab===1?'is-active':''"><a @click="setTab(1)">列表</a></li>
               <li :class="currentTab===2?'is-active':''"><a @click="setTab(2)">批量配置{{multipleElementsIndicator}}</a></li>
             </ul>
           </div>
-          <prop-config v-if="currentTab===0" :element="currentElement"
-            @remove="removeCurrentElement"
-            @clone="cloneElement"></prop-config>
-          <element-list-config v-if="currentTab===1" :elements="elements" :scene="scene" @choose="chooseElement"
-             @clone="cloneElement"></element-list-config>
+          <prop-config v-if="currentTab===0" :element="currentElement"></prop-config>
+          <element-list-config v-if="currentTab===1" :elements="elements" :scene="scene" :device="device"
+            @choose="chooseElement"
+            @clone="cloneElement"></element-list-config>
           <multi-element-config v-if="currentTab===2"
             :elements="multipleElements"
             :device="device"></multi-element-config>
@@ -186,6 +185,15 @@ export default {
 		}
 	},
 
+  watch: {
+	  currentElement: {
+	    deep: true,
+      handler () {
+	      this.currentElement.style = getElementStyle(this.currentElement, this.device)
+      }
+    }
+  },
+
   filters: {
     newline (v) {
       return v.replace(/\n/g, '<br>')
@@ -209,6 +217,7 @@ export default {
     addShape () {
       const clonedElement = clone(SHAPE)
       clonedElement.visible = true
+      clonedElement.style = getElementStyle(clonedElement, this.device)
       this.inc ++
       this.elements.push(clonedElement)
       this.currentElement = clonedElement
@@ -220,11 +229,11 @@ export default {
       clonedElement.text = '请输入文本内容'
       clonedElement.size.width = '80vw'
       clonedElement.size.height = '0px'
+      clonedElement.style = getElementStyle(clonedElement, this.device)
       this.inc ++
       this.elements.push(clonedElement)
       this.currentElement = clonedElement
 		},
-
 
     cropComplete (croppedList, cropScreenSize) {
       for (let {blob, cropbox} of croppedList) {
@@ -265,20 +274,6 @@ export default {
       }
     },
 
-		removeCurrentElement () {
-			for (let i = 0; i < this.elements.length; i++) {
-				if (this.elements[i] === this.currentElement) {
-					this.elements.splice(i, 1)
-          if (this.currentElement.url) {
-            this.resources[url] = null
-					  delete this.resources[url]
-          }
-					break
-				}
-			}
-			this.currentElement = null
-		},
-
 		fileChoosed (e) {
 			if (e.currentTarget.files.length) {
 				const file = e.currentTarget.files[0]
@@ -293,6 +288,10 @@ export default {
 		sceneClick () {
       this.chooseElement(null)
 		},
+
+    moveUp (elements) {
+
+    },
 
 		play () {
       this.chooseElement(null)
@@ -365,6 +364,7 @@ export default {
       }
       for (let element of scene.elements) {
         element.style = getElementStyle(element, this.device)
+        element.checked = false
       }
       this.elements = scene.elements
     },
@@ -436,8 +436,9 @@ export default {
       border: 1px solid #efefef;
       position: relative;
       .element.current {
-        outline: 3px dashed #87b1f1;
+        outline: 2px dashed #87b1f1;
         outline-offset: 0;
+        z-index: 9999;
       }
       .element.hidden {
         display: none;
@@ -458,6 +459,9 @@ export default {
     width: 100%;
   }
 
+  .config-tabs {
+    margin-bottom: .8rem;
+  }
   .f-left {
     float: left;
   }

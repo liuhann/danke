@@ -1,11 +1,10 @@
 <template>
-<div class="prop-config box">
+<div class="prop-config">
   <div v-if="element">
     <edit-font v-if="element.font" v-model="element.font"></edit-font>
     <form-field v-if="element.shape" v-model="element.shape" label="形状" type="select" :options="shapeOptions"></form-field>
     <edit-position v-model="element.position"></edit-position>
     <edit-size v-model="element.size"></edit-size>
-    <edit-len v-model="element.position.z" label="Z" :with-unit="false"></edit-len>
     <edit-animation :animation="element.animation.in" label="进入" animation-type="1"></edit-animation>
     <a class="button is-text" v-if="!showMore" @click="showMore = !showMore">更多配置</a>
     <div class="show-more" v-if="showMore">
