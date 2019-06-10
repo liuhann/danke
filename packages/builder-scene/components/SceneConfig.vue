@@ -14,10 +14,13 @@
       <div class="element-list panel" v-show="currentTab==='元素列表'">
          <a class="panel-block" v-for="element of elements" :key="element.id" @click="toggleElement(element)">
           <div v-if="element.type === TypeEnum.IMAGE" class="image" :style="'background-image: url(' + element.url + ')'"></div>
-          <div v-if="element.type !== TypeEnum.IMAGE" class="image" :class="iconSet[element.type]"></div>
+          <div v-if="element.type === TypeEnum.SHAPE" class="shape" :style="{
+            backgroundColor: element.background.colors[0]
+          }"></div>
            <i :class="element.visible? 'icon-eye-1': 'icon-eye-outline'" @click="toggleElementVisible(element)"></i>
            <div class="element-content"></div>
-           <i class=" icon-trash" @click="deleteElement(element)"></i>
+
+           <i class="icon-trash" @click="deleteElement(element)"></i>
         </a>
       </div>
     </div>
@@ -28,6 +31,7 @@
 import EditBackground from './EditBackground.vue'
 import FormField from '../../common/components/FormField'
 import { TypeEnum } from '../../danke-core/elements/index'
+import { MessageBox } from 'element-ui'
 
 export default {
   name: 'SceneConfig',
@@ -70,7 +74,13 @@ export default {
       // element.visible = !element.visible
     },
     deleteElement (element) {
-      this.$emit('remove', element)
+      MessageBox.confirm('确认删除元素，是否继续？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$emit('remove', element)
+      })
     },
     setTab(tab) {
       this.currentTab = tab
@@ -97,6 +107,11 @@ export default {
     width: 20px;
     height: 20px;
     background-size: cover;
+  }
+  .shape {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
   }
 }
 </style>

@@ -11,7 +11,6 @@ const shape = {
   name: '',
   position: POSITION,
   background: BACKGROUND,
-  border: BORDER,
   size: SIZE,
   shadow: '',
   animation: {

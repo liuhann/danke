@@ -7,6 +7,7 @@ import { getBackgroundStyle } from '../css-model/background'
 import { getBorderStyle } from '../css-model/border'
 import { getClipPathStyle } from '../css-model/clippath'
 import { getTransformStyle } from '../css-model/transform'
+import { getShapeStyle } from '../css-model/shapeclip'
 import { createSheet, addAnimationStyle } from '../../builder-frame/keyframe'
 
 function revertLength (value, currentLen, device) {
@@ -34,6 +35,7 @@ function getElementStyle (element, device, animation) {
     .concat(getClipPathStyle(element, device))
     .concat(getTransformStyle(element, device))
     .concat(getBoxShadowStyle(element, device))
+    .concat(getShapeStyle(element, device))
 
   if (animation && element.animation[animation] && element.animation[animation].name) {
     const animationDef = element.animation[animation]
