@@ -3,7 +3,6 @@
   <nav-bar></nav-bar>
   <div class="section">
     <div class="container">
-
       <div class="columns is-mobile is-multiline" style="margin: 5px;">
         <div class="column is-full-mobile">
           <div id="preview" :style="{background: previewType==='文字'? 'none': ''}">

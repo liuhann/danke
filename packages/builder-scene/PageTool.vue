@@ -13,10 +13,16 @@
             </div>
             <div class="level-right">
               <a class="button is-primary is-small" @click="savePage">
-            <span class="icon">
-              <i class="icon-ok is-small"></i>
-            </span>
+                <span class="icon">
+                  <i class="icon-ok is-small"></i>
+                </span>
                 <span>保存</span>
+              </a>
+              <a class="button is-primary is-small" @click="play">
+                <span class="icon">
+                  <i class="icon-ok is-small"></i>
+                </span>
+                <span>运行</span>
               </a>
             </div>
           </div>
@@ -51,6 +57,7 @@
     </div>
   </div>
   <image-cropper ref="cropper" @complete="cropComplete" :ratio="previewRatio"></image-cropper>
+  <preview-dialog ref="previewDialog"></preview-dialog>
 </div>
 </template>
 
@@ -68,12 +75,17 @@ import ImageCropper from './components/ImageCropper.vue'
 import DropDownMenu from '../common/components/DropDownMenu'
 import ImageDAO from '../common/dao/imagedao'
 import RestDAO from '../common/dao/restdao'
-import { Loading, Message } from 'element-ui'
+import { Loading, Message, Dialog } from 'element-ui'
 import MultiElementConfig from './tabs/MultiElementConfig'
+import PagePlay from './PagePlay'
+import PreviewDialog from './PreviewDialog'
+import { fitToContainer } from '../danke-core/utils/common'
 
 export default {
 	name: 'StyleTool',
-	components: {MultiElementConfig, DropDownMenu, ImageCropper, PropConfig, NavBar, ElementListConfig},
+	components: {
+    PreviewDialog,
+    PagePlay, MultiElementConfig, DropDownMenu, ImageCropper, PropConfig, NavBar, ElementListConfig, Dialog},
 	mixins: [ mixinLoginRequired ],
 	data () {
 		const background = clone(TPL_BACKGROUND)
@@ -84,7 +96,6 @@ export default {
 			maskStyle: '',
 			cornerPosition: {},
 			currentElement: null,
-			isPlaying: false,
 			elements: [],
 			scene: {
 				name: '我的场景',
@@ -151,7 +162,7 @@ export default {
 		},
 
 		containerSize () {
-			if (screen.width > 768) {
+			if (window.innerWidth > 768) {
 				return {
 					width: 800,
 					height: 600
@@ -164,24 +175,7 @@ export default {
 			}
 		},
 		device () {
-			let [w, h] = this.previewRatio.split(':')
-			let rw = parseInt(w)
-			let rh = parseInt(h)
-			const width1 = this.containerSize.width
-			const height1 = width1 / rw * rh
-			if (height1 > this.containerSize.height) {
-				const height2 = this.containerSize.height
-				const width2 = this.containerSize.height / rh * rw
-				return {
-					width: Math.floor(width2),
-					height: Math.floor(height2)
-				}
-			} else {
-				return {
-					width: Math.floor(width1),
-					height: Math.floor(height1)
-				}
-			}
+      return fitToContainer(this.previewRatio, this.containerSize.width, this.containerSize.height)
 		}
 	},
 
@@ -245,25 +239,6 @@ export default {
         clonedElement.position.vertical = 'top'
         clonedElement.position.offsetX = Math.floor(100 * cropbox.left / cropScreenSize.width) + 'vw'
         clonedElement.position.offsetY = Math.floor(100 * cropbox.top / cropScreenSize.height) + 'vh'
-
-       /* const wider = (cropbox.width / cropbox.height) > (this.device.width / this.device.height)
-        if (wider) { // 宽度优先
-          if (cropbox.width > this.device.width) {
-            clonedElement.size.width = '100vw'
-            clonedElement.size.height =  Math.floor((cropbox.height / cropbox.width) * 100) + 'vw'
-          } else {
-            clonedElement.size.width = Math.floor(100 * cropbox.width/this.device.width) + 'vw'
-            clonedElement.size.height = Math.floor(100 * cropbox.height/this.device.width) + 'vw'
-          }
-        } else { // 高度优先
-          if (cropbox.height > this.device.height) {
-            clonedElement.size.height = '100vh'
-            clonedElement.size.width =  Math.floor((cropbox.width / cropbox.height) * 100) + 'vh'
-          } else {
-            clonedElement.size.width = Math.floor(100 * cropbox.width/this.device.height) + 'vh'
-            clonedElement.size.height = Math.floor(100 * cropbox.height/this.device.height) + 'vh'
-          }
-        }*/
         clonedElement.url = URL.createObjectURL(blob)
         const style = getElementStyle(clonedElement, this.device)
         clonedElement.style = style
@@ -294,16 +269,7 @@ export default {
     },
 
 		play () {
-      this.chooseElement(null)
-			const clonedElements = clone(this.elements)
-			this.elements = []
-			this.$nextTick( () => {
-				for (let element of clonedElements) {
-					element.style = getElementStyle(element, this.device, 'in')
-					this.elements = clonedElements
-				}
-			}, 20)
-			this.isPlaying = true
+			this.$refs.previewDialog.show(clone(this.elements), this.previewRatio)
 		},
 
 		chooseElement (element) {

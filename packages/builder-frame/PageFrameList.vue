@@ -1,26 +1,24 @@
 <template>
-  <div class="page-frame-list">
-    <nav-bar></nav-bar>
-    <div class="section">
-      <div class="container">
-          <span class="button icon-mobile is-small" @click="goFrameTool">创建动画</span>
-      </div>
-    </div>
-    <div class="section">
-      <div class="container">
-        <frame-box></frame-box>
-      </div>
+<div id="page-frame-list">
+  <nav-bar></nav-bar>
+  <div class="section">
+    <div class="container">
+      <frame-box></frame-box>
     </div>
   </div>
+  <nav-footer></nav-footer>
+</div>
 </template>
 
 <script>
 import NavBar from '../common/site/NavBar'
 import { createSheet, addAnimationStyle, clearAnimation } from './keyframe'
 import FrameBox from './FrameBox'
+import NavFooter from '../common/site/NavFooter'
 export default {
   name: 'PageFrameList',
   components: {
+    NavFooter,
     FrameBox,
     NavBar
   },
@@ -140,7 +138,7 @@ export default {
 </script>
 
 <style lang="scss">
-.page-frame-list {
+#page-frame-list {
   .play-area {
     position: relative;
     display: flex;

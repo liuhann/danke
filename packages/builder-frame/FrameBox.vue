@@ -2,32 +2,41 @@
 <div class="columns frame-box-columns">
   <div class="column is-two-thirds-tablet">
     <div class="frame-preview">
-      <div v-if="currentAnimation" class="preview-box" :class="currentAnimation.name"></div>
+      <div class="buttons has-addons toggle-type">
+        <span class="button is-small" v-for="ptype of previewTypes" :key="ptype" :class="previewType === ptype? 'is-selected is-info': ''" @click="previewType = ptype">{{ptype}}</span>
+      </div>
+      <span class="button is-small edit-button is-info" @click="editFrame">
+        <i class="icon-edit"></i>
+      </span>
+      <div v-if="currentAnimation && previewType==='方块'" class="preview-box" :class="currentAnimation.name"></div>
+      <div v-if="currentAnimation && previewType==='文字'" class="preview-text" :class="currentAnimation.name">danke.fun</div>
+      <div v-if="previewType==='图片'" class="preview-box" :class="boxClass" :style="frameStyle">
+        <img src="http://cdn.danke.fun/res/sample1.jpg" width="160" height="160">
+      </div>
+
     </div>
   </div>
   <div class="column is-one-third-tablet column-list">
     <nav class="panel">
       <div class="panel-block">
-        <p class="control has-icons-right">
-          <input class="input is-small" type="text" placeholder="按名称查找" v-model="searchFilter">
-          <span class="icon is-small is-right">
-            <i class="icon-search" aria-hidden="true"></i>
-          </span>
-        </p>
-      </div>
-    <p class="panel-tabs">
-      <a v-for="(type, index) in animationTypes" :key="index" @click="changeType(type)" :class="currentType === type.key? 'is-active': ''">
-        {{type.value}}
+          <p class="control">
+            <router-link to="/builder-frame" class="button icon-plus is-small is-info">创建</router-link>
+          </p>
+          <p class="control has-icons-right">
+            <input class="input is-small" type="text" placeholder="按名称查找" v-model="searchFilter">
+            <span class="icon is-small is-right">
+              <i class="icon-search-outline" aria-hidden="true"></i>
+            </span>
+          </p>
+        </div>
+      <p class="panel-tabs">
+        <a v-for="(type, index) in animationTypes" :key="index" @click="changeType(type)" :class="currentType === type.key? 'is-active': ''">
+          {{type.value}}
+        </a>
+      </p>
+      <a v-for="animation in animations" :key="animation.name" class="panel-block" @click="setAnimation(animation)" :class="currentAnimation.name === animation.name? 'is-active': ''">
+         {{animation.desc}}
       </a>
-    </p>
-    <a v-for="animation in animations" :key="animation.name" class="panel-block" @click="setAnimation(animation)" :class="currentAnimation.name === animation.name? 'is-active': ''">
-       {{animation.desc}}
-    </a>
-      <div class="panel-block" v-if="select">
-        <button class="button is-link is-outlined is-fullwidth">
-          选择
-        </button>
-      </div>
     </nav>
   </div>
 </div>
@@ -35,10 +44,12 @@
 
 <script>
 import RestDAO from '../common/dao/restdao'
-
 export default {
   name: 'FrameBox',
   props: {
+    isEdit: {
+      type: Boolean
+    },
     select: {
       type: Boolean,
       default: false
@@ -46,6 +57,8 @@ export default {
   },
   data () {
     return {
+      previewType: '方块',
+      previewTypes: ['方块', '文字', '图片'],
       currentType: '',
       searchFilter: '',
       currentAnimation: null,
@@ -88,6 +101,11 @@ export default {
         this.currentAnimation = this.animations[0]
       }
     },
+
+    editFrame () {
+      this.ctx.editAnimation = this.currentAnimation
+      this.$router.push('/builder-frame')
+    },
     changeType (type) {
       this.currentType = type.key
       this.loadAnimation()
@@ -98,10 +116,24 @@ export default {
 
 <style lang="scss">
 .frame-preview {
-  height: 480px;
+  height: 650px;
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+  .toggle-type {
+    position: absolute;
+    left: .3rem;
+    top: .3rem;
+  }
+  .preview-text {
+    font-size: 2rem;
+  }
+  .edit-button {
+    position: absolute;
+    top: .3rem;
+    right: .3rem;
+  }
   .preview-box {
     width: 160px;
     height: 160px;
@@ -117,6 +149,11 @@ export default {
   .frame-preview {
     width: 100vw;
     height: 80vw;
+    .preview-box {
+      width: 30vw;
+      height: 30vw;
+      background-color: #FF4B4B;
+    }
   }
 }
 

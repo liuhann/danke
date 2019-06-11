@@ -44,6 +44,34 @@ function getLength (unitLen, device) {
 }
 
 /**
+ * get device size by ratio within the container
+ * @param ratio
+ * @param width
+ * @param height
+ * @returns {{width: number, height: number}}
+ */
+function fitToContainer (ratio, width, height) {
+  // 获取比例
+  let [w, h] = ratio.split(':')
+  let rw = parseInt(w)
+  let rh = parseInt(h)
+
+  const heightByWidth = width / rw * rh
+  if (heightByWidth > height) {
+    const widthByHeight = height / rh * rw
+    return {
+      width: Math.floor(widthByHeight),
+      height: Math.floor(height)
+    }
+  } else {
+    return {
+      width: Math.floor(width),
+      height: Math.floor(heightByWidth)
+    }
+  }
+}
+
+/**
  * increse or decrease the length, for copying use
  */
 function getLengthDelta (unitLen, delta) {
@@ -54,4 +82,4 @@ function getLengthDelta (unitLen, delta) {
   return (parseInt(len) + delta) + unit
 }
 
-export { getLength, getLenSplits, getLengthDelta }
+export { getLength, getLenSplits, getLengthDelta, fitToContainer }

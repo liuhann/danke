@@ -119,6 +119,12 @@
       "css": "angle-down",
       "code": 61703,
       "src": "fontawesome"
+    },
+    {
+      "uid": "1be0ad37c941fcc88233d38c2e460cf5",
+      "css": "search-outline",
+      "code": 59406,
+      "src": "typicons"
     }
   ]
 }
