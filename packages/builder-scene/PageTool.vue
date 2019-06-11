@@ -18,10 +18,7 @@
                 </span>
                 <span>保存</span>
               </a>
-              <a class="button is-primary is-small" @click="play">
-                <span class="icon">
-                  <i class="icon-ok is-small"></i>
-                </span>
+              <a class="button is-success is-small" @click="play">
                 <span>运行</span>
               </a>
             </div>

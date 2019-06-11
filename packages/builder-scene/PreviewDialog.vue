@@ -1,5 +1,5 @@
 <template>
-<div id="preview-dialog" v-show="dialogVisible">
+<div id="preview-dialog" v-show="dialogVisible" @click.self="close">
   <page-play ref="play" :device="device" :scene="scene"></page-play>
 </div>
 </template>
@@ -43,6 +43,9 @@ export default {
     },
     setDevice () {
 
+    },
+    close () {
+      this.dialogVisible = false
     }
   }
 }
