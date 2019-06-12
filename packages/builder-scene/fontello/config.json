@@ -125,6 +125,18 @@
       "css": "search-outline",
       "code": 59406,
       "src": "typicons"
+    },
+    {
+      "uid": "7034e4d22866af82bef811f52fb1ba46",
+      "css": "code",
+      "code": 61729,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "mqlxga8x57rhlfv44zsvmz1reex8lbqg",
+      "css": "arrows-cw",
+      "code": 59407,
+      "src": "typicons"
     }
   ]
 }

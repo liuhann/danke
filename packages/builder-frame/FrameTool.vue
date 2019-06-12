@@ -31,7 +31,7 @@
                   </a>
                   <a class="button is-small" @click="play">
                     <span class="icon">
-                      <i class="icon-play-outline"></i>
+                      <i class=" icon-arrows-cw"></i>
                     </span>
                   </a>
                 </div>
@@ -43,16 +43,6 @@
           <frames-config :animation="animation" class="config" @frame-change="frameChange"></frames-config>
         </div>
       </div>
-      <div class="modal" :class="errorMessage && 'is-active'">
-        <div class="modal-background"></div>
-        <div class="modal-content">
-          <div class="box">
-            {{errorMessage}}
-          </div>
-        </div>
-        <button class="modal-close is-large" aria-label="close" @click="errorMessage = ''"></button>
-      </div>
-
       <div class="modal" :class="showCode && 'is-active'">
         <div class="modal-background"></div>
         <div class="modal-content">
@@ -73,6 +63,7 @@
 import FramesConfig from './FramesConfig'
 import { clone } from '../utils/object'
 import FRAME from './model/frame'
+import { Message } from 'element-ui'
 import { createSheet, addAnimationStyle, clearAnimation, getAnimationSourceCode } from './keyframe'
 import { getElementStyle } from '../danke-core/utils/styles'
 import { setTimeout } from 'timers'
@@ -157,10 +148,11 @@ export default {
 
     async share () {
       const result = await this.ctx.animdao.addAnimation(this.animation)
+
       if (result.code === 409) {
-        this.errorMessage = '动画名称和现有的冲突'
+        Message.error('动画名称和现有的冲突')
       } else {
-        this.errorMessage = '保存成功'
+        Message.success('保存成功')
       }
     },
 

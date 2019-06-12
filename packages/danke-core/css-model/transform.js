@@ -21,7 +21,7 @@ export function getTransformStyle ({ transform }) {
       transforms.push(`rotateY(${transform.rotate[1]}deg)`)
       transforms.push(`rotateZ(${transform.rotate[2]}deg)`)
     }
-    if (transform.scale) {
+    if (transform.scale != null) {
       transforms.push(`scale(${transform.scale / 100})`)
     }
     styles.push(`transform: ${transforms.join(' ')}`)

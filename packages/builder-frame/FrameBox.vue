@@ -89,8 +89,8 @@ export default {
     },
     async loadAnimation () {
       const query = {}
-      if (this.type) {
-        query.type = this.type
+      if (this.currentType) {
+        query.type = this.currentType
       }
       if (this.searchFilter) {
         query.desc = this.searchFilter
@@ -108,6 +108,7 @@ export default {
     },
     changeType (type) {
       this.currentType = type.key
+      this.searchFilter = ''
       this.loadAnimation()
     }
   }

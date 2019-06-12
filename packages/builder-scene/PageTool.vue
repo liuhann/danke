@@ -15,7 +15,7 @@
               <a class="button is-primary is-small" @click="savePage">
                 <span class="icon">
                   <i class="icon-ok is-small"></i>
-                </span>
+                </span>=
                 <span>保存</span>
               </a>
               <a class="button is-success is-small" @click="play">
