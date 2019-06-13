@@ -11,7 +11,7 @@
               <option v-for="option in optionsArray" :value="option.key" :key="option.key">{{option.value}}</option>
             </select>
           </div>
-          <input v-if="isInput" class="input" :style="inputWidth" :class="size" :type="type" v-model="fieldValue" :placeholder="placehoder"/>
+          <input v-if="isInput" class="input" :style="inputWidth" :class="size" :type="type" v-model="fieldValue" :placeholder="placehoder" :disabled="disabled"/>
           <div class="buttons has-addons" v-if="isRadio">
             <span v-for="option in optionsArray" :key="option.key" :class="fieldValue === option.key? 'is-selected is-info': ''" class="button is-small" @click="changeRadioValue(option.key)">{{option.value}}</span>
           </div>
@@ -62,6 +62,9 @@ export default {
     },
     width: {
       type: String
+    },
+    disabled: {
+      type: Boolean
     }
   },
   data () {

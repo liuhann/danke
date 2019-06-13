@@ -1,7 +1,7 @@
 <template>
 <div class="animation-config">
   <div class="frames">
-    <form-field v-model="animation.name" label="动画名称" type="text">
+    <form-field v-model="animation.name" label="动画名称" type="text" :disabled="isEdit">
     </form-field>
     <form-field v-model="animation.desc" label="描述" type="text">
     </form-field>
@@ -27,7 +27,7 @@
               <a v-if="frame.percent !== 100" class="icon-plus" @click="appendFrame(index)"></a>
               <a v-if="!(frame.percent === 100 || frame.percent === 0)" class="icon-trash" @click="removeFrame(index)"></a>
               <a v-if="currentFrameIndex === index" class="icon-angle-up" @click="closeFrame"></a>
-              <a v-if="currentFrameIndex !== index" class="icon-edit" @click="editFrame(index)"></a>
+              <a v-if="currentFrameIndex !== index" class="icon-angle-down" @click="editFrame(index)"></a>
             </div>
           </div>
           <div class="frame-dialog-content" v-if="currentFrameIndex === index">
@@ -56,6 +56,9 @@ export default {
   props: {
     animation: {
       type: Object
+    },
+    isEdit: {
+      type: Boolean
     }
   },
   components: {FormField, ItemBlock, EditTransform, EditClipPath, EditLen },

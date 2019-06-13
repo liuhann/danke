@@ -1,9 +1,21 @@
 <template>
 <div id="page-frame-list">
   <nav-bar></nav-bar>
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container">
+        <h1 class="title">
+          Hero title
+        </h1>
+        <h2 class="subtitle">
+          Hero subtitle
+        </h2>
+      </div>
+    </div>
+  </section>
   <div class="section">
     <div class="container">
-      <frame-box></frame-box>
+      <frame-box :is-edit="true"></frame-box>
     </div>
   </div>
   <nav-footer></nav-footer>

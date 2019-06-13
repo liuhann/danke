@@ -3,13 +3,13 @@
   <nav-bar></nav-bar>
   <div class="section">
     <div class="container">
-      <div class="columns is-mobile is-multiline" style="margin: 5px;">
+      <div class="columns is-gapless is-mobile is-multiline" style="margin: 5px;">
         <div class="column is-full-mobile">
           <div id="preview" :style="{background: previewType==='文字'? 'none': ''}">
             <div v-if="previewType==='方块'" class="preview-box" :class="boxClass" :style="frameStyle"></div>
             <div v-if="previewType==='文字'" class="preview-text" :class="boxClass" :style="frameStyle">danke.fun</div>
             <div v-if="previewType==='图片'" class="preview-box" :class="boxClass" :style="frameStyle">
-              <img src="http://cdn.danke.fun/res/sample1.jpg" width="160" height="160">
+              <img src="http://cdn.danke.fun/res/sample1.png" width="160" height="160">
             </div>
             <div class="columns toolbar">
               <div class="column">
@@ -67,7 +67,6 @@ import { Message } from 'element-ui'
 import { createSheet, addAnimationStyle, clearAnimation, getAnimationSourceCode } from './keyframe'
 import { getElementStyle } from '../danke-core/utils/styles'
 import { setTimeout } from 'timers'
-import ky from 'ky'
 import NavBar from '../common/site/NavBar'
 
 export default {
@@ -92,10 +91,9 @@ export default {
       sourceCode: '',
       errorMessage: '',
       previewType: '方块',
-      boxClass: '',
-      frameStyle: '',
       animationName: '',
       frameIndex: -1,
+      isEdit: false,
       animation: {
         name: 'my-animation',
         desc: '',
@@ -113,16 +111,16 @@ export default {
 
   },
   created () {
-    this.client = ky.extend({
-      prefixUrl: 'http://www.danke.fun/api/',
-      throwHttpErrors: false
-    })
+
   },
 
   mounted () {
     if (this.ctx.editAnimation) {
+      this.isEdit = true
       this.animation = this.ctx.editAnimation
       this.ctx.editAnimation = null
+    } else {
+      this.isEdit = false
     }
   },
 
@@ -147,6 +145,10 @@ export default {
     },
 
     async share () {
+      if (!this.animation.name) {
+        Message.error('请输入动画名称')
+        return
+      }
       const result = await this.ctx.animdao.addAnimation(this.animation)
 
       if (result.code === 409) {
@@ -166,7 +168,6 @@ export default {
   }
 }
 </script>
-
 <style lang="scss">
 #preview {
   position: relative;
@@ -191,8 +192,8 @@ export default {
     font-size: 2.5rem;
   }
   .toolbar {
+    top: 0;
     position: absolute;
-    top: 15px;
     width: 100%;
   }
 }
