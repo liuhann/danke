@@ -7,14 +7,14 @@
       </div>
       <span class="buttons has-addons edit-button" v-if="isEdit" >
         <span class="button icon-edit is-info" @click="editFrame"></span>
-        <span class="button icon-trash is-danger" @click=""></span>
+        <span class="button icon-trash is-danger" @click="removeFrame"></span>
       </span>
       <div v-if="currentAnimation && previewType==='方块'" class="preview-box" :class="currentAnimation.name"></div>
       <div v-if="currentAnimation && previewType==='文字'" class="preview-text" :class="currentAnimation.name">danke.fun</div>
       <div v-if="previewType==='图片'" class="preview-box" :class="currentAnimation.name">
         <img src="http://cdn.danke.fun/res/sample1.png" width="160" height="160">
       </div>
-
+      <span class="animation-provider">{{currentAnimation}}</span>
     </div>
   </div>
   <div class="column is-one-third-tablet column-list">
@@ -45,6 +45,7 @@
 
 <script>
 import RestDAO from '../common/dao/restdao'
+import { Message } from 'element-ui'
 export default {
   name: 'FrameBox',
   props: {
@@ -103,9 +104,10 @@ export default {
       }
     },
 
-    removeFrame () {
-
-      this.restdao.delete(this.currentAnimation)
+    async removeFrame () {
+      await this.restdao.delete(this.currentAnimation)
+      await this.loadAnimation()
+      Message.success('删除成功')
     },
 
     editFrame () {

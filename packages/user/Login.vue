@@ -1,7 +1,6 @@
 <template>
 <div class="login">
   <nav-bar></nav-bar>
-
   <section class="login-panel box">
     <h1 class="title">登录</h1>
     <div class="field">

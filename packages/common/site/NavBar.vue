@@ -52,9 +52,9 @@
               </figure>
             </a>
             <div class="navbar-dropdown is-right">
-              <a class="navbar-item">
+              <router-link class="navbar-item" to="/user">
                 个人信息
-              </a>
+              </router-link>
               <a class="navbar-item">
                 我的页面
               </a>
