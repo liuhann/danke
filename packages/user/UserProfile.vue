@@ -14,9 +14,9 @@
             </div>
             <div class="card-content">
               <div class="media">
-                vcc<div class="media-content">
+                <div class="media-content">
                   <p class="title is-4">John Smith</p>
-                  <p class="subtitle is-6">@johnsmith</p>
+                  <p class="subtitle is-6">账号: {{user.id}}</p>
                 </div>
               </div>
 
