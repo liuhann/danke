@@ -14,7 +14,7 @@
       <div v-if="previewType==='图片'" class="preview-box" :class="currentAnimation.name">
         <img src="http://cdn.danke.fun/res/sample1.png" width="160" height="160">
       </div>
-      <span class="animation-provider">{{currentAnimation}}</span>
+      <span class="animation-provider">From:{{currentAnimation.userid}}</span>
     </div>
   </div>
   <div class="column is-one-third-tablet column-list">
@@ -32,10 +32,14 @@
         </div>
       <p class="panel-tabs">
         <a v-for="(type, index) in animationTypes" :key="index" @click="changeType(type)" :class="currentType === type.key? 'is-active': ''">
+          <span class="icon is-small"><i :class="type.icon" aria-hidden="true"></i></span>
           {{type.value}}
         </a>
       </p>
       <a v-for="animation in animations" :key="animation.name" class="panel-block" @click="setAnimation(animation)" :class="currentAnimation.name === animation.name? 'is-active': ''">
+        <span class="panel-icon">
+          <i class='icon-left-small' aria-hidden="true"></i>
+        </span>
          {{animation.desc || animation.name}}
       </a>
     </nav>
@@ -71,6 +75,7 @@ export default {
         },
         {
           key: '1',
+          icon: 'icon-left-small',
           value: '进入'
         }, {
           key: '2',
@@ -130,6 +135,12 @@ export default {
   justify-content: center;
   align-items: center;
   position: relative;
+
+  background-image: linear-gradient(90deg, #592D2D, #592D2D);
+  background-size: 160px 160px;
+  background-position: center;
+  background-repeat: no-repeat;
+
   .toggle-type {
     position: absolute;
     left: .3rem;
@@ -147,6 +158,13 @@ export default {
     width: 160px;
     height: 160px;
     background-color: #FF4B4B;
+  }
+  .animation-provider {
+    position: absolute;
+    right: .5rem;
+    bottom: .5rem;
+    color: 999;
+    font-size: 12px;
   }
 }
 .frame-box-columns {

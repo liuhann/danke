@@ -39,7 +39,7 @@
 
 <script>
 import './fontello/css/fontello.css'
-import NavBar from '../common/site/NavBar'
+import NavBar from '../common/site/NavBar.vue'
 import ratios from './utils/ratios'
 import DropDownMenu from '../common/components/DropDownMenu'
 import RestDAO from '../common/dao/restdao'

@@ -11,6 +11,14 @@
             <div v-if="previewType==='图片'" class="preview-box" :class="boxClass" :style="frameStyle">
               <img src="http://cdn.danke.fun/res/sample1.png" width="160" height="160">
             </div>
+
+            <div class='clip-note' v-if="currentFrame && currentFrame.clip.type === 'polygon'">
+              <div v-for="(point, index) of currentFrame.clip.points" class="circle" :style="{
+                left: point[0] + '%',
+                top: point[1] + '%'
+              }">
+              </div>
+            </div>
             <div class="columns toolbar">
               <div class="column">
                 <div class="buttons has-addons">
@@ -19,7 +27,7 @@
               </div>
               <div class="column">
                 <div class="buttons has-addons is-right">
-                  <a class="button is-small" @click="share">
+                  <a class="button is-small" @click="save">
                     <span class="icon">
                       <i class="icon-ok"></i>
                     </span>
@@ -31,7 +39,7 @@
                   </a>
                   <a class="button is-small" @click="play">
                     <span class="icon">
-                      <i class=" icon-arrows-cw"></i>
+                      <i class=" icon-cw"></i>
                     </span>
                   </a>
                 </div>
@@ -78,6 +86,9 @@ export default {
   computed: {
     previewTypes() {
       return ['方块', '文字', '图片']
+    },
+    currentFrame () {
+      return this.animation.frames[this.frameIndex]
     }
   },
   data () {
@@ -89,10 +100,11 @@ export default {
     return {
       showCode: false,  // source code css-model
       sourceCode: '',
-      errorMessage: '',
       previewType: '方块',
       animationName: '',
       frameIndex: -1,
+      frameStyle: '',
+      boxClass: '',
       isEdit: false,
       animation: {
         name: 'my-animation',
@@ -144,7 +156,7 @@ export default {
       this.showCode = true
     },
 
-    async share () {
+    async save () {
       if (!this.animation.name) {
         Message.error('请输入动画名称')
         return
@@ -164,6 +176,7 @@ export default {
       }
       const frame = this.animation.frames[this.frameIndex]
       this.frameStyle = getElementStyle(frame)
+      console.log('frame chage', this.frameStyle)
     }
   }
 }
@@ -186,6 +199,24 @@ export default {
     height: 160px;
     overflow: hidden;
     box-sizing: border-box;
+  }
+
+  .clip-note {
+    width: 160px;
+    height: 160px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -80px;
+    margin-top: -80px;
+    .circle {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      background-color: #ef1;
+      border-radius: 14px;
+      transform: translateX(-50%) translateY(-50%);
+    }
   }
   .preview-text {
     text-transform: uppercase;
