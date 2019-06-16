@@ -5,7 +5,7 @@ export default {
     component: () => import(/* webpackChunkName: "tool" */'./PageTool.vue')
   }, {
     path: '/scenes',
-    component: () => import(/* webpackChunkName: "tool" */'./PageList.vue')
+    component: () => import(/* webpackChunkName: "tool" */'./PageSceneList.vue')
   }],
   async onload (ctx) {
 
