@@ -24,7 +24,7 @@
             </div>
           </div>
           <div id="stylePreview" @click.self="sceneClick">
-            <div class="device" :style="deviceStyle" @click.self="sceneClick">
+            <div class="device" :style="deviceStyle" @click.self="sceneClick" ref="previewDevice">
               <div v-for="element of elements" :key="element.id"
                    class="element" :class="[element===currentElement? 'current': '', element.visible?'':'hidden']" :style="element.style"
                    @click.self="chooseElement(element)">
@@ -339,6 +339,11 @@ export default {
         spinner: 'el-icon-loading',
         background: 'rgba(255, 255, 255, 0.4)'
       })
+
+      // save scene preview
+      const html2Canvas = await import(/* webpackChunkName: "html2canvas" */'html2canvas')
+      const previewCanvas = await html2Canvas(this.$refs.previewDevice)
+
 
       await this.saveImages()
       const scene = this.getSceneConfig()

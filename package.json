@@ -20,6 +20,7 @@
     "element-ui": "^2.9.1",
     "events": "^3.0.0",
     "howler": "^2.1.2",
+    "html2canvas": "^1.0.0-rc.3",
     "image-preloader": "^1.1.1",
     "ky": "^0.8.0",
     "merge": "^1.2.1",
