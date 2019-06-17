@@ -61,60 +61,62 @@
 <script>
 import mixinLoginRequired from '../user/guardLoginRequired'
 import ElementListConfig from './tabs/ElementListConfig.vue'
-import { clone } from '../utils/object'
 import NavBar from '../site/components/NavBar'
 import PropConfig from './tabs/PropConfig.vue'
 import { IMAGE, SHAPE, TEXT, TypeEnum } from '../danke-core/elements/index'
-import TPL_BACKGROUND from '../danke-core/css-model/background.js'
-import { getElementStyle, getPositionSizingStyle, getSceneStyle } from '../danke-core/utils/styles'
-import { getLength, getLengthDelta } from '../danke-core/utils/common.js'
+import { clone } from '../utils/object'
+import { getElementStyle, getSceneStyle } from '../danke-core/utils/styles'
+import { getLengthDelta, fitToContainer } from '../danke-core/utils/common.js'
 import ImageCropper from './components/ImageCropper.vue'
 import DropDownMenu from '../common/components/DropDownMenu'
 import ImageDAO from '../common/dao/imagedao'
 import RestDAO from '../common/dao/restdao'
-import { Loading, Message, Dialog } from 'element-ui'
+import { Loading, Message } from 'element-ui'
 import MultiElementConfig from './tabs/MultiElementConfig'
 import PagePlay from './PagePlay'
 import PreviewDialog from './PreviewDialog'
-import { fitToContainer } from '../danke-core/utils/common'
 
 export default {
-	name: 'StyleTool',
-	components: {
+  name: 'PageSceneBuilder',
+  components: {
     PreviewDialog,
-    PagePlay, MultiElementConfig, DropDownMenu, ImageCropper, PropConfig, NavBar, ElementListConfig, Dialog},
-	mixins: [ mixinLoginRequired ],
-	data () {
-		const background = clone(TPL_BACKGROUND)
-		background.size = 40
-		return {
+    PagePlay,
+    MultiElementConfig,
+    DropDownMenu,
+    ImageCropper,
+    PropConfig,
+    NavBar,
+    ElementListConfig
+  },
+  mixins: [ mixinLoginRequired ],
+  data () {
+    return {
       TypeEnum,
-		  inc: 1,
-			maskStyle: '',
-			cornerPosition: {},
-			currentElement: null,
-			elements: [],
-			scene: {
-				name: '我的场景',
-				background
-			},
+      inc: 1,
+      maskStyle: '',
+      cornerPosition: {},
+      currentElement: null,
+      elements: [],
+      scene: {
+        name: '我的场景'
+      },
       currentTab: 1,
       resources: {}
-		}
-	},
-	created () {
-	  this.imagedao = new ImageDAO(this.ctx)
-		this.scenedao = new RestDAO(this.ctx, 'danke/scene')
-		this.ctx.crop = (file, callback) => {
-	    this.croppingFileName = file.name
-			this.$refs.cropper.open(URL.createObjectURL(file))
-			this.$refs.cropper.cropCompleteCallback = callback
-		}
-		if (this.$route.params.id !== 'new') {
-		  this.loadScene(this.$route.params.id)
     }
-	},
-	computed: {
+  },
+  created () {
+    this.imagedao = new ImageDAO(this.ctx)
+    this.scenedao = new RestDAO(this.ctx, 'danke/scene')
+    this.ctx.crop = (file, callback) => {
+      this.croppingFileName = file.name
+      this.$refs.cropper.open(URL.createObjectURL(file))
+      this.$refs.cropper.cropCompleteCallback = callback
+    }
+    if (this.$route.params.id !== 'new') {
+      this.loadScene(this.$route.params.id)
+    }
+  },
+  computed: {
     multipleElements () {
       const elements = []
       for (let element of this.elements) {
@@ -133,7 +135,7 @@ export default {
     },
     previewRatio () {
       return this.$route.params.screen
-		},
+    },
     addElementType () {
       return [{
         type: 'file',
@@ -147,40 +149,34 @@ export default {
         icon: 'icon-sort-alphabet'
       }]
     },
-		currentStyle () {
-			const style = getElementStyle(this.currentElement, this.device)
-			this.maskStyle = getPositionSizingStyle(this.currentElement, this.device)
-			this.currentElement.style = style
-			return style
-		},
 
-		deviceStyle () {
-			return getSceneStyle(this.scene, this.device)
-		},
+    deviceStyle () {
+      return getSceneStyle(this.scene, this.device)
+    },
 
-		containerSize () {
-			if (window.innerWidth > 768) {
-				return {
-					width: 800,
-					height: 600
-				}
-			} else {
-				return {
-					width: window.innerWidth,
-					height: window.innerWidth - 20
-				}
-			}
-		},
-		device () {
+    containerSize () {
+      if (window.innerWidth > 768) {
+        return {
+          width: 800,
+          height: 600
+        }
+      } else {
+        return {
+          width: window.innerWidth,
+          height: window.innerWidth - 20
+        }
+      }
+    },
+    device () {
       return fitToContainer(this.previewRatio, this.containerSize.width, this.containerSize.height)
-		}
-	},
+    }
+  },
 
   watch: {
-	  currentElement: {
-	    deep: true,
+    currentElement: {
+      deep: true,
       handler () {
-	      this.currentElement.style = getElementStyle(this.currentElement, this.device)
+        this.currentElement.style = getElementStyle(this.currentElement, this.device)
       }
     }
   },
@@ -191,7 +187,7 @@ export default {
     }
   },
 
-	methods: {
+  methods: {
     setTab (index) {
       this.currentTab = index
     },
@@ -209,25 +205,25 @@ export default {
       const clonedElement = clone(SHAPE)
       clonedElement.visible = true
       clonedElement.style = getElementStyle(clonedElement, this.device)
-      this.inc ++
+      this.inc++
       this.elements.push(clonedElement)
       this.currentElement = clonedElement
     },
 
-		addText () {
+    addText () {
       const clonedElement = clone(TEXT)
       clonedElement.visible = true
       clonedElement.text = '请输入文本内容'
       clonedElement.size.width = '80vw'
       clonedElement.size.height = '0px'
       clonedElement.style = getElementStyle(clonedElement, this.device)
-      this.inc ++
+      this.inc++
       this.elements.push(clonedElement)
       this.currentElement = clonedElement
-		},
+    },
 
     cropComplete (croppedList, cropScreenSize) {
-      for (let {blob, cropbox} of croppedList) {
+      for (let { blob, cropbox } of croppedList) {
         const clonedElement = clone(IMAGE)
         clonedElement.visible = true
         clonedElement.size.width = Math.floor(100 * cropbox.width / cropScreenSize.width) + 'vw'
@@ -246,39 +242,39 @@ export default {
       }
     },
 
-		fileChoosed (e) {
-			if (e.currentTarget.files.length) {
-				const file = e.currentTarget.files[0]
-				if (file.size > this.ctx.upload.maxSize) {
-					this.error = '文件最大为' + this.ctx.upload.maxSize
-				}
-				this.ctx.crop(file, this.cropComplete)
-				e.currentTarget.value = ''
-			}
-		},
+    fileChoosed (e) {
+      if (e.currentTarget.files.length) {
+        const file = e.currentTarget.files[0]
+        if (file.size > this.ctx.upload.maxSize) {
+          this.error = '文件最大为' + this.ctx.upload.maxSize
+        }
+        this.ctx.crop(file, this.cropComplete)
+        e.currentTarget.value = ''
+      }
+    },
 
-		sceneClick () {
+    sceneClick () {
       this.chooseElement(null)
-		},
+    },
 
     moveUp (elements) {
 
     },
 
-		play () {
-			this.$refs.previewDialog.show(clone(this.elements), this.previewRatio)
-		},
+    play () {
+      this.$refs.previewDialog.show(clone(this.elements), this.previewRatio)
+    },
 
-		chooseElement (element) {
+    chooseElement (element) {
       // save cache of content editable text
       if (this.currentElement && this.currentElement.type === TypeEnum.TEXT && this.editedText) {
         this.currentElement.text = this.editedText
         this.editedText = null
       }
       if (this.currentElement && this.currentElement.type === TypeEnum.TEXT && this.currentElement.text === '') {
-        this.currentElement.text === ' '
+        this.currentElement.text = ' '
       }
-			this.currentElement = element
+      this.currentElement = element
     },
 
     cloneElement (element) {
@@ -287,7 +283,7 @@ export default {
         clonedElement.visible = true
         clonedElement.position.offsetX = getLengthDelta(clonedElement.position.offsetX, 5)
         clonedElement.position.offsetY = getLengthDelta(clonedElement.position.offsetY, 5)
-        this.inc ++
+        this.inc++
         this.elements.push(clonedElement)
         this.currentElement = clonedElement
       }
@@ -297,21 +293,21 @@ export default {
       this.editedText = e.target.innerHTML.replace(/<br>/g, '\n')
     },
 
-		// extract scene info
-		getSceneConfig () {
+    // extract scene info
+    getSceneConfig () {
       const elements = []
       for (let element of this.elements) {
         let cloned = clone(element)
         delete cloned.style
         elements.push(cloned)
       }
-			return {
-				name: this.scene.name,
+      return {
+        name: this.scene.name,
         screen: this.$route.params.screen,
-				background: this.scene.background,
-				elements: elements
-			}
-		},
+        background: this.scene.background,
+        elements: elements
+      }
+    },
 
     async loadScene (id) {
       const scene = await this.scenedao.getOne(id)
@@ -344,7 +340,6 @@ export default {
       const html2Canvas = await import(/* webpackChunkName: "html2canvas" */'html2canvas')
       const previewCanvas = await html2Canvas(this.$refs.previewDevice)
 
-
       await this.saveImages()
       const scene = this.getSceneConfig()
       if (this.$route.params.id === 'new') {
@@ -367,7 +362,7 @@ export default {
         }
       }
     }
-	}
+  }
 }
 </script>
 
@@ -442,7 +437,5 @@ export default {
     }
   }
 }
-
-
 
 </style>

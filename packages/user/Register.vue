@@ -63,17 +63,11 @@ export default {
         username: '',
         password: ''
       },
-      password: '',
+      password: ''
     }
   },
 
   created () {
-    setInterval(() => {
-      if (this.countDown !== 0) {
-        this.countDown --
-        // window.localStorage.setItem('sms.countdown', this.countDown)
-      }
-    }, 1000)
   },
 
   methods: {

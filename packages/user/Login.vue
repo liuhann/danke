@@ -50,22 +50,17 @@ export default {
     return {
       error: {
         captcha: '',
-        username: '',
+        username: ''
       },
       captcha: '',
       svg: '',
       username: '',
-      password: '',
+      password: ''
     }
   },
 
   created () {
-    setInterval(() => {
-      if (this.countDown !== 0) {
-        this.countDown --
-        // window.localStorage.setItem('sms.countdown', this.countDown)
-      }
-    }, 1000)
+
   },
 
   mounted () {

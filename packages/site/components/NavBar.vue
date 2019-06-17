@@ -28,14 +28,11 @@
               工具
             </a>
             <div class="navbar-dropdown">
-              <router-link class="navbar-item" to="/frame-list">动画</router-link>
+              <router-link class="navbar-item" to="/frames">动画</router-link>
               <router-link class="navbar-item" to="/scenes">页面</router-link>
-              <router-link class="navbar-item" to="/slide-tool">展示</router-link>
+              <router-link class="navbar-item" to="/works">展示</router-link>
             </div>
           </div>
-          <a class="navbar-item" href="/story">
-            元宝故事
-          </a>
         </div>
 
         <div class="navbar-end">

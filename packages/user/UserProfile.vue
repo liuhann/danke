@@ -36,14 +36,16 @@
       </div>
     </div>
   </section>
+  <nav-footer></nav-footer>
 </div>
 </template>
 
 <script>
 import NavBar from '../site/components/NavBar'
+import NavFooter from '../site/components/NavFooter'
 export default {
   name: 'UserHome',
-  components: { NavBar },
+  components: { NavFooter, NavBar },
   data () {
     return {
       user: this.ctx.user

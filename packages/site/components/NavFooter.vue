@@ -9,9 +9,9 @@
 </template>
 
 <script>
-  export default {
-    name: 'NavFooter'
-  }
+export default {
+  name: 'NavFooter'
+}
 </script>
 
 <style scoped>
