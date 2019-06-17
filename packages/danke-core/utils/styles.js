@@ -8,7 +8,7 @@ import { getBorderStyle } from '../css-model/border'
 import { getClipPathStyle } from '../css-model/clippath'
 import { getTransformStyle } from '../css-model/transform'
 import { getShapeStyle } from '../css-model/shapeclip'
-import { createSheet, addAnimationStyle } from '../../builder-frame/keyframe'
+import { createSheet, addAnimationStyle } from '../../frames/keyframe'
 import { getPositionStyle } from '../css-model/position'
 import { getSizingStyle } from '../css-model/size'
 

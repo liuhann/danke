@@ -6,7 +6,7 @@
       <div class="buttons has-addons group-btn-type">
         <a v-for="type in createMenus" :key="type.ratio" class="button is-small" :class="[screenType===type.ratio? 'is-selected is-info':'']"
               @click="setScreenType(type.ratio)">
-          <span class="icon">
+          <span class="icon is-small">
             <i :class="type.icon"></i>
           </span>
           <span>{{type.label}}</span>
@@ -39,7 +39,7 @@
 
 <script>
 import './fontello/css/fontello.css'
-import NavBar from '../common/site/NavBar.vue'
+import NavBar from '../site/components/NavBar.vue'
 import ratios from './utils/ratios'
 import DropDownMenu from '../common/components/DropDownMenu'
 import RestDAO from '../common/dao/restdao'

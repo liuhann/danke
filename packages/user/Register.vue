@@ -50,7 +50,7 @@
 
 <script>
 
-import NavBar from '../common/site/NavBar'
+import NavBar from '../site/components/NavBar'
 export default {
   name: 'Register',
   components: { NavBar },

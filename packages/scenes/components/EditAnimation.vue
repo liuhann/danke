@@ -12,7 +12,7 @@
 <script>
 import EditLen from './EditLen.vue'
 import FormField from '../../common/components/FormField'
-import frameModel from '../../builder-frame/frameChooseDialog'
+import frameModel from '../../frames/frameChooseDialog'
 export default {
   name: 'EditAnimation',
   components: {

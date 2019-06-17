@@ -36,7 +36,7 @@ import EditLen from '../components/EditLen.vue'
 import FormField from '../../common/components/FormField.vue'
 import { getLengthDelta } from '../../danke-core/utils/common'
 import { getElementStyle } from '../../danke-core/utils/styles'
-import frameModel from '../../builder-frame/frameChooseDialog'
+import frameModel from '../../frames/frameChooseDialog'
 
 export default {
   name: 'MultiElementConfig',

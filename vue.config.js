@@ -1,5 +1,5 @@
 module.exports = {
-  lintOnSave: false,
+  lintOnSave: true,
   productionSourceMap: true,
   transpileDependencies: ['async-boot', 'ky'],
   devServer: {

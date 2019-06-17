@@ -75,7 +75,7 @@ import { Message } from 'element-ui'
 import { createSheet, addAnimationStyle, clearAnimation, getAnimationSourceCode } from './keyframe'
 import { getElementStyle } from '../danke-core/utils/styles'
 import { setTimeout } from 'timers'
-import NavBar from '../common/site/NavBar'
+import NavBar from '../site/components/NavBar'
 
 export default {
   name: 'FrameTool',

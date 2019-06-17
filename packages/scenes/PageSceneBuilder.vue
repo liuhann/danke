@@ -62,7 +62,7 @@
 import mixinLoginRequired from '../user/guardLoginRequired'
 import ElementListConfig from './tabs/ElementListConfig.vue'
 import { clone } from '../utils/object'
-import NavBar from '../common/site/NavBar'
+import NavBar from '../site/components/NavBar'
 import PropConfig from './tabs/PropConfig.vue'
 import { IMAGE, SHAPE, TEXT, TypeEnum } from '../danke-core/elements/index'
 import TPL_BACKGROUND from '../danke-core/css-model/background.js'

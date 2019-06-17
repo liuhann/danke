@@ -1,16 +1,17 @@
 <template>
 <div class="columns frame-box-columns">
   <div class="column is-two-thirds-tablet">
-    <div class="frame-preview">
+    <div class="frame-preview" :class="[previewType!=='文字'?'shadow': '']">
       <div class="buttons has-addons toggle-type">
-        <span class="button" v-for="ptype of previewTypes" :key="ptype" :class="previewType === ptype? 'is-selected is-info': ''" @click="previewType = ptype">{{ptype}}</span>
+        <span class="button is-small" v-for="ptype of previewTypes" :key="ptype" :class="previewType === ptype? 'is-selected is-info': ''" @click="previewType = ptype">{{ptype}}</span>
       </div>
       <span class="buttons has-addons edit-button" v-if="isEdit" >
-        <span class="button icon-edit is-info" @click="editFrame"></span>
-        <span class="button icon-trash is-danger" @click="removeFrame"></span>
+        <span class="button icon-cw is-small" @click="refreshFrame"></span>
+        <span class="button icon-edit is-info is-small" @click="editFrame"></span>
+        <span class="button icon-trash is-danger is-small" v-if="currentAnimation.userid === user.id" @click="removeFrame"></span>
       </span>
       <div v-if="currentAnimation && previewType==='方块'" class="preview-box" :class="currentAnimation.name"></div>
-      <div v-if="currentAnimation && previewType==='文字'" class="preview-text" :class="currentAnimation.name">danke.fun</div>
+      <div v-if="currentAnimation && previewType==='文字'" class="preview-text" :class="currentAnimation.name">frames@danke</div>
       <div v-if="previewType==='图片'" class="preview-box" :class="currentAnimation.name">
         <img src="http://cdn.danke.fun/res/sample1.png" width="160" height="160">
       </div>
@@ -36,7 +37,8 @@
           {{type.value}}
         </a>
       </p>
-      <a v-for="animation in animations" :key="animation.name" class="panel-block" @click="setAnimation(animation)" :class="currentAnimation.name === animation.name? 'is-active': ''">
+      <a v-for="animation in animations" :key="animation.name" class="panel-block" @click="setAnimation(animation)"
+         :class="currentAnimation.name === animation.name? 'is-active': ''">
         <span class="panel-icon">
           <i class='icon-left-small' aria-hidden="true"></i>
         </span>
@@ -63,6 +65,7 @@ export default {
   },
   data () {
     return {
+      user: this.ctx.user,
       previewType: '方块',
       previewTypes: ['方块', '文字', '图片'],
       currentType: '',
@@ -109,6 +112,10 @@ export default {
       }
     },
 
+    refreshFrame () {
+
+    },
+
     async removeFrame () {
       await this.restdao.delete(this.currentAnimation)
       await this.loadAnimation()
@@ -117,7 +124,7 @@ export default {
 
     editFrame () {
       this.ctx.editAnimation = this.currentAnimation
-      this.$router.push('/builder-frame')
+      this.$router.push('/frames')
     },
     changeType (type) {
       this.currentType = type.key
@@ -136,10 +143,12 @@ export default {
   align-items: center;
   position: relative;
 
-  background-image: linear-gradient(90deg, #592D2D, #592D2D);
-  background-size: 160px 160px;
-  background-position: center;
-  background-repeat: no-repeat;
+  &.shadow {
+    background-image: linear-gradient(90deg, #592D2D, #592D2D);
+    background-size: 160px 160px;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
 
   .toggle-type {
     position: absolute;
@@ -163,7 +172,7 @@ export default {
     position: absolute;
     right: .5rem;
     bottom: .5rem;
-    color: 999;
+    color: #999;
     font-size: 12px;
   }
 }

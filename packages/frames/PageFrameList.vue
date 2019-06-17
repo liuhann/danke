@@ -11,10 +11,10 @@
 </template>
 
 <script>
-import NavBar from '../common/site/NavBar'
+import NavBar from '../site/components/NavBar'
 import { createSheet, addAnimationStyle, clearAnimation } from './keyframe'
 import FrameBox from './FrameBox'
-import NavFooter from '../common/site/NavFooter'
+import NavFooter from '../site/components/NavFooter'
 export default {
   name: 'PageFrameList',
   components: {
@@ -95,12 +95,12 @@ export default {
     },
 
     goFrameTool () {
-      this.$router.push('/builder-frame')
+      this.$router.push('/frames')
     },
 
     edit (animation) {
       this.ctx.editAnimation = animation
-      this.$router.push('/builder-frame')
+      this.$router.push('/frames')
     },
 
     replay (animation) {

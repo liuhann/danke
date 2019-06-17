@@ -11,7 +11,7 @@
 <script>
 import { getElementStyle, getSceneStyle, getLength } from '../danke-core/utils/styles'
 import ELEMENT_TPL, { simplify, TypeEnum } from '../danke-core/css-model/element'
-import { createSheet, addAnimationStyle } from '../builder-frame/keyframe'
+import { createSheet, addAnimationStyle } from '../frames/keyframe'
 export default {
   name: 'PagePlay',
   props: {

@@ -30,7 +30,7 @@ import LogoWrapper from '../common/site/LogoWrapper'
 import TabChooseType from './TabChooseType'
 import ImageDefault from './photo.svg'
 import DankeHeader from '../common/site/DankeHeader'
-import NavBar from '../common/site/NavBar'
+import NavBar from '../site/components/NavBar'
 export default {
   name: 'Home',
   components: {NavBar, DankeHeader, TabChooseType, LogoWrapper},

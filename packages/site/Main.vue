@@ -6,9 +6,9 @@
 </div>
 </template>
 <script>
-import NavBar from '../common/site/NavBar'
+import NavBar from './components/NavBar'
 import WorkList from '../common/site/WorkList'
-import NavFooter from '../common/site/NavFooter'
+import NavFooter from './components/NavFooter'
 export default {
   name: 'view.vue',
   components: { NavFooter, WorkList, NavBar },
