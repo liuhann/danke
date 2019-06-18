@@ -12,15 +12,17 @@
               </drop-down-menu>
             </div>
             <div class="level-right">
-              <a class="button is-primary is-small" @click="savePage">
-                <span class="icon">
-                  <i class="icon-ok is-small"></i>
-                </span>=
-                <span>保存</span>
-              </a>
-              <a class="button is-success is-small" @click="play">
-                <span>运行</span>
-              </a>
+              <div class="buttons has-addons">
+                <a class="button is-primary is-small" @click="savePage">
+                  <span class="icon">
+                    <i class="icon-ok"></i>
+                  </span>
+                  <span>保存</span>
+                </a>
+                <a class="button is-success is-small" @click="play">
+                  <span>预览</span>
+                </a>
+              </div>
             </div>
           </div>
           <div id="stylePreview" @click.self="sceneClick">
@@ -28,7 +30,6 @@
               <div v-for="element of elements" :key="element.id"
                    class="element" :class="[element===currentElement? 'current': '', element.visible?'':'hidden']" :style="element.style"
                    @click.self="chooseElement(element)">
-                <!--<textarea autoHeight="true" :style="{fontSize: '1em', color: element.font.color}" v-if="element.type === TypeEnum.TEXT && element===currentElement" v-css-model="element.text"></textarea>-->
                 <span @click.self="chooseElement(element)" @input="contentChange" :contenteditable="element===currentElement" v-if="element.type === TypeEnum.TEXT /*&& element!==currentElement*/" v-html="$options.filters.newline(element.text)"></span>
               </div>
             </div>
@@ -92,6 +93,8 @@ export default {
   data () {
     return {
       TypeEnum,
+      addedBlobUrl: '',
+      imageDialogVisible: false,
       inc: 1,
       maskStyle: '',
       cornerPosition: {},
@@ -100,7 +103,7 @@ export default {
       scene: {
         name: '我的场景'
       },
-      currentTab: 1,
+      currentTab: 0,
       resources: {}
     }
   },
@@ -109,7 +112,7 @@ export default {
     this.scenedao = new RestDAO(this.ctx, 'danke/scene')
     this.ctx.crop = (file, callback) => {
       this.croppingFileName = file.name
-      this.$refs.cropper.open(URL.createObjectURL(file))
+      this.$refs.cropper.open(file)
       this.$refs.cropper.cropCompleteCallback = callback
     }
     if (this.$route.params.id !== 'new') {
@@ -176,7 +179,9 @@ export default {
     currentElement: {
       deep: true,
       handler () {
-        this.currentElement.style = getElementStyle(this.currentElement, this.device)
+        if (this.currentElement) {
+          this.currentElement.style = getElementStyle(this.currentElement, this.device)
+        }
       }
     }
   },
@@ -223,15 +228,16 @@ export default {
     },
 
     cropComplete (croppedList, cropScreenSize) {
+      debugger
       for (let { blob, cropbox } of croppedList) {
         const clonedElement = clone(IMAGE)
         clonedElement.visible = true
-        clonedElement.size.width = Math.floor(100 * cropbox.width / cropScreenSize.width) + 'vw'
-        clonedElement.size.height = Math.floor(100 * cropbox.height / cropScreenSize.height) + 'vh'
         clonedElement.position.horizontal = 'left'
         clonedElement.position.vertical = 'top'
-        clonedElement.position.offsetX = Math.floor(100 * cropbox.left / cropScreenSize.width) + 'vw'
-        clonedElement.position.offsetY = Math.floor(100 * cropbox.top / cropScreenSize.height) + 'vh'
+        clonedElement.size.width = Math.floor(100 * cropbox.width / cropScreenSize.width) + 'vw'
+        clonedElement.size.height = Math.floor(100 * cropbox.height / cropScreenSize.height) + 'vh'
+        clonedElement.position.offsetX = Math.floor(100 * cropbox.left || 0 / cropScreenSize.width) + 'vw'
+        clonedElement.position.offsetY = Math.floor(100 * cropbox.top || 0 / cropScreenSize.height) + 'vh'
         clonedElement.url = URL.createObjectURL(blob)
         const style = getElementStyle(clonedElement, this.device)
         clonedElement.style = style
@@ -248,6 +254,9 @@ export default {
         if (file.size > this.ctx.upload.maxSize) {
           this.error = '文件最大为' + this.ctx.upload.maxSize
         }
+        // this.addedBlobUrl = URL.createObjectURL(file)
+        // this.addedBlobFile = file
+        // this.imageDialogVisible = true
         this.ctx.crop(file, this.cropComplete)
         e.currentTarget.value = ''
       }
@@ -275,6 +284,7 @@ export default {
         this.currentElement.text = ' '
       }
       this.currentElement = element
+      this.currentTab = 0
     },
 
     cloneElement (element) {
@@ -303,8 +313,8 @@ export default {
       }
       return {
         name: this.scene.name,
+        cover: this.scene.cover,
         screen: this.$route.params.screen,
-        background: this.scene.background,
         elements: elements
       }
     },
@@ -327,7 +337,13 @@ export default {
       }
       this.elements = scene.elements
     },
-
+    async getCanvasBlob (canvas) {
+      return new Promise((resolve, reject) => {
+        canvas.toBlob(function (blob) {
+          resolve(blob)
+        })
+      })
+    },
     async savePage () {
       const loading = Loading.service({
         lock: true,
@@ -335,11 +351,7 @@ export default {
         spinner: 'el-icon-loading',
         background: 'rgba(255, 255, 255, 0.4)'
       })
-
       // save scene preview
-      const html2Canvas = await import(/* webpackChunkName: "html2canvas" */'html2canvas')
-      const previewCanvas = await html2Canvas(this.$refs.previewDevice)
-
       await this.saveImages()
       const scene = this.getSceneConfig()
       if (this.$route.params.id === 'new') {
@@ -348,8 +360,17 @@ export default {
         await this.scenedao.patch(this.$route.params.id, scene)
       }
       loading.close()
-
       Message.success('保存完成')
+    },
+
+    async saveCover () {
+      const html2Canvas = (await import(/* webpackChunkName: "html2canvas" */'html2canvas')).default
+      const previewBlob = await this.getCanvasBlob(await html2Canvas(this.$refs.previewDevice, {
+        allowTaint: true,
+        useCORS: true
+      }))
+      const previewUpload = await this.imagedao.uploadBlob(previewBlob)
+      this.scene.cover = previewUpload.url.replace(/http[s]*:\/\/[^/]+/g, '')
     },
 
     async saveImages () {

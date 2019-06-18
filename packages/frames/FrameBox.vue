@@ -15,14 +15,14 @@
       <div v-if="previewType==='图片'" class="preview-box" :class="currentAnimation.name">
         <img src="http://cdn.danke.fun/res/sample1.png" width="160" height="160">
       </div>
-      <span class="animation-provider">From:{{currentAnimation.userid}}</span>
+      <span class="animation-provider" v-if="currentAnimation">From:{{currentAnimation.userid}}</span>
     </div>
   </div>
   <div class="column is-one-third-tablet column-list">
     <nav class="panel">
       <div class="panel-block">
           <p class="control">
-            <router-link to="/builder-frame" class="button icon-plus is-small is-info">创建</router-link>
+            <router-link v-if="isEdit" to="/frame/edit" class="button icon-plus is-small is-info">创建</router-link>
           </p>
           <p class="control has-icons-right">
             <input class="input is-small" type="text" placeholder="按名称查找" v-model="searchFilter">
@@ -72,20 +72,20 @@ export default {
       searchFilter: '',
       currentAnimation: null,
       animations: [],
-      animationTypes:[{
-          key: '',
-          value: '全部'
-        },
-        {
-          key: '1',
-          icon: 'icon-left-small',
-          value: '进入'
-        }, {
-          key: '2',
-          value: '离开'
-        }, {
-          key: '3',
-          value: '持续'
+      animationTypes: [{
+        key: '',
+        value: '全部'
+      },
+      {
+        key: '1',
+        icon: 'icon-left-small',
+        value: '进入'
+      }, {
+        key: '2',
+        value: '离开'
+      }, {
+        key: '3',
+        value: '持续'
       }]
     }
   },
@@ -191,6 +191,5 @@ export default {
     }
   }
 }
-
 
 </style>

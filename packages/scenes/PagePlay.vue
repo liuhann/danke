@@ -10,14 +10,10 @@
 
 <script>
 import { getElementStyle, getSceneStyle, getLength } from '../danke-core/utils/styles'
-import ELEMENT_TPL, { simplify, TypeEnum } from '../danke-core/css-model/element'
-import { createSheet, addAnimationStyle } from '../frames/keyframe'
+import { TypeEnum } from '../danke-core/css-model/element'
 export default {
   name: 'PagePlay',
   props: {
-    device: {
-      type: Object
-    },
     scene: {
       type: Object
     }
@@ -27,18 +23,28 @@ export default {
       return v.replace(/\n/g, '<br>')
     }
   },
+
+  mounted () {
+    const [width, height] = this.scene.screen.split(':')
+    this.device.width = this.$el.clientWidth
+    this.device.height = Math.floor(this.device.width * parseInt(height) / parseInt(width))
+    this.sceneStyle = getSceneStyle(this.scene, this.device)
+    this.renderStage()
+  },
   created () {
-    this.renderStage('in')
+
   },
   data () {
     return {
+      device: {
+        width: 100,
+        height: 100
+      },
+      sceneStyle: '',
       TypeEnum
     }
   },
   computed: {
-    sceneStyle () {
-      return getSceneStyle(this.scene, this.device)
-    }
   },
   methods: {
     renderStage (stage) {
@@ -55,7 +61,7 @@ export default {
     replay () {
       const elements = this.scene.elements
       this.scene.elements = []
-      setTimeout( ()=> {
+      setTimeout(() => {
         this.scene.elements = elements
         this.renderStage('in')
       }, 300)
@@ -69,7 +75,7 @@ export default {
 
 <style lang="scss">
 .scene {
-	position: relative;
+  position: relative;
   font-size: 12px;
 }
 </style>

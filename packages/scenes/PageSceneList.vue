@@ -3,35 +3,44 @@
   <nav-bar></nav-bar>
   <div class="section">
     <div class="container">
-      <div class="buttons has-addons group-btn-type">
-        <a v-for="type in createMenus" :key="type.ratio" class="button is-small" :class="[screenType===type.ratio? 'is-selected is-info':'']"
-              @click="setScreenType(type.ratio)">
-          <span class="icon is-small">
-            <i :class="type.icon"></i>
-          </span>
-          <span>{{type.label}}</span>
-        </a>
+      <span class="button icon-plus is-primary is-pulled-right is-small" @click="addSceneClicked">创建页面</span>
+      <div class="tabs is-centered is-small is-toggle is-toggle-rounded">
+        <ul>
+          <li v-for="type in createMenus" :key="type.ratio"  :class="[screenType===type.ratio? 'is-active':'']"><a @click="setScreenType(type.ratio)">{{type.label}}</a></li>
+        </ul>
       </div>
     </div>
   </div>
   <section class="section scene-list">
     <div class="container">
-      <div class="columns is-mobile is-multiline">
-        <div class="column is-one-fifth-fullhd is-one-quarter-widescreen is-one-quarter-desktop is-one-third-tablet is-half-mobile is-vcentered" @click="addSceneClicked">
-          <div class="add-empty">
-            <i class="icon-plus"></i>
-          </div>
-        </div>
-        <div class="column is-one-quarter-fullhd is-one-third-widescreen is-one-third-desktop is-one-third-tablet is-half-mobile is-vcentered"
+      <div class="columns is-mobile is-multiline" v-if="screenType !=='9:16'">
+        <div class="column is-one-third-fullhd is-one-third-widescreen is-one-third-desktop is-half-tablet is-full-mobile is-vcentered"
              v-for="(scene, index) in scenes" :key="scene._id">
           <div class="device">
-            <page-play :device="getDevice(scene.screen)" :scene="scene" ref="pagePlay"></page-play>
-						<span class="button icon-cw" @click="replay(scene, index)"></span>
+            <page-play :scene="scene" ref="pagePlay"></page-play>
+            <span class="button icon-cw" @click="replay(scene, index)"></span>
             <span class="button icon-edit is-small is-primary" @click="editScene(scene)"></span>
             <span class="button icon-trash is-small is-danger" @click="deleteScene(scene)"></span>
           </div>
         </div>
       </div>
+
+      <div class="columns is-mobile is-multiline" v-if="screenType ==='9:16'">
+        <div class="column is-one-fifth-fullhd is-one-quarter-widescreen is-one-third-desktop is-half-tablet is-full-mobile is-vcentered"
+             v-for="(scene, index) in scenes" :key="scene._id">
+          <div class="device">
+            <page-play :scene="scene" ref="pagePlay"></page-play>
+            <span class="button icon-cw" @click="replay(scene, index)"></span>
+            <span class="button icon-edit is-small is-primary" @click="editScene(scene)"></span>
+            <span class="button icon-trash is-small is-danger" @click="deleteScene(scene)"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container is-centered">
+
     </div>
   </section>
 </div>
@@ -108,6 +117,10 @@ export default {
       return this.screenDevices[ratioStr]
     },
 
+    getSceneCover () {
+
+    },
+
     async loadMoreScenes () {
       const result = await this.scenedao.list({
         screen: this.screenType,
@@ -115,6 +128,10 @@ export default {
         count: this.count
       })
       this.scenes = result.list
+
+      for (let scene of this.scenes) {
+        scene.url = this.ctx.IMG_SERVER + scene.cover.replace(/http[s]*:\/\/[^/]+/g, '') + '?x-oss-process=image/format,webp/quality,Q_80'
+      }
       this.total = result.total
     },
 
@@ -125,20 +142,18 @@ export default {
       this.page = 1
       this.loadMoreScenes()
     },
-
     editScene (scene) {
-      this.$router.push(`/builder/scene/${scene._id}/${scene.screen}`)
+      this.$router.push(`/scene/${scene._id}/${scene.screen}`)
     },
-
     replay (scene, index) {
-			this.$refs.pagePlay[index].replay()
-		},
+      this.$refs.pagePlay[index].replay()
+    },
     async deleteScene (scene) {
       await this.scenedao.delete(scene)
     },
 
     addSceneClicked () {
-      this.$router.push('/builder/scene/new/' + this.screenType)
+      this.$router.push('/scene/new/' + this.screenType)
     }
   }
 }
@@ -164,7 +179,6 @@ export default {
     }
     .device {
       background-color: white;
-      width: 240px;
       border: 1px solid #efefef;
       overflow: hidden;
       position: relative;

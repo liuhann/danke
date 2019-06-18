@@ -52,9 +52,11 @@ function getWorkStyle (work, device) {
 
 function getSceneStyle (scene, device) {
   const styles = []
-  styles.push(getBackgroundStyle({
-    background: scene.background
-  }))
+  if (scene.background) {
+    styles.push(getBackgroundStyle({
+      background: scene.background
+    }))
+  }
   styles.push(`width: ${device.width}px`)
   styles.push(`height: ${device.height}px`)
   if (scene.type === 'background') {

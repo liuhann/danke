@@ -34,6 +34,7 @@
           <div class="buttons has-addons">
             <p class="level-item"><span class="button is-small icon-plus" @click="cropAdd()">{{croppedData.length}}</span></p>
             <p class="level-item"><a><span class="button is-small icon-ok is-success" @click="cropComplete"></span></a></p>
+            <p class="level-item"><a><span class="button is-small icon-ok is-success" @click="fullCrop">原图</span></a></p>
           </div>
         </div>
       </nav>
@@ -56,7 +57,7 @@ import Cropper from 'cropperjs'
 import FormField from '../../common/components/FormField'
 export default {
   name: 'ImageCropper',
-  components: {FormField},
+  components: { FormField },
   props: {
     ratio: {
       type: String
@@ -78,15 +79,14 @@ export default {
         width: 1,
         height: 1
       },
-      croppedData : []
+      croppedData: []
     }
-
   },
   computed: {
     fullSize () {
       const builderRatio = this.client.width / this.client.height
       let [w, h] = this.ratio.split(':')
-      const sceneRatio =  parseInt(w) / parseInt(h)
+      const sceneRatio = parseInt(w) / parseInt(h)
 
       if (builderRatio > sceneRatio) {
         return {
@@ -125,9 +125,9 @@ export default {
     setRatioWithRotate () {
       const [x, y] = this.currentRatio.split(':')
       if (this.isRotate) {
-        this.cropper.setAspectRatio(parseInt(y)/parseInt(x))
+        this.cropper.setAspectRatio(parseInt(y) / parseInt(x))
       } else {
-        this.cropper.setAspectRatio(parseInt(x)/parseInt(y))
+        this.cropper.setAspectRatio(parseInt(x) / parseInt(y))
       }
     },
     setRotate () {
@@ -139,14 +139,15 @@ export default {
     rotate (degree) {
       this.cropper.rotate(degree)
     },
-    open (url) {
+    open (blob) {
       const ic = this
-      this.imageUrl = url
+      this.blob = blob
+      this.imageUrl = URL.createObjectURL(blob)
       this.croppedData = []
       const image = this.$refs.crop
       image.onload = function () {
         ic.cropper = new Cropper(image, {
-          crop(event) {
+          crop (event) {
             const cropboxData = ic.cropper.getCropBoxData()
             ic.cropInfo.x = Math.floor(cropboxData.left)
             ic.cropInfo.y = Math.floor(cropboxData.top)
@@ -164,7 +165,7 @@ export default {
       const cropboxData = this.cropper.getCropBoxData()
       this.cropper.getCroppedCanvas({
         width: cropboxData.width,
-        height: cropboxData.height,
+        height: cropboxData.height
       }).toBlob((blob) => {
         this.croppedData.push({
           blob,
@@ -172,6 +173,18 @@ export default {
         })
         addComplete && addComplete()
       })
+    },
+    fullCrop () {
+      const imageData = this.cropper.getImageData()
+      this.croppedData.push({
+        blob: this.blob,
+        cropbox: {
+          width: imageData.naturalWidth,
+          height: imageData.naturalHeight
+        }
+      })
+      this.cropCompleteCallback(this.croppedData, this.fullSize)
+      this.close()
     },
     cropComplete () {
       if (this.croppedData.length) {

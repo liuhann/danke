@@ -1,6 +1,6 @@
 <template>
 <div id="preview-dialog" v-show="dialogVisible" @click.self="close">
-  <page-play ref="play" :device="device" :scene="scene"></page-play>
+  <page-play v-if="dialogVisible" ref="play" :scene="scene"></page-play>
 </div>
 </template>
 
@@ -10,7 +10,7 @@ import PagePlay from './PagePlay'
 import { fitToContainer } from '../danke-core/utils/common'
 export default {
   name: 'PreviewDialog',
-  components: {PagePlay, Dialog },
+  components: { PagePlay, Dialog },
   props: {
   },
   data () {
@@ -18,6 +18,7 @@ export default {
       device: {
       },
       scene: {
+        screen: '4:3',
         elements: []
       },
       dialogVisible: false
@@ -32,6 +33,7 @@ export default {
   methods: {
     show (elements, ratio) {
       this.scene = {
+        screen: ratio,
         elements
       }
       this.device = fitToContainer(ratio, window.innerWidth * 0.9, window.innerHeight * 0.9)

@@ -29,6 +29,7 @@ const boot = new AsyncBoot({
   mode: 'history',
   appServer: 'http://www.danke.fun',
   cdn: 'http://cdn.danke.fun',
+  IMG_SERVER: 'http://image.danke.fun',
   mount: '#app',
   packages: [
     site, runtime, user, frameTool, pageTool, ybstory
