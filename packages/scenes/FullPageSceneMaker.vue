@@ -168,9 +168,11 @@ export default {
         z-index: 10;
         .element {
           position: absolute;
-          background-color: #0a0a0a;
-          width: 30px;
-          height: 30px;
+          &.current {
+            outline: 2px dashed #87b1f1;
+            outline-offset: 0;
+            z-index: 9999;
+          }
         }
         .ti {
           position: absolute;
