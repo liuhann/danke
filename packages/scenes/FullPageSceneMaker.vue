@@ -1,6 +1,9 @@
 <template>
   <div id="scene-maker">
     <div class="tool-bar">
+      增加
+      <a class="button is-white is-small">图片</a>
+      <a class="button is-white is-small"></a>
       <a class="button is-white is-small">White</a>
       <a class="button is-white is-small" @click="zoomIn">
         <i class="icon-plus"></i>
@@ -11,6 +14,9 @@
       <a class="button is-white is-small" @click="zoomOut">
         <i class="icon-minus"></i>
       </a>
+    </div>
+    <div class="v-tool-bar">
+
     </div>
     <div class="sider-bar"></div>
     <div class="scene-container" ref="container">
