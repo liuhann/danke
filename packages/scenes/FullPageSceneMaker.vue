@@ -1,18 +1,18 @@
 <template>
   <div id="scene-maker">
     <div class="tool-bar">
-      增加
-      <a class="button is-white is-small">图片</a>
+      <drop-down-menu :menus="addElementType" @menu-clicked="addMenuClicked">
+        <span class="button icon-plus is-white is-small">插入元素</span>
+      </drop-down-menu>
       <a class="button is-white is-small"></a>
-      <a class="button is-white is-small">White</a>
       <a class="button is-white is-small" @click="zoomIn">
-        <i class="icon-plus"></i>
+        <i class="icon-minus"></i>
       </a>
       <a class="button is-white is-small" >
         {{zoom}}
       </a>
       <a class="button is-white is-small" @click="zoomOut">
-        <i class="icon-minus"></i>
+        <i class="icon-plus"></i>
       </a>
     </div>
     <div class="v-tool-bar">
@@ -22,17 +22,29 @@
     <div class="scene-container" ref="container">
       <div class="device draggable-source" ref="device" :style="deviceStyle">
         <div class="ti"></div>
+        <div v-for="element of elements" :key="element.id"
+             class="element" :class="[element===currentElement? 'current': '', element.visible?'':'hidden']" :style="element.style"
+             @click.self="chooseElement(element)">
+          <span @click.self="chooseElement(element)" @input="contentChange" :contenteditable="element===currentElement" v-if="element.type === TypeEnum.TEXT /*&& element!==currentElement*/" v-html="$options.filters.newline(element.text)"></span>
+        </div>
       </div>
     </div>
     <div class="line"></div>
+    <image-cropper ref="cropper"></image-cropper>
   </div>
 </template>
 
 <script>
 import interact from 'interactjs'
 import { fitToContainer } from '../danke-core/utils/common'
+import elementMixin from './mixins/elementMixins'
+import DropDownMenu from '../common/components/DropDownMenu'
+import ImageCropper from './components/ImageCropper'
+import { TypeEnum } from '../danke-core/elements/index'
 export default {
   name: 'FullPageSceneMaker',
+  components: { ImageCropper, DropDownMenu },
+  mixins: [ elementMixin ],
   props: {
     ratio: {
       type: String,
@@ -41,6 +53,7 @@ export default {
   },
   data () {
     return {
+      TypeEnum,
       device: {
         width: 360,
         height: 640
@@ -116,7 +129,6 @@ export default {
   html.has-navbar-fixed-top, body.has-navbar-fixed-top {
     padding-top: 0;
   }
-
   #scene-maker {
     position: relative;
     left: 0;
@@ -153,7 +165,7 @@ export default {
         position: absolute;
         left: 20px;
         background-color: #fff;
-        z-index: 100;
+        z-index: 10;
         .element {
           position: absolute;
           background-color: #0a0a0a;

@@ -59,12 +59,10 @@ export default {
   name: 'ImageCropper',
   components: { FormField },
   props: {
-    ratio: {
-      type: String
-    }
   },
   data () {
     return {
+      ratio: '4:3',
       imageRatios,
       imageUrl: null,
       currentRatio: null,
@@ -139,9 +137,10 @@ export default {
     rotate (degree) {
       this.cropper.rotate(degree)
     },
-    open (blob) {
+    open (blob, ratio) {
       const ic = this
       this.blob = blob
+      this.ratio = ratio
       this.imageUrl = URL.createObjectURL(blob)
       this.croppedData = []
       const image = this.$refs.crop
