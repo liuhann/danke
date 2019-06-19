@@ -13,12 +13,6 @@
       "src": "typicons"
     },
     {
-      "uid": "1gf923f9wvaezxmfon515dglxa3drf0e",
-      "css": "plus",
-      "code": 59392,
-      "src": "typicons"
-    },
-    {
       "uid": "csuoy0rqoun3unhsgjoy2uumpldzbfmt",
       "css": "trash",
       "code": 59395,
@@ -133,27 +127,21 @@
       "src": "fontawesome"
     },
     {
-      "uid": "877a233d7fdca8a1d82615b96ed0d7a2",
-      "css": "right-small",
-      "code": 59408,
-      "src": "typicons"
-    },
-    {
-      "uid": "58b78b6ca784d5c3db5beefcd9e18061",
-      "css": "left-small",
-      "code": 59409,
-      "src": "typicons"
-    },
-    {
-      "uid": "5qynhqqaenby227l5kogqj8sdk5s4e7h",
-      "css": "cw",
-      "code": 59410,
-      "src": "typicons"
-    },
-    {
-      "uid": "e5e2804a6d7681eb37e80a1fc380fe49",
-      "css": "wristwatch",
+      "uid": "mqlxga8x57rhlfv44zsvmz1reex8lbqg",
+      "css": "arrows-cw",
       "code": 59407,
+      "src": "typicons"
+    },
+    {
+      "uid": "1gf923f9wvaezxmfon515dglxa3drf0e",
+      "css": "plus",
+      "code": 59392,
+      "src": "typicons"
+    },
+    {
+      "uid": "qab5uvjyoc3uu4d2pvt8soshtgkuvpak",
+      "css": "minus",
+      "code": 59408,
       "src": "typicons"
     }
   ]
