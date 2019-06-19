@@ -228,14 +228,15 @@ export default {
     },
 
     cropComplete (croppedList, cropScreenSize) {
-      debugger
       for (let { blob, cropbox } of croppedList) {
         const clonedElement = clone(IMAGE)
         clonedElement.visible = true
         clonedElement.position.horizontal = 'left'
         clonedElement.position.vertical = 'top'
-        clonedElement.size.width = Math.floor(100 * cropbox.width / cropScreenSize.width) + 'vw'
-        clonedElement.size.height = Math.floor(100 * cropbox.height / cropScreenSize.height) + 'vh'
+        const sizeWidth = Math.floor(100 * cropbox.width / cropScreenSize.width)
+        clonedElement.size.width = (sizeWidth > 100 ? 100 : sizeWidth) + 'vw'
+        const sizeHeight = Math.floor(100 * cropbox.height / cropScreenSize.height)
+        clonedElement.size.height = (sizeHeight > 100 ? 100 : sizeHeight) + 'vh'
         clonedElement.position.offsetX = Math.floor(100 * cropbox.left || 0 / cropScreenSize.width) + 'vw'
         clonedElement.position.offsetY = Math.floor(100 * cropbox.top || 0 / cropScreenSize.height) + 'vh'
         clonedElement.url = URL.createObjectURL(blob)

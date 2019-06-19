@@ -12,7 +12,7 @@
 
 <script>
 import NavBar from '../site/components/NavBar'
-import { createSheet, addAnimationStyle, clearAnimation } from './keyframe'
+import { createSheet, addAnimationStyle } from './keyframe'
 import FrameBox from './FrameBox'
 import NavFooter from '../site/components/NavFooter'
 export default {
@@ -33,12 +33,12 @@ export default {
     }
   },
   computed: {
-    animationTypes() {
+    animationTypes () {
       return [{
         key: '',
         value: '全部'
       },
-        {
+      {
         key: '1',
         value: '进入'
       }, {
@@ -79,19 +79,19 @@ export default {
       }
     },
 
-    debounce(func, wait, immediate) {
-      var timeout;
-      return function() {
-        var context = this, args = arguments;
-        var later = function() {
-          timeout = null;
-          if (!immediate) func.apply(context, args);
-        };
-        var callNow = immediate && !timeout;
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) func.apply(context, args);
-      };
+    debounce (func, wait, immediate) {
+      var timeout
+      return function () {
+        var context = this, args = arguments
+        var later = function () {
+          timeout = null
+          if (!immediate) func.apply(context, args)
+        }
+        var callNow = immediate && !timeout
+        clearTimeout(timeout)
+        timeout = setTimeout(later, wait)
+        if (callNow) func.apply(context, args)
+      }
     },
 
     goFrameTool () {
@@ -109,7 +109,7 @@ export default {
           animation.nameCache = animation.name
         }
         animation.name = 'none'
-        setTimeout( ()=> {
+        setTimeout(() => {
           animation.name = animation.nameCache
         }, 300)
       }, 1000)()

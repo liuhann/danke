@@ -52,6 +52,7 @@
 <script>
 import RestDAO from '../common/dao/restdao'
 import { Message } from 'element-ui'
+import { addAnimationStyle, createSheet } from './keyframe'
 export default {
   name: 'FrameBox',
   props: {
@@ -90,11 +91,13 @@ export default {
     }
   },
   created () {
+    this.sheet = createSheet()
     this.restdao = new RestDAO(this.ctx, 'danke/animation')
     this.loadAnimation()
   },
   methods: {
     setAnimation (animation) {
+      addAnimationStyle(this.sheet, animation)
       this.currentAnimation = animation
     },
     async loadAnimation () {
