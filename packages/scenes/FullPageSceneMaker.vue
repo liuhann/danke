@@ -2,26 +2,23 @@
   <div id="scene-maker">
     <div class="tool-bar">
       <drop-down-menu :menus="addElementType" @menu-clicked="addMenuClicked">
-        <span class="button icon-plus is-white is-small">插入元素</span>
+        <span class="button icon-plus-1 is-primary is-small">插入元素</span>
       </drop-down-menu>
       <a class="button is-white is-small"></a>
       <a class="button is-white is-small" @click="zoomIn">
-        <i class="icon-minus"></i>
+        <i class="icon-minus-1"></i>
       </a>
       <a class="button is-white is-small" >
         {{zoom}}
       </a>
       <a class="button is-white is-small" @click="zoomOut">
-        <i class="icon-plus"></i>
+        <i class="icon-plus-1"></i>
       </a>
-    </div>
-    <div class="v-tool-bar">
-
     </div>
     <div class="sider-bar"></div>
     <div class="scene-container" ref="container">
-      <div class="device draggable-source" ref="device" :style="deviceStyle">
-        <div class="ti"></div>
+      <div class="device-drag"></div>
+      <div class="device" ref="device" :style="deviceStyle">
         <div v-for="element of elements" :key="element.id"
              class="element" :class="[element===currentElement? 'current': '', element.visible?'':'hidden']" :style="element.style"
              @click.self="chooseElement(element)">
@@ -75,25 +72,9 @@ export default {
   },
   mounted () {
     this.autoZoomFitContainer()
-    /*interact('.ti')
-      .draggable({
-        // keep the element within the area of it's parent
-        // modifiers: [
-        //   interact.modifiers.restrict({
-        //     restriction: 'parent',
-        //     endOnly: true,
-        //     elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
-        //   })
-        // ],
-        // call this function on every dragmove event
-        onmove: this.dragMoveListener,
-        // call this function on every dragend event
-        onend: function (event) {
-        }
-      })*/
-    interact('.ti').draggable({
+    interact('.device-drag').draggable({
       onmove: this.dragMoveListener
-    })
+    }).styleCursor(false)
   },
   methods: {
     zoomIn () {
@@ -104,6 +85,7 @@ export default {
     },
     autoZoomFitContainer () {
       const containerEl = this.$refs.container
+      this.zoom = 1
       this.device = fitToContainer(this.ratio, containerEl.clientWidth, containerEl.clientHeight - 40)
     },
     dragMoveListener (event) {
@@ -113,9 +95,7 @@ export default {
       const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx
       const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy
       // translate the element
-      target.style.webkitTransform =
-        target.style.transform =
-          'translate(' + x + 'px, ' + y + 'px)'
+      this.$refs.device.style.transform = 'translate(' + x + 'px, ' + y + 'px)'
 
       // update the posiion attributes
       target.setAttribute('data-x', x)
