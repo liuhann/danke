@@ -15,9 +15,8 @@
         <i class="icon-plus-1"></i>
       </a>
     </div>
-    <div class="sider-bar"></div>
     <div class="scene-container" ref="container">
-      <div class="device-drag"></div>
+      <div class="device-drag" ref="deviceDrag"></div>
       <div class="device" ref="device" :style="deviceStyle">
         <div v-for="element of elements" :key="element.id"
              class="element" :class="[element===currentElement? 'current': '', element.visible?'':'hidden']" :style="element.style"
@@ -27,20 +26,31 @@
       </div>
     </div>
     <div class="line"></div>
+
+    <nav class="panel element-prop-config is-small" v-if="currentElement">
+      <p class="panel-heading">
+        属性配置
+      </p>
+      <div class="panel-block">
+        <prop-config :element="currentElement"></prop-config>
+      </div>
+    </nav>
+
     <image-cropper ref="cropper"></image-cropper>
   </div>
 </template>
 
 <script>
-import interact from 'interactjs'
 import { fitToContainer } from '../danke-core/utils/common'
 import elementMixin from './mixins/elementMixins'
-import DropDownMenu from '../common/components/DropDownMenu'
-import ImageCropper from './components/ImageCropper'
+import { intereactWith } from './mixins/interact'
 import { TypeEnum } from '../danke-core/elements/index'
+import ImageCropper from './components/ImageCropper.vue'
+import DropDownMenu from '../common/components/DropDownMenu.vue'
+import PropConfig from './tabs/PropConfig'
 export default {
   name: 'FullPageSceneMaker',
-  components: { ImageCropper, DropDownMenu },
+  components: { PropConfig, ImageCropper, DropDownMenu },
   mixins: [ elementMixin ],
   props: {
     ratio: {
@@ -51,7 +61,7 @@ export default {
   data () {
     return {
       TypeEnum,
-      device: {
+      deviceOrigin: {
         width: 360,
         height: 640
       },
@@ -63,30 +73,37 @@ export default {
     }
   },
   computed: {
+    device () {
+      return {
+        width: this.deviceOrigin.width * this.zoom,
+        height: this.deviceOrigin.height * this.zoom
+      }
+    },
     deviceStyle () {
       return {
-        width: this.device.width * this.zoom + 'px',
-        height: this.device.height * this.zoom + 'px'
+        width: this.device.width + 'px',
+        height: this.device.height + 'px'
       }
     }
   },
   mounted () {
-    this.autoZoomFitContainer()
-    interact('.device-drag').draggable({
-      onmove: this.dragMoveListener
-    }).styleCursor(false)
+    this.zoomCenter()
+    intereactWith(this.$refs.deviceDrag, this.$refs.device)
   },
   methods: {
     zoomIn () {
       this.zoom = Math.floor((this.zoom - 0.1) * 10) / 10
+      this.reflow()
     },
     zoomOut () {
       this.zoom = Math.floor((this.zoom + 0.1) * 10) / 10
+      this.reflow()
     },
-    autoZoomFitContainer () {
+    zoomCenter () {
       const containerEl = this.$refs.container
+      const paddings = [20, 20]
       this.zoom = 1
-      this.device = fitToContainer(this.ratio, containerEl.clientWidth, containerEl.clientHeight - 40)
+      this.deviceOrigin = fitToContainer(this.ratio, containerEl.clientWidth - paddings[0] * 2, containerEl.clientHeight - paddings[1] * 2)
     },
     dragMoveListener (event) {
       let target = event.target
@@ -122,6 +139,14 @@ export default {
       height: 2.25em;
       line-height: 2.25em;
       background-color: #fff;
+    }
+    .element-prop-config {
+      position: absolute;
+      z-index: 1001;
+      right: 0;
+      top: 3em;
+      background-color: #fff;
+      width: 360px;
     }
     .scene-container {
       position: absolute;

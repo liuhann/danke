@@ -22,6 +22,16 @@ export default {
       currentElement: null
     }
   },
+  watch: {
+    currentElement: {
+      deep: true,
+      handler () {
+        if (this.currentElement) {
+          this.currentElement.style = getElementStyle(this.currentElement, this.device)
+        }
+      }
+    }
+  },
   filters: {
     newline (v) {
       return v.replace(/\n/g, '<br>')
@@ -98,6 +108,11 @@ export default {
         this.currentElement.text = ' '
       }
       this.currentElement = element
+    },
+    reflow () {
+      for (let element of this.elements) {
+        element.style = getElementStyle(element, this.device)
+      }
     }
   }
 }
