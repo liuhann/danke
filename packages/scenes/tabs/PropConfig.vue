@@ -6,7 +6,6 @@
     <edit-position v-model="element.position"></edit-position>
     <edit-size v-model="element.size"></edit-size>
     <edit-animation :animation="element.animation.in" label="进入" animation-type="1"></edit-animation>
-    <a class="button is-text" v-if="!showMore" @click="showMore = !showMore">更多配置</a>
     <div class="show-more" v-if="showMore">
       <form-field v-if="element.type === TypeEnum.SHAPE || element.type === TypeEnum.IMAGE" label="阴影" v-model="element.shadow" :options="shadowType"></form-field>
       <edit-animation :animation="element.animation.dura" label="持续" animation-type="2"></edit-animation>
@@ -15,11 +14,8 @@
       <edit-border v-model="element.border" v-if="element.type !== TypeEnum.TEXT"></edit-border>
       <edit-clip-path v-model="element.clip" v-if="element.clip"></edit-clip-path>
       <!--<form-field label="背景大小" type="select" v-css-model="element.background.size" :options="backgroundSizeOptions"></form-field>-->
-      <div class="buttons">
-        <span class="button is-small is-danger" @click="removeElement">删除</span>
-        <span class="button is-small is-primary" @click="cloneElement">复制</span>
-      </div>
     </div>
+    <a class="button is-text" @click="showMore = !showMore">{{showMore? '折叠': '更多配置'}}</a>
   </div>
   <div v-else>
     请选择元素
@@ -93,15 +89,6 @@ export default {
     }
   },
   methods: {
-    setTab(tab) {
-      this.currentTab = tab
-    },
-    removeElement () {
-      this.$emit('remove')
-    },
-    cloneElement () {
-      this.$emit('clone')
-    }
   }
 }
 </script>

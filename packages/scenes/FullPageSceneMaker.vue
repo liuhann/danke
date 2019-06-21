@@ -18,15 +18,13 @@
     <div class="scene-container" ref="container">
       <div class="device-drag" ref="deviceDrag"></div>
       <div class="device" ref="device" :style="deviceStyle">
-        <div v-for="element of elements" :key="element.id"
+        <div v-for="element of elements" :key="element.id" :id="'element-' + element.id"
              class="element" :class="[element===currentElement? 'current': '', element.visible?'':'hidden']" :style="element.style"
              @click.self="chooseElement(element)">
           <span @click.self="chooseElement(element)" @input="contentChange" :contenteditable="element===currentElement" v-if="element.type === TypeEnum.TEXT /*&& element!==currentElement*/" v-html="$options.filters.newline(element.text)"></span>
         </div>
       </div>
     </div>
-    <div class="line"></div>
-
     <nav class="panel element-prop-config is-small" v-if="currentElement">
       <p class="panel-heading">
         属性配置
@@ -35,7 +33,6 @@
         <prop-config :element="currentElement"></prop-config>
       </div>
     </nav>
-
     <image-cropper ref="cropper"></image-cropper>
   </div>
 </template>
@@ -55,7 +52,7 @@ export default {
   props: {
     ratio: {
       type: String,
-      default: '9:16'
+      default: '4:3'
     }
   },
   data () {
@@ -104,19 +101,11 @@ export default {
       const paddings = [20, 20]
       this.zoom = 1
       this.deviceOrigin = fitToContainer(this.ratio, containerEl.clientWidth - paddings[0] * 2, containerEl.clientHeight - paddings[1] * 2)
-    },
-    dragMoveListener (event) {
-      let target = event.target
-      console.log(target)
-      target = target.parentElement
-      const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx
-      const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy
-      // translate the element
-      this.$refs.device.style.transform = 'translate(' + x + 'px, ' + y + 'px)'
-
-      // update the posiion attributes
-      target.setAttribute('data-x', x)
-      target.setAttribute('data-y', y)
+      this.$nextTick(() => {
+        let x = (containerEl.clientWidth - paddings[0] * 2 - this.deviceOrigin.width) / 2
+        let y = paddings[1]
+        this.$refs.device.style.transform = 'translate(' + x + 'px, ' + y + 'px)'
+      })
     }
   }
 }
@@ -146,7 +135,7 @@ export default {
       right: 0;
       top: 3em;
       background-color: #fff;
-      width: 360px;
+      width: 320px;
     }
     .scene-container {
       position: absolute;

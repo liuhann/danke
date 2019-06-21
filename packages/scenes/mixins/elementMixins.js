@@ -1,6 +1,8 @@
 import { IMAGE, SHAPE, TEXT, TypeEnum } from '../../danke-core/elements/index'
 import { clone } from '../../utils/object'
 import { getElementStyle } from '../../danke-core/utils/styles'
+import { interactElement } from './interact'
+import { shortid } from '../../utils/string'
 const addElementType = [{
   type: 'file',
   label: '图片',
@@ -61,14 +63,17 @@ export default {
     },
     insertShape () {
       const clonedElement = clone(SHAPE)
+      clonedElement.id = shortid()
       clonedElement.visible = true
       clonedElement.style = getElementStyle(clonedElement, this.device)
       this.inc++
       this.elements.push(clonedElement)
       this.currentElement = clonedElement
+      this.$nextTick(this.elementMounted([clonedElement]))
     },
     insertText () {
       const clonedElement = clone(TEXT)
+      clonedElement.id = shortid()
       clonedElement.visible = true
       clonedElement.text = '请输入文本内容'
       clonedElement.size.width = '80vw'
@@ -77,10 +82,13 @@ export default {
       this.inc++
       this.elements.push(clonedElement)
       this.currentElement = clonedElement
+      this.$nextTick(this.elementMounted([clonedElement]))
     },
     insertImage (croppedList, cropScreenSize) {
+      const elements = []
       for (let { blob, cropbox } of croppedList) {
         const clonedElement = clone(IMAGE)
+        clonedElement.id = shortid()
         clonedElement.visible = true
         clonedElement.position.horizontal = 'left'
         clonedElement.position.vertical = 'top'
@@ -94,10 +102,19 @@ export default {
         const style = getElementStyle(clonedElement, this.device)
         clonedElement.style = style
         this.elements.push(clonedElement)
+        elements.push(clonedElement)
         blob.filename = this.croppingFileName
         this.resources[clonedElement.url] = blob
       }
+      this.$nextTick(this.elementMounted(elements))
     },
+
+    elementMounted (elements) {
+      for (const element of elements) {
+        interactElement(document.getElementById('element-' + element.id), element, this.device)
+      }
+    },
+
     chooseElement (element) {
       // save cache of content editable text
       if (this.currentElement && this.currentElement.type === TypeEnum.TEXT && this.editedText) {

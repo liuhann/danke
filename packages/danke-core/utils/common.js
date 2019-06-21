@@ -70,7 +70,6 @@ function fitToContainer (ratio, width, height) {
     }
   }
 }
-
 /**
  * increse or decrease the length, for copying use
  */
@@ -81,5 +80,6 @@ function getLengthDelta (unitLen, delta) {
   const { len, unit } = getLenSplits(unitLen)
   return (parseInt(len) + delta) + unit
 }
+
 
 export { getLength, getLenSplits, getLengthDelta, fitToContainer }
