@@ -65,6 +65,8 @@ export default {
       const clonedElement = clone(SHAPE)
       clonedElement.id = shortid()
       clonedElement.visible = true
+      clonedElement.size.width = '30vw'
+      clonedElement.size.height = '30vw'
       clonedElement.style = getElementStyle(clonedElement, this.device)
       this.inc++
       this.elements.push(clonedElement)
@@ -76,8 +78,8 @@ export default {
       clonedElement.id = shortid()
       clonedElement.visible = true
       clonedElement.text = '请输入文本内容'
-      clonedElement.size.width = '80vw'
-      clonedElement.size.height = '0px'
+      clonedElement.size.width = '50vw'
+      clonedElement.size.height = '30px'
       clonedElement.style = getElementStyle(clonedElement, this.device)
       this.inc++
       this.elements.push(clonedElement)
