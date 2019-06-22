@@ -1,9 +1,11 @@
 <template>
 <div class="edit-position">
-  <form-field label="横向对齐" type="radio" v-model="position.horizontal" :options="horizontalOptions"></form-field>
-  <edit-len label="横向偏移" v-model="position.offsetX" :min="-1000" :max="1000"></edit-len>
-  <form-field label="纵向对齐" type="radio" v-model="position.vertical" :options="verticalOptions"></form-field>
-  <edit-len label="纵向偏移" v-model="position.offsetY"></edit-len>
+  <form-field label="横向" type="select" v-model="position.horizontal" :options="horizontalOptions">
+    <edit-len v-model="position.offsetX"></edit-len>
+  </form-field>
+  <form-field label="纵向" type="select" v-model="position.vertical" :options="verticalOptions">
+    <edit-len v-model="position.offsetY"></edit-len>
+  </form-field>
 </div>
 </template>
 
@@ -43,9 +45,8 @@ export default {
 </script>
 
 <style lang="scss">
-.position-preview {
-  width: 80vw;
-  height: 80vw;
+.edit-position {
+  margin-bottom:.75rem;
 }
 
 </style>

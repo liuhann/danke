@@ -6,7 +6,7 @@
   <div class="field-body">
     <div class="field has-addons">
       <p class="control">
-        <input class="input is-small" type="number" v-model.number="size.width">
+        <input class="input is-small" v-model="size.width">
       </p>
       <p class="control">
         <span class="select is-small">
@@ -18,7 +18,7 @@
     </div>
     <div class="field has-addons">
       <p class="control">
-        <input class="input is-small" type="number" v-model.number="size.height">
+        <input class="input is-small" type="number" v-model="size.height">
       </p>
       <p class="control">
         <span class="select is-small">
@@ -59,7 +59,7 @@ export default {
         hu: 'px'
       },
       oldSize: {},
-      units: lenUnit,
+      units: lenUnit
     }
   },
   computed: {
@@ -83,7 +83,7 @@ export default {
     this.setSize()
   },
   watch: {
-    value () {
+    'value.width': function () {
       this.setSize()
     },
     size: {

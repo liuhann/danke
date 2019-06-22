@@ -1,26 +1,41 @@
 import interact from 'interactjs'
-import { getLenSplits } from '../../utils/position'
+import { getLenSplits } from '../../danke-core/utils/common'
 
 function interactElement (element, model, vm) {
   interact(element).draggable({
     onmove: event => {
-      event.target.style.top = (parseFloat(event.target.style.top) + event.dy) + 'px'
-      event.target.style.left = (parseFloat(event.target.style.left) + event.dx) + 'px'
-      // model.position.offsetX = increaseOffsetWithPixel(model.position.offsetX, event.dx, vm.device)
-      // model.position.offsetY = increaseOffsetWithPixel(model.position.offsetY, event.dy, vm.device)
+      // event.target.style.top = (parseFloat(event.target.style.top) + event.dy) + 'px'
+      // event.target.style.left = (parseFloat(event.target.style.left) + event.dx) + 'px'
+      console.log('old', model.position.offsetX, model.position.offsetY)
+      model.position.offsetX = increaseOffsetWithPixel(model.position.offsetX, event.dx, vm.device)
+      model.position.offsetY = increaseOffsetWithPixel(model.position.offsetY, event.dy, vm.device)
+      console.log('new', model.position.offsetX, model.position.offsetY)
     },
     onend: event => {
     }
+  }).resizable({
+    // resize from all edges and corners
+    edges: { left: false, right: true, bottom: true, top: false },
+    modifiers: [
+      // keep the edges inside the parent
+      interact.modifiers.restrictEdges({
+        outer: 'parent',
+        endOnly: true
+      })
+    ],
+    inertia: true
+  }).on('resizemove', function (event) {
+    model.size.width = increaseOffsetWithPixel(model.size.width, event.dx, vm.device)
+    model.size.height = increaseOffsetWithPixel(model.size.height, event.dy, vm.device)
   })
 }
 
 function increaseOffsetWithPixel (offset, pixel, device) {
-  console.log(offset, pixel, device)
   const original = getLenSplits(offset)
   if (original.unit === 'px') {
     return (original.len + pixel) + 'px'
   } else if (original.unit === 'vw') {
-    return Math.floor((original.len + (pixel / device.width * 100))) + 'vw'
+    return (original.len + (pixel / device.width * 100)).toFixed(2) + 'vw'
   } else {
     return (original.len + (pixel / device.height * 100)).toFixed(2) + 'vh'
   }

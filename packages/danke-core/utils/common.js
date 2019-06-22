@@ -70,15 +70,4 @@ function fitToContainer (ratio, width, height) {
     }
   }
 }
-/**
- * increse or decrease the length, for copying use
- */
-function getLengthDelta (unitLen, delta) {
-  if (unitLen === 0 || unitLen == null || unitLen === '') {
-    return 0
-  }
-  const { len, unit } = getLenSplits(unitLen)
-  return (parseInt(len) + delta) + unit
-}
-
-export { getLength, getLenSplits, getLengthDelta, fitToContainer }
+export { getLength, getLenSplits, fitToContainer }

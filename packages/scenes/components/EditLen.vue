@@ -1,8 +1,5 @@
 <template>
 <div class="field is-horizontal">
-  <div class="field-label is-small">
-    <label class="label">{{label}}</label>
-  </div>
   <div class="field-body">
     <div class="field has-addons">
       <p class="control">
@@ -21,7 +18,8 @@
 </template>
 
 <script>
-const REG_LEN = /([+-]?[0-9#]+)(%|px|pt|em|rem|in|cm|mm|ex|ch|pc|vw|vh|vmin|vmax|deg|rad|turn)?$/
+import { getLenSplits } from '../../danke-core/utils/common'
+
 export default {
   components: { },
   props: {
@@ -98,8 +96,8 @@ export default {
   methods: {
     setDataFromValue () {
       if (typeof this.value === 'string') {
-        let lu = this.getLengthUnit(this.value)
-        this.length = lu.number || 0
+        let lu = getLenSplits(this.value)
+        this.length = lu.len || 0
         this.unit = lu.unit
       } else {
         this.length = this.value
@@ -124,17 +122,8 @@ export default {
         this.lastTouchMoveX = e.touches[0].clientX
       }
     },
-
     stepChange () {
       this.$emit('step-change')
-    },
-    getLengthUnit (len) {
-      // -15vw ->  [-15vw,-15,vw]
-      const splits = REG_LEN.exec(len)
-      return {
-        number: splits[1],
-        unit: splits[2]
-      }
     }
   }
 }

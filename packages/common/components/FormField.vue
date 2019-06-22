@@ -94,7 +94,6 @@ export default {
       return this.type === 'text' || this.type === 'number'
     },
     isSelect () {
-      if (this.hasSlot) return false
       return this.type === 'select'
     },
     isRadio () {

@@ -1,35 +1,3 @@
-const REG_LEN = /([+-]?[0-9#]+)(%|px|pt|em|rem|in|cm|mm|ex|ch|pc|vw|vh|vmin|vmax|deg|rad|turn)?$/
-
-/**
- * 抽取长度信息  例如 10vw -> {len:10, unit: 'vw'}
- * @param len
- * @returns {{len: (*|string), unit: (*|string)}}
- */
-function getLenSplits (len) {
-  const splits = REG_LEN.exec(len)
-  return {
-    len: parseFloat(splits[1]),
-    unit: splits[2]
-  }
-}
-
-function getLength (unitLen, device, px) {
-  // -15vw ->  [-15vw,-15,vw]
-  if (unitLen === 0 || unitLen == null || unitLen === '') {
-    return '0'
-  }
-  const { len, unit } = getLenSplits(unitLen)
-  let number = 0
-  if (unit === 'vw') {
-    number = Math.floor(device.width * len / 100)
-  } else if (unit === 'vh') {
-    number = Math.floor(device.height * len / 100)
-  } else if (unit === 'px') {
-    number = len
-  }
-  return number + (px || '')
-}
-
 /**
  * 将以px定位形式转换为按element原定位方式的单位
  * @param element 元素配置
@@ -111,7 +79,5 @@ function toPixel (element, coordinate, device) {
 export {
   toViewPoint,
   toPixel,
-  setLenFromPx,
-  getLenSplits,
-  getLength
+  setLenFromPx
 }

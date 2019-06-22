@@ -10,23 +10,23 @@ export default {
 }
 export const horizontalOptions = [{
   key: 'left',
-  value: '左'
+  value: '距左'
 }, {
   key: 'center',
-  value: '居中'
+  value: '正中'
 }, {
   key: 'right',
-  value: '右'
+  value: '距右'
 }]
 export const verticalOptions = [{
   key: 'top',
-  value: '上'
+  value: '距上'
 }, {
   key: 'center',
-  value: '居中'
+  value: '正中'
 }, {
   key: 'bottom',
-  value: '下'
+  value: '距下'
 }]
 
 export function getPositionStyle (element, device) {
