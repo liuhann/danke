@@ -11,7 +11,6 @@
 </template>
 
 <script>
-import { createSheet, addAnimationStyle, clearAnimation } from './keyframe'
 import { Dialog } from 'element-ui'
 import FrameBox from './FrameBox.vue'
 import Vue from 'vue'
@@ -23,9 +22,8 @@ export default {
 
   },
   mounted () {
-    this.sheet = createSheet()
   },
-  data() {
+  data () {
     return {
       centerDialogVisible: false,
       isShow: false,
@@ -36,23 +34,13 @@ export default {
     }
   },
   methods: {
-    chooseFrame(type, choosedCallback) {
+    chooseFrame (type, choosedCallback) {
       this.type = type
       this.skip = 0
       this.animations = []
       this.total = 0
       this.centerDialogVisible = true
-      this.getFrames()
       this.choosedCallback = choosedCallback
-    },
-    async getFrames () {
-      const response = await this.ctx.animdao.getAnimationList(this.type, this.skip, 30)
-      this.total = response.total
-      this.animations = this.animations.concat(response.list)
-
-      for (let animation of this.animations) {
-        addAnimationStyle(this.sheet, animation)
-      }
     },
     choose () {
       this.centerDialogVisible = false

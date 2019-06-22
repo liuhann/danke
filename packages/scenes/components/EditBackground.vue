@@ -1,11 +1,10 @@
 <template>
-<div class="edit-background panel">
-  <form-field label="背景颜色">
+<div class="edit-background">
+  <form-field label="背景">
     <color-pickr v-for="(color, index) of background.colors" :key="index" v-model="background.colors[index]" @remove="removeColor(index)"></color-pickr>
-    <a class="icon-plus" @click="addColor"></a>
+    <a class="icon-plus-1" @click="addColor"></a>
   </form-field>
   <form-field v-if="multipleColor" label="渐变方向" type="radio" v-model="background.angle" :options="gradientAngle"></form-field>
-  <!--<form-field label="背景位置" type="select" v-css-model="background.position" :options="backgroundPositions"></form-field>-->
 </div>
 </template>
 
@@ -114,8 +113,7 @@ export default {
     fileChoosed (e) {
       if (e.currentTarget.files.length) {
         const file = e.currentTarget.files[0]
-				this.ctx.crop(file, this.cropComplete)
-				// this.$refs.cropper.open(URL.createObjectURL(file))
+        this.ctx.crop(file, this.cropComplete)
       }
     },
 
@@ -135,7 +133,7 @@ export default {
 
 <style lang="scss">
 .edit-background {
-  .icon-plus {
+  .icon-plus-1 {
     vertical-align: top;
     line-height: 1.8rem;
     display: inline-block;

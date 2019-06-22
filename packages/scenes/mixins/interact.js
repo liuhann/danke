@@ -4,12 +4,8 @@ import { getLenSplits } from '../../danke-core/utils/common'
 function interactElement (element, model, vm) {
   interact(element).draggable({
     onmove: event => {
-      // event.target.style.top = (parseFloat(event.target.style.top) + event.dy) + 'px'
-      // event.target.style.left = (parseFloat(event.target.style.left) + event.dx) + 'px'
-      console.log('old', model.position.offsetX, model.position.offsetY)
       model.position.offsetX = increaseOffsetWithPixel(model.position.offsetX, event.dx, vm.device)
       model.position.offsetY = increaseOffsetWithPixel(model.position.offsetY, event.dy, vm.device)
-      console.log('new', model.position.offsetX, model.position.offsetY)
     },
     onend: event => {
     }
@@ -58,7 +54,6 @@ function intereactWith (element, withElement) {
   interact(element).draggable({
     onmove: function (event) {
       const targetTranslates = getElementTranslates(withElement)
-      console.log(targetTranslates)
       const x = parseInt(targetTranslates[0]) + event.dx
       const y = parseInt(targetTranslates[1]) + event.dy
       // translate the element

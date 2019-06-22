@@ -1,11 +1,16 @@
 <template>
 <div class="edit-animation-option panel">
-  <form-field :label="label + '动画'" type="empty">
+  <form-field label="选择" type="empty">
     <span class="button is-small" @click="chooseAnimation(animationType)">{{animation.desc || '选择'}}</span>
-    <span v-if="animation.name" class="button is-small icon-trash" @click="clearAnimation"></span>
+    <span v-if="animation.name" class="button is-small icon-trash is-danger" @click="clearAnimation"></span>
   </form-field>
-  <edit-len label="时长" v-model="animation.duration" :with-unit="false"></edit-len>
-  <edit-len label="延迟" v-model="animation.delay" :with-unit="false"></edit-len>
+  <form-field label="时长" type="empty">
+    <edit-len v-model="animation.duration" :with-unit="false"></edit-len>
+  </form-field>
+
+  <form-field label="延迟" type="empty">
+    <edit-len v-model="animation.delay" :with-unit="false"></edit-len>
+  </form-field>
 </div>
 </template>
 

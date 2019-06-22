@@ -17,7 +17,7 @@
     </div>
     <div class="scene-container" ref="container">
       <div class="device-drag" ref="deviceDrag"></div>
-      <div class="device" ref="device" :style="deviceStyle">
+      <div class="device" ref="device" :style="deviceStyle" @click.self="sceneClick">
         <div v-for="element of elements" :key="element.id" :id="'element-' + element.id"
              class="element" :class="[element===currentElement? 'current': '', element.visible?'':'hidden']" :style="element.style"
              @click.self="chooseElement(element)">
@@ -106,6 +106,9 @@ export default {
         let y = paddings[1]
         this.$refs.device.style.transform = 'translate(' + x + 'px, ' + y + 'px)'
       })
+    },
+    sceneClick () {
+      this.chooseElement(null)
     }
   }
 }
