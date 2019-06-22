@@ -69,7 +69,7 @@ export default {
       this.inc++
       this.elements.push(clonedElement)
       this.currentElement = clonedElement
-      this.$nextTick(this.elementMounted([clonedElement]))
+      this.elementMounted([clonedElement])
     },
     insertText () {
       const clonedElement = clone(TEXT)
@@ -82,7 +82,7 @@ export default {
       this.inc++
       this.elements.push(clonedElement)
       this.currentElement = clonedElement
-      this.$nextTick(this.elementMounted([clonedElement]))
+      this.elementMounted([clonedElement])
     },
     insertImage (croppedList, cropScreenSize) {
       const elements = []
@@ -106,13 +106,15 @@ export default {
         blob.filename = this.croppingFileName
         this.resources[clonedElement.url] = blob
       }
-      this.$nextTick(this.elementMounted(elements))
+      this.elementMounted(elements)
     },
 
     elementMounted (elements) {
-      for (const element of elements) {
-        interactElement(document.getElementById('element-' + element.id), element, this.device)
-      }
+      this.$nextTick(() => {
+        for (const element of elements) {
+          interactElement(document.getElementById('element-' + element.id), element, this)
+        }
+      })
     },
 
     chooseElement (element) {

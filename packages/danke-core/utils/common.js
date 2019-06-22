@@ -1,4 +1,4 @@
-const REG_LEN = /([+-]?[0-9#]+)(%|px|pt|em|rem|in|cm|mm|ex|ch|pc|vw|vh|vmin|vmax|deg|rad|turn)?$/
+const REG_LEN = /([+-]?[.0-9#]+)(%|px|pt|em|rem|in|cm|mm|ex|ch|pc|vw|vh|vmin|vmax|deg|rad|turn)?$/
 
 /**
  * 抽取长度信息  例如 10vw -> {len:10, unit: 'vw'}
@@ -80,6 +80,5 @@ function getLengthDelta (unitLen, delta) {
   const { len, unit } = getLenSplits(unitLen)
   return (parseInt(len) + delta) + unit
 }
-
 
 export { getLength, getLenSplits, getLengthDelta, fitToContainer }

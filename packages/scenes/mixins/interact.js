@@ -1,17 +1,29 @@
 import interact from 'interactjs'
+import { getLenSplits } from '../../utils/position'
 
-function interactElement (element, model, device) {
+function interactElement (element, model, vm) {
   interact(element).draggable({
     onmove: event => {
-      let target = event.target
-      const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx
-      const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy
-      // translate the element
-      // update the posiion attributes
-      target.setAttribute('data-x', x)
-      target.setAttribute('data-y', y)
+      event.target.style.top = (parseFloat(event.target.style.top) + event.dy) + 'px'
+      event.target.style.left = (parseFloat(event.target.style.left) + event.dx) + 'px'
+      // model.position.offsetX = increaseOffsetWithPixel(model.position.offsetX, event.dx, vm.device)
+      // model.position.offsetY = increaseOffsetWithPixel(model.position.offsetY, event.dy, vm.device)
+    },
+    onend: event => {
     }
   })
+}
+
+function increaseOffsetWithPixel (offset, pixel, device) {
+  console.log(offset, pixel, device)
+  const original = getLenSplits(offset)
+  if (original.unit === 'px') {
+    return (original.len + pixel) + 'px'
+  } else if (original.unit === 'vw') {
+    return Math.floor((original.len + (pixel / device.width * 100))) + 'vw'
+  } else {
+    return (original.len + (pixel / device.height * 100)).toFixed(2) + 'vh'
+  }
 }
 
 function getElementTranslates (el) {
