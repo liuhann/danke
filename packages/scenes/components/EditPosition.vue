@@ -1,5 +1,5 @@
 <template>
-<div class="edit-position">
+<div class="edit-position field-group">
   <form-field label="横向" type="select" v-model="position.horizontal" :options="horizontalOptions">
     <edit-len v-model="position.offsetX"></edit-len>
   </form-field>

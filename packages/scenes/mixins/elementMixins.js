@@ -98,15 +98,17 @@ export default {
         const sizeHeight = Math.floor(100 * cropbox.height / cropScreenSize.height)
         clonedElement.size.width = (sizeWidth > 100 ? 100 : sizeWidth) + 'vw'
         clonedElement.size.height = (sizeHeight > 100 ? 100 : sizeHeight) + 'vh'
-        clonedElement.position.offsetX = Math.floor(100 * cropbox.left || 0 / cropScreenSize.width) + 'vw'
-        clonedElement.position.offsetY = Math.floor(100 * cropbox.top || 0 / cropScreenSize.height) + 'vh'
+        clonedElement.position.offsetX = Math.floor((100 * cropbox.left || 0) / cropScreenSize.width) + 'vw'
+        clonedElement.position.offsetY = Math.floor((100 * cropbox.top || 0) / cropScreenSize.height) + 'vh'
         clonedElement.url = URL.createObjectURL(blob)
         const style = getElementStyle(clonedElement, this.device)
         clonedElement.style = style
         this.elements.push(clonedElement)
+        console.log(clonedElement)
         elements.push(clonedElement)
         blob.filename = this.croppingFileName
         this.resources[clonedElement.url] = blob
+        this.currentElement = clonedElement
       }
       this.elementMounted(elements)
     },
@@ -117,6 +119,9 @@ export default {
           interactElement(document.getElementById('element-' + element.id), element, this)
         }
       })
+    },
+    contentChange (e) {
+      this.editedText = e.target.innerHTML.replace(/<br>/g, '\n')
     },
 
     chooseElement (element) {

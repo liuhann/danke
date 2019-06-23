@@ -1,12 +1,16 @@
 <template>
-<div class="edit-font">
-  <edit-len v-model="font.size" label="字体大小" :with-unit="false"></edit-len>
+<div class="edit-font field-group">
+  <form-field label="字体">
+    <edit-len v-model="font.size" unit-label="倍大小" :with-unit="false"></edit-len>
+  </form-field>
   <form-field label="颜色">
     <color-pickr v-model="font.color"></color-pickr>
   </form-field>
   <form-field label="粗细" type="radio" v-model="font.weight" :options="weights"></form-field>
   <form-field label="对齐" type="radio" v-model="font.align" :options="aligns"></form-field>
-  <edit-len v-model="font.padding" label="边距" :with-unit="false"></edit-len>
+  <form-field label="边距">
+    <edit-len v-model="font.padding" :with-unit="false"></edit-len>
+  </form-field>
 </div>
 </template>
 

@@ -16,26 +16,17 @@
     </div>
   </div>
   <div class="level-buttons">
-    <div class="container">
+    <div class="container is-centered">
       <nav class="level is-mobile">
         <!-- Left side -->
-        <div class="level-left">
-          <div class="level-item">
-            <div class="buttons has-addons">
-                <span class="button is-small" v-for="ratio of imageRatios" :key="ratio"
-                      :class="currentRatio===ratio? 'is-primary ': ''"
-                      @click="setRatio(ratio)">{{ratio}}</span>
-              <span class="button is-small icon-cw" :class="isRotate?'is-primary':''" @click="setRotate"></span>
-            </div>
-          </div>
-        </div>
-        <!-- Right side -->
-        <div class="level-right">
-          <div class="buttons has-addons">
-            <p class="level-item"><span class="button is-small icon-plus" @click="cropAdd()">{{croppedData.length}}</span></p>
-            <p class="level-item"><a><span class="button is-small icon-ok is-success" @click="cropComplete"></span></a></p>
-            <p class="level-item"><a><span class="button is-small icon-ok is-success" @click="fullCrop">原图</span></a></p>
-          </div>
+        <div class="buttons has-addons">
+            <span class="button is-small" v-for="ratio of imageRatios" :key="ratio"
+                  :class="currentRatio===ratio? 'is-primary ': ''"
+                  @click="setRatio(ratio)">{{ratio}}</span>
+          <span class="button is-small icon-cw" :class="isRotate?'is-primary':''" @click="setRotate">旋转</span>
+          <span class="button is-small icon-plus" @click="cropAdd()">裁切</span>
+          <span class="button is-small icon-ok is-success" @click="cropComplete">完成</span>
+          <span class="button is-small icon-ok is-success" @click="fullCrop">原图</span>
         </div>
       </nav>
     </div>
@@ -208,16 +199,9 @@ export default {
     max-height: 100%;
   }
   .level-buttons {
-    width: 100%;
-    left: 0;
     position: absolute;
     bottom: 0;
     margin: 0 auto;
-    .buttons {
-      text-align: center;
-      max-width: 640px;
-      margin: 0 auto;
-    }
   }
   .crop-info {
     position: absolute;

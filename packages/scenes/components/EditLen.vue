@@ -3,7 +3,7 @@
   <div class="field-body">
     <div class="field has-addons">
       <p class="control">
-        <input class="input is-small" style="width: 80px;" type="number" v-model.number="length">
+        <input class="input is-small" style="width: 80px;" type="number" v-model="length">
       </p>
       <p class="control">
         <span class="select is-small" v-if="withUnit">
@@ -11,6 +11,9 @@
             <option v-for="u of units" :key="u.value" :value="u.value" :label="u.label">{{u.label}}</option>
           </select>
         </span>
+        <a class="button is-static is-small" v-if="unitLabel">
+          {{unitLabel}}
+        </a>
       </p>
     </div>
   </div>
@@ -24,6 +27,9 @@ export default {
   components: { },
   props: {
     label: {
+      type: String
+    },
+    unitLabel: {
       type: String
     },
     value: {
