@@ -1,11 +1,35 @@
 <template>
 <div class="edit-border panel">
-  <edit-len v-model="border.width" label="边框宽度" :with-unit="false"></edit-len>
-  <form-field label="样式" v-model="border.style" type="select" :options="lineStyles"></form-field>
-  <form-field label="颜色">
-    <color-pickr v-model="border.color"></color-pickr>
-  </form-field>
-  <edit-len v-model="border.radius" label="圆角" :with-unit="false"></edit-len>
+  <div class="field is-horizontal">
+    <div class="field-label is-small">
+      <label class="label">边框</label>
+    </div>
+    <div class="field-body is-small">
+      <p class="control">
+        <edit-len v-model="border.width" :with-unit="false" unit-label="像素"></edit-len>
+      </p>
+      <p class="control">
+        <span class="select is-small">
+          <select v-model="border.style">
+            <option v-for="option in LINE_STYLES" :value="option.key" :key="option.key">{{option.value}}</option>
+          </select>
+        </span>
+      </p>
+      <p class="control">
+        <color-pickr v-model="border.color"></color-pickr>
+      </p>
+    </div>
+  </div>
+  <div class="field is-horizontal">
+    <div class="field-label is-small">
+      <label class="label">圆角</label>
+    </div>
+    <div class="field-body is-small">
+      <p class="control">
+        <edit-len v-model="border.radius" label="" :with-unit="false" unit-label="像素"></edit-len>
+      </p>
+    </div>
+  </div>
 </div>
 </template>
 
@@ -14,14 +38,7 @@ import ItemBlock from './ItemBlock'
 import FormField from '../../common/components/FormField'
 import EditLen from './EditLen'
 import ColorPickr from '../../common/components/ColorPickr'
-const lineStyles = {
-  solid: '实线',
-  dotted: '虚点线',
-  dashed: '虚划线',
-  double: '双层',
-  none: '无边框',
-  inset: '嵌入线'
-}
+import { LINE_STYLES } from '../../danke-core/css-model/border'
 const allSides = {
   top: '上',
   bottom: '下',
@@ -43,6 +60,7 @@ export default {
   },
   data () {
     return {
+      LINE_STYLES
     }
   },
   computed: {
@@ -51,27 +69,6 @@ export default {
     },
     allSides () {
       return allSides
-    },
-    lineStyles () {
-      return [{
-        key: 'solid',
-        value: '实线'
-      }, {
-        key: 'dotted',
-        value: '虚点线'
-      }, {
-        key: 'dashed',
-        value: '虚划线'
-      }, {
-        key: 'double',
-        value: '双层'
-      }, {
-        key: 'none',
-        value: '无边框'
-      }, {
-        key: 'inset',
-        value: '嵌入线'
-      },]
     }
   },
   watch: {

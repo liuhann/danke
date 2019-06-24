@@ -3,7 +3,7 @@
   <div class="field-body">
     <div class="field has-addons">
       <p class="control">
-        <input class="input is-small" style="width: 80px;" type="number" v-model="length">
+        <input class="input is-small" style="width: 65px;" type="number" v-model="length">
       </p>
       <p class="control">
         <span class="select is-small" v-if="withUnit">
@@ -22,9 +22,7 @@
 
 <script>
 import { getLenSplits } from '../../danke-core/utils/common'
-
 export default {
-  components: { },
   props: {
     label: {
       type: String

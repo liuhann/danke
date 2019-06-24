@@ -9,7 +9,7 @@ import { ColorPicker } from 'element-ui'
 export default {
   name: 'ColorPickr',
   components: {
-    [ColorPicker.name]: ColorPicker,
+    [ColorPicker.name]: ColorPicker
   },
   props: {
     value: {
