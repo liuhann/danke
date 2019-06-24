@@ -1,5 +1,5 @@
 export default {
-  width: 0,
+  width: 1,
   style: 'solid',
   color: '#fafafa',
   radius: 0

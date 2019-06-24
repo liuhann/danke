@@ -19,9 +19,12 @@
       <div class="device-drag" ref="deviceDrag"></div>
       <div class="device" ref="device" :style="deviceStyle" @click.self="sceneClick">
         <div v-for="element of elements" :key="element.id" :id="'element-' + element.id"
-             class="element" :class="[element===currentElement? 'current': '', element.visible?'':'hidden']" :style="element.style"
+             class="element" :class="[element.visible?'':'hidden']" :style="element.style"
              @click.self="chooseElement(element)">
           <span @click.self="chooseElement(element)" @input="contentChange" :contenteditable="element===currentElement" v-if="element.type === TypeEnum.TEXT /*&& element!==currentElement*/" v-html="$options.filters.newline(element.text)"></span>
+          <div class="mask" v-if="element===currentElement">
+            <div class="corner-rb"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -147,7 +150,7 @@ export default {
       top: 2.5em;
       bottom: 0;
       right: 0;
-
+      overflow: hidden;
       .device-drag {
         position: absolute;
         top: 0;
@@ -169,6 +172,22 @@ export default {
             outline: 2px dashed #87b1f1;
             outline-offset: 0;
             z-index: 9999;
+          }
+          .mask {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            border: 1px solid #87b1f1;
+            .corner-rb {
+              background-color: #87b1f1;
+              position: absolute;
+              right: -6px;
+              bottom: -6px;
+              width: 12px;
+              height: 12px;
+            }
           }
         }
         .ti {

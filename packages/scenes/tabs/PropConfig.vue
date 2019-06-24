@@ -17,7 +17,7 @@
     <edit-animation :animation="element.animation[animatoinTabs[animationIndex]]" :animation-type="animatoinTabs[animationIndex]"></edit-animation>
     <div class="show-more" v-if="showMore">
       <form-field v-if="element.type === TypeEnum.SHAPE || element.type === TypeEnum.IMAGE" label="阴影" v-model="element.shadow" :options="shadowType"></form-field>
-      <edit-border v-model="element.border" v-if="element.type !== TypeEnum.TEXT"></edit-border>
+      <edit-border v-model="element.border" v-if="element.border"></edit-border>
       <edit-clip-path v-model="element.clip" v-if="element.clip"></edit-clip-path>
       <!--<form-field label="背景大小" type="select" v-css-model="element.background.size" :options="backgroundSizeOptions"></form-field>-->
     </div>

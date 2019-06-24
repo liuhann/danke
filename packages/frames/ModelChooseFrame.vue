@@ -1,8 +1,8 @@
 <template>
 <el-dialog
   title="选择动画效果"
-  :visible.sync="centerDialogVisible"
-  width="80%">
+  :fullscreen="true"
+  :visible.sync="centerDialogVisible">
   <frame-box ref="frameBox"></frame-box>
   <span slot="footer" class="dialog-footer">
     <button class="button is-link is-small is-outlined" @click="choose">选择</button>
