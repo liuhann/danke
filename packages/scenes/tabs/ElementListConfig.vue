@@ -1,36 +1,32 @@
 <template>
-<div class="scene-config">
-   <div class="tabContent">
-    <form-field label="名称" v-model="scene.name">
-    </form-field>
-    <div class="element-list panel">
-       <a class="panel-block element-item" v-for="(element, index) of elements" :key="index" @click="toggleElement(element)">
-        <i :class="element.checked?'icon-check': 'icon-check-empty'" @click="toggleSelect(element)"></i>
-        <div v-if="element.type === TypeEnum.IMAGE" class="image" :style="'background-image: url(' + element.url + ')'"></div>
-        <div v-if="element.type === TypeEnum.SHAPE" class="shape" :style="{
-          backgroundColor: element.background.colors[0]
-        }"></div>
-        <div class="element-content animations">
-         <div class="element-animation" v-if="element.animation.in" :style="{
-            clipPath: 'polygon(' + Math.floor(((element.animation.in.delay + element.animation.in.duration) * 100)/(maxInDuration * 5)) + '% 0%,'
-            + ' 100% 0%,'
-            + ' 100% 100%,'
-            +  Math.floor(((element.animation.in.delay) * 100)/(maxInDuration * 3)) + '% 100%)'
-         }"></div>
-        </div>
-        <i :class="element.visible? 'icon-eye': 'icon-eye-off'" @click="toggleElementVisible(element)"></i>
-      </a>
-    </div>
-    <div class="multiple-operations">
-      <span class="button is-small" @click="toggleChooseAll">全选</span>
-      <div class="buttons has-addons">
-        <span class="button is-small icon-angle-up" :class="hasSelected?'':'is-static'" @click="upAll"></span>
-        <span class="button is-small icon-angle-double-up" :class="hasSelected?'':'is-static'" @click="topAll"></span>
-        <span class="button is-small icon-angle-down" :class="hasSelected?'':'is-static'" @click="downAll"></span>
-        <span class="button is-small icon-angle-double-down" :class="hasSelected?'':'is-static'" @click="bottomAll"></span>
-        <span class="button is-small icon-popup" :class="hasSelected?'':'is-static'" @click="copyAll"></span>
-        <span class="button is-small icon-trash " :class="hasSelected?'':'is-static'" @click="deleteAll"></span>
+<div class="element-list-content">
+  <div class="element-list">
+    <a class="panel-block element-item" v-for="(element, index) of elements" :key="index" @click="toggleElement(element)">
+      <i :class="element.checked?'icon-check': 'icon-check-empty'" @click="toggleSelect(element)"></i>
+      <div v-if="element.type === TypeEnum.IMAGE" class="image" :style="'background-image: url(' + element.url + ')'"></div>
+      <div v-if="element.type === TypeEnum.SHAPE" class="shape" :style="{
+        backgroundColor: element.background.colors[0]
+      }"></div>
+      <div class="element-content animations">
+        <div class="element-animation" v-if="element.animation.in" :style="{
+          clipPath: 'polygon(' + Math.floor(((element.animation.in.delay + element.animation.in.duration) * 100)/(maxInDuration * 5)) + '% 0%,'
+          + ' 100% 0%,'
+          + ' 100% 100%,'
+          +  Math.floor(((element.animation.in.delay) * 100)/(maxInDuration * 3)) + '% 100%)'
+       }"></div>
       </div>
+      <i :class="element.visible? 'icon-eye': 'icon-eye-off'" @click="toggleElementVisible(element)"></i>
+    </a>
+  </div>
+  <div class="multiple-operations">
+    <span class="button is-small" @click="toggleChooseAll">全选</span>
+    <div class="buttons has-addons">
+      <span class="button is-small icon-angle-up" :class="hasSelected?'':'is-static'" @click="upAll"></span>
+      <span class="button is-small icon-angle-double-up" :class="hasSelected?'':'is-static'" @click="topAll"></span>
+      <span class="button is-small icon-angle-down" :class="hasSelected?'':'is-static'" @click="downAll"></span>
+      <span class="button is-small icon-angle-double-down" :class="hasSelected?'':'is-static'" @click="bottomAll"></span>
+      <span class="button is-small icon-popup" :class="hasSelected?'':'is-static'" @click="copyAll"></span>
+      <span class="button is-small icon-trash " :class="hasSelected?'':'is-static'" @click="deleteAll"></span>
     </div>
   </div>
 </div>
@@ -47,7 +43,7 @@ import { getLengthDelta } from '../../danke-core/utils/common'
 import { getElementStyle } from '../../danke-core/utils/styles'
 
 export default {
-  name: 'SceneConfig',
+  name: 'ElementListConfig',
   components: { FormField, EditBackground },
   props: {
     trigger: {
@@ -95,6 +91,9 @@ export default {
   },
 
   methods: {
+    toggleElement () {
+
+    },
     toggleChooseAll () {
 
     },
@@ -183,7 +182,7 @@ export default {
 </script>
 
 <style lang="scss">
-.scene-config {
+.element-list-content {
   .panel-block {
     padding: 5px;
     height: 31px;

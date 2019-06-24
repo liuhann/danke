@@ -1,19 +1,25 @@
 <template>
   <div id="scene-maker">
     <div class="tool-bar">
-      <drop-down-menu :menus="addElementType" @menu-clicked="addMenuClicked">
-        <span class="button icon-plus-1 is-primary is-small">插入元素</span>
-      </drop-down-menu>
-      <a class="button is-white is-small"></a>
-      <a class="button is-white is-small" @click="zoomIn">
-        <i class="icon-minus-1"></i>
-      </a>
-      <a class="button is-white is-small" >
-        {{zoom}}
-      </a>
-      <a class="button is-white is-small" @click="zoomOut">
-        <i class="icon-plus-1"></i>
-      </a>
+      <div style="float: left">
+        <drop-down-menu :menus="addElementType" @menu-clicked="addMenuClicked">
+          <span class="button icon-plus-1 is-primary is-small">插入元素</span>
+        </drop-down-menu>
+        <a class="button is-white is-small"></a>
+        <a class="button is-white is-small" @click="zoomIn">
+          <i class="icon-minus-1"></i>
+        </a>
+        <a class="button is-white is-small" >
+          {{zoom}}
+        </a>
+        <a class="button is-white is-small" @click="zoomOut">
+          <i class="icon-plus-1"></i>
+        </a>
+      </div>
+      <div style="float: right;">
+        <a class="button is-plain">列表</a>
+        <a class="button is-small is-primary">保存</a>
+      </div>
     </div>
     <div class="scene-container" ref="container">
       <div class="device-drag" ref="deviceDrag"></div>
@@ -36,6 +42,14 @@
         <prop-config :element="currentElement"></prop-config>
       </div>
     </nav>
+    <nav class="panel element-list-config is-small">
+      <p class="panel-heading">
+        属性配置
+      </p>
+      <div class="panel-block">
+        <element-list-config :elements="elements"></element-list-config>
+      </div>
+    </nav>
     <image-cropper ref="cropper"></image-cropper>
   </div>
 </template>
@@ -48,9 +62,10 @@ import { TypeEnum } from '../danke-core/elements/index'
 import ImageCropper from './components/ImageCropper.vue'
 import DropDownMenu from '../common/components/DropDownMenu.vue'
 import PropConfig from './tabs/PropConfig'
+import ElementListConfig from './tabs/ElementListConfig'
 export default {
   name: 'FullPageSceneMaker',
-  components: { PropConfig, ImageCropper, DropDownMenu },
+  components: { ElementListConfig, PropConfig, ImageCropper, DropDownMenu },
   mixins: [ elementMixin ],
   props: {
     ratio: {
@@ -135,13 +150,18 @@ export default {
       line-height: 2.25em;
       background-color: #fff;
     }
-    .element-prop-config {
+    .element-prop-config, .element-list-config {
       position: absolute;
       z-index: 1001;
-      right: 0;
       top: 3em;
       background-color: #fff;
       width: 320px;
+    }
+    .element-prop-config {
+      right: 0;
+    }
+    .element-list-config {
+      left: 0;
     }
     .scene-container {
       position: absolute;
