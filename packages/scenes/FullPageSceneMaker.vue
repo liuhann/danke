@@ -41,7 +41,7 @@
         <prop-config :element="currentElement"></prop-config>
       </div>
     </nav>
-    <element-list-config :elements="elements"></element-list-config>
+    <element-list-config :elements="elements" @choose="chooseElement"></element-list-config>
     <image-cropper ref="cropper"></image-cropper>
   </div>
 </template>

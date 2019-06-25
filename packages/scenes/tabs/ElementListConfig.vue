@@ -105,8 +105,8 @@ export default {
   },
 
   methods: {
-    toggleElement () {
-
+    toggleElement (element) {
+      this.$emit('choose', element)
     },
     toggleChooseAll () {
 
