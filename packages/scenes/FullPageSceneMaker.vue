@@ -17,7 +17,6 @@
         </a>
       </div>
       <div style="float: right;">
-        <a class="button is-plain">列表</a>
         <a class="button is-small is-primary">保存</a>
       </div>
     </div>
@@ -36,20 +35,13 @@
     </div>
     <nav class="panel element-prop-config is-small" v-if="currentElement">
       <p class="panel-heading">
-        属性配置
+        元素配置
       </p>
       <div class="panel-block">
         <prop-config :element="currentElement"></prop-config>
       </div>
     </nav>
-    <nav class="panel element-list-config is-small">
-      <p class="panel-heading">
-        属性配置
-      </p>
-      <div class="panel-block">
-        <element-list-config :elements="elements"></element-list-config>
-      </div>
-    </nav>
+    <element-list-config :elements="elements"></element-list-config>
     <image-cropper ref="cropper"></image-cropper>
   </div>
 </template>
@@ -70,7 +62,7 @@ export default {
   props: {
     ratio: {
       type: String,
-      default: '4:3'
+      default: '9:16'
     }
   },
   data () {
@@ -152,7 +144,7 @@ export default {
     }
     .element-prop-config, .element-list-config {
       position: absolute;
-      z-index: 1001;
+      z-index: 11;
       top: 3em;
       background-color: #fff;
       width: 320px;
