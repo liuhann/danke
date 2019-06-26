@@ -21,7 +21,7 @@
       </div>
     </div>
     <div class="element-bar">
-      <div>
+      <div class="top">
         <a class="file">
           <label class="file-label">
             <input class="file-input" type="file" name="resume" @input="fileChoosed">
@@ -29,15 +29,12 @@
             </span>
           </label>
         </a>
-      </div>
-      <div>
         <a class="button is-white icon-check-empty-1" @click="insertShape('rect')"></a>
-      </div>
-      <div>
         <a class="button is-white icon-circle-thin" @click="insertShape('circle')"></a>
+        <a class="button is-white icon-sort-alphabet" @click="insertText"></a>
       </div>
-      <div>
-        <a class="button is-white icon-sort-alphabet"></a>
+      <div class="bottom">
+        <a class="button is-white icon-check-empty-1" @click="showElementsLayer = !showElementsLayer"></a>
       </div>
     </div>
     <div class="scene-container" ref="container">
@@ -61,7 +58,7 @@
         <prop-config :element="currentElement"></prop-config>
       </div>
     </nav>
-    <element-list-config v-show="false" :elements="elements" @choose="chooseElement"></element-list-config>
+    <element-list-config v-show="showElementsLayer" :elements="elements" @choose="chooseElement"></element-list-config>
     <image-cropper ref="cropper"></image-cropper>
   </div>
 </template>
@@ -93,10 +90,7 @@ export default {
         height: 640
       },
       zoom: 1,
-      position: {
-        left: 0,
-        top: 0
-      }
+      showElementsLayer: false
     }
   },
   computed: {
@@ -167,15 +161,22 @@ export default {
     .element-bar {
       position: absolute;
       z-index: 101;
-      top: 3em;
+      top: 2.5em;
       left: 0;
       bottom: 0;
       background-color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content:space-between;
+      .top, .bottom {
+        display: flex;
+        flex-direction: column;
+      }
     }
     .element-prop-config, .element-list-config {
       position: absolute;
       z-index: 11;
-      top: 3em;
+      top: 2.5em;
       background-color: #fff;
       width: 320px;
     }
@@ -183,7 +184,9 @@ export default {
       right: 0;
     }
     .element-list-config {
-      left: 0;
+      left: 3.2em;
+      width: 280px;
+      bottom: 0;
     }
     .scene-container {
       position: absolute;

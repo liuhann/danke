@@ -1,48 +1,30 @@
 <template>
-<nav class="panel element-list-config is-small">
-  <p class="panel-heading">
+<nav class="element-list-config">
+  <p class="heading">
     元素列表
   </p>
-  <a class="panel-block element-item is-small" v-for="(element, index) of elements" :key="index" @click="toggleElement(element)">
-    <input type="checkbox" v-model="element.checked" @click="toggleSelect(element)">
-    <div v-if="element.type === TypeEnum.IMAGE" class="image" :style="'background-image: url(' + element.url + ')'"></div>
-    <div v-if="element.type === TypeEnum.SHAPE" class="shape" :style="{
-        backgroundColor: element.background.colors[0]
-      }"></div>
-    <div class="element-content animations">
-      <div class="element-animation" v-if="element.animation.in" :style="[
-          element.animation.in.name ? {
-            clipPath: 'polygon(' + Math.floor(((element.animation.in.delay + element.animation.in.duration) * 100)/(maxInDuration * 5)) + '% 0%,'
-            + ' 100% 0%,'
-            + ' 100% 100%,'
-            +  Math.floor(((element.animation.in.delay) * 100)/(maxInDuration * 3)) + '% 100%)'
-         }: {}]"></div>
-    </div>
-    <i :class="element.visible? 'icon-eye': 'icon-eye-off'" @click="toggleElementVisible(element)"></i>
-  </a>
-  <div class="panel-block level">
-    <div class="level-left">
-      <div class="level-item">
-        <label class="checkbox is-small">
-          <input type="checkbox">
-          全选
-        </label>
-      </div>
-    </div>
-    <div class="level-right">
-      <div class="level-item">
-        <div class="buttons has-addons">
-          <span class="button is-small icon-angle-up" :class="hasSelected?'':'is-static'" @click="upAll"></span>
-          <span class="button is-small icon-angle-double-up" :class="hasSelected?'':'is-static'" @click="topAll"></span>
-          <span class="button is-small icon-angle-down" :class="hasSelected?'':'is-static'" @click="downAll"></span>
-          <span class="button is-small icon-angle-double-down" :class="hasSelected?'':'is-static'" @click="bottomAll"></span>
-          <span class="button is-small icon-popup" :class="hasSelected?'':'is-static'" @click="copyAll"></span>
-          <span class="button is-small icon-trash " :class="hasSelected?'':'is-static'" @click="deleteAll"></span>
+  <div class="item-list">
+    <draggable v-model="elements">
+      <a class="element-item" v-for="(element, index) of elements" :key="index" @click="toggleElement(element)">
+        <div v-if="element.type === TypeEnum.IMAGE" class="image" :style="'background-image: url(' + element.url + ')'"></div>
+        <div v-if="element.type === TypeEnum.SHAPE" class="shape" :style="{
+            backgroundColor: '#eec'
+          }"></div>
+        <div class="element-content animations">
+          <div class="element-animation" v-if="element.animation.in" :style="[
+              element.animation.in.name ? {
+                clipPath: 'polygon(' + Math.floor(((element.animation.in.delay + element.animation.in.duration) * 100)/(maxInDuration * 5)) + '% 0%,'
+                + ' 100% 0%,'
+                + ' 100% 100%,'
+                +  Math.floor(((element.animation.in.delay) * 100)/(maxInDuration * 3)) + '% 100%)'
+            }: {}]"></div>
         </div>
-      </div>
-    </div>
+        <i :class="element.visible? 'icon-eye': 'icon-eye-off'" @click="toggleElementVisible(element)"></i>
+      </a>
+    </draggable>
   </div>
 </nav>
+
 </template>
 
 <script>
@@ -54,10 +36,11 @@ import { getMaxDuration } from '../../danke-core/css-model/animation'
 import { clone } from '../../utils/object'
 import { getLengthDelta } from '../../danke-core/utils/common'
 import { getElementStyle } from '../../danke-core/utils/styles'
+import draggable from 'vuedraggable'
 
 export default {
   name: 'ElementListConfig',
-  components: { FormField, EditBackground },
+  components: { FormField, EditBackground, draggable },
   props: {
     trigger: {
       type: String
@@ -106,18 +89,6 @@ export default {
   methods: {
     toggleElement (element) {
       this.$emit('choose', element)
-    },
-    toggleChooseAll () {
-
-    },
-    toggleSelect (element) {
-      this.$set(element, 'checked', !element.checked)
-      this.selectedElements = []
-      for (let element of this.elements) {
-        if (element.checked) {
-          this.selectedElements.push(element)
-        }
-      }
     },
     toggleElementVisible (element) {
       this.$set(element, 'visible', !element.visible)
@@ -196,10 +167,24 @@ export default {
 
 <style lang="scss">
 .element-list-config {
-  .panel-block {
-    padding: 5px;
-    height: 31px;
-    box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  .heading {
+    color: #999;
+    font-weight: bold;
+    margin: 0 .5em;
+    padding: 1em 0;
+    border-bottom: 1px solid #eee;
+  }
+  .item-list {
+    flex: 1;
+    overflow-y: auto;
+    .element-item {
+      padding: 5px;
+      height: 31px;
+      box-sizing: border-box;
+      display: flex;
+    }
   }
   .element-content {
     height: 100%;
