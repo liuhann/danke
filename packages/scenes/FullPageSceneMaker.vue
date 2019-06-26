@@ -2,27 +2,43 @@
   <div id="scene-maker">
     <div class="tool-bar is-clearfix">
       <div style="float: left">
-        <drop-down-menu :menus="addElementType" @menu-clicked="addMenuClicked">
-          <span class="button icon-plus-1 is-primary is-small">插入元素</span>
-        </drop-down-menu>
         <a class="button is-white icon-menu"></a>
-        <a class="button is-white is-small" @click="zoomIn">
-          <i class="icon-minus-1"></i>
-        </a>
-        <a class="button is-white is-small" >
-          {{zoom}}
-        </a>
-        <a class="button is-white is-small" @click="zoomOut">
-          <i class="icon-plus-1"></i>
-        </a>
       </div>
       <div style="float: right;">
-        <a class="button is-small is-primary">保存</a>
+        <a class="button is-white" @click="zoomIn">
+          <i class="icon-minus-1"></i>
+        </a>
+        <a class="button is-white">
+          {{zoom}}
+        </a>
+        <a class="button is-white" @click="zoomOut">
+          <i class="icon-plus-1"></i>
+        </a>
+        <a class="button is-white">
+          <i class="icon-right-dir" @click="runPreview"></i>
+        </a>
+        <a class="button is-success is-rounded is-small button-share">发布并分享</a>
       </div>
     </div>
     <div class="element-bar">
-      <div class="button is-white icon-picture-1"></div>
-      <div class="button is-white icon-picture-1"></div>
+      <div>
+        <a class="file">
+          <label class="file-label">
+            <input class="file-input" type="file" name="resume" @input="fileChoosed">
+            <span class="button is-white icon-picture-1">
+            </span>
+          </label>
+        </a>
+      </div>
+      <div>
+        <a class="button is-white icon-check-empty-1" @click="insertShape('rect')"></a>
+      </div>
+      <div>
+        <a class="button is-white icon-circle-thin" @click="insertShape('circle')"></a>
+      </div>
+      <div>
+        <a class="button is-white icon-sort-alphabet"></a>
+      </div>
     </div>
     <div class="scene-container" ref="container">
       <div class="device-drag" ref="deviceDrag"></div>
@@ -45,7 +61,7 @@
         <prop-config :element="currentElement"></prop-config>
       </div>
     </nav>
-    <element-list-config :elements="elements" @choose="chooseElement"></element-list-config>
+    <element-list-config v-show="false" :elements="elements" @choose="chooseElement"></element-list-config>
     <image-cropper ref="cropper"></image-cropper>
   </div>
 </template>
@@ -123,6 +139,8 @@ export default {
     },
     sceneClick () {
       this.chooseElement(null)
+    },
+    runPreview () {
     }
   }
 }
@@ -141,12 +159,14 @@ export default {
     overflow: hidden;
     background-color: #f5f5f4;
     .tool-bar {
-      height: 3em;
-      line-height: 3em;
       background-color: #fff;
+      .button-share {
+        margin: .25em 1em;
+      }
     }
     .element-bar {
       position: absolute;
+      z-index: 101;
       top: 3em;
       left: 0;
       bottom: 0;

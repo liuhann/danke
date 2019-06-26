@@ -61,9 +61,10 @@ export default {
         e.currentTarget.value = ''
       }
     },
-    insertShape () {
+    insertShape (shape) {
       const clonedElement = clone(SHAPE)
       clonedElement.id = shortid()
+      clonedElement.shape = shape
       clonedElement.visible = true
       clonedElement.size.width = '30vw'
       clonedElement.size.height = '30vw'

@@ -1,5 +1,4 @@
 <template>
-
 <nav class="panel element-list-config is-small">
   <p class="panel-heading">
     元素列表
@@ -129,7 +128,7 @@ export default {
         let i = this.elements.indexOf(element)
         if (i > 0) {
           let c = this.elements[i - 1]
-          this.$set(this.elements, i-1, element)
+          this.$set(this.elements, i - 1, element)
           this.$set(this.elements, i, c)
         }
       }
@@ -160,7 +159,7 @@ export default {
 
     bottomAll () {
       for (let i = 0; i < this.selectedElements.length; i++) {
-        let element = this.selectedElements[this.selectedElements.length -1 - i]
+        let element = this.selectedElements[this.selectedElements.length - 1 - i]
         let currentOrder = this.elements.indexOf(element)
         let c = this.elements[this.elements.length - 1 - i]
         this.$set(this.elements, this.elements.length - 1 - i, element)

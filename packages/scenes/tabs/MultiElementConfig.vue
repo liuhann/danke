@@ -40,7 +40,7 @@ import frameModel from '../../frames/frameChooseDialog'
 
 export default {
   name: 'MultiElementConfig',
-  components: {FormField, EditLen},
+  components: { FormField, EditLen },
   props: {
     elements: {
       type: Array
@@ -133,10 +133,9 @@ export default {
         if (unit === 'deltaDelay') {
           element.animation[this.animationType].delay = this.animation.delay + i * this.animation.deltaDelay
         }
-        i ++
+        i++
         element.style = getElementStyle(element, this.device)
       }
-
     }
   }
 }
