@@ -1,11 +1,11 @@
 <template>
   <div id="scene-maker">
-    <div class="tool-bar">
+    <div class="tool-bar is-clearfix">
       <div style="float: left">
         <drop-down-menu :menus="addElementType" @menu-clicked="addMenuClicked">
           <span class="button icon-plus-1 is-primary is-small">插入元素</span>
         </drop-down-menu>
-        <a class="button is-white is-small"></a>
+        <a class="button is-white icon-menu"></a>
         <a class="button is-white is-small" @click="zoomIn">
           <i class="icon-minus-1"></i>
         </a>
@@ -19,6 +19,10 @@
       <div style="float: right;">
         <a class="button is-small is-primary">保存</a>
       </div>
+    </div>
+    <div class="element-bar">
+      <div class="button is-white icon-picture-1"></div>
+      <div class="button is-white icon-picture-1"></div>
     </div>
     <div class="scene-container" ref="container">
       <div class="device-drag" ref="deviceDrag"></div>
@@ -137,9 +141,15 @@ export default {
     overflow: hidden;
     background-color: #f5f5f4;
     .tool-bar {
-      font-size: 0.75rem;
-      height: 2.25em;
-      line-height: 2.25em;
+      height: 3em;
+      line-height: 3em;
+      background-color: #fff;
+    }
+    .element-bar {
+      position: absolute;
+      top: 3em;
+      left: 0;
+      bottom: 0;
       background-color: #fff;
     }
     .element-prop-config, .element-list-config {
@@ -159,7 +169,7 @@ export default {
       position: absolute;
       left: 0;
       font-size: 0.75rem;
-      top: 2.5em;
+      top: 3em;
       bottom: 0;
       right: 0;
       overflow: hidden;
