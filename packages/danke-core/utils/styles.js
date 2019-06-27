@@ -1,5 +1,4 @@
-import { TypeEnum } from '../elements/index'
-import { getLenSplits, getLength } from './common'
+import { getLenSplits, getLength, wait } from './common'
 
 import { getBoxShadowStyle } from '../css-model/boxshadow'
 import { getFontStyle } from '../css-model/font'
@@ -83,8 +82,7 @@ async function renderSceneStage (scene, device, stage) {
       playEnd = element.animation[stage].delay + element.animation[stage].duration
     }
   }
-  await wait()
-  setTimeout()
+  await wait(playEnd)
 }
 
 export {

@@ -2,7 +2,7 @@
   <div id="scene-maker">
     <div class="tool-bar is-clearfix">
       <div style="float: left">
-        <a class="button is-white icon-menu"></a>
+        <a class="button is-white icon-menu" @click="showLeftToggleMenu = true"></a>
       </div>
       <div style="float: right;">
         <a class="button is-white" @click="zoomIn">
@@ -59,6 +59,9 @@
         <prop-config :element="currentElement"></prop-config>
       </div>
     </nav>
+    <transition name="slide-left">
+      <left-toggle-menu v-if="showLeftToggleMenu" @menu-clicked="showLeftToggleMenu = false"></left-toggle-menu>
+    </transition>
     <element-list-config v-show="showElementsLayer" :elements="elements" @choose="chooseElement" @ordered="resetOrder"></element-list-config>
     <image-cropper ref="cropper"></image-cropper>
   </div>
@@ -69,14 +72,14 @@ import { fitToContainer } from '../danke-core/utils/common'
 import elementMixin from './mixins/elementMixins'
 import { intereactWith } from './mixins/interact'
 import { TypeEnum } from '../danke-core/elements/index'
-import ImageCropper from './components/ImageCropper.vue'
-import DropDownMenu from '../common/components/DropDownMenu.vue'
+import ImageCropper from './components/ImageCropper'
+import LeftToggleMenu from './tabs/LeftToggleMenu'
 import PropConfig from './tabs/PropConfig'
 import ElementListConfig from './tabs/ElementListConfig'
-import { renderSceneStage } from '../danke-core/utils/styles';
+import { renderSceneStage } from '../danke-core/utils/styles'
 export default {
   name: 'FullPageSceneMaker',
-  components: { ElementListConfig, PropConfig, ImageCropper, DropDownMenu },
+  components: { ElementListConfig, PropConfig, ImageCropper, LeftToggleMenu },
   mixins: [ elementMixin ],
   props: {
     ratio: {
@@ -92,6 +95,7 @@ export default {
         height: 640
       },
       zoom: 1,
+      showLeftToggleMenu: false,
       showElementsLayer: false
     }
   },
@@ -140,11 +144,14 @@ export default {
       console.log('reordered')
       this.elements = elements
     },
-    runPreview () {
+    async runPreview () {
       this.zoomCenter()
-      renderSceneStage({
+      await renderSceneStage({
         elements: this.elements
       }, this.device, 'in')
+      renderSceneStage({
+        elements: this.elements
+      }, this.device, 'dura')
     }
   }
 }
@@ -233,8 +240,8 @@ export default {
             position: absolute;
             left: -2px;
             top: -2px;
-            width: calc(100% + 4px);
-            height: calc(100% + 4px);
+            width: calc(100% + 2px);
+            height: calc(100% + 2px);
             border: 1px solid #87b1f1;
             box-sizing: content-box;
             span {
@@ -269,4 +276,11 @@ export default {
     background-size: 100% 1px;
     background-repeat: no-repeat;
   }
+
+  .slide-left-enter-active, .slide-left-leave-active {
+  transition: transform .2s ease-out;
+}
+.slide-left-enter, .slide-left-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  transform: translateX(-100%)
+}
 </style>
