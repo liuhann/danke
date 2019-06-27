@@ -8,9 +8,6 @@
   </form-field>
   <form-field label="粗细" type="radio" v-model="font.weight" :options="weights"></form-field>
   <form-field label="对齐" type="radio" v-model="font.align" :options="aligns"></form-field>
-  <form-field label="边距">
-    <edit-len v-model="font.padding" :with-unit="false"></edit-len>
-  </form-field>
 </div>
 </template>
 

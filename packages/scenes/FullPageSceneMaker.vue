@@ -42,9 +42,10 @@
       <div class="device" ref="device" :style="deviceStyle" @click.self="sceneClick">
         <div v-for="element of elements" :key="element.id" :id="'element-' + element.id"
              class="element" :class="[element.visible?'':'hidden']" :style="element.style"
-             @click.self="chooseElement(element)">
-          <span @click.self="chooseElement(element)" @input="contentChange" :contenteditable="element===currentElement" v-if="element.type === TypeEnum.TEXT /*&& element!==currentElement*/" v-html="$options.filters.newline(element.text)"></span>
+             @click="chooseElement(element)">
+          <span v-if="element.type === TypeEnum.TEXT && element!==currentElement" v-html="$options.filters.newline(element.text)"></span>
           <div class="mask" v-if="element===currentElement">
+            <span @input="contentChange" contenteditable v-if="element.type === TypeEnum.TEXT" v-html="$options.filters.newline(element.text)"></span>
             <div class="corner-rb"></div>
           </div>
         </div>
@@ -220,11 +221,15 @@ export default {
           }
           .mask {
             position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
+            left: -2px;
+            top: -2px;
+            width: calc(100% + 4px);
+            height: calc(100% + 4px);
             border: 1px solid #87b1f1;
+            box-sizing: content-box;
+            span {
+              outline:none;
+            }
             .corner-rb {
               background-color: #87b1f1;
               position: absolute;

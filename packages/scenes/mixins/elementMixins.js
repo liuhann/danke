@@ -1,7 +1,7 @@
 import { IMAGE, SHAPE, TEXT, TypeEnum } from '../../danke-core/elements/index'
 import { clone } from '../../utils/object'
 import { getElementStyle } from '../../danke-core/utils/styles'
-import { interactElement } from './interact'
+import { interactElement, destoryInteraction } from './interact'
 import { shortid } from '../../utils/string'
 const addElementType = [{
   type: 'file',
@@ -66,13 +66,13 @@ export default {
       clonedElement.id = shortid()
       clonedElement.shape = shape
       clonedElement.visible = true
+      clonedElement.background.colors = ['#eee']
       clonedElement.size.width = '30vw'
       clonedElement.size.height = '30vw'
       clonedElement.style = getElementStyle(clonedElement, this.device)
       this.inc++
       this.elements.push(clonedElement)
-      this.currentElement = clonedElement
-      this.elementMounted([clonedElement])
+      this.chooseElement(clonedElement)
     },
     insertText () {
       const clonedElement = clone(TEXT)
@@ -84,8 +84,7 @@ export default {
       clonedElement.style = getElementStyle(clonedElement, this.device)
       this.inc++
       this.elements.push(clonedElement)
-      this.currentElement = clonedElement
-      this.elementMounted([clonedElement])
+      this.chooseElement(clonedElement)
     },
     insertImage (croppedList, cropScreenSize) {
       const elements = []
@@ -109,23 +108,16 @@ export default {
         elements.push(clonedElement)
         blob.filename = this.croppingFileName
         this.resources[clonedElement.url] = blob
-        this.currentElement = clonedElement
       }
-      this.elementMounted(elements)
-    },
-
-    elementMounted (elements) {
-      this.$nextTick(() => {
-        for (const element of elements) {
-          interactElement(document.getElementById('element-' + element.id), element, this)
-        }
-      })
     },
     contentChange (e) {
       this.editedText = e.target.innerHTML.replace(/<br>/g, '\n')
     },
 
     chooseElement (element) {
+      if (this.currentElement) {
+        destoryInteraction(document.getElementById('element-' + this.currentElement.id))
+      }
       // save cache of content editable text
       if (this.currentElement && this.currentElement.type === TypeEnum.TEXT && this.editedText) {
         this.currentElement.text = this.editedText
@@ -135,6 +127,9 @@ export default {
         this.currentElement.text = ' '
       }
       this.currentElement = element
+      this.$nextTick(() => {
+        interactElement(document.getElementById('element-' + element.id), element, this)
+      })
     },
     reflow () {
       for (let element of this.elements) {

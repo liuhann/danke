@@ -7,7 +7,6 @@ export const TextShadows = {
 }
 
 export default {
-  padding: 0,
   size: 1,
   spacing: 0,
   color: '#333',

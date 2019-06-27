@@ -7,9 +7,15 @@
     <draggable v-model="elements">
       <a class="element-item" v-for="(element, index) of elements" :key="index" @click="toggleElement(element)">
         <div v-if="element.type === TypeEnum.IMAGE" class="image" :style="'background-image: url(' + element.url + ')'"></div>
-        <div v-if="element.type === TypeEnum.SHAPE" class="shape" :style="{
-            backgroundColor: '#eec'
-          }"></div>
+        <div v-if="element.type === TypeEnum.SHAPE" class="shape" :style="[{
+            backgroundColor: element.background.colors[0] || '#ccc',
+            border: '1px solid #999'
+          }, element.shape === 'circle'? {
+            borderRadius: '20px'
+          }: {}]"></div>
+        <div v-if="element.type === TypeEnum.TEXT" class="text">
+          <i class="icon-sort-alphabet"></i>
+        </div>
         <div class="element-content animations">
           <div class="element-animation" v-if="element.animation.in" :style="[
               element.animation.in.name ? {
@@ -24,9 +30,7 @@
     </draggable>
   </div>
 </nav>
-
 </template>
-
 <script>
 import EditBackground from '../components/EditBackground.vue'
 import FormField from '../../common/components/FormField'

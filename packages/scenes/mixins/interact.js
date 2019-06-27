@@ -23,7 +23,11 @@ function interactElement (element, model, vm) {
   }).on('resizemove', function (event) {
     model.size.width = increaseOffsetWithPixel(model.size.width, event.dx, vm.device)
     model.size.height = increaseOffsetWithPixel(model.size.height, event.dy, vm.device)
-  })
+  }).styleCursor(false)
+}
+
+function destoryInteraction (element) {
+  interact(element).unset()
 }
 
 function increaseOffsetWithPixel (offset, pixel, device) {
@@ -64,5 +68,6 @@ function intereactWith (element, withElement) {
 
 export {
   interactElement,
+  destoryInteraction,
   intereactWith
 }
