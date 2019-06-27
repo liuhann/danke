@@ -73,6 +73,7 @@ import ImageCropper from './components/ImageCropper.vue'
 import DropDownMenu from '../common/components/DropDownMenu.vue'
 import PropConfig from './tabs/PropConfig'
 import ElementListConfig from './tabs/ElementListConfig'
+import { renderSceneStage } from '../danke-core/utils/styles';
 export default {
   name: 'FullPageSceneMaker',
   components: { ElementListConfig, PropConfig, ImageCropper, DropDownMenu },
@@ -140,6 +141,10 @@ export default {
       this.elements = elements
     },
     runPreview () {
+      this.zoomCenter()
+      renderSceneStage({
+        elements: this.elements
+      }, this.device, 'in')
     }
   }
 }
@@ -216,6 +221,7 @@ export default {
         left: 20px;
         background-color: #fff;
         z-index: 10;
+        transition: transform .2s linear;
         .element {
           position: absolute;
           &.current {

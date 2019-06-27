@@ -1,3 +1,5 @@
+import { resolve, reject } from 'q'
+
 const REG_LEN = /([+-]?[.0-9#]+)(%|px|pt|em|rem|in|cm|mm|ex|ch|pc|vw|vh|vmin|vmax|deg|rad|turn)?$/
 
 /**
@@ -69,5 +71,10 @@ function fitToContainer (ratio, width, height) {
       height: Math.floor(heightByWidth)
     }
   }
+}
+
+async function wait (mill) {
+  return new Promise((resolve, reject) => {
+  })
 }
 export { getLength, getLenSplits, fitToContainer }

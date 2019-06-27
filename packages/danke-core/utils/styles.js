@@ -69,9 +69,28 @@ function getSceneStyle (scene, device) {
   return styles.join(';')
 }
 
+async function renderSceneStage (scene, device, stage) {
+  let playEnd = 0
+  for (let element of scene.elements) {
+    if (element.baseUrl) {
+      let w = getLength(element.size.width, device)
+      let h = getLength(element.size.height, device)
+      element.baseUrl = element.baseUrl || element.url
+      element.url = 'http://image.danke.fun' + element.baseUrl.replace(/http[s]*:\/\/[^/]+/g, '') + '?x-oss-process=image/format,webp/quality,Q_80/resize,m_fixed,h_' + h + ',w_' + w
+    }
+    element.style = getElementStyle(element, device, stage)
+    if (element.animation[stage].delay + element.animation[stage].duration > playEnd) {
+      playEnd = element.animation[stage].delay + element.animation[stage].duration
+    }
+  }
+  await wait()
+  setTimeout()
+}
+
 export {
   getLength,
   getLenSplits,
+  renderSceneStage,
   getElementStyle,
   getWorkStyle,
   getSceneStyle,
