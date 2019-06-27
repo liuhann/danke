@@ -127,9 +127,11 @@ export default {
         this.currentElement.text = ' '
       }
       this.currentElement = element
-      this.$nextTick(() => {
-        interactElement(document.getElementById('element-' + element.id), element, this)
-      })
+      if (element) {
+        this.$nextTick(() => {
+          interactElement(document.getElementById('element-' + element.id), element, this)
+        })
+      }
     },
     reflow () {
       for (let element of this.elements) {

@@ -59,7 +59,7 @@
         <prop-config :element="currentElement"></prop-config>
       </div>
     </nav>
-    <element-list-config v-show="showElementsLayer" :elements="elements" @choose="chooseElement"></element-list-config>
+    <element-list-config v-show="showElementsLayer" :elements="elements" @choose="chooseElement" @ordered="resetOrder"></element-list-config>
     <image-cropper ref="cropper"></image-cropper>
   </div>
 </template>
@@ -134,6 +134,10 @@ export default {
     },
     sceneClick () {
       this.chooseElement(null)
+    },
+    resetOrder (elements) {
+      console.log('reordered')
+      this.elements = elements
     },
     runPreview () {
     }

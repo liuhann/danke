@@ -4,8 +4,8 @@
     元素列表
   </p>
   <div class="item-list">
-    <draggable v-model="elements">
-      <a class="element-item" v-for="(element, index) of elements" :key="index" @click="toggleElement(element)">
+    <draggable v-model="elementList">
+      <a class="element-item" v-for="(element, index) of elementList" :key="index" @click="toggleElement(element)">
         <div v-if="element.type === TypeEnum.IMAGE" class="image" :style="'background-image: url(' + element.url + ')'"></div>
         <div v-if="element.type === TypeEnum.SHAPE" class="shape" :style="[{
             backgroundColor: element.background.colors[0] || '#ccc',
@@ -61,12 +61,21 @@ export default {
   },
   data () {
     return {
+      elementList: this.elements,
       TypeEnum,
       iconSet: {
         [TypeEnum.SHAPE]: 'icon-popup',
         [TypeEnum.TEXT]: 'icon-sort-alphabet'
       },
       selectedElements: []
+    }
+  },
+  watch: {
+    'elements': function () {
+      this.elementList = this.elements
+    },
+    'elementList': function () {
+      this.$emit('ordered', this.elementList)
     }
   },
   computed: {
@@ -82,14 +91,9 @@ export default {
     }
   },
   filters: {
-
-  },
-  watch: {
-
   },
   created () {
   },
-
   methods: {
     toggleElement (element) {
       this.$emit('choose', element)
@@ -97,7 +101,6 @@ export default {
     toggleElementVisible (element) {
       this.$set(element, 'visible', !element.visible)
     },
-
     upAll () {
       for (let element of this.selectedElements) {
         let i = this.elements.indexOf(element)
@@ -177,7 +180,7 @@ export default {
     color: #999;
     font-weight: bold;
     margin: 0 .5em;
-    padding: 1em 0;
+    padding: .75em 0;
     border-bottom: 1px solid #eee;
   }
   .item-list {
