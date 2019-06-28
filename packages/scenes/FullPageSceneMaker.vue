@@ -1,29 +1,14 @@
 <template>
   <div id="scene-maker">
-    
-    <div class="element-bar">
-      <div class="top">
-        <a class="file">
-          <label class="file-label">
-            <input class="file-input" type="file" name="resume" @input="fileChoosed">
-            <span class="button is-white icon-picture-1">
-            </span>
-          </label>
-        </a>
-        <a class="button is-white icon-check-empty-1" @click="insertShape('rect')"></a>
-        <a class="button is-white icon-circle-thin" @click="insertShape('circle')"></a>
-        <a class="button is-white icon-sort-alphabet" @click="insertText"></a>
-      </div>
-      <div class="bottom">
-        <a class="button is-white icon-check-empty-1" @click="showElementsLayer = !showElementsLayer"></a>
-      </div>
-    </div>
+    <toolbar></toolbar>
+    <left-menubar></left-menubar>
     <div class="scene-container" ref="container">
       <div class="device-drag" ref="deviceDrag"></div>
       <div class="device" ref="device" :style="deviceStyle" @click.self="sceneClick">
         <div v-for="element of elements" :key="element.id" :id="'element-' + element.id"
              class="element" :class="[element.visible?'':'hidden']" :style="element.style"
              @click="chooseElement(element)">
+          <img v-if="element.type === TypeEnum.IMAGE" :src="element.url">
           <span v-if="element.type === TypeEnum.TEXT && element!==currentElement" v-html="$options.filters.newline(element.text)"></span>
           <div class="mask" v-if="element===currentElement">
             <span @input="contentChange" contenteditable v-if="element.type === TypeEnum.TEXT" v-html="$options.filters.newline(element.text)"></span>
@@ -56,12 +41,14 @@ import { intereactWith } from './mixins/interact'
 import { TypeEnum } from '../danke-core/elements/index'
 import ImageCropper from './components/ImageCropper'
 import LeftToggleMenu from './tabs/LeftToggleMenu'
+import Toolbar from './parts/Toolbar'
+import LeftMenubar from './parts/LeftMenubar'
 import PropConfig from './tabs/PropConfig'
 import ElementListConfig from './tabs/ElementListConfig'
 import { renderSceneStage } from '../danke-core/utils/styles'
 export default {
   name: 'FullPageSceneMaker',
-  components: { ElementListConfig, PropConfig, ImageCropper, LeftToggleMenu },
+  components: { ElementListConfig, PropConfig, ImageCropper, LeftToggleMenu, Toolbar, LeftMenubar },
   mixins: [ elementMixin, saveShareMixin ],
   props: {
     ratio: {
@@ -71,7 +58,12 @@ export default {
   },
   data () {
     return {
+      sceneName: '我的作品-1',
+      sceneId: null,
       TypeEnum,
+      elements: [],
+      resources: {},
+      currentElement: null,
       deviceOrigin: {
         width: 360,
         height: 640
@@ -79,6 +71,20 @@ export default {
       zoom: 1,
       showLeftToggleMenu: false,
       showElementsLayer: false
+    }
+  },
+  provide () {
+    return {
+      sceneName: this.sceneName,
+      showLeftToggleMenu: this.showLeftToggleMenu,
+      showElementsLayer: this.showElementsLayer,
+      elements: this.elements,
+      currentElement: this.currentElement,
+      zoom: this.zoom,
+      // provide methods
+      runPreview: this.runPreview,
+      zoomIn: this.zoomIn,
+      zoomOut: this.zoomOut
     }
   },
   computed: {
@@ -216,6 +222,11 @@ export default {
         transition: transform .2s linear;
         .element {
           position: absolute;
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
           &.current {
             outline: 2px dashed #87b1f1;
             outline-offset: 0;

@@ -18,10 +18,10 @@ export default {
       // save scene preview
       await this.saveImages()
       const scene = this.getSceneConfig()
-      if (this.$route.params.id === 'new') {
-        await this.scenedao.create(scene)
+      if (this.sceneId) {
+        await this.scenedao.patch(this.sceneId, scene)
       } else {
-        await this.scenedao.patch(this.$route.params.id, scene)
+        const result = await this.scenedao.create(scene)
       }
       loading.close()
       Message.success('保存完成')
@@ -45,8 +45,7 @@ export default {
         elements.push(cloned)
       }
       return {
-        name: this.scene.name,
-        cover: this.scene.cover,
+        name: this.sceneName,
         screen: this.$route.params.screen,
         elements: elements
       }

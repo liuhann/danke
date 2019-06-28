@@ -10,7 +10,7 @@ export default {
 
 export function getBackgroundStyle ({ background, url }) {
   const styles = []
-  if (background) {
+  if (background && !url) {
     const backgroundImages = []
     let bgUrl = url || background.url
     if (bgUrl) {

@@ -18,10 +18,15 @@ const addElementType = [{
 export default {
   data () {
     return {
-      addElementType,
-      elements: [],
-      resources: {},
-      currentElement: null
+      addElementType
+    }
+  },
+  provide () {
+    return {
+      insertImage: this.insertImage,
+      insertShape: this.insertShape,
+      insertText: this.insertText,
+      fileChoosed: this.fileChoosed
     }
   },
   watch: {
