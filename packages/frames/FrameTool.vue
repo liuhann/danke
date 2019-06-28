@@ -13,7 +13,7 @@
             </div>
 
             <div class='clip-note' v-if="currentFrame && currentFrame.clip.type === 'polygon'">
-              <div v-for="(point, index) of currentFrame.clip.points" class="circle" :style="{
+              <div v-for="(point, index) of currentFrame.clip.points" class="circle" :key="index" :style="{
                 left: point[0] + '%',
                 top: point[1] + '%'
               }">

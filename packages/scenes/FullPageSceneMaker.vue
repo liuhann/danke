@@ -1,25 +1,6 @@
 <template>
   <div id="scene-maker">
-    <div class="tool-bar is-clearfix">
-      <div style="float: left">
-        <a class="button is-white icon-menu" @click="showLeftToggleMenu = true"></a>
-      </div>
-      <div style="float: right;">
-        <a class="button is-white" @click="zoomIn">
-          <i class="icon-minus-1"></i>
-        </a>
-        <a class="button is-white">
-          {{zoom}}
-        </a>
-        <a class="button is-white" @click="zoomOut">
-          <i class="icon-plus-1"></i>
-        </a>
-        <a class="button is-white">
-          <i class="icon-right-dir" @click="runPreview"></i>
-        </a>
-        <a class="button is-success is-rounded is-small button-share">发布并分享</a>
-      </div>
-    </div>
+    
     <div class="element-bar">
       <div class="top">
         <a class="file">
@@ -60,7 +41,7 @@
       </div>
     </nav>
     <transition name="slide-left">
-      <left-toggle-menu v-if="showLeftToggleMenu" @menu-clicked="showLeftToggleMenu = false"></left-toggle-menu>
+      <left-toggle-menu v-if="showLeftToggleMenu" @menu-clicked="showLeftToggleMenu = false" @command="executeCommand"></left-toggle-menu>
     </transition>
     <element-list-config v-show="showElementsLayer" :elements="elements" @choose="chooseElement" @ordered="resetOrder"></element-list-config>
     <image-cropper ref="cropper"></image-cropper>
@@ -68,8 +49,9 @@
 </template>
 
 <script>
-import { fitToContainer } from '../danke-core/utils/common'
 import elementMixin from './mixins/elementMixins'
+import saveShareMixin from './mixins/saveShare'
+import { fitToContainer } from '../danke-core/utils/common'
 import { intereactWith } from './mixins/interact'
 import { TypeEnum } from '../danke-core/elements/index'
 import ImageCropper from './components/ImageCropper'
@@ -80,7 +62,7 @@ import { renderSceneStage } from '../danke-core/utils/styles'
 export default {
   name: 'FullPageSceneMaker',
   components: { ElementListConfig, PropConfig, ImageCropper, LeftToggleMenu },
-  mixins: [ elementMixin ],
+  mixins: [ elementMixin, saveShareMixin ],
   props: {
     ratio: {
       type: String,
@@ -152,6 +134,15 @@ export default {
       renderSceneStage({
         elements: this.elements
       }, this.device, 'dura')
+    },
+    executeCommand (cmd) {
+      switch (cmd) {
+        case 'save':
+          this.savePage()
+          break
+        default:
+          break
+      }
     }
   }
 }
@@ -169,13 +160,7 @@ export default {
     height: 100%;
     overflow: hidden;
     background-color: #f5f5f4;
-    .tool-bar {
-      background-color: #fff;
-      .button-share {
-        margin: .25em 1em;
-      }
-    }
-    .element-bar {
+  .element-bar {
       position: absolute;
       z-index: 101;
       top: 2.5em;

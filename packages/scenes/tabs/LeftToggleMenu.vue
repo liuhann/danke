@@ -6,7 +6,7 @@
   <ul class="menu-list">
     <li><a>新建</a></li>
     <li><a>打开</a></li>
-    <li><a>保存</a></li>
+    <li><a @click="command('save')">保存</a></li>
   </ul>
   <p class="menu-label">
     发布与共享
@@ -27,7 +27,11 @@
 
 <script>
 export default {
-
+  methods: {
+    command (cmd) {
+      this.$emit('command', cmd)
+    }
+  }
 }
 </script>
 
