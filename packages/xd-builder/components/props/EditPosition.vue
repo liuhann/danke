@@ -11,8 +11,8 @@
 
 <script>
 import EditLen from './EditLen'
-import FormField from '../../common/components/FormField'
-import { horizontalOptions, verticalOptions } from '../../danke-core/css-model/position'
+import FormField from './FormField'
+import { horizontalOptions, verticalOptions } from '../../../danke-core/css-model/position'
 export default {
   name: 'EditPosition',
   components: {

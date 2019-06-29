@@ -53,10 +53,10 @@
 
 <script>
 import EditLen from './EditLen'
-import FormField from '../../common/components/FormField'
+import FormField from './FormField'
 export default {
   name: 'EditTransform',
-  components: {FormField, EditLen },
+  components: { FormField, EditLen },
   props: {
     value: {
       type: Object

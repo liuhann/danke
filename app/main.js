@@ -13,8 +13,8 @@ import site from '../packages/site'
 import runtime from '../packages/runtime'
 import user from '../packages/user'
 import frameTool from '../packages/frames'
-import pageTool from '../packages/scenes'
 import ybstory from '../packages/story'
+import xd from '../packages/xd-builder'
 
 import initClient from '../packages/common/utils/initClient'
 import initEventEmitter from '../packages/common/utils/initEventEmitter'
@@ -32,7 +32,7 @@ const boot = new AsyncBoot({
   IMG_SERVER: 'http://image.danke.fun',
   mount: '#app',
   packages: [
-    site, runtime, user, frameTool, pageTool, ybstory
+    site, runtime, user, frameTool, xd, ybstory
   ],
   started: async (ctx, next) => {
     await next()

@@ -84,7 +84,7 @@ export default {
     FramesConfig
   },
   computed: {
-    previewTypes() {
+    previewTypes () {
       return ['方块', '文字', '图片']
     },
     currentFrame () {

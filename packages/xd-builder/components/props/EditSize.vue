@@ -33,9 +33,9 @@
 
 <script>
 import EditLen from './EditLen.vue'
-import { getLenSplits } from '../../danke-core/utils/styles'
-import { lenUnit } from '../../danke-core/utils/css-options'
-import FormField from '../../common/components/FormField.vue'
+import { getLenSplits } from '../../../danke-core/utils/styles'
+import { lenUnit } from '../../../danke-core/utils/css-options'
+import FormField from './FormField.vue'
 export default {
   name: 'EditSize',
   components: {

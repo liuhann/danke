@@ -34,11 +34,10 @@
 </template>
 
 <script>
-import ItemBlock from './ItemBlock'
-import FormField from '../../common/components/FormField'
+import FormField from './FormField'
 import EditLen from './EditLen'
-import ColorPickr from '../../common/components/ColorPickr'
-import { LINE_STYLES } from '../../danke-core/css-model/border'
+import ColorPickr from '../ColorPickr'
+import { LINE_STYLES } from '../../../danke-core/css-model/border'
 const allSides = {
   top: '上',
   bottom: '下',
@@ -50,8 +49,7 @@ export default {
   components: {
     ColorPickr,
     EditLen,
-    FormField,
-    ItemBlock
+    FormField
   },
   props: {
     value: {

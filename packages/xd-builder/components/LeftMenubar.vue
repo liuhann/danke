@@ -22,4 +22,3 @@ export default {
   inject: ['fileChoosed', 'insertShape', 'insertText']
 }
 </script>
-

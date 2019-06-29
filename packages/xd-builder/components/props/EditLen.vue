@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { getLenSplits } from '../../danke-core/utils/common'
+import { getLenSplits } from '../../../danke-core/utils/common'
 export default {
   props: {
     label: {

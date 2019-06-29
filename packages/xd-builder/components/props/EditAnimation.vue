@@ -16,8 +16,8 @@
 
 <script>
 import EditLen from './EditLen.vue'
-import FormField from '../../common/components/FormField'
-import frameModel from '../../frames/frameChooseDialog'
+import FormField from './FormField'
+import frameModel from '../../../frames/frameChooseDialog'
 export default {
   name: 'EditAnimation',
   components: {

@@ -32,8 +32,6 @@
 </nav>
 </template>
 <script>
-import EditBackground from '../components/EditBackground.vue'
-import FormField from '../../common/components/FormField'
 import { TypeEnum } from '../../danke-core/elements'
 import { MessageBox } from 'element-ui'
 import { getMaxDuration } from '../../danke-core/css-model/animation'
@@ -44,7 +42,7 @@ import draggable from 'vuedraggable'
 
 export default {
   name: 'ElementListConfig',
-  components: { FormField, EditBackground, draggable },
+  components: { draggable },
   props: {
     trigger: {
       type: String

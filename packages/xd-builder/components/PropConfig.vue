@@ -1,5 +1,5 @@
 <template>
-<div class="prop-config">
+<div id="prop-config">
   <div v-if="element">
     <edit-font v-if="element.font" v-model="element.font"></edit-font>
     <form-field v-if="element.shape" v-model="element.shape" label="形状" type="select" :options="shapeOptions"></form-field>
@@ -7,7 +7,6 @@
     <edit-position v-model="element.position"></edit-position>
     <edit-size v-model="element.size"></edit-size>
     <edit-border v-model="element.border" v-if="element.border"></edit-border>
-
     <div class="tabs is-small">
       <ul>
         <li v-for="(key, index) of animatoinTabs" :class="[index===animationIndex? 'is-active': '']" :key="key">
@@ -16,12 +15,8 @@
       </ul>
     </div>
     <edit-animation :animation="element.animation[animatoinTabs[animationIndex]]" :animation-type="animatoinTabs[animationIndex]"></edit-animation>
-    <div class="show-more" v-if="showMore">
-      <form-field v-if="element.type === TypeEnum.SHAPE || element.type === TypeEnum.IMAGE" label="阴影" v-model="element.shadow" :options="shadowType"></form-field>
-      <edit-clip-path v-model="element.clip" v-if="element.clip"></edit-clip-path>
+    <edit-clip-path v-model="element.clip" v-if="element.clip"></edit-clip-path>
       <!--<form-field label="背景大小" type="select" v-css-model="element.background.size" :options="backgroundSizeOptions"></form-field>-->
-    </div>
-    <a class="button is-text" @click="showMore = !showMore">{{showMore? '折叠': '更多配置'}}</a>
   </div>
   <div v-else>
     请选择元素
@@ -30,20 +25,15 @@
 </template>
 
 <script>
-import EditFont from '../components/EditFont.vue'
-import EditPosition from '../components/EditPosition.vue'
-import EditBackground from '../components/EditBackground.vue'
-import EditImage from '../components/EditImage.vue'
-import EditBorder from '../components/EditBorder.vue'
-import EditClipPath from '../components/EditClipPath.vue'
-import EditSize from '../components/EditSize.vue'
-import EditTransform from '../components/EditTransform.vue'
-import ItemBlock from '../components/ItemBlock.vue'
-import EditAnimation from '../components/EditAnimation.vue'
-import FormField from '../../common/components/FormField.vue'
+import EditFont from './props/EditFont.vue'
+import EditPosition from './props/EditPosition.vue'
+import EditBackground from './props/EditBackground.vue'
+import EditBorder from './props/EditBorder.vue'
+import EditClipPath from './props/EditClipPath.vue'
+import EditSize from './props/EditSize.vue'
+import EditTransform from './props/EditTransform.vue'
+import EditAnimation from './props/EditAnimation.vue'
 import { TypeEnum } from '../../danke-core/css-model/element'
-import EditLen from '../components/EditLen'
-import { boxShadows } from '../../danke-core/css-model/boxshadow'
 import { Shapes } from '../../danke-core/css-model/shapeclip'
 
 export default {
@@ -57,17 +47,13 @@ export default {
     }
   },
   components: {
-    EditLen,
-    FormField,
     EditAnimation,
-    ItemBlock,
     EditTransform,
     EditSize,
     EditClipPath,
     EditBorder,
     EditBackground,
     EditPosition,
-    EditImage,
     EditFont
   },
   data () {
@@ -75,13 +61,9 @@ export default {
       animatoinTabs: ['in', 'dura', 'out'],
       animatoinTabsName: ['进入效果', '持续效果', '离开效果'],
       animationIndex: 0,
-      shadowType: boxShadows,
       shapeOptions: Shapes,
       TypeEnum,
-      showMore: false,
-      fileUrl: '',
-      currentTab: '样式',
-      activeNames: []
+      fileUrl: ''
     }
   },
   watch: {
@@ -103,7 +85,7 @@ export default {
 </script>
 
 <style lang="scss">
-.style-config {
+#style-config {
   .desc {
     height: 60px;
   }
@@ -123,26 +105,4 @@ export default {
     }
   }
 }
-
-@media screen and (max-width: 768px) {
-  /*.style-config {
-    .column {
-      padding: 0!important;
-    }
-    .box {
-      padding: 10px;
-    }
-    .field {
-      display: flex;
-    }
-    .field-label {
-      font-size: 14px;
-      font-weight: 200;
-      margin-bottom: 0;
-      margin-right: 6px;
-      width: 65px;
-    }
-  }*/
-}
-
 </style>

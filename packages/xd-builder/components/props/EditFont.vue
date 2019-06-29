@@ -13,8 +13,8 @@
 
 <script>
 import EditLen from './EditLen.vue'
-import FormField from '../../common/components/FormField'
-import ColorPickr from '../../common/components/ColorPickr'
+import FormField from './FormField'
+import ColorPickr from '../ColorPickr'
 export default {
   name: 'EditFont',
   components: {

@@ -1,24 +1,12 @@
 import { IMAGE, SHAPE, TEXT, TypeEnum } from '../../danke-core/elements/index'
 import { clone } from '../../utils/object'
 import { getElementStyle } from '../../danke-core/utils/styles'
-import { interactElement, destoryInteraction } from './interact'
+import { interactElement, destoryInteraction } from '../utils/interact'
 import { shortid } from '../../utils/string'
-const addElementType = [{
-  type: 'file',
-  label: '图片',
-  icon: 'icon-picture'
-}, {
-  label: '形状',
-  icon: 'icon-popup'
-}, {
-  label: '文字',
-  icon: 'icon-sort-alphabet'
-}]
 
 export default {
   data () {
     return {
-      addElementType
     }
   },
   provide () {

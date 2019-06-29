@@ -45,12 +45,13 @@
 
 <script>
 import './bulma-timeline.css'
-import { EditTransform, EditClipPath, ItemBlock, EditLen } from '../scenes/exports.js'
+import EditTransform from '../xd-builder/components/props/EditTransform'
+import EditClipPath from '../xd-builder/components/props/EditClipPath'
+import EditLen from '../xd-builder/components/props/EditLen'
+import FormField from '../xd-builder/components/props/FormField'
 import { clone } from '../utils/object'
 import FRAME from './model/frame'
 import cubicBeziers from './model/cubic-beziers'
-import FormField from '../common/components/FormField'
-
 export default {
   name: 'FramesConfig',
   props: {
@@ -61,7 +62,7 @@ export default {
       type: Boolean
     }
   },
-  components: {FormField, ItemBlock, EditTransform, EditClipPath, EditLen },
+  components: { FormField, EditTransform, EditClipPath, EditLen },
   data () {
     return {
       cubicBeziers: cubicBeziers,
@@ -72,7 +73,7 @@ export default {
   },
 
   computed: {
-    animationTypes() {
+    animationTypes () {
       return [{
         key: '1',
         value: '进入'
