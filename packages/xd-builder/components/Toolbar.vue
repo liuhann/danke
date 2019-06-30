@@ -50,7 +50,7 @@ export default {
 }
 </script>
 <style lang="scss">
-#scene-maker {
+#xd {
   .tool-bar {
     display: flex;
     background-color: #fff;
