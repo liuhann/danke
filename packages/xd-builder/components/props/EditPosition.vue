@@ -2,7 +2,7 @@
 <div class="edit-position field-group">
   <div class="field has-addons">
     <div class="control icon-label">
-      <i class="icon-right"></i>
+      <img class="svg-icon" :src="SVG_HOR">
     </div>
     <div class="control">
       <div class="select is-small">
@@ -17,7 +17,7 @@
   </div>
   <div class="field has-addons">
     <div class="control icon-label">
-      <i class="icon-up"></i>
+      <img class="svg-icon" :src="SVG_VER">
     </div>
     <div class="control">
       <div class="select is-small">
@@ -35,6 +35,8 @@
 
 <script>
 import EditLen from './EditLen'
+import SVG_HOR from '../../svg/double-arrow-horizontal-symbol.svg'
+import SVG_VER from '../../svg/resize-arrow.svg'
 import FormField from './FormField'
 import { horizontalOptions, verticalOptions } from '../../../danke-core/css-model/position'
 export default {
@@ -53,6 +55,8 @@ export default {
   },
   data () {
     return {
+      SVG_HOR,
+      SVG_VER,
       horizontalOptions,
       verticalOptions
     }
@@ -70,7 +74,6 @@ export default {
 
 <style lang="scss">
 .edit-position {
-  margin-bottom:.75rem;
 }
 
 </style>

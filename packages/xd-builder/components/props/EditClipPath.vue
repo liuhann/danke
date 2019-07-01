@@ -1,44 +1,43 @@
 <template>
   <div class="edit-clip-path">
-    <form-field v-model="clip.type" label="裁切类型" type="select" :options="clipTypes"></form-field>
-    <div class="field is-horizontal clip-path-point" v-for="(point, index) of clip.points" :key="index">
-      <div class="field-label is-small">
-        <label class="label">{{index+1}}</label>
+    <div class="field has-addons">
+      <div class="control icon-label">
+        <img class="svg-icon" :src="SVG_CROP">
       </div>
-      <div class="field-body">
-        <div class="field">
-          <p class="control is-small">
-            <input class="input is-small" v-model.number="point[0]" type="number">
-          </p>
-        </div>
-        <div class="field">
-          <p class="control is-small">
-            <input class="input is-small" v-model.number="point[1]" type="number">
-          </p>
-        </div>
-        <div class="field">
-          <p class="control is-small">
-            <a class="icon-trash-empty" @click="removePoint(index)"></a>
-          </p>
+      <div class="control">
+        <div class="select is-small">
+          <select v-model="clip.type">
+            <option v-for="option in clipTypes" :value="option.key" :key="option.key">{{option.value}}</option>
+          </select>
         </div>
       </div>
     </div>
-
-    <div class="field is-horizontal" v-if="clip.type === 'polygon'">
-      <div class="field-label is-small">
+    <div class="field is-horizontal clip-path-point" v-for="(point, index) of clip.points" :key="index">
+      <div class="control order">
+        {{index+1}}.
       </div>
-      <div class="field-body">
-        <div class="field">
-          <p class="control is-small">
-            <a class="icon-plus" @click="addPoint"></a>
-          </p>
-        </div>
+      <div class="control">
+         <input class="input is-small" v-model.number="point[0]" type="number">
       </div>
+      <div class="control">
+         <input class="input is-small" v-model.number="point[1]" type="number">
+      </div>
+      <p class="control is-small">
+        <a class="icon-trash-empty" @click="removePoint(index)"></a>
+      </p>
+    </div>
+    <div class="field has-addons" v-if="clip.type === 'polygon'">
+      <p class="control order">
+      </p>
+      <p class="control">
+        <a class="icon-plus-1" @click="addPoint">增加点</a>
+      </p>
     </div>
   </div>
 </template>
 
 <script>
+import SVG_CROP from '../../svg/crop.svg'
 import FormField from './FormField'
 export default {
   name: 'EditClipPath',
@@ -50,6 +49,7 @@ export default {
   },
   data () {
     return {
+      SVG_CROP,
       clipTypes: [{
         key: 'none',
         value: '无'
@@ -103,6 +103,12 @@ export default {
 
 <style lang="scss">
 .edit-clip-path {
+  font-size: 1em;
+  .order {
+    width: 40px;
+    text-align: right;
+    padding-right: 10px;
+  }
   margin-top: .5rem;
   .clip-path-point {
 		flex: 1;

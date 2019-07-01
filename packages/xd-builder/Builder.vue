@@ -167,6 +167,20 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
   height: 100%;
   overflow: hidden;
   background-color: #f5f5f4;
+  .field {
+    margin-bottom: .3rem;
+    height: 32px;
+  }
+  .field:not(:last-child) {
+    margin-bottom: .3rem;
+  }
+  img.svg-icon {
+    width: 16px;
+    filter: invert(50%);
+  }
+  input[type='number'] {
+    width: 65px;
+  }
 .element-bar {
     position: absolute;
     z-index: 101;

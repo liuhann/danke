@@ -2,7 +2,7 @@
 <div class="edit-background">
   <div class="field has-addons">
     <p class="control icon-label">
-        <i class="icon-adjust"></i>
+      <img class="svg-icon" :src="SVG_COLOR">
     </p>
     <p class="control">
       <color-pickr v-for="(color, index) of background.colors" :key="index" v-model="background.colors[index]" @remove="removeColor(index)"></color-pickr>
@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import SVG_COLOR from '../../svg/pipette.svg'
 import FormField from './FormField.vue'
 import ColorPickr from '../ColorPickr'
 import { backgroundSize } from '../../../danke-core/utils/css-options.js'
@@ -36,6 +37,7 @@ export default {
   },
   data () {
     return {
+      SVG_COLOR
     }
   },
 

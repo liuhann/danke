@@ -7,6 +7,7 @@
     <edit-position v-model="element.position"></edit-position>
     <edit-size v-model="element.size"></edit-size>
     <edit-border v-model="element.border" v-if="element.border"></edit-border>
+    <edit-clip-path v-model="element.clip" v-if="element.clip"></edit-clip-path>
     <div class="tabs is-small">
       <ul>
         <li v-for="(key, index) of animatoinTabs" :class="[index===animationIndex? 'is-active': '']" :key="key">
@@ -15,7 +16,7 @@
       </ul>
     </div>
     <edit-animation :animation="element.animation[animatoinTabs[animationIndex]]" :animation-type="animatoinTabs[animationIndex]"></edit-animation>
-    <edit-clip-path v-model="element.clip" v-if="element.clip"></edit-clip-path>
+    
       <!--<form-field label="背景大小" type="select" v-css-model="element.background.size" :options="backgroundSizeOptions"></form-field>-->
   </div>
   <div v-else>

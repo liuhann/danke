@@ -1,8 +1,8 @@
 <template>
-<div class="edit-border panel">
+<div class="edit-border">
   <div class="field has-addons">
     <div class="control icon-label">
-      <i class=" icon-doc-landscape"></i>
+      <img class="svg-icon" :src="SVG_BORDER">
     </div>
     <p class="control">
       <edit-len v-model="border.width" :with-unit="false" unit-label="像素"></edit-len>
@@ -20,7 +20,7 @@
   </div>
   <div class="field has-addons">
     <p class="control icon-label">
-      <i class="icon-circle-thin"></i>
+      <img class="svg-icon" :src="SVG_CORNER">
     </p>
     <p class="control">
       <edit-len v-model="border.radius" label="" :with-unit="false" unit-label="像素"></edit-len>
@@ -30,6 +30,8 @@
 </template>
 
 <script>
+import SVG_BORDER from '../../svg/broken-lines-square-border.svg'
+import SVG_CORNER from '../../svg/corner.svg'
 import FormField from './FormField'
 import EditLen from './EditLen'
 import ColorPickr from '../ColorPickr'
@@ -54,6 +56,8 @@ export default {
   },
   data () {
     return {
+      SVG_CORNER,
+      SVG_BORDER,
       LINE_STYLES
     }
   },
