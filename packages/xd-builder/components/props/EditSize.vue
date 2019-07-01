@@ -1,35 +1,30 @@
 <template>
-<div class="field is-horizontal edit-size">
-  <div class="field-label is-small">
-    <label class="label">宽-高</label>
-  </div>
-  <div class="field-body">
-    <div class="field has-addons">
-      <p class="control">
-        <input class="input is-small" v-model="size.width">
-      </p>
-      <p class="control">
-        <span class="select is-small">
-          <select v-model="size.wu" class="is-small">
-            <option v-for="u of units" :key="u.value" :value="u.value" :label="u.label">{{u.label}}</option>
-          </select>
-        </span>
-      </p>
-    </div>
-    <div class="field has-addons">
-      <p class="control">
-        <input class="input is-small" type="number" v-model="size.height">
-      </p>
-      <p class="control">
-        <span class="select is-small">
-          <select v-model="size.hu" class="is-small">
-            <option v-for="u of units" :key="u.value" :value="u.value" :label="u.label">{{u.label}}</option>
-          </select>
-        </span>
-      </p>
-    </div>
-  </div>
-</div></template>
+<div class="field has-addons">
+  <p class="control icon-label">
+    <i class="icon-resize-full"></i>
+  </p>
+  <p class="control">
+    <input class="input is-small" v-model="size.width">
+  </p>
+  <p class="control">
+    <span class="select is-small">
+      <select v-model="size.wu" class="is-small">
+        <option v-for="u of units" :key="u.value" :value="u.value" :label="u.label">{{u.label}}</option>
+      </select>
+    </span>
+  </p>
+  <p class="control">
+    <input class="input is-small" type="number" v-model="size.height">
+  </p>
+  <p class="control">
+    <span class="select is-small">
+      <select v-model="size.hu" class="is-small">
+        <option v-for="u of units" :key="u.value" :value="u.value" :label="u.label">{{u.label}}</option>
+      </select>
+    </span>
+  </p>
+</div>
+</template>
 
 <script>
 import EditLen from './EditLen.vue'

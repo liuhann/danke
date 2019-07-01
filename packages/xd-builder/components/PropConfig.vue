@@ -85,7 +85,10 @@ export default {
 </script>
 
 <style lang="scss">
-#style-config {
+#prop-config {
+  .icon-label {
+    padding: 2px 10px;
+  }
   .desc {
     height: 60px;
   }

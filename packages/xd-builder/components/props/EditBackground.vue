@@ -1,10 +1,21 @@
 <template>
 <div class="edit-background">
-  <form-field label="背景">
-    <color-pickr v-for="(color, index) of background.colors" :key="index" v-model="background.colors[index]" @remove="removeColor(index)"></color-pickr>
-    <a class="icon-plus-1" @click="addColor"></a>
-  </form-field>
-  <form-field v-if="multipleColor" label="渐变方向" type="radio" v-model="background.angle" :options="gradientAngle"></form-field>
+  <div class="field has-addons">
+    <p class="control icon-label">
+        <i class="icon-adjust"></i>
+    </p>
+    <p class="control">
+      <color-pickr v-for="(color, index) of background.colors" :key="index" v-model="background.colors[index]" @remove="removeColor(index)"></color-pickr>
+      <a class="icon-plus-1" @click="addColor"></a>
+    </p>
+    <p class="control">
+      <div class="select is-small" v-if="multipleColor">
+        <select v-model="background.angle">
+          <option v-for="option in gradientAngle" :value="option.key" :key="option.key">{{option.value}}</option>
+        </select>
+      </div>
+    </p>
+  </div>
 </div>
 </template>
 
@@ -25,7 +36,6 @@ export default {
   },
   data () {
     return {
-      file: null
     }
   },
 
