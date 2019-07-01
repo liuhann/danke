@@ -1,11 +1,35 @@
 <template>
 <div class="edit-position field-group">
-  <form-field label="横向" type="select" v-model="position.horizontal" :options="horizontalOptions">
-    <edit-len v-model="position.offsetX"></edit-len>
-  </form-field>
-  <form-field label="纵向" type="select" v-model="position.vertical" :options="verticalOptions">
-    <edit-len v-model="position.offsetY"></edit-len>
-  </form-field>
+  <div class="field has-addons">
+    <div class="control icon-label">
+      <i class="icon-right"></i>
+    </div>
+    <div class="control">
+      <div class="select is-small">
+        <select v-model="position.horizontal">
+          <option v-for="option in horizontalOptions" :value="option.key" :key="option.key">{{option.value}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="control">
+       <edit-len v-model="position.offsetX"></edit-len>
+    </div>
+  </div>
+  <div class="field has-addons">
+    <div class="control icon-label">
+      <i class="icon-up"></i>
+    </div>
+    <div class="control">
+      <div class="select is-small">
+        <select v-model="position.vertical">
+          <option v-for="option in verticalOptions" :value="option.key" :key="option.key">{{option.value}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="control">
+       <edit-len v-model="position.offsetY"></edit-len>
+    </div>
+  </div>
 </div>
 </template>
 

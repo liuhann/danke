@@ -1,34 +1,30 @@
 <template>
 <div class="edit-border panel">
-  <div class="field is-horizontal">
-    <div class="field-label is-small">
-      <label class="label">边框</label>
+  <div class="field has-addons">
+    <div class="control icon-label">
+      <i class=" icon-doc-landscape"></i>
     </div>
-    <div class="field-body is-small">
-      <p class="control">
-        <edit-len v-model="border.width" :with-unit="false" unit-label="像素"></edit-len>
-      </p>
-      <p class="control">
-        <span class="select is-small">
-          <select v-model="border.style">
-            <option v-for="option in LINE_STYLES" :value="option.key" :key="option.key">{{option.value}}</option>
-          </select>
-        </span>
-      </p>
-      <p class="control">
-        <color-pickr v-model="border.color"></color-pickr>
-      </p>
-    </div>
+    <p class="control">
+      <edit-len v-model="border.width" :with-unit="false" unit-label="像素"></edit-len>
+    </p>
+    <p class="control">
+      <span class="select is-small">
+        <select v-model="border.style">
+          <option v-for="option in LINE_STYLES" :value="option.key" :key="option.key">{{option.value}}</option>
+        </select>
+      </span>
+    </p>
+    <p class="control">
+      <color-pickr v-model="border.color"></color-pickr>
+    </p>
   </div>
-  <div class="field is-horizontal">
-    <div class="field-label is-small">
-      <label class="label">圆角</label>
-    </div>
-    <div class="field-body is-small">
-      <p class="control">
-        <edit-len v-model="border.radius" label="" :with-unit="false" unit-label="像素"></edit-len>
-      </p>
-    </div>
+  <div class="field has-addons">
+    <p class="control icon-label">
+      <i class="icon-circle-thin"></i>
+    </p>
+    <p class="control">
+      <edit-len v-model="border.radius" label="" :with-unit="false" unit-label="像素"></edit-len>
+    </p>
   </div>
 </div>
 </template>
