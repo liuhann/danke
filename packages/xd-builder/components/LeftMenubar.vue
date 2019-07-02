@@ -8,12 +8,13 @@
           </span>
         </label>
       </a>
-      <a class="button is-white icon-check-empty-1" @click="insertShape('rect')"></a>
+      <a class="button is-white icon-doc-landscape" @click="insertShape('rect')"></a>
       <a class="button is-white icon-circle-thin" @click="insertShape('circle')"></a>
       <a class="button is-white icon-sort-alphabet" @click="insertText"></a>
     </div>
     <div class="bottom">
-      <a class="button is-white icon-check-empty-1" @click="$parent.showElementsLayer = !$parent.showElementsLayer"></a>
+      <a class="button is-white icon-clone" @click="$parent.showElementsLayer = !$parent.showElementsLayer"></a>
+      <a class="button is-white icon-th-list" @click="$parent.showElementsLayer = !$parent.showElementsLayer"></a>
     </div>
   </div>
 </template>

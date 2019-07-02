@@ -8,15 +8,10 @@
     <edit-size v-model="element.size"></edit-size>
     <edit-border v-model="element.border" v-if="element.border"></edit-border>
     <edit-clip-path v-model="element.clip" v-if="element.clip"></edit-clip-path>
-    <div class="tabs is-small">
-      <ul>
-        <li v-for="(key, index) of animatoinTabs" :class="[index===animationIndex? 'is-active': '']" :key="key">
-          <a @click="animationIndex = index">{{animatoinTabsName[index]}}</a>
-        </li>
-      </ul>
-    </div>
-    <edit-animation :animation="element.animation[animatoinTabs[animationIndex]]" :animation-type="animatoinTabs[animationIndex]"></edit-animation>
-    
+    <progress class="progress is-small" value="0" max="100">15%</progress>
+    <edit-animation :animation="element.animation.in" animation-type="in" :icon="SVG_IN"></edit-animation>
+    <edit-animation :animation="element.animation.dura" animation-type="dura" :icon="SVG_DURA"></edit-animation>
+    <edit-animation :animation="element.animation.out" animation-type="out" :icon="SVG_OUT"></edit-animation>
       <!--<form-field label="背景大小" type="select" v-css-model="element.background.size" :options="backgroundSizeOptions"></form-field>-->
   </div>
   <div v-else>
@@ -36,6 +31,9 @@ import EditTransform from './props/EditTransform.vue'
 import EditAnimation from './props/EditAnimation.vue'
 import { TypeEnum } from '../../danke-core/css-model/element'
 import { Shapes } from '../../danke-core/css-model/shapeclip'
+import SVG_DURA from '../svg/loading.svg'
+import SVG_IN from '../svg/login.svg'
+import SVG_OUT from '../svg/logout.svg'
 
 export default {
   name: 'PropConfig',
@@ -59,9 +57,9 @@ export default {
   },
   data () {
     return {
-      animatoinTabs: ['in', 'dura', 'out'],
-      animatoinTabsName: ['进入效果', '持续效果', '离开效果'],
-      animationIndex: 0,
+      SVG_DURA,
+      SVG_IN,
+      SVG_OUT,
       shapeOptions: Shapes,
       TypeEnum,
       fileUrl: ''

@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'fontello';
-  src: url('../font/fontello.eot?32844144');
-  src: url('../font/fontello.eot?32844144#iefix') format('embedded-opentype'),
-       url('../font/fontello.woff2?32844144') format('woff2'),
-       url('../font/fontello.woff?32844144') format('woff'),
-       url('../font/fontello.ttf?32844144') format('truetype'),
-       url('../font/fontello.svg?32844144#fontello') format('svg');
+  src: url('../font/fontello.eot?35325819');
+  src: url('../font/fontello.eot?35325819#iefix') format('embedded-opentype'),
+       url('../font/fontello.woff2?35325819') format('woff2'),
+       url('../font/fontello.woff?35325819') format('woff'),
+       url('../font/fontello.ttf?35325819') format('truetype'),
+       url('../font/fontello.svg?35325819#fontello') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -15,7 +15,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'fontello';
-    src: url('../font/fontello.svg?32844144#fontello') format('svg');
+    src: url('../font/fontello.svg?35325819#fontello') format('svg');
   }
 }
 */
@@ -60,17 +60,18 @@
 .icon-eye:before { content: '\e802'; } /* '' */
 .icon-trash-empty:before { content: '\e803'; } /* '' */
 .icon-eye-off:before { content: '\e804'; } /* '' */
-.icon-align-left:before { content: '\e805'; } /* '' */
+.icon-play:before { content: '\e805'; } /* '' */
 .icon-sort-alphabet:before { content: '\e806'; } /* '' */
-.icon-align-center:before { content: '\e807'; } /* '' */
-.icon-align-right:before { content: '\e808'; } /* '' */
+.icon-th-list:before { content: '\e807'; } /* '' */
 .icon-picture-1:before { content: '\e809'; } /* '' */
-.icon-bold:before { content: '\e80a'; } /* '' */
 .icon-plus-1:before { content: '\e811'; } /* '' */
 .icon-minus-1:before { content: '\e812'; } /* '' */
 .icon-check-empty-1:before { content: '\f096'; } /* '' */
 .icon-menu:before { content: '\f0c9'; } /* '' */
+.icon-magic:before { content: '\f0d0'; } /* '' */
 .icon-angle-up:before { content: '\f106'; } /* '' */
 .icon-angle-down:before { content: '\f107'; } /* '' */
 .icon-code:before { content: '\f121'; } /* '' */
+.icon-box:before { content: '\f187'; } /* '' */
 .icon-circle-thin:before { content: '\f1db'; } /* '' */
+.icon-clone:before { content: '\f24d'; } /* '' */

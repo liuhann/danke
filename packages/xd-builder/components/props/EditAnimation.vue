@@ -1,16 +1,20 @@
 <template>
-<div class="edit-animation-option panel">
-  <form-field label="选择" type="empty">
+<div class="field has-addons">
+  <div class="control icon-label">
+    <img class="svg-icon" :src="icon">
+  </div>
+  <div class="control">
     <span class="button is-small" @click="chooseAnimation(animationType)">{{animation.desc || '选择'}}</span>
-    <span v-if="animation.name" class="button is-small icon-trash is-danger" @click="clearAnimation"></span>
-  </form-field>
-  <form-field label="时长" type="empty">
+  </div>
+  <div class="control">
     <edit-len v-model="animation.duration" :with-unit="false"></edit-len>
-  </form-field>
-
-  <form-field label="延迟" type="empty">
+  </div>
+  <div class="control">
     <edit-len v-model="animation.delay" :with-unit="false"></edit-len>
-  </form-field>
+  </div>
+  <div class="control">
+    <span v-if="animation.name" class="button is-small icon-trash-empty is-danger" @click="clearAnimation"></span>
+  </div>
 </div>
 </template>
 
@@ -25,6 +29,9 @@ export default {
     EditLen
   },
   props: {
+    icon: {
+      type: String
+    },
     label: {
       type: String
     },
