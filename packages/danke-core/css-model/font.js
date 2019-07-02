@@ -10,7 +10,7 @@ export default {
   size: 1,
   spacing: 0,
   color: '#333',
-  weight: 'normal',
+  bold: false,
   align: 'left',
   decoration: 'none',
   style: 'normal',
@@ -24,7 +24,9 @@ export function getFontStyle ({ font }, device) {
     styles.push(`font-size: ${font.size}em`)
     styles.push(`color: ${font.color}`)
     styles.push(`text-align: ${font.align}`)
-    styles.push(`font-weight: ${font.weight}`)
+    if (font.bold) {
+      styles.push(`font-weight: bold`)
+    }
     styles.push(`letter-spacing: ${font.spacing}px`)
     if (font.decoration) {
       styles.push(`text-decoration: ${font.decoration}`)

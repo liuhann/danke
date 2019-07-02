@@ -95,6 +95,30 @@
       "css": "check-empty-1",
       "code": 61590,
       "src": "fontawesome"
+    },
+    {
+      "uid": "f4f0e849b805be1f6d76b65581cb3b8b",
+      "css": "align-left",
+      "code": 59397,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "ae6336c46d73af999fe7460c089abb4d",
+      "css": "align-center",
+      "code": 59399,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "e1e7306b47c3c5e6faecce9d32571381",
+      "css": "align-right",
+      "code": 59400,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "02cca871bb69da75e8ee286b7055832c",
+      "css": "bold",
+      "code": 59402,
+      "src": "fontawesome"
     }
   ]
 }

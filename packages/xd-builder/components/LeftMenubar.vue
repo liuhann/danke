@@ -22,3 +22,21 @@ export default {
   inject: ['fileChoosed', 'insertShape', 'insertText']
 }
 </script>
+<style lang="scss">
+.element-bar {
+  position: absolute;
+  z-index: 101;
+  top: 2.5em;
+  left: 0;
+  bottom: 0;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content:space-between;
+  .top, .bottom {
+    display: flex;
+    flex-direction: column;
+  }
+}
+</style>
+

@@ -1,26 +1,47 @@
 <template>
 <div class="edit-font field-group">
-  <form-field label="字体">
-    <edit-len v-model="font.size" unit-label="倍大小" :with-unit="false"></edit-len>
-  </form-field>
-  <form-field label="颜色">
-    <color-pickr v-model="font.color"></color-pickr>
-  </form-field>
-  <form-field label="粗细" type="radio" v-model="font.weight" :options="weights"></form-field>
-  <form-field label="对齐" type="radio" v-model="font.align" :options="aligns"></form-field>
+  <div class="field has-addons">
+    <p class="control icon-label">
+      <img class="svg-icon" :src="SVG_FONT_SIZE">
+    </p>
+    <p class="control">
+      <edit-len v-model="font.size" unit-label="倍" :with-unit="false"></edit-len>
+    </p>
+    <p class="control space">
+    </p>
+    <p class="control">
+      <color-pickr v-model="font.color"></color-pickr>
+    </p>
+    <p class="control space">
+    </p>
+    <p class="control">
+      <toggle-button v-model="font.bold" icon="icon-bold"></toggle-button>
+    </p>
+    <p class="control space">
+    </p>
+    <p class="control">
+      <toggle-grouped-button :options="aligns" v-model="font.align"></toggle-grouped-button>
+    </p>
+  </div>
 </div>
 </template>
 
 <script>
+import SVG_FONT_SIZE from '../../svg/font.svg'
+import SVG_COLOR from '../../svg/pipette.svg'
 import EditLen from './EditLen.vue'
-import FormField from './FormField'
-import ColorPickr from '../ColorPickr'
+import FormField from './FormField.vue'
+import ToggleGroupedButton from './ToggleGroupedButton.vue'
+import ToggleButton from './ToggleButton.vue'
+import ColorPickr from '../ColorPickr.vue'
 export default {
   name: 'EditFont',
   components: {
     ColorPickr,
     FormField,
-    EditLen
+    EditLen,
+    ToggleButton,
+    ToggleGroupedButton
   },
   props: {
     value: {
@@ -29,22 +50,17 @@ export default {
   },
   data () {
     return {
-      weights: [{
-        key: 'bold',
-        value: '粗'
-      }, {
-        key: 'normal',
-        value: '细'
-      }],
+      SVG_FONT_SIZE,
+      SVG_COLOR,
       aligns: [{
         key: 'left',
-        value: '左'
+        icon: 'icon-align-left'
       }, {
         key: 'center',
-        value: '居中'
+        icon: 'icon-align-center'
       }, {
         key: 'right',
-        value: '右'
+        icon: 'icon-align-right'
       }]
     }
   },
