@@ -57,6 +57,7 @@ export default {
     insertShape (shape) {
       const clonedElement = clone(SHAPE)
       clonedElement.id = shortid()
+      clonedElement.name = shape === 'circle' ? '圆形': '矩形'
       clonedElement.shape = shape
       clonedElement.visible = true
       clonedElement.background.colors = ['#eee']
@@ -84,6 +85,7 @@ export default {
       for (let { blob, cropbox } of croppedList) {
         const clonedElement = clone(IMAGE)
         clonedElement.id = shortid()
+        clonedElement.name = '图片'
         clonedElement.visible = true
         clonedElement.position.horizontal = 'left'
         clonedElement.position.vertical = 'top'

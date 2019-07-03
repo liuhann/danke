@@ -16,7 +16,8 @@
         <div v-if="element.type === TypeEnum.TEXT" class="text">
           <i class="icon-sort-alphabet"></i>
         </div>
-        <div class="element-content animations">
+        <div class="name element-content">{{element.name}}</div>
+        <!-- <div class="element-content animations">
           <div class="element-animation" v-if="element.animation.in" :style="[
               element.animation.in.name ? {
                 clipPath: 'polygon(' + Math.floor(((element.animation.in.delay + element.animation.in.duration) * 100)/(maxInDuration * 5)) + '% 0%,'
@@ -24,7 +25,7 @@
                 + ' 100% 100%,'
                 +  Math.floor(((element.animation.in.delay) * 100)/(maxInDuration * 3)) + '% 100%)'
             }: {}]"></div>
-        </div>
+        </div> -->
         <i :class="element.visible? 'icon-eye': 'icon-eye-off'" @click="toggleElementVisible(element)"></i>
       </a>
     </draggable>

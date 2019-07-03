@@ -8,7 +8,7 @@
     <edit-size v-model="element.size"></edit-size>
     <edit-border v-model="element.border" v-if="element.border"></edit-border>
     <edit-clip-path v-model="element.clip" v-if="element.clip"></edit-clip-path>
-    <progress class="progress is-small" value="0" max="100">15%</progress>
+    <hr/>
     <edit-animation :animation="element.animation.in" animation-type="in" :icon="SVG_IN"></edit-animation>
     <edit-animation :animation="element.animation.dura" animation-type="dura" :icon="SVG_DURA"></edit-animation>
     <edit-animation :animation="element.animation.out" animation-type="out" :icon="SVG_OUT"></edit-animation>
