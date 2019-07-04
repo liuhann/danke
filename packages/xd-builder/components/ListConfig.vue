@@ -12,10 +12,11 @@
   </div>
   <div class="item-list">
     <div class="scene-list" v-if="showSceneList">
-      <a class="scene-item" v-for="(scene, index) of scenes" :key="index" @click="toggleScene(scene)">
-        <span class="icon-sticky-note-o"></span>
+      <div class="scene-item" v-for="(scene, index) of scenes" :key="index" @click="toggleScene(scene)">
+        <i class="icon-sticky-note-o"></i>
         <div class="name">{{scene.name}}</div>
-      </a>
+        <i class="icon-trash-empty" @click="deleteScene(scene)"></i>
+      </div>
     </div>
     
     <draggable v-model="elementList" v-if="!showSceneList">
@@ -232,7 +233,16 @@ export default {
       display: flex;
       font-size: 1rem;
       padding: .25rem 0;
-      .icon {
+      color: #666;
+      padding: .2rem .5rem;
+      &:hover {
+        background-color: #9ec8ee;
+        color: #fff;
+      }
+      .name {
+        flex: 1;
+      }
+      .i {
         width: 32px;
       }
     }
