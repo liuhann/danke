@@ -26,6 +26,7 @@
       :current-scene="currentScene"
       @add-scene="addNewScene"
       @choose="chooseElement"
+      @go-scene-list="goToSceneList"
       @choose-scene="chooseScene"
       @ordered="resetOrder"></list-config>
     <image-cropper ref="cropper"></image-cropper>
@@ -107,7 +108,6 @@ export default {
   },
   methods: {
     addNewScene () {
-      debugger
       const scene = {
         name: '画面 ' + (this.scenes.length + 1),
         elements: [],
@@ -161,8 +161,12 @@ export default {
           break
       }
     },
-    chooseScene () {
-      
+    chooseScene (scene) {
+      this.chooseElement(null)
+      this.currentScene = scene
+    },
+    goToSceneList () {
+      this.chooseElement(null)
     }
   }
 }

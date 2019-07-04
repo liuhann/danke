@@ -18,7 +18,6 @@
         <i class="icon-trash-empty" @click="deleteScene(scene)"></i>
       </div>
     </div>
-    
     <draggable v-model="elementList" v-if="!showSceneList">
       <a class="element-item" v-for="(element, index) of elementList" :key="index" @click="toggleElement(element)">
         <div v-if="element.type === TypeEnum.IMAGE" class="image" :style="'background-image: url(' + element.url + ')'"></div>
@@ -89,8 +88,8 @@ export default {
     }
   },
   watch: {
-    'elements': function () {
-      this.elementList = this.elements
+    'currentScene': function () {
+      this.elementList = this.currentScene.elements
     },
     'elementList': function () {
       this.$emit('ordered', this.elementList)
@@ -117,6 +116,7 @@ export default {
     },
     returnSceneList () {
       this.showSceneList = true
+      this.$emit('go-scene-list')
     },
     toggleElement (element) {
       this.$emit('choose', element)
@@ -213,12 +213,14 @@ export default {
   .head {
     color: #999;
     font-weight: bold;
-    margin: 0 .5em;
+    margin: .5em;
     border-bottom: 1px solid #eee;
     display: flex;
-    padding: .2rem;
+    font-size: .9rem;
+    line-height: 2rem;
     i {
       cursor: pointer;
+      font-size: 1.2rem;
     }
     span {
       flex: 1;
@@ -228,7 +230,7 @@ export default {
     font-size: 1rem;
   }
   .scene-list {
-    font-size: 1rem;
+    font-size: .9rem;
     .scene-item {
       display: flex;
       font-size: 1rem;
@@ -242,8 +244,8 @@ export default {
       .name {
         flex: 1;
       }
-      .i {
-        width: 32px;
+      i {
+        padding: 0 .3rem;
       }
     }
   }
