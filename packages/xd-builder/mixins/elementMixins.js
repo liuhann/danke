@@ -65,7 +65,7 @@ export default {
       clonedElement.size.height = '30vw'
       clonedElement.style = getElementStyle(clonedElement, this.device)
       this.inc++
-      this.elements.push(clonedElement)
+      this.currentScene.elements.push(clonedElement)
       this.chooseElement(clonedElement)
     },
     insertText () {
@@ -77,7 +77,7 @@ export default {
       clonedElement.size.height = '30px'
       clonedElement.style = getElementStyle(clonedElement, this.device)
       this.inc++
-      this.elements.push(clonedElement)
+      this.currentScene.elements.push(clonedElement)
       this.chooseElement(clonedElement)
     },
     insertImage (croppedList, cropScreenSize) {
@@ -98,8 +98,7 @@ export default {
         clonedElement.url = URL.createObjectURL(blob)
         const style = getElementStyle(clonedElement, this.device)
         clonedElement.style = style
-        this.elements.push(clonedElement)
-        console.log(clonedElement)
+        this.currentScene.elements.push(clonedElement)
         elements.push(clonedElement)
         blob.filename = this.croppingFileName
         this.resources[clonedElement.url] = blob

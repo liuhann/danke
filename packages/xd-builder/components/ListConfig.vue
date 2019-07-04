@@ -1,10 +1,24 @@
 <template>
-<nav class="element-list-config">
-  <p class="heading">
-    元素列表
+<nav id="list-config">
+  <p class="head" v-if="showSceneList">
+    <span>画面列表</span>
+    <i class="icon-plus-1" @click="addScene"></i>
   </p>
+  <p class="head" v-if="!showSceneList">
+    <i class="icon-angle-left" @click="returnSceneList"></i>
+    <span>
+      {{currentScene.name}}
+    </span>
+  </div>
   <div class="item-list">
-    <draggable v-model="elementList">
+    <div class="scene-list" v-if="showSceneList">
+      <a class="scene-item" v-for="(scene, index) of scenes" :key="index" @click="toggleScene(scene)">
+        <span class="icon-sticky-note-o"></span>
+        <div class="name">{{scene.name}}</div>
+      </a>
+    </div>
+    
+    <draggable v-model="elementList" v-if="!showSceneList">
       <a class="element-item" v-for="(element, index) of elementList" :key="index" @click="toggleElement(element)">
         <div v-if="element.type === TypeEnum.IMAGE" class="image" :style="'background-image: url(' + element.url + ')'"></div>
         <div v-if="element.type === TypeEnum.SHAPE" class="shape" :style="[{
@@ -42,17 +56,20 @@ import { getElementStyle } from '../../danke-core/utils/styles'
 import draggable from 'vuedraggable'
 
 export default {
-  name: 'ElementListConfig',
+  name: 'ListConfig',
   components: { draggable },
   props: {
     trigger: {
       type: String
     },
-    elements: {
-      type: Array
-    },
-    scene: {
+    currentScene: {
       type: Object
+    },
+    currentElement: {
+      type: Object
+    },
+    scenes: {
+      type: Array
     },
     device: {
       type: Object
@@ -60,7 +77,8 @@ export default {
   },
   data () {
     return {
-      elementList: this.elements,
+      showSceneList: false,
+      elementList: this.currentScene.elements || [],
       TypeEnum,
       iconSet: {
         [TypeEnum.SHAPE]: 'icon-popup',
@@ -81,7 +99,6 @@ export default {
     hasSelected () {
       return this.selectedElements.length
     },
-
     maxInDuration () {
       return getMaxDuration(this.elements, 'in') || 1
     },
@@ -94,8 +111,18 @@ export default {
   created () {
   },
   methods: {
+    addScene () {
+      this.$emit('add-scene')
+    },
+    returnSceneList () {
+      this.showSceneList = true
+    },
     toggleElement (element) {
       this.$emit('choose', element)
+    },
+    toggleScene (scene) {
+      this.showSceneList = false
+      this.$emit('choose-scene', scene)
     },
     toggleElementVisible (element) {
       this.$set(element, 'visible', !element.visible)
@@ -172,15 +199,43 @@ export default {
 </script>
 
 <style lang="scss">
-.element-list-config {
+#list-config {
+  position: absolute;
+  left: 3.2em;
+  width: 280px;
+  bottom: 0;
+  z-index: 11;
+  top: 2.5em;
+  background-color: #fff;
   display: flex;
   flex-direction: column;
-  .heading {
+  .head {
     color: #999;
     font-weight: bold;
     margin: 0 .5em;
-    padding: .75em 0;
     border-bottom: 1px solid #eee;
+    display: flex;
+    padding: .2rem;
+    i {
+      cursor: pointer;
+    }
+    span {
+      flex: 1;
+    }
+  }
+  .return-scene {
+    font-size: 1rem;
+  }
+  .scene-list {
+    font-size: 1rem;
+    .scene-item {
+      display: flex;
+      font-size: 1rem;
+      padding: .25rem 0;
+      .icon {
+        width: 32px;
+      }
+    }
   }
   .item-list {
     flex: 1;

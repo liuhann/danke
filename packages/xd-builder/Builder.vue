@@ -4,8 +4,8 @@
     <left-menubar></left-menubar>
     <div class="scene-container" ref="container">
       <div class="device-drag" ref="deviceDrag"></div>
-      <div class="device" ref="device" :style="deviceStyle" @click.self="sceneClick">
-        <div v-for="element of elements" :key="element.id" :id="'element-' + element.id"
+      <div class="device" v-if="currentScene" ref="device" :style="deviceStyle" @click.self="sceneClick">
+        <div v-for="element of currentScene.elements" :key="element.id" :id="'element-' + element.id"
              class="element" :class="[element.visible?'':'hidden']" :style="element.style"
              @click="chooseElement(element)">
           <img v-if="element.type === TypeEnum.IMAGE" :src="element.url">
@@ -17,18 +17,17 @@
         </div>
       </div>
     </div>
-    <nav class="panel element-prop-config is-small" v-if="currentElement">
-      <p class="panel-heading">
-        元素配置
-      </p>
-      <div class="panel-block">
-        <prop-config :element="currentElement"></prop-config>
-      </div>
-    </nav>
+    <prop-config :element="currentElement" v-if="currentElement"></prop-config>
     <transition name="slide-left">
       <left-toggle-menu v-if="showLeftToggleMenu" @menu-clicked="showLeftToggleMenu = false" @command="executeCommand"></left-toggle-menu>
     </transition>
-    <element-list-config v-show="showElementsLayer" :elements="elements" @choose="chooseElement" @ordered="resetOrder"></element-list-config>
+    <list-config v-if="currentScene" v-show="showElementsLayer"
+      :scenes="scenes"
+      :current-scene="currentScene"
+      @add-scene="addNewScene"
+      @choose="chooseElement"
+      @choose-scene="chooseScene"
+      @ordered="resetOrder"></list-config>
     <image-cropper ref="cropper"></image-cropper>
   </div>
 </template>
@@ -41,14 +40,14 @@ import { intereactWith } from './utils/interact'
 import { TypeEnum } from '../danke-core/elements/index'
 import ImageCropper from './components/ImageCropper'
 import LeftToggleMenu from './components/LeftToggleMenu'
-import Toolbar from './components/Toolbar'
+import Toolbar from './components/Toolbar.vue'
 import LeftMenubar from './components/LeftMenubar'
-import PropConfig from './components/PropConfig'
-import ElementListConfig from './components/ElementListConfig'
+import PropConfig from './components/PropConfig.vue'
+import ListConfig from './components/ListConfig.vue'
 import { renderSceneStage } from '../danke-core/utils/styles'
 export default {
   name: 'Builder',
-  components: { ElementListConfig, PropConfig, ImageCropper, LeftToggleMenu, Toolbar, LeftMenubar },
+  components: { ListConfig, PropConfig, ImageCropper, LeftToggleMenu, Toolbar, LeftMenubar },
   mixins: [ elementMixin, saveShareMixin ],
   props: {
     ratio: {
@@ -58,13 +57,11 @@ export default {
   },
   data () {
     return {
-      sceneName: '我的作品-1',
       scenes: [],
+      currentScene: {},
       resources: {},
-      sceneId: null,
-      TypeEnum,
-      elements: [],
       currentElement: null,
+      TypeEnum,
       deviceOrigin: {
         width: 360,
         height: 640
@@ -76,7 +73,6 @@ export default {
   },
   provide () {
     return {
-      sceneName: this.sceneName,
       showLeftToggleMenu: this.showLeftToggleMenu,
       showElementsLayer: this.showElementsLayer,
       elements: this.elements,
@@ -102,11 +98,25 @@ export default {
       }
     }
   },
+  created () {
+    this.addNewScene()
+  },
   mounted () {
     this.zoomCenter()
     intereactWith(this.$refs.deviceDrag, this.$refs.device)
   },
   methods: {
+    addNewScene () {
+      debugger
+      const scene = {
+        name: '画面 ' + (this.scenes.length + 1),
+        elements: [],
+        styles: {}
+      }
+      this.scenes.push(scene)
+      this.currentScene = scene
+    },
+
     zoomIn () {
       this.zoom = Math.floor((this.zoom - 0.1) * 10) / 10
       this.reflow()
@@ -150,6 +160,9 @@ export default {
         default:
           break
       }
+    },
+    chooseScene () {
+      
     }
   }
 }
@@ -169,21 +182,6 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
   overflow: hidden;
   background-color: #f5f5f4;
 
-  .element-prop-config, .element-list-config {
-    position: absolute;
-    z-index: 11;
-    top: 2.5em;
-    background-color: #fff;
-    width: 320px;
-  }
-  .element-prop-config {
-    right: 0;
-  }
-  .element-list-config {
-    left: 3.2em;
-    width: 280px;
-    bottom: 0;
-  }
   .scene-container {
     position: absolute;
     left: 0;
@@ -200,7 +198,6 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
       right: 0;
       z-index: 1;
     }
-
     .device {
       touch-action: none;
       position: absolute;

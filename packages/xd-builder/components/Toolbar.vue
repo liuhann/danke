@@ -4,16 +4,6 @@
     <a class="button is-white icon-menu" @click="$parent.showLeftToggleMenu = true"></a>
   </div>
   <div>
-    <div class="tags has-addons is-centered">
-      <span class="tag is-light">
-        {{isEditName? '' : $parent.sceneName}}
-        <input v-if="isEditName" v-model="$parent.sceneName"/>
-      </span>
-      <span v-if="!isEditName" class="tag is-info icon-edit is-link" @click="editSceneName"></span>
-      <span v-if="isEditName" class="tag is-info icon-check-1 is-link" @click="isEditName = false"></span>
-    </div>
-  </div>
-  <div>
     <a class="button is-white" @click="zoomIn">
       <i class="icon-minus-1"></i>
     </a>
@@ -41,11 +31,8 @@ export default {
       isEditName: false
     }
   },
-  inject: ['zoomIn', 'zoomOut', 'runPreview', 'zoom', 'sceneName'],
+  inject: ['zoomIn', 'zoomOut', 'runPreview', 'zoom'],
   methods: {
-    editSceneName () {
-      this.isEditName = true
-    }
   }
 }
 </script>
