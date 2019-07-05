@@ -9,17 +9,17 @@
     <span>
       {{currentScene.name}}
     </span>
-  </div>
+  </p>
   <div class="item-list">
     <div class="scene-list" v-if="showSceneList">
-      <div class="scene-item" v-for="(scene, index) of scenes" :key="index" @click="toggleScene(scene)">
+      <div class="scene-item list-item" v-for="(scene, index) of scenes" :class="[currentScene===scene?'current': '']" :key="index">
         <i class="icon-sticky-note-o"></i>
-        <div class="name">{{scene.name}}</div>
+        <div class="list-content" @click="toggleScene(scene)">{{scene.name}}</div>
         <i class="icon-trash-empty" @click="deleteScene(scene)"></i>
       </div>
     </div>
     <draggable v-model="elementList" v-if="!showSceneList">
-      <a class="element-item" v-for="(element, index) of elementList" :key="index" @click="toggleElement(element)">
+      <div class="element-item list-item" v-for="(element, index) of elementList" :class="[currentElement===element?'current': '']" :key="index">
         <div v-if="element.type === TypeEnum.IMAGE" class="image" :style="'background-image: url(' + element.url + ')'"></div>
         <div v-if="element.type === TypeEnum.SHAPE" class="shape" :style="[{
             backgroundColor: element.background.colors[0] || '#ccc',
@@ -30,7 +30,7 @@
         <div v-if="element.type === TypeEnum.TEXT" class="text">
           <i class="icon-sort-alphabet"></i>
         </div>
-        <div class="name element-content">{{element.name}}</div>
+        <div class="name list-content" @click="toggleElement(element)">{{element.name}}</div>
         <!-- <div class="element-content animations">
           <div class="element-animation" v-if="element.animation.in" :style="[
               element.animation.in.name ? {
@@ -41,7 +41,8 @@
             }: {}]"></div>
         </div> -->
         <i :class="element.visible? 'icon-eye': 'icon-eye-off'" @click="toggleElementVisible(element)"></i>
-      </a>
+        <i class="icon-trash-empty" @click="deleteElement(scene)"></i>
+      </div>
     </draggable>
   </div>
 </nav>
@@ -185,6 +186,43 @@ export default {
       })
     },
 
+    deleteElement (element) {
+      MessageBox.confirm('确认删除元素，是否继续？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        
+      })
+    },
+
+    deleteScene (scene) {
+      MessageBox.confirm('删除场景后不可恢复，是否确认？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        for (let i = 0; i < this.scenes.length; i++ ) {
+          if (this.scenes[i].id === scene.id) {
+            this.scenes.splice(i, 1)
+            if (this.currentScene.id === scene.id) {
+              if (this.scenes.length === 0) {
+                this.$emit('choose-scene', null)
+              } else {
+                if (i > 0) {
+                  this.$emit('choose-scene', this.scenes[i - 1])
+                } else {
+                  this.$emit('choose-scene', this.scenes[i + 1])
+                }
+              }
+            }
+            break
+          }
+        }
+        // this.$emit('delete-scene', scene)
+      })
+    },
+
     copyAll () {
       for (let element of this.selectedElements) {
         const clonedElement = clone(element)
@@ -229,57 +267,35 @@ export default {
   .return-scene {
     font-size: 1rem;
   }
-  .scene-list {
-    font-size: .9rem;
-    .scene-item {
-      display: flex;
-      font-size: 1rem;
-      padding: .25rem 0;
-      color: #666;
-      padding: .2rem .5rem;
-      &:hover {
-        background-color: #9ec8ee;
-        color: #fff;
-      }
-      .name {
-        flex: 1;
-      }
-      i {
-        padding: 0 .3rem;
-      }
-    }
-  }
-  .item-list {
-    flex: 1;
-    overflow-y: auto;
-    .element-item {
-      padding: 5px;
-      height: 31px;
-      box-sizing: border-box;
-      display: flex;
-    }
-  }
-  .element-content {
-    height: 100%;
-    margin: 0 5px;
-    flex: 1;
-    .element-animation {
-      background-color: #9ec8ee;
-      height: 100%;
-    }
-  }
-  .element-item {
+  .list-item {
+    display: flex;
+    cursor: pointer;
     color: #666;
+    padding: .3rem .5rem;
+    font-size: .8rem;
+    border-radius: 0;
+    &.current {
+      background: #f2f2f2;
+    }
+    &:hover {
+       background: #f1f1f1;
+    }
+    .list-content {
+      flex: 1;
+    }
+    i {
+      padding: 0 .3rem;
+    }
   }
   .image {
     margin-right: 5px;
-    width: 20px;
-    height: 20px;
+    width: 16x;
+    height: 16px;
     background-size: cover;
   }
   .shape {
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
     margin-right: 5px;
   }
   .multiple-operations {

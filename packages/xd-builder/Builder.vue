@@ -4,9 +4,9 @@
     <left-menubar></left-menubar>
     <div class="scene-container" ref="container">
       <div class="device-drag" ref="deviceDrag"></div>
-      <div class="device" v-if="currentScene" ref="device" :style="deviceStyle" @click.self="sceneClick">
-        <div v-for="element of currentScene.elements" :key="element.id" :id="'element-' + element.id"
-             class="element" :class="[element.visible?'':'hidden']" :style="element.style"
+      <div class="device" v-if="currentScene" ref="device" :style="currentScene.style" @click.self="sceneClick">
+        <div v-for="(element, index) of currentScene.elements" :key="element.id" :id="'element-' + element.id"
+             class="element" :class="[element.visible?'':'hidden']" :style="element.style + ';' + 'z-index:' + index + ';'"
              @click="chooseElement(element)">
           <img v-if="element.type === TypeEnum.IMAGE" :src="element.url">
           <span v-if="element.type === TypeEnum.TEXT && element!==currentElement" v-html="$options.filters.newline(element.text)"></span>
@@ -18,13 +18,16 @@
       </div>
     </div>
     <prop-config :element="currentElement" v-if="currentElement"></prop-config>
+    <scene-config :scene="currentScene" v-if="!currentElement"></scene-config>
     <transition name="slide-left">
       <left-toggle-menu v-if="showLeftToggleMenu" @menu-clicked="showLeftToggleMenu = false" @command="executeCommand"></left-toggle-menu>
     </transition>
     <list-config v-if="currentScene" v-show="showElementsLayer"
       :scenes="scenes"
+      :current-element="currentElement"
       :current-scene="currentScene"
       @add-scene="addNewScene"
+      @delete-scene="deleteScene"
       @choose="chooseElement"
       @go-scene-list="goToSceneList"
       @choose-scene="chooseScene"
@@ -45,10 +48,14 @@ import Toolbar from './components/Toolbar.vue'
 import LeftMenubar from './components/LeftMenubar'
 import PropConfig from './components/PropConfig.vue'
 import ListConfig from './components/ListConfig.vue'
-import { renderSceneStage } from '../danke-core/utils/styles'
+import SceneConfig from './components/SceneConfig.vue'
+import { renderSceneStage, getSceneStyle } from '../danke-core/utils/styles'
+import SCENE from '../danke-core/elements/scene'
+import { shortid } from '../utils/string'
+import { clone } from '../utils/object'
 export default {
   name: 'Builder',
-  components: { ListConfig, PropConfig, ImageCropper, LeftToggleMenu, Toolbar, LeftMenubar },
+  components: { ListConfig, PropConfig, ImageCropper, LeftToggleMenu, Toolbar, LeftMenubar, SceneConfig },
   mixins: [ elementMixin, saveShareMixin ],
   props: {
     ratio: {
@@ -72,12 +79,19 @@ export default {
       showElementsLayer: false
     }
   },
+  watch: {
+    'currentScene.background': {
+      deep: true,
+      handler () {
+        this.currentScene.style = getSceneStyle(this.currentScene, this.device)
+      }
+    }
+  },
   provide () {
     return {
+      scenes: this.scenes,
       showLeftToggleMenu: this.showLeftToggleMenu,
       showElementsLayer: this.showElementsLayer,
-      elements: this.elements,
-      currentElement: this.currentElement,
       zoom: this.zoom,
       // provide methods
       runPreview: this.runPreview,
@@ -108,11 +122,10 @@ export default {
   },
   methods: {
     addNewScene () {
-      const scene = {
-        name: '画面 ' + (this.scenes.length + 1),
-        elements: [],
-        styles: {}
-      }
+      const scene = clone(SCENE)
+      scene.name = '画面 ' + (this.scenes.length + 1)
+      scene.id = shortid()
+      scene.style = getSceneStyle(scene, this.device)
       this.scenes.push(scene)
       this.currentScene = scene
     },
@@ -140,8 +153,7 @@ export default {
       this.chooseElement(null)
     },
     resetOrder (elements) {
-      console.log('reordered')
-      this.elements = elements
+      this.currentScene.elements = elements
     },
     async runPreview () {
       this.zoomCenter()
@@ -160,6 +172,9 @@ export default {
         default:
           break
       }
+    },
+    deleteScene (scene) {
+      
     },
     chooseScene (scene) {
       this.chooseElement(null)
@@ -215,6 +230,9 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
           width: 100%;
           height: 100%;
           object-fit: cover;
+        }
+        &.hidden {
+          display: none;
         }
         &.current {
           outline: 2px dashed #87b1f1;

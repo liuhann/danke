@@ -4,7 +4,23 @@
     画面配置
   </p>
   <div class="panel-body">
+    <div class="field has-addons">
+      <p class="control">
+        <a class="button is-static is-small">名称</a>
+      </p>
+      <p class="control">
+        <input class="input is-small" style="width: 220px;" v-model="scene.name">
+      </p>
+    </div>
     <edit-background v-model="scene.background"></edit-background>
+    <div class="field has-addons">
+      <p class="control">
+        <a class="button is-static is-small">切换到下一个</a>
+      </p>
+      <p class="control">
+        <input class="input is-small" v-model="scene.leave">
+      </p>
+    </div>
   </div>
 </nav>
 </template>

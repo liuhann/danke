@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import SVG_COLOR from '../../svg/pipette.svg'
+import SVG_COLOR from '../../svg/paint-palette-and-brush.svg'
 import FormField from './FormField.vue'
 import ColorPickr from '../ColorPickr'
 import { backgroundSize } from '../../../danke-core/utils/css-options.js'

@@ -4,7 +4,7 @@ export default {
 }
 export const CLIPS = [{
   key: 'rect',
-  value: '方形',
+  value: '方形'
 }, {
   key: 'circle',
   value: '圆形',

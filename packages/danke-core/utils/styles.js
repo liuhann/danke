@@ -49,7 +49,7 @@ function getWorkStyle (work, device) {
   return getBackgroundStyle(work.background)
 }
 
-function getSceneStyle (scene, device) {
+function getSceneStyle (scene, device, stage) {
   const styles = []
   if (scene.background) {
     styles.push(getBackgroundStyle({
@@ -59,12 +59,13 @@ function getSceneStyle (scene, device) {
   styles.push(`width: ${device.width}px`)
   styles.push(`height: ${device.height}px`)
   if (scene.type === 'background') {
-    styles.push(`z-index: 1`)
+    styles.push(`z-index: 100`)
   } else if (scene.type === 'foreground') {
-    styles.push(`z-index: 10`)
+    styles.push(`z-index: 1000`)
   } else {
-    styles.push(`z-index: 5`)
+    styles.push(`z-index: 101`)
   }
+  
   return styles.join(';')
 }
 
