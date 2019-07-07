@@ -28,6 +28,15 @@ export default class Danke {
   play () {
     this.next()
   }
+  pause () {
+
+  }
+  resume () {
+
+  }
+  stop () {
+
+  }
 
   hasNext () {
     return this.scenes.length - 1 > this.index
@@ -37,7 +46,6 @@ export default class Danke {
    * trigger next display scenes
    */
   next () {
-    debugger
     // 游标向下
     this.index++
     // 判断播放结束
@@ -109,8 +117,8 @@ export default class Danke {
   enterScene (scene) {
     this.renderEnter(scene)
     this.sceneEnterCallback && this.sceneEnterCallback(this)
-    if (!scene.manual && scene.type === 'slide') {
-      this.pauseForLeave = pauseable.setTimeout(this.next.bind(this), scene.duration)
+    if (!scene.manual) {
+      this.pauseForLeave = pauseable.setTimeout(this.next.bind(this), scene.leave || 3000)
     }
   }
 

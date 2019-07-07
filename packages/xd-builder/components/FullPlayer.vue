@@ -1,6 +1,7 @@
 <template>
 <div class="xd-full-player">
   <player :device="device" :work="work"></player>
+  <button class="modal-close" @click="stopWork"></button>
 </div>
 </template>
 
@@ -24,6 +25,7 @@ export default {
       device: null
     }
   },
+  inject: ['stopWork'],
   created () {
     this.device = fitToContainer(this.ratio, window.innerWidth, window.innerHeight)
   }
@@ -40,6 +42,10 @@ export default {
   z-index: 20001;
   display: flex;
   justify-content: center;
-  background: rgba(0,0,0, .8);
+  background: rgba(10,10,10,.86);
+  .modal-close {
+    width: 32px;
+    height: 32px;
+  }
 }
 </style>

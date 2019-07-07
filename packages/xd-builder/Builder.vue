@@ -99,6 +99,7 @@ export default {
       zoom: this.zoom,
       // provide methods
       runPreview: this.runPreview,
+      stopWork: this.stopWork,
       runWork: this.runWork,
       zoomIn: this.zoomIn,
       zoomOut: this.zoomOut
@@ -176,6 +177,11 @@ export default {
       }
       this.playing = true
     },
+
+    async stopWork () {
+      this.playing = false
+    },
+
     executeCommand (cmd) {
       switch (cmd) {
         case 'save':
