@@ -14,7 +14,7 @@
       <i class="icon-plus-1"></i>
     </a>
     <a class="button is-white">
-      <i class="icon-right-dir" @click="runPreview"></i>
+      <i class="icon-right-dir" @click="runWork"></i>
     </a>
     <a class="button is-success is-rounded is-small button-share">发布并分享</a>
   </div>
@@ -31,7 +31,7 @@ export default {
       isEditName: false
     }
   },
-  inject: ['zoomIn', 'zoomOut', 'runPreview', 'zoom'],
+  inject: ['zoomIn', 'zoomOut', 'runWork', 'zoom'],
   methods: {
   }
 }

@@ -10,7 +10,6 @@ import VueRouter from 'vue-router'
 // import designer from '../packages/designer'
 
 import site from '../packages/site'
-import runtime from '../packages/runtime'
 import user from '../packages/user'
 import frameTool from '../packages/frames'
 import ybstory from '../packages/story'
@@ -32,7 +31,7 @@ const boot = new AsyncBoot({
   IMG_SERVER: 'http://image.danke.fun',
   mount: '#app',
   packages: [
-    site, runtime, user, frameTool, xd, ybstory
+    site, user, frameTool, xd, ybstory
   ],
   started: async (ctx, next) => {
     await next()

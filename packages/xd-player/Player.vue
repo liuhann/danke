@@ -4,8 +4,7 @@
   <div v-for="scene in work.scenes" :key="scene.id" class="scene" :style="scene.style">
     <div v-for="(element, index) in scene.elements" :key="element.id" class="element"
       @click="onElementClicked(index)"
-      :style="element.style"
-      :class="[element.animationPreview, index===currentIndex?'current':'']">
+      :style="element.style">
       <img v-if="element.type === TypeEnum.IMAGE" :src="element.url">
       <span v-if="element.type === TypeEnum.TEXT" v-html="$options.filters.newline(element.text)"></span>
     </div>
@@ -17,6 +16,7 @@
 import { getElementStyle, getSceneStyle, renderSceneStage } from '../danke-core/utils/styles'
 import { sceneTypeEnum } from '../danke-core/elements/scene'
 import { TypeEnum } from '../danke-core/elements/index'
+import DankeEngine from '../danke-core/engine'
 export default {
   name: 'Player',
   components: {
@@ -35,18 +35,21 @@ export default {
     }
   },
   watch: {},
-  computed: {},
+  computed: {
+    deviceStyle () {
+      return {
+        width: this.device.width + 'px',
+        height: this.device.height + 'px'
+      }
+    }
+  },
   created () {
 
   },
   async mounted () {
+    this.engine = new DankeEngine(this.work.scenes, this.device)
+    this.engine.play()
     await this.loadResources()
-
-    const [width, height] = this.work.screen.split(':')
-    this.device.width = this.$el.clientWidth
-    this.device.height = Math.floor(this.device.width * parseInt(height) / parseInt(width))
-    this.sceneStyle = getSceneStyle(this.scene, this.device)
-    this.renderStage()
   },
   data () {
     return {
@@ -54,12 +57,11 @@ export default {
       sceneTypeEnum,
       currentSceneIndex: -1,
       backgroundSceneIndex: -1,
-      forgroundSceneIndex: -1,
+      forgroundSceneIndex: -1
     }
   },
   methods: {
     async loadResources () {
-      
     },
     async renderNextScene () {
       let nextSceneIndex = this.currentSceneIndex + 1
@@ -77,7 +79,7 @@ export default {
           this.forgroundSceneIndex = nextSceneIndex
           this.renderSceneStage(this.forgroundSceneIndex, 'in')
         }
-        nextSceneIndex ++
+        nextSceneIndex++
       }
       if (this.work.scenes[nextSceneIndex]) {
         this.renderSceneStage(this.currentSceneIndex, 'out')
@@ -87,35 +89,7 @@ export default {
         await this.renderNextScene()
       }
     },
-    renderSceneStage (sceneIndex, stage) {
-      const scene = this.work.scenes[sceneIndex]
-      if (scene) {
-        this.work.scenes[sceneIndex].style = getSceneStyle(this.work.scenes[sceneIndex], this.device, stage)
-        for (let element of this.scene.elements) {
-          if (element.type === TypeEnum.IMAGE) {
-            let w = getLength(element.size.width, this.device)
-            let h = getLength(element.size.height, this.device)
-            element.baseUrl = element.baseUrl || element.url
-            if (element.baseUrl) {
-              element.url = 'http://image.danke.fun' + element.baseUrl.replace(/http[s]*:\/\/[^/]+/g, '') + '?x-oss-process=image/format,webp/quality,Q_80/resize,m_fixed,h_' + h + ',w_' + w
-            }
-          }
-          element.style = getElementStyle(element, this.device, stage)
-        }
-      }
-    },
-
-    renderStage (stage) {
-      for (let element of this.scene.elements) {
-        let w = getLength(element.size.width, this.device)
-        let h = getLength(element.size.height, this.device)
-        element.baseUrl = element.baseUrl || element.url
-        if (element.baseUrl) {
-          element.url = 'http://image.danke.fun' + element.baseUrl.replace(/http[s]*:\/\/[^/]+/g, '') + '?x-oss-process=image/format,webp/quality,Q_80/resize,m_fixed,h_' + h + ',w_' + w
-        }
-        element.style = getElementStyle(element, this.device, stage)
-      }
-    },
+    
     renderElement (element) {
       this.$set(element, 'computedStyle', getElementStyle(element, this.device))
       // element.computedStyle = styleUtils.getElementStyle(element, this.device)
@@ -130,11 +104,8 @@ export default {
 </script>
 
 <style lang="less">
-#player-container {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
+.device {
+  position: relative;
+  overflow: hidden;
 }
 </style>

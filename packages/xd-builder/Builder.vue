@@ -33,6 +33,7 @@
       @choose-scene="chooseScene"
       @ordered="resetOrder"></list-config>
     <image-cropper ref="cropper"></image-cropper>
+    <full-player v-if="playing" :ratio="ratio" :work="work"></full-player>
   </div>
 </template>
 
@@ -49,13 +50,14 @@ import LeftMenubar from './components/LeftMenubar'
 import PropConfig from './components/PropConfig.vue'
 import ListConfig from './components/ListConfig.vue'
 import SceneConfig from './components/SceneConfig.vue'
+import FullPlayer from './components/FullPlayer.vue'
 import { renderSceneStage, getSceneStyle } from '../danke-core/utils/styles'
 import SCENE from '../danke-core/elements/scene'
 import { shortid } from '../utils/string'
 import { clone } from '../utils/object'
 export default {
   name: 'Builder',
-  components: { ListConfig, PropConfig, ImageCropper, LeftToggleMenu, Toolbar, LeftMenubar, SceneConfig },
+  components: { ListConfig, PropConfig, ImageCropper, LeftToggleMenu, Toolbar, LeftMenubar, SceneConfig, FullPlayer },
   mixins: [ elementMixin, saveShareMixin ],
   props: {
     ratio: {
@@ -76,7 +78,9 @@ export default {
       },
       zoom: 1,
       showLeftToggleMenu: false,
-      showElementsLayer: false
+      showElementsLayer: false,
+      work: null,
+      playing: false
     }
   },
   watch: {
@@ -95,6 +99,7 @@ export default {
       zoom: this.zoom,
       // provide methods
       runPreview: this.runPreview,
+      runWork: this.runWork,
       zoomIn: this.zoomIn,
       zoomOut: this.zoomOut
     }
@@ -158,11 +163,18 @@ export default {
     async runPreview () {
       this.zoomCenter()
       await renderSceneStage({
-        elements: this.elements
+        elements: this.currentScene.elements
       }, this.device, 'in')
       renderSceneStage({
-        elements: this.elements
+        elements: this.currentScene.elements
       }, this.device, 'dura')
+    },
+
+    async runWork () {
+      this.work = {
+        scenes: JSON.parse(JSON.stringify(this.scenes))
+      }
+      this.playing = true
     },
     executeCommand (cmd) {
       switch (cmd) {
@@ -174,7 +186,6 @@ export default {
       }
     },
     deleteScene (scene) {
-      
     },
     chooseScene (scene) {
       this.chooseElement(null)

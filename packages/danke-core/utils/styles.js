@@ -65,7 +65,6 @@ function getSceneStyle (scene, device, stage) {
   } else {
     styles.push(`z-index: 101`)
   }
-  
   return styles.join(';')
 }
 

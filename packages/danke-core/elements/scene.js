@@ -21,6 +21,7 @@ export default {
   background: BACKGROUND,
   elements: [],
   leave: 3000,
+  manual: false,
   animation: {
     in: ANIMATION,
     dura: ANIMATION,
