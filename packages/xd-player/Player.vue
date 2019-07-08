@@ -89,7 +89,6 @@ export default {
         await this.renderNextScene()
       }
     },
-    
     renderElement (element) {
       this.$set(element, 'computedStyle', getElementStyle(element, this.device))
       // element.computedStyle = styleUtils.getElementStyle(element, this.device)
@@ -107,5 +106,12 @@ export default {
 .device {
   position: relative;
   overflow: hidden;
+  .element {
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
 }
 </style>

@@ -4,8 +4,10 @@ import { getLenSplits } from '../../danke-core/utils/common'
 function interactElement (element, model, vm) {
   interact(element).draggable({
     onmove: event => {
-      model.position.offsetX = increaseOffsetWithPixel(model.position.offsetX, event.dx, vm.device)
-      model.position.offsetY = increaseOffsetWithPixel(model.position.offsetY, event.dy, vm.device)
+      model.position.offsetX = increaseOffsetWithPixel(model.position.offsetX,
+        model.position.horizontal !== 'right' ? event.dx : -event.dx, vm.device)
+      model.position.offsetY = increaseOffsetWithPixel(model.position.offsetY,
+        model.position.vertical !== 'bottom' ? event.dy : -event.dy, vm.device)
     },
     onend: event => {
     }

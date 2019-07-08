@@ -204,7 +204,7 @@ export default {
   left: 3.2em;
   width: 280px;
   bottom: 0;
-  z-index: 11;
+  z-index: 20001;
   top: 2.5em;
   background-color: #fff;
   display: flex;
