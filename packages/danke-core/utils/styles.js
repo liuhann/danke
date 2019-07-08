@@ -10,6 +10,7 @@ import { getShapeStyle } from '../css-model/shapeclip'
 import { createSheet, addAnimationStyle } from '../../frames/keyframe'
 import { getPositionStyle } from '../css-model/position'
 import { getSizingStyle } from '../css-model/size'
+import { sceneTypeEnum } from '../elements/scene'
 
 function revertLength (value, currentLen, device) {
   const { unit } = getLenSplits(currentLen)
@@ -58,12 +59,23 @@ function getSceneStyle (scene, device, stage) {
   }
   styles.push(`width: ${device.width}px`)
   styles.push(`height: ${device.height}px`)
-  if (scene.type === 'background') {
-    styles.push(`z-index: 100`)
-  } else if (scene.type === 'foreground') {
-    styles.push(`z-index: 1000`)
-  } else {
-    styles.push(`z-index: 101`)
+  switch (scene.type) {
+    case sceneTypeEnum.COMMON:
+      styles.push(`z-index: 100`)
+      break
+    case sceneTypeEnum.BACKGROUND:
+      styles.push(`z-index: 100`)
+      break
+    case sceneTypeEnum.FORGROUND:
+      styles.push(`z-index: 9999`)
+      break
+    default:
+      break
+  }
+  if (stage && scene.animation[stage] && scene.animation[stage].name) {
+    const animationDef = scene.animation[stage]
+    styles.push(`animation: ${animationDef.name} ${animationDef.duration}ms ${animationDef.timing} ${animationDef.delay}ms ${animationDef.iteration} normal both running`)
+    addAnimationStyle(sheet, animationDef)
   }
   return styles.join(';')
 }

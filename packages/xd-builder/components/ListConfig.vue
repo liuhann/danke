@@ -2,7 +2,7 @@
 <nav id="list-config">
   <p class="head" v-if="showSceneList">
     <span>画面列表</span>
-    <i class="icon-plus-1" @click="addScene"></i>
+    <i class="icon-plus-1" @click="addNewScene"></i>
   </p>
   <p class="head" v-if="!showSceneList">
     <i class="icon-angle-left" @click="returnSceneList"></i>
@@ -14,8 +14,8 @@
     <div class="scene-list" v-if="showSceneList">
       <div class="scene-item list-item" v-for="(scene, index) of scenes" :class="[currentScene===scene?'current': '']" :key="index">
         <i class="icon-sticky-note-o"></i>
-        <div class="list-content" @click="toggleScene(scene)">{{scene.name}}</div>
-        <i class="icon-trash-empty" @click="deleteScene(scene)"></i>
+        <div class="list-content" @click="chooseScene(scene)">{{scene.name}}</div>
+        <i class="icon-angle-right" @click="openScene(scene)"></i>
       </div>
     </div>
     <draggable v-model="elementList" v-if="!showSceneList">
@@ -30,7 +30,7 @@
         <div v-if="element.type === TypeEnum.TEXT" class="text">
           <i class="icon-sort-alphabet"></i>
         </div>
-        <div class="name list-content" @click="toggleElement(element)">{{element.name}}</div>
+        <div class="name list-content" @click="chooseElement(element)">{{element.name}}</div>
         <!-- <div class="element-content animations">
           <div class="element-animation" v-if="element.animation.in" :style="[
               element.animation.in.name ? {
@@ -41,7 +41,7 @@
             }: {}]"></div>
         </div> -->
         <i :class="element.visible? 'icon-eye': 'icon-eye-off'" @click="toggleElementVisible(element)"></i>
-        <i class="icon-trash-empty" @click="deleteElement(scene)"></i>
+        <i class="icon-trash-empty" @click="deleteElement(element)"></i>
       </div>
     </draggable>
   </div>
@@ -76,6 +76,11 @@ export default {
       type: Object
     }
   },
+  inject: [
+    'deleteElement',
+    'chooseElement',
+    'addNewScene',
+    'chooseScene'],
   data () {
     return {
       showSceneList: false,
@@ -112,19 +117,13 @@ export default {
   created () {
   },
   methods: {
-    addScene () {
-      this.$emit('add-scene')
-    },
     returnSceneList () {
       this.showSceneList = true
-      this.$emit('go-scene-list')
+      this.chooseElement(null)
     },
-    toggleElement (element) {
-      this.$emit('choose', element)
-    },
-    toggleScene (scene) {
+    openScene (scene) {
       this.showSceneList = false
-      this.$emit('choose-scene', scene)
+      this.chooseScene(scene)
     },
     toggleElementVisible (element) {
       this.$set(element, 'visible', !element.visible)
@@ -185,44 +184,6 @@ export default {
         }
       })
     },
-
-    deleteElement (element) {
-      MessageBox.confirm('确认删除元素，是否继续？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        
-      })
-    },
-
-    deleteScene (scene) {
-      MessageBox.confirm('删除场景后不可恢复，是否确认？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        for (let i = 0; i < this.scenes.length; i++ ) {
-          if (this.scenes[i].id === scene.id) {
-            this.scenes.splice(i, 1)
-            if (this.currentScene.id === scene.id) {
-              if (this.scenes.length === 0) {
-                this.$emit('choose-scene', null)
-              } else {
-                if (i > 0) {
-                  this.$emit('choose-scene', this.scenes[i - 1])
-                } else {
-                  this.$emit('choose-scene', this.scenes[i + 1])
-                }
-              }
-            }
-            break
-          }
-        }
-        // this.$emit('delete-scene', scene)
-      })
-    },
-
     copyAll () {
       for (let element of this.selectedElements) {
         const clonedElement = clone(element)

@@ -18,7 +18,7 @@
       </div>
     </div>
     <prop-config :element="currentElement" v-if="currentElement"></prop-config>
-    <scene-config :scene="currentScene" v-if="!currentElement"></scene-config>
+    <scene-config :scene="currentScene" v-if="!currentElement" @delete="deleteScene"></scene-config>
     <transition name="slide-left">
       <left-toggle-menu v-if="showLeftToggleMenu" @menu-clicked="showLeftToggleMenu = false" @command="executeCommand"></left-toggle-menu>
     </transition>
@@ -26,9 +26,6 @@
       :scenes="scenes"
       :current-element="currentElement"
       :current-scene="currentScene"
-      @add-scene="addNewScene"
-      @delete-scene="deleteScene"
-      @choose="chooseElement"
       @go-scene-list="goToSceneList"
       @choose-scene="chooseScene"
       @ordered="resetOrder"></list-config>
@@ -40,6 +37,7 @@
 <script>
 import elementMixin from './mixins/elementMixins'
 import saveShareMixin from './mixins/saveShare'
+import sceneMixin from './mixins/sceneMixins'
 import { fitToContainer } from '../danke-core/utils/common'
 import { intereactWith } from './utils/interact'
 import { TypeEnum } from '../danke-core/elements/index'
@@ -52,13 +50,10 @@ import ListConfig from './components/ListConfig.vue'
 import SceneConfig from './components/SceneConfig.vue'
 import FullPlayer from './components/FullPlayer.vue'
 import { renderSceneStage, getSceneStyle } from '../danke-core/utils/styles'
-import SCENE from '../danke-core/elements/scene'
-import { shortid } from '../utils/string'
-import { clone } from '../utils/object'
 export default {
   name: 'Builder',
   components: { ListConfig, PropConfig, ImageCropper, LeftToggleMenu, Toolbar, LeftMenubar, SceneConfig, FullPlayer },
-  mixins: [ elementMixin, saveShareMixin ],
+  mixins: [ elementMixin, saveShareMixin, sceneMixin ],
   props: {
     ratio: {
       type: String,
@@ -98,6 +93,7 @@ export default {
       showElementsLayer: this.showElementsLayer,
       zoom: this.zoom,
       // provide methods
+      deleteScene: this.deleteScene,
       runPreview: this.runPreview,
       stopWork: this.stopWork,
       runWork: this.runWork,
@@ -127,15 +123,6 @@ export default {
     intereactWith(this.$refs.deviceDrag, this.$refs.device)
   },
   methods: {
-    addNewScene () {
-      const scene = clone(SCENE)
-      scene.name = '画面 ' + (this.scenes.length + 1)
-      scene.id = shortid()
-      scene.style = getSceneStyle(scene, this.device)
-      this.scenes.push(scene)
-      this.currentScene = scene
-    },
-
     zoomIn () {
       this.zoom = Math.floor((this.zoom - 0.1) * 10) / 10
       this.reflow()
@@ -190,8 +177,6 @@ export default {
         default:
           break
       }
-    },
-    deleteScene (scene) {
     },
     chooseScene (scene) {
       this.chooseElement(null)

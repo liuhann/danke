@@ -13,8 +13,7 @@
       <a class="button is-white icon-sort-alphabet" @click="insertText"></a>
     </div>
     <div class="bottom">
-      <a class="button is-white icon-clone" @click="$parent.showElementsLayer = !$parent.showElementsLayer"></a>
-      <a class="button is-white icon-th-list" @click="$parent.showElementsLayer = !$parent.showElementsLayer"></a>
+      <a class="button is-white icon-th-list" :class="$parent.showElementsLayer? 'on': ''" @click="$parent.showElementsLayer = !$parent.showElementsLayer"></a>
     </div>
   </div>
 </template>
@@ -37,6 +36,10 @@ export default {
   .top, .bottom {
     display: flex;
     flex-direction: column;
+  }
+  .button.on {
+    color: #3273dc;
+    font-weight: bold;
   }
 }
 </style>

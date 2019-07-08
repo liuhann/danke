@@ -3,6 +3,7 @@ import { clone } from '../../utils/object'
 import { getElementStyle } from '../../danke-core/utils/styles'
 import { interactElement, destoryInteraction } from '../utils/interact'
 import { shortid } from '../../utils/string'
+import { MessageBox } from 'element-ui'
 
 export default {
   data () {
@@ -11,6 +12,7 @@ export default {
   },
   provide () {
     return {
+      chooseElement: this.chooseElement,
       insertImage: this.insertImage,
       insertShape: this.insertShape,
       insertText: this.insertText,
@@ -57,7 +59,7 @@ export default {
     insertShape (shape) {
       const clonedElement = clone(SHAPE)
       clonedElement.id = shortid()
-      clonedElement.name = shape === 'circle' ? '圆形': '矩形'
+      clonedElement.name = shape === 'circle' ? '圆形' : '矩形'
       clonedElement.shape = shape
       clonedElement.visible = true
       clonedElement.background.colors = ['#eee']
@@ -106,6 +108,24 @@ export default {
     },
     contentChange (e) {
       this.editedText = e.target.innerHTML.replace(/<br>/g, '\n')
+    },
+
+    deleteElement (element) {
+      MessageBox.confirm('确认删除元素，是否继续？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        if (this.currentElement.id === element.id) {
+          this.currentElement = null
+        }
+        for (let i = 0; i < this.currentScene.elements.length; i++) {
+          if (this.currentScene.elements[i].id === element.id) {
+            this.currentScene.elements.splice(i, 1)
+            break
+          }
+        }
+      })
     },
 
     chooseElement (element) {

@@ -31,6 +31,9 @@
       <a class="button is-small" @click="runPreview">
         场景预览
       </a>
+      <p class="control">
+        <a class="button is-danger is-small" @click="deleteScene">删除</a>
+      </p>
     </div>
   </div>
 </nav>
@@ -48,7 +51,7 @@ export default {
   components: {
     EditBackground
   },
-  inject: ['zoomIn', 'zoomOut', 'runPreview', 'zoom'],
+  inject: ['zoomIn', 'zoomOut', 'runPreview', 'zoom', 'deleteScene'],
   data () {
     return {
     }
