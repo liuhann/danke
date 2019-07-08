@@ -93,7 +93,6 @@ export default {
       showElementsLayer: this.showElementsLayer,
       zoom: this.zoom,
       // provide methods
-      runPreview: this.runPreview,
       stopWork: this.stopWork,
       runWork: this.runWork,
       zoomIn: this.zoomIn,
@@ -147,16 +146,6 @@ export default {
     resetOrder (elements) {
       this.currentScene.elements = elements
     },
-    async runPreview () {
-      this.zoomCenter()
-      await renderSceneStage({
-        elements: this.currentScene.elements
-      }, this.device, 'in')
-      renderSceneStage({
-        elements: this.currentScene.elements
-      }, this.device, 'dura')
-    },
-
     async runWork () {
       this.work = {
         scenes: JSON.parse(JSON.stringify(this.scenes))

@@ -2,12 +2,13 @@ import { MessageBox } from 'element-ui'
 import { clone } from '../../utils/object'
 import { shortid } from '../../utils/string'
 import SCENE from '../../danke-core/elements/scene'
-import { getSceneStyle } from '../../danke-core/utils/styles'
+import { getSceneStyle, renderSceneStage } from '../../danke-core/utils/styles'
 export default {
   provide () {
     return {
       addNewScene: this.addNewScene,
       chooseScene: this.chooseScene,
+      previewScene: this.previewScene,
       deleteCurrentScene: this.deleteCurrentScene
     }
   },
@@ -23,6 +24,15 @@ export default {
     chooseScene (scene) {
       this.chooseElement(null)
       this.currentScene = scene
+    },
+    async previewScene () {
+      this.zoomCenter()
+      await renderSceneStage({
+        elements: this.currentScene.elements
+      }, this.device, 'in')
+      renderSceneStage({
+        elements: this.currentScene.elements
+      }, this.device, 'dura')
     },
     deleteCurrentScene () {
       if (this.scenes.length === 1) {

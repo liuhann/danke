@@ -28,7 +28,7 @@
     </div>
     <edit-background v-model="scene.background"></edit-background>
     <div class="field has-addons">
-      <a class="button is-small" @click="runPreview">
+      <a class="button is-small" @click="previewScene">
         场景预览
       </a>
       <p class="control">
@@ -51,7 +51,7 @@ export default {
   components: {
     EditBackground
   },
-  inject: ['zoomIn', 'zoomOut', 'runPreview', 'zoom', 'deleteCurrentScene'],
+  inject: ['zoomIn', 'zoomOut', 'previewScene', 'zoom', 'deleteCurrentScene'],
   data () {
     return {
     }
