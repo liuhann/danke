@@ -16,6 +16,7 @@ export default {
       insertImage: this.insertImage,
       insertShape: this.insertShape,
       insertText: this.insertText,
+      deleteElement: this.deleteElement,
       fileChoosed: this.fileChoosed
     }
   },

@@ -18,7 +18,7 @@
       </div>
     </div>
     <prop-config :element="currentElement" v-if="currentElement"></prop-config>
-    <scene-config :scene="currentScene" v-if="!currentElement" @delete="deleteScene"></scene-config>
+    <scene-config :scene="currentScene" v-if="!currentElement"></scene-config>
     <transition name="slide-left">
       <left-toggle-menu v-if="showLeftToggleMenu" @menu-clicked="showLeftToggleMenu = false" @command="executeCommand"></left-toggle-menu>
     </transition>
@@ -93,7 +93,6 @@ export default {
       showElementsLayer: this.showElementsLayer,
       zoom: this.zoom,
       // provide methods
-      deleteScene: this.deleteScene,
       runPreview: this.runPreview,
       stopWork: this.stopWork,
       runWork: this.runWork,

@@ -32,7 +32,7 @@
         场景预览
       </a>
       <p class="control">
-        <a class="button is-danger is-small" @click="deleteScene">删除</a>
+        <a class="button is-danger is-small" @click="deleteCurrentScene">删除</a>
       </p>
     </div>
   </div>
@@ -51,7 +51,7 @@ export default {
   components: {
     EditBackground
   },
-  inject: ['zoomIn', 'zoomOut', 'runPreview', 'zoom', 'deleteScene'],
+  inject: ['zoomIn', 'zoomOut', 'runPreview', 'zoom', 'deleteCurrentScene'],
   data () {
     return {
     }
