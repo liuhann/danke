@@ -3,12 +3,18 @@ import ImageDAO from '../../common/dao/imagedao'
 import RestDAO from '../../common/dao/restdao'
 import { clone } from '../../utils/object'
 export default {
+  provide () {
+    return {
+      saveWork: this.saveWork,
+      openWorkListDialog: this.openWorkListDialog
+    }
+  },
   created () {
     this.imagedao = new ImageDAO(this.ctx)
-    this.scenedao = new RestDAO(this.ctx, 'danke/scene')
+    this.workdao = new RestDAO(this.ctx, 'danke/work')
   },
   methods: {
-    async savePage () {
+    async saveWork () {
       const loading = Loading.service({
         lock: true,
         text: '正在保存中',
@@ -17,38 +23,43 @@ export default {
       })
       // save scene preview
       await this.saveImages()
-      const scene = this.getSceneConfig()
-      if (this.sceneId) {
-        await this.scenedao.patch(this.sceneId, scene)
+      const work = this.getWorkConfig()
+      if (this.work.isNew) {
+        await this.workdao.create(work)
       } else {
-        const result = await this.scenedao.create(scene)
+        await this.workdao.patch(work.id, work)
       }
       loading.close()
       Message.success('保存完成')
     },
     async saveImages () {
       for (let url in this.resources) {
-        const result = await this.imagedao.uploadBlob(this.resources[url])
-        for (let element of this.elements) {
-          if (element.url === url) {
-            element.url = result.url.replace(/http[s]*:\/\/[^/]+/g, '')
+        const result = await this.imagedao.uploadBlob(this.resources[url], this.work.id)
+        for (let scene of this.scenes) {
+          for (let element of scene.elements) {
+            if (element.url === url) {
+              element.imgPath = result.name
+              break
+            }
           }
         }
       }
     },
-    // extract scene info
-    getSceneConfig () {
-      const elements = []
-      for (let element of this.elements) {
-        let cloned = clone(element)
-        delete cloned.style
-        elements.push(cloned)
+    // extract work info
+    getWorkConfig () {
+      const work = Object.assign({}, this.work)
+      work.scenes = clone(this.scenes)
+      for (let scene of work.scenes) {
+        for (let element of scene.elements) {
+          delete element.style
+        }
+        delete scene.style
       }
-      return {
-        name: this.sceneName,
-        screen: this.$route.params.screen,
-        elements: elements
-      }
+      work.ratio = this.ratio
+      return work
+    },
+    openWorkListDialog () {
+      this.$refs.dialogWorkList.open()
     }
   }
 }

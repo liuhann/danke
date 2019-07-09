@@ -5,8 +5,8 @@
   </p>
   <ul class="menu-list">
     <li><a>新建</a></li>
-    <li><a>打开</a></li>
-    <li><a @click="command('save')">保存</a></li>
+    <li><a @click="openWorkListDialog">打开</a></li>
+    <li><a @click="saveWork">保存</a></li>
   </ul>
   <p class="menu-label">
     发布与共享
@@ -27,10 +27,8 @@
 
 <script>
 export default {
+  inject: ['saveWork', 'openWorkListDialog'],
   methods: {
-    command (cmd) {
-      this.$emit('command', cmd)
-    }
   }
 }
 </script>

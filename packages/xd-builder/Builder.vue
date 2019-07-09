@@ -20,7 +20,7 @@
     <prop-config :element="currentElement" v-if="currentElement"></prop-config>
     <scene-config :scene="currentScene" v-if="!currentElement"></scene-config>
     <transition name="slide-left">
-      <left-toggle-menu v-if="showLeftToggleMenu" @menu-clicked="showLeftToggleMenu = false" @command="executeCommand"></left-toggle-menu>
+      <left-toggle-menu v-if="showLeftToggleMenu" @menu-clicked="showLeftToggleMenu = false"></left-toggle-menu>
     </transition>
     <list-config v-if="currentScene" v-show="showElementsLayer"
       :scenes="scenes"
@@ -30,6 +30,7 @@
       @choose-scene="chooseScene"
       @ordered="resetOrder"></list-config>
     <image-cropper ref="cropper"></image-cropper>
+    <dialog-work-list ref="dialogWorkList"></dialog-work-list>
     <full-player v-if="playing" :ratio="ratio" :work="work"></full-player>
   </div>
 </template>
@@ -42,17 +43,19 @@ import { fitToContainer } from '../danke-core/utils/common'
 import { intereactWith } from './utils/interact'
 import { TypeEnum } from '../danke-core/elements/index'
 import ImageCropper from './components/ImageCropper'
-import LeftToggleMenu from './components/LeftToggleMenu'
+import LeftToggleMenu from './components/LeftToggleMenu.vue'
 import Toolbar from './components/Toolbar.vue'
-import LeftMenubar from './components/LeftMenubar'
+import LeftMenubar from './components/LeftMenubar.vue'
 import PropConfig from './components/PropConfig.vue'
 import ListConfig from './components/ListConfig.vue'
 import SceneConfig from './components/SceneConfig.vue'
 import FullPlayer from './components/FullPlayer.vue'
+import DialogWorkList from './components/DialogWorkList.vue'
 import { renderSceneStage, getSceneStyle } from '../danke-core/utils/styles'
+import { shortid } from '../utils/string'
 export default {
   name: 'Builder',
-  components: { ListConfig, PropConfig, ImageCropper, LeftToggleMenu, Toolbar, LeftMenubar, SceneConfig, FullPlayer },
+  components: { ListConfig, PropConfig, ImageCropper, LeftToggleMenu, Toolbar, LeftMenubar, SceneConfig, FullPlayer, DialogWorkList },
   mixins: [ elementMixin, saveShareMixin, sceneMixin ],
   props: {
     ratio: {
@@ -62,6 +65,12 @@ export default {
   },
   data () {
     return {
+      work: {
+        id: '',
+        title: '',
+        categories: '',
+        desc: '',
+      },
       scenes: [],
       currentScene: {},
       resources: {},
@@ -74,16 +83,7 @@ export default {
       zoom: 1,
       showLeftToggleMenu: false,
       showElementsLayer: false,
-      work: null,
       playing: false
-    }
-  },
-  watch: {
-    'currentScene.background': {
-      deep: true,
-      handler () {
-        this.currentScene.style = getSceneStyle(this.currentScene, this.device)
-      }
     }
   },
   provide () {
@@ -114,13 +114,18 @@ export default {
     }
   },
   created () {
-    this.addNewScene()
+    this.newWork()
   },
   mounted () {
     this.zoomCenter()
     intereactWith(this.$refs.deviceDrag, this.$refs.device)
   },
   methods: {
+    newWork () {
+      this.work.id = shortid()
+      this.work.title = '我的作品'
+      this.addNewScene()
+    },
     zoomIn () {
       this.zoom = Math.floor((this.zoom - 0.1) * 10) / 10
       this.reflow()
@@ -155,16 +160,6 @@ export default {
 
     async stopWork () {
       this.playing = false
-    },
-
-    executeCommand (cmd) {
-      switch (cmd) {
-        case 'save':
-          this.savePage()
-          break
-        default:
-          break
-      }
     },
     chooseScene (scene) {
       this.chooseElement(null)

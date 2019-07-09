@@ -12,6 +12,14 @@ export default {
       deleteCurrentScene: this.deleteCurrentScene
     }
   },
+  watch: {
+    'currentScene.background': {
+      deep: true,
+      handler () {
+        this.currentScene.style = getSceneStyle(this.currentScene, this.device)
+      }
+    }
+  },
   methods: {
     addNewScene () {
       const scene = clone(SCENE)
