@@ -140,7 +140,7 @@ export default {
 
 <style lang="scss">
 .frame-preview {
-  height: 650px;
+  min-height: 400px;
   display: flex;
   justify-content: center;
   align-items: center;

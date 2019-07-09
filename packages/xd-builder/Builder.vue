@@ -208,7 +208,6 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
       left: 20px;
       background-color: #fff;
       z-index: 10;
-      transition: transform .2s linear;
       .element {
         position: absolute;
         img {

@@ -12,15 +12,16 @@
     发布与共享
   </p>
   <ul class="menu-list">
-    <li><a>Team Settings</a></li>
+    <li><a>导出</a></li>
+    <li><a>共享...</a></li>
   </ul>
   <p class="menu-label">
-    Transactions
+    用户
   </p>
   <ul class="menu-list">
-    <li><a>Payments</a></li>
-    <li><a>Transfers</a></li>
-    <li><a>Balance</a></li>
+    <li><a>个人信息</a></li>
+    <li><a>我的分享</a></li>
+    <li><a>退出</a></li>
   </ul>
 </aside>
 </template>
