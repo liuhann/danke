@@ -85,7 +85,7 @@ export default {
 <style lang="scss">
 #element-prop-config {
   position: absolute;
-  z-index: 11;
+  z-index: 1002;
   top: 2.5em;
   background-color: #fff;
   width: 320px;

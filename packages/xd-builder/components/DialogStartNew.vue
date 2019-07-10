@@ -1,21 +1,9 @@
 <template>
 <el-dialog
   width="800px"
-  title="打开已有作品"
+  title="开始"
   :visible.sync="dialogVisible">
-  <div class="work-list-container">
-    <div class="drafts">
-      <div >草稿</div>
-      <ul class='work-list'>
-        <li class="work-item" :class="choosedWork.id===work.id?'current': ''" v-for="work in works" :key="work.id" @click="chooseWork(work)">
-          <div class="work-title">{{work.title}}</div>
-          <div class="updated">{{formateTime(work.updated)}}</div>
-          <div class="operation"><i class="icon-trash-empty" @click="deleteWorkDraft(work)"></i></div>
-        </li>
-      </ul>
-    </div>
-    <div class="publishs">
-    </div>
+  <div class="start-new-container">
   </div>
   <span slot="footer" class="dialog-footer">
     <a class="button is-small" @click="dialogVisible = false">

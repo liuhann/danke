@@ -68,7 +68,7 @@ export default {
 <style lang="scss">
 #scene-config {
   position: absolute;
-  z-index: 20001;
+  z-index: 1002;
   top: 2.5em;
   background-color: #fff;
   width: 320px;

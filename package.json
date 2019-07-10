@@ -17,6 +17,7 @@
     "bulma": "^0.7.5",
     "bulmaswatch": "^0.7.2",
     "cropperjs": "^1.5.1",
+    "dayjs": "^1.8.15",
     "draggabilly": "^2.2.0",
     "element-ui": "^2.10.0",
     "events": "^3.0.0",
