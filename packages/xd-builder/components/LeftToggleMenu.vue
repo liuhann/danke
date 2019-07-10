@@ -28,7 +28,7 @@
 
 <script>
 export default {
-  inject: ['saveWork', 'openWorkListDialog'],
+  inject: ['saveWork', 'openWorkListDialog', 'hideLeftToggleMenu'],
   methods: {
   }
 }

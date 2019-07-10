@@ -3,6 +3,7 @@ import ImageDAO from '../../common/dao/imagedao'
 import RestDAO from '../../common/dao/restdao'
 import { clone } from '../../utils/object'
 export default {
+  inject: ['hideLeftToggleMenu'],
   provide () {
     return {
       saveWork: this.saveWork,
@@ -24,13 +25,28 @@ export default {
       // save scene preview
       await this.saveImages()
       const work = this.getWorkConfig()
+      work.isDraft = true
       if (this.work.isNew) {
+        delete this.work.isNew
         await this.workdao.create(work)
       } else {
-        await this.workdao.patch(work.id, work)
+        await this.workdao.patch(work._id, work)
       }
       loading.close()
       Message.success('保存完成')
+    },
+    openWork (o) {
+      const work = clone(o)
+      this.reflow(work.scenes)
+      this.scenes = work.scenes
+      this.work.id = work.id
+      this.work._id = work._id
+      this.work.isNew = false
+      this.work.title = work.title
+      this.work.categories = work.categories
+      this.work.desc = work.desc
+      this.currentScene = this.scenes[0]
+      this.currentElement = null
     },
     async saveImages () {
       for (let url in this.resources) {
@@ -59,6 +75,7 @@ export default {
       return work
     },
     openWorkListDialog () {
+      this.hideLeftToggleMenu()
       this.$refs.dialogWorkList.open()
     }
   }

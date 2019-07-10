@@ -1,6 +1,6 @@
 import { IMAGE, SHAPE, TEXT, TypeEnum } from '../../danke-core/elements/index'
 import { clone } from '../../utils/object'
-import { getElementStyle } from '../../danke-core/utils/styles'
+import { getElementStyle, getSceneStyle } from '../../danke-core/utils/styles'
 import { interactElement, destoryInteraction } from '../utils/interact'
 import { shortid } from '../../utils/string'
 import { MessageBox } from 'element-ui'
@@ -148,9 +148,12 @@ export default {
         })
       }
     },
-    reflow () {
-      for (let element of this.elements) {
-        element.style = getElementStyle(element, this.device)
+    reflow (scenes) {
+      for (let scene of scenes) {
+        for (let element of scene.elements) {
+          element.style = getElementStyle(element, this.device)
+        }
+        scene.style = getSceneStyle(scene, this.device)
       }
     }
   }

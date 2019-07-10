@@ -30,7 +30,7 @@
       @choose-scene="chooseScene"
       @ordered="resetOrder"></list-config>
     <image-cropper ref="cropper"></image-cropper>
-    <dialog-work-list ref="dialogWorkList"></dialog-work-list>
+    <dialog-work-list ref="dialogWorkList" @choose="openWork"></dialog-work-list>
     <full-player v-if="playing" :ratio="ratio" :work="work"></full-player>
   </div>
 </template>
@@ -93,6 +93,7 @@ export default {
       showElementsLayer: this.showElementsLayer,
       zoom: this.zoom,
       // provide methods
+      hideLeftToggleMenu: this.hideLeftToggleMenu,
       stopWork: this.stopWork,
       runWork: this.runWork,
       zoomIn: this.zoomIn,
@@ -124,8 +125,13 @@ export default {
     newWork () {
       this.work.id = shortid()
       this.work.title = '我的作品'
+      this.work.isNew = true
       this.addNewScene()
     },
+    hideLeftToggleMenu () {
+      this.showLeftToggleMenu = false
+    },
+    
     zoomIn () {
       this.zoom = Math.floor((this.zoom - 0.1) * 10) / 10
       this.reflow()
