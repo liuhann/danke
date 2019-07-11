@@ -18,7 +18,7 @@
       </div>
     </div>
     <prop-config :element="currentElement" v-if="currentElement"></prop-config>
-    <scene-config :scene="currentScene" v-if="!currentElement"></scene-config>
+    <scene-config :scene="currentScene" v-if="!currentElement && currentScene"></scene-config>
     <transition name="slide-left">
       <left-toggle-menu v-if="showLeftToggleMenu" @menu-clicked="showLeftToggleMenu = false"></left-toggle-menu>
     </transition>

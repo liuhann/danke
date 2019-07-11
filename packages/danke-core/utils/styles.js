@@ -1,6 +1,6 @@
 import { getLenSplits, getLength, wait } from './common'
 
-import { getBoxShadowStyle } from '../css-model/boxshadow'
+import { getBoxShadowStyle } from '../css-model/shadow'
 import { getFontStyle } from '../css-model/font'
 import { getBackgroundStyle } from '../css-model/background'
 import { getBorderStyle } from '../css-model/border'

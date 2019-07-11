@@ -33,7 +33,7 @@
 import SVG_BORDER from '../../svg/broken-lines-square-border.svg'
 import SVG_CORNER from '../../svg/corner.svg'
 import FormField from './FormField'
-import EditLen from './EditLen'
+import EditLen from './EditLen.vue'
 import ColorPickr from '../ColorPickr'
 import { LINE_STYLES } from '../../../danke-core/css-model/border'
 const allSides = {

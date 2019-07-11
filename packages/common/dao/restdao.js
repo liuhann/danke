@@ -29,12 +29,6 @@ export default class RestDAO {
     })
   }
 
-  async update (id, json) {
-    await this.ctx.ky.put(`${this.path}/${id}`, {
-      json
-    })
-  }
-
   async regex (prop, value, limit) {
     const result = await this.ctx.get(`${this.path}/regex/${prop}/${value}?limit=${limit || 1000}`, {}).json()
     return result

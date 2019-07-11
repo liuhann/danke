@@ -3,7 +3,7 @@ import BACKGROUND from '../css-model/background'
 import SIZE from '../css-model/size'
 import ANIMATION from '../css-model/animation'
 import BORDER from '../css-model/border'
-
+import SHADOW from '../css-model/shadow'
 const shape = {
   version: '1.2',
   type: 3,
@@ -13,7 +13,7 @@ const shape = {
   size: SIZE,
   background: BACKGROUND,
   border: BORDER,
-  shadow: '',
+  shadow: SHADOW,
   animation: {
     in: ANIMATION,
     dura: ANIMATION,

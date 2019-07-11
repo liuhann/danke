@@ -3,6 +3,7 @@ import BORDER from '../css-model/border'
 import CLIPPATH from '../css-model/clippath'
 import POSITION from '../css-model/position'
 import SIZE from '../css-model/size'
+import SHADOW from '../css-model/shadow'
 import ANIMATION from '../css-model/animation'
 const image = {
   version: '1.2',
@@ -15,7 +16,7 @@ const image = {
   border: BORDER,
   clip: CLIPPATH,
   size: SIZE,
-  shadow: '',
+  shadow: SHADOW,
   animation: {
     in: ANIMATION,
     dura: ANIMATION,

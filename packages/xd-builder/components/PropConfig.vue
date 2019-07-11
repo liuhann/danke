@@ -9,12 +9,13 @@
     <edit-position v-model="element.position"></edit-position>
     <edit-size v-model="element.size"></edit-size>
     <edit-border v-model="element.border" v-if="element.border"></edit-border>
+    <edit-shadow v-model="element.shadow" v-if="element.shadow"></edit-shadow>
     <edit-clip-path v-model="element.clip" v-if="element.clip"></edit-clip-path>
     <hr/>
     <edit-animation :animation="element.animation.in" animation-type="in" :icon="SVG_IN"></edit-animation>
     <edit-animation :animation="element.animation.dura" animation-type="dura" :icon="SVG_DURA"></edit-animation>
     <edit-animation :animation="element.animation.out" animation-type="out" :icon="SVG_OUT"></edit-animation>
-          <!--<form-field label="背景大小" type="select" v-css-model="element.background.size" :options="backgroundSizeOptions"></form-field>-->
+    <!--<form-field label="背景大小" type="select" v-css-model="element.background.size" :options="backgroundSizeOptions"></form-field>-->
   </div>
 </nav>
 </template>
@@ -27,6 +28,7 @@ import EditBorder from './props/EditBorder.vue'
 import EditClipPath from './props/EditClipPath.vue'
 import EditSize from './props/EditSize.vue'
 import EditTransform from './props/EditTransform.vue'
+import EditShadow from './props/EditShadow.vue'
 import EditAnimation from './props/EditAnimation.vue'
 import { TypeEnum } from '../../danke-core/css-model/element'
 import { Shapes } from '../../danke-core/css-model/shapeclip'
@@ -52,6 +54,7 @@ export default {
     EditBorder,
     EditBackground,
     EditPosition,
+    EditShadow,
     EditFont
   },
   data () {
