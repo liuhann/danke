@@ -2,6 +2,7 @@ import { Loading, Message } from 'element-ui'
 import ImageDAO from '../../common/dao/imagedao'
 import RestDAO from '../../common/dao/restdao'
 import { clone } from '../../utils/object'
+
 export default {
   inject: ['hideLeftToggleMenu'],
   provide () {
@@ -28,7 +29,8 @@ export default {
       work.isDraft = true
       if (this.work.isNew) {
         delete this.work.isNew
-        await this.workdao.create(work)
+        const result = await this.workdao.create(work)
+        this.work._id = result.object._id
       } else {
         await this.workdao.patch(work._id, work)
       }
@@ -59,6 +61,7 @@ export default {
             }
           }
         }
+        delete this.resources[url]
       }
     },
     // extract work info
@@ -68,6 +71,7 @@ export default {
       for (let scene of work.scenes) {
         for (let element of scene.elements) {
           delete element.style
+          delete element.url
         }
         delete scene.style
       }

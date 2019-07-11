@@ -9,6 +9,14 @@ export default {
   direction: 'normal',
   fillMode: 'both'
 }
+export function trim (element) {
+  for (let key in element.animation) {
+    const ani = element.animation[key]
+    if (ani.name === '' || ani.duration === 0) {
+      delete element.animation[key]
+    }
+  }
+}
 export function getMaxDuration (elements, type) {
   let max = 0
   for (let element of elements) {

@@ -23,4 +23,13 @@ const image = {
     out: ANIMATION
   }
 }
+
+export function resume (image) {
+  if (!image.background) {
+    image.background = JSON.parse(JSON.stringify(BACKGROUND))
+  }
+  if (!image.border) {
+    image.border = JSON.parse(JSON.stringify(BORDER))
+  }
+}
 export default image

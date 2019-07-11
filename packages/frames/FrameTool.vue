@@ -29,7 +29,7 @@
                 <div class="buttons has-addons is-right">
                   <a class="button is-small" @click="save">
                     <span class="icon">
-                      <i class="icon-ok"></i>
+                      <i class="icon-check-1"></i>
                     </span>
                   </a>
                   <a class="button is-small" @click="viewCode">
@@ -39,7 +39,7 @@
                   </a>
                   <a class="button is-small" @click="play">
                     <span class="icon">
-                      <i class=" icon-cw"></i>
+                      <i class="icon-right-dir"></i>
                     </span>
                   </a>
                 </div>
@@ -68,7 +68,7 @@
 </template>
 
 <script>
-import FramesConfig from './FramesConfig'
+import FramesConfig from './FramesConfig.vue'
 import { clone } from '../utils/object'
 import FRAME from './model/frame'
 import { Message } from 'element-ui'

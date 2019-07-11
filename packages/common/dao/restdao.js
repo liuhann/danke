@@ -24,9 +24,9 @@ export default class RestDAO {
   }
 
   async create (o) {
-    await this.ctx.post(`${this.path}`, {
+    return (await this.ctx.post(`${this.path}`, {
       json: o
-    })
+    })).json()
   }
 
   async regex (prop, value, limit) {

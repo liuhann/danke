@@ -40,6 +40,7 @@
                 +  Math.floor(((element.animation.in.delay) * 100)/(maxInDuration * 3)) + '% 100%)'
             }: {}]"></div>
         </div> -->
+        <i class="icon-clone" @click="cloneElement(element)"></i>
         <i :class="element.visible? 'icon-eye': 'icon-eye-off'" @click="toggleElementVisible(element)"></i>
         <i class="icon-trash-empty" @click="deleteElement(element)"></i>
       </div>
@@ -80,6 +81,7 @@ export default {
     'deleteElement',
     'chooseElement',
     'addNewScene',
+    'cloneElement',
     'chooseScene'],
   data () {
     return {

@@ -1,5 +1,5 @@
 <template>
-<div class="animation-config">
+<div class="animation-config box">
   <div class="frames">
     <form-field v-model="animation.name" label="动画名称" type="text" :disabled="isEdit">
     </form-field>
@@ -24,8 +24,8 @@
           <div class="heading level">
             <div class="level-left is-small">{{frame.percent}}%</div>
             <div class="level-right is-small">
-              <a v-if="frame.percent !== 100" class="icon-plus" @click="appendFrame(index)"></a>
-              <a v-if="!(frame.percent === 100 || frame.percent === 0)" class="icon-trash" @click="removeFrame(index)"></a>
+              <a v-if="frame.percent !== 100" class="icon-plus-1" @click="appendFrame(index)"></a>
+              <a v-if="!(frame.percent === 100 || frame.percent === 0)" class="icon-trash-empty" @click="removeFrame(index)"></a>
               <a v-if="currentFrameIndex === index" class="icon-angle-up" @click="closeFrame"></a>
               <a v-if="currentFrameIndex !== index" class="icon-angle-down" @click="editFrame(index)"></a>
             </div>
@@ -48,7 +48,7 @@ import './bulma-timeline.css'
 import EditTransform from '../xd-builder/components/props/EditTransform'
 import EditClipPath from '../xd-builder/components/props/EditClipPath'
 import EditLen from '../xd-builder/components/props/EditLen'
-import FormField from '../xd-builder/components/props/FormField'
+import FormField from '../xd-builder/components/props/FormField.vue'
 import { clone } from '../utils/object'
 import FRAME from './model/frame'
 import cubicBeziers from './model/cubic-beziers'

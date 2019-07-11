@@ -3,7 +3,7 @@
     <div class="field-label" :class="size" v-if="label">
       <label class="label">{{label}}</label>
     </div>
-    <div class="field-label" :class="size" v-if="label">
+    <div class="field-label" :class="size" v-if="icon">
       <i :class="icon"></i>
     </div>
     <div class="field-body" :class="size">

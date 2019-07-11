@@ -4,6 +4,14 @@
   title="开始"
   :visible.sync="dialogVisible">
   <div class="start-new-container">
+    <div class="ratio-list">
+      <div class="ratio">
+      </div>
+      <div class="ratio">
+      </div>
+      <div class="ratio">
+      </div>
+    </div>
   </div>
   <span slot="footer" class="dialog-footer">
     <a class="button is-small" @click="dialogVisible = false">

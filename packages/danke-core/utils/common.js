@@ -1,5 +1,6 @@
-const REG_LEN = /([+-]?[.0-9#]+)(%|px|pt|em|rem|in|cm|mm|ex|ch|pc|vw|vh|vmin|vmax|deg|rad|turn)?$/
+import { trim as animationTrim } from '../css-model/animation'
 
+const REG_LEN = /([+-]?[.0-9#]+)(%|px|pt|em|rem|in|cm|mm|ex|ch|pc|vw|vh|vmin|vmax|deg|rad|turn)?$/
 /**
  * 抽取长度信息  例如 10vw -> {len:10, unit: 'vw'}
  * @param len
@@ -78,4 +79,11 @@ async function wait (mill) {
     }, mill)
   })
 }
-export { getLength, getLenSplits, fitToContainer, wait }
+
+const trimers = [animationTrim]
+function clipElement (element) {
+  for (let trim of trimers) {
+    trim(element)
+  }
+}
+export { getLength, getLenSplits, fitToContainer, wait, clipElement }

@@ -17,7 +17,8 @@ export default {
       insertShape: this.insertShape,
       insertText: this.insertText,
       deleteElement: this.deleteElement,
-      fileChoosed: this.fileChoosed
+      fileChoosed: this.fileChoosed,
+      cloneElement: this.cloneElement
     }
   },
   watch: {
@@ -148,9 +149,23 @@ export default {
         })
       }
     },
+
+    cloneElement (element) {
+      const clonedElement = clone(element)
+      clonedElement.id = shortid()
+      clonedElement.visible = true
+      clonedElement.style = getElementStyle(clonedElement, this.device)
+      this.inc++
+      this.currentScene.elements.push(clonedElement)
+      this.chooseElement(clonedElement)
+    },
+
     reflow (scenes) {
       for (let scene of scenes) {
         for (let element of scene.elements) {
+          if (element.imgPath) {
+            element.url = this.ctx.IMG_SERVER + '/' + element.imgPath
+          }
           element.style = getElementStyle(element, this.device)
         }
         scene.style = getSceneStyle(scene, this.device)
