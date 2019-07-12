@@ -139,7 +139,7 @@ export default class Danke {
     this.renderLeave(scene)
     this.sceneLeaveCallback && this.sceneLeaveCallback(this)
     pauseable.setTimeout(() => {
-      scene.style = `display: none`
+      // scene.style = `display: none`
       this.sceneHideCallback && this.sceneHideCallback(this)
     }, scene.hideDelay || 3000)
   }
@@ -148,7 +148,7 @@ export default class Danke {
     for (let element of scene.elements) {
       element.style = getElementStyle(element, this.device, 'out')
     }
-    scene.style = `display: inherit; ${getSceneStyle(scene, this.device)}`
+    scene.style = `display: inherit; ${getSceneStyle(scene, this.device, 'out')}`
   }
 
   sceneEnter (cb) {

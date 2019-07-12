@@ -4,7 +4,6 @@ import RestDAO from '../../common/dao/restdao'
 import { clone } from '../../utils/object'
 
 export default {
-  inject: ['hideLeftToggleMenu'],
   provide () {
     return {
       saveWork: this.saveWork,
@@ -69,12 +68,12 @@ export default {
     getWorkConfig () {
       const work = Object.assign({}, this.work)
       work.scenes = clone(this.scenes)
-      for (let scene of work.scenes) {
+      for (let i = 0; i < work.scenes.length; i++) {
+        const scene = work.scenes[i]
         for (let element of scene.elements) {
-          delete element.style
-          delete element.url
+          element.style = ''
         }
-        delete scene.style
+        scene.style = ''
       }
       work.ratio = this.ratio
       return work

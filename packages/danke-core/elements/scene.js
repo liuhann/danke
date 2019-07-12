@@ -21,7 +21,7 @@ export default {
   background: BACKGROUND,
   elements: [],
   leave: 3000,
-  aboveNext: true, // 场景切换时和下一页的上下关系
+  z: 100, // 场景的层次
   manual: false,
   animation: {
     in: ANIMATION,

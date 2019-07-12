@@ -3,7 +3,7 @@
     <toolbar></toolbar>
     <left-menubar></left-menubar>
     <div class="scene-container" ref="container">
-      <div class="device-drag" ref="deviceDrag"></div>
+      <div class="device-drag" ref="deviceDrag" @click="sceneClick"></div>
       <div class="device" v-if="currentScene" ref="device" :style="currentScene.style" @click.self="sceneClick">
         <div v-for="(element, index) of currentScene.elements" :key="element.id" :id="'element-' + element.id"
              class="element" :class="[element.visible?'':'hidden']" :style="element.style + ';' + 'z-index:' + index + ';'"
@@ -31,7 +31,7 @@
       @ordered="resetOrder"></list-config>
     <image-cropper ref="cropper"></image-cropper>
     <dialog-work-list ref="dialogWorkList" @choose="openWork"></dialog-work-list>
-    <full-player v-if="playing" :ratio="ratio" :work="work"></full-player>
+    <full-player v-if="playing" :ratio="ratio" :work="playingWork"></full-player>
   </div>
 </template>
 
@@ -70,6 +70,7 @@ export default {
         categories: '',
         desc: ''
       },
+      playingWork: null,
       scenes: [],
       currentScene: {},
       resources: {},
@@ -157,9 +158,7 @@ export default {
       this.currentScene.elements = elements
     },
     async runWork () {
-      this.work = {
-        scenes: JSON.parse(JSON.stringify(this.scenes))
-      }
+      this.playingWork = this.getWorkConfig()
       this.playing = true
     },
 

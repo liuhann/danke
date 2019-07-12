@@ -81,9 +81,13 @@ async function wait (mill) {
 }
 
 const trimers = [animationTrim]
-function clipElement (element) {
+function clipElementModel (element) {
   for (let trim of trimers) {
     trim(element)
   }
 }
-export { getLength, getLenSplits, fitToContainer, wait, clipElement }
+
+function resumeElementModel (element) {
+
+}
+export { getLength, getLenSplits, fitToContainer, wait, clipElementModel, resumeElementModel }

@@ -26,18 +26,18 @@
         </a>
       </p>
     </div>
-    <edit-background v-model="scene.background"></edit-background>
     <div class="field has-addons">
       <p class="control">
-        <a class="button is-static is-small">后续场景</a>
+        <a class="button is-static is-small">层次</a>
       </p>
       <p class="control">
-        <a class="button is-small">
-          <input type="checkbox" v-model="scene.aboveNext">靠前
-        </a>
+        <input class="input is-small" style="width: 220px;" v-model="scene.z">
       </p>
     </div>
-
+    <edit-background v-model="scene.background"></edit-background>
+    <edit-animation :animation="scene.animation.in" animation-type="in" :icon="SVG_IN"></edit-animation>
+    <edit-animation :animation="scene.animation.dura" animation-type="dura" :icon="SVG_DURA"></edit-animation>
+    <edit-animation :animation="scene.animation.out" animation-type="out" :icon="SVG_OUT"></edit-animation>
     <div class="field has-addons">
       <a class="button is-small" @click="previewScene">
         场景预览
@@ -52,6 +52,10 @@
 
 <script>
 import EditBackground from './props/EditBackground.vue'
+import SVG_DURA from '../svg/loading.svg'
+import SVG_IN from '../svg/login.svg'
+import SVG_OUT from '../svg/logout.svg'
+import EditAnimation from './props/EditAnimation.vue'
 export default {
   name: 'SceneConfig',
   props: {
@@ -60,11 +64,15 @@ export default {
     }
   },
   components: {
-    EditBackground
+    EditBackground,
+    EditAnimation
   },
   inject: ['zoomIn', 'zoomOut', 'previewScene', 'zoom', 'deleteCurrentScene'],
   data () {
     return {
+      SVG_DURA,
+      SVG_IN,
+      SVG_OUT
     }
   },
   watch: {
