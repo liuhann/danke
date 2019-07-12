@@ -145,7 +145,7 @@ export default {
   justify-content: center;
   align-items: center;
   position: relative;
-
+  overflow: hidden;
   &.shadow {
     background-image: linear-gradient(90deg, #592D2D, #592D2D);
     background-size: 160px 160px;

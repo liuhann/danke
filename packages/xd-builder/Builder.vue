@@ -51,7 +51,6 @@ import ListConfig from './components/ListConfig.vue'
 import SceneConfig from './components/SceneConfig.vue'
 import FullPlayer from './components/FullPlayer.vue'
 import DialogWorkList from './components/DialogWorkList.vue'
-import { renderSceneStage, getSceneStyle } from '../danke-core/utils/styles'
 import { shortid } from '../utils/string'
 export default {
   name: 'Builder',
@@ -69,7 +68,7 @@ export default {
         id: '',
         title: '',
         categories: '',
-        desc: '',
+        desc: ''
       },
       scenes: [],
       currentScene: {},

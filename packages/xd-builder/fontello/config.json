@@ -179,6 +179,12 @@
       "css": "docs",
       "code": 61637,
       "src": "fontawesome"
+    },
+    {
+      "uid": "02cca871bb69da75e8ee286b7055832c",
+      "css": "bold",
+      "code": 59404,
+      "src": "fontawesome"
     }
   ]
 }

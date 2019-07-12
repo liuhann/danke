@@ -148,6 +148,7 @@ export default class Danke {
     for (let element of scene.elements) {
       element.style = getElementStyle(element, this.device, 'out')
     }
+    scene.style = `display: inherit; ${getSceneStyle(scene, this.device)}`
   }
 
   sceneEnter (cb) {

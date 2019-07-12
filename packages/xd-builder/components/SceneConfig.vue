@@ -28,6 +28,17 @@
     </div>
     <edit-background v-model="scene.background"></edit-background>
     <div class="field has-addons">
+      <p class="control">
+        <a class="button is-static is-small">后续场景</a>
+      </p>
+      <p class="control">
+        <a class="button is-small">
+          <input type="checkbox" v-model="scene.aboveNext">靠前
+        </a>
+      </p>
+    </div>
+
+    <div class="field has-addons">
       <a class="button is-small" @click="previewScene">
         场景预览
       </a>

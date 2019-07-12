@@ -17,6 +17,7 @@ export default {
   },
   methods: {
     async saveWork () {
+      this.hideLeftToggleMenu()
       const loading = Loading.service({
         lock: true,
         text: '正在保存中',

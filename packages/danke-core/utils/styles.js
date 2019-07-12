@@ -59,9 +59,10 @@ function getSceneStyle (scene, device, stage) {
   }
   styles.push(`width: ${device.width}px`)
   styles.push(`height: ${device.height}px`)
+  styles.push(`font-size: ${device.width / 30}px`)
   switch (scene.type) {
     case sceneTypeEnum.COMMON:
-      styles.push(`z-index: 100`)
+      styles.push(`z-index: ${500 + scene.zindex}`)
       break
     case sceneTypeEnum.BACKGROUND:
       styles.push(`z-index: 100`)
