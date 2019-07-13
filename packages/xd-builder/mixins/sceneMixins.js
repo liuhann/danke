@@ -9,7 +9,9 @@ export default {
       addNewScene: this.addNewScene,
       chooseScene: this.chooseScene,
       previewScene: this.previewScene,
-      deleteCurrentScene: this.deleteCurrentScene
+      deleteCurrentScene: this.deleteCurrentScene,
+      nextScene: this.nextScene,
+      previousScene: this.previousScene
     }
   },
   watch: {
@@ -27,11 +29,31 @@ export default {
       scene.id = shortid()
       scene.style = getSceneStyle(scene, this.device)
       this.scenes.push(scene)
-      this.currentScene = scene
+      this.chooseScene(scene)
     },
     chooseScene (scene) {
       this.chooseElement(null)
       this.currentScene = scene
+    },
+    nextScene () {
+      for (let i = 0; i < this.scenes.length; i++) {
+        if (this.currentScene === this.scenes[i]) {
+          if (i < this.scenes.length - 1) {
+            this.chooseScene(this.scenes[i + 1])
+            break
+          }
+        }
+      }
+    },
+    previousScene () {
+      for (let i = 0; i < this.scenes.length; i++) {
+        if (this.currentScene === this.scenes[i]) {
+          if (i > 0) {
+            this.chooseScene(this.scenes[i - 1])
+            break
+          }
+        }
+      }
     },
     async previewScene () {
       this.zoomCenter()
@@ -52,7 +74,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        for (let i = 0; i < this.scenes.length; i++ ) {
+        for (let i = 0; i < this.scenes.length; i++) {
           if (this.scenes[i].id === this.currentScene.id) {
             this.scenes.splice(i, 1)
             if (i > 0) {

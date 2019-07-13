@@ -40,7 +40,13 @@
     <edit-animation :animation="scene.animation.out" animation-type="out" :icon="SVG_OUT"></edit-animation>
     <div class="field has-addons">
       <a class="button is-small" @click="previewScene">
-        场景预览
+        预览
+      </a>
+      <a class="button is-small" @click="previousScene">
+        上一场景
+      </a>
+      <a class="button is-small" @click="nextScene">
+        下一场景
       </a>
       <p class="control">
         <a class="button is-danger is-small" @click="deleteCurrentScene">删除</a>
@@ -67,7 +73,7 @@ export default {
     EditBackground,
     EditAnimation
   },
-  inject: ['zoomIn', 'zoomOut', 'previewScene', 'zoom', 'deleteCurrentScene'],
+  inject: ['zoomIn', 'zoomOut', 'previewScene', 'zoom', 'deleteCurrentScene', 'previousScene', 'nextScene'],
   data () {
     return {
       SVG_DURA,

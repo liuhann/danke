@@ -1,5 +1,5 @@
 <template>
-<div class="device" :style="deviceStyle">
+<div class="device player" :style="deviceStyle">
   <div class="loading"></div>
   <div v-for="scene in work.scenes" :key="scene.id" class="scene" :style="scene.style">
     <div v-for="(element) in scene.elements" :key="element.id" class="element"
@@ -71,7 +71,7 @@ export default {
 </script>
 
 <style lang="less">
-.device {
+.device.player {
   position: relative;
   overflow: hidden;
   .scene {

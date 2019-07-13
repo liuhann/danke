@@ -17,6 +17,9 @@ export const boxShadows = {
 
 export function getBoxShadowStyle ({ shadow, type }) {
   if (shadow) {
+    if (shadow.x === 0 && shadow.y === 0 && shadow.b === 0) {
+      return []
+    }
     if (type === TypeEnum.TEXT) {
       return [`text-shadow: ${shadow.x}px ${shadow.y}px ${shadow.b}px ${shadow.color}`]
     } else {
