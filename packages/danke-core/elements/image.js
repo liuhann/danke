@@ -23,6 +23,9 @@ const image = {
     out: ANIMATION
   }
 }
+export function trim (image) {
+
+}
 
 export function resume (image) {
   if (!image.background) {

@@ -93,6 +93,7 @@ export default {
         clonedElement.visible = true
         clonedElement.position.horizontal = 'left'
         clonedElement.position.vertical = 'top'
+        clonedElement.border.width = 0
         const sizeWidth = Math.floor(100 * cropbox.width / cropScreenSize.width)
         const sizeHeight = Math.floor(100 * cropbox.height / cropScreenSize.height)
         clonedElement.size.width = (sizeWidth > 100 ? 100 : sizeWidth) + 'vw'
