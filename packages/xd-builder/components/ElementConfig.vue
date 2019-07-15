@@ -37,7 +37,7 @@ import SVG_IN from '../svg/login.svg'
 import SVG_OUT from '../svg/logout.svg'
 
 export default {
-  name: 'PropConfig',
+  name: 'ElmentConfig',
   props: {
     element: {
       type: Object

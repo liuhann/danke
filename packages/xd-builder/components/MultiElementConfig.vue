@@ -1,33 +1,20 @@
 <template>
-<div class="prop-config">
-  <form-field label="横向对齐" type="radio" v-model="horizontal" :options="horizontalOptions">
-  </form-field>
-  <edit-len label="横向偏移" v-model="offsetX"></edit-len>
-  <form-field label="递增" type="number" width="60px" v-model="deltaX">
-    <span class="button is-small is-info" @click="batchSet('positionX')">批量设置</span>
-  </form-field>
-  <form-field label="纵向对齐" type="radio" v-model="vertical" :options="verticalOptions"></form-field>
-  <edit-len label="纵向偏移" v-model="offsetY"></edit-len>
-  <form-field label="递增" type="number" width="60px" v-model="deltaY">
-    <span class="button is-small is-info" @click="batchSet('positionY')">批量设置</span>
-  </form-field>
-
-  <form-field label="动画设置" type="radio" v-model="animationType" :options="animationOptions">
-  </form-field>
-  <form-field label="动画">
-    <span class="button is-small" @click="chooseAnimation(animationType)">{{animation.desc || '选择'}}</span>
-    <span v-if="animation.name" class="button is-small icon-trash" @click="clearAnimation"></span>
-  </form-field>
-  <edit-len label="时长" v-model="animation.duration" :with-unit="false"></edit-len>
-  <form-field label="递增" type="number" width="60px" v-model="animation.deltaDuration">
-    <span class="button is-small is-info" @click="batchSet('deltaDuration')">批量设置</span>
-  </form-field>
-  <edit-len label="延迟" v-model="animation.delay" :with-unit="false"></edit-len>
-  <form-field label="递增" type="number" width="60px" v-model="animation.deltaDelay">
-    <span class="button is-small is-info" @click="batchSet('deltaDelay')">批量设置</span>
-  </form-field>
-
-</div>
+  <nav class="panel multi-element-prop-config is-small" id="multielement-prop-config">
+    <p class="panel-heading">
+      批量设置
+    </p>
+    <div class="panel-body">
+      <edit-position v-model="position" v-if="position"></edit-position>
+      <edit-border v-model="element.border" v-if="element.border"></edit-border>
+      <edit-shadow v-model="element.shadow" v-if="element.shadow"></edit-shadow>
+      <edit-clip-path v-model="element.clip" v-if="element.clip"></edit-clip-path>
+      <hr/>
+      <edit-animation :animation="element.animation.in" animation-type="in" :icon="SVG_IN"></edit-animation>
+      <edit-animation :animation="element.animation.dura" animation-type="dura" :icon="SVG_DURA"></edit-animation>
+      <edit-animation :animation="element.animation.out" animation-type="out" :icon="SVG_OUT"></edit-animation>
+      <!--<form-field label="背景大小" type="select" v-css-model="element.background.size" :options="backgroundSizeOptions"></form-field>-->
+    </div>
+  </nav>
 </template>
 
 <script>
@@ -51,33 +38,7 @@ export default {
   },
   data () {
     return {
-      horizontal: '',
-      vertical: '',
-      offsetX: '0vw',
-      deltaX: 0,
-      offsetY: '0vh',
-      deltaY: 0,
-      horizontalOptions,
-      verticalOptions,
-      animationType: 'in',
-      animation: {
-        deltaDuration: 0,
-        deltaDelay: 0,
-        duration: 0,
-        delay: 0,
-        desc: '',
-        name: ''
-      },
-      animationOptions: [{
-        key: 'in',
-        value: '进入'
-      }, {
-        key: 'dura',
-        value: '持续'
-      }, {
-        key: 'out',
-        value: '离开'
-      }]
+      position: null
     }
   },
   watch: {

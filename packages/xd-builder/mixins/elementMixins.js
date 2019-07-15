@@ -131,26 +131,38 @@ export default {
       })
     },
 
-    chooseElement (element) {
+    chooseElement (element, event) {
+      if (this.currentElement && element && this.currentElement.id === element.id) {
+        return
+      }
       if (this.currentElement) {
         destoryInteraction(document.getElementById('element-' + this.currentElement.id))
       }
-      // save cache of content editable text
-      if (this.currentElement && this.currentElement.type === TypeEnum.TEXT && this.editedText) {
-        this.currentElement.text = this.editedText
-        this.editedText = null
-      }
-      if (this.currentElement && this.currentElement.type === TypeEnum.TEXT && this.currentElement.text === '') {
-        this.currentElement.text = ' '
-      }
-      this.currentElement = element
-      if (element) {
-        this.$nextTick(() => {
-          interactElement(document.getElementById('element-' + element.id), element, this)
-        })
+      if (event == null || !event.ctrlKey) {
+        // save cache of content editable text
+        if (this.currentElement && this.currentElement.type === TypeEnum.TEXT && this.editedText) {
+          this.currentElement.text = this.editedText
+          this.editedText = null
+        }
+        if (this.currentElement && this.currentElement.type === TypeEnum.TEXT && this.currentElement.text === '') {
+          this.currentElement.text = ' '
+        }
+        this.currentElement = element
+        if (element) {
+          this.multipleElements = [element]
+          this.$nextTick(() => {
+            interactElement(document.getElementById('element-' + element.id), element, this)
+          })
+        }
+      } else {
+        this.addMultipleElement(element)
       }
     },
-
+    addMultipleElement (element) {
+      if (element) {
+        this.multipleElements.push(element)
+      }
+    },
     cloneElement (element) {
       const clonedElement = clone(element)
       clonedElement.id = shortid()

@@ -7,17 +7,17 @@
       <div class="device" v-if="currentScene" ref="device" :style="currentScene.style" @click.self="sceneClick">
         <div v-for="(element, index) of currentScene.elements" :key="element.id" :id="'element-' + element.id"
              class="element" :class="[element.visible?'':'hidden']" :style="element.style + ';' + 'z-index:' + index + ';'"
-             @click="chooseElement(element)">
+             @click="chooseElement(element, $event)">
           <img v-if="element.type === TypeEnum.IMAGE" :src="element.url">
           <span v-if="element.type === TypeEnum.TEXT && element!==currentElement" v-html="$options.filters.newline(element.text)"></span>
-          <div class="mask" v-if="element===currentElement">
+          <div class="mask" v-if="multipleElements.indexOf(element) > -1">
             <span @input="contentChange" contenteditable v-if="element.type === TypeEnum.TEXT" v-html="$options.filters.newline(element.text)"></span>
-            <div class="corner-rb"></div>
+            <div class="corner-rb" v-if="element===currentElement"></div>
           </div>
         </div>
       </div>
     </div>
-    <prop-config :element="currentElement" v-if="currentElement"></prop-config>
+    <element-config :element="currentElement" v-if="currentElement"></element-config>
     <scene-config :scene="currentScene" v-if="!currentElement && currentScene"></scene-config>
     <transition name="slide-left">
       <left-toggle-menu v-if="showLeftToggleMenu" @menu-clicked="showLeftToggleMenu = false"></left-toggle-menu>
@@ -46,7 +46,7 @@ import ImageCropper from './components/ImageCropper'
 import LeftToggleMenu from './components/LeftToggleMenu.vue'
 import Toolbar from './components/Toolbar.vue'
 import LeftMenubar from './components/LeftMenubar.vue'
-import PropConfig from './components/PropConfig.vue'
+import ElementConfig from './components/ElementConfig.vue'
 import ListConfig from './components/ListConfig.vue'
 import SceneConfig from './components/SceneConfig.vue'
 import FullPlayer from './components/FullPlayer.vue'
@@ -54,7 +54,7 @@ import DialogWorkList from './components/DialogWorkList.vue'
 import { shortid } from '../utils/string'
 export default {
   name: 'Builder',
-  components: { ListConfig, PropConfig, ImageCropper, LeftToggleMenu, Toolbar, LeftMenubar, SceneConfig, FullPlayer, DialogWorkList },
+  components: { ListConfig, ElementConfig, ImageCropper, LeftToggleMenu, Toolbar, LeftMenubar, SceneConfig, FullPlayer, DialogWorkList },
   mixins: [ elementMixin, saveShareMixin, sceneMixin ],
   props: {
     ratio: {
@@ -75,6 +75,7 @@ export default {
       currentScene: {},
       resources: {},
       currentElement: null,
+      multipleElements: [],
       TypeEnum,
       deviceOrigin: {
         width: 360,
@@ -131,7 +132,7 @@ export default {
     hideLeftToggleMenu () {
       this.showLeftToggleMenu = false
     },
-    
+
     zoomIn () {
       this.zoom = Math.floor((this.zoom - 0.1) * 10) / 10
       this.reflow()
