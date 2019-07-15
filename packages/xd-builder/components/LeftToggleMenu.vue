@@ -7,6 +7,7 @@
     <li><a>新建</a></li>
     <li><a @click="openWorkListDialog">打开</a></li>
     <li><a @click="saveWork">保存</a></li>
+    <li><a @click="editWork">编辑作品信息</a></li>
   </ul>
   <p class="menu-label">
     发布与共享
@@ -28,7 +29,7 @@
 
 <script>
 export default {
-  inject: ['saveWork', 'openWorkListDialog', 'hideLeftToggleMenu'],
+  inject: ['saveWork', 'openWorkListDialog', 'hideLeftToggleMenu', 'editWork'],
   methods: {
   }
 }

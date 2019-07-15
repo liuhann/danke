@@ -37,6 +37,14 @@ export default {
           element.style = getElementStyle(element, this.device)
         }
       }
+    },
+    'currentElement.position.offsetY': function (val) {
+      if (this.multipleElements.length > 1) {
+        for (let element of this.multipleElements) {
+          element.position.offsetY = val
+          element.style = getElementStyle(element, this.device)
+        }
+      }
     }
   },
   filters: {

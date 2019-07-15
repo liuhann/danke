@@ -7,7 +7,8 @@ export default {
   provide () {
     return {
       saveWork: this.saveWork,
-      openWorkListDialog: this.openWorkListDialog
+      openWorkListDialog: this.openWorkListDialog,
+      editWork: this.editWork
     }
   },
   created () {
@@ -15,6 +16,8 @@ export default {
     this.workdao = new RestDAO(this.ctx, 'danke/work')
   },
   methods: {
+    editWork () {
+    },
     async saveWork () {
       this.hideLeftToggleMenu()
       const loading = Loading.service({
