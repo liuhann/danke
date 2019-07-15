@@ -12,7 +12,7 @@
           <span v-if="element.type === TypeEnum.TEXT && element!==currentElement" v-html="$options.filters.newline(element.text)"></span>
           <div class="mask" v-if="multipleElements.indexOf(element) > -1">
             <span @input="contentChange" contenteditable v-if="element.type === TypeEnum.TEXT" v-html="$options.filters.newline(element.text)"></span>
-            <div class="corner-rb" v-if="element===currentElement"></div>
+            <div class="corner-rb" v-if="multipleElements.length === 1 && element===currentElement"></div>
           </div>
         </div>
       </div>

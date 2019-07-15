@@ -24,9 +24,17 @@ export default {
   watch: {
     currentElement: {
       deep: true,
-      handler () {
+      handler (val, oldVal, diff) {
         if (this.currentElement) {
           this.currentElement.style = getElementStyle(this.currentElement, this.device)
+        }
+      }
+    },
+    'currentElement.position.offsetX': function (val) {
+      if (this.multipleElements.length > 1) {
+        for (let element of this.multipleElements) {
+          element.position.offsetX = val
+          element.style = getElementStyle(element, this.device)
         }
       }
     }
@@ -137,6 +145,11 @@ export default {
       }
       if (this.currentElement) {
         destoryInteraction(document.getElementById('element-' + this.currentElement.id))
+      }
+      if (element == null) {
+        this.currentElement = null
+        this.multipleElements = []
+        return
       }
       if (event == null || !event.ctrlKey) {
         // save cache of content editable text
