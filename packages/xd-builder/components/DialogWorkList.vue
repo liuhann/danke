@@ -3,9 +3,9 @@
   width="800px"
   title="打开已有作品"
   :visible.sync="dialogVisible">
-  <div class="work-list-container">
-    <div class="drafts">
-      <div >草稿</div>
+  <div class="work-list-container columns">
+    <div class="drafts column">
+      <div>草稿</div>
       <ul class='work-list'>
         <li class="work-item" :class="choosedWork.id===work.id?'current': ''" v-for="work in works" :key="work.id" @click="chooseWork(work)">
           <div class="work-title">{{work.title}}</div>
@@ -14,7 +14,10 @@
         </li>
       </ul>
     </div>
-    <div class="publishs">
+    <div class="previews column is-narrow">
+      <div style="width: 360px; height: 360px;" class="centering">
+        <player v-if="choosedWork" :work="choosedWork" :device="previewDevice"></player>
+      </div>
     </div>
   </div>
   <span slot="footer" class="dialog-footer">
@@ -28,18 +31,22 @@
 </el-dialog>
 </template>
 <script>
-import { Dialog } from 'element-ui'
+import { Dialog, MessageBox } from 'element-ui'
 import RestDAO from '../../common/dao/restdao'
 import dayjs from 'dayjs'
 import 'dayjs/locale/zh-cn'
+import Player from '../../xd-player/Player'
+import { fitToContainer } from '../../danke-core/utils/common'
 export default {
   components: {
+    Player,
     Dialog
   },
   data () {
     return {
       works: [],
       choosedWork: {},
+      previewDevice: {},
       dialogVisible: false
     }
   },
@@ -55,6 +62,7 @@ export default {
     },
     chooseWork (work) {
       this.choosedWork = work
+      this.previewDevice = fitToContainer(work.ratio, 320, 320)
     },
     async chooseWorkOpen () {
       if (this.choosedWork.id) {
@@ -64,6 +72,7 @@ export default {
       this.dialogVisible = false
     },
     async deleteWorkDraft (work) {
+      await MessageBox.confirm('确认删除此作品', '注意')
       await this.workdao.delete(work)
       const result = await this.workdao.list()
       this.works = result.list
@@ -78,8 +87,6 @@ export default {
 .work-list-container {
   display: flex;
   .drafts {
-    flex: 3;
-    padding: 0 5px;
     height: 360px;
     overflow: auto;
     .work-list {
@@ -114,8 +121,11 @@ export default {
       }
     }
   }
-  .publishs {
-    flex: 2;
+  .previews {
+    .device {
+      border: 1px solid #ddd;
+      border-radius: 20px;
+    }
   }
 }
 </style>

@@ -154,13 +154,9 @@ export default {
       if (this.currentElement) {
         destoryInteraction(document.getElementById('element-' + this.currentElement.id))
       }
-      if (element == null) {
-        this.currentElement = null
-        this.multipleElements = []
-        return
-      }
-      if (event == null || !event.ctrlKey) {
-        // save cache of content editable text
+      if (event && event.ctrlKey && this.multipleElements.length > 0) {
+        this.addMultipleElement(element)
+      } else {
         if (this.currentElement && this.currentElement.type === TypeEnum.TEXT && this.editedText) {
           this.currentElement.text = this.editedText
           this.editedText = null
@@ -174,9 +170,9 @@ export default {
           this.$nextTick(() => {
             interactElement(document.getElementById('element-' + element.id), element, this)
           })
+        } else {
+          this.multipleElements = []
         }
-      } else {
-        this.addMultipleElement(element)
       }
     },
     addMultipleElement (element) {

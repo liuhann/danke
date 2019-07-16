@@ -11,9 +11,18 @@
           <img v-if="element.type === TypeEnum.IMAGE" :src="element.url">
           <span v-if="element.type === TypeEnum.TEXT && element!==currentElement" v-html="$options.filters.newline(element.text)"></span>
           <div class="mask" v-if="multipleElements.indexOf(element) > -1">
-            <span @input="contentChange" contenteditable v-if="element.type === TypeEnum.TEXT" v-html="$options.filters.newline(element.text)"></span>
+            <span @input="contentChange" contenteditable v-if="element.type === TypeEnum.TEXT && multipleElements.length === 1" v-html="$options.filters.newline(element.text)"></span>
             <div class="corner-rb" v-if="multipleElements.length === 1 && element===currentElement"></div>
           </div>
+        </div>
+        <div class="scene-options">
+          <span class="tag is-info">场景{{scenes.indexOf(currentScene)+1}}/{{scenes.length}}</span>
+          <a class="tag is-white" @click="previousScene" style="margin-top: 5px;">
+            向前
+          </a>
+          <a class="tag is-white" @click="nextScene" style="margin-top: 5px;">
+            向后
+          </a>
         </div>
       </div>
     </div>
@@ -31,6 +40,7 @@
       @ordered="resetOrder"></list-config>
     <image-cropper ref="cropper"></image-cropper>
     <dialog-work-list ref="dialogWorkList" @choose="openWork"></dialog-work-list>
+    <dialog-edit-work ref="dialogEditWork" @save="saveWorkDesc"></dialog-edit-work>
     <full-player v-if="playing" :ratio="ratio" :work="playingWork"></full-player>
   </div>
 </template>
@@ -52,9 +62,10 @@ import SceneConfig from './components/SceneConfig.vue'
 import FullPlayer from './components/FullPlayer.vue'
 import DialogWorkList from './components/DialogWorkList.vue'
 import { shortid } from '../utils/string'
+import DialogEditWork from './components/DialogEditWork'
 export default {
   name: 'Builder',
-  components: { ListConfig, ElementConfig, ImageCropper, LeftToggleMenu, Toolbar, LeftMenubar, SceneConfig, FullPlayer, DialogWorkList },
+  components: {DialogEditWork, ListConfig, ElementConfig, ImageCropper, LeftToggleMenu, Toolbar, LeftMenubar, SceneConfig, FullPlayer, DialogWorkList },
   mixins: [ elementMixin, saveShareMixin, sceneMixin ],
   props: {
     ratio: {
@@ -67,7 +78,7 @@ export default {
       work: {
         id: '',
         title: '',
-        categories: '',
+        categories: [],
         desc: ''
       },
       playingWork: null,
@@ -90,7 +101,6 @@ export default {
   provide () {
     return {
       scenes: this.scenes,
-      showLeftToggleMenu: this.showLeftToggleMenu,
       showElementsLayer: this.showElementsLayer,
       zoom: this.zoom,
       // provide methods
@@ -132,7 +142,6 @@ export default {
     hideLeftToggleMenu () {
       this.showLeftToggleMenu = false
     },
-
     zoomIn () {
       this.zoom = Math.floor((this.zoom - 0.1) * 10) / 10
       this.reflow()
@@ -153,6 +162,7 @@ export default {
       })
     },
     sceneClick () {
+      this.hideLeftToggleMenu()
       this.chooseElement(null)
     },
     resetOrder (elements) {
@@ -248,6 +258,13 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
             height: 12px;
           }
         }
+      }
+      .scene-options {
+        position: absolute;
+        right: -82px;
+        top: 0;
+        width: 80px;
+        height: 300px;
       }
       .ti {
         position: absolute;

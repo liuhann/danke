@@ -13,3 +13,8 @@ html, body {
   height: 100%;
 }
 @import "./overrides.css";
+.centering {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

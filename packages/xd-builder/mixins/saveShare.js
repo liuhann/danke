@@ -2,12 +2,14 @@ import { Loading, Message } from 'element-ui'
 import ImageDAO from '../../common/dao/imagedao'
 import RestDAO from '../../common/dao/restdao'
 import { clone } from '../../utils/object'
+import is from '../../utils/is'
 
 export default {
   provide () {
     return {
       saveWork: this.saveWork,
       openWorkListDialog: this.openWorkListDialog,
+      openEditWorkDialog: this.openEditWorkDialog,
       editWork: this.editWork
     }
   },
@@ -49,6 +51,9 @@ export default {
       this.work.isNew = false
       this.work.title = work.title
       this.work.categories = work.categories
+      if (is.str(work.categories)) {
+        this.work.categories = this.work.categories.split(',')
+      }
       this.work.desc = work.desc
       this.currentScene = this.scenes[0]
       this.currentElement = null
@@ -84,6 +89,17 @@ export default {
     openWorkListDialog () {
       this.hideLeftToggleMenu()
       this.$refs.dialogWorkList.open()
+    },
+    // open dialog and edit work title
+    openEditWorkDialog () {
+      this.hideLeftToggleMenu()
+      this.$refs.dialogEditWork.open(this.work)
+    },
+    // save work title & desc
+    saveWorkDesc (work) {
+      this.work.title = work.title
+      this.work.categories = work.categories
+      this.work.desc = work.desc
     }
   }
 }

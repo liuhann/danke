@@ -32,7 +32,11 @@ export default {
       return v.replace(/\n/g, '<br>')
     }
   },
-  watch: {},
+  watch: {
+    work () {
+      this.play()
+    }
+  },
   computed: {
     deviceStyle () {
       return {
@@ -45,9 +49,7 @@ export default {
 
   },
   async mounted () {
-    this.engine = new DankeEngine(this.work.scenes, this.device)
-    this.engine.play()
-    await this.loadResources()
+
   },
   data () {
     return {
@@ -59,6 +61,11 @@ export default {
     }
   },
   methods: {
+    async play () {
+      this.engine = new DankeEngine(this.work.scenes, this.device)
+      this.engine.play()
+      await this.loadResources()
+    },
     async loadResources () {
     },
     onElementClicked (index) {

@@ -42,12 +42,6 @@
       <a class="button is-small" @click="previewScene">
         预览
       </a>
-      <a class="button is-small" @click="previousScene">
-        上一场景
-      </a>
-      <a class="button is-small" @click="nextScene">
-        下一场景
-      </a>
       <p class="control">
         <a class="button is-danger is-small" @click="deleteCurrentScene">删除</a>
       </p>
