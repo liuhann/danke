@@ -18,10 +18,10 @@
     </div>
   </div>
   <div class="column is-one-third-tablet column-list">
-    <nav class="panel">
-      <div class="panel-block">
+    <nav class="panel frames-list">
+      <div class="panel-block" v-if="isEdit">
           <p class="control">
-            <router-link v-if="isEdit" to="/frame/edit" class="button icon-plus is-small is-info">创建</router-link>
+            <router-link to="/frame/edit" class="button icon-plus is-small is-info">创建</router-link>
           </p>
           <p class="control has-icons-right">
             <input class="input is-small" type="text" placeholder="按名称查找" v-model="searchFilter">
@@ -36,13 +36,15 @@
           {{type.value}}
         </a>
       </p>
-      <a v-for="animation in animations" :key="animation.name" class="panel-block" @click="setAnimation(animation)"
-         :class="currentAnimation.name === animation.name? 'is-active': ''">
-        <span class="panel-icon">
-          <i class='icon-left-small' aria-hidden="true"></i>
-        </span>
-         {{animation.desc || animation.name}}
-      </a>
+      <div class="panel-body">
+        <a v-for="animation in animations" :key="animation.name" class="panel-block" @click="setAnimation(animation)"
+           :class="currentAnimation.name === animation.name? 'is-active': ''">
+          <span class="panel-icon">
+            <i class='icon-left-small' aria-hidden="true"></i>
+          </span>
+           {{animation.desc || animation.name}}
+        </a>
+      </div>
     </nav>
   </div>
 </div>
@@ -107,6 +109,7 @@ export default {
       if (this.searchFilter) {
         query.desc = this.searchFilter
       }
+      query.count = 10000
       const response = await this.restdao.list(query)
       this.animations = response.list
       if (this.animations.length) {
@@ -176,6 +179,13 @@ export default {
     bottom: .5rem;
     color: #999;
     font-size: 12px;
+  }
+}
+
+.frames-list {
+  .panel-body {
+    height: 350px;
+    overflow-y: auto;
   }
 }
 .frame-box-columns {
