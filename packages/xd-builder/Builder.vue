@@ -49,6 +49,7 @@
 import elementMixin from './mixins/elementMixins'
 import saveShareMixin from './mixins/saveShare'
 import sceneMixin from './mixins/sceneMixins'
+import keyBindMixin from './mixins/key-binds'
 import { fitToContainer } from '../danke-core/utils/common'
 import { intereactWith } from './utils/interact'
 import { TypeEnum } from '../danke-core/elements/index'
@@ -65,8 +66,8 @@ import { shortid } from '../utils/string'
 import DialogEditWork from './components/DialogEditWork'
 export default {
   name: 'Builder',
-  components: {DialogEditWork, ListConfig, ElementConfig, ImageCropper, LeftToggleMenu, Toolbar, LeftMenubar, SceneConfig, FullPlayer, DialogWorkList },
-  mixins: [ elementMixin, saveShareMixin, sceneMixin ],
+  components: { DialogEditWork, ListConfig, ElementConfig, ImageCropper, LeftToggleMenu, Toolbar, LeftMenubar, SceneConfig, FullPlayer, DialogWorkList },
+  mixins: [ elementMixin, saveShareMixin, sceneMixin, keyBindMixin ],
   props: {
     ratio: {
       type: String,

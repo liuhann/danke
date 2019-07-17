@@ -137,6 +137,7 @@ export default {
       }).then(() => {
         if (this.currentElement.id === element.id) {
           this.currentElement = null
+          this.multipleElements = []
         }
         for (let i = 0; i < this.currentScene.elements.length; i++) {
           if (this.currentScene.elements[i].id === element.id) {

@@ -2,9 +2,9 @@
 <div class="columns frame-box-columns">
   <div class="column is-two-thirds-tablet">
     <div class="frame-preview" :class="[previewType!=='文字'?'shadow': '']">
-      <div class="buttons has-addons toggle-type">
+      <!--<div class="buttons has-addons toggle-type">
         <span class="button is-small" v-for="ptype of previewTypes" :key="ptype" :class="previewType === ptype? 'is-selected is-info': ''" @click="previewType = ptype">{{ptype}}</span>
-      </div>
+      </div>-->
       <span class="buttons has-addons edit-button" v-if="isEdit" >
         <span class="button icon-cw is-small" @click="refreshFrame"></span>
         <span class="button icon-edit is-info is-small" @click="editFrame"></span>
@@ -15,7 +15,6 @@
       <div v-if="previewType==='图片'" class="preview-box" :class="currentAnimation.name">
         <img src="http://cdn.danke.fun/res/sample1.png" width="160" height="160">
       </div>
-      <span class="animation-provider" v-if="currentAnimation">From:{{currentAnimation.userid}}</span>
     </div>
   </div>
   <div class="column is-one-third-tablet column-list">

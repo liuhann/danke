@@ -103,6 +103,10 @@ export default {
 
 <style lang="scss">
 .edit-clip-path {
+  .icon-label {
+    padding: 2px 10px;
+    line-height: 32px;
+  }
   font-size: 1em;
   .order {
     width: 40px;

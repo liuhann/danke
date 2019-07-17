@@ -1,11 +1,11 @@
 <template>
 <div class="animation-config box">
   <div class="frames">
-    <form-field v-model="animation.name" label="动画名称" type="text" :disabled="isEdit">
+    <form-field v-model="animation.name" label="名称" type="text" :disabled="isEdit">
     </form-field>
     <form-field v-model="animation.desc" label="描述" type="text">
     </form-field>
-    <form-field v-model="animation.type" label="动画类型" type="select" :options="animationTypes">
+    <form-field v-model="animation.type" label="类型" type="select" :options="animationTypes">
     </form-field>
     <form-field v-model="animation.duration" width="70px" label="时长" placeholder="动画时长" unit="毫秒" type="number">
     </form-field>
@@ -120,6 +120,19 @@ export default {
   flex-grow: 4;
 }
 .animation-config {
+  .field {
+    display: flex;
+    .field-label {
+      margin-right: .5rem;
+      width: 48px;
+      flex: initial;
+      text-align: right;
+      label {
+        color: #888;
+        font-weight: normal;
+      }
+    }
+  }
   .el-timeline {
     padding-left: 5px;
     .el-timeline-item__wrapper {
