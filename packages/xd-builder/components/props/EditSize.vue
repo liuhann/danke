@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import SVG_RESIZE from '../../svg/scale.svg'
+import SVG_RESIZE from '../../svg/size.svg'
 import EditLen from './EditLen.vue'
 import { getLenSplits } from '../../../danke-core/utils/styles'
 import { lenUnit } from '../../../danke-core/utils/css-options'

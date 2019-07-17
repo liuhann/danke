@@ -28,7 +28,6 @@
 
 <script>
 import SVG_FONT_SIZE from '../../svg/font.svg'
-import SVG_COLOR from '../../svg/pipette.svg'
 import EditLen from './EditLen.vue'
 import FormField from './FormField.vue'
 import ToggleGroupedButton from './ToggleGroupedButton.vue'
@@ -51,7 +50,6 @@ export default {
   data () {
     return {
       SVG_FONT_SIZE,
-      SVG_COLOR,
       aligns: [{
         key: 'left',
         icon: 'icon-align-left'

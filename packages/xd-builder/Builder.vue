@@ -226,6 +226,9 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
       z-index: 10;
       .element {
         position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         img {
           width: 100%;
           height: 100%;

@@ -1,6 +1,6 @@
 <template>
 <div class="xd-full-player">
-  <player :device="device" :work="work"></player>
+  <player :device="device" :work="work" ref="player"></player>
   <button class="modal-close" @click="stopWork"></button>
 </div>
 </template>
@@ -28,6 +28,9 @@ export default {
   inject: ['stopWork'],
   created () {
     this.device = fitToContainer(this.ratio, window.innerWidth, window.innerHeight)
+  },
+  mounted () {
+    this.$refs.player.play()
   }
 }
 </script>

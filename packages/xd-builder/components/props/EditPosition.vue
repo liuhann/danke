@@ -35,8 +35,8 @@
 
 <script>
 import EditLen from './EditLen'
-import SVG_HOR from '../../svg/double-arrow-horizontal-symbol.svg'
-import SVG_VER from '../../svg/resize-arrow.svg'
+import SVG_HOR from '../../svg/position-x.svg'
+import SVG_VER from '../../svg/position-y.svg'
 import FormField from './FormField'
 import { horizontalOptions, verticalOptions } from '../../../danke-core/css-model/position'
 export default {
