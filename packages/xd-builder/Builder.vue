@@ -41,7 +41,8 @@
     <image-cropper ref="cropper"></image-cropper>
     <dialog-work-list ref="dialogWorkList" @choose="openWork"></dialog-work-list>
     <dialog-edit-work ref="dialogEditWork" @save="saveWorkDesc"></dialog-edit-work>
-    <full-player v-if="playing" :ratio="ratio" :work="playingWork"></full-player>
+    <dialog-start-new ref="dialogStartNew"></dialog-start-new>
+    <full-player v-if="playing" :ratio="playingWork.ratio" :work="playingWork"></full-player>
   </div>
 </template>
 
@@ -62,21 +63,18 @@ import ListConfig from './components/ListConfig.vue'
 import SceneConfig from './components/SceneConfig.vue'
 import FullPlayer from './components/FullPlayer.vue'
 import DialogWorkList from './components/DialogWorkList.vue'
-import { shortid } from '../utils/string'
 import DialogEditWork from './components/DialogEditWork'
+import DialogStartNew from './components/DialogStartNew'
 export default {
   name: 'Builder',
-  components: { DialogEditWork, ListConfig, ElementConfig, ImageCropper, LeftToggleMenu, Toolbar, LeftMenubar, SceneConfig, FullPlayer, DialogWorkList },
+  components: {DialogStartNew, DialogEditWork, ListConfig, ElementConfig, ImageCropper, LeftToggleMenu, Toolbar, LeftMenubar, SceneConfig, FullPlayer, DialogWorkList },
   mixins: [ elementMixin, saveShareMixin, sceneMixin, keyBindMixin ],
   props: {
-    ratio: {
-      type: String,
-      default: '9:16'
-    }
   },
   data () {
     return {
       work: {
+        ratio: '',
         id: '',
         title: '',
         categories: [],
@@ -127,19 +125,13 @@ export default {
     }
   },
   created () {
-    this.newWork()
+    this.newWorkDialog()
   },
   mounted () {
     this.zoomCenter()
     intereactWith(this.$refs.deviceDrag, this.$refs.device)
   },
   methods: {
-    newWork () {
-      this.work.id = shortid()
-      this.work.title = '我的作品'
-      this.work.isNew = true
-      this.addNewScene()
-    },
     hideLeftToggleMenu () {
       this.showLeftToggleMenu = false
     },
@@ -155,7 +147,7 @@ export default {
       const containerEl = this.$refs.container
       const paddings = [20, 20]
       this.zoom = 1
-      this.deviceOrigin = fitToContainer(this.ratio, containerEl.clientWidth - paddings[0] * 2, containerEl.clientHeight - paddings[1] * 2)
+      this.deviceOrigin = fitToContainer(this.work.ratio, containerEl.clientWidth - paddings[0] * 2, containerEl.clientHeight - paddings[1] * 2)
       this.$nextTick(() => {
         let x = (containerEl.clientWidth - paddings[0] * 2 - this.deviceOrigin.width) / 2
         let y = paddings[1]

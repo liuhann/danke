@@ -1,15 +1,21 @@
 <template>
 <el-dialog
-  width="800px"
+  width="640px"
   title="开始"
   :visible.sync="dialogVisible">
   <div class="start-new-container">
-    <div class="ratio-list">
-      <div class="ratio">
+    <div class="device-type-list">
+      <div class="device-type" :class="ratio==='9:16'?'checked':''" @click="ratio='9:16'">
+        <i class="icon-mobile-1"></i>
+        <div class="desc">适合手机等设备竖向观看</div>
       </div>
-      <div class="ratio">
+      <div class="device-type" :class="ratio==='4:3'?'checked':''" @click="ratio='4:3'">
+        <i class="icon-tablet-1"></i>
+        <div class="desc">适合平板等设备横向观看，比例为4：3</div>
       </div>
-      <div class="ratio">
+      <div class="device-type" :class="ratio==='16:9'?'checked':''" @click="ratio='16:9'">
+        <i class="icon-laptop"></i>
+        <div class="desc">适合桌面等16:9横向屏幕</div>
       </div>
     </div>
   </div>
@@ -17,7 +23,7 @@
     <a class="button is-small" @click="dialogVisible = false">
         取 消
     </a>
-    <a class="button is-small is-primary" @click="chooseWorkOpen">
+    <a class="button is-small is-primary" @click="chooseStartWork">
         确 定
     </a>
   </span>
@@ -34,84 +40,37 @@ export default {
   },
   data () {
     return {
-      works: [],
-      choosedWork: {},
+      ratio: '',
       dialogVisible: false
     }
   },
   created () {
-    this.workdao = new RestDAO(this.ctx, 'danke/work')
-    dayjs.locale('zh-cn')
   },
   methods: {
-    async open () {
+    open () {
       this.dialogVisible = true
-      const result = await this.workdao.list()
-      this.works = result.list
     },
-    chooseWork (work) {
-      this.choosedWork = work
-    },
-    async chooseWorkOpen () {
-      if (this.choosedWork.id) {
-        this.$emit('choose', this.choosedWork)
-      }
-      this.choosedWork = {}
-      this.dialogVisible = false
-    },
-    async deleteWorkDraft (work) {
-      await this.workdao.delete(work)
-      const result = await this.workdao.list()
-      this.works = result.list
-    },
-    formateTime (mill) {
-      return dayjs(mill).format('YYYY-MM-DD HH:mm:ss')
+    chooseStartWork () {
+
     }
   }
 }
 </script>
 <style lang="scss">
-.work-list-container {
-  display: flex;
-  .drafts {
-    flex: 3;
-    padding: 0 5px;
-    height: 360px;
-    overflow: auto;
-    .work-list {
-      border: 1px solid #eee;
-      border-radius: 10px;
-    }
-    .work-item {
-      padding: 5px 10px;
-      font-size: 1rem;
-      color:rgb(89, 96, 99);
-      position:relative;
-      &:hover {
-        background: #f2f2f2;
-      }
-      &.current {
-        background: rgb(68, 81, 94);
-        color: #fff;
-      }
-      .work-title {
-        flex: 1;
-      }
-      .operation {
-        position: absolute;
-        right: 10px;
-        top: 10px;
-      }
-      .updated {
-        white-space: nowrap;
-        font-weight: 700;
-        font-size: 12px;
-        color: #6e848b;
+.start-new-container {
+  .device-type-list {
+    display: flex;
+    height: 320px;
+    .device-type {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      i {
+        font-size: 24px;
+        color: #7a7a7a;
       }
     }
-  }
-  .publishs {
-    flex: 2;
   }
 }
 </style>

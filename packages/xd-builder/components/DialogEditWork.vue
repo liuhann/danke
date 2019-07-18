@@ -58,12 +58,13 @@ export default {
       this.desc = work.desc
       this.dialogVisible = true
     },
-    saveWork () {
+    async saveWork () {
       this.$emit('save', {
         title: this.title,
         categories: this.categories.split(' '),
         desc: this.desc
       })
+      this.dialogVisible = false
     }
   }
 }

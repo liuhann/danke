@@ -3,7 +3,7 @@ import ImageDAO from '../../common/dao/imagedao'
 import RestDAO from '../../common/dao/restdao'
 import { clone } from '../../utils/object'
 import is from '../../utils/is'
-
+import { shortid } from '../utils/string'
 export default {
   provide () {
     return {
@@ -18,7 +18,17 @@ export default {
     this.workdao = new RestDAO(this.ctx, 'danke/work')
   },
   methods: {
+    newWork (ratio) {
+      this.work.ratio = ratio
+      this.work.id = shortid()
+      this.work.title = '我的作品'
+      this.work.isNew = true
+      this.addNewScene()
+    },
     editWork () {
+    },
+    newWorkDialog () {
+      this.$refs.dialogStartNew.open()
     },
     async saveWork () {
       this.hideLeftToggleMenu()
