@@ -3,7 +3,7 @@ import ImageDAO from '../../common/dao/imagedao'
 import RestDAO from '../../common/dao/restdao'
 import { clone } from '../../utils/object'
 import is from '../../utils/is'
-import { shortid } from '../utils/string'
+import { shortid } from '../../utils/string'
 export default {
   provide () {
     return {

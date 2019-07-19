@@ -7,7 +7,6 @@ export default {
           vi.deleteElement(this.currentElement)
         }
       }
-      console.log(e.key)
       if (e.key.toUpperCase() === 'S' && e.ctrlKey) {
         e.preventDefault()
         vi.saveWork()

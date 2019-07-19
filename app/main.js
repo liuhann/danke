@@ -34,6 +34,10 @@ const boot = new AsyncBoot({
     site, user, frameTool, xd, ybstory
   ],
   started: async (ctx, next) => {
+    ctx._router.beforeEach((to, from, next) => {
+      to.meta.ctx = ctx
+      next()
+    })
     await next()
   },
   upload: {
