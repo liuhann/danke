@@ -6,7 +6,7 @@
       <div class="device-drag" ref="deviceDrag" @click="sceneClick"></div>
       <div class="device" v-if="currentScene" ref="device" :style="currentScene.style" @click.self="sceneClick">
         <div v-for="(element, index) of currentScene.elements" :key="element.id" :id="'element-' + element.id"
-             class="element" :class="[element.visible?'':'hidden']" :style="element.style + ';' + 'z-index:' + index + ';'"
+             class="element" :class="[element.visible?'':'hidden', 'type' + element.type]" :style="element.style + ';' + 'z-index:' + index + ';'"
              @click="chooseElement(element, $event)">
           <img v-if="element.type === TypeEnum.IMAGE" :src="element.url">
           <span v-if="element.type === TypeEnum.TEXT && element!==currentElement" v-html="$options.filters.newline(element.text)"></span>
@@ -16,13 +16,14 @@
           </div>
         </div>
         <div class="scene-options">
-          <span class="tag is-info">场景{{scenes.indexOf(currentScene)+1}}/{{scenes.length}}</span>
-          <a class="tag is-white" @click="previousScene" style="margin-top: 5px;">
+          <span class="tag is-info">{{scenes.indexOf(currentScene)+1}}/{{scenes.length}}</span>
+          <a class="button is-small" @click="previousScene" style="margin-top: 5px;">
             向前
           </a>
-          <a class="tag is-white" @click="nextScene" style="margin-top: 5px;">
+          <a class="button is-small" @click="nextScene" style="margin-top: 5px;">
             向后
           </a>
+          <a class="button is-success is-small" @click="addNewScene" style="margin-top: 5px;">新增</a>
         </div>
       </div>
     </div>
@@ -41,7 +42,7 @@
     <image-cropper ref="cropper"></image-cropper>
     <dialog-work-list ref="dialogWorkList" @choose="openWork"></dialog-work-list>
     <dialog-edit-work ref="dialogEditWork" @save="saveWorkDesc"></dialog-edit-work>
-    <dialog-start-new ref="dialogStartNew"></dialog-start-new>
+    <dialog-start-new ref="dialogStartNew" @choose="newWork"></dialog-start-new>
     <full-player v-if="playing" :ratio="playingWork.ratio" :work="playingWork"></full-player>
   </div>
 </template>
@@ -52,7 +53,6 @@ import saveShareMixin from './mixins/saveShare'
 import sceneMixin from './mixins/sceneMixins'
 import keyBindMixin from './mixins/key-binds'
 import { fitToContainer } from '../danke-core/utils/common'
-import { intereactWith } from './utils/interact'
 import { TypeEnum } from '../danke-core/elements/index'
 import ImageCropper from './components/ImageCropper'
 import LeftToggleMenu from './components/LeftToggleMenu.vue'
@@ -128,20 +128,19 @@ export default {
   },
   mounted () {
     this.newWorkDialog()
-    this.zoomCenter()
-    intereactWith(this.$refs.deviceDrag, this.$refs.device)
   },
   methods: {
     hideLeftToggleMenu () {
       this.showLeftToggleMenu = false
     },
     zoomIn () {
-      this.zoom = Math.floor((this.zoom - 0.1) * 10) / 10
-      this.reflow()
+      this.zoom = Math.floor((this.zoom - 0.02) * 100) / 100
+      this.reflow(this.scenes)
     },
     zoomOut () {
-      this.zoom = Math.floor((this.zoom + 0.1) * 10) / 10
-      this.reflow()
+      this.zoom = Math.floor((this.zoom + 0.02) * 100) / 100
+      console.log(this.zoom)
+      this.reflow(this.scenes)
     },
     zoomCenter () {
       const containerEl = this.$refs.container
@@ -218,9 +217,11 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
       z-index: 10;
       .element {
         position: absolute;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        &.type1 {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
         img {
           width: 100%;
           height: 100%;
@@ -257,9 +258,11 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
       }
       .scene-options {
         position: absolute;
-        right: -82px;
+        right: -42px;
+        display: flex;
+        flex-direction: column;
         top: 0;
-        width: 80px;
+        width: 40px;
         height: 300px;
       }
       .ti {

@@ -2,7 +2,7 @@
 <div class="device player" :style="deviceStyle">
   <div class="loading"></div>
   <div v-for="scene in work.scenes" :key="scene.id" class="scene" :style="scene.style">
-    <div v-for="(element) in scene.elements" :key="element.id" class="element"
+    <div v-for="(element) in scene.elements" :key="element.id" class="element" :class="['type' + element.type]"
       :style="element.style">
       <img v-if="element.type === TypeEnum.IMAGE" :src="element.url">
       <span v-if="element.type === TypeEnum.TEXT" v-html="$options.filters.newline(element.text)"></span>
@@ -33,9 +33,6 @@ export default {
     }
   },
   watch: {
-    work () {
-      this.play()
-    }
   },
   computed: {
     deviceStyle () {
@@ -88,9 +85,11 @@ export default {
   }
   .element {
     position: absolute;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    &.type1 {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
     img {
       width: 100%;
       height: 100%;

@@ -16,7 +16,7 @@
     </div>
     <div class="previews column is-narrow">
       <div style="width: 360px; height: 360px;" class="centering">
-        <player v-if="choosedWork" :work="choosedWork" :device="previewDevice"></player>
+        <player v-if="choosedWork" ref="player" :work="choosedWork" :device="previewDevice"></player>
       </div>
     </div>
   </div>
@@ -62,7 +62,11 @@ export default {
     },
     chooseWork (work) {
       this.choosedWork = work
+      // this.choosedWork.ratio = '16:9'
       this.previewDevice = fitToContainer(work.ratio, 320, 320)
+      this.$nextTick(() => {
+        this.$refs.player.play()
+      })
     },
     async chooseWorkOpen () {
       if (this.choosedWork.id) {

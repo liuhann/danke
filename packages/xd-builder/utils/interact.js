@@ -57,6 +57,7 @@ function getElementTranslates (el) {
 }
 
 function intereactWith (element, withElement) {
+  interact(element).unset()
   interact(element).draggable({
     onmove: function (event) {
       const targetTranslates = getElementTranslates(withElement)

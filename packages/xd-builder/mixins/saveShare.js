@@ -1,4 +1,5 @@
 import { Loading, Message } from 'element-ui'
+import { intereactWith } from '../utils/interact'
 import ImageDAO from '../../common/dao/imagedao'
 import RestDAO from '../../common/dao/restdao'
 import { clone } from '../../utils/object'
@@ -24,6 +25,10 @@ export default {
       this.work.title = '我的作品'
       this.work.isNew = true
       this.addNewScene()
+      this.zoomCenter()
+      this.$nextTick(() => {
+        intereactWith(this.$refs.deviceDrag, this.$refs.device)
+      })
     },
     editWork () {
     },
@@ -54,12 +59,12 @@ export default {
     },
     openWork (o) {
       const work = clone(o)
-      this.reflow(work.scenes)
       this.scenes = work.scenes
       this.work.id = work.id
       this.work._id = work._id
       this.work.isNew = false
       this.work.title = work.title
+      this.work.ratio = work.ratio
       this.work.categories = work.categories
       if (is.str(work.categories)) {
         this.work.categories = this.work.categories.split(',')
@@ -67,6 +72,11 @@ export default {
       this.work.desc = work.desc
       this.currentScene = this.scenes[0]
       this.currentElement = null
+      this.zoomCenter()
+      this.reflow(work.scenes)
+      this.$nextTick(() => {
+        intereactWith(this.$refs.deviceDrag, this.$refs.device)
+      })
     },
     async saveImages () {
       for (let url in this.resources) {
@@ -93,7 +103,6 @@ export default {
         }
         scene.style = ''
       }
-      work.ratio = this.ratio
       return work
     },
     openWorkListDialog () {
