@@ -67,7 +67,7 @@ import DialogEditWork from './components/DialogEditWork'
 import DialogStartNew from './components/DialogStartNew'
 export default {
   name: 'Builder',
-  components: {DialogStartNew, DialogEditWork, ListConfig, ElementConfig, ImageCropper, LeftToggleMenu, Toolbar, LeftMenubar, SceneConfig, FullPlayer, DialogWorkList },
+  components: { DialogStartNew, DialogEditWork, ListConfig, ElementConfig, ImageCropper, LeftToggleMenu, Toolbar, LeftMenubar, SceneConfig, FullPlayer, DialogWorkList },
   mixins: [ elementMixin, saveShareMixin, sceneMixin, keyBindMixin ],
   props: {
   },
@@ -82,7 +82,7 @@ export default {
       },
       playingWork: null,
       scenes: [],
-      currentScene: {},
+      currentScene: null,
       resources: {},
       currentElement: null,
       multipleElements: [],
@@ -125,9 +125,9 @@ export default {
     }
   },
   created () {
-    this.newWorkDialog()
   },
   mounted () {
+    this.newWorkDialog()
     this.zoomCenter()
     intereactWith(this.$refs.deviceDrag, this.$refs.device)
   },
