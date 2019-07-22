@@ -30,7 +30,7 @@
     </div>
     <div class="field is-grouped">
       <div class="control">
-        <button class="button is-primary" @click="login">登录</button>
+        <button class="button is-primary" :class="isLoading? 'is-loading': ''" @click="login">登录</button>
       </div>
       <div class="control">
         <button class="button is-text" @click="register">注册</button>
@@ -55,7 +55,8 @@ export default {
       captcha: '',
       svg: '',
       username: '',
-      password: ''
+      password: '',
+      isLoading: false
     }
   },
 
@@ -78,24 +79,29 @@ export default {
     },
 
     async login () {
+      this.isLoading = true
       let result = await this.ctx.userdao.login(this.username, this.password, this.captcha)
       if (result.code === 400) {
         this.error.captcha = '验证码不正确'
         this.refreshCaptcha()
+        this.isLoading = false
       }
       if (result.code === 401) {
         this.error.captcha = ''
         this.error.username = result.message
         this.captcha = ''
         this.refreshCaptcha()
+        this.isLoading = false
       }
       if (result.code === 200) {
+        this.ctx.user = result.user
         if (this.ctx.toPath) {
           this.$router.replace(this.ctx.toPath)
           this.ctx.toPath = null
         } else {
           this.$router.replace('/')
         }
+        this.isLoading = false
       }
     }
 
