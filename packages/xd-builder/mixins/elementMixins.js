@@ -47,11 +47,6 @@ export default {
       }
     }
   },
-  filters: {
-    newline (v) {
-      return v.replace(/\n/g, '<br>')
-    }
-  },
   methods: {
     addMenuClicked (menu, event) {
       if (menu.type === 'file') {
@@ -125,9 +120,6 @@ export default {
         this.resources[clonedElement.url] = blob
       }
     },
-    contentChange (e) {
-      this.editedText = e.target.innerHTML.replace(/<br>/g, '\n')
-    },
 
     deleteElement (element) {
       MessageBox.confirm('确认删除元素，是否继续？', '提示', {
@@ -158,13 +150,6 @@ export default {
       if (event && event.ctrlKey && this.multipleElements.length > 0) {
         this.addMultipleElement(element)
       } else {
-        if (this.currentElement && this.currentElement.type === TypeEnum.TEXT && this.editedText) {
-          this.currentElement.text = this.editedText
-          this.editedText = null
-        }
-        if (this.currentElement && this.currentElement.type === TypeEnum.TEXT && this.currentElement.text === '') {
-          this.currentElement.text = ' '
-        }
         this.currentElement = element
         if (element) {
           this.multipleElements = [element]

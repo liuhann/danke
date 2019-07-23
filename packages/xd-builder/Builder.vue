@@ -1,13 +1,16 @@
 <template>
   <div id="xd">
-    <toolbar></toolbar>
-    <left-menubar></left-menubar>
-    <div class="scene-container" ref="container">
+    <top-bar></top-bar>
+    <tool-bar></tool-bar>
+    <transition name="slide-left">
+      <left-toggle-menu v-if="showLeftToggleMenu" @menu-clicked="showLeftToggleMenu = false"></left-toggle-menu>
+    </transition>
+    <div class="scene-container" ref="sceneContainer">
       <div class="device-drag" ref="deviceDrag" @click="sceneClick"></div>
-      <div class="device" v-if="currentScene" ref="device" :style="currentScene.style" @click.self="sceneClick">
+      <div class="device" ref="device" v-if="currentScene" :style="currentScene.style" @click.self="sceneClick">
         <div v-for="(element, index) of currentScene.elements" :key="element.id" :id="'element-' + element.id"
              class="element" :class="[element.visible?'':'hidden', 'type' + element.type]" :style="element.style + ';' + 'z-index:' + index + ';'"
-             @click="chooseElement(element, $event)">
+             @click="choose(element, $event)">
           <img v-if="element.type === TypeEnum.IMAGE" :src="element.url">
           <span v-if="element.type === TypeEnum.TEXT && element!==currentElement" v-html="$options.filters.newline(element.text)"></span>
           <div class="mask" v-if="multipleElements.indexOf(element) > -1">
@@ -27,11 +30,11 @@
         </div>
       </div>
     </div>
-    <element-config :element="currentElement" v-if="currentElement"></element-config>
-    <scene-config :scene="currentScene" v-if="!currentElement && currentScene"></scene-config>
-    <transition name="slide-left">
-      <left-toggle-menu v-if="showLeftToggleMenu" @menu-clicked="showLeftToggleMenu = false"></left-toggle-menu>
-    </transition>
+    <div class="aside">
+      <element-config :element="currentElement" v-if="currentElement"></element-config>
+      <scene-config :scene="currentScene" v-if="!currentElement && currentScene"></scene-config>
+    </div>
+    <!-- float 切换显示 -->
     <list-config v-if="currentScene" v-show="showElementsLayer"
       :scenes="scenes"
       :current-element="currentElement"
@@ -51,13 +54,12 @@
 import elementMixin from './mixins/elementMixins'
 import saveShareMixin from './mixins/saveShare'
 import sceneMixin from './mixins/sceneMixins'
+import sceneContainer from './mixins/sceneContainer'
 import keyBindMixin from './mixins/key-binds'
-import { fitToContainer } from '../danke-core/utils/common'
 import { TypeEnum } from '../danke-core/elements/index'
 import ImageCropper from './components/ImageCropper'
 import LeftToggleMenu from './components/LeftToggleMenu.vue'
-import Toolbar from './components/Toolbar.vue'
-import LeftMenubar from './components/LeftMenubar.vue'
+import TopBar from './components/TopBar.vue'
 import ElementConfig from './components/ElementConfig.vue'
 import ListConfig from './components/ListConfig.vue'
 import SceneConfig from './components/SceneConfig.vue'
@@ -65,14 +67,28 @@ import FullPlayer from './components/FullPlayer.vue'
 import DialogWorkList from './components/DialogWorkList.vue'
 import DialogEditWork from './components/DialogEditWork'
 import DialogStartNew from './components/DialogStartNew'
+import ToolBar from './components/ToolBar.vue'
 export default {
   name: 'Builder',
-  components: { DialogStartNew, DialogEditWork, ListConfig, ElementConfig, ImageCropper, LeftToggleMenu, Toolbar, LeftMenubar, SceneConfig, FullPlayer, DialogWorkList },
-  mixins: [ elementMixin, saveShareMixin, sceneMixin, keyBindMixin ],
+  components: {
+    ToolBar,
+    TopBar,
+    DialogStartNew,
+    DialogEditWork,
+    ListConfig,
+    ElementConfig,
+    ImageCropper,
+    LeftToggleMenu,
+    SceneConfig,
+    FullPlayer,
+    DialogWorkList
+  },
+  mixins: [elementMixin, saveShareMixin, sceneMixin, keyBindMixin, sceneContainer],
   props: {
   },
   data () {
     return {
+      showWelcome: true,
       work: {
         ratio: '',
         id: '',
@@ -87,11 +103,6 @@ export default {
       currentElement: null,
       multipleElements: [],
       TypeEnum,
-      deviceOrigin: {
-        width: 360,
-        height: 640
-      },
-      zoom: 1,
       showLeftToggleMenu: false,
       showElementsLayer: false,
       playing: false
@@ -101,57 +112,35 @@ export default {
     return {
       scenes: this.scenes,
       showElementsLayer: this.showElementsLayer,
-      zoom: this.zoom,
+      multipleElements: this.multipleElements,
+      currentScene: this.currentScene,
       // provide methods
       hideLeftToggleMenu: this.hideLeftToggleMenu,
       stopWork: this.stopWork,
       runWork: this.runWork,
-      zoomIn: this.zoomIn,
-      zoomOut: this.zoomOut
-    }
-  },
-  computed: {
-    device () {
-      return {
-        width: this.deviceOrigin.width * this.zoom,
-        height: this.deviceOrigin.height * this.zoom
-      }
-    },
-    deviceStyle () {
-      return {
-        width: this.device.width + 'px',
-        height: this.device.height + 'px'
+      sceneClick: this.sceneClick,
+      zoomIn () {
+        this.$refs.sceneContainer.zoomIn()
+      },
+      zoomOut () {
+        this.$refs.sceneContainer.zoomOut()
       }
     }
   },
   created () {
   },
   mounted () {
-    this.newWorkDialog()
+    const work = this.$route.query.work
+    const ratio = this.$route.query.ratio
+    if (work === 'new') {
+      this.newWork(ratio)
+    } else {
+      this.fetchWork(work)
+    }
   },
   methods: {
     hideLeftToggleMenu () {
       this.showLeftToggleMenu = false
-    },
-    zoomIn () {
-      this.zoom = Math.floor((this.zoom - 0.02) * 100) / 100
-      this.reflow(this.scenes)
-    },
-    zoomOut () {
-      this.zoom = Math.floor((this.zoom + 0.02) * 100) / 100
-      console.log(this.zoom)
-      this.reflow(this.scenes)
-    },
-    zoomCenter () {
-      const containerEl = this.$refs.container
-      const paddings = [20, 20]
-      this.zoom = 1
-      this.deviceOrigin = fitToContainer(this.work.ratio, containerEl.clientWidth - paddings[0] * 2, containerEl.clientHeight - paddings[1] * 2)
-      this.$nextTick(() => {
-        let x = (containerEl.clientWidth - paddings[0] * 2 - this.deviceOrigin.width) / 2
-        let y = paddings[1]
-        this.$refs.device.style.transform = 'translate(' + x + 'px, ' + y + 'px)'
-      })
     },
     sceneClick () {
       this.hideLeftToggleMenu()
@@ -192,15 +181,25 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
   height: 100%;
   overflow: hidden;
   background-color: #f5f5f4;
-
+  .tool-bar {
+    position: absolute;
+    z-index: 101;
+    top: 40px;
+    width: 48px;
+    left: 0;
+    bottom: 0;
+  }
+  .top-bar {
+    height: 38px;
+  }
   .scene-container {
     position: absolute;
-    left: 0;
-    font-size: 0.75rem;
-    top: 3em;
+    left: 48px;
+    top: 40px;
     bottom: 0;
-    right: 0;
-    overflow: hidden;
+    right: 320px;
+    overflow: auto;
+
     .device-drag {
       position: absolute;
       top: 0;
@@ -273,6 +272,22 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
         height: 30px;
       }
     }
+  }
+  .welcome {
+    position: absolute;
+    left: 48px;
+    top: 40px;
+    bottom: 0;
+    right: 0;
+    overflow: auto;
+  }
+  .aside {
+    position: absolute;
+    right: 0;
+    top: 40px;
+    width: 320px;
+    bottom: 0;
+    background-color: #fff;
   }
 }
 

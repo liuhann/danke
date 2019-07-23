@@ -1,5 +1,5 @@
 <template>
-<nav class="panel element-prop-config is-small" id="element-prop-config">
+<nav class="element-prop-config">
   <p class="panel-heading">
     元素配置
   </p>
@@ -87,12 +87,7 @@ export default {
 
 <style lang="scss">
 #element-prop-config {
-  position: absolute;
-  z-index: 1002;
-  top: 2.5em;
-  background-color: #fff;
   width: 320px;
-  right: 0;
   .panel-body {
     padding: 10px;
     border: 1px solid #ccc;

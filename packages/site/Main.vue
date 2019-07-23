@@ -8,7 +8,7 @@
           设计适用于各种场景的展示页面
         </h1>
         <h2 class="subtitle">
-          <a class="button is-success is-rounded is-medium">发布并分享</a>
+          <router-link class="button is-success is-rounded is-medium" to="/xd/welcome">立刻开始</router-link>
         </h2>
       </div>
     </div>

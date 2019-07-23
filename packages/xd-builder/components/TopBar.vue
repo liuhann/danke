@@ -1,5 +1,5 @@
 <template>
-<div class="tool-bar is-clearfix">
+<div class="top-bar is-clearfix">
   <div class="flex-1">
     <a class="button is-white icon-menu" @click="$parent.showLeftToggleMenu = true"></a>
   </div>
@@ -23,6 +23,7 @@
 <script>
 import { Dialog } from 'element-ui'
 export default {
+  name: 'TopBar',
   components: {
     Dialog
   },
@@ -38,7 +39,7 @@ export default {
 </script>
 <style lang="scss">
 #xd {
-  .tool-bar {
+  .top-bar {
     display: flex;
     background-color: #fff;
     .align-right {

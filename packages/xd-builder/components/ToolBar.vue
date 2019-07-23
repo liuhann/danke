@@ -1,5 +1,5 @@
 <template>
-<div class="element-bar">
+<div class="tool-bar">
     <div class="top">
       <a class="file">
         <label class="file-label">
@@ -19,16 +19,12 @@
 </template>
 <script>
 export default {
+  name: 'ToolBar',
   inject: ['fileChoosed', 'insertShape', 'insertText']
 }
 </script>
 <style lang="scss">
-.element-bar {
-  position: absolute;
-  z-index: 101;
-  top: 2.5em;
-  left: 0;
-  bottom: 0;
+.tool-bar {
   background-color: #fff;
   display: flex;
   flex-direction: column;

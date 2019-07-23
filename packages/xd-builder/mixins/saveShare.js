@@ -24,11 +24,14 @@ export default {
       this.work.id = shortid()
       this.work.title = '我的作品'
       this.work.isNew = true
-      this.addNewScene()
       this.zoomCenter()
+      this.addNewScene()
       this.$nextTick(() => {
         intereactWith(this.$refs.deviceDrag, this.$refs.device)
       })
+    },
+    async fetchWork (workId) {
+
     },
     editWork () {
     },
@@ -74,9 +77,6 @@ export default {
       this.currentElement = null
       this.zoomCenter()
       this.reflow(work.scenes)
-      this.$nextTick(() => {
-        intereactWith(this.$refs.deviceDrag, this.$refs.device)
-      })
     },
     async saveImages () {
       for (let url in this.resources) {
