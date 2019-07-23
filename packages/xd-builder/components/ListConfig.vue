@@ -1,5 +1,6 @@
 <template>
 <nav id="list-config">
+  {{currentScene}}
   <p class="head" v-if="showSceneList">
     <span>画面列表</span>
     <i class="icon-plus-1" @click="addNewScene"></i>
@@ -12,14 +13,15 @@
   </p>
   <div class="item-list">
     <div class="scene-list" v-if="showSceneList">
-      <div class="scene-item list-item" v-for="(scene, index) of scenes" :class="[currentScene===scene?'current': '']" :key="index">
+      <div class="scene-item list-item" v-for="(scene, index) of work.scenes" :class="[currentScene===scene?'current': '']" :key="index">
         <i class="icon-sticky-note-o"></i>
         <div class="list-content" @click="chooseScene(scene)">{{scene.name}}</div>
         <i class="icon-angle-right" @click="openScene(scene)"></i>
       </div>
     </div>
     <draggable v-model="elementList" v-if="!showSceneList">
-      <div class="element-item list-item" v-for="(element, index) of elementList" :class="[currentElement===element?'current': '']" :key="index">
+      {{currentScene}}
+      <div class="element-item list-item" v-for="(element, index) of currentScene.elements" :class="[currentElement===element?'current': '']" :key="index">
         <div v-if="element.type === TypeEnum.IMAGE" class="image" :style="'background-image: url(' + element.url + ')'"></div>
         <div v-if="element.type === TypeEnum.SHAPE" class="shape" :style="[{
             backgroundColor: element.background.colors[0] || '#ccc',
@@ -66,12 +68,13 @@ export default {
     'currentScene',
     'currentElement',
     'device',
-    'scenes',
+    'work',
     'deleteElement',
     'chooseElement',
     'addNewScene',
     'cloneElement',
-    'chooseScene'],
+    'chooseScene'
+  ],
   data () {
     return {
       showSceneList: false,

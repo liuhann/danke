@@ -10,7 +10,7 @@
       <div class="device" ref="device" v-if="currentScene" :style="currentScene.style" @click.self="sceneClick">
         <div v-for="(element, index) of currentScene.elements" :key="element.id" :id="'element-' + element.id"
              class="element" :class="[element.visible?'':'hidden', 'type' + element.type]" :style="element.style + ';' + 'z-index:' + index + ';'"
-             @click="choose(element, $event)">
+             @click="chooseElement(element, $event)">
           <img v-if="element.type === TypeEnum.IMAGE" :src="element.url">
           <span v-if="element.type === TypeEnum.TEXT && element!==currentElement" v-html="$options.filters.newline(element.text)"></span>
           <div class="mask" v-if="multipleElements.indexOf(element) > -1">
@@ -19,7 +19,7 @@
           </div>
         </div>
         <div class="scene-options">
-          <span class="tag is-info">{{scenes.indexOf(currentScene)+1}}/{{scenes.length}}</span>
+          <span class="tag is-info">{{work.scenes.indexOf(currentScene)+1}}/{{work.scenes.length}}</span>
           <a class="button is-small" @click="previousScene" style="margin-top: 5px;">
             向前
           </a>
@@ -32,13 +32,10 @@
     </div>
     <div class="aside">
       <element-config :element="currentElement" v-if="currentElement"></element-config>
-      <scene-config :scene="currentScene" v-if="!currentElement && currentScene"></scene-config>
+      <scene-config :scene="currentScene" v-if="!currentElement && currentScene.id"></scene-config>
     </div>
     <!-- float 切换显示 -->
-    <list-config v-if="currentScene" v-show="showElementsLayer"
-      @go-scene-list="goToSceneList"
-      @choose-scene="chooseScene"
-      @ordered="resetOrder"></list-config>
+    <list-config v-show="showElementsLayer"></list-config>
     <image-cropper ref="cropper"></image-cropper>
     <dialog-work-list ref="dialogWorkList" @choose="openWork"></dialog-work-list>
     <dialog-edit-work ref="dialogEditWork" @save="saveWorkDesc"></dialog-edit-work>
@@ -82,31 +79,32 @@ export default {
   },
   data () {
     return {
-      showWelcome: true,
+      // 作品概要信息
       work: {
         ratio: '',
         id: '',
         title: '',
         categories: [],
-        desc: ''
+        desc: '',
+        resources: [],
+        scenes: []
       },
-      playingWork: null,
-      scenes: [],
-      currentScene: null,
-      resources: {},
+      currentScene: {},
       currentElement: null,
       multipleElements: [],
       TypeEnum,
       showLeftToggleMenu: false,
       showElementsLayer: false,
-      playing: false
+      playing: false,
+      playingWork: null
     }
   },
   provide () {
     return {
-      scenes: this.scenes,
+      work: this.work,
       showElementsLayer: this.showElementsLayer,
       multipleElements: this.multipleElements,
+      currentElement: this.currentElement,
       currentScene: this.currentScene,
       // provide methods
       hideLeftToggleMenu: this.hideLeftToggleMenu,
@@ -147,13 +145,8 @@ export default {
       this.playingWork = this.getWorkConfig()
       this.playing = true
     },
-
     async stopWork () {
       this.playing = false
-    },
-    chooseScene (scene) {
-      this.chooseElement(null)
-      this.currentScene = scene
     },
     goToSceneList () {
       this.chooseElement(null)

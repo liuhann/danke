@@ -62,7 +62,7 @@ export default {
     },
     openWork (o) {
       const work = clone(o)
-      this.scenes = work.scenes
+      this.work.scenes = work.scenes
       this.work.id = work.id
       this.work._id = work._id
       this.work.isNew = false
@@ -94,8 +94,7 @@ export default {
     },
     // extract work info
     getWorkConfig () {
-      const work = Object.assign({}, this.work)
-      work.scenes = clone(this.scenes)
+      const work = JSON.parse(JSON.stringify(this.work))
       for (let i = 0; i < work.scenes.length; i++) {
         const scene = work.scenes[i]
         for (let element of scene.elements) {

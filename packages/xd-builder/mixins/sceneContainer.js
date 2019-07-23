@@ -14,7 +14,11 @@ export default {
   },
   provide () {
     return {
-      zoom: this.zoom
+      device: this.device,
+      zoom: this.zoom,
+      zoomIn: this.zoomIn,
+      zoomOut: this.zoomOut,
+      zoomCenter: this.zoomCenter
     }
   },
   computed: {
@@ -31,27 +35,10 @@ export default {
       }
     }
   },
-  mounted () {
-  },
-  destroyed () {
-  },
   methods: {
     initSceneContainer () {
       intereactWith(this.$refs.deviceDrag, this.$refs.device)
       this.zoomCenter()
-    },
-    contentChange (e) {
-      this.editedText = e.target.innerHTML.replace(/<br>/g, '\n')
-    },
-    choose (element, e) {
-      if (this.currentElement && this.currentElement.type === TypeEnum.TEXT && this.editedText) {
-        this.currentElement.text = this.editedText
-        this.editedText = null
-      }
-      if (this.currentElement && this.currentElement.type === TypeEnum.TEXT && this.currentElement.text === '') {
-        this.currentElement.text = ' '
-      }
-      this.chooseElement(element, e)
     },
     zoomIn () {
       this.zoom = Math.floor((this.zoom - 0.02) * 100) / 100
@@ -62,7 +49,6 @@ export default {
       this.reflow(this.scenes)
     },
     zoomCenter () {
-      debugger
       const containerEl = this.$refs.sceneContainer
       const paddings = [20, 20]
       this.zoom = 1

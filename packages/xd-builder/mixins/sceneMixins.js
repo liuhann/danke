@@ -25,31 +25,32 @@ export default {
   methods: {
     addNewScene () {
       const scene = clone(SCENE)
-      scene.name = '画面 ' + (this.scenes.length + 1)
+      scene.name = '画面 ' + (this.work.scenes.length + 1)
       scene.id = shortid()
       scene.style = getSceneStyle(scene, this.device)
-      this.scenes.push(scene)
+      this.work.scenes.push(scene)
       this.chooseScene(scene)
     },
     chooseScene (scene) {
+      debugger
       this.chooseElement(null)
       this.currentScene = scene
     },
     nextScene () {
-      for (let i = 0; i < this.scenes.length; i++) {
-        if (this.currentScene === this.scenes[i]) {
-          if (i < this.scenes.length - 1) {
-            this.chooseScene(this.scenes[i + 1])
+      for (let i = 0; i < this.work.scenes.length; i++) {
+        if (this.currentScene === this.work.scenes[i]) {
+          if (i < this.work.scenes.length - 1) {
+            this.chooseScene(this.work.scenes[i + 1])
             break
           }
         }
       }
     },
     previousScene () {
-      for (let i = 0; i < this.scenes.length; i++) {
-        if (this.currentScene === this.scenes[i]) {
+      for (let i = 0; i < this.work.scenes.length; i++) {
+        if (this.currentScene === this.work.scenes[i]) {
           if (i > 0) {
-            this.chooseScene(this.scenes[i - 1])
+            this.chooseScene(this.work.scenes[i - 1])
             break
           }
         }
@@ -65,7 +66,7 @@ export default {
       }, this.device, 'dura')
     },
     deleteCurrentScene () {
-      if (this.scenes.length === 1) {
+      if (this.work.scenes.length === 1) {
         MessageBox.prompt('无法删除: 请至少保留一个场景')
         return
       }
@@ -74,13 +75,13 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        for (let i = 0; i < this.scenes.length; i++) {
-          if (this.scenes[i].id === this.currentScene.id) {
-            this.scenes.splice(i, 1)
+        for (let i = 0; i < this.work.scenes.length; i++) {
+          if (this.work.scenes[i].id === this.currentScene.id) {
+            this.work.scenes.splice(i, 1)
             if (i > 0) {
-              this.currentScene = this.scenes[i - 1]
+              this.currentScene = this.work.scenes[i - 1]
             } else {
-              this.currentScene = this.scenes[0]
+              this.currentScene = this.work.scenes[0]
             }
             break
           }

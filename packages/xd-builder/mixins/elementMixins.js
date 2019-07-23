@@ -47,6 +47,11 @@ export default {
       }
     }
   },
+  filters: {
+    newline (val) {
+      return val.replace(/\n/g, '<br>')
+    }
+  },
   methods: {
     addMenuClicked (menu, event) {
       if (menu.type === 'file') {
@@ -111,13 +116,13 @@ export default {
         clonedElement.size.height = (sizeHeight > 100 ? 100 : sizeHeight) + 'vh'
         clonedElement.position.offsetX = Math.floor((100 * cropbox.left || 0) / cropScreenSize.width) + 'vw'
         clonedElement.position.offsetY = Math.floor((100 * cropbox.top || 0) / cropScreenSize.height) + 'vh'
-        clonedElement.url = URL.createObjectURL(blob)
+        const resourceUrl = URL.createObjectURL(blob)
+        clonedElement.url = resourceUrl
         const style = getElementStyle(clonedElement, this.device)
         clonedElement.style = style
         this.currentScene.elements.push(clonedElement)
         elements.push(clonedElement)
         blob.filename = this.croppingFileName
-        this.resources[clonedElement.url] = blob
       }
     },
 
@@ -139,17 +144,28 @@ export default {
         }
       })
     },
-
+    contentChange (e) {
+      this.editedText = e.target.innerHTML.replace(/<br>/g, '\n')
+    },
     chooseElement (element, event) {
+      // 选择的就是当前元素、忽略
       if (this.currentElement && element && this.currentElement.id === element.id) {
         return
       }
+      // 销毁现有推拽
       if (this.currentElement) {
         destoryInteraction(document.getElementById('element-' + this.currentElement.id))
       }
       if (event && event.ctrlKey && this.multipleElements.length > 0) {
         this.addMultipleElement(element)
       } else {
+        if (this.currentElement && this.currentElement.type === TypeEnum.TEXT && this.editedText) {
+          this.currentElement.text = this.editedText
+          this.editedText = null
+        }
+        if (this.currentElement && this.currentElement.type === TypeEnum.TEXT && this.currentElement.text === '') {
+          this.currentElement.text = ' '
+        }
         this.currentElement = element
         if (element) {
           this.multipleElements = [element]
