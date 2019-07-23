@@ -36,16 +36,12 @@
     </div>
     <!-- float 切换显示 -->
     <list-config v-if="currentScene" v-show="showElementsLayer"
-      :scenes="scenes"
-      :current-element="currentElement"
-      :current-scene="currentScene"
       @go-scene-list="goToSceneList"
       @choose-scene="chooseScene"
       @ordered="resetOrder"></list-config>
     <image-cropper ref="cropper"></image-cropper>
     <dialog-work-list ref="dialogWorkList" @choose="openWork"></dialog-work-list>
     <dialog-edit-work ref="dialogEditWork" @save="saveWorkDesc"></dialog-edit-work>
-    <dialog-start-new ref="dialogStartNew" @choose="newWork"></dialog-start-new>
     <full-player v-if="playing" :ratio="playingWork.ratio" :work="playingWork"></full-player>
   </div>
 </template>
@@ -66,14 +62,12 @@ import SceneConfig from './components/SceneConfig.vue'
 import FullPlayer from './components/FullPlayer.vue'
 import DialogWorkList from './components/DialogWorkList.vue'
 import DialogEditWork from './components/DialogEditWork'
-import DialogStartNew from './components/DialogStartNew'
 import ToolBar from './components/ToolBar.vue'
 export default {
   name: 'Builder',
   components: {
     ToolBar,
     TopBar,
-    DialogStartNew,
     DialogEditWork,
     ListConfig,
     ElementConfig,

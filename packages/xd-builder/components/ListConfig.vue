@@ -61,23 +61,12 @@ export default {
   name: 'ListConfig',
   components: { draggable },
   props: {
-    trigger: {
-      type: String
-    },
-    currentScene: {
-      type: Object
-    },
-    currentElement: {
-      type: Object
-    },
-    scenes: {
-      type: Array
-    },
-    device: {
-      type: Object
-    }
   },
   inject: [
+    'currentScene',
+    'currentElement',
+    'device',
+    'scenes',
     'deleteElement',
     'chooseElement',
     'addNewScene',

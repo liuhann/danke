@@ -27,10 +27,16 @@
       </div>
     </div>
   </section>
-  <div class="create-from-template">
-  </div>
-  <div class="open-work">
-  </div>
+  <section class="section">
+    <div class="container">
+      <div class="welcome-title">使用模板创建</div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+      <div class="welcome-title">打开草稿</div>
+    </div>
+  </section>
 </div>
 </template>
 
@@ -54,49 +60,54 @@ export default {
 </script>
 
 <style lang="scss">
-  .device-type-list {
+.welcome-title {
+  font-size: 1.25rem;
+  color: #333;
+  padding: 5px;
+}
+.device-type-list {
+  display: flex;
+  height: 12rem;
+  .device-type {
+    cursor: pointer;
+    width: 160px;
+    flex-direction: column;
     display: flex;
-    height: 12rem;
-    justify-content: center;
-    .device-type {
-      cursor: pointer;
-      width: 160px;
-      flex-direction: column;
-      display: flex;
-      align-items: center;
-      border-radius: 8px;
-      margin: 10px;
-      &:hover {
-        border: 1px solid #00bf72;
-        i {
-          color: #47b17c;
-          transform: scale(1.6);
-        }
-        .desc {
-          color: #47b17c;
-        }
-      }
+    align-items: center;
+    border-radius: 8px;
+    margin: 10px;
+    &:hover {
+      border: 1px solid #00bf72;
       i {
-        transition: transform .2s ease-in;
-        margin-top: 3rem;
-        font-size: 3rem;
-        color: #7a7a7a;
+        color: #47b17c;
+        transform: scale(1.6);
       }
       .desc {
-        width: 8rem;
-        text-align: center;
+        color: #47b17c;
       }
+    }
+    i {
+      transition: transform .2s ease-in;
+      margin-top: 3rem;
+      font-size: 2.5rem;
+      color: #7a7a7a;
+    }
+    .desc {
+      font-size: .8rem;
+      width: 8rem;
+      text-align: center;
+    }
 
-      &.checked {
-        background-color: #00bf72;
-        i {
-          color: #fff;
-          transform: scale(1.6);
-        }
-        .desc {
-          color: #fff
-        }
+    &.checked {
+      background-color: #00bf72;
+      i {
+        color: #fff;
+        transform: scale(1.6);
+      }
+      .desc {
+        color: #fff
       }
     }
   }
+}
 </style>
