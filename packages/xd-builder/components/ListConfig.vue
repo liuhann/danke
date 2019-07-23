@@ -1,6 +1,5 @@
 <template>
 <nav id="list-config">
-  {{currentScene}}
   <p class="head" v-if="showSceneList">
     <span>画面列表</span>
     <i class="icon-plus-1" @click="addNewScene"></i>
@@ -20,7 +19,6 @@
       </div>
     </div>
     <draggable v-model="elementList" v-if="!showSceneList">
-      {{currentScene}}
       <div class="element-item list-item" v-for="(element, index) of currentScene.elements" :class="[currentElement===element?'current': '']" :key="index">
         <div v-if="element.type === TypeEnum.IMAGE" class="image" :style="'background-image: url(' + element.url + ')'"></div>
         <div v-if="element.type === TypeEnum.SHAPE" class="shape" :style="[{
@@ -63,10 +61,14 @@ export default {
   name: 'ListConfig',
   components: { draggable },
   props: {
+    currentScene: {
+      type: Object
+    },
+    currentElement: {
+      type: Object
+    }
   },
   inject: [
-    'currentScene',
-    'currentElement',
     'device',
     'work',
     'deleteElement',

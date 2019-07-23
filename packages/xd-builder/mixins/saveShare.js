@@ -73,7 +73,7 @@ export default {
         this.work.categories = this.work.categories.split(',')
       }
       this.work.desc = work.desc
-      this.currentScene = this.scenes[0]
+      this.currentScene = this.work.scenes[0]
       this.currentElement = null
       this.zoomCenter()
       this.reflow(work.scenes)

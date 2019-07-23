@@ -35,7 +35,7 @@
       <scene-config :scene="currentScene" v-if="!currentElement && currentScene.id"></scene-config>
     </div>
     <!-- float 切换显示 -->
-    <list-config v-show="showElementsLayer"></list-config>
+    <list-config v-show="showElementsLayer" :current-scene="currentScene" :current-element="currentElement"></list-config>
     <image-cropper ref="cropper"></image-cropper>
     <dialog-work-list ref="dialogWorkList" @choose="openWork"></dialog-work-list>
     <dialog-edit-work ref="dialogEditWork" @save="saveWorkDesc"></dialog-edit-work>

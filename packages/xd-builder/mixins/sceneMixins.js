@@ -32,7 +32,6 @@ export default {
       this.chooseScene(scene)
     },
     chooseScene (scene) {
-      debugger
       this.chooseElement(null)
       this.currentScene = scene
     },
