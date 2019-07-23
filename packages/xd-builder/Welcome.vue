@@ -13,10 +13,9 @@
           <div class="device-type" @click="chooseStartWork('9:16')">
             <i class="icon-mobile-1"></i>
             <div class="desc">手机</div>
-            <div class="desc">近似9:16比例</div>
           </div>
           <div class="device-type" @click="chooseStartWork('4:3')">
-            <i class="icon-tablet-1"></i>
+            <i class="icon-tablet-1 rotate90"></i>
             <div class="desc">平板</div>
           </div>
           <div class="device-type" @click="chooseStartWork('16:9')">
@@ -63,11 +62,14 @@ export default {
 .welcome-title {
   font-size: 1.25rem;
   color: #333;
-  padding: 5px;
+  padding: .25rem 1rem;
+}
+.rotate90 {
+  transform: rotate(90deg);
 }
 .device-type-list {
   display: flex;
-  height: 12rem;
+  height: 9rem;
   .device-type {
     cursor: pointer;
     width: 160px;
@@ -81,6 +83,9 @@ export default {
       i {
         color: #47b17c;
         transform: scale(1.6);
+        &.rotate90 {
+          transform: scale(1.6) rotate(90deg);
+        }
       }
       .desc {
         color: #47b17c;
@@ -88,7 +93,7 @@ export default {
     }
     i {
       transition: transform .2s ease-in;
-      margin-top: 3rem;
+      margin-top: 2rem;
       font-size: 2.5rem;
       color: #7a7a7a;
     }
