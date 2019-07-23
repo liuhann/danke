@@ -241,7 +241,7 @@ export default {
   }
   .image {
     margin-right: 5px;
-    width: 16x;
+    width: 16px;
     height: 16px;
     background-size: cover;
   }
