@@ -1,22 +1,18 @@
 <template>
 <nav class="element-prop-config">
-  <p class="panel-heading">
-    元素配置
-  </p>
-  <div class="panel-body">
-    <edit-font v-if="element.font" v-model="element.font"></edit-font>
-    <edit-background v-model="element.background" v-if="element.type !== TypeEnum.TEXT"></edit-background>
-    <edit-position v-model="element.position"></edit-position>
-    <edit-size v-model="element.size"></edit-size>
-    <edit-border v-model="element.border" v-if="element.border"></edit-border>
-    <edit-shadow v-model="element.shadow" v-if="element.shadow"></edit-shadow>
-    <edit-clip-path v-model="element.clip" v-if="element.clip"></edit-clip-path>
-    <hr/>
-    <edit-animation :animation="element.animation.in" animation-type="in" :icon="SVG_IN"></edit-animation>
-    <edit-animation :animation="element.animation.dura" animation-type="dura" :icon="SVG_DURA"></edit-animation>
-    <edit-animation :animation="element.animation.out" animation-type="out" :icon="SVG_OUT"></edit-animation>
-    <!--<form-field label="背景大小" type="select" v-css-model="element.background.size" :options="backgroundSizeOptions"></form-field>-->
+  <div class="form-title">
+    <div class="content">元素配置</div>
   </div>
+  <edit-font v-if="element.font" v-model="element.font"></edit-font>
+  <edit-background v-model="element.background" v-if="element.background"></edit-background>
+  <edit-position v-model="element.position"></edit-position>
+  <edit-size v-model="element.size"></edit-size>
+  <edit-border v-model="element.border" v-if="element.border"></edit-border>
+  <edit-shadow v-model="element.shadow" v-if="element.shadow"></edit-shadow>
+  <edit-clip-path v-model="element.clip" v-if="element.clip"></edit-clip-path>
+  <edit-animation :animation="element.animation.in" animation-type="in" :icon="SVG_IN"></edit-animation>
+  <edit-animation :animation="element.animation.dura" animation-type="dura" :icon="SVG_DURA"></edit-animation>
+  <edit-animation :animation="element.animation.out" animation-type="out" :icon="SVG_OUT"></edit-animation>
 </nav>
 </template>
 
@@ -86,30 +82,12 @@ export default {
 </script>
 
 <style lang="scss">
-#element-prop-config {
-  width: 320px;
-  .panel-body {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-top: none;
-  }
-  .desc {
-    height: 60px;
-  }
-  .image-display {
-    width: 220px;
-    height: 90px;
-    background-color: #efefef;
-  }
-  .upload {
-    height: 100px;
-    .el-upload {
-      display: inherit;
-      text-align: center;
-      cursor: pointer;
-      outline: 0;
-      padding: 25px;
-    }
+.element-prop-config {
+  padding: 10px;
+  .form-title {
+    padding-bottom: .3rem;
+    margin-bottom: .5rem;
+    border-bottom: 1px solid #eee;
   }
 }
 </style>

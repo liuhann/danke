@@ -1,4 +1,4 @@
-import { IMAGE, SHAPE, TEXT, TypeEnum } from '../../danke-core/elements/index'
+import { IMAGE, SHAPE, TEXT, TypeEnum, SVG } from '../../danke-core/elements/index'
 import { clone } from '../../utils/object'
 import { getElementStyle, getSceneStyle } from '../../danke-core/utils/styles'
 import { interactElement, destoryInteraction } from '../utils/interact'
@@ -18,6 +18,7 @@ export default {
       insertText: this.insertText,
       deleteElement: this.deleteElement,
       fileChoosed: this.fileChoosed,
+      svgFileChoosed: this.svgFileChoosed,
       cloneElement: this.cloneElement
     }
   },
@@ -62,6 +63,23 @@ export default {
         this.insertShape()
       }
     },
+
+    svgFileChoosed (e) {
+      const builder = this
+      if (e.currentTarget.files.length) {
+        const file = e.currentTarget.files[0]
+        if (file.size > this.ctx.upload.maxSize) {
+          this.error = '文件最大为' + this.ctx.upload.maxSize
+          return
+        }
+        const image = new Image()
+        image.onload = function () {
+          builder.insertSVG(this.src, this.width, this.height)
+        }
+        image.src = URL.createObjectURL(file)
+      }
+    },
+
     fileChoosed (e) {
       if (e.currentTarget.files.length) {
         const file = e.currentTarget.files[0]
@@ -124,6 +142,20 @@ export default {
         elements.push(clonedElement)
         blob.filename = this.croppingFileName
       }
+    },
+    insertSVG (url, width, height) {
+      const clonedElement = clone(SVG)
+      clonedElement.name = '矢量图'
+      clonedElement.visible = true
+      clonedElement.position.horizontal = 'left'
+      clonedElement.position.vertical = 'top'
+      clonedElement.size.width = '20vw'
+      clonedElement.size.height = Math.floor(20 / width * height) + 'vw'
+      clonedElement.url = url
+      const style = getElementStyle(clonedElement, this.device)
+      clonedElement.style = style
+      this.currentScene.elements.push(clonedElement)
+      this.currentElement = clonedElement
     },
 
     deleteElement (element) {

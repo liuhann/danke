@@ -11,7 +11,7 @@
         <div v-for="(element, index) of currentScene.elements" :key="element.id" :id="'element-' + element.id"
              class="element" :class="[element.visible?'':'hidden', 'type' + element.type]" :style="element.style + ';' + 'z-index:' + index + ';'"
              @click="chooseElement(element, $event)">
-          <img v-if="element.type === TypeEnum.IMAGE" :src="element.url">
+          <img v-if="element.type === TypeEnum.IMAGE || element.type === TypeEnum.SVG" :src="element.url">
           <span v-if="element.type === TypeEnum.TEXT && element!==currentElement" v-html="$options.filters.newline(element.text)"></span>
           <div class="mask" v-if="multipleElements.indexOf(element) > -1">
             <span @input="contentChange" contenteditable v-if="element.type === TypeEnum.TEXT && multipleElements.length === 1" v-html="$options.filters.newline(element.text)"></span>

@@ -25,7 +25,7 @@ export default {
   methods: {
     addNewScene () {
       const scene = clone(SCENE)
-      scene.name = '画面 ' + (this.work.scenes.length + 1)
+      scene.name = '场景 ' + (this.work.scenes.length + 1)
       scene.id = shortid()
       scene.style = getSceneStyle(scene, this.device)
       this.work.scenes.push(scene)

@@ -1,3 +1,6 @@
+/**
+ * 保存加载相关处理
+ */
 import { Loading, Message } from 'element-ui'
 import { intereactWith } from '../utils/interact'
 import ImageDAO from '../../common/dao/imagedao'
@@ -20,6 +23,10 @@ export default {
     this.workdao = new RestDAO(this.ctx, 'danke/work')
   },
   methods: {
+    /**
+     * 新增作品
+     * @param ratio
+     */
     newWork (ratio) {
       this.work.ratio = ratio
       this.work.id = shortid()
@@ -42,6 +49,10 @@ export default {
     },
     async saveWork () {
       this.hideLeftToggleMenu()
+      if (this.savingWork) {
+        return
+      }
+      this.savingWork = true
       const loading = Loading.service({
         lock: true,
         text: '正在保存中',
@@ -62,6 +73,7 @@ export default {
       }
       loading.close()
       Message.success('保存完成')
+      this.savingWork = false
     },
     openWork (o) {
       const work = clone(o)

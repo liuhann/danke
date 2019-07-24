@@ -1,5 +1,8 @@
 <template>
-<nav id="scene-config">
+<nav class="scene-config">
+  <div class="form-title">
+    <div class="content">场景配置</div>
+  </div>
   <div class="field has-addons">
     <p class="control">
       <a class="button is-static is-small">名称</a>
@@ -80,12 +83,12 @@ export default {
 </script>
 
 <style lang="scss">
-#scene-config {
+.scene-config {
   padding: 10px;
-  .panel-body {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-top: none;
+  .form-title {
+    padding-bottom: .3rem;
+    margin-bottom: .5rem;
+    border-bottom: 1px solid #eee;
   }
 }
 </style>
