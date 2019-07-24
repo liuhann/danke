@@ -15,10 +15,12 @@ export const sceneType = [{
   key: sceneTypeEnum.FORGROUND,
   value: '前景'
 }]
+const background = JSON.parse(JSON.stringify(BACKGROUND))
+background.color = ['rgba(0,0,0,0)']
 export default {
   name: '',
   type: 1,
-  background: BACKGROUND,
+  background,
   elements: [],
   leave: 3000,
   z: 100, // 场景的层次

@@ -84,9 +84,10 @@ export default {
     async saveImages () {
       for (let scene of this.work.scenes) {
         for (let element of scene.elements) {
-          if (element.type === TypeEnum.IMAGE && element.url.indexOf('blob:') > -1) {
-            const result = await this.imagedao.uploadBlob(element.url, this.work.id)
+          if (element.blob) {
+            const result = await this.imagedao.uploadBlob(element.blob, this.work.id)
             element.imgPath = result.name
+            delete element.blob
           }
         }
       }

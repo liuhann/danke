@@ -147,7 +147,6 @@ export default class Danke {
   renderLeave (scene) {
     for (let element of scene.elements) {
       element.style = getElementStyle(element, this.device, 'out')
-      console.log('render leave style', element.style)
     }
     scene.style = `display: inherit; ${getSceneStyle(scene, this.device, 'out')}`
   }
