@@ -10,7 +10,7 @@ import EditLen from './components/EditLen.vue'
 import EditPosition from './components/EditPosition.vue'
 import EditSize from './components/EditSize.vue'
 import ItemBlock from './components/ItemBlock.vue'
-import { getElementStyle } from '../danke-core/utils/styles'
+import { getElementStyle } from '../../danke-core/utils/styles'
 
 export default PropConfig
 

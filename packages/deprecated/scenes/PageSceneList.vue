@@ -48,10 +48,10 @@
 
 <script>
 import './fontello/css/fontello.css'
-import NavBar from '../site/components/NavBar.vue'
+import NavBar from '../../site/components/NavBar.vue'
 import ratios from './utils/ratios'
-import DropDownMenu from '../common/components/DropDownMenu'
-import RestDAO from '../common/dao/restdao'
+import DropDownMenu from '../../common/components/DropDownMenu'
+import RestDAO from '../../common/dao/restdao'
 import PagePlay from './PagePlay.vue'
 
 const sizes = {

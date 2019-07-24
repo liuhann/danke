@@ -36,16 +36,16 @@
 <script>
 import elementMixin from './mixins/elementMixins'
 import saveShareMixin from './mixins/saveShare'
-import { fitToContainer } from '../danke-core/utils/common'
+import { fitToContainer } from '../../danke-core/utils/common'
 import { intereactWith } from './mixins/interact'
-import { TypeEnum } from '../danke-core/elements/index'
+import { TypeEnum } from '../../danke-core/elements'
 import ImageCropper from './components/ImageCropper'
 import LeftToggleMenu from './tabs/LeftToggleMenu'
 import Toolbar from './parts/Toolbar'
 import LeftMenubar from './parts/LeftMenubar'
 import PropConfig from './tabs/PropConfig'
 import ElementListConfig from './tabs/ElementListConfig'
-import { renderSceneStage } from '../danke-core/utils/styles'
+import { renderSceneStage } from '../../danke-core/utils/styles'
 export default {
   name: 'FullPageSceneMaker',
   components: { ElementListConfig, PropConfig, ImageCropper, LeftToggleMenu, Toolbar, LeftMenubar },

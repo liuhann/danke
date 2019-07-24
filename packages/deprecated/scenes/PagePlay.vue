@@ -9,8 +9,8 @@
 </template>
 
 <script>
-import { getElementStyle, getSceneStyle, getLength } from '../danke-core/utils/styles'
-import { TypeEnum } from '../danke-core/css-model/element'
+import { getElementStyle, getSceneStyle, getLength } from '../../danke-core/utils/styles'
+import { TypeEnum } from '../../danke-core/css-model/element'
 export default {
   name: 'PagePlay',
   props: {

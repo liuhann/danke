@@ -60,19 +60,19 @@
 </template>
 
 <script>
-import mixinLoginRequired from '../user/guardLoginRequired'
+import mixinLoginRequired from '../../user/guardLoginRequired'
 import ElementListConfig from './tabs/ElementListConfig.vue'
-import NavBar from '../site/components/NavBar'
+import NavBar from '../../site/components/NavBar'
 import PropConfig from './tabs/PropConfig.vue'
-import { IMAGE, SHAPE, TEXT, TypeEnum } from '../danke-core/elements/index'
-import { clone } from '../utils/object'
-import { getElementStyle, getSceneStyle } from '../danke-core/utils/styles'
-import { getLengthDelta, fitToContainer } from '../danke-core/utils/common.js'
+import { IMAGE, SHAPE, TEXT, TypeEnum } from '../../danke-core/elements'
+import { clone } from '../../utils/object'
+import { getElementStyle, getSceneStyle } from '../../danke-core/utils/styles'
+import { getLengthDelta, fitToContainer } from '../../danke-core/utils/common.js'
 import ImageCropper from './components/ImageCropper.vue'
-import DropDownMenu from '../common/components/DropDownMenu'
-import ImageDAO from '../common/dao/imagedao'
-import RestDAO from '../common/dao/restdao'
-import { Loading, Message } from 'element-ui'
+import DropDownMenu from '../../common/components/DropDownMenu'
+import ImageDAO from '../../common/dao/imagedao'
+import RestDAO from '../../common/dao/restdao'
+import { Loading, Message } from 'element-ui/types'
 import MultiElementConfig from './tabs/MultiElementConfig'
 import PagePlay from './PagePlay'
 import PreviewDialog from './PreviewDialog'
@@ -365,7 +365,7 @@ export default {
     },
 
     async saveCover () {
-      const html2Canvas = (await import(/* webpackChunkName: "html2canvas" */'html2canvas')).default
+      const html2Canvas = (await import(/* webpackChunkName: "html2canvas" */'html2canvas/dist/types')).default
       const previewBlob = await this.getCanvasBlob(await html2Canvas(this.$refs.previewDevice, {
         allowTaint: true,
         useCORS: true

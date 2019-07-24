@@ -31,7 +31,8 @@ export default {
       })
     },
     async fetchWork (workId) {
-
+      const work = await this.workdao.getOne(workId)
+      this.openWork(work)
     },
     editWork () {
     },

@@ -5,9 +5,9 @@
 </template>
 
 <script>
-import { Dialog } from 'element-ui'
+import { Dialog } from 'element-ui/types'
 import PagePlay from './PagePlay'
-import { fitToContainer } from '../danke-core/utils/common'
+import { fitToContainer } from '../../danke-core/utils/common'
 export default {
   name: 'PreviewDialog',
   components: { PagePlay, Dialog },

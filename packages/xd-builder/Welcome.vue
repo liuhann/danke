@@ -35,12 +35,21 @@
     <div class="container">
       <div class="welcome-title">打开草稿</div>
     </div>
+    <ul class='work-list'>
+      <li class="work-item" :class="choosedWork.id===work.id?'current': ''" v-for="work in draftWorks" :key="work.id" @click="chooseDraftWork(work)">
+        <div class="work-title">{{work.title}}</div>
+        <div class="updated">{{formateTime(work.updated)}}</div>
+        <div class="operation"><i class="icon-trash-empty" @click="deleteWorkDraft(work)"></i></div>
+      </li>
+    </ul>
   </section>
 </div>
 </template>
 
 <script>
 import NavBar from '../site/components/NavBar'
+import RestDAO from '../common/dao/restdao'
+import dayjs from 'dayjs'
 export default {
   name: 'Welcome',
   components: {
@@ -48,11 +57,27 @@ export default {
   },
   data () {
     return {
+      choosedWork: {},
+      draftWorks: []
     }
   },
+  created () {
+    this.workdao = new RestDAO(this.ctx, 'danke/work')
+    this.loadDraftWorks()
+  },
   methods: {
+    async loadDraftWorks () {
+      const result = await this.workdao.list()
+      this.draftWorks = result.list
+    },
+    chooseDraftWork (work) {
+      this.$router.push('/xd?ratio=' + work.ratio + '&work=' + work._id)
+    },
     chooseStartWork (ratio) {
-      this.$router.replace('/xd?ratio=' + ratio + '&work=new')
+      this.$router.push('/xd?ratio=' + ratio + '&work=new')
+    },
+    formateTime (mill) {
+      return dayjs(mill).format('YYYY-MM-DD HH:mm:ss')
     }
   }
 }
