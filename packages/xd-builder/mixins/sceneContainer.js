@@ -50,7 +50,7 @@ export default {
     },
     zoomCenter () {
       const containerEl = this.$refs.sceneContainer
-      const paddings = [20, 20]
+      const paddings = [40, 20]
       this.zoom = 1
       this.deviceOrigin = fitToContainer(this.work.ratio, containerEl.clientWidth - paddings[0] * 2, containerEl.clientHeight - paddings[1] * 2)
       this.$nextTick(() => {

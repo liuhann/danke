@@ -72,6 +72,29 @@ function fitToContainer (ratio, width, height) {
   }
 }
 
+function fitBy (ratio, width, height) {
+  // 获取比例
+  let [w, h] = ratio.split(':')
+  let rw = parseInt(w)
+  let rh = parseInt(h)
+  if (width) {
+    return {
+      width,
+      height: Math.floor(width / rw * rh)
+    }
+  }
+  if (height) {
+    return {
+      height,
+      width: Math.floor(height / rh * rw)
+    }
+  }
+  return {
+    width: 320,
+    height: 640
+  }
+}
+
 async function wait (mill) {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -90,4 +113,4 @@ function clipElementModel (element) {
 function resumeElementModel (element) {
 
 }
-export { getLength, getLenSplits, fitToContainer, wait, clipElementModel, resumeElementModel }
+export { getLength, getLenSplits, fitToContainer, wait, clipElementModel, resumeElementModel, fitBy }

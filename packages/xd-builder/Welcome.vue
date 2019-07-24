@@ -34,25 +34,34 @@
   <section class="section">
     <div class="container">
       <div class="welcome-title">打开草稿</div>
+      <ul class='work-list'>
+        <li class="work-item" v-for="work in draftWorks" :key="work.id" >
+          <div class="cover" @click="chooseDraftWork(work)">
+            <work-cover :work="work" :height="200"></work-cover>
+          </div>
+          <div class="work-info">
+            <div class="work-title">
+              {{work.title}}
+            </div>
+            <div class="operation"><i class="icon-trash-empty" @click="deleteWorkDraft(work)"></i></div>
+          </div>
+        </li>
+      </ul>
     </div>
-    <ul class='work-list'>
-      <li class="work-item" :class="choosedWork.id===work.id?'current': ''" v-for="work in draftWorks" :key="work.id" @click="chooseDraftWork(work)">
-        <div class="work-title">{{work.title}}</div>
-        <div class="updated">{{formateTime(work.updated)}}</div>
-        <div class="operation"><i class="icon-trash-empty" @click="deleteWorkDraft(work)"></i></div>
-      </li>
-    </ul>
   </section>
 </div>
 </template>
 
 <script>
+import { MessageBox } from 'element-ui'
 import NavBar from '../site/components/NavBar'
 import RestDAO from '../common/dao/restdao'
 import dayjs from 'dayjs'
+import WorkCover from './components/WorkCover'
 export default {
   name: 'Welcome',
   components: {
+    WorkCover,
     NavBar
   },
   data () {
@@ -78,6 +87,11 @@ export default {
     },
     formateTime (mill) {
       return dayjs(mill).format('YYYY-MM-DD HH:mm:ss')
+    },
+    async deleteWorkDraft (work) {
+      await MessageBox.confirm('确认删除此作品', '注意')
+      await this.workdao.delete(work)
+      this.loadDraftWorks()
     }
   }
 }
@@ -91,6 +105,23 @@ export default {
 }
 .rotate90 {
   transform: rotate(90deg);
+}
+.work-list {
+  display: flex;
+  flex-wrap: wrap;
+  .work-item {
+    margin-right: 2rem;
+    .work-info {
+      align-items: center;
+      display: flex;
+      padding: .5rem;
+      .work-title {
+        flex: 1;
+        font-size: .8rem;
+        color: #333;
+      }
+    }
+  }
 }
 .device-type-list {
   display: flex;

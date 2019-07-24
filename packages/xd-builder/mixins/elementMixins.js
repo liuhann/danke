@@ -192,8 +192,8 @@ export default {
       this.chooseElement(clonedElement)
     },
 
-    reflow (scenes) {
-      for (let scene of scenes) {
+    reflow () {
+      for (let scene of this.work.scenes) {
         for (let element of scene.elements) {
           if (element.imgPath) {
             element.url = this.ctx.IMG_SERVER + '/' + element.imgPath

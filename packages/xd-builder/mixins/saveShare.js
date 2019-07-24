@@ -5,6 +5,7 @@ import RestDAO from '../../common/dao/restdao'
 import { clone } from '../../utils/object'
 import is from '../../utils/is'
 import { shortid } from '../../utils/string'
+import { TypeEnum } from '../../danke-core/elements'
 export default {
   provide () {
     return {
@@ -50,6 +51,7 @@ export default {
       // save scene preview
       await this.saveImages()
       const work = this.getWorkConfig()
+      // work.cover = await this.saveCover()
       work.isDraft = true
       if (this.work.isNew) {
         delete this.work.isNew
@@ -80,18 +82,23 @@ export default {
       this.reflow(work.scenes)
     },
     async saveImages () {
-      for (let url in this.resources) {
-        const result = await this.imagedao.uploadBlob(this.resources[url], this.work.id)
-        for (let scene of this.scenes) {
-          for (let element of scene.elements) {
-            if (element.url === url) {
-              element.imgPath = result.name
-              break
-            }
+      for (let scene of this.work.scenes) {
+        for (let element of scene.elements) {
+          if (element.type === TypeEnum.IMAGE && element.url.indexOf('blob:') > -1) {
+            const result = await this.imagedao.uploadBlob(element.url, this.work.id)
+            element.imgPath = result.name
           }
         }
-        delete this.resources[url]
       }
+    },
+    async saveCover () {
+      const html2Canvas = (await import(/* webpackChunkName: "html2canvas" */'html2canvas/dist/html2canvas.esm.js')).default
+      const previewBlob = await this.getCanvasBlob(await html2Canvas(this.$refs.device, {
+        allowTaint: true,
+        useCORS: true
+      }))
+      const previewUpload = await this.imagedao.uploadBlob(previewBlob)
+      return previewUpload.url.replace(/http[s]*:\/\/[^/]+/g, '')
     },
     // extract work info
     getWorkConfig () {
