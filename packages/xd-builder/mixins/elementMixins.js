@@ -136,6 +136,7 @@ export default {
         clonedElement.position.offsetY = Math.floor((100 * cropbox.top || 0) / cropScreenSize.height) + 'vh'
         const resourceUrl = URL.createObjectURL(blob)
         clonedElement.url = resourceUrl
+        clonedElement.blob = blob
         const style = getElementStyle(clonedElement, this.device)
         clonedElement.style = style
         this.currentScene.elements.push(clonedElement)

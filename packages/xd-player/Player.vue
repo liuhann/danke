@@ -90,6 +90,13 @@ export default {
       justify-content: center;
       align-items: center;
     }
+    &.type2 {
+      display: flex;
+      align-items: center;
+      span {
+        width: 100%;
+      }
+    }
     img {
       width: 100%;
       height: 100%;

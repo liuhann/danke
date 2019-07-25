@@ -26,6 +26,9 @@ export default {
     width: {
       type: Number
     },
+    ratio: {
+      type: String
+    },
     height: {
       type: Number
     }
@@ -39,7 +42,7 @@ export default {
   },
   computed: {
     device () {
-      return fitBy(this.work.ratio, this.width, this.height)
+      return fitBy(this.ratio, this.width, this.height)
     },
     scene () {
       if (this.index) {
@@ -92,9 +95,11 @@ export default {
       align-items: center;
     }
     &.type2 {
-      justify-content: center;
       display: flex;
       align-items: center;
+      span {
+        width: 100%;
+      }
     }
     img {
       width: 100%;

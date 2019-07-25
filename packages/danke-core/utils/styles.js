@@ -50,7 +50,7 @@ function getWorkStyle (work, device) {
   return getBackgroundStyle(work.background)
 }
 
-function getSceneStyle (scene, device, stage) {
+function getSceneStyle (scene, device, stage, fontRatio = 1) {
   const styles = []
   if (scene.background) {
     styles.push(getBackgroundStyle({
@@ -59,7 +59,7 @@ function getSceneStyle (scene, device, stage) {
   }
   styles.push(`width: ${device.width}px`)
   styles.push(`height: ${device.height}px`)
-  styles.push(`font-size: ${device.width / 30}px`)
+  styles.push(`font-size: ${device.width / 30 * fontRatio}px`)
   switch (scene.type) {
     case sceneTypeEnum.COMMON:
       styles.push(`z-index: ${100 + parseInt(scene.z)}`)

@@ -6,7 +6,9 @@ export default class ImageDAO {
   async uploadBlob (blob, path) {
     // check file size
     const formData = new window.FormData()
-    blob.lastModifiedDate = new Date()
+    if (!blob.lastModifiedDate) {
+      blob.lastModifiedDate = new Date()
+    }
     formData.append('file', blob, blob.filename)
     return this.ctx.post(`image/upload?path=${path}`, {
       body: formData
