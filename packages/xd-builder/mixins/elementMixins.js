@@ -19,7 +19,11 @@ export default {
       deleteElement: this.deleteElement,
       fileChoosed: this.fileChoosed,
       svgFileChoosed: this.svgFileChoosed,
-      cloneElement: this.cloneElement
+      cloneElement: this.cloneElement,
+      moveUp: this.moveUp,
+      moveDown: this.moveDown,
+      moveTop: this.moveTop,
+      moveBottom: this.moveBottom
     }
   },
   watch: {
@@ -223,6 +227,22 @@ export default {
       this.inc++
       this.currentScene.elements.push(clonedElement)
       this.chooseElement(clonedElement)
+    },
+    
+    moveUp (element) {
+    
+    },
+    
+    moveDown () {
+    
+    },
+    
+    moveTop () {
+    
+    },
+    
+    moveBottom () {
+    
     },
 
     reflow () {

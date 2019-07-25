@@ -15,7 +15,7 @@
   <edit-clip-path v-model="element.clip" v-if="element.clip"></edit-clip-path>
 
   <div class="buttons has-addons">
-    <span class="button is-small" @click="">
+    <span class="button is-small" @click="moveUp">
       <span class="icon is-small" >
         <i class="icon-angle-up"></i>
       </span>
@@ -73,6 +73,7 @@ export default {
     EditShadow,
     EditFont
   },
+  inject: ['moveUp', 'moveDown', 'moveTop', 'moveBottom'],
   data () {
     return {
       shapeOptions: Shapes,
