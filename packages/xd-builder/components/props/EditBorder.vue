@@ -2,7 +2,7 @@
 <div class="edit-border">
   <div class="field has-addons">
     <div class="control icon-label">
-      <img class="svg-icon" :src="SVG_BORDER">
+      <i class="icon-marquee"></i>
     </div>
     <p class="control">
       <edit-len v-model="border.width" :with-unit="false" unit-label="像素"></edit-len>
@@ -20,7 +20,7 @@
   </div>
   <div class="field has-addons">
     <p class="control icon-label">
-      <img class="svg-icon" :src="SVG_CORNER">
+      <i class="icon-check-empty-1"></i>
     </p>
     <p class="control">
       <edit-len v-model="border.radius" label="" :with-unit="false" unit-label="像素"></edit-len>
@@ -30,7 +30,6 @@
 </template>
 
 <script>
-import SVG_BORDER from '../../svg/broken-lines-square-border.svg'
 import SVG_CORNER from '../../svg/corner.svg'
 import FormField from './FormField'
 import EditLen from './EditLen.vue'
@@ -57,7 +56,6 @@ export default {
   data () {
     return {
       SVG_CORNER,
-      SVG_BORDER,
       LINE_STYLES
     }
   },

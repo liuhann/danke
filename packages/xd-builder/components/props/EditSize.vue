@@ -1,7 +1,7 @@
 <template>
-<div class="field has-addons">
+<div class="field has-addons bottom-line">
   <p class="control icon-label">
-    <img class="svg-icon" :src="SVG_RESIZE">
+    <i class="icon-resize-full"></i>
   </p>
   <p class="control">
     <input class="input is-small" type="number" style="width: 65px;" v-model="size.width">
@@ -27,7 +27,6 @@
 </template>
 
 <script>
-import SVG_RESIZE from '../../svg/size.svg'
 import EditLen from './EditLen.vue'
 import { getLenSplits } from '../../../danke-core/utils/styles'
 import { lenUnit } from '../../../danke-core/utils/css-options'
@@ -48,7 +47,6 @@ export default {
   },
   data () {
     return {
-      SVG_RESIZE,
       size: {
         width: 0,
         wu: 'px',

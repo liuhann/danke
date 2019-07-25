@@ -34,9 +34,9 @@
     </p>
   </div>
   <edit-background v-model="scene.background"></edit-background>
-  <edit-animation :animation="scene.animation.in" animation-type="in" :icon="SVG_IN"></edit-animation>
-  <edit-animation :animation="scene.animation.dura" animation-type="dura" :icon="SVG_DURA"></edit-animation>
-  <edit-animation :animation="scene.animation.out" animation-type="out" :icon="SVG_OUT"></edit-animation>
+  <edit-animation :animation="scene.animation.in" animation-type="in" icon="icon-login"></edit-animation>
+  <edit-animation :animation="scene.animation.dura" animation-type="dura" icon="icon-clock"></edit-animation>
+  <edit-animation :animation="scene.animation.out" animation-type="out" icon="icon-logout"></edit-animation>
   <div class="field has-addons">
     <a class="button is-small" @click="previewScene">
       预览
@@ -50,9 +50,6 @@
 
 <script>
 import EditBackground from './props/EditBackground.vue'
-import SVG_DURA from '../svg/loading.svg'
-import SVG_IN from '../svg/login.svg'
-import SVG_OUT from '../svg/logout.svg'
 import EditAnimation from './props/EditAnimation.vue'
 export default {
   name: 'SceneConfig',
@@ -68,9 +65,6 @@ export default {
   inject: ['zoomIn', 'zoomOut', 'previewScene', 'zoom', 'deleteCurrentScene', 'previousScene', 'nextScene'],
   data () {
     return {
-      SVG_DURA,
-      SVG_IN,
-      SVG_OUT
     }
   },
   watch: {

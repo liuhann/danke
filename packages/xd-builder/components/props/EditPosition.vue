@@ -2,7 +2,7 @@
 <div class="edit-position field-group">
   <div class="field has-addons">
     <div class="control icon-label">
-      <img class="svg-icon" :src="SVG_HOR">
+      <i class="icon-move"></i>
     </div>
     <div class="control">
       <div class="select is-small">
@@ -17,7 +17,7 @@
   </div>
   <div class="field has-addons">
     <div class="control icon-label">
-      <img class="svg-icon" :src="SVG_VER">
+      <i class="icon-empty"></i>
     </div>
     <div class="control">
       <div class="select is-small">

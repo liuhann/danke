@@ -2,7 +2,7 @@
   <div class="edit-clip-path">
     <div class="field has-addons">
       <div class="control icon-label">
-        <img class="svg-icon" :src="SVG_CROP">
+        <i clas="icon-crop"></i>
       </div>
       <div class="control">
         <div class="select is-small">
@@ -37,7 +37,6 @@
 </template>
 
 <script>
-import SVG_CROP from '../../svg/crop.svg'
 import FormField from './FormField'
 export default {
   name: 'EditClipPath',
@@ -49,7 +48,6 @@ export default {
   },
   data () {
     return {
-      SVG_CROP,
       clipTypes: [{
         key: 'none',
         value: '无'

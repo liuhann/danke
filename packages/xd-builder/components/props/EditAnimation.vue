@@ -1,7 +1,7 @@
 <template>
 <div class="field has-addons">
   <div class="control icon-label">
-    <img class="svg-icon" :src="icon">
+    <i :class="icon"></i>
   </div>
   <div class="control">
     <span class="button is-small" @click="chooseAnimation(animationType)">{{animation.desc || '选择'}}</span>

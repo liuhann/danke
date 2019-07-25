@@ -2,7 +2,7 @@
 <div class="edit-shadow field-group">
   <div class="field has-addons">
     <div class="control icon-label">
-      <img class="svg-icon" :src="SVG_SHADOW">
+      <i class="icon-photo"></i>
     </div>
     <div class="control">
       <a class="button is-static is-small">X</a>
