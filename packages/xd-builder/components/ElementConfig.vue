@@ -116,7 +116,10 @@ export default {
       flex: 1;
     }
     .opers {
-      font-size: 12px;
+      font-size: 14px;
+      display: flex;
+      width: 80px;
+      justify-content: space-between;
       color: #333;
       .icon-paste {
         color: #999;

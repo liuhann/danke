@@ -86,7 +86,7 @@ export default {
         }
         const image = new Image()
         image.onload = function () {
-          builder.insertSVG(this.src, this.width, this.height)
+          builder.insertSVG(file, this.width, this.height)
         }
         image.src = URL.createObjectURL(file)
       }
@@ -156,15 +156,17 @@ export default {
         blob.filename = this.croppingFileName
       }
     },
-    insertSVG (url, width, height) {
+    insertSVG (file, width, height) {
       const clonedElement = clone(SVG)
+      clonedElement.id = shortid()
       clonedElement.name = '矢量图'
       clonedElement.visible = true
       clonedElement.position.horizontal = 'left'
       clonedElement.position.vertical = 'top'
-      clonedElement.size.width = '20vw'
+      clonedElement.size.width = '40vw'
       clonedElement.size.height = Math.floor(20 / width * height) + 'vw'
-      clonedElement.url = url
+      clonedElement.url = URL.createObjectURL(file)
+      clonedElement.blob = file
       const style = getElementStyle(clonedElement, this.device)
       clonedElement.style = style
       this.currentScene.elements.push(clonedElement)

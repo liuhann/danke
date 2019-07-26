@@ -13,8 +13,8 @@
     <a class="button is-white" @click="zoomOut">
       <i class="icon-plus-1"></i>
     </a>
-    <a class="button is-white">
-      <i class="icon-right-dir" @click="runWork"></i>
+    <a class="button is-white" @click="runWork">
+      <i class="icon-play" style="font-size: 12px;"></i>
     </a>
     <a class="button is-success is-rounded is-small button-share">发布并分享</a>
   </div>
