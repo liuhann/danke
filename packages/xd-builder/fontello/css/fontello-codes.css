@@ -1,5 +1,4 @@
 
-.icon-check-1:before { content: '\e800'; } /* '' */
 .icon-doc-landscape:before { content: '\e801'; } /* '' */
 .icon-eye:before { content: '\e802'; } /* '' */
 .icon-trash-empty:before { content: '\e803'; } /* '' */
@@ -24,6 +23,7 @@
 .icon-clock:before { content: '\e816'; } /* '' */
 .icon-photo:before { content: '\e817'; } /* '' */
 .icon-fontsize:before { content: '\e818'; } /* '' */
+.icon-ok:before { content: '\e819'; } /* '' */
 .icon-marquee:before { content: '\e847'; } /* '' */
 .icon-coverflow-empty:before { content: '\f00d'; } /* '' */
 .icon-color-adjust:before { content: '\f020'; } /* '' */
@@ -35,6 +35,8 @@
 .icon-paste:before { content: '\f0ea'; } /* '' */
 .icon-angle-double-up:before { content: '\f102'; } /* '' */
 .icon-angle-double-down:before { content: '\f103'; } /* '' */
+.icon-angle-left:before { content: '\f104'; } /* '' */
+.icon-angle-right:before { content: '\f105'; } /* '' */
 .icon-angle-up:before { content: '\f106'; } /* '' */
 .icon-angle-down:before { content: '\f107'; } /* '' */
 .icon-desktop:before { content: '\f108'; } /* '' */
