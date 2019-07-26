@@ -1,7 +1,12 @@
 <template>
 <nav class="element-prop-config">
   <div class="form-title">
-    <div class="content">元素配置</div>
+    <div class="text">元素配置</div>
+    <div class="opers">
+      <span class="icon-clone" @click="copyElement"></span>
+      <span class="icon-scissors" @click="cutElement"></span>
+      <span class="icon-paste" :class="[clipboard.elements.length > 0? 'has-clipboard': '']" @click="pasteElement"></span>
+    </div>
   </div>
   <edit-font v-if="element.font" v-model="element.font"></edit-font>
   <edit-background v-model="element.background" v-if="element.background"></edit-background>
@@ -36,9 +41,9 @@
       </span>
     </span>
   </div>
+
 </nav>
 </template>
-
 <script>
 import EditFont from './props/EditFont.vue'
 import EditPosition from './props/EditPosition.vue'
@@ -73,7 +78,7 @@ export default {
     EditShadow,
     EditFont
   },
-  inject: ['moveUp', 'moveDown', 'moveTop', 'moveBottom'],
+  inject: ['moveUp', 'moveDown', 'moveTop', 'moveBottom', 'clipboard', 'cutElement', 'copyElement', 'pasteElement'],
   data () {
     return {
       shapeOptions: Shapes,
@@ -106,6 +111,20 @@ export default {
     padding-bottom: .3rem;
     margin-bottom: .5rem;
     border-bottom: 1px solid #eee;
+    display: flex;
+    .text {
+      flex: 1;
+    }
+    .opers {
+      font-size: 12px;
+      color: #333;
+      .icon-paste {
+        color: #999;
+        &.has-clipboard {
+          color: #333;
+        }
+      }
+    }
   }
 }
 </style>

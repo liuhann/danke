@@ -37,7 +37,7 @@
       <ul class='work-list'>
         <li class="work-item" v-for="work in draftWorks" :key="work.id" >
           <div class="cover" @click="chooseDraftWork(work)">
-            <work-cover :work="work" :ratio="work.ratio | displayRatio" :height="200"></work-cover>
+            <work-cover :work="work" :ratio="work.ratio | displayRatio" :height="260" :text-adjust="work.ratio | textAdjust"></work-cover>
           </div>
           <div class="work-info">
             <div class="work-title">
@@ -64,6 +64,11 @@ const welcomeRatios = {
   '4:3': '4:3',
   '16:9': '3:2'
 }
+const textAdjusts = {
+  '9:16': 2,
+  '4:3': 0.8,
+  '16:9': 0.7
+}
 export default {
   name: 'Welcome',
   components: {
@@ -77,13 +82,13 @@ export default {
     }
   },
   computed: {
-    welcomeRatios () {
-      return
-    }
   },
   filters: {
     displayRatio (r) {
       return welcomeRatios[r] || '1:1'
+    },
+    textAdjust (r) {
+      return textAdjusts[r] || 3
     }
   },
   created () {

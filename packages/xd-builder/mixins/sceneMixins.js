@@ -11,6 +11,7 @@ export default {
       previewScene: this.previewScene,
       deleteCurrentScene: this.deleteCurrentScene,
       nextScene: this.nextScene,
+      copyScene: this.copyScene,
       previousScene: this.previousScene
     }
   },
@@ -54,6 +55,14 @@ export default {
           }
         }
       }
+    },
+    copyScene () {
+      const scene = clone(this.currentScene)
+      scene.name = '场景 ' + (this.work.scenes.length + 1)
+      scene.id = shortid()
+      scene.style = getSceneStyle(scene, this.device)
+      this.work.scenes.push(scene)
+      this.chooseScene(scene)
     },
     async previewScene () {
       this.zoomCenter()

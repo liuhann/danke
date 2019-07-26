@@ -1,7 +1,11 @@
 <template>
 <nav class="scene-config">
   <div class="form-title">
-    <div class="content">场景配置</div>
+    <div class="text">场景配置</div>
+    <div class="opers">
+      <span class="icon-clone" @click="copyScene"></span>
+      <span class="icon-paste" :class="[clipboard.elements.length > 0? 'has-clipboard': '']" @click="pasteElement"></span>
+    </div>
   </div>
   <div class="field has-addons">
     <p class="control">
@@ -62,7 +66,7 @@ export default {
     EditBackground,
     EditAnimation
   },
-  inject: ['zoomIn', 'zoomOut', 'previewScene', 'zoom', 'deleteCurrentScene', 'previousScene', 'nextScene'],
+  inject: ['zoomIn', 'zoomOut', 'previewScene', 'zoom', 'deleteCurrentScene', 'previousScene', 'nextScene', 'clipboard', 'pasteElement', 'copyScene'],
   data () {
     return {
     }
@@ -83,6 +87,20 @@ export default {
     padding-bottom: .3rem;
     margin-bottom: .5rem;
     border-bottom: 1px solid #eee;
+    display: flex;
+    .text {
+      flex: 1;
+    }
+    .opers {
+      font-size: 12px;
+      color: #333;
+      .icon-paste {
+        color: #ccc;
+        &.has-clipboard {
+          color: #333;
+        }
+      }
+    }
   }
 }
 </style>

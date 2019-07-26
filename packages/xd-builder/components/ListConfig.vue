@@ -18,7 +18,7 @@
         <i class="icon-angle-right" @click="openScene(scene)"></i>
       </div>
     </div>
-    <draggable v-model="elementList" v-if="!showSceneList">
+    <div v-if="!showSceneList">
       <div class="element-item list-item" v-for="(element, index) of currentScene.elements" :class="[currentElement===element?'current': '']" :key="index">
         <div v-if="element.type === TypeEnum.IMAGE" class="image" :style="'background-image: url(' + element.url + ')'"></div>
         <div v-if="element.type === TypeEnum.SHAPE" class="shape" :style="[{
@@ -44,7 +44,7 @@
         <i :class="element.visible? 'icon-eye': 'icon-eye-off'" @click="toggleElementVisible(element)"></i>
         <i class="icon-trash-empty" @click="deleteElement(element)"></i>
       </div>
-    </draggable>
+    </div>
   </div>
 </nav>
 </template>

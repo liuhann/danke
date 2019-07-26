@@ -2,7 +2,7 @@
 <div class="edit-font field-group">
   <div class="field has-addons">
     <p class="control icon-label">
-      <img class="svg-icon" :src="SVG_FONT_SIZE">
+      <i class="icon-fontsize"></i>
     </p>
     <p class="control">
       <edit-len v-model="font.size" unit-label="倍" :with-unit="false"></edit-len>
@@ -27,7 +27,6 @@
 </template>
 
 <script>
-import SVG_FONT_SIZE from '../../svg/font.svg'
 import EditLen from './EditLen.vue'
 import FormField from './FormField.vue'
 import ToggleGroupedButton from './ToggleGroupedButton.vue'
@@ -49,7 +48,6 @@ export default {
   },
   data () {
     return {
-      SVG_FONT_SIZE,
       aligns: [{
         key: 'left',
         icon: 'icon-align-left'

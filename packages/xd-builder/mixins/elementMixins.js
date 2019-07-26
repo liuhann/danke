@@ -3,11 +3,15 @@ import { clone } from '../../utils/object'
 import { getElementStyle, getSceneStyle } from '../../danke-core/utils/styles'
 import { interactElement, destoryInteraction } from '../utils/interact'
 import { shortid } from '../../utils/string'
-import { MessageBox } from 'element-ui'
+import { MessageBox, Message } from 'element-ui'
 
 export default {
   data () {
     return {
+      clipboard: {
+        elements: [],
+        cutFrom: null
+      }
     }
   },
   provide () {
@@ -23,7 +27,11 @@ export default {
       moveUp: this.moveUp,
       moveDown: this.moveDown,
       moveTop: this.moveTop,
-      moveBottom: this.moveBottom
+      moveBottom: this.moveBottom,
+      cutElement: this.cutElement,
+      copyElement: this.copyElement,
+      pasteElement: this.pasteElement,
+      clipboard: this.clipboard
     }
   },
   watch: {
@@ -260,6 +268,36 @@ export default {
         this.moveDown(element)
         elementIndex = this.currentScene.elements.indexOf(element)
       }
+    },
+
+    // 拷贝当前选择元素到剪贴板
+    copyElement () {
+      this.clipboard.elements = this.multipleElements
+      this.clipboard.cutFrom = null
+      Message.info('元素已经拷贝到剪贴板')
+    },
+    // 剪切当前选择元素到剪贴板
+    cutElement () {
+      this.clipboard.elements = this.multipleElements
+      this.clipboard.cutFrom = this.currentScene
+      Message.info('元素已经剪切到剪贴板')
+    },
+    // 从剪切板粘贴 可能跨场景
+    pasteElement () {
+      if (this.clipboard.cutFrom) {
+        for (let element of this.clipboard.elements) {
+          this.clipboard.cutFrom.elements.splice(this.clipboard.cutFrom.elements.indexOf(element), 1)
+          this.currentScene.elements.push(element)
+        }
+      } else {
+        for (let element of this.clipboard.elements) {
+          const cloned = JSON.parse(JSON.stringify(element))
+          cloned.id = shortid()
+          this.currentScene.elements.push(cloned)
+        }
+      }
+      Message.info('元素已经粘贴')
+      this.clipboard.elements = []
     },
 
     reflow () {
