@@ -1,7 +1,7 @@
 export default {
   mounted () {
     const vi = this
-    window.addEventListener('keydown', (e) => {
+    this.eventListener = (e) => {
       if (e.key === 'Delete') {
         if (vi.currentElement && vi.multipleElements.length === 1) {
           vi.deleteElement(this.currentElement)
@@ -11,6 +11,10 @@ export default {
         e.preventDefault()
         vi.saveWork()
       }
-    })
+    }
+    window.addEventListener('keydown', this.eventListener)
+  },
+  beforeDestroy () {
+    window.removeEventListener('keydown', this.eventListener)
   }
 }

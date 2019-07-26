@@ -15,22 +15,22 @@
   <edit-clip-path v-model="element.clip" v-if="element.clip"></edit-clip-path>
 
   <div class="buttons has-addons">
-    <span class="button is-small" @click="moveUp">
+    <span class="button is-small" @click="moveDown(element)">
       <span class="icon is-small" >
         <i class="icon-angle-up"></i>
       </span>
     </span>
-    <span class="button is-small" @click="">
+    <span class="button is-small" @click="moveUp(element)">
       <span class="icon is-small" >
         <i class="icon-angle-down"></i>
       </span>
     </span>
-    <span class="button is-small" @click="">
+    <span class="button is-small" @click="moveBottom(element)">
       <span class="icon is-small" >
         <i class="icon-angle-double-up"></i>
       </span>
     </span>
-    <span class="button is-small" @click="">
+    <span class="button is-small" @click="moveTop(element)">
       <span class="icon is-small" >
         <i class="icon-angle-double-down"></i>
       </span>

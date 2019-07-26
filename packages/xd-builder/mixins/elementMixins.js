@@ -228,21 +228,38 @@ export default {
       this.currentScene.elements.push(clonedElement)
       this.chooseElement(clonedElement)
     },
-    
     moveUp (element) {
-    
+      const elementIndex = this.currentScene.elements.indexOf(element)
+      if (elementIndex === 0) {
+        return
+      }
+      this.$set(this.currentScene.elements, elementIndex, this.currentScene.elements[elementIndex - 1])
+      this.$set(this.currentScene.elements, elementIndex - 1, this.currentElement)
     },
-    
-    moveDown () {
-    
+
+    moveDown (element) {
+      const elementIndex = this.currentScene.elements.indexOf(element)
+      if (elementIndex === this.currentScene.elements.length - 1) {
+        return
+      }
+      this.$set(this.currentScene.elements, elementIndex, this.currentScene.elements[elementIndex + 1])
+      this.$set(this.currentScene.elements, elementIndex + 1, this.currentElement)
     },
-    
-    moveTop () {
-    
+
+    moveTop (element) {
+      let elementIndex = this.currentScene.elements.indexOf(element)
+      while (elementIndex > 0) {
+        this.moveUp(element)
+        elementIndex = this.currentScene.elements.indexOf(element)
+      }
     },
-    
-    moveBottom () {
-    
+
+    moveBottom (element) {
+      let elementIndex = this.currentScene.elements.indexOf(element)
+      while (elementIndex < this.currentScene.elements.length - 1) {
+        this.moveDown(element)
+        elementIndex = this.currentScene.elements.indexOf(element)
+      }
     },
 
     reflow () {
