@@ -92,6 +92,9 @@ export default {
       this.currentElement = null
       this.zoomCenter()
       this.reflow(work.scenes)
+      this.$nextTick(() => {
+        intereactWith(this.$refs.deviceDrag, this.$refs.device)
+      })
     },
     async saveImages () {
       for (let scene of this.work.scenes) {

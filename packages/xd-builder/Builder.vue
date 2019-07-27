@@ -186,7 +186,6 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
     bottom: 0;
     right: 320px;
     overflow: auto;
-
     .device-drag {
       position: absolute;
       top: 0;

@@ -35,6 +35,8 @@ export default {
       }
     }
   },
+  mounted () {
+  },
   methods: {
     initSceneContainer () {
       intereactWith(this.$refs.deviceDrag, this.$refs.device)
