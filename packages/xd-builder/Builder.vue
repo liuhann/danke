@@ -49,7 +49,8 @@ import saveShareMixin from './mixins/saveShare'
 import sceneMixin from './mixins/sceneMixins'
 import sceneContainer from './mixins/sceneContainer'
 import keyBindMixin from './mixins/key-binds'
-import { TypeEnum } from '../danke-core/elements/index'
+import dataProvideMixin from './mixins/dataProvides'
+
 import ImageCropper from './components/ImageCropper'
 import LeftToggleMenu from './components/LeftToggleMenu.vue'
 import TopBar from './components/TopBar.vue'
@@ -74,61 +75,16 @@ export default {
     FullPlayer,
     DialogWorkList
   },
-  mixins: [elementMixin, saveShareMixin, sceneMixin, keyBindMixin, sceneContainer],
+  mixins: [elementMixin, saveShareMixin, sceneMixin, keyBindMixin, sceneContainer, dataProvideMixin],
   props: {
   },
   data () {
     return {
-      // 作品概要信息
-      work: {
-        ratio: '',
-        id: '',
-        title: '',
-        categories: [],
-        desc: '',
-        resources: [],
-        scenes: []
-      },
-      currentScene: {},
-      currentElement: null,
-      multipleElements: [],
-      TypeEnum,
-      showLeftToggleMenu: false,
-      showElementsLayer: false,
-      playing: false,
-      playingWork: null
-    }
-  },
-  provide () {
-    return {
-      work: this.work,
-      showElementsLayer: this.showElementsLayer,
-      multipleElements: this.multipleElements,
-      currentElement: this.currentElement,
-      currentScene: this.currentScene,
-      // provide methods
-      hideLeftToggleMenu: this.hideLeftToggleMenu,
-      stopWork: this.stopWork,
-      runWork: this.runWork,
-      sceneClick: this.sceneClick,
-      zoomIn () {
-        this.$refs.sceneContainer.zoomIn()
-      },
-      zoomOut () {
-        this.$refs.sceneContainer.zoomOut()
-      }
+      interactEnabled: true,
+      devicePadding: [40, 20]
     }
   },
   created () {
-  },
-  mounted () {
-    const work = this.$route.query.work
-    const ratio = this.$route.query.ratio
-    if (work === 'new') {
-      this.newWork(ratio)
-    } else {
-      this.fetchWork(work)
-    }
   },
   methods: {
     hideLeftToggleMenu () {
@@ -138,18 +94,12 @@ export default {
       this.hideLeftToggleMenu()
       this.chooseElement(null)
     },
-    resetOrder (elements) {
-      this.currentScene.elements = elements
-    },
     async runWork () {
       this.playingWork = this.getWorkConfig()
       this.playing = true
     },
     async stopWork () {
       this.playing = false
-    },
-    goToSceneList () {
-      this.chooseElement(null)
     }
   }
 }
@@ -175,9 +125,6 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
     width: 48px;
     left: 0;
     bottom: 0;
-  }
-  .top-bar {
-    height: 38px;
   }
   .scene-container {
     position: absolute;

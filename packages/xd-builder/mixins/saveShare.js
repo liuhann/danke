@@ -8,7 +8,6 @@ import RestDAO from '../../common/dao/restdao'
 import { clone } from '../../utils/object'
 import is from '../../utils/is'
 import { shortid } from '../../utils/string'
-import { TypeEnum } from '../../danke-core/elements'
 export default {
   provide () {
     return {
@@ -22,6 +21,15 @@ export default {
     this.imagedao = new ImageDAO(this.ctx)
     this.workdao = new RestDAO(this.ctx, 'danke/work')
   },
+  mounted () {
+    const work = this.$route.query.work
+    const ratio = this.$route.query.ratio
+    if (work === 'new') {
+      this.newWork(ratio)
+    } else {
+      this.fetchWork(work)
+    }
+  },
   methods: {
     /**
      * 新增作品
@@ -34,18 +42,17 @@ export default {
       this.work.isNew = true
       this.zoomCenter()
       this.addNewScene()
-      this.$nextTick(() => {
-        intereactWith(this.$refs.deviceDrag, this.$refs.device)
-      })
+      if (this.interactEnabled) {
+        this.$nextTick(() => {
+          intereactWith(this.$refs.deviceDrag, this.$refs.device)
+        })
+      }
     },
     async fetchWork (workId) {
       const work = await this.workdao.getOne(workId)
       this.openWork(work)
     },
     editWork () {
-    },
-    newWorkDialog () {
-      this.$refs.dialogStartNew.open()
     },
     async saveWork () {
       this.hideLeftToggleMenu()

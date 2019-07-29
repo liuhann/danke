@@ -3,20 +3,18 @@
   <div class="flex-1">
     <a class="button is-white icon-menu" @click="$parent.showLeftToggleMenu = true"></a>
   </div>
-  <div>
-    <a class="button is-white" @click="zoomIn">
+  <div class="right-buttons">
+    <a class="button is-white is-small" @click="zoomIn">
       <i class="icon-minus-1"></i>
     </a>
-    <a class="button is-white">
-      {{zoom}}
-    </a>
-    <a class="button is-white" @click="zoomOut">
+    <span style="line-height: 38px;">{{Math.round($parent.zoom * 100)}}%</span>
+    <a class="button is-white is-small" @click="zoomOut">
       <i class="icon-plus-1"></i>
     </a>
-    <a class="button is-white" @click="runWork">
-      <i class="icon-play" style="font-size: 12px;"></i>
+    <a class="button is-small">
+      预览
     </a>
-    <a class="button is-success is-rounded is-small button-share">发布并分享</a>
+    <a class="button is-success is-rounded is-small button-share">发布</a>
   </div>
 </div>
 </template>
@@ -40,15 +38,16 @@ export default {
 <style lang="scss">
 #xd {
   .top-bar {
+    height: 38px;
     display: flex;
     background-color: #fff;
     .align-right {
       text-align: right;
     }
-    .tags {
-      .tag {
-        margin-top: .3em;
-      }
+    .right-buttons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     .flex-1 {
       flex: 1;

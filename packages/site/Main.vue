@@ -65,6 +65,22 @@
     <div class="container">
       <div class="columns">
         <div class="column">
+          <p class="title is-3 is-spaced">
+            移动设计
+          </p>
+          <p class="subtitle is-5">
+            不需要使用电脑，用手机上也能进行创作
+          </p>
+        </div>
+        <div class="column">
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+      <div class="columns">
+        <div class="column">
         </div>
         <div class="column">
           <p class="title is-3 is-spaced">

@@ -1,6 +1,6 @@
 import './fontello/css/fontello.css'
 const beforeEnter = (to, from, next) => {
-// called before the route that renders this component is confirmed.
+  // called before the route that renders this component is confirmed.
   // does NOT have access to `this` component instance,
   // because it has not been created yet when this guard is called!
   if (!to.meta.ctx.user.id) {
@@ -19,6 +19,10 @@ export default {
     path: '/xd',
     beforeEnter,
     component: () => import(/* webpackChunkName: "xd" */'./Builder.vue')
+  }, {
+    path: '/xd-mobile',
+    beforeEnter,
+    component: () => import(/* webpackChunkName: "xd-mobile" */'./MBuilder.vue')
   }],
   async onload (ctx) {
   }

@@ -1,5 +1,4 @@
 import { intereactWith } from '../utils/interact'
-import { TypeEnum } from '../../danke-core/elements'
 import { fitToContainer } from '../../danke-core/utils/common'
 
 export default {
@@ -52,14 +51,16 @@ export default {
     },
     zoomCenter () {
       const containerEl = this.$refs.sceneContainer
-      const paddings = [40, 20]
+      const paddings = this.devicePadding
       this.zoom = 1
       this.deviceOrigin = fitToContainer(this.work.ratio, containerEl.clientWidth - paddings[0] * 2, containerEl.clientHeight - paddings[1] * 2)
-      this.$nextTick(() => {
-        let x = (containerEl.clientWidth - paddings[0] * 2 - this.deviceOrigin.width) / 2
-        let y = paddings[1]
-        this.$refs.device.style.transform = 'translate(' + x + 'px, ' + y + 'px)'
-      })
+      if (this.interactEnabled) {
+        this.$nextTick(() => {
+          let x = (containerEl.clientWidth - paddings[0] * 2 - this.deviceOrigin.width) / 2
+          let y = paddings[1]
+          this.$refs.device.style.transform = 'translate(' + x + 'px, ' + y + 'px)'
+        })
+      }
     }
   }
 }
