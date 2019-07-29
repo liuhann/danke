@@ -3,7 +3,7 @@
   <div class="field-body">
     <div class="field has-addons">
       <p class="control">
-        <input class="input is-small" style="width: 65px;" type="number" v-model="length">
+        <input class="input is-small" style="width: 65px;" type="number" :step="step" v-model="length">
       </p>
       <p class="control">
         <span class="select is-small" v-if="withUnit">

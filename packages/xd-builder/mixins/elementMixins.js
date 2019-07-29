@@ -81,7 +81,7 @@ export default {
       if (e.currentTarget.files.length) {
         const file = e.currentTarget.files[0]
         if (file.size > this.ctx.upload.maxSize) {
-          this.error = '文件最大为' + this.ctx.upload.maxSize
+          Message.error('文件最大为' + Math.floor(this.ctx.upload.maxSize / (1024 * 1024)) + 'M')
           return
         }
         const image = new Image()

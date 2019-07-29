@@ -5,7 +5,7 @@
       <i class="icon-fontsize"></i>
     </p>
     <p class="control">
-      <edit-len v-model="font.size" unit-label="倍" :with-unit="false"></edit-len>
+      <edit-len v-model="font.size" unit-label="倍" :with-unit="false" :step="0.2"></edit-len>
     </p>
     <p class="control space">
     </p>

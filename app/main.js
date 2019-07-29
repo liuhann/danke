@@ -41,7 +41,7 @@ const boot = new AsyncBoot({
     await next()
   },
   upload: {
-    maxSize: 2 * 1024 * 1024
+    maxSize: 4 * 1024 * 1024
   }
 })
 
