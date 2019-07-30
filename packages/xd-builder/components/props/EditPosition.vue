@@ -1,7 +1,7 @@
 <template>
 <div class="edit-position field-group">
   <div class="field has-addons">
-    <div class="control icon-label">
+    <div class="control icon-label" @click="copyPositionStyle">
       <i class="icon-move"></i>
     </div>
     <div class="control">
@@ -13,6 +13,9 @@
     </div>
     <div class="control">
        <edit-len v-model="position.offsetX"></edit-len>
+    </div>
+    <div v-if="copied" class="control paste" @click="pastePositionStyle">
+      <i class="icon-paste"></i>
     </div>
   </div>
   <div class="field has-addons">
@@ -55,6 +58,7 @@ export default {
   },
   data () {
     return {
+      copied: null,
       SVG_HOR,
       SVG_VER,
       horizontalOptions,
@@ -67,7 +71,30 @@ export default {
     }
   },
   created () {
-
+    if (this.ctx.positionCopied) {
+      this.copied = this.ctx.positionCopied
+    }
+  },
+  methods: {
+    pastePositionStyle () {
+      if (this.copied) {
+        this.position.horizontal = this.copied.position.horizontal
+        this.position.offsetX = this.copied.position.offsetX
+        this.position.vertical = this.copied.position.vertical
+        this.position.offsetY = this.copied.position.offsetY
+      }
+    },
+    copyPositionStyle () {
+      if (this.ctx.positionCopied) {
+        this.ctx.positionCopied = null
+        this.copied = null
+      } else {
+        this.copied = {
+          position: JSON.parse(JSON.stringify(this.position))
+        }
+        this.ctx.positionCopied = this.copied
+      }
+    }
   }
 }
 </script>

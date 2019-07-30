@@ -1,6 +1,6 @@
 <template>
 <div class="field has-addons bottom-line">
-  <p class="control icon-label">
+  <p class="control icon-label" @click="copySizeStyle">
     <i class="icon-resize-full"></i>
   </p>
   <p class="control">
@@ -23,6 +23,9 @@
       </select>
     </span>
   </p>
+  <div v-if="copied" class="control paste" @click="pasteSizeStyle">
+    <i class="icon-paste"></i>
+  </div>
 </div>
 </template>
 
@@ -47,6 +50,7 @@ export default {
   },
   data () {
     return {
+      copied: null,
       size: {
         width: 0,
         wu: 'px',
@@ -76,6 +80,9 @@ export default {
   },
   created () {
     this.setSize()
+    if (this.ctx.sizeCopied) {
+      this.copied = this.ctx.sizeCopied
+    }
   },
   watch: {
     'value.width': function () {
@@ -103,6 +110,27 @@ export default {
       this.size.wu = wsp.unit
       this.size.height = hsp.len
       this.size.hu = hsp.unit
+    },
+
+    pasteSizeStyle () {
+      if (this.copied) {
+        this.size.width = this.copied.size.width
+        this.size.wu = this.copied.size.wu
+        this.size.height = this.copied.size.height
+        this.size.hu = this.copied.size.hu
+      }
+    },
+
+    copySizeStyle () {
+      if (this.ctx.sizeCopied) {
+        this.ctx.sizeCopied = null
+        this.copied = null
+      } else {
+        this.copied = {
+          size: JSON.parse(JSON.stringify(this.size))
+        }
+        this.ctx.sizeCopied = this.copied
+      }
     }
   }
 }

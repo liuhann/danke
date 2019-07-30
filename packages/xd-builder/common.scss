@@ -27,6 +27,14 @@ input[type='number'] {
 .control.space {
   padding: 2px 5px;
 }
+.control.paste {
+  flex: 1;
+  text-align: right;
+  color: #666;
+  i {
+    font-size: 12px;
+  }
+}
 .el-dialog__header {
   padding: 10px 20px;
 }
