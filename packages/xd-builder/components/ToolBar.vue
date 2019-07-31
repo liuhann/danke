@@ -10,7 +10,7 @@
       </a>
       <a class="button is-white icon-doc-landscape" @click="insertShape('rect')"></a>
       <a class="button is-white icon-circle-thin" @click="insertShape('circle')"></a>
-      <a class="button is-white icon-sort-alphabet" @click="insertText"></a>
+      <a class="button is-white icon-sort-alphabet" @click="insertText()"></a>
       <a class="file">
         <label class="file-label">
           <input class="file-input" type="file" name="resume" @input="svgFileChoosed">

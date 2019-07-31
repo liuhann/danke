@@ -11,6 +11,11 @@ export default {
         e.preventDefault()
         vi.saveWork()
       }
+      if (e.key.toUpperCase() === 'V' && e.ctrlKey) {
+        navigator.clipboard.readText().then(text => {
+          vi.insertText(text)
+        })
+      }
     }
     window.addEventListener('keydown', this.eventListener)
   },

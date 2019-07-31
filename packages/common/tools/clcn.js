@@ -17,7 +17,6 @@ for (let i = 0; i<sheets.length; i++) {
   }
 }
 
-
 $('body').empty()
 for (let key in window.chapters) {
   var info = window.chapters[key]

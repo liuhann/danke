@@ -1,7 +1,7 @@
 <template>
 <div class="edit-font field-group">
   <div class="field has-addons">
-    <p class="control icon-label">
+    <p class="control icon-label" @click="copyStyle">
       <i class="icon-fontsize"></i>
     </p>
     <p class="control">
@@ -22,6 +22,9 @@
     <p class="control">
       <toggle-grouped-button :options="aligns" v-model="font.align"></toggle-grouped-button>
     </p>
+    <div v-if="copied" class="control paste" @click="pasteStyle">
+      <i class="icon-paste"></i>
+    </div>
   </div>
 </div>
 </template>
@@ -32,8 +35,10 @@ import FormField from './FormField.vue'
 import ToggleGroupedButton from './ToggleGroupedButton.vue'
 import ToggleButton from './ToggleButton.vue'
 import ColorPickr from '../ColorPickr.vue'
+import pastable from './pastable'
 export default {
   name: 'EditFont',
+  mixins: [ pastable ],
   components: {
     ColorPickr,
     FormField,
@@ -48,6 +53,8 @@ export default {
   },
   data () {
     return {
+      ctxKey: 'fontCopied',
+      propKey: 'font',
       aligns: [{
         key: 'left',
         icon: 'icon-align-left'
@@ -72,7 +79,12 @@ export default {
     }
   },
   methods: {
-
+    copySizeStyle () {
+      this.copied = {
+        font: JSON.parse(JSON.stringify(this.font))
+      }
+      this.ctx.fontCopied = this.copied
+    }
   }
 }
 </script>
