@@ -6,9 +6,9 @@
         <span class="button is-small" v-for="ptype of previewTypes" :key="ptype" :class="previewType === ptype? 'is-selected is-info': ''" @click="previewType = ptype">{{ptype}}</span>
       </div>-->
       <span class="buttons has-addons edit-button" v-if="isEdit" >
-        <span class="button icon-cw is-small" @click="refreshFrame"></span>
-        <span class="button icon-edit is-info is-small" @click="editFrame"></span>
-        <span class="button icon-trash is-danger is-small" v-if="currentAnimation.userid === user.id" @click="removeFrame"></span>
+        <span class="button icon-cw is-small" @click="refreshFrame">刷新</span>
+        <span class="button icon-edit is-info is-small" @click="editFrame">编辑</span>
+        <span class="button icon-trash is-danger is-small" v-if="currentAnimation.userid === user.id" @click="removeFrame">删除</span>
       </span>
       <div v-if="currentAnimation && previewType==='方块'" class="preview-box" :class="currentAnimation.name"></div>
       <div v-if="currentAnimation && previewType==='文字'" class="preview-text" :class="currentAnimation.name">frames@danke</div>

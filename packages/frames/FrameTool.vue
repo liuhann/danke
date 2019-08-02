@@ -28,19 +28,10 @@
               <div class="column">
                 <div class="buttons has-addons is-right">
                   <a class="button is-small" @click="save">
-                    <span class="icon">
-                      <i class="icon-check-1"></i>
-                    </span>
-                  </a>
-                  <a class="button is-small" @click="viewCode">
-                    <span class="icon">
-                      <i class="icon-code"></i>
-                    </span>
+                    保存
                   </a>
                   <a class="button is-small" @click="play">
-                    <span class="icon">
-                      <i class="icon-right-dir"></i>
-                    </span>
+                    预览
                   </a>
                 </div>
               </div>

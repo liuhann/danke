@@ -11,7 +11,7 @@
     <a class="button is-white is-small" @click="zoomOut">
       <i class="icon-plus-1"></i>
     </a>
-    <a class="button is-small">
+    <a class="button is-small" @click="runWork">
       预览
     </a>
     <a class="button is-success is-rounded is-small button-share">发布</a>

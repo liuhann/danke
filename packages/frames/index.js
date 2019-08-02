@@ -1,5 +1,4 @@
 import AnimationDAO from './animationdao'
-
 export default {
   routes: [{
     path: '/frame/edit',

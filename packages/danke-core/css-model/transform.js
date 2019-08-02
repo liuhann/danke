@@ -3,6 +3,7 @@ export default {
   scale: 100,
   opacity: 100,
   psp: '1000',
+  origin: ['center', 'center'],
   rotate: ['0', '0', '0']
 }
 
@@ -27,6 +28,9 @@ export function getTransformStyle ({ transform }) {
     styles.push(`transform: ${transforms.join(' ')}`)
     if (transform.opacity != null) {
       styles.push(`opacity: ${transform.opacity / 100}`)
+    }
+    if (transform.origin) {
+      styles.push(`transform-origin: ${transform.origin[0]} ${transform.origin[1]}`)
     }
   }
   return styles
