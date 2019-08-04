@@ -67,6 +67,11 @@ export default class Danke {
     this.checkForBack()
     this.enterScene(this.displays.current)
   }
+  /**
+   * Trigger to go to previews scene
+   */
+  previous () {
+  }
 
   checkForBack () {
     // 获取当前场景需要的背景和前景
@@ -149,6 +154,14 @@ export default class Danke {
       element.style = getElementStyle(element, this.device, 'out')
     }
     scene.style = `display: inherit; ${getSceneStyle(scene, this.device, 'out')}`
+  }
+  setDeviceEl (elDevice) {
+    this.deviceElement = elDevice
+    this.deviceElement.addEventListener('click', (event) => {
+      if (this.displays.current.manual) {
+        this.next()
+      }
+    })
   }
 
   sceneEnter (cb) {

@@ -1,5 +1,5 @@
 <template>
-<div class="device player" :style="deviceStyle">
+<div class="device player" :style="deviceStyle" @click="onSceneClick">
   <div class="loading"></div>
   <div v-for="scene in work.scenes" :key="scene.id" class="scene" :style="scene.style">
     <div v-for="(element) in scene.elements" :key="element.id" class="element" :class="['type' + element.type]"
@@ -51,10 +51,7 @@ export default {
   data () {
     return {
       TypeEnum,
-      sceneTypeEnum,
-      currentSceneIndex: -1,
-      backgroundSceneIndex: -1,
-      forgroundSceneIndex: -1
+      sceneTypeEnum
     }
   },
   methods: {
@@ -62,8 +59,16 @@ export default {
       this.engine = new DankeEngine(this.work.scenes, this.device)
       this.engine.play()
       await this.loadResources()
+
+      this.engine.setDeviceEl(this.$el)
     },
     async loadResources () {
+    },
+
+    onSceneClick () {
+      // if (this.engine.displays.current.manual) {
+      //   this.engine.next()
+      // }
     },
     onElementClicked (index) {
       this.currentIndex = index
