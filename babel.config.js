@@ -9,13 +9,6 @@ module.exports = {
         'libraryName': 'element-ui',
         'styleLibraryName': 'theme-chalk'
       }
-    ],
-    [
-      'import',
-      {
-        'libraryName': 'antd',
-        'style': true
-      }
     ]
   ]
 }

@@ -28,6 +28,7 @@ export default {
       const scene = clone(SCENE)
       scene.name = '场景 ' + (this.work.scenes.length + 1)
       scene.id = shortid()
+      // scene.background.colors = ['rgba(0,0,0,0)']
       scene.style = getSceneStyle(scene, this.device)
       this.work.scenes.push(scene)
       this.chooseScene(scene)
