@@ -1,3 +1,6 @@
+/**
+ * 场景绘制区大小、缩放相关控制
+ */
 import { intereactWith } from '../utils/interact'
 import { fitToContainer } from '../../danke-core/utils/common'
 
@@ -17,7 +20,8 @@ export default {
       zoom: this.zoom,
       zoomIn: this.zoomIn,
       zoomOut: this.zoomOut,
-      zoomCenter: this.zoomCenter
+      zoomCenter: this.zoomCenter,
+      setLeftToggleShow: this.setLeftToggleShow
     }
   },
   computed: {
@@ -35,8 +39,15 @@ export default {
     }
   },
   mounted () {
+    this.zoomCenter()
   },
   methods: {
+    setLeftToggleShow () {
+      this.showLeftToggleMenu = true
+    },
+    hideLeftToggleMenu () {
+      this.showLeftToggleMenu = false
+    },
     initSceneContainer () {
       intereactWith(this.$refs.deviceDrag, this.$refs.device)
       this.zoomCenter()
@@ -50,17 +61,17 @@ export default {
       this.reflow(this.scenes)
     },
     zoomCenter () {
+      const ratio = this.$route.query.ratio
       const containerEl = this.$refs.sceneContainer
       const paddings = this.devicePadding
       this.zoom = 1
-      this.deviceOrigin = fitToContainer(this.work.ratio, containerEl.clientWidth - paddings[0] * 2, containerEl.clientHeight - paddings[1] * 2)
-      if (this.interactEnabled) {
-        this.$nextTick(() => {
-          let x = (containerEl.clientWidth - paddings[0] * 2 - this.deviceOrigin.width) / 2
-          let y = paddings[1]
-          this.$refs.device.style.transform = 'translate(' + x + 'px, ' + y + 'px)'
-        })
-      }
+      this.deviceOrigin = fitToContainer(ratio, containerEl.clientWidth - paddings[0] * 2, containerEl.clientHeight - paddings[1] * 2)
+      this.$nextTick(() => {
+        let x = (containerEl.clientWidth - paddings[0] * 2 - this.deviceOrigin.width) / 2
+        let y = paddings[1]
+        this.$refs.device.style.transform = 'translate(' + x + 'px, ' + y + 'px)'
+        intereactWith(this.$refs.deviceDrag || this.$refs.device, this.$refs.device)
+      })
     }
   }
 }

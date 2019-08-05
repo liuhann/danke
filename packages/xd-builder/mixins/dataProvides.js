@@ -31,8 +31,6 @@ export default {
       currentScene: this.currentScene,
       // provide methods
       hideLeftToggleMenu: this.hideLeftToggleMenu,
-      stopWork: this.stopWork,
-      runWork: this.runWork,
       sceneClick: this.sceneClick
     }
   }

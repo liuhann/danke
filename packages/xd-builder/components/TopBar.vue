@@ -1,7 +1,7 @@
 <template>
 <div class="top-bar is-clearfix">
   <div class="flex-1">
-    <a class="button is-white icon-menu" @click="$parent.showLeftToggleMenu = true"></a>
+    <a class="button is-white icon-menu" @click="setLeftToggleShow"></a>
   </div>
   <div class="right-buttons">
     <a class="button is-white is-small" @click="zoomIn">
@@ -30,7 +30,7 @@ export default {
       isEditName: false
     }
   },
-  inject: ['zoomIn', 'zoomOut', 'runWork', 'zoom'],
+  inject: ['zoomIn', 'zoomOut', 'runWork', 'zoom', 'setLeftToggleShow'],
   methods: {
   }
 }

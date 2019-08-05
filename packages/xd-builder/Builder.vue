@@ -47,9 +47,10 @@
 import elementMixin from './mixins/elementMixins'
 import saveShareMixin from './mixins/saveShare'
 import sceneMixin from './mixins/sceneMixins'
-import sceneContainer from './mixins/sceneContainer'
+import layoutMixin from './mixins/layoutMixin'
 import keyBindMixin from './mixins/key-binds'
 import dataProvideMixin from './mixins/dataProvides'
+import initMixin from './mixins/init'
 
 import ImageCropper from './components/ImageCropper'
 import LeftToggleMenu from './components/LeftToggleMenu.vue'
@@ -75,7 +76,7 @@ export default {
     FullPlayer,
     DialogWorkList
   },
-  mixins: [elementMixin, saveShareMixin, sceneMixin, keyBindMixin, sceneContainer, dataProvideMixin],
+  mixins: [initMixin, elementMixin, saveShareMixin, sceneMixin, keyBindMixin, layoutMixin, dataProvideMixin],
   props: {
   },
   data () {
@@ -87,19 +88,9 @@ export default {
   created () {
   },
   methods: {
-    hideLeftToggleMenu () {
-      this.showLeftToggleMenu = false
-    },
     sceneClick () {
       this.hideLeftToggleMenu()
       this.chooseElement(null)
-    },
-    async runWork () {
-      this.playingWork = this.getWorkConfig()
-      this.playing = true
-    },
-    async stopWork () {
-      this.playing = false
     }
   }
 }

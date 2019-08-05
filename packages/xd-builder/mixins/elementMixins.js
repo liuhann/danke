@@ -199,12 +199,13 @@ export default {
       this.editedText = e.target.innerHTML.replace(/<br>/g, '\n')
     },
     chooseElement (element, event) {
+      this.elementChoosed && this.elementChoosed()
       // 选择的就是当前元素、忽略
       if (this.currentElement && element && this.currentElement.id === element.id) {
         return
       }
       // 销毁现有推拽
-      if (this.currentElement) {
+      if (this.currentElement && this.interactEnabled) {
         destoryInteraction(document.getElementById('element-' + this.currentElement.id))
       }
       if (event && event.ctrlKey && this.multipleElements.length > 0) {
@@ -220,9 +221,11 @@ export default {
         this.currentElement = element
         if (element) {
           this.multipleElements = [element]
-          this.$nextTick(() => {
-            interactElement(document.getElementById('element-' + element.id), element, this)
-          })
+          if (this.interactEnabled) {
+            this.$nextTick(() => {
+              interactElement(document.getElementById('element-' + element.id), element, this)
+            })
+          }
         } else {
           this.multipleElements = []
         }

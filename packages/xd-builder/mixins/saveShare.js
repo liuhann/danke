@@ -3,8 +3,6 @@
  */
 import { Loading, Message } from 'element-ui'
 import { intereactWith } from '../utils/interact'
-import ImageDAO from '../../common/dao/imagedao'
-import RestDAO from '../../common/dao/restdao'
 import { clone } from '../../utils/object'
 import is from '../../utils/is'
 import { shortid } from '../../utils/string'
@@ -14,20 +12,9 @@ export default {
       saveWork: this.saveWork,
       openWorkListDialog: this.openWorkListDialog,
       openEditWorkDialog: this.openEditWorkDialog,
-      editWork: this.editWork
-    }
-  },
-  created () {
-    this.imagedao = new ImageDAO(this.ctx)
-    this.workdao = new RestDAO(this.ctx, 'danke/work')
-  },
-  mounted () {
-    const work = this.$route.query.work
-    const ratio = this.$route.query.ratio
-    if (work === 'new') {
-      this.newWork(ratio)
-    } else {
-      this.fetchWork(work)
+      editWork: this.editWork,
+      stopWork: this.stopWork,
+      runWork: this.runWork
     }
   },
   methods: {
@@ -40,7 +27,6 @@ export default {
       this.work.id = shortid()
       this.work.title = '我的作品'
       this.work.isNew = true
-      this.zoomCenter()
       this.addNewScene()
       if (this.interactEnabled) {
         this.$nextTick(() => {
@@ -149,6 +135,13 @@ export default {
       this.work.title = work.title
       this.work.categories = work.categories
       this.work.desc = work.desc
+    },
+    async stopWork () {
+      this.playing = false
+    },
+    async runWork () {
+      this.playingWork = this.getWorkConfig()
+      this.playing = true
     }
   }
 }

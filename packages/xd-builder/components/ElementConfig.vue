@@ -58,7 +58,7 @@ import { TypeEnum } from '../../danke-core/elements/index'
 import { Shapes } from '../../danke-core/css-model/shapeclip'
 
 export default {
-  name: 'ElmentConfig',
+  name: 'ElementConfig',
   props: {
     element: {
       type: Object
