@@ -12,7 +12,7 @@
     发布与共享
   </p>
   <ul class="menu-list">
-    <li><a>导出</a></li>
+    <li><a @click="exportWork">导出</a></li>
     <li><a>共享...</a></li>
   </ul>
 </aside>
@@ -20,7 +20,7 @@
 
 <script>
 export default {
-  inject: ['saveWork', 'openWorkListDialog', 'hideLeftToggleMenu', 'openEditWorkDialog'],
+  inject: ['saveWork', 'openWorkListDialog', 'hideLeftToggleMenu', 'openEditWorkDialog', 'exportWork'],
   methods: {
   }
 }

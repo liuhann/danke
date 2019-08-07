@@ -9,7 +9,7 @@
       <div class="device-drag" ref="deviceDrag" @click="sceneClick"></div>
       <div class="device" ref="device" v-if="currentScene" :style="currentScene.style" @click.self="sceneClick">
         <div v-for="(element, index) of currentScene.elements" :key="element.id" :id="'element-' + element.id"
-             class="element" :class="[element.visible?'':'hidden', 'type' + element.type]" :style="element.style + ';' + 'z-index:' + index + ';'"
+             class="element" :class="[element.visible?'':'hidden', 'type' + element.type, multipleElements.indexOf(element) > -1? 'selected': '']" :style="element.style + ';' + 'z-index:' + index + ';'"
              @click="chooseElement(element, $event)">
           <img v-if="element.type === TypeEnum.IMAGE || element.type === TypeEnum.SVG" :src="element.url">
           <span v-if="element.type === TypeEnum.TEXT && element!==currentElement" v-html="$options.filters.newline(element.text)"></span>
@@ -140,6 +140,10 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
       z-index: 10;
       .element {
         position: absolute;
+        overflow: hidden;
+        &.selected {
+          overflow: visible;
+        }
         &.type1 {
           display: flex;
           justify-content: center;

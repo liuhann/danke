@@ -14,7 +14,8 @@ export default {
       openEditWorkDialog: this.openEditWorkDialog,
       editWork: this.editWork,
       stopWork: this.stopWork,
-      runWork: this.runWork
+      runWork: this.runWork,
+      exportWork: this.exportWork
     }
   },
   methods: {
@@ -142,6 +143,20 @@ export default {
     async runWork () {
       this.playingWork = this.getWorkConfig()
       this.playing = true
+    },
+    importWork () {
+    },
+    async exportWork () {
+      const JSZip = (await import(/* webpackChunkName: "jszip" */'jszip')).default
+      const { saveAs } = (await import(/* webpackChunkName: "jszip" */'file-saver')).default
+      debugger
+      const zip = new JSZip()
+      zip.file('work.json', JSON.stringify(this.getWorkConfig()), '\n\r', 2)
+      const img = zip.folder('images')
+      zip.generateAsync({ type: 'blob' }).then(function (content) {
+        // see FileSaver.js
+        saveAs(content, 'example.zip')
+      })
     }
   }
 }

@@ -1,4 +1,4 @@
-import { IMAGE, SHAPE, TEXT, TypeEnum, SVG } from '../../danke-core/elements/index'
+import { IMAGE, SHAPE, TEXT, TypeEnum } from '../../danke-core/elements/index'
 import { clone } from '../../utils/object'
 import { getElementStyle, getSceneStyle } from '../../danke-core/utils/styles'
 import { interactElement, destoryInteraction } from '../utils/interact'
@@ -86,7 +86,7 @@ export default {
         }
         const image = new Image()
         image.onload = function () {
-          builder.insertSVG(file, this.width, this.height)
+          builder.insertRawImage(file, this.width, this.height)
         }
         image.src = URL.createObjectURL(file)
       }
@@ -160,14 +160,15 @@ export default {
         blob.filename = this.croppingFileName
       }
     },
-    insertSVG (file, width, height) {
-      const clonedElement = clone(SVG)
+    insertRawImage (file, width, height) {
+      const clonedElement = clone(IMAGE)
       clonedElement.id = shortid()
-      clonedElement.name = '矢量图'
+      clonedElement.name = '图片'
       clonedElement.visible = true
       clonedElement.position.horizontal = 'left'
       clonedElement.position.vertical = 'top'
-      clonedElement.size.width = '40vw'
+      clonedElement.border.width = 0
+      clonedElement.size.width = '50vw'
       clonedElement.size.height = Math.floor(20 / width * height) + 'vw'
       clonedElement.url = URL.createObjectURL(file)
       clonedElement.blob = file
