@@ -55,11 +55,10 @@ import { getMaxDuration } from '../../danke-core/css-model/animation'
 import { clone } from '../../utils/object'
 import { getLengthDelta } from '../../danke-core/utils/common'
 import { getElementStyle } from '../../danke-core/utils/styles'
-import draggable from 'vuedraggable'
 
 export default {
   name: 'ListConfig',
-  components: { draggable },
+  components: { },
   props: {
     currentScene: {
       type: Object

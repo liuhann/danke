@@ -6,7 +6,7 @@
   <album-discover v-if="currentNav === 1 && !playingOpen && !isSearching"></album-discover>
   <user-home v-if="currentNav === 2 && !playingOpen && !isSearching"></user-home>
   <transition name="bounce">
-  <playing v-if="currentPlayStory && playingOpen" :story="currentPlayStory" @return="hidePlayer"
+  <playing v-if="currentPlayStory && playingOpen" :story="currentPlayStory"  @return="hidePlayer"
     :progress="progress" :is-playing="isPlaying" @pause="pause" @resume="resume" ></playing>
   </transition>
   <playing-bar v-if="currentPlayStory" v-show="!playingOpen" :story="currentPlayStory" :progress="progress" :is-playing="isPlaying"
