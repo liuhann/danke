@@ -1,8 +1,8 @@
 <template>
 <el-dialog
   title="选择动画效果"
-  :fullscreen="false"
-  width="800px"
+  :top="0"
+  :fullscreen="isMobile? true: false"
   :visible.sync="centerDialogVisible">
   <frame-box ref="frameBox"></frame-box>
   <span slot="footer" class="dialog-footer">
@@ -27,12 +27,16 @@ export default {
   data () {
     return {
       centerDialogVisible: false,
+      isMobile: window.outerWidth < 769,
       isShow: false,
       type: '',
       skip: 0,
       total: 0,
       animations: []
     }
+  },
+  created () {
+
   },
   methods: {
     chooseFrame (type, choosedCallback) {

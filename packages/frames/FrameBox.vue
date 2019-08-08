@@ -1,6 +1,6 @@
 <template>
 <div class="columns frame-box-columns">
-  <div class="column is-two-thirds-tablet">
+  <div class="column">
     <div class="frame-preview" :class="[previewType!=='文字'?'shadow': '']">
       <!--<div class="buttons has-addons toggle-type">
         <span class="button is-small" v-for="ptype of previewTypes" :key="ptype" :class="previewType === ptype? 'is-selected is-info': ''" @click="previewType = ptype">{{ptype}}</span>
@@ -10,24 +10,15 @@
         <span class="button icon-edit is-info is-small" @click="editFrame">编辑</span>
         <span class="button icon-trash is-danger is-small" v-if="currentAnimation.userid === user.id" @click="removeFrame">删除</span>
       </span>
-      <div v-if="currentAnimation && previewType==='方块'" class="preview-box" :class="currentAnimation.name"></div>
-      <div v-if="currentAnimation && previewType==='文字'" class="preview-text" :class="currentAnimation.name">frames@danke</div>
-      <div v-if="previewType==='图片'" class="preview-box" :class="currentAnimation.name">
-        <img src="http://cdn.danke.fun/res/sample1.png" width="160" height="160">
-      </div>
+      <div v-if="currentAnimation && previewType==='rect'" class="preview-box" :class="currentAnimation.name"></div>
+      <div v-if="currentAnimation && previewType==='text'" class="preview-text" :class="currentAnimation.name">frames@danke</div>
     </div>
   </div>
-  <div class="column is-one-third-tablet column-list">
-    <nav class="panel frames-list">
+  <div class="column is-narrow-tablet">
+    <nav class="panel frames-list" style="min-width: 320px;">
       <div class="panel-block" v-if="isEdit">
           <p class="control">
             <router-link to="/frame/edit" class="button icon-plus is-small is-info">创建</router-link>
-          </p>
-          <p class="control has-icons-right">
-            <input class="input is-small" type="text" placeholder="按名称查找" v-model="searchFilter">
-            <span class="icon is-small is-right">
-              <i class="icon-search-outline" aria-hidden="true"></i>
-            </span>
           </p>
         </div>
       <p class="panel-tabs">
@@ -37,6 +28,11 @@
         </a>
       </p>
       <div class="panel-body">
+        <div class="buttons">
+          <span class="button" v-for="key in currentKeyWords" :key="key.en" @click="filter">{{key.zh}}</span>
+          <span class="button is-info">Save and continue</span>
+          <span class="button is-danger">Cancel</span>
+        </div>
         <a v-for="animation in animations" :key="animation.name" class="panel-block" @click="setAnimation(animation)"
            :class="currentAnimation.name === animation.name? 'is-active': ''">
           <span class="panel-icon">
@@ -60,6 +56,10 @@ export default {
     isEdit: {
       type: Boolean
     },
+    previewType: {
+      type: String,
+      default: 'rect'
+    },
     select: {
       type: Boolean,
       default: false
@@ -68,27 +68,76 @@ export default {
   data () {
     return {
       user: this.ctx.user,
-      previewType: '方块',
       previewTypes: ['方块', '文字', '图片'],
-      currentType: '',
-      searchFilter: '',
+      currentType: '1',
       currentAnimation: null,
       animations: [],
+      currentKeyWords: [],
+      filterKey: '',
       animationTypes: [{
-        key: '',
-        value: '全部'
-      },
-      {
         key: '1',
         icon: 'icon-left-small',
+        keywords: [{
+          en: 'fade',
+          zh: '淡入'
+        }, {
+          en: 'flip',
+          zh: '翻转'
+        }, {
+          en: 'crop',
+          zh: '裁切'
+        }, {
+          en: 'scale',
+          zh: '缩放'
+        }, {
+          en: 'rotate',
+          zh: '旋转'
+        }],
         value: '进入'
       }, {
         key: '2',
-        value: '离开'
+        value: '离开',
+        keywords: [{
+          en: 'fade',
+          zh: '淡出'
+        }, {
+          en: 'flip',
+          zh: '翻转'
+        }, {
+          en: 'crop',
+          zh: '裁切'
+        }, {
+          en: 'scale',
+          zh: '缩放'
+        }, {
+          en: 'rotate',
+          zh: '旋转'
+        }]
       }, {
         key: '3',
-        value: '持续'
+        value: '持续',
+        keywords: [{
+          en: 'fade',
+          zh: '淡入'
+        }, {
+          en: 'flip',
+          zh: '翻转'
+        }, {
+          en: 'crop',
+          zh: '裁切'
+        }, {
+          en: 'scale',
+          zh: '缩放'
+        }, {
+          en: 'rotate',
+          zh: '旋转'
+        }]
       }]
+    }
+  },
+  computed: {
+    filteredKeys () {
+
     }
   },
   created () {
@@ -131,9 +180,16 @@ export default {
       this.ctx.editAnimation = this.currentAnimation
       this.$router.push('/frames')
     },
+
+
+    filter (key) {
+
+    },
+
     changeType (type) {
       this.currentType = type.key
-      this.searchFilter = ''
+      this.currentKeyWords = this.animationTypes.filter(at => at.key === type.key)[0]
+      this.filterKey = ''
       this.loadAnimation()
     }
   }
