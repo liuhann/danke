@@ -15,7 +15,7 @@
     </div>
   </div>
   <div class="column is-narrow-tablet">
-    <nav class="panel frames-list" style="min-width: 320px;">
+    <nav class="panel frames-list">
       <div class="panel-block" v-if="isEdit">
           <p class="control">
             <router-link to="/frame/edit" class="button icon-plus is-small is-info">创建</router-link>
@@ -23,23 +23,20 @@
         </div>
       <p class="panel-tabs">
         <a v-for="(type, index) in animationTypes" :key="index" @click="changeType(type)" :class="currentType === type.key? 'is-active': ''">
-          <span class="icon is-small"><i :class="type.icon" aria-hidden="true"></i></span>
           {{type.value}}
         </a>
       </p>
       <div class="panel-body">
-        <div class="buttons">
-          <span class="button" v-for="key in currentKeyWords" :key="key.en" @click="filter">{{key.zh}}</span>
-          <span class="button is-info">Save and continue</span>
-          <span class="button is-danger">Cancel</span>
+        <span class="tags" style="width: 320px; padding: 10px 5px;">
+          <span class="tag is-light" v-for="key in currentKeyWords" :key="key.en" @click="filter">{{key.zh}}</span>
+        </span>
+        <div class="animations">
+          <div v-for="animation in animations" :key="animation.name" class="animation" @click="setAnimation(animation)"
+             :class="currentAnimation.name === animation.name? 'is-active': ''">
+            <div class="en-name">{{animation.name}}</div>
+            <div class="zh-name">{{animation.desc}}</div>
+          </div>
         </div>
-        <a v-for="animation in animations" :key="animation.name" class="panel-block" @click="setAnimation(animation)"
-           :class="currentAnimation.name === animation.name? 'is-active': ''">
-          <span class="panel-icon">
-            <i class='icon-left-small' aria-hidden="true"></i>
-          </span>
-           {{animation.desc || animation.name}}
-        </a>
       </div>
     </nav>
   </div>
@@ -92,6 +89,9 @@ export default {
         }, {
           en: 'rotate',
           zh: '旋转'
+        }, {
+          en: 'rotate1',
+          zh: '旋转1'
         }],
         value: '进入'
       }, {
@@ -188,7 +188,7 @@ export default {
 
     changeType (type) {
       this.currentType = type.key
-      this.currentKeyWords = this.animationTypes.filter(at => at.key === type.key)[0]
+      this.currentKeyWords = this.animationTypes.filter(at => at.key === type.key)[0].keywords
       this.filterKey = ''
       this.loadAnimation()
     }
@@ -196,68 +196,95 @@ export default {
 }
 </script>
 
+
 <style lang="scss">
-.frame-preview {
-  min-height: 400px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  overflow: hidden;
-  &.shadow {
-    background-image: linear-gradient(90deg, #592D2D, #592D2D);
-    background-size: 160px 160px;
-    background-position: center;
-    background-repeat: no-repeat;
-  }
-
-  .toggle-type {
-    position: absolute;
-    left: .3rem;
-    top: .3rem;
-  }
-  .preview-text {
-    font-size: 2rem;
-  }
-  .edit-button {
-    position: absolute;
-    top: .3rem;
-    right: .3rem;
-  }
-  .preview-box {
-    width: 160px;
-    height: 160px;
-    background-color: #FF4B4B;
-  }
-  .animation-provider {
-    position: absolute;
-    right: .5rem;
-    bottom: .5rem;
-    color: #999;
-    font-size: 12px;
-  }
-}
-
-.frames-list {
-  .panel-body {
-    height: 350px;
-    overflow-y: auto;
-  }
-}
-.frame-box-columns {
-  .panel {
-    font-size: 12px;
-  }
-}
-@media screen and (max-width: 640px) {
   .frame-preview {
-    height: 80vw;
+    min-height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    &.shadow {
+      background-image: linear-gradient(90deg, #592D2D, #592D2D);
+      background-size: 160px 160px;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .toggle-type {
+      position: absolute;
+      left: .3rem;
+      top: .3rem;
+    }
+    .preview-text {
+      font-size: 2rem;
+    }
+    .edit-button {
+      position: absolute;
+      top: .3rem;
+      right: .3rem;
+    }
     .preview-box {
-      width: 30vw;
-      height: 30vw;
+      width: 160px;
+      height: 160px;
       background-color: #FF4B4B;
     }
+    .animation-provider {
+      position: absolute;
+      right: .5rem;
+      bottom: .5rem;
+      color: #999;
+      font-size: 12px;
+    }
   }
-}
+
+  .frames-list {
+    width: 320px;
+    .panel-body {
+      width: 100%;
+      height: 420px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      border: 1px solid #eee;
+    }
+    .animations {
+      width: 100%;
+      .animation {
+        cursor: pointer;
+        &:hover {
+          background: #efefef;
+        }
+        &.is-active {
+          border: 1px solid #FD8735;
+        }
+        display: inline-block;
+        border: 1px solid #eee;
+        padding: 8px;
+        margin: 5px;
+        .en-name {
+          font-size: 14px;
+        }
+      }
+    }
+  }
+  .frame-box-columns {
+    .panel {
+      font-size: 12px;
+    }
+  }
+  @media screen and (max-width: 640px) {
+    .frame-preview {
+      height: 80vw;
+      .preview-box {
+        width: 30vw;
+        height: 30vw;
+        background-color: #FF4B4B;
+      }
+      .frames-list {
+        width: 100vw;
+      }
+    }
+  }
 
 </style>
