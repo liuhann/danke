@@ -2,9 +2,6 @@
 <div class="columns frame-box-columns">
   <div class="column">
     <div class="frame-preview" :class="[previewType!=='文字'?'shadow': '']">
-      <!--<div class="buttons has-addons toggle-type">
-        <span class="button is-small" v-for="ptype of previewTypes" :key="ptype" :class="previewType === ptype? 'is-selected is-info': ''" @click="previewType = ptype">{{ptype}}</span>
-      </div>-->
       <span class="buttons has-addons edit-button" v-if="isEdit" >
         <span class="button icon-cw is-small" @click="refreshFrame">刷新</span>
         <span class="button icon-edit is-info is-small" @click="editFrame">编辑</span>
@@ -14,24 +11,27 @@
       <div v-if="currentAnimation && previewType==='text'" class="preview-text" :class="currentAnimation.name">frames@danke</div>
     </div>
   </div>
-  <div class="column is-narrow-tablet">
+  <div class="column is-narrow-tablet frame-navigation">
+    <div class="tabs" style="margin-bottom: .5rem;">
+      <ul>
+        <li v-for="(type, index) in animationTypes" :key="index" :class="currentType === type.key? 'is-active': ''">
+          <a @click="changeType(type)" >{{type.value}}</a>
+        </li>
+      </ul>
+    </div>
+    <div class="tags" style="margin-bottom: .5rem;">
+      <span class="tag is-light" :class="[key.en === filterKey? 'is-info': '']" v-for="key in currentKeyWords" :key="key.en" @click="filter(key.en)">{{key.zh}}</span>
+    </div>
+
     <nav class="panel frames-list">
       <div class="panel-block" v-if="isEdit">
           <p class="control">
             <router-link to="/frame/edit" class="button icon-plus is-small is-info">创建</router-link>
           </p>
         </div>
-      <p class="panel-tabs">
-        <a v-for="(type, index) in animationTypes" :key="index" @click="changeType(type)" :class="currentType === type.key? 'is-active': ''">
-          {{type.value}}
-        </a>
-      </p>
       <div class="panel-body">
-        <span class="tags" style="width: 320px; padding: 10px 5px;">
-          <span class="tag is-light" v-for="key in currentKeyWords" :key="key.en" @click="filter">{{key.zh}}</span>
-        </span>
         <div class="animations">
-          <div v-for="animation in animations" :key="animation.name" class="animation" @click="setAnimation(animation)"
+          <div v-for="animation in filteredAnimations" :key="animation.name" class="animation" @click="setAnimation(animation)"
              :class="currentAnimation.name === animation.name? 'is-active': ''">
             <div class="en-name">{{animation.name}}</div>
             <div class="zh-name">{{animation.desc}}</div>
@@ -136,8 +136,8 @@ export default {
     }
   },
   computed: {
-    filteredKeys () {
-
+    filteredAnimations () {
+      return this.animations.filter( animation => animation.name.indexOf(this.filterKey) > -1)
     }
   },
   created () {
@@ -154,9 +154,6 @@ export default {
       const query = {}
       if (this.currentType) {
         query.type = this.currentType
-      }
-      if (this.searchFilter) {
-        query.desc = this.searchFilter
       }
       query.count = 10000
       const response = await this.restdao.list(query)
@@ -183,7 +180,7 @@ export default {
 
 
     filter (key) {
-
+      this.filterKey = key
     },
 
     changeType (type) {
@@ -256,7 +253,8 @@ export default {
           background: #efefef;
         }
         &.is-active {
-          border: 1px solid #FD8735;
+          background-color: #209cee;
+          color: #fff;
         }
         display: inline-block;
         border: 1px solid #eee;
