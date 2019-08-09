@@ -32,6 +32,7 @@ export default {
     height: {
       type: Number
     },
+    // 字体样式，小于指定数字的字体不进行展示
     textAdjust: {
       type: Number,
       default: 2

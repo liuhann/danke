@@ -3,6 +3,21 @@
   <nav-bar></nav-bar>
   <section class="section splash">
     <div class="container">
+      <div class="columns is-mobile">
+        <div class="column is-half-mobile">
+          <div class="cover" @click="chooseDraftWork()">
+          </div>
+        </div>
+        <div class="column is-half-mobile">
+          Second column
+        </div>
+        <div class="column is-half-mobile">
+          Third column
+        </div>
+        <div class="column is-half-mobile">
+          Fourth column
+        </div>
+      </div>
     </div>
   </section>
   <section class="section create-work">
@@ -77,7 +92,10 @@ export default {
   },
   data () {
     return {
-      choosedWork: {},
+      templates: {
+        tablets: [],
+        mobiles: []
+      },
       draftWorks: []
     }
   },

@@ -25,7 +25,6 @@ export default {
     this.workdao = new RestDAO(this.ctx, 'danke/work')
   },
   mounted () {
-    debugger
     const mode = this.$route.params.mode
     this.loadWork()
   },
