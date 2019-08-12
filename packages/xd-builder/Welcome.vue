@@ -3,7 +3,11 @@
   <nav-bar></nav-bar>
   <section class="section splash">
     <div class="container">
-      <div class="columns is-mobile">
+      <header>
+        <h5 class="subtitle is-5">使用推荐模板</h5>
+        更多
+      </header>
+      <div class="columns is-mobile is-multiple">
         <div class="column is-half-mobile">
           <div class="cover" @click="chooseDraftWork()">
           </div>
