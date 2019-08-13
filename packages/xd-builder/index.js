@@ -20,7 +20,7 @@ export default {
     beforeEnter,
     component: () => import(/* webpackChunkName: "xd" */'./Builder.vue')
   }, {
-    path: '/xd-mobile',
+    path: '/xdm',
     beforeEnter,
     component: () => import(/* webpackChunkName: "xd-mobile" */'./MBuilder.vue')
   }],

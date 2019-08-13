@@ -1,5 +1,5 @@
 <template>
-<div class="columns frame-box-columns">
+<div class="columns frame-box-columns is-gapless">
   <div class="column">
     <div class="frame-preview" :class="[previewType!=='文字'?'shadow': '']">
       <span class="buttons has-addons edit-button" v-if="isEdit" >
@@ -195,94 +195,103 @@ export default {
 
 
 <style lang="scss">
+.frame-preview {
+  min-height: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  &.shadow {
+    background-image: linear-gradient(90deg, #592D2D, #592D2D);
+    background-size: 160px 160px;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .toggle-type {
+    position: absolute;
+    left: .3rem;
+    top: .3rem;
+  }
+  .preview-text {
+    font-size: 2rem;
+  }
+  .edit-button {
+    position: absolute;
+    top: .3rem;
+    right: .3rem;
+  }
+  .preview-box {
+    width: 160px;
+    height: 160px;
+    background-color: #FF4B4B;
+  }
+  .animation-provider {
+    position: absolute;
+    right: .5rem;
+    bottom: .5rem;
+    color: #999;
+    font-size: 12px;
+  }
+}
+
+.frames-list {
+  width: 320px;
+  .panel-body {
+    width: 100%;
+    height: 420px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border: 1px solid #eee;
+  }
+  .animations {
+    width: 100%;
+    .animation {
+      cursor: pointer;
+      &:hover {
+        background: #efefef;
+      }
+      &.is-active {
+        background-color: #209cee;
+        color: #fff;
+      }
+      display: inline-block;
+      border: 1px solid #eee;
+      padding: 8px;
+      margin: 5px;
+      .en-name {
+        font-size: 14px;
+      }
+    }
+  }
+}
+.frame-box-columns {
+  .panel {
+    font-size: 12px;
+  }
+}
+@media screen and (max-width: 640px) {
+  .el-dialog__body {
+    padding: 10px;
+  }
+  .frames-list {
+    width: 100vw;
+  }
   .frame-preview {
-    min-height: 400px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    overflow: hidden;
+    height: 40vw;
+    min-height: 40vw;
     &.shadow {
       background-image: linear-gradient(90deg, #592D2D, #592D2D);
-      background-size: 160px 160px;
-      background-position: center;
-      background-repeat: no-repeat;
-    }
-
-    .toggle-type {
-      position: absolute;
-      left: .3rem;
-      top: .3rem;
-    }
-    .preview-text {
-      font-size: 2rem;
-    }
-    .edit-button {
-      position: absolute;
-      top: .3rem;
-      right: .3rem;
+      background-size: 24vw 24vw;
+      background-color: #f5f5f5;
     }
     .preview-box {
-      width: 160px;
-      height: 160px;
+      width: 24vw;
+      height: 24vw;
       background-color: #FF4B4B;
     }
-    .animation-provider {
-      position: absolute;
-      right: .5rem;
-      bottom: .5rem;
-      color: #999;
-      font-size: 12px;
-    }
   }
-
-  .frames-list {
-    width: 320px;
-    .panel-body {
-      width: 100%;
-      height: 420px;
-      overflow-x: hidden;
-      overflow-y: auto;
-      border: 1px solid #eee;
-    }
-    .animations {
-      width: 100%;
-      .animation {
-        cursor: pointer;
-        &:hover {
-          background: #efefef;
-        }
-        &.is-active {
-          background-color: #209cee;
-          color: #fff;
-        }
-        display: inline-block;
-        border: 1px solid #eee;
-        padding: 8px;
-        margin: 5px;
-        .en-name {
-          font-size: 14px;
-        }
-      }
-    }
-  }
-  .frame-box-columns {
-    .panel {
-      font-size: 12px;
-    }
-  }
-  @media screen and (max-width: 640px) {
-    .frame-preview {
-      height: 80vw;
-      .preview-box {
-        width: 30vw;
-        height: 30vw;
-        background-color: #FF4B4B;
-      }
-      .frames-list {
-        width: 100vw;
-      }
-    }
-  }
+}
 
 </style>

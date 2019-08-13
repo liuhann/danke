@@ -44,6 +44,7 @@ export default {
   bottom: 0;
   z-index: 20001;
   display: flex;
+  align-items: center;
   justify-content: center;
   background: rgba(10,10,10,.86);
   .modal-close {

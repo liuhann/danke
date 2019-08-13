@@ -3,11 +3,11 @@
   <nav-bar></nav-bar>
   <section class="section splash">
     <div class="container">
-      <header>
-        <h5 class="subtitle is-5">使用推荐模板</h5>
-        更多
-      </header>
-      <div class="columns is-mobile is-multiple">
+      <div class="welcome-title">
+        <span>使用模板创建</span>
+        <div class="button is-small is-pulled-right is-plain">更多</div>
+      </div>
+      <div class="columns is-mobile is-multiline">
         <div class="column is-half-mobile">
           <div class="cover" @click="chooseDraftWork()">
           </div>
@@ -26,28 +26,25 @@
   </section>
   <section class="section create-work">
     <div class="container">
-      <div class="welcome-title">从空白创建新的作品</div>
+      <div class="welcome-title">
+        <span>从空白创建新的作品</span>
+      </div>
       <div class="start-new-container">
-        <div class="device-type-list">
-          <div class="device-type" @click="chooseStartWork('9:16')">
+        <div class="device-type-list columns is-mobile">
+          <div class="device-type column is-one-third-mobile is-one-fifth-tablet" @click="chooseStartWork('9:16')">
             <i class="icon-mobile-1"></i>
             <div class="desc">手机</div>
           </div>
-          <div class="device-type" @click="chooseStartWork('4:3')">
+          <div class="device-type column is-one-third-mobile is-one-fifth-tablet" @click="chooseStartWork('4:3')">
             <i class="icon-tablet-1 rotate90"></i>
             <div class="desc">平板</div>
           </div>
-          <div class="device-type" @click="chooseStartWork('16:9')">
+          <div class="device-type column is-one-third-mobile is-one-fifth-tablet" @click="chooseStartWork('16:9')">
             <i class="icon-laptop"></i>
             <div class="desc">桌面</div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
-  <section class="section">
-    <div class="container">
-      <div class="welcome-title">使用模板创建</div>
     </div>
   </section>
   <section class="section">
@@ -96,6 +93,7 @@ export default {
   },
   data () {
     return {
+      isMobile: screen.width < screen.height,
       templates: {
         tablets: [],
         mobiles: []
@@ -104,6 +102,9 @@ export default {
     }
   },
   computed: {
+    xdUrl () {
+      return this.isMobile? '/xdm': '/xd'
+    }
   },
   filters: {
     displayRatio (r) {
@@ -123,10 +124,10 @@ export default {
       this.draftWorks = result.list
     },
     chooseDraftWork (work) {
-      this.$router.push('/xd?ratio=' + work.ratio + '&work=' + work._id)
+      this.$router.push(this.xdUrl + '?ratio=' + work.ratio + '&work=' + work._id)
     },
     chooseStartWork (ratio) {
-      this.$router.push('/xd?ratio=' + ratio + '&work=new')
+      this.$router.push(this.xdUrl + '?ratio=' + ratio + '&work=new')
     },
     formateTime (mill) {
       return dayjs(mill).format('YYYY-MM-DD HH:mm:ss')
@@ -142,9 +143,11 @@ export default {
 
 <style lang="scss">
 .welcome-title {
-  font-size: 1.25rem;
+  font-size: 1rem;
   color: #333;
-  padding: .25rem 1rem;
+  padding: .25rem .5rem;
+  height: 2.5rem;
+  margin: 1rem 0;
 }
 .rotate90 {
   transform: rotate(90deg);
@@ -167,16 +170,13 @@ export default {
   }
 }
 .device-type-list {
-  display: flex;
   height: 9rem;
   .device-type {
     cursor: pointer;
-    width: 160px;
     flex-direction: column;
     display: flex;
     align-items: center;
     border-radius: 8px;
-    margin: 10px;
     &:hover {
       border: 1px solid #00bf72;
       i {
