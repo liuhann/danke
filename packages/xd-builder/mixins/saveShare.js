@@ -101,15 +101,15 @@ export default {
         }
       }
     },
-    async saveCover () {
-      const html2Canvas = (await import(/* webpackChunkName: "html2canvas" */'html2canvas/dist/html2canvas.esm.js')).default
+    /*async saveCover () {
+      const html2Canvas = (await import(/!* webpackChunkName: "html2canvas" *!/'html2canvas/dist/html2canvas.esm.js')).default
       const previewBlob = await this.getCanvasBlob(await html2Canvas(this.$refs.device, {
         allowTaint: true,
         useCORS: true
       }))
       const previewUpload = await this.imagedao.uploadBlob(previewBlob)
       return previewUpload.url.replace(/http[s]*:\/\/[^/]+/g, '')
-    },
+    },*/
     // extract work info
     getWorkConfig () {
       const work = JSON.parse(JSON.stringify(this.work))

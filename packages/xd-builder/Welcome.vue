@@ -50,6 +50,19 @@
   <section class="section">
     <div class="container">
       <div class="welcome-title">打开草稿</div>
+      <div class="columns is-multiline is-mobile">
+        <div class="work-item column" v-for="work in draftWorks" :key="work.id" >
+          <div class="cover" @click="chooseDraftWork(work)">
+            <work-cover :work="work" :ratio="work.ratio | displayRatio" :height="260" :text-adjust="work.ratio | textAdjust"></work-cover>
+          </div>
+          <div class="work-info">
+            <div class="work-title">
+              {{work.title}}
+            </div>
+            <div class="operation"><i class="icon-trash-empty" @click="deleteWorkDraft(work)"></i></div>
+          </div>
+        </div>
+      </div>
       <ul class='work-list'>
         <li class="work-item" v-for="work in draftWorks" :key="work.id" >
           <div class="cover" @click="chooseDraftWork(work)">
