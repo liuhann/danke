@@ -18,17 +18,15 @@
           <a @click="changeType(type)" >{{type.value}}</a>
         </li>
       </ul>
+      <div v-if="isEdit">
+          <router-link to="/frame/edit" class="button icon-plus is-small is-info">创建</router-link>
+      </div>
     </div>
     <div class="tags" style="margin-bottom: .5rem;">
       <span class="tag is-light" :class="[key.en === filterKey? 'is-info': '']" v-for="key in currentKeyWords" :key="key.en" @click="filter(key.en)">{{key.zh}}</span>
     </div>
 
     <nav class="panel frames-list">
-      <div class="panel-block" v-if="isEdit">
-          <p class="control">
-            <router-link to="/frame/edit" class="button icon-plus is-small is-info">创建</router-link>
-          </p>
-        </div>
       <div class="panel-body">
         <div class="animations">
           <div v-for="animation in filteredAnimations" :key="animation.name" class="animation" @click="setAnimation(animation)"
@@ -89,9 +87,6 @@ export default {
         }, {
           en: 'rotate',
           zh: '旋转'
-        }, {
-          en: 'rotate1',
-          zh: '旋转1'
         }],
         value: '进入'
       }, {
@@ -143,7 +138,7 @@ export default {
   created () {
     this.sheet = createSheet()
     this.restdao = new RestDAO(this.ctx, 'danke/animation')
-    this.loadAnimation()
+    this.changeType(this.animationTypes[0])
   },
   methods: {
     setAnimation (animation) {
