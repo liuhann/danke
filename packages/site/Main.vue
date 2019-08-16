@@ -1,17 +1,20 @@
 <template>
 <div id="site">
-  <nav-bar></nav-bar>
-  <section class="hero is-medium">
-    <div class="hero-body">
-      <div class="container is-centered">
-        <h1 class="title">
+  <section class="primary-background">
+    <nav-bar></nav-bar>
+    <section class="section has-text-centered hero is-medium">
+      <div class="section">
+        <p class="title is-3 is-spaced has-text-white is-family-sans-serif">
           设计适用于各种场景的展示页面
-        </h1>
-        <h2 class="subtitle">
-          <router-link class="button is-success is-rounded is-medium" to="/xd/welcome">立刻开始</router-link>
-        </h2>
+        </p>
+        <p class="has-text-white" style="font-size: 20px;margin-bottom: 40px;">
+          Customize keyboard shortcuts for your frequently visited websites
+        </p>
+        <router-link class="round-button installation chrome-installation" to="/xd/welcome">
+          立刻开始
+        </router-link>
       </div>
-    </div>
+    </section>
   </section>
   <section class="section">
     <div class="container">
@@ -118,6 +121,19 @@ export default {
 
 <style lang="scss">
 #site {
+  .primary-background {
+    background-color: #507ce8;
+    color: #fff;
+    background-image: url('/res/icons-background.svg');
+    .heading {
+      font-size: 36px;
+      line-height: 60px;
+      font-family: Poppins,sans-serif;
+      font-weight: 600;
+      color: #234689;
+      letter-spacing: 0;
+    }
+  }
   // background-image: linear-gradient(to right top, #051937, #004d7a, #008793, #00bf72, #a8eb12);
 }
 </style>

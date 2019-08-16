@@ -47,7 +47,11 @@ export default {
   },
   computed: {
     device () {
-      return fitBy(this.ratio, this.width, this.height)
+      if (this.height || this.width) {
+        return fitBy(this.ratio, this.width, this.height)
+      } else {
+        return fitBy(this.ratio, this.$el.clientWidth)
+      }
     },
     scene () {
       if (this.index) {
