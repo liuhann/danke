@@ -12,9 +12,11 @@ export default {
         vi.saveWork()
       }
       if (e.key.toUpperCase() === 'V' && e.ctrlKey) {
-        navigator.clipboard.readText().then(text => {
-          vi.insertText(text)
-        })
+        if (document.activeElement.tagName.toUpperCase() === 'BODY') {
+          navigator.clipboard.readText().then(text => {
+            vi.insertText(text)
+          })
+        }
       }
     }
     window.addEventListener('keydown', this.eventListener)

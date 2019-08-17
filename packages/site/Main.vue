@@ -10,7 +10,7 @@
         <p class="has-text-white" style="font-size: 20px;margin-bottom: 40px;">
           Customize keyboard shortcuts for your frequently visited websites
         </p>
-        <router-link class="round-button installation chrome-installation" to="/xd/welcome">
+        <router-link class="button is-large is-rounded installation chrome-installation" to="/xd/welcome">
           立刻开始
         </router-link>
       </div>
@@ -122,7 +122,7 @@ export default {
 <style lang="scss">
 #site {
   .primary-background {
-    background-color: #507ce8;
+    background-color: #47b17c;
     color: #fff;
     background-image: url('/res/icons-background.svg');
     .heading {
