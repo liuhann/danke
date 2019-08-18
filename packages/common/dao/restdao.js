@@ -41,6 +41,7 @@ export default class RestDAO {
   }
 
   async delete (o) {
+    debugger
     const result = await this.ctx.delete(`${this.path}/${o._id}`).json()
     return result
   }

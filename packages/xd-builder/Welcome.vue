@@ -9,8 +9,10 @@
         <div class="button is-small is-pulled-right is-plain">更多模板</div>
       </div>
       <div class="columns is-mobile is-multiline is-1">
-        <div class="column is-half-mobile is-one-quarter-tablet add-work" @click="chooseStartWork('16:9')">
-          <i class="icon-plus-1"></i>
+        <div class="column is-half-mobile is-one-quarter-tablet" @click="chooseStartWork('16:9')">
+          <div class="add-work">
+            <i class="icon-plus-1"></i>
+          </div>
         </div>
         <div class="column is-half-mobile is-one-quarter-tablet" v-for="work in templates.widescreens" :key="work.id">
           <work-cover :work="work" :ratio="work.ratio"></work-cover>
@@ -27,8 +29,10 @@
         <div class="button is-small is-pulled-right is-plain">更多模板</div>
       </div>
       <div class="columns is-mobile is-multiline is-1">
-        <div class="column is-half-mobile is-2-tablet add-work" @click="chooseStartWork('9:16')">
-          <i class="icon-plus-1"></i>
+        <div class="column is-half-mobile is-2-tablet" @click="chooseStartWork('9:16')">
+          <div class="add-work">
+            <i class="icon-plus-1"></i>
+          </div>
         </div>
         <div class="column is-half-mobile is-2-tablet" v-for="work in templates.mobiles" :key="work.id">
           <work-cover :work="work" :ratio="work.ratio"></work-cover>
@@ -46,8 +50,10 @@
         <div class="button is-small is-pulled-right is-plain">更多模板</div>
       </div>
       <div class="columns is-mobile is-multiline is-1">
-        <div class="column is-half-mobile is-2-tablet add-work" @click="chooseStartWork('4:3')">
-          <i class="icon-plus-1"></i>
+        <div class="column is-half-mobile is-2-tablet" @click="chooseStartWork('4:3')">
+          <div class="add-work">
+            <i class="icon-plus-1"></i>
+          </div>
         </div>
         <div class="column is-half-mobile is-2-tablet" v-for="work in templates.books" :key="work.id">
           <work-cover :work="work" :ratio="work.ratio"></work-cover>
@@ -167,8 +173,14 @@ export default {
   align-items: center;
   justify-content: center;
   font-size: 2.5rem;
-  border: 1px dashed #bbb;
+  border: 2px dashed #bbb;
   border-radius: 1rem;
+  height: 100%;
+  &:hover {
+    color: #47b17c;
+    border: 2px dashed #47b17c;
+    cursor: pointer;
+  }
 }
 .welcome-title {
   font-size: 1rem;

@@ -170,7 +170,7 @@ export default {
 
     editFrame () {
       this.ctx.editAnimation = this.currentAnimation
-      this.$router.push('/frames')
+      this.$router.push('/frame/edit')
     },
 
 
