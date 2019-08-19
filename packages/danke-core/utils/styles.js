@@ -98,6 +98,16 @@ async function renderSceneStage (scene, device, stage) {
   await wait(playEnd)
 }
 
+function getImageWebUrl (element, device, supportWebP) {
+  let w = getLength(element.size.width, device)
+  let h = getLength(element.size.height, device)
+  if (supportWebP) {
+    element.url = element.url + '?x-oss-process=image/format,webp/quality,Q_80/resize,m_fixed,h_' + h + ',w_' + w
+  } else {
+    element.url = element.url + '?x-oss-process=image/format,jpg/quality,Q_80/resize,m_fixed,h_' + h + ',w_' + w
+  }
+}
+
 export {
   getLength,
   getLenSplits,
@@ -105,5 +115,6 @@ export {
   getElementStyle,
   getWorkStyle,
   getSceneStyle,
+  getImageWebUrl,
   revertLength
 }

@@ -10,7 +10,7 @@
 
 <script>
 import { TypeEnum } from '../../danke-core/elements'
-import { getElementStyle, getSceneStyle } from '../../danke-core/utils/styles'
+import { getElementStyle, getImageWebUrl, getSceneStyle } from '../../danke-core/utils/styles'
 import { fitBy } from '../../danke-core/utils/common'
 export default {
   name: 'WorkCover',
@@ -68,6 +68,7 @@ export default {
     for (let element of this.scene.elements) {
       if (element.imgPath) {
         element.url = this.ctx.IMG_SERVER + '/' + element.imgPath
+        getImageWebUrl(element, this.device, this.ctx.supportWebp)
       }
       element.style = getElementStyle(element, this.device)
       this.scene.style = getSceneStyle(this.scene, this.device)

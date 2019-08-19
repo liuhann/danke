@@ -1,14 +1,32 @@
 <template>
 <div class="welcome">
   <nav-bar></nav-bar>
-  <section class="section splash">
+  <section class="section">
     <div class="container">
-      <div class="welcome-title">
-        <i class="icon-desktop"></i>
-        <span>大屏作品</span>
-        <div class="button is-small is-pulled-right is-plain">更多模板</div>
+      <h2 class="subtitle">创建新的作品</h2>
+      <div class="tabs is-medium">
+        <ul>
+          <li :class="startNav === 'mobile'?'is-active': ''">
+            <a @click="startNav = 'mobile'">
+              <span class="icon is-small"><i class="icon-mobile-1" aria-hidden="true"></i></span>
+              <span>竖屏</span>
+            </a>
+          </li>
+          <li :class="startNav === 'widescreen'?'is-active': ''">
+            <a @click="startNav = 'widescreen'">
+              <span class="icon is-small"><i class="icon-desktop" aria-hidden="true"></i></span>
+              <span>宽屏</span>
+            </a>
+          </li>
+          <li :class="startNav === 'tablet'?'is-active': ''">
+            <a @click="startNav = 'tablet'">
+              <span class="icon is-small"><i class="icon-tablet-1" aria-hidden="true"></i></span>
+              <span>平板</span>
+            </a>
+          </li>
+        </ul>
       </div>
-      <div class="columns is-mobile is-multiline is-1">
+      <div class="columns is-mobile is-multiline is-1" v-if="startNav === 'widescreen'">
         <div class="column is-half-mobile is-one-quarter-tablet" @click="chooseStartWork('16:9')">
           <div class="add-work">
             <i class="icon-plus-1"></i>
@@ -18,38 +36,17 @@
           <work-cover :work="work" :ratio="work.ratio"></work-cover>
         </div>
       </div>
-    </div>
-  </section>
-
-  <section class="section splash">
-    <div class="container">
-      <div class="welcome-title">
-        <i class="icon-desktop"></i>
-        <span>手机作品</span>
-        <div class="button is-small is-pulled-right is-plain">更多模板</div>
-      </div>
-      <div class="columns is-mobile is-multiline is-1">
-        <div class="column is-half-mobile is-2-tablet" @click="chooseStartWork('9:16')">
+      <div class="columns is-mobile is-multiline is-1" v-if="startNav === 'mobile'">
+        <div class="column is-one-third-mobile is-2-tablet" @click="chooseStartWork('9:16')">
           <div class="add-work">
             <i class="icon-plus-1"></i>
           </div>
         </div>
-        <div class="column is-half-mobile is-2-tablet" v-for="work in templates.mobiles" :key="work.id">
+        <div class="column is-one-third-mobile is-2-tablet" v-for="work in templates.mobiles" :key="work.id">
           <work-cover :work="work" :ratio="work.ratio"></work-cover>
         </div>
       </div>
-    </div>
-  </section>
-
-
-  <section class="section splash">
-    <div class="container">
-      <div class="welcome-title">
-        <i class="icon-tablet-1"></i>
-        <span>平板</span>
-        <div class="button is-small is-pulled-right is-plain">更多模板</div>
-      </div>
-      <div class="columns is-mobile is-multiline is-1">
+      <div class="columns is-mobile is-multiline is-1" v-if="startNav === 'tablet'">
         <div class="column is-half-mobile is-2-tablet" @click="chooseStartWork('4:3')">
           <div class="add-work">
             <i class="icon-plus-1"></i>
@@ -63,7 +60,7 @@
   </section>
   <section class="section">
     <div class="container">
-      <div class="welcome-title">打开草稿</div>
+      <h2 class="subtitle">打开草稿</h2>
       <ul class='work-list'>
         <li class="work-item" v-for="work in draftWorks" :key="work.id" >
           <div class="cover" @click="chooseDraftWork(work)">
@@ -108,12 +105,17 @@ export default {
   data () {
     return {
       isMobile: screen.width < screen.height,
+      startNav: 'mobile',
       templates: {
         books: [],
         mobiles: [],
         widescreens: []
       },
-      draftWorks: []
+      drafts: {
+        books: [],
+        mobiles: [],
+        widescreens: []
+      }
     }
   },
   computed: {
@@ -137,7 +139,9 @@ export default {
   methods: {
     async loadDraftWorks () {
       const result = await this.workdao.list()
-      this.draftWorks = result.list
+      this.drafts.widescreens = result.list.filter( work => work.ratio === '16:9')
+      this.drafts.mobiles = result.list.filter( work => work.ratio === '9:16')
+      this.drafts.books = result.list.filter( work => work.ratio === '4:3')
     },
 
     async loadTops () {
