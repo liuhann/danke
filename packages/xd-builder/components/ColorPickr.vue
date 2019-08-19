@@ -18,12 +18,8 @@ export default {
   },
   data () {
     return {
-      psColor: this.value
-    }
-  },
-  computed: {
-    predefineColors () {
-      return [
+      psColor: this.value,
+      predefineColors: [
         '#ff4500',
         '#ff8c00',
         '#ffd700',
@@ -38,11 +34,25 @@ export default {
       ]
     }
   },
+  computed: {
+
+  },
+
+  created () {
+    if (this.ctx.predefineColors == null) {
+      this.ctx.predefineColors = []
+    } else {
+      this.predefineColors = this.predefineColors.concat(this.ctx.predefineColors)
+    }
+  },
   methods: {
     colorChange () {
       if (!this.psColor) {
         this.$emit('remove')
       } else {
+        if (this.ctx.predefineColors.indexOf(this.psColor) === -1) {
+          this.ctx.predefineColors.push(this.psColor)
+        }
         this.$emit('input', this.psColor)
       }
     }

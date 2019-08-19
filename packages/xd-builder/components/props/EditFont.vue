@@ -1,8 +1,11 @@
 <template>
 <div class="edit-font field-group">
   <div class="field has-addons">
-    <p class="control icon-label" @click="copyStyle">
-      <i class="icon-fontsize"></i>
+
+  </div>
+  <div class="field has-addons">
+    <p class="control" @click="copyStyle">
+      字体  
     </p>
     <p class="control">
       <edit-len v-model="font.size" unit-label="倍" :with-unit="false" :step="0.2"></edit-len>
@@ -25,6 +28,11 @@
     <div v-if="copied" class="control paste" @click="pasteStyle">
       <i class="icon-paste"></i>
     </div>
+  </div>
+  <div class="field has-addons">
+    <p class="control">
+      <toggle-grouped-button :options="valigns" v-model="font.valign"></toggle-grouped-button>
+    </p>
   </div>
 </div>
 </template>
@@ -64,6 +72,16 @@ export default {
       }, {
         key: 'right',
         icon: 'icon-align-right'
+      }],
+      valigns: [{
+        key: 'flex-start',
+        value: '上'
+      }, {
+        key: 'center',
+        value: '中'
+      }, {
+        key: 'flex-end',
+        value: '下'
       }]
     }
   },

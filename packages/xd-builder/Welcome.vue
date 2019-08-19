@@ -62,7 +62,7 @@
     <div class="container">
       <h2 class="subtitle">打开草稿</h2>
       <ul class='work-list'>
-        <li class="work-item" v-for="work in draftWorks" :key="work.id" >
+        <li class="work-item" v-for="work in drafts.books" :key="work.id" >
           <div class="cover" @click="chooseDraftWork(work)">
             <work-cover :work="work" :ratio="work.ratio" :height="200"></work-cover>
           </div>

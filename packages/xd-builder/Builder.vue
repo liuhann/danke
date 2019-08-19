@@ -14,7 +14,7 @@
           <img v-if="element.type === TypeEnum.IMAGE || element.type === TypeEnum.SVG" :src="element.url">
           <span v-if="element.type === TypeEnum.TEXT && element!==currentElement" v-html="$options.filters.newline(element.text)"></span>
           <div class="mask" v-if="multipleElements.indexOf(element) > -1">
-            <span @input="contentChange" contenteditable v-if="element.type === TypeEnum.TEXT && multipleElements.length === 1" v-html="$options.filters.newline(element.text)"></span>
+            <span @input="contentChange" class="content-editable" contenteditable v-if="element.type === TypeEnum.TEXT && multipleElements.length === 1" v-html="$options.filters.newline(element.text)"></span>
             <div class="corner-rb" v-if="multipleElements.length === 1 && element===currentElement"></div>
           </div>
         </div>
@@ -179,6 +179,7 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
           box-sizing: content-box;
           span {
             outline:none;
+            -webkit-user-modify: read-write-plaintext-only;
           }
           .corner-rb {
             background-color: #87b1f1;

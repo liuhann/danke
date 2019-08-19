@@ -2,7 +2,7 @@
 <div class="buttons has-addons">
   <span v-for="option in options" :key="option.key" :class="fieldValue === option.key? 'is-selected is-info': ''" class="button is-small" @click="changeRadioValue(option.key)">
     <span class="icon is-small" v-if="option.icon">
-      <i :class="option.icon"></i>
+      <i v-if="option.icon" :class="option.icon"></i>{{option.value}}
     </span>
     {{option.value}}
   </span>
