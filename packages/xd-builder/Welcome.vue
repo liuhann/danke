@@ -4,28 +4,7 @@
   <section class="section">
     <div class="container">
       <h2 class="subtitle">创建新的作品</h2>
-      <div class="tabs is-medium">
-        <ul>
-          <li :class="startNav === 'mobile'?'is-active': ''">
-            <a @click="startNav = 'mobile'">
-              <span class="icon is-small"><i class="icon-mobile-1" aria-hidden="true"></i></span>
-              <span>竖屏</span>
-            </a>
-          </li>
-          <li :class="startNav === 'widescreen'?'is-active': ''">
-            <a @click="startNav = 'widescreen'">
-              <span class="icon is-small"><i class="icon-desktop" aria-hidden="true"></i></span>
-              <span>宽屏</span>
-            </a>
-          </li>
-          <li :class="startNav === 'tablet'?'is-active': ''">
-            <a @click="startNav = 'tablet'">
-              <span class="icon is-small"><i class="icon-tablet-1" aria-hidden="true"></i></span>
-              <span>平板</span>
-            </a>
-          </li>
-        </ul>
-      </div>
+      <tabs v-model="startNav" :tabs="tabs"></tabs>
       <div class="columns is-mobile is-multiline is-1" v-if="startNav === 'widescreen'">
         <div class="column is-half-mobile is-one-quarter-tablet" @click="chooseStartWork('16:9')">
           <div class="add-work">
@@ -81,6 +60,7 @@
 
 <script>
 import { MessageBox } from 'element-ui'
+import Tabs from '../common/components/Tabs.vue'
 import NavBar from '../site/components/NavBar'
 import RestDAO from '../common/dao/restdao'
 import dayjs from 'dayjs'
@@ -100,6 +80,7 @@ export default {
   name: 'Welcome',
   components: {
     WorkCover,
+    Tabs,
     NavBar
   },
   data () {
@@ -119,6 +100,21 @@ export default {
     }
   },
   computed: {
+    tabs () {
+      return [{
+        key: 'mobile',
+        icon: 'icon-mobile-1',
+        title: '竖屏'
+      }, {
+        key: 'widescreen',
+        icon: 'icon-desktop',
+        title: '宽屏'
+      }, {
+        key: 'tablet',
+        icon: 'icon-tablet-1',
+        title: '平板'
+      }]
+    },
     xdUrl () {
       return this.isMobile? '/xdm': '/xd'
     }

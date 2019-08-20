@@ -1,6 +1,14 @@
 <template>
 <div class="tool-bar" :class="[vertical? 'flex-column': '']">
   <div class="top" :class="[vertical? 'flex-column': '']">
+    <popover
+      placement="right-start"
+      title="标题"
+      width="200"
+      trigger="click"
+      content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
+      <a class="button is-white icon-th-thumb-empty" slot="reference"></a>
+    </popover>
     <a class="file">
       <label class="file-label">
         <input class="file-input" type="file" name="resume" @input="svgFileChoosed">
@@ -24,8 +32,12 @@
 </div>
 </template>
 <script>
+import { Popover } from 'element-ui'
 export default {
   name: 'ToolBar',
+  components: {
+    Popover
+  },
   props: {
     vertical: {
       type: Boolean,
