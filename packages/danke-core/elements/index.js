@@ -1,6 +1,7 @@
 import IMAGE from './image'
 import TEXT from './text'
 import SHAPE from './shape'
+import LAYOUT from './layout'
 import SVG from './svg'
 const TypeEnum = {
   IMAGE: 1,
@@ -10,4 +11,4 @@ const TypeEnum = {
   VIDEO: 6,
   SVG: 7
 }
-export { TypeEnum, IMAGE, SHAPE, TEXT, SVG }
+export { TypeEnum, IMAGE, SHAPE, TEXT, SVG, LAYOUT }

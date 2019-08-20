@@ -3,10 +3,14 @@
   <div class="top" :class="[vertical? 'flex-column': '']">
     <popover
       placement="right-start"
-      title="标题"
       width="200"
       trigger="click"
       content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
+      <ul>
+        <li v-for="layout in layoutTemplates" :key="layout.title" @click="insertLayout(layout)">
+          {{layout.title}}
+        </li>
+      </ul>
       <a class="button is-white icon-th-thumb-empty" slot="reference"></a>
     </popover>
     <a class="file">
@@ -33,6 +37,7 @@
 </template>
 <script>
 import { Popover } from 'element-ui'
+import { templates } from '../../danke-core/elements/layout'
 export default {
   name: 'ToolBar',
   components: {
@@ -44,7 +49,12 @@ export default {
       default: true
     }
   },
-  inject: ['fileChoosed', 'insertShape', 'insertText', 'svgFileChoosed']
+  inject: ['fileChoosed', 'insertShape', 'insertText', 'svgFileChoosed', 'insertLayout'],
+  data () {
+    return {
+      layoutTemplates: templates
+    }
+  }
 }
 </script>
 <style lang="scss">

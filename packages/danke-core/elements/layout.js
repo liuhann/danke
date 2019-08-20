@@ -14,6 +14,19 @@ const layout = {
   }
 }
 export const templates = [{
-  title: '居中'
+  title: '靠上半屏',
+  value: {
+    position: {
+      type: 'absolute',
+      horizontal: 'center',
+      vertical: 'top',
+      offsetX: '0vw',
+      offsetY: '2vh'
+    },
+    size: {
+      width: '90vw',
+      height: '50vh'
+    }
+  }
 }]
 export default layout

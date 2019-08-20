@@ -1,4 +1,4 @@
-import { IMAGE, SHAPE, TEXT, TypeEnum } from '../../danke-core/elements/index'
+import { IMAGE, SHAPE, TEXT, TypeEnum, LAYOUT } from '../../danke-core/elements/index'
 import { clone } from '../../utils/object'
 import { getElementStyle, getSceneStyle } from '../../danke-core/utils/styles'
 import { interactElement, destoryInteraction } from '../utils/interact'
@@ -103,6 +103,15 @@ export default {
         this.$refs.cropper.cropCompleteCallback = this.insertImage
         e.currentTarget.value = ''
       }
+    },
+
+    insertLayout (template) {
+      const cloned = clone(LAYOUT)
+      Object.assign(cloned, template)
+      cloned.id = shortid()
+      cloned.style = getElementStyle(cloned, this.device)
+      this.currentScene.layouts.push(cloned)
+      this.chooseElement(cloned)
     },
     insertShape (shape) {
       const clonedElement = clone(SHAPE)
