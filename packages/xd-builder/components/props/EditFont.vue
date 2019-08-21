@@ -1,12 +1,9 @@
 <template>
 <div class="edit-font field-group">
   <div class="field has-addons">
-
-  </div>
-  <div class="field has-addons">
-    <p class="control" @click="copyStyle">
-      字体  
-    </p>
+    <div class="control icon-label" @click="copySizeStyle">
+      <i class="icon-fontsize"></i>
+    </div>
     <p class="control">
       <edit-len v-model="font.size" unit-label="倍" :with-unit="false" :step="0.2"></edit-len>
     </p>
@@ -28,11 +25,6 @@
     <div v-if="copied" class="control paste" @click="pasteStyle">
       <i class="icon-paste"></i>
     </div>
-  </div>
-  <div class="field has-addons">
-    <p class="control">
-      <toggle-grouped-button :options="valigns" v-model="font.valign"></toggle-grouped-button>
-    </p>
   </div>
 </div>
 </template>

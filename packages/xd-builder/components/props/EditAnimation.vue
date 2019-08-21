@@ -1,6 +1,6 @@
 <template>
 <div class="field has-addons">
-  <div class="control icon-label">
+  <div class="control icon-label" @click="copyAnimationStyle">
     <i :class="icon"></i>
   </div>
   <div class="control">
@@ -15,6 +15,9 @@
   <div class="control">
     <span v-if="animation.name" class="button is-small icon-trash-empty is-danger" @click="clearAnimation"></span>
   </div>
+  <div v-if="copied" class="control paste" @click="pasteStyle">
+    <i class="icon-paste"></i>
+  </div>
 </div>
 </template>
 
@@ -22,8 +25,10 @@
 import EditLen from './EditLen.vue'
 import FormField from './FormField'
 import frameModel from '../../../frames/frameChooseDialog'
+import pastable from './pastable'
 export default {
   name: 'EditAnimation',
+  mixins: [pastable],
   components: {
     FormField,
     EditLen
@@ -50,11 +55,18 @@ export default {
   },
   data () {
     return {
+
     }
   },
   computed: {
     font () {
       return this.value
+    },
+    ctxKey () {
+      return this.animationType + 'aniCopied'
+    },
+    propKey () {
+      return this.animationType + 'ani'
     }
   },
 
@@ -81,6 +93,12 @@ export default {
         this.animation.timing = animation.timing
         this.animation.frames = animation.frames
       })
+    },
+    copyAnimationStyle () {
+      this.copied = {
+        animation: JSON.parse(JSON.stringify(this.animation))
+      }
+      this.ctx[this.animationType + 'aniCopied'] = this.copied
     }
   }
 }
