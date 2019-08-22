@@ -3,8 +3,8 @@
   <nav-bar></nav-bar>
   <section class="section">
     <div class="container">
-      <h4 class="subtitle is-6">创建新的作品</h4>
-      <tabs v-model="startNav" :tabs="tabs" size="is-small"></tabs>
+      <h4 class="subtitle is-4">创建新的作品</h4>
+      <tabs v-model="startNav" :tabs="tabs" size="is-medium"></tabs>
       <div class="columns is-mobile is-multiline is-1" v-if="startNav === 'widescreen'">
         <div class="column is-half-mobile is-one-quarter-tablet" @click="chooseStartWork('16:9')">
           <div class="add-work">
@@ -26,7 +26,7 @@
         </div>
       </div>
       <div class="columns is-mobile is-multiline is-1" v-if="startNav === 'tablet'">
-        <div class="column is-half-mobile is-2-tablet" @click="chooseStartWork('4:3')">
+        <div class="column is-half-mobile is-one-quarter-tablet" @click="chooseStartWork('4:3')">
           <div class="add-work">
             <i class="icon-plus-1"></i>
           </div>
@@ -39,7 +39,7 @@
   </section>
   <section class="section">
     <div class="container">
-      <h4 class="subtitle is-6">打开草稿</h4>
+      <h4 class="subtitle is-4">打开草稿</h4>
       <div class="columns is-mobile is-multiline is-1">
         <div class="column is-half-mobile is-one-quarter-tablet" v-for="work in drafts.widescreens" :key="work.id" @click="chooseDraftWork(work)">
           <work-cover :work="work" :ratio="work.ratio"></work-cover>
@@ -65,7 +65,7 @@
       </div>
 
       <div class="columns is-mobile is-multiline is-1">
-        <div class="column is-half-mobile is-2-tablet" v-for="work in drafts.books" :key="work.id" @click="chooseDraftWork(work)">
+        <div class="column is-half-mobile is-one-quarter-tablet" v-for="work in drafts.books" :key="work.id" @click="chooseDraftWork(work)">
           <work-cover :work="work" :ratio="work.ratio"></work-cover>
           <div class="work-info">
             <div class="work-title">
