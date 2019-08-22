@@ -3,8 +3,8 @@
   <nav-bar></nav-bar>
   <section class="section">
     <div class="container">
-      <h2 class="subtitle">创建新的作品</h2>
-      <tabs v-model="startNav" :tabs="tabs"></tabs>
+      <h4 class="subtitle is-6">创建新的作品</h4>
+      <tabs v-model="startNav" :tabs="tabs" size="is-small"></tabs>
       <div class="columns is-mobile is-multiline is-1" v-if="startNav === 'widescreen'">
         <div class="column is-half-mobile is-one-quarter-tablet" @click="chooseStartWork('16:9')">
           <div class="add-work">
@@ -39,20 +39,43 @@
   </section>
   <section class="section">
     <div class="container">
-      <h2 class="subtitle">打开草稿</h2>
-      <ul class='work-list'>
-        <li class="work-item" v-for="work in drafts.books" :key="work.id" >
-          <div class="cover" @click="chooseDraftWork(work)">
-            <work-cover :work="work" :ratio="work.ratio" :height="200"></work-cover>
-          </div>
+      <h4 class="subtitle is-6">打开草稿</h4>
+      <div class="columns is-mobile is-multiline is-1">
+        <div class="column is-half-mobile is-one-quarter-tablet" v-for="work in drafts.widescreens" :key="work.id" @click="chooseDraftWork(work)">
+          <work-cover :work="work" :ratio="work.ratio"></work-cover>
           <div class="work-info">
             <div class="work-title">
               {{work.title}}
             </div>
             <div class="operation"><i class="icon-trash-empty" @click="deleteWorkDraft(work)"></i></div>
           </div>
-        </li>
-      </ul>
+        </div>
+      </div>
+
+      <div class="columns is-mobile is-multiline is-1">
+        <div class="column is-one-third-mobile is-2-tablet" v-for="work in drafts.mobiles" :key="work.id" @click="chooseDraftWork(work)">
+          <work-cover :work="work" :ratio="work.ratio"></work-cover>
+          <div class="work-info">
+            <div class="work-title">
+              {{work.title}}
+            </div>
+            <div class="operation"><i class="icon-trash-empty" @click="deleteWorkDraft(work)"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="columns is-mobile is-multiline is-1">
+        <div class="column is-half-mobile is-2-tablet" v-for="work in drafts.books" :key="work.id" @click="chooseDraftWork(work)">
+          <work-cover :work="work" :ratio="work.ratio"></work-cover>
+          <div class="work-info">
+            <div class="work-title">
+              {{work.title}}
+            </div>
+            <div class="operation"><i class="icon-trash-empty" @click="deleteWorkDraft(work)"></i></div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
 </div>
@@ -173,7 +196,7 @@ export default {
   align-items: center;
   justify-content: center;
   font-size: 2.5rem;
-  border: 2px dashed #bbb;
+  border: 1px dashed #bbb;
   border-radius: 1rem;
   height: 100%;
   &:hover {
