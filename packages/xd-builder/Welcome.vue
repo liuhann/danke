@@ -139,7 +139,7 @@ export default {
       }]
     },
     xdUrl () {
-      return this.isMobile? '/xdm': '/xd'
+      return this.isMobile ? '/xdm' : '/xd'
     }
   },
   filters: {
@@ -158,18 +158,18 @@ export default {
   methods: {
     async loadDraftWorks () {
       const result = await this.workdao.list()
-      this.drafts.widescreens = result.list.filter( work => work.ratio === '16:9')
-      this.drafts.mobiles = result.list.filter( work => work.ratio === '9:16')
-      this.drafts.books = result.list.filter( work => work.ratio === '4:3')
+      this.drafts.widescreens = result.list.filter(work => work.ratio === '16:9')
+      this.drafts.mobiles = result.list.filter(work => work.ratio === '9:16')
+      this.drafts.books = result.list.filter(work => work.ratio === '4:3')
     },
 
     async loadTops () {
       const tops = await this.workdao.list({
         'system.top4': '1'
       })
-      this.templates.widescreens = tops.list.filter( work => work.ratio === '16:9')
-      this.templates.mobiles = tops.list.filter( work => work.ratio === '9:16')
-      this.templates.books = tops.list.filter( work => work.ratio === '4:3')
+      this.templates.widescreens = tops.list.filter(work => work.ratio === '16:9')
+      this.templates.mobiles = tops.list.filter(work => work.ratio === '9:16')
+      this.templates.books = tops.list.filter(work => work.ratio === '4:3')
     },
 
     chooseDraftWork (work) {

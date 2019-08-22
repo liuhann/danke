@@ -18,10 +18,8 @@
           <a @click="changeType(type)" >{{type.value}}</a>
         </li>
       </ul>
-      <div v-if="isEdit">
-          <router-link to="/frame/edit" class="button icon-plus is-small is-info">创建</router-link>
-      </div>
     </div>
+    <router-link to="/frame/edit" class="button icon-plus is-small is-info is-rtl">创建</router-link>
     <div class="tags" style="margin-bottom: .5rem;">
       <span class="tag is-light" :class="[key.en === filterKey? 'is-info': '']" v-for="key in currentKeyWords" :key="key.en" @click="filter(key.en)">{{key.zh}}</span>
     </div>

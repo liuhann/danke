@@ -55,18 +55,13 @@ export default {
   },
   data () {
     return {
-
+      ctxKey: this.animationType + 'aniCopied',
+      propKey: this.animationType + 'ani'
     }
   },
   computed: {
     font () {
       return this.value
-    },
-    ctxKey () {
-      return this.animationType + 'aniCopied'
-    },
-    propKey () {
-      return this.animationType + 'ani'
     }
   },
 

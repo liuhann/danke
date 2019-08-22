@@ -1,7 +1,7 @@
 <template>
 <el-dialog
   title="选择动画效果"
-  :top="0"
+  top="0"
   :fullscreen="isMobile? true: false"
   :visible.sync="centerDialogVisible">
   <frame-box ref="frameBox"></frame-box>
