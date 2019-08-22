@@ -16,8 +16,8 @@ export default {
     return {
       work: null,
       device: {
-        width: 1024,
-        height: 768
+        width: window.innerWidth,
+        height: window.innerHeight
       }
     }
   },

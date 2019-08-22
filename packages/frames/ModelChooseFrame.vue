@@ -1,12 +1,14 @@
 <template>
 <el-dialog
   title="选择动画效果"
+  class="modal-frame-choose"
   top="0"
   :fullscreen="isMobile? true: false"
   :visible.sync="centerDialogVisible">
   <frame-box ref="frameBox"></frame-box>
   <span slot="footer" class="dialog-footer">
-    <button class="button is-link is-small is-outlined" @click="choose">选择</button>
+    <button class="button icon-plus is-info">创建</button>
+    <button class="button is-link is-outlined" @click="choose">选择</button>
   </span>
 </el-dialog>
 </template>
@@ -59,7 +61,12 @@ export default {
 <style lang="scss">
 .modal-frame-choose {
   z-index: 10001;
-
+  .el-dialog__header {
+    padding: 10px 20px 5px 20px;
+  }
+  .el-dialog__body {
+    padding: 10px 20px;
+  }
   .modal-content {
     background-color: #fff;
   }

@@ -1,9 +1,23 @@
 <template>
-  <div class="device cover" :style="scene.style">
+  <div class="device cover" :style="scene.style" @mouseover="mouseOn = true" @mouseout="mouseOn = false">
     <div v-for="(element) in scene.elements" :key="element.id" class="element" :class="['type' + element.type]"
          :style="element.style">
       <img v-if="element.url" :src="element.url">
       <span v-if="element.type === TypeEnum.TEXT && element.font.size >= textAdjust" v-html="$options.filters.newline(element.text)"></span>
+    </div>
+    <div class="hover-mask" :class="mouseOn? 'on': ''">
+      <div class="centering">
+        <a class="button is-medium is-success">
+          <span class="icon">
+            <i class="icon-play"></i>
+          </span>
+        </a>
+        <a class="button is-medium is-info" style="margin-left: 20px;">
+          <span class="icon">
+            <i class="icon-pencil"></i>
+          </span>
+        </a>
+      </div>
     </div>
   </div>
 </template>
@@ -43,6 +57,12 @@ export default {
       return v.replace(/\n/g, '<br>')
     }
   },
+  data () {
+    return {
+      mouseOn: false,
+      TypeEnum
+    }
+  },
   watch: {
   },
   computed: {
@@ -72,11 +92,6 @@ export default {
       }
       element.style = getElementStyle(element, this.device)
       this.scene.style = getSceneStyle(this.scene, this.device)
-    }
-  },
-  data () {
-    return {
-      TypeEnum
     }
   },
   methods: {
@@ -115,6 +130,24 @@ export default {
       width: 100%;
       height: 100%;
       object-fit: cover;
+    }
+  }
+
+  .hover-mask {
+    opacity: 0;
+    transition: opacity .2s ease-out;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background-color: #0a0a0a;
+    // background-color: rgba(0,0,0, .75);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &.on {
+      opacity: .75;
     }
   }
 }

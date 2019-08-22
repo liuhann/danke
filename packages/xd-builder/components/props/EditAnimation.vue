@@ -56,7 +56,7 @@ export default {
   data () {
     return {
       ctxKey: this.animationType + 'aniCopied',
-      propKey: this.animationType + 'ani'
+      propKey: 'animation'
     }
   },
   computed: {
@@ -88,6 +88,18 @@ export default {
         this.animation.timing = animation.timing
         this.animation.frames = animation.frames
       })
+    },
+
+    pasteStyle () {
+      if (this.copied) {
+        this.animation.name = this.copied.animation.name
+        this.animation.desc = this.copied.animation.desc
+        this.animation.duration = this.copied.animation.duration
+        this.animation.delay = this.copied.animation.delay
+        this.animation.timing = this.copied.animation.timing
+        this.animation.frames = this.copied.animation.frames
+        this.copied = null
+      }
     },
     copyAnimationStyle () {
       this.copied = {
