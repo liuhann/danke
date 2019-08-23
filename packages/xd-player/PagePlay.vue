@@ -26,6 +26,10 @@ export default {
   },
   mounted () {
     const mode = this.$route.params.mode
+    if (mode === 'full') {
+      this.device.width = window.innerWidth
+      this.device.height = window.innerHeight
+    }
     this.loadWork()
   },
   methods: {

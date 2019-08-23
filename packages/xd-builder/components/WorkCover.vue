@@ -7,12 +7,12 @@
     </div>
     <div class="hover-mask" :class="mouseOn? 'on': ''">
       <div class="centering">
-        <a class="button is-medium is-success">
+        <a class="button is-medium is-success" @click="play">
           <span class="icon">
             <i class="icon-play"></i>
           </span>
         </a>
-        <a class="button is-medium is-info" style="margin-left: 20px;">
+        <a class="button is-medium is-info" style="margin-left: 20px;" @click="edit">
           <span class="icon">
             <i class="icon-pencil"></i>
           </span>
@@ -95,7 +95,12 @@ export default {
     }
   },
   methods: {
-
+    play () {
+      this.$emit('play')
+    },
+    edit () {
+      this.$emit('edit')
+    }
   }
 }
 </script>

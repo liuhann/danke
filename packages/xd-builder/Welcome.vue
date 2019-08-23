@@ -32,7 +32,7 @@
           </div>
         </div>
         <div class="column is-half-mobile is-2-tablet" v-for="work in templates.books" :key="work.id">
-          <work-cover :work="work" :ratio="work.ratio"></work-cover>
+          <work-cover :work="work" :ratio="work.ratio" @play="playWork(work._id)" @edit="chooseFromTemplateWork(work)"></work-cover>
         </div>
       </div>
     </div>
@@ -41,8 +41,8 @@
     <div class="container">
       <h4 class="subtitle is-4">打开草稿</h4>
       <div class="columns is-mobile is-multiline is-1">
-        <div class="column is-half-mobile is-one-quarter-tablet" v-for="work in drafts.widescreens" :key="work.id" @click="chooseDraftWork(work)">
-          <work-cover :work="work" :ratio="work.ratio"></work-cover>
+        <div class="column is-half-mobile is-one-quarter-tablet" v-for="work in drafts.widescreens" :key="work.id">
+          <work-cover :work="work" :ratio="work.ratio" @play="playWork(work._id)" @edit="chooseDraftWork(work)"></work-cover>
           <div class="work-info">
             <div class="work-title">
               {{work.title}}
@@ -53,8 +53,8 @@
       </div>
 
       <div class="columns is-mobile is-multiline is-1">
-        <div class="column is-one-third-mobile is-2-tablet" v-for="work in drafts.mobiles" :key="work.id" @click="chooseDraftWork(work)">
-          <work-cover :work="work" :ratio="work.ratio"></work-cover>
+        <div class="column is-one-third-mobile is-2-tablet" v-for="work in drafts.mobiles" :key="work.id">
+          <work-cover :work="work" :ratio="work.ratio" @play="playWork(work._id)" @edit="chooseDraftWork(work)"></work-cover>
           <div class="work-info">
             <div class="work-title">
               {{work.title}}
@@ -65,8 +65,8 @@
       </div>
 
       <div class="columns is-mobile is-multiline is-1">
-        <div class="column is-half-mobile is-one-quarter-tablet" v-for="work in drafts.books" :key="work.id" @click="chooseDraftWork(work)">
-          <work-cover :work="work" :ratio="work.ratio"></work-cover>
+        <div class="column is-half-mobile is-one-quarter-tablet" v-for="work in drafts.books" :key="work.id">
+          <work-cover :work="work" :ratio="work.ratio" @play="playWork(work._id)" @edit="chooseDraftWork(work)"></work-cover>
           <div class="work-info">
             <div class="work-title">
               {{work.title}}
@@ -162,7 +162,6 @@ export default {
       this.drafts.mobiles = result.list.filter(work => work.ratio === '9:16')
       this.drafts.books = result.list.filter(work => work.ratio === '4:3')
     },
-
     async loadTops () {
       const tops = await this.workdao.list({
         'system.top4': '1'
@@ -172,6 +171,12 @@ export default {
       this.templates.books = tops.list.filter(work => work.ratio === '4:3')
     },
 
+    playWork (id) {
+      window.open('/play/auto/' + id)
+    },
+    chooseFromTemplateWork () {
+
+    },
     chooseDraftWork (work) {
       this.$router.push(this.xdUrl + '?ratio=' + work.ratio + '&work=' + work._id)
     },

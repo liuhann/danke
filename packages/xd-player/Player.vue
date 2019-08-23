@@ -1,18 +1,22 @@
 <template>
 <div class="device player" :style="deviceStyle" @click="onSceneClick">
-  <div class="loading"></div>
-  <div v-for="scene in work.scenes" :key="scene.id" class="scene" :style="scene.style">
-    <div v-for="(element) in scene.elements" :key="element.id" class="element" :class="['type' + element.type]"
-      :style="element.style">
-      <img v-if="element.url" :src="element.url">
-      <span v-if="element.type === TypeEnum.TEXT" v-html="$options.filters.newline(element.text)"></span>
+  <div class="loading" v-if="isLoading">Loading</div>
+  <div v-if="isLoading===false">
+    <div v-for="scene in work.scenes" :key="scene.id" class="scene" :style="scene.style">
+      <div v-for="(element) in scene.elements" :key="element.id" class="element" :class="['type' + element.type]"
+        :style="element.style">
+        <img v-if="element.url" :src="element.url">
+        <span v-if="element.type === TypeEnum.TEXT" v-html="$options.filters.newline(element.text)"></span>
+      </div>
     </div>
   </div>
 </div>
 </template>
 
 <script>
+import { Loader, middleware } from 'resource-loader'
 import { sceneTypeEnum } from '../danke-core/elements/scene'
+import { getImageWebUrl } from '../danke-core/utils/styles'
 import { TypeEnum } from '../danke-core/elements/index'
 import DankeEngine from '../danke-core/engine'
 export default {
@@ -50,19 +54,35 @@ export default {
   },
   data () {
     return {
+      isLoading: true,
       TypeEnum,
       sceneTypeEnum
     }
   },
   methods: {
     async play () {
+      // await this.loadResources()
+      this.isLoading = false
       this.engine = new DankeEngine(this.work.scenes, this.device)
       this.engine.play()
-      await this.loadResources()
-
       this.engine.setDeviceEl(this.$el)
     },
     async loadResources () {
+      return new Promise((resolve, reject) => {
+        const loader = new Loader()
+        for (let scene of this.work.scenes) {
+          for (let element of scene.elements) {
+            if (element.url) {
+              loader.add(element.id, getImageWebUrl(element, this.device, this.ctx.supportWebp))
+            }
+          }
+        }
+        loader.load(() => {
+          resolve()
+        })
+        loader.onProgress.add(() => {})
+        loader.onComplete.add(() => {})
+      })
     },
 
     onSceneClick () {

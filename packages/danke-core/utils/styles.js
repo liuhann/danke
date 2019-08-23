@@ -106,6 +106,7 @@ function getImageWebUrl (element, device, supportWebP) {
   } else {
     element.url = element.url + '?x-oss-process=image/format,jpg/quality,Q_80/resize,m_fixed,h_' + h + ',w_' + w
   }
+  return element.url
 }
 
 export {
