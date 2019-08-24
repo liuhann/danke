@@ -1,8 +1,10 @@
 <template>
-<div id="player">
-  <div class="loading" v-if="work == null">Loading</div>
-  <player ref="player" v-if="work" :work="work" :device="device"></player>
-</div>
+  <div id="player">
+    <div
+      v-if="work == null"
+      class="loading">Loading</div>
+    <player v-if="work" :work="work" :device="device"/>
+  </div>
 </template>
 
 <script>
@@ -10,7 +12,7 @@ import Player from './Player'
 import RestDAO from '../common/dao/restdao'
 import { fitToContainer } from '../danke-core/utils/common'
 export default {
-  name: 'PagePlay.vue',
+  name: 'PagePlayVue',
   components: { Player },
   data () {
     return {
@@ -36,9 +38,9 @@ export default {
     async loadWork () {
       const workId = this.$route.params.id
       this.work = await this.workdao.getOne(workId)
-      this.$nextTick(() => {
-        this.$refs.player.play()
-      })
+      // this.$nextTick(() => {
+      //   this.$refs.player.play()
+      // })
     }
   }
 }

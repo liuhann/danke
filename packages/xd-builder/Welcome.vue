@@ -1,84 +1,143 @@
 <template>
-<div class="welcome">
-  <nav-bar></nav-bar>
-  <section class="section">
-    <div class="container">
-      <h4 class="subtitle is-4">创建新的作品</h4>
-      <tabs v-model="startNav" :tabs="tabs" size="is-medium"></tabs>
-      <div class="columns is-mobile is-multiline is-1" v-if="startNav === 'widescreen'">
-        <div class="column is-half-mobile is-one-quarter-tablet" @click="chooseStartWork('16:9')">
-          <div class="add-work">
-            <i class="icon-plus-1"></i>
-          </div>
-        </div>
-        <div class="column is-half-mobile is-one-quarter-tablet" v-for="work in templates.widescreens" :key="work.id">
-          <work-cover :work="work" :ratio="work.ratio"></work-cover>
-        </div>
-      </div>
-      <div class="columns is-mobile is-multiline is-1" v-if="startNav === 'mobile'">
-        <div class="column is-one-third-mobile is-2-tablet" @click="chooseStartWork('9:16')">
-          <div class="add-work">
-            <i class="icon-plus-1"></i>
-          </div>
-        </div>
-        <div class="column is-one-third-mobile is-2-tablet" v-for="work in templates.mobiles" :key="work.id">
-          <work-cover :work="work" :ratio="work.ratio"></work-cover>
-        </div>
-      </div>
-      <div class="columns is-mobile is-multiline is-1" v-if="startNav === 'tablet'">
-        <div class="column is-half-mobile is-one-quarter-tablet" @click="chooseStartWork('4:3')">
-          <div class="add-work">
-            <i class="icon-plus-1"></i>
-          </div>
-        </div>
-        <div class="column is-half-mobile is-2-tablet" v-for="work in templates.books" :key="work.id">
-          <work-cover :work="work" :ratio="work.ratio" @play="playWork(work._id)" @edit="chooseFromTemplateWork(work)"></work-cover>
-        </div>
-      </div>
-    </div>
-  </section>
-  <section class="section">
-    <div class="container">
-      <h4 class="subtitle is-4">打开草稿</h4>
-      <div class="columns is-mobile is-multiline is-1">
-        <div class="column is-half-mobile is-one-quarter-tablet" v-for="work in drafts.widescreens" :key="work.id">
-          <work-cover :work="work" :ratio="work.ratio" @play="playWork(work._id)" @edit="chooseDraftWork(work)"></work-cover>
-          <div class="work-info">
-            <div class="work-title">
-              {{work.title}}
+  <div class="welcome">
+    <nav-bar/>
+    <section class="section">
+      <div class="container">
+        <h4 class="subtitle is-4">创建新的作品</h4>
+        <tabs
+          v-model="startNav"
+          :tabs="tabs"
+          size="is-medium"/>
+        <div
+          v-if="startNav === 'widescreen'"
+          class="columns is-mobile is-multiline is-1">
+          <div
+            class="column is-half-mobile is-one-quarter-tablet"
+            @click="chooseStartWork('16:9')">
+            <div class="add-work">
+              <i class="icon-plus-1"/>
             </div>
-            <div class="operation"><i class="icon-trash-empty" @click="deleteWorkDraft(work)"></i></div>
+          </div>
+          <div
+            v-for="work in templates.widescreens"
+            :key="work.id"
+            class="column is-half-mobile is-one-quarter-tablet">
+            <work-cover
+              :work="work"
+              :ratio="work.ratio"/>
           </div>
         </div>
-      </div>
-
-      <div class="columns is-mobile is-multiline is-1">
-        <div class="column is-one-third-mobile is-2-tablet" v-for="work in drafts.mobiles" :key="work.id">
-          <work-cover :work="work" :ratio="work.ratio" @play="playWork(work._id)" @edit="chooseDraftWork(work)"></work-cover>
-          <div class="work-info">
-            <div class="work-title">
-              {{work.title}}
+        <div
+          v-if="startNav === 'mobile'"
+          class="columns is-mobile is-multiline is-1">
+          <div
+            class="column is-one-third-mobile is-2-tablet"
+            @click="chooseStartWork('9:16')">
+            <div class="add-work">
+              <i class="icon-plus-1"/>
             </div>
-            <div class="operation"><i class="icon-trash-empty" @click="deleteWorkDraft(work)"></i></div>
+          </div>
+          <div
+            v-for="work in templates.mobiles"
+            :key="work.id"
+            class="column is-one-third-mobile is-2-tablet">
+            <work-cover
+              :work="work"
+              :ratio="work.ratio"/>
           </div>
         </div>
-      </div>
-
-      <div class="columns is-mobile is-multiline is-1">
-        <div class="column is-half-mobile is-one-quarter-tablet" v-for="work in drafts.books" :key="work.id">
-          <work-cover :work="work" :ratio="work.ratio" @play="playWork(work._id)" @edit="chooseDraftWork(work)"></work-cover>
-          <div class="work-info">
-            <div class="work-title">
-              {{work.title}}
+        <div
+          v-if="startNav === 'tablet'"
+          class="columns is-mobile is-multiline is-1">
+          <div
+            class="column is-half-mobile is-one-quarter-tablet"
+            @click="chooseStartWork('4:3')">
+            <div class="add-work">
+              <i class="icon-plus-1"/>
             </div>
-            <div class="operation"><i class="icon-trash-empty" @click="deleteWorkDraft(work)"></i></div>
+          </div>
+          <div
+            v-for="work in templates.books"
+            :key="work.id"
+            class="column is-half-mobile is-2-tablet">
+            <work-cover
+              :work="work"
+              :ratio="work.ratio"
+              @play="playWork(work._id)"
+              @edit="chooseFromTemplateWork(work)"/>
           </div>
         </div>
       </div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <h4 class="subtitle is-4">打开草稿</h4>
+        <div class="columns is-mobile is-multiline is-1">
+          <div
+            v-for="work in drafts.widescreens"
+            :key="work.id"
+            class="column is-half-mobile is-one-quarter-tablet">
+            <work-cover
+              :work="work"
+              :ratio="work.ratio"
+              @play="playWork(work._id)"
+              @edit="chooseDraftWork(work)"/>
+            <div class="work-info">
+              <div class="work-title">
+                {{ work.title }}
+              </div>
+              <div class="operation"><i
+                class="icon-trash-empty"
+                @click="deleteWorkDraft(work)"/></div>
+            </div>
+          </div>
+        </div>
 
-    </div>
-  </section>
-</div>
+        <div class="columns is-mobile is-multiline is-1">
+          <div
+            v-for="work in drafts.mobiles"
+            :key="work.id"
+            class="column is-one-third-mobile is-2-tablet">
+            <work-cover
+              :work="work"
+              :ratio="work.ratio"
+              @play="playWork(work._id)"
+              @edit="chooseDraftWork(work)"/>
+            <div class="work-info">
+              <div class="work-title">
+                {{ work.title }}
+              </div>
+              <div class="operation"><i
+                class="icon-trash-empty"
+                @click="deleteWorkDraft(work)"/></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="columns is-mobile is-multiline is-1">
+          <div
+            v-for="work in drafts.books"
+            :key="work.id"
+            class="column is-half-mobile is-one-quarter-tablet">
+            <work-cover
+              :work="work"
+              :ratio="work.ratio"
+              @play="playWork(work._id)"
+              @edit="chooseDraftWork(work)"/>
+            <div class="work-info">
+              <div class="work-title">
+                {{ work.title }}
+              </div>
+              <div class="operation"><i
+                class="icon-trash-empty"
+                @click="deleteWorkDraft(work)"/></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </div>
 </template>
 
 <script>
@@ -105,6 +164,14 @@ export default {
     WorkCover,
     Tabs,
     NavBar
+  },
+  filters: {
+    displayRatio (r) {
+      return welcomeRatios[r] || '1:1'
+    },
+    textAdjust (r) {
+      return textAdjusts[r] || 3
+    }
   },
   data () {
     return {
@@ -140,14 +207,6 @@ export default {
     },
     xdUrl () {
       return this.isMobile ? '/xdm' : '/xd'
-    }
-  },
-  filters: {
-    displayRatio (r) {
-      return welcomeRatios[r] || '1:1'
-    },
-    textAdjust (r) {
-      return textAdjusts[r] || 3
     }
   },
   created () {

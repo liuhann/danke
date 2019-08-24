@@ -1,7 +1,7 @@
 /**
  * 保存加载相关处理
  */
-import { Loading, Message } from 'element-ui'
+import { Loading, Message, MessageBox } from 'element-ui'
 import { intereactWith } from '../utils/interact'
 import { clone } from '../../utils/object'
 import is from '../../utils/is'
@@ -15,7 +15,8 @@ export default {
       editWork: this.editWork,
       stopWork: this.stopWork,
       runWork: this.runWork,
-      exportWork: this.exportWork
+      exportWork: this.exportWork,
+      publishShareWork: this.publishShareWork
     }
   },
   methods: {
@@ -41,7 +42,7 @@ export default {
     },
     editWork () {
     },
-    async saveWork () {
+    async saveWork (isPublish) {
       this.hideLeftToggleMenu()
       if (this.savingWork) {
         return
@@ -58,6 +59,9 @@ export default {
       const work = this.getWorkConfig()
       // work.cover = await this.saveCover()
       work.isDraft = true
+      if (isPublish) {
+        work.isDraft = false
+      }
       if (this.work.isNew) {
         delete this.work.isNew
         const result = await this.workdao.create(work)
@@ -156,6 +160,19 @@ export default {
       zip.generateAsync({ type: 'blob' }).then(function (content) {
         // see FileSaver.js
         saveAs(content, 'example.zip')
+      })
+    },
+    async publishShareWork () {
+      MessageBox.confirm('是否确认发布作品?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async ()=> {
+        await this.saveWork(true)
+        await this.linkdao.create({
+          work: this.work._id,
+          link: shortid(6)
+        })
       })
     }
   }

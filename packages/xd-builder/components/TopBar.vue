@@ -14,7 +14,7 @@
     <a class="button is-small" @click="runWork">
       预览
     </a>
-    <a class="button is-success is-rounded is-small button-share">发布</a>
+    <a class="button is-success is-rounded is-small button-share" @click="publishShareWork">发布</a>
   </div>
 </div>
 </template>
@@ -30,7 +30,7 @@ export default {
       isEditName: false
     }
   },
-  inject: ['zoomIn', 'zoomOut', 'runWork', 'zoom', 'setLeftToggleShow'],
+  inject: ['zoomIn', 'zoomOut', 'runWork', 'zoom', 'setLeftToggleShow', 'publishShareWork'],
   methods: {
   }
 }

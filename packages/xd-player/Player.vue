@@ -1,27 +1,41 @@
 <template>
-<div class="device player" :style="deviceStyle" @click="onSceneClick">
-  <div class="loading" v-if="isLoading">Loading</div>
-  <div v-if="isLoading===false">
-    <div v-for="scene in work.scenes" :key="scene.id" class="scene" :style="scene.style">
-      <div v-for="(element) in scene.elements" :key="element.id" class="element" :class="['type' + element.type]"
-        :style="element.style">
-        <img v-if="element.url" :src="element.url">
-        <span v-if="element.type === TypeEnum.TEXT" v-html="$options.filters.newline(element.text)"></span>
+  <div :style="deviceStyle" class="device player"
+    @click="onSceneClick">
+    <div v-if="isLoading" class="loading">
+      <span>加载中</span>
+      <div v-for="(load, index) in imagePreloads" :key="index" class="image-preloads">
+        <img :src="load.url" @load="imageLoaded(index)"/>
+      </div>
+    </div>
+    <div v-if="isLoading===false">
+      <div v-for="scene in work.scenes" :key="scene.id"
+        :style="scene.style" class="scene">
+        <div v-for="(element) in scene.elements" :key="element.id"
+          :class="['type' + element.type]"
+          :style="element.style" class="element">
+          <img v-if="element.url" :src="element.url">
+          <span v-if="element.type === TypeEnum.TEXT" v-html="$options.filters.newline(element.text)"/>
+        </div>
       </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
-import { Loader, middleware } from 'resource-loader'
 import { sceneTypeEnum } from '../danke-core/elements/scene'
 import { getImageWebUrl } from '../danke-core/utils/styles'
 import { TypeEnum } from '../danke-core/elements/index'
 import DankeEngine from '../danke-core/engine'
+import WorkCover from '../xd-builder/components/WorkCover'
 export default {
   name: 'Player',
   components: {
+    WorkCover
+  },
+  filters: {
+    newline (v) {
+      return v.replace(/\n/g, '<br>')
+    }
   },
   props: {
     work: {
@@ -31,12 +45,13 @@ export default {
       type: Object
     }
   },
-  filters: {
-    newline (v) {
-      return v.replace(/\n/g, '<br>')
+  data () {
+    return {
+      imagePreloads: this.getWorkImagesInDevice(this.work, this.device, this.ctx.supportWebp),
+      isLoading: true,
+      TypeEnum,
+      sceneTypeEnum
     }
-  },
-  watch: {
   },
   computed: {
     deviceStyle () {
@@ -46,23 +61,15 @@ export default {
       }
     }
   },
+  watch: {
+  },
   created () {
-
   },
   async mounted () {
 
   },
-  data () {
-    return {
-      isLoading: true,
-      TypeEnum,
-      sceneTypeEnum
-    }
-  },
   methods: {
-    async play () {
-      // await this.loadResources()
-      this.isLoading = false
+    async startEngine () {
       this.engine = new DankeEngine(this.work.scenes, this.device)
       this.engine.play()
       this.engine.setDeviceEl(this.$el)
@@ -85,6 +92,31 @@ export default {
       })
     },
 
+    imageLoaded (index) {
+      this.imagePreloads[index].loaded = true
+      for (let load of this.imagePreloads) {
+        if (!load.loaded) return
+      }
+      this.isLoading = false
+      this.startEngine()
+    },
+
+    getWorkImagesInDevice (work, device, iswep) {
+      const result = []
+      for (let scene of this.work.scenes) {
+        for (let element of scene.elements) {
+          if (element.url) {
+            result.push({
+              id: element.id,
+              url: getImageWebUrl(element, device, iswep),
+              loaded: false
+            })
+          }
+        }
+      }
+      return result
+    },
+
     onSceneClick () {
       // if (this.engine.displays.current.manual) {
       //   this.engine.next()
@@ -103,6 +135,9 @@ export default {
 .device.player {
   position: relative;
   overflow: hidden;
+  .image-preloads {
+    opacity: 0;
+  }
   .scene {
     position: absolute;
     left: 0;

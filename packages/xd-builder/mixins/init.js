@@ -7,6 +7,7 @@ export default {
   created () {
     this.imagedao = new ImageDAO(this.ctx)
     this.workdao = new RestDAO(this.ctx, 'danke/work')
+    this.linkdao = new RestDAO(this.ctx, 'danke/link')
   },
   mounted () {
     const work = this.$route.query.work

@@ -6,9 +6,6 @@ import App from './app.vue'
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-// import home from '../packages/home'
-// import designer from '../packages/designer'
-
 import site from '../packages/site'
 import user from '../packages/user'
 import frameTool from '../packages/frames'

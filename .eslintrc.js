@@ -8,7 +8,7 @@ module.exports = {
     'no-debugger': 'off'
   },
   'extends': [
-    'plugin:vue/recommended',
+    'plugin:vue/essential',
     '@vue/standard'
   ]
 }

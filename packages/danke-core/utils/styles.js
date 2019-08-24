@@ -23,7 +23,32 @@ function revertLength (value, currentLen, device) {
   }
 }
 
+async function checkWebpFeature (feature) {
+  return new Promise((resolve, reject) => {
+    var kTestImages = {
+      lossy: 'UklGRiIAAABXRUJQVlA4IBYAAAAwAQCdASoBAAEADsD+JaQAA3AAAAAA',
+      lossless: 'UklGRhoAAABXRUJQVlA4TA0AAAAvAAAAEAcQERGIiP4HAA==',
+      alpha: 'UklGRkoAAABXRUJQVlA4WAoAAAAQAAAAAAAAAAAAQUxQSAwAAAARBxAR/Q9ERP8DAABWUDggGAAAABQBAJ0BKgEAAQAAAP4AAA3AAP7mtQAAAA==',
+      animation: 'UklGRlIAAABXRUJQVlA4WAoAAAASAAAAAAAAAAAAQU5JTQYAAAD/////AABBTk1GJgAAAAAAAAAAAAAAAAAAAGQAAABWUDhMDQAAAC8AAAAQBxAREYiI/gcA'
+    }
+    // eslint-disable-next-line no-undef
+    var img = new Image()
+    img.onload = function () {
+      var result = (img.width > 0) && (img.height > 0)
+      resolve(result)
+    }
+    img.onerror = function () {
+      resolve(false)
+    }
+    img.src = 'data:image/webp;base64,' + kTestImages[feature]
+  })
+}
+
 let sheet = createSheet()
+let supportWebP = false
+checkWebpFeature('lossy').then((feature) => {
+  supportWebP = feature
+})
 
 function getElementStyle (element, device, animation) {
   let styles = []
@@ -98,9 +123,12 @@ async function renderSceneStage (scene, device, stage) {
   await wait(playEnd)
 }
 
-function getImageWebUrl (element, device, supportWebP) {
+const DANKE_IMG_CDN = `http://image.danke.fun/`
+
+function getImageWebUrl (element, device) {
   let w = getLength(element.size.width, device)
   let h = getLength(element.size.height, device)
+  element.url = element.imgPath ? `${DANKE_IMG_CDN}${element.imgPath}` : element.url
   if (supportWebP) {
     element.url = element.url + '?x-oss-process=image/format,webp/quality,Q_80/resize,m_fixed,h_' + h + ',w_' + w
   } else {
