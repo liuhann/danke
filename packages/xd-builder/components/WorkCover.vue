@@ -42,6 +42,9 @@ export default {
     index: {
       type: Number
     },
+    deviceSet: {
+      type: Object
+    },
     width: {
       type: Number
     },
@@ -72,10 +75,13 @@ export default {
   },
   computed: {
     device () {
+      if (this.deviceSet) {
+        return this.deviceSet
+      }
       if (this.height || this.width) {
         return fitBy(this.ratio, this.width, this.height)
       } else {
-        return fitBy(this.ratio, this.$el.clientWidth)
+        return fitBy(this.ratio, this.$el.clientWidth, this.$el.clientHeight)
       }
     },
     scene () {

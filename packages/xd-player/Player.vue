@@ -25,12 +25,12 @@ import { sceneTypeEnum } from '../danke-core/elements/scene'
 import { getImageWebUrl } from '../danke-core/utils/styles'
 import { TypeEnum } from '../danke-core/elements/index'
 import DankeEngine from '../danke-core/engine'
-import WorkCover from '../xd-builder/components/WorkCover'
+import mixinDevice from './mixinDevice'
 export default {
   name: 'Player',
   components: {
-    WorkCover
   },
+  mixins: [ mixinDevice ],
   filters: {
     newline (v) {
       return v.replace(/\n/g, '<br>')
@@ -38,9 +38,6 @@ export default {
   },
   props: {
     work: {
-      type: Object
-    },
-    device: {
       type: Object
     }
   },
@@ -53,12 +50,6 @@ export default {
     }
   },
   computed: {
-    deviceStyle () {
-      return {
-        width: this.device.width + 'px',
-        height: this.device.height + 'px'
-      }
-    }
   },
   watch: {
   },
@@ -72,23 +63,6 @@ export default {
       this.engine = new DankeEngine(this.work.scenes, this.device)
       this.engine.play()
       this.engine.setDeviceEl(this.$el)
-    },
-    async loadResources () {
-      return new Promise((resolve, reject) => {
-        const loader = new Loader()
-        for (let scene of this.work.scenes) {
-          for (let element of scene.elements) {
-            if (element.url) {
-              loader.add(element.id, getImageWebUrl(element, this.device, this.ctx.supportWebp))
-            }
-          }
-        }
-        loader.load(() => {
-          resolve()
-        })
-        loader.onProgress.add(() => {})
-        loader.onComplete.add(() => {})
-      })
     },
 
     imageLoaded (index) {
