@@ -50,6 +50,12 @@ export default {
     }
   },
   computed: {
+    deviceStyle() {
+      return {
+        width: this.device.width + 'px',
+        height: this.device.height + 'px'
+      }
+    }
   },
   watch: {
   },
