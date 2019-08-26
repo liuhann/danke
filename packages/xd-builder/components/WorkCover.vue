@@ -12,9 +12,14 @@
             <i class="icon-play"></i>
           </span>
         </a>
-        <a class="button is-medium is-info" style="margin-left: 20px;" @click="edit">
+        <a v-if="work.isDraft" class="button is-medium is-info" style="margin-left: 20px;" @click="edit">
           <span class="icon">
             <i class="icon-pencil"></i>
+          </span>
+        </a>
+        <a v-if="!work.isDraft" class="button is-medium is-info" style="margin-left: 20px;" @click="shareLink">
+          <span class="icon">
+            <i class="icon-cube"></i>
           </span>
         </a>
       </div>
@@ -100,6 +105,9 @@ export default {
     },
     edit () {
       this.$emit('edit')
+    },
+    shareLink () {
+      this.$emit('link')
     }
   }
 }

@@ -45,16 +45,16 @@ export default {
     }
   },
   methods: {
-    shareLink(work) {
+    shareLink (work) {
       this.$emit('share-info', work)
     },
-    playWork(work) {
+    playWork (work) {
       this.$emit('play', work)
     },
-    chooseDraftWork(work) {
+    chooseDraftWork (work) {
       this.$emit('edit', work)
     },
-    deleteWork(work) {
+    deleteWork (work) {
       this.$emit('delete', work)
     }
   }

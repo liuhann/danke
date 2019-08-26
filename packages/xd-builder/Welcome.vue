@@ -80,9 +80,9 @@
     <section class="section">
       <div class="container">
         <h4 class="subtitle is-4">我发布的作品</h4>
-        <works-column :works="drafts.widescreens" @edit="chooseDraftWork" @play="playWork" @delete="deleteWorkDraft"></works-column>
-        <works-column :works="drafts.mobiles" @edit="chooseDraftWork" @play="playWork" @delete="deleteWorkDraft"></works-column>
-        <works-column :works="drafts.books" @edit="chooseDraftWork" @play="playWork" @delete="deleteWorkDraft"></works-column>
+        <works-column :works="shares.widescreens" @share-info="goShareLink" @play="playWork" @delete="deleteWorkDraft"></works-column>
+        <works-column :works="shares.mobiles" @share-info="goShareLink" @play="playWork" @delete="deleteWorkDraft"></works-column>
+        <works-column :works="shares.books" @share-info="goShareLink" @play="playWork" @delete="deleteWorkDraft"></works-column>
       </div>
     </section>
   </div>
@@ -172,9 +172,12 @@ export default {
   methods: {
     async loadDraftWorks () {
       const result = await this.workdao.list()
-      this.drafts.widescreens = result.list.filter(work => work.ratio === '16:9')
-      this.drafts.mobiles = result.list.filter(work => work.ratio === '9:16')
-      this.drafts.books = result.list.filter(work => work.ratio === '4:3')
+      this.drafts.widescreens = result.list.filter(work => work.ratio === '16:9' && work.isDraft)
+      this.drafts.mobiles = result.list.filter(work => work.ratio === '9:16' && work.isDraft)
+      this.drafts.books = result.list.filter(work => work.ratio === '4:3' && work.isDraft)
+      this.shares.widescreens = result.list.filter(work => work.ratio === '16:9' && !work.isDraft)
+      this.shares.mobiles = result.list.filter(work => work.ratio === '9:16' && !work.isDraft)
+      this.shares.books = result.list.filter(work => work.ratio === '4:3' && !work.isDraft)
     },
     async loadTops () {
       const tops = await this.workdao.list({
@@ -204,6 +207,9 @@ export default {
       await MessageBox.confirm('确认删除此作品', '注意')
       await this.workdao.delete(work)
       this.loadDraftWorks()
+    },
+    goShareLink (work) {
+      this.$router.push('/shared/' + work._id)
     }
   }
 }

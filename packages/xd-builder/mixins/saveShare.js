@@ -61,6 +61,7 @@ export default {
       work.isDraft = true
       if (isPublish) {
         work.isDraft = false
+        work.link = shortid(8)
       }
       if (this.work.isNew) {
         delete this.work.isNew
