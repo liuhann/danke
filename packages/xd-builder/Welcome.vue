@@ -72,69 +72,17 @@
     <section class="section">
       <div class="container">
         <h4 class="subtitle is-4">打开草稿</h4>
-        <div class="columns is-mobile is-multiline is-1">
-          <div
-            v-for="work in drafts.widescreens"
-            :key="work.id"
-            class="column is-half-mobile is-one-quarter-tablet">
-            <work-cover
-              :work="work"
-              :ratio="work.ratio"
-              @play="playWork(work._id)"
-              @edit="chooseDraftWork(work)"/>
-            <div class="work-info">
-              <div class="work-title">
-                {{ work.title }}
-              </div>
-              <div class="operation"><i
-                class="icon-trash-empty"
-                @click="deleteWorkDraft(work)"/></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="columns is-mobile is-multiline is-1">
-          <div
-            v-for="work in drafts.mobiles"
-            :key="work.id"
-            class="column is-one-third-mobile is-2-tablet">
-            <work-cover
-              :work="work"
-              :ratio="work.ratio"
-              @play="playWork(work._id)"
-              @edit="chooseDraftWork(work)"/>
-            <div class="work-info">
-              <div class="work-title">
-                {{ work.title }}
-              </div>
-              <div class="operation"><i
-                class="icon-trash-empty"
-                @click="deleteWorkDraft(work)"/></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="columns is-mobile is-multiline is-1">
-          <div
-            v-for="work in drafts.books"
-            :key="work.id"
-            class="column is-half-mobile is-one-quarter-tablet">
-            <work-cover
-              :work="work"
-              :ratio="work.ratio"
-              @play="playWork(work._id)"
-              @edit="chooseDraftWork(work)"/>
-            <div class="work-info">
-              <div class="work-title">
-                {{ work.title }}
-              </div>
-              <div class="operation"><i
-                class="icon-trash-empty"
-                @click="deleteWorkDraft(work)"/></div>
-            </div>
-          </div>
-        </div>
-
+        <works-column :works="drafts.widescreens" @edit="chooseDraftWork" @play="playWork" @delete="deleteWorkDraft"></works-column>
+        <works-column :works="drafts.mobiles" @edit="chooseDraftWork" @play="playWork" @delete="deleteWorkDraft"></works-column>
+        <works-column :works="drafts.books" @edit="chooseDraftWork" @play="playWork" @delete="deleteWorkDraft"></works-column>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <h4 class="subtitle is-4">我发布的作品</h4>
+        <works-column :works="drafts.widescreens" @edit="chooseDraftWork" @play="playWork" @delete="deleteWorkDraft"></works-column>
+        <works-column :works="drafts.mobiles" @edit="chooseDraftWork" @play="playWork" @delete="deleteWorkDraft"></works-column>
+        <works-column :works="drafts.books" @edit="chooseDraftWork" @play="playWork" @delete="deleteWorkDraft"></works-column>
       </div>
     </section>
   </div>
@@ -147,6 +95,7 @@ import NavBar from '../site/components/NavBar'
 import RestDAO from '../common/dao/restdao'
 import dayjs from 'dayjs'
 import WorkCover from './components/WorkCover'
+import WorksColumn from './components/WorksColumn'
 
 const welcomeRatios = {
   '9:16': '2:3',
@@ -161,6 +110,7 @@ const textAdjusts = {
 export default {
   name: 'Welcome',
   components: {
+    WorksColumn,
     WorkCover,
     Tabs,
     NavBar
@@ -183,6 +133,11 @@ export default {
         widescreens: []
       },
       drafts: {
+        books: [],
+        mobiles: [],
+        widescreens: []
+      },
+      shares: {
         books: [],
         mobiles: [],
         widescreens: []
@@ -230,8 +185,8 @@ export default {
       this.templates.books = tops.list.filter(work => work.ratio === '4:3')
     },
 
-    playWork (id) {
-      window.open('/play/auto/' + id)
+    playWork (work) {
+      window.open('/play/auto/' + work._id)
     },
     chooseFromTemplateWork () {
 

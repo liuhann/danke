@@ -23,6 +23,9 @@ export default {
     path: '/xdm',
     beforeEnter,
     component: () => import(/* webpackChunkName: "xd-mobile" */'./MBuilder.vue')
+  }, {
+    path: '/shared/:workid',
+    component: () => import(/* webpackChunkName: "xd-welcome" */'./SharedLink.vue')
   }],
   async onload (ctx) {
   }
