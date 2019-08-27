@@ -29,12 +29,12 @@
 
 <script>
 import { TypeEnum } from '../../danke-core/elements'
+import mixinDevice from '../../xd-player/mixinDevice'
 import { getElementStyle, getImageWebUrl, getSceneStyle } from '../../danke-core/utils/styles'
 import { fitBy } from '../../danke-core/utils/common'
 export default {
   name: 'WorkCover',
-  components: {
-  },
+  mixins: [ mixinDevice ],
   props: {
     work: {
       type: Object
@@ -74,16 +74,6 @@ export default {
   watch: {
   },
   computed: {
-    device () {
-      if (this.deviceSet) {
-        return this.deviceSet
-      }
-      if (this.height || this.width) {
-        return fitBy(this.ratio, this.width, this.height)
-      } else {
-        return fitBy(this.ratio, this.$el.clientWidth, this.$el.clientHeight)
-      }
-    },
     scene () {
       if (this.index) {
         return this.work.scenes[this.index]

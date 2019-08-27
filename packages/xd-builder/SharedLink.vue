@@ -5,10 +5,10 @@
     <div class="container">
       <div class="columns">
         <div class="column preview is-two-thirds" ref="columnLeft">
-          <work-cover v-if="work" v-show="!isPlaying" :work="work" :ratio="work.ratio" @play="play"></work-cover>
-          <player v-if="work" v-show="isPlaying" :work="work"></player>
+          <work-cover v-if="work && !isPlaying" :work="work" :ratio="work.ratio" @play="play"></work-cover>
+          <player v-if="work && isPlaying" :work="work" :ratio="work.ratio"></player>
         </div>
-        <div class="column detail">
+        <div class="column detail" v-if="work">
           <h4 class="work-title">{{work.title}}</h4>
           <p class="author">来自：<span>{{work.creator}}</span></p>
           <div class="site-info-like">
@@ -23,8 +23,13 @@
           <div class="categories">
             <a class="category" v-for="(cat,index) in work.categories" :key="index">{{cat}}</a>
           </div>
+          <small>QRCode</small>
+          <img :src="qrlink">
           <small>URL</small>
-          <div id="QRCode"></div>
+          <div class="control">
+            <input class="input" type="text" :value="link" readonly>
+          </div>
+          <small>MORE</small>
         </div>
       </div>
     </div>
@@ -45,6 +50,8 @@ export default {
   components: { WorkCover, NavBar, NavFooter, Player },
   data () {
     return {
+      link: '',
+      qrlink: '',
       work: null,
       isPlaying: false
     }
@@ -60,6 +67,8 @@ export default {
   methods: {
     async loadWork () {
       this.work = await this.workdao.getOne(this.$route.params.link)
+      this.link = 'http://danke.fun/show/' + this.work.link
+      this.qrlink = `https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=` + encodeURIComponent(this.link)
     },
     play () {
       this.isPlaying = true

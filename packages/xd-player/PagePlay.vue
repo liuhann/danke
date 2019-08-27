@@ -10,7 +10,6 @@
 <script>
 import Player from './Player'
 import RestDAO from '../common/dao/restdao'
-import { fitToContainer } from '../danke-core/utils/common'
 export default {
   name: 'PagePlayVue',
   components: { Player },

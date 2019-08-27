@@ -6,7 +6,7 @@
         <img :src="load.url" @load="imageLoaded(index)"/>
       </div>
     </div>
-    <div v-if="isLoading===false">
+    <div v-if="!isLoading">
       <div v-for="scene in work.scenes" :key="scene.id"
         :style="scene.style" class="scene">
         <div v-for="(element) in scene.elements" :key="element.id"
@@ -43,29 +43,23 @@ export default {
   },
   data () {
     return {
-      imagePreloads: this.getWorkImagesInDevice(this.work, this.device, this.ctx.supportWebp),
+      imagePreloads: [],
       isLoading: true,
       TypeEnum,
       sceneTypeEnum
     }
   },
-  computed: {
-    deviceStyle() {
-      return {
-        width: this.device.width + 'px',
-        height: this.device.height + 'px'
-      }
+
+  mounted () {
+    this.imagePreloads = this.getWorkImagesInDevice(this.work, this.device)
+    if (this.imagePreloads.length === 0) {
+      this.startEngine()
     }
   },
-  watch: {
-  },
-  created () {
-  },
-  async mounted () {
 
-  },
   methods: {
     async startEngine () {
+      this.isLoading = false
       this.engine = new DankeEngine(this.work.scenes, this.device)
       this.engine.play()
       this.engine.setDeviceEl(this.$el)
@@ -76,18 +70,17 @@ export default {
       for (let load of this.imagePreloads) {
         if (!load.loaded) return
       }
-      this.isLoading = false
       this.startEngine()
     },
 
-    getWorkImagesInDevice (work, device, iswep) {
+    getWorkImagesInDevice (work, device) {
       const result = []
       for (let scene of this.work.scenes) {
         for (let element of scene.elements) {
           if (element.url) {
             result.push({
               id: element.id,
-              url: getImageWebUrl(element, device, iswep),
+              url: getImageWebUrl(element, device),
               loaded: false
             })
           }
