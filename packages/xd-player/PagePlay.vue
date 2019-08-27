@@ -1,8 +1,7 @@
 <template>
   <div id="player">
-    <div
-      v-if="work == null"
-      class="loading">Loading</div>
+    <div v-if="!work" class="loading boxLoading">
+    </div>
     <player v-if="work" :work="work" :device="device"/>
   </div>
 </template>
