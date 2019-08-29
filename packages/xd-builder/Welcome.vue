@@ -189,7 +189,7 @@ export default {
     },
 
     playWork (work) {
-      window.open('/play/auto/' + work._id)
+      window.open('/play/' + work._id)
     },
     chooseFromTemplateWork () {
 

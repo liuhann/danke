@@ -1,6 +1,6 @@
 export default {
   routes: [{
-    path: '/play/:mode/:id',
+    path: '/play/:id',
     component: () => import(/* webpackChunkName: "xd-player" */'./PagePlay.vue')
   }],
   async onload (ctx) {

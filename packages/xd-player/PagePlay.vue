@@ -2,13 +2,14 @@
   <div id="player">
     <div v-if="!work" class="loading boxLoading">
     </div>
-    <player v-if="work" :work="work" :device="device"/>
+    <player v-if="work" :work="work" :device-set="device"/>
   </div>
 </template>
 
 <script>
 import Player from './Player'
 import RestDAO from '../common/dao/restdao'
+import { fitBy } from '../danke-core/utils/common'
 export default {
   name: 'PagePlayVue',
   components: { Player },
@@ -16,8 +17,8 @@ export default {
     return {
       work: null,
       device: {
-        width: window.innerWidth,
-        height: window.innerHeight
+        width: 300,
+        height: 300
       }
     }
   },
@@ -25,25 +26,24 @@ export default {
     this.workdao = new RestDAO(this.ctx, 'danke/work')
   },
   mounted () {
-    const mode = this.$route.params.mode
-    if (mode === 'full') {
-      this.device.width = window.innerWidth
-      this.device.height = window.innerHeight
-    }
     this.loadWork()
   },
   methods: {
     async loadWork () {
       const workId = this.$route.params.id
       this.work = await this.workdao.getOne(workId)
-      // this.$nextTick(() => {
-      //   this.$refs.player.play()
-      // })
+      this.device = fitBy(this.work.ratio, window.innerWidth, window.innerHeight)
     }
+
   }
 }
 </script>
 
-<style scoped>
-
+<style>
+#player {
+  background-color: #0a0a0a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 </style>
