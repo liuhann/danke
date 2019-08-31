@@ -8,44 +8,11 @@
           v-model="startNav"
           :tabs="tabs"
           size="is-medium"/>
-        <div
-          v-if="startNav === 'widescreen'"
-          class="columns is-mobile is-multiline is-1">
-          <div
-            class="column is-half-mobile is-one-quarter-tablet"
-            @click="chooseStartWork('16:9')">
-            <div class="add-work">
-              <i class="icon-plus-1"/>
-            </div>
-          </div>
-          <div
-            v-for="work in templates.widescreens"
-            :key="work.id"
-            class="column is-half-mobile is-one-quarter-tablet">
-            <work-cover
-              :work="work"
-              :ratio="work.ratio"/>
-          </div>
+        <div>
+          <span>选择模板或</span><a class="button" @click="chooseStartWork(startNav)" type="pr">从空白新建</a>
         </div>
-        <div
-          v-if="startNav === 'mobile'"
-          class="columns is-mobile is-multiline is-1">
-          <div
-            class="column is-one-third-mobile is-2-tablet"
-            @click="chooseStartWork('9:16')">
-            <div class="add-work">
-              <i class="icon-plus-1"/>
-            </div>
-          </div>
-          <div
-            v-for="work in templates.mobiles"
-            :key="work.id"
-            class="column is-one-third-mobile is-2-tablet">
-            <work-cover
-              :work="work"
-              :ratio="work.ratio"/>
-          </div>
-        </div>
+        <works-column v-if="startNav === 'widescreen'" :works="templates.widescreens"></works-column>
+        <works-column v-if="startNav === 'mobile'" :works="templates.mobiles"></works-column>
         <div
           v-if="startNav === 'tablet'"
           class="columns is-mobile is-multiline is-1">
@@ -106,6 +73,11 @@ const textAdjusts = {
   '9:16': 2,
   '4:3': 0.8,
   '16:9': 0.7
+}
+const screenRatios = {
+  'mobile': '9:16',
+  'widescreen': '16:9',
+  'books': '4:3'
 }
 export default {
   name: 'Welcome',
@@ -198,7 +170,7 @@ export default {
       this.$router.push(this.xdUrl + '?ratio=' + work.ratio + '&work=' + work._id)
     },
     chooseStartWork (ratio) {
-      this.$router.push(this.xdUrl + '?ratio=' + ratio + '&work=new')
+      this.$router.push(this.xdUrl + '?ratio=' + screenRatios[ratio] + '&work=new')
     },
     formateTime (mill) {
       return dayjs(mill).format('YYYY-MM-DD HH:mm:ss')

@@ -8,6 +8,7 @@
     <work-cover
       :work="work"
       :ratio="work.ratio"
+      :height="0"
       @link="shareLink(work)"
       @play="playWork(work)"
       @edit="chooseDraftWork(work)"/>
@@ -32,6 +33,8 @@ export default {
     works: {
       type: Array
     }
+  },
+  computed: {
   },
   filters: {
     workSize (ratio) {

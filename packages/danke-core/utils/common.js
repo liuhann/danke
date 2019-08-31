@@ -77,7 +77,6 @@ function fitBy (ratio, width, height) {
   let [w, h] = ratio.split(':')
   let rw = parseInt(w)
   let rh = parseInt(h)
-  debugger
   if (width) {
     let ratioHeight = Math.floor(width / rw * rh)
     if (height && ratioHeight > height) {

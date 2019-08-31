@@ -27,8 +27,6 @@
         <textarea class="input is-small" style="height: 64px;" v-model="desc"></textarea>
       </p>
     </div>
-
-
     <span slot="footer" class="dialog-footer">
     <a class="button is-small" @click="dialogVisible = false">
         取 消
@@ -41,7 +39,9 @@
 </template>
 
 <script>
+import { Dialog } from 'element-ui'
 export default {
+  components: [ Dialog ],
   name: 'DialogEditWork',
   data () {
     return {

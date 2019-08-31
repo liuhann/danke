@@ -42,7 +42,8 @@ export default {
       if (this.height || this.width) {
         return fitBy(this.ratio, this.width, this.height)
       } else {
-        return fitBy(this.ratio, this.$el.parentElement.clientWidth, this.$el.parentElement.clientHeight)
+        return fitBy(this.ratio, this.width === 0 ? 0 : this.$el.parentElement.clientWidth,
+          this.height === 0 ? 0 : this.$el.parentElement.clientHeight)
       }
     }
   }

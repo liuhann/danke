@@ -31,7 +31,6 @@
 import { TypeEnum } from '../../danke-core/elements'
 import mixinDevice from '../../xd-player/mixinDevice'
 import { getElementStyle, getImageWebUrl, getSceneStyle } from '../../danke-core/utils/styles'
-import { fitBy } from '../../danke-core/utils/common'
 export default {
   name: 'WorkCover',
   mixins: [ mixinDevice ],
