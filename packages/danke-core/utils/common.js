@@ -111,14 +111,29 @@ async function wait (mill) {
   })
 }
 
-const trimers = [animationTrim]
-function clipElementModel (element) {
-  for (let trim of trimers) {
-    trim(element)
+/**
+ * trim out same field by template
+ * @param target
+ * @param template
+ */
+function trimCompare (target, template) {
+  const trimed = {}
+  for (let key in target) {
+    if (template[key] !== target[key]) {
+      trimed[key] = target[key]
+    }
   }
+  return trimed
 }
 
-function resumeElementModel (element) {
-
+function resumeCompare (target, template) {
+  const resumed = Object.assign({}, template)
+  for (let key in target) {
+    if (template[key] !== target[key]) {
+      resumed[key] = target[key]
+    }
+  }
+  return resumed
 }
-export { getLength, getLenSplits, fitToContainer, wait, clipElementModel, resumeElementModel, fitBy }
+
+export { getLength, getLenSplits, fitToContainer, wait, resumeCompare, fitBy, trimCompare }

@@ -1,6 +1,4 @@
 import { getLength } from '../utils/common'
-import { TypeEnum } from '../elements'
-
 export default {
   type: 'absolute',
   horizontal: 'center',

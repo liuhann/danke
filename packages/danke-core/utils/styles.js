@@ -47,7 +47,7 @@ async function checkWebpFeature (feature) {
 let sheet = createSheet()
 let supportWebP = false
 checkWebpFeature('lossy').then((feature) => {
-  supportWebP = feature
+  // supportWebP = feature
 })
 
 function getElementStyle (element, device, animation) {

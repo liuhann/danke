@@ -5,6 +5,8 @@ import POSITION from '../css-model/position'
 import SIZE from '../css-model/size'
 import SHADOW from '../css-model/shadow'
 import ANIMATION from '../css-model/animation'
+import MASK from '../css-model/mask'
+import { resumeCompare, trimCompare } from '../utils/common'
 const image = {
   version: '1.2',
   type: 1,
@@ -17,22 +19,53 @@ const image = {
   clip: CLIPPATH,
   size: SIZE,
   shadow: SHADOW,
+  mask: MASK,
   animation: {
     in: ANIMATION,
     dura: ANIMATION,
     out: ANIMATION
   }
 }
-export function trim (image) {
 
+export function trim (image) {
+  return {
+    version: image.version,
+    type: image.type,
+    name: image.name,
+    desc: image.desc,
+    url: image.url,
+    position: trimCompare(image.position, POSITION),
+    background: trimCompare(image.background, BACKGROUND),
+    border: trimCompare(image.border, BORDER),
+    clip: image.clip,
+    size: image.size,
+    shadow: trimCompare(image.shadow, SHADOW),
+    animation: {
+      in: trimCompare(image.animation.in, ANIMATION),
+      dura: trimCompare(image.animation.dura, ANIMATION),
+      out: trimCompare(image.animation.out, ANIMATION)
+    }
+  }
 }
 
 export function resume (image) {
-  if (!image.background) {
-    image.background = JSON.parse(JSON.stringify(BACKGROUND))
-  }
-  if (!image.border) {
-    image.border = JSON.parse(JSON.stringify(BORDER))
+  return {
+    version: image.version,
+    type: image.type,
+    name: image.name,
+    desc: image.desc,
+    url: image.url,
+    position: resumeCompare(image.position, POSITION),
+    background: resumeCompare(image.background, BACKGROUND),
+    border: resumeCompare(image.border, BORDER),
+    clip: image.clip,
+    size: image.size,
+    shadow: resumeCompare(image.shadow, SHADOW),
+    animation: {
+      in: resumeCompare(image.animation.in, ANIMATION),
+      dura: resumeCompare(image.animation.dura, ANIMATION),
+      out: resumeCompare(image.animation.out, ANIMATION)
+    }
   }
 }
 export default image

@@ -3,12 +3,12 @@
   :width="width + 'px'"
   :title="title"
   :visible.sync="dialogVisible">
-  <div class="field has-addons" v-for="key in object" :key="key">
+  <div class="field has-addons" v-for="(value, name) in object" :key="name">
     <p class="control">
-      <a class="button is-static is-small">{{key}}</a>
+      <a class="button is-static is-small">{{name}}</a>
     </p>
     <p class="control" style="width: 100%;">
-      <input class="input is-small" v-model="object[key]">
+      <input class="input is-small" v-model="object[name]">
     </p>
   </div>
   <span slot="footer" class="dialog-footer">
@@ -25,7 +25,9 @@
 <script>
 import { Dialog } from 'element-ui'
 export default {
-  components: [ Dialog ],
+  components: {
+    'el-dialog': Dialog
+  },
   name: 'FormEditDialog',
   props: {
     types: {
