@@ -11,6 +11,7 @@ import { createSheet, addAnimationStyle } from '../../frames/keyframe'
 import { getPositionStyle } from '../css-model/position'
 import { getSizingStyle } from '../css-model/size'
 import { sceneTypeEnum } from '../elements/scene'
+import { getMaskStyle } from '../css-model/mask'
 
 function revertLength (value, currentLen, device) {
   const { unit } = getLenSplits(currentLen)
@@ -62,6 +63,7 @@ function getElementStyle (element, device, animation) {
     .concat(getClipPathStyle(element, device))
     .concat(getTransformStyle(element, device))
     .concat(getShapeStyle(element, device))
+    .concat(getMaskStyle(element, device))
 
   if (animation && element.animation[animation] && element.animation[animation].name) {
     const animationDef = element.animation[animation]

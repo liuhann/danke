@@ -12,6 +12,7 @@
   <edit-background v-model="element.background" v-if="element.background"></edit-background>
   <edit-position v-model="element.position"></edit-position>
   <edit-size v-model="element.size"></edit-size>
+  <edit-mask v-model="element.mask" v-if="element.mask"></edit-mask>
   <edit-animation :animation="element.animation.in" animation-type="in" icon="icon-login"></edit-animation>
   <edit-animation :animation="element.animation.dura" animation-type="dura" icon="icon-clock"></edit-animation>
   <edit-animation :animation="element.animation.out" animation-type="out" icon="icon-logout" class="bottom-line"></edit-animation>
@@ -56,6 +57,7 @@ import EditShadow from './props/EditShadow.vue'
 import EditAnimation from './props/EditAnimation.vue'
 import { TypeEnum } from '../../danke-core/elements/index'
 import { Shapes } from '../../danke-core/css-model/shapeclip'
+import EditMask from './props/EditMask'
 
 export default {
   name: 'ElementConfig',
@@ -68,6 +70,7 @@ export default {
     }
   },
   components: {
+    EditMask,
     EditAnimation,
     EditTransform,
     EditSize,
