@@ -7,50 +7,42 @@
         <span class="button is-primary">上传SVG</span>
       </label>
     </a>
-    <form-edit-dialog :width="400" title="Edit Vector" ref="formEditDialog" @save="confirmVectorEdit"></form-edit-dialog>
-    <div class="columns is-mobile is-multiline">
-      <div class="column is-2-tablet is-one-third-mobile" v-for="(vector, index) in vectors" :key="index">
+    <form-edit-dialog :width="400" :object="vectorObject" title="Edit Vector" ref="formEditDialog" @save="confirmVectorEdit"></form-edit-dialog>
+    <rest-list rest="danke/vector" ref="restList">
+      <template v-slot:item="{ item }">
         <article class="media">
           <div class="media-left">
             <figure class="image is-48x48 figure-vector" :style="{
-              maskImage: 'url(' + IMG_SERVER + '/' + vector.url + ')'
+              maskImage: 'url(' + IMG_SERVER + '/' + item.url + ')'
             }">
             </figure>
           </div>
           <div class="media-content">
-            <p class="title is-4">{{vector.name}}</p>
-            <p class="subtitle is-6">{{vector.desc}}</p>
+            <p class="title is-4">{{item.name}}</p>
+            <p class="subtitle is-6">{{item.desc}}</p>
           </div>
         </article>
-      </div>
-    </div>
-    <nav class="pagination is-rounded" role="navigation" aria-label="pagination">
-      <a class="pagination-previous">上一页</a>
-      <a class="pagination-next" @click="nextPage">下一页</a>
-      <ul class="pagination-list">
-        {{this.pageNumber}}
-      </ul>
-    </nav>
+      </template>
+    </rest-list>
   </div>
 </section>
 </template>
 
 <script>
-import RestDAO from '../common/dao/restdao'
 import ImageDAO from '../common/dao/imagedao'
 import FormEditDialog from '../common/components/FormEditDialog'
+import RestList from '../common/components/RestList'
+import RestDAO from '../common/dao/restdao'
 
 export default {
   name: 'Vectors.vue',
   components: {
+    RestList,
     FormEditDialog
   },
   data () {
     return {
       IMG_SERVER: this.ctx.IMG_SERVER,
-      pageSize: 20,
-      pageNumber: 1,
-      vectors: [],
       vectorObject: {
         name: '',
         desc: '',
@@ -59,24 +51,12 @@ export default {
     }
   },
   created () {
-    this.vectordao = new RestDAO(this.ctx, 'danke/vector')
     this.imagedao = new ImageDAO(this.ctx)
+    this.vectordao = new RestDAO(this.ctx, 'danke/vector')
   },
   mounted () {
-    this.list()
   },
   methods: {
-    async list () {
-      this.vectors = (await this.vectordao.list({
-        page: this.pageNumber,
-        count: this.pageSize
-      })).list
-    },
-    async nextPage () {
-      this.pageNumber ++
-      this.list()
-    },
-
     async svgFileChoosed (e) {
       if (e.currentTarget.files.length) {
         const file = e.currentTarget.files[0]
@@ -96,10 +76,10 @@ export default {
     async confirmVectorEdit (object) {
       if (object._id) {
         await this.vectordao.patch(object._id, object)
-        await this.list()
+        this.$refs.restList.refresh()
       } else {
         this.vectordao.create(object)
-        await this.list()
+        this.$refs.restList.refresh()
       }
     }
   }
