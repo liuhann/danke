@@ -13,7 +13,6 @@ export default {
       openWorkListDialog: this.openWorkListDialog,
       openEditWorkDialog: this.openEditWorkDialog,
       editWork: this.editWork,
-      stopWork: this.stopWork,
       runWork: this.runWork,
       exportWork: this.exportWork,
       publishShareWork: this.publishShareWork
@@ -142,12 +141,9 @@ export default {
       this.work.categories = work.categories
       this.work.desc = work.desc
     },
-    async stopWork () {
-      this.playing = false
-    },
     async runWork () {
-      this.playingWork = this.getWorkConfig()
-      this.playing = true
+      await this.saveWork()
+      window.open('/play/' + this.work._id)
     },
     importWork () {
     },

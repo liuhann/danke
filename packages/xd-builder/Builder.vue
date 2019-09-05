@@ -39,7 +39,6 @@
     <image-cropper ref="cropper"></image-cropper>
     <dialog-work-list ref="dialogWorkList" @choose="openWork"></dialog-work-list>
     <dialog-edit-work ref="dialogEditWork" @save="saveWorkDesc"></dialog-edit-work>
-    <full-player v-if="playing" :ratio="playingWork.ratio" :work="playingWork"></full-player>
   </div>
 </template>
 
@@ -58,9 +57,8 @@ import TopBar from './components/TopBar.vue'
 import ElementConfig from './components/ElementConfig.vue'
 import ListConfig from './components/ListConfig.vue'
 import SceneConfig from './components/SceneConfig.vue'
-import FullPlayer from './components/FullPlayer.vue'
 import DialogWorkList from './components/DialogWorkList.vue'
-import DialogEditWork from './components/DialogEditWork'
+import DialogEditWork from './components/DialogEditWork.vue'
 import ToolBar from './components/ToolBar.vue'
 export default {
   name: 'Builder',
@@ -73,7 +71,6 @@ export default {
     ImageCropper,
     LeftToggleMenu,
     SceneConfig,
-    FullPlayer,
     DialogWorkList
   },
   mixins: [initMixin, elementMixin, saveShareMixin, sceneMixin, keyBindMixin, layoutMixin, dataProvideMixin],

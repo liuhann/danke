@@ -34,13 +34,12 @@ import dataProvideMixin from './mixins/dataProvides'
 import TopBar from './components/TopBar'
 import LeftToggleMenu from './components/LeftToggleMenu'
 import ToolBar from './components/ToolBar'
-import FullPlayer from './components/FullPlayer'
 import ElementConfig from './components/ElementConfig'
 
 import { Drawer } from 'element-ui'
 export default {
   name: 'MBuilder',
-  components: { ElementConfig, FullPlayer, ToolBar, LeftToggleMenu, TopBar, Drawer },
+  components: { ElementConfig, ToolBar, LeftToggleMenu, TopBar, Drawer },
   mixins: [initMixin, elementMixin, saveShareMixin, sceneMixin, keyBindMixin, layoutMixin, dataProvideMixin],
   data () {
     return {

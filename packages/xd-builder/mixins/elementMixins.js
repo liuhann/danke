@@ -20,6 +20,7 @@ export default {
       insertImage: this.insertImage,
       insertShape: this.insertShape,
       insertText: this.insertText,
+      insertLayout: this.insertLayout,
       deleteElement: this.deleteElement,
       fileChoosed: this.fileChoosed,
       svgFileChoosed: this.svgFileChoosed,

@@ -41,8 +41,8 @@
 <script>
 import { Dialog } from 'element-ui'
 export default {
-  components: [ Dialog ],
   name: 'DialogEditWork',
+  components: { Dialog },
   data () {
     return {
       dialogVisible: false,
