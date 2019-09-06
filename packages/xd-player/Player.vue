@@ -12,7 +12,7 @@
         <div v-for="(element) in scene.elements" :key="element.id"
           :class="['type' + element.type]"
           :style="element.style" class="element">
-          <img v-if="element.url" :src="element.url">
+          <img v-if="element.url" :src="element.url" :style="element.innerStyle||''">
           <span v-if="element.type === TypeEnum.TEXT" v-html="$options.filters.newline(element.text)"/>
         </div>
       </div>

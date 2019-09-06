@@ -26,6 +26,9 @@ export default {
     rest: {
       type: String
     },
+    localList: {
+      type: Array
+    },
     column: {
       type: String,
       default: 'is-2-tablet is-one-third-mobile'
@@ -43,8 +46,12 @@ export default {
     }
   },
   mounted () {
-    this.restdao = new RestDAO(this.ctx, this.rest)
-    this.list()
+    if (this.rest) {
+      this.restdao = new RestDAO(this.ctx, this.rest)
+      this.list()
+    } else {
+      this.listData = this.localList
+    }
   },
   methods: {
     async list () {

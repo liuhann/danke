@@ -1,6 +1,6 @@
 import { IMAGE, SHAPE, TEXT, TypeEnum, LAYOUT } from '../../danke-core/elements/index'
 import { clone } from '../../utils/object'
-import { getElementStyle, getSceneStyle } from '../../danke-core/utils/styles'
+import { getElementInnerStyle, getElementStyle, getSceneStyle } from '../../danke-core/utils/styles'
 import { interactElement, destoryInteraction } from '../utils/interact'
 import { shortid } from '../../utils/string'
 import { MessageBox, Message } from 'element-ui'
@@ -41,9 +41,11 @@ export default {
       handler (val, oldVal, diff) {
         if (this.currentElement) {
           this.currentElement.style = getElementStyle(this.currentElement, this.device)
+          this.currentElement.innerStyle = getElementInnerStyle(this.currentElement, this.device)
         }
       }
     },
+    // 处理多个元素选中后同时调整X、Y坐标功能
     'currentElement.position.offsetX': function (val) {
       if (this.multipleElements.length > 1) {
         for (let element of this.multipleElements) {
@@ -136,7 +138,6 @@ export default {
       clonedElement.size.width = '50vw'
       clonedElement.size.height = '30px'
       if (this.ctx.fontCopied) {
-        debugger
         clonedElement.font = JSON.parse(JSON.stringify(this.ctx.fontCopied))
       }
       clonedElement.style = getElementStyle(clonedElement, this.device)
@@ -327,6 +328,7 @@ export default {
             element.url = this.ctx.IMG_SERVER + '/' + element.imgPath
           }
           element.style = getElementStyle(element, this.device)
+          element.innerStyle = getElementInnerStyle(element, this.device)
         }
         scene.style = getSceneStyle(scene, this.device)
       }

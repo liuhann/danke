@@ -11,10 +11,14 @@
         <div v-for="(element, index) of currentScene.elements" :key="element.id" :id="'element-' + element.id"
              class="element" :class="[element.visible?'':'hidden', 'type' + element.type, multipleElements.indexOf(element) > -1? 'selected': '']" :style="element.style + ';' + 'z-index:' + index + ';'"
              @click="chooseElement(element, $event)">
-          <img v-if="element.type === TypeEnum.IMAGE || element.type === TypeEnum.SVG" :src="element.url">
+          <!--图片渲染-->
+          <img v-if="element.type === TypeEnum.IMAGE || element.type === TypeEnum.SVG" :src="element.url" :style="element.innerStyle || ''">
+          <!--文本渲染情况下 文本内容-->
           <span v-if="element.type === TypeEnum.TEXT && element!==currentElement" v-html="$options.filters.newline(element.text)"></span>
+          <!--文件被选中的遮罩-->
           <div class="mask" v-if="multipleElements.indexOf(element) > -1">
             <span @input="contentChange" class="content-editable" contenteditable v-if="element.type === TypeEnum.TEXT && multipleElements.length === 1" v-html="$options.filters.newline(element.text)"></span>
+            <!--右下角corner-->
             <div class="corner-rb" v-if="multipleElements.length === 1 && element===currentElement"></div>
           </div>
         </div>

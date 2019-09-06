@@ -1,5 +1,5 @@
 import { sceneTypeEnum } from './elements/scene'
-import { getElementStyle, getSceneStyle } from './utils/styles'
+import { getElementInnerStyle, getElementStyle, getSceneStyle } from './utils/styles'
 import pauseable from 'pauseable'
 /**
  * Loading scenes and  resources then init ticker + views
@@ -131,6 +131,7 @@ export default class Danke {
     // 处理每个元素的入场动画
     for (let element of scene.elements) {
       element.style = getElementStyle(element, this.device, 'in')
+      element.innerStyle = getElementInnerStyle(element, this.device)
       if (element.animation.dura.name && element.animation.dura.duration) {
         pauseable.setTimeout(() => {
           element.style = getElementStyle(element, this.device, 'dura')

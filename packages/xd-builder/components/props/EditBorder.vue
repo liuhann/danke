@@ -1,8 +1,8 @@
 <template>
 <div class="edit-border">
   <div class="field has-addons">
-    <div class="control icon-label">
-      <i class="icon-marquee"></i>
+    <div class="control field-lb">
+      边框
     </div>
     <p class="control">
       <edit-len v-model="border.width" :with-unit="false" unit-label="像素"></edit-len>
@@ -19,9 +19,9 @@
     </p>
   </div>
   <div class="field has-addons">
-    <p class="control icon-label">
-      <i class="icon-check-empty-1"></i>
-    </p>
+    <div class="control field-lb">
+      圆角
+    </div>
     <p class="control">
       <edit-len v-model="border.radius" label="" :with-unit="false" unit-label="像素"></edit-len>
     </p>

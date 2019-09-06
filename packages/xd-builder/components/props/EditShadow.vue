@@ -1,8 +1,8 @@
 <template>
 <div class="edit-shadow field-group">
   <div class="field has-addons">
-    <div class="control icon-label">
-      <i class="icon-photo"></i>
+    <div class="control field-lb">
+      阴影
     </div>
     <div class="control">
       <a class="button is-static is-small">X</a>

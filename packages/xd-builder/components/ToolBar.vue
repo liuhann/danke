@@ -1,18 +1,6 @@
 <template>
 <div class="tool-bar" :class="[vertical? 'flex-column': '']">
   <div class="top" :class="[vertical? 'flex-column': '']">
-    <popover
-      placement="right-start"
-      width="200"
-      trigger="click"
-      content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
-      <ul>
-        <li v-for="layout in layoutTemplates" :key="layout.title" @click="insertLayout(layout)">
-          {{layout.title}}
-        </li>
-      </ul>
-      <a class="button is-white icon-th-thumb-empty" slot="reference"></a>
-    </popover>
     <a class="file">
       <label class="file-label">
         <input class="file-input" type="file" name="resume" @input="svgFileChoosed">
@@ -36,12 +24,11 @@
 </div>
 </template>
 <script>
-import { Popover } from 'element-ui'
+// import { Popover } from 'element-ui'
 import { templates } from '../../danke-core/elements/layout'
 export default {
   name: 'ToolBar',
   components: {
-    Popover
   },
   props: {
     vertical: {

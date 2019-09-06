@@ -1,53 +1,71 @@
 <template>
-<div class="field has-addons">
-  <div class="control icon-label" @click="copyAnimationStyle">
-    <i :class="icon"></i>
+<div class="edit-animation">
+  <div class="field has-addons">
+    <div class="control field-lb">
+      效果
+    </div>
+    <div class="control">
+      <span class="button is-small" @click="chooseAnimation(animationType)">{{animation.desc || '选择'}}</span>
+    </div>
+    <div class="control">
+      <span v-if="animation.name" class="button is-small icon-trash-empty is-danger" @click="clearAnimation"></span>
+    </div>
   </div>
-  <div class="control">
-    <span class="button is-small" @click="chooseAnimation(animationType)">{{animation.desc || '选择'}}</span>
+
+  <div class="field has-addons">
+    <div class="control field-lb">
+      持续
+    </div>
+    <div class="control">
+      <edit-len v-model="animation.duration" :with-unit="false"></edit-len>
+    </div>
+    <div class="control field-lb">
+      延迟
+    </div>
+    <div class="control">
+      <edit-len v-model="animation.delay" :with-unit="false"></edit-len>
+    </div>
   </div>
-  <div class="control">
-    <edit-len v-model="animation.duration" :with-unit="false"></edit-len>
+
+  <div class="field has-addons">
+    <div class="control field-lb">
+      缓动
+    </div>
+    <div class="control">
+      <div class="select is-small">
+        <select v-model="animation.timing">
+          <option v-for="(value, key) in cubicBerziers" :value="value" :key="key">{{key}}</option>
+        </select>
+      </div>
+    </div>
   </div>
-  <div class="control">
-    <edit-len v-model="animation.delay" :with-unit="false"></edit-len>
+  <div class="field has-addons">
+    <div class="control">
+      <span class="button is-small" @click="copyAnimation">复制</span>
+    </div>
+    <div class="control">
+      <span class="button is-small" @click="pasteAnimation">粘贴</span>
+    </div>
+    <div class="control">
+      <span class="button is-small" @click="pasteDelayAnimation">延迟粘贴</span>
+    </div>
   </div>
-  <div class="control">
-    <span v-if="animation.name" class="button is-small icon-trash-empty is-danger" @click="clearAnimation"></span>
-  </div>
-  <div v-if="copied" class="control paste" @click="pasteStyle">
-    <i class="icon-paste"></i>
-  </div>
+
 </div>
 </template>
 
 <script>
 import EditLen from './EditLen.vue'
-import FormField from './FormField'
 import frameModel from '../../../frames/frameChooseDialog'
-import pastable from './pastable'
+import cubicBerziers from '../../../frames/model/cubic-beziers'
 export default {
   name: 'EditAnimation',
-  mixins: [pastable],
   components: {
-    FormField,
     EditLen
   },
   props: {
-    icon: {
-      type: String
-    },
-    label: {
-      type: String
-    },
     animation: {
       type: Object
-    },
-    value: {
-      type: Object
-    },
-    animations: {
-      type: Array
     },
     animationType: {
       type: String
@@ -55,20 +73,11 @@ export default {
   },
   data () {
     return {
-      ctxKey: this.animationType + 'aniCopied',
-      propKey: 'animation'
+      cubicBerziers,
     }
   },
-  computed: {
-    font () {
-      return this.value
-    }
-  },
-
   watch: {
-    font () {
-      this.$emit('input', this.font)
-    }
+
   },
   methods: {
     clearAnimation () {
@@ -101,11 +110,21 @@ export default {
         this.copied = null
       }
     },
-    copyAnimationStyle () {
-      this.copied = {
-        animation: JSON.parse(JSON.stringify(this.animation))
+
+    copyAnimation () {
+      this.ctx.animationCopied = JSON.parse(JSON.stringify(this.animation))
+    },
+    pasteAnimation () {
+      if (this.ctx.animationCopied) {
+        this.animation = JSON.parse(JSON.stringify(this.ctx.animationCopied))
       }
-      this.ctx[this.animationType + 'aniCopied'] = this.copied
+    },
+    pasteDelayAnimation () {
+      if (this.ctx.animationCopied) {
+        Object.assign(this.animation, JSON.parse(JSON.stringify(this.ctx.animationCopied)))
+        this.animation.delay = this.animation.delay + this.animation.duration
+        this.copyAnimation()
+      }
     }
   }
 }

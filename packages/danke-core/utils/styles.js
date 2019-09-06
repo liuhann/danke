@@ -51,6 +51,13 @@ checkWebpFeature('lossy').then((feature) => {
   // supportWebP = feature
 })
 
+/**
+ * 获取整个元素的样式
+ * @param element
+ * @param device
+ * @param animation
+ * @returns {string}
+ */
 function getElementStyle (element, device, animation) {
   let styles = []
   // position and size
@@ -70,6 +77,19 @@ function getElementStyle (element, device, animation) {
     styles.push(`animation: ${animationDef.name} ${animationDef.duration}ms ${animationDef.timing} ${animationDef.delay}ms ${animationDef.iteration} normal both running`)
     addAnimationStyle(sheet, animationDef)
   }
+  return styles.filter(n => n).join(';')
+}
+
+/**
+ * 获取元素内部样式 目前用于情况：
+ * - 图片的遮罩
+ * @param element
+ * @param device
+ * @param animation
+ */
+function getElementInnerStyle (element, device, animation) {
+  let styles = []
+  styles = styles.concat(getMaskStyle(element, device))
   return styles.filter(n => n).join(';')
 }
 
@@ -147,5 +167,6 @@ export {
   getWorkStyle,
   getSceneStyle,
   getImageWebUrl,
-  revertLength
+  revertLength,
+  getElementInnerStyle
 }

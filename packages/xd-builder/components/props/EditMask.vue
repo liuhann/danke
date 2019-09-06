@@ -1,11 +1,11 @@
 <template>
 <div class="edit-mask field-group">
   <div class="field has-addons">
-    <div class="control icon-label">
-      <i class="icon-photo"></i>
+    <div class="control field-lb">
+      Mask
     </div>
     <div class="control">
-      <span class="button is-small" @click="chooseMaskSVG">{{ '选择'}}</span>
+      <span class="button is-small" @click="showMaskList = !showMaskList">选择</span>
     </div>
     <div class="control">
       <div class="select is-small">
@@ -15,6 +15,16 @@
       </div>
     </div>
   </div>
+  <div class="mask-list-container">
+    <rest-list v-if="showMaskList" rest="danke/vector" column="is-gapless">
+      <template v-slot:item="{ item }">
+        <figure class="image is-48x48 figure-vector" :style="{
+          maskImage: 'url(' + IMG_SERVER + '/' + item.url + ')'
+        }" @click="chooseMask(item)">
+        </figure>
+      </template>
+    </rest-list>
+  </div>
 </div>
 </template>
 
@@ -22,9 +32,11 @@
 import EditLen from './EditLen.vue'
 import { Sizes } from '../../../danke-core/css-model/mask'
 import ColorPickr from '../ColorPickr.vue'
+import RestList from '../../../common/components/RestList'
 export default {
   name: 'EditMask',
   components: {
+    RestList,
     EditLen,
     ColorPickr
   },
@@ -35,6 +47,8 @@ export default {
   },
   data () {
     return {
+      showMaskList: false,
+      IMG_SERVER: this.ctx.IMG_SERVER,
       Sizes
     }
   },
@@ -50,15 +64,19 @@ export default {
 
   },
   methods: {
-    chooseMaskSVG () {
-
+    chooseMask (item) {
+      this.mask.url = this.IMG_SERVER + '/' + item.url
     }
   }
 }
 </script>
 
 <style lang="scss">
-.edit-position {
+.edit-mask {
+  .figure-vector {
+    background-color: #00d1b2;
+    -webkit-mask-size: cover;
+  }
 }
 
 </style>

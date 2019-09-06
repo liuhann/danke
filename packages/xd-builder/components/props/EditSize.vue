@@ -1,5 +1,5 @@
 <template>
-<div class="field has-addons bottom-line">
+<div class="field has-addons">
   <p class="control icon-label" @click="copySizeStyle">
     <i class="icon-resize-full"></i>
   </p>
