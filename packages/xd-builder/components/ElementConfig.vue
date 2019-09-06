@@ -21,6 +21,7 @@
       <li :class="animationType==='out'? 'is-active': ''"><a @click="animationType = 'out'">离开</a></li>
     </ul>
   </div>
+  <tabs size="is-small" v-model="animationType" :tabs="animationTabs"></tabs>
   <edit-animation v-if="animationType==='in'" :animation="element.animation.in" animation-type="in"></edit-animation>
   <edit-animation v-if="animationType==='dura'" :animation="element.animation.dura" animation-type="dura"></edit-animation>
   <edit-animation v-if="animationType==='out'" :animation="element.animation.out" animation-type="out"class="bottom-line"></edit-animation>
@@ -67,6 +68,7 @@ import EditAnimation from './props/EditAnimation.vue'
 import { TypeEnum } from '../../danke-core/elements/index'
 import { Shapes } from '../../danke-core/css-model/shapeclip'
 import EditMask from './props/EditMask'
+import Tabs from '../../common/components/Tabs.vue'
 
 export default {
   name: 'ElementConfig',
@@ -79,6 +81,7 @@ export default {
     }
   },
   components: {
+    Tabs,
     EditMask,
     EditAnimation,
     EditTransform,
@@ -93,6 +96,16 @@ export default {
   inject: ['moveUp', 'moveDown', 'moveTop', 'moveBottom', 'clipboard', 'cutElement', 'copyElement', 'pasteElement'],
   data () {
     return {
+      animationTabs: [{
+        title: '进入',
+        key: 'in'
+      }, {
+        title: '持续',
+        key: 'dura'
+      }, {
+        title: '离开',
+        key: 'out'
+      }],
       animationType: 'in',
       shapeOptions: Shapes,
       TypeEnum,

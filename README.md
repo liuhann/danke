@@ -31,7 +31,6 @@ npm run lint
     复制
 - clippath是否还需要？ 目前认为不需要  clippath没有svg遮罩功能多 
 
- 
 
     
 
@@ -41,7 +40,7 @@ npm run lint
 
 ## appearance
 - 我的首页列表
-
+- 增加devider组件
 
 ## Products
 ### Image Slide (embed)

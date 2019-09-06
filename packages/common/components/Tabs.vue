@@ -1,5 +1,5 @@
 <template>
-<div class="tabs" :class="size">
+<div class="tabs" :class="size" style="margin-bottom: 8px;">
   <ul>
     <li v-for="tab in tabs" :key="tab.key" :class="currentNav === tab.key? 'is-active': ''">
       <a @click="chooseNav(tab.key)">

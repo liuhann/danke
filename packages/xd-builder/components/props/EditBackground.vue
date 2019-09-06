@@ -1,8 +1,8 @@
 <template>
 <div class="edit-background">
   <div class="field has-addons">
-    <p class="control icon-label">
-      <i class="icon-color-adjust"></i>
+    <p class="control field-lb">
+      背景
     </p>
     <p class="control">
       <color-pickr v-for="(color, index) of background.colors" :key="index" v-model="background.colors[index]" @remove="removeColor(index)"></color-pickr>
