@@ -13,14 +13,6 @@
   <edit-position v-model="element.position"></edit-position>
   <edit-size v-model="element.size"></edit-size>
   <edit-mask v-model="element.mask" v-if="element.mask"></edit-mask>
-  <div class="tabs is-small">
-    <ul>
-      <li style="width: 50px;">动画</li>
-      <li :class="animationType==='in'? 'is-active': ''"><a @click="animationType = 'in'">进入</a></li>
-      <li :class="animationType==='dura'? 'is-active': ''"><a @click="animationType = 'dura'">持续</a></li>
-      <li :class="animationType==='out'? 'is-active': ''"><a @click="animationType = 'out'">离开</a></li>
-    </ul>
-  </div>
   <tabs size="is-small" v-model="animationType" :tabs="animationTabs"></tabs>
   <edit-animation v-if="animationType==='in'" :animation="element.animation.in" animation-type="in"></edit-animation>
   <edit-animation v-if="animationType==='dura'" :animation="element.animation.dura" animation-type="dura"></edit-animation>

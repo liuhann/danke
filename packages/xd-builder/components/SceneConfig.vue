@@ -38,17 +38,11 @@
   <tabs size="is-small" v-model="animationType" :tabs="animationTabs"></tabs>
   <edit-animation :animation="scene.animation[animationType]" :animation-type="animationType"></edit-animation>
   <divider></divider>
-  <div class="">
-    <a class="button is-primary">Primary</a>
-    <a class="button is-link">Link</a>
-    <a class="button is-info">Info</a>
-    <a class="button is-small" @click="previewScene">预览</a>
-    <a class="button is-danger is-small" @click="deleteCurrentScene">删除</a>
-    <div class="opers">
-      <span class="icon-clone" @click="copyScene"></span>
-      <span class="icon-paste" :class="[clipboard.elements.length > 0? 'has-clipboard': '']" @click="pasteElement"></span>
-    </div>
-
+  <div class="scene-buttons">
+    <a @click="previewScene">预览</a>
+    <a @click="copyScene"> 复制场景</a>
+    <a @click="pasteElement"> 粘贴元素</a>
+    <a @click="deleteCurrentScene">删除</a>
   </div>
 </nav>
 </template>
@@ -107,15 +101,12 @@ export default {
     .text {
       flex: 1;
     }
-    .opers {
-      font-size: 12px;
-      color: #333;
-      .icon-paste {
-        color: #ccc;
-        &.has-clipboard {
-          color: #333;
-        }
-      }
+  }
+  .scene-buttons {
+    font-size: 12px;
+    color: #333;
+    a {
+      margin-right: 10px;
     }
   }
 }
