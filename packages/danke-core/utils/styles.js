@@ -70,7 +70,6 @@ function getElementStyle (element, device, animation) {
     .concat(getClipPathStyle(element, device))
     .concat(getTransformStyle(element, device))
     .concat(getShapeStyle(element, device))
-    .concat(getMaskStyle(element, device))
 
   if (animation && element.animation[animation] && element.animation[animation].name) {
     const animationDef = element.animation[animation]
@@ -152,9 +151,9 @@ function getImageWebUrl (element, device) {
   let h = getLength(element.size.height, device)
   element.url = element.imgPath ? `${DANKE_IMG_CDN}${element.imgPath}` : element.url
   if (supportWebP) {
-    element.url = element.url + '?x-oss-process=image/format,webp/quality,Q_80/resize,m_fixed,h_' + h + ',w_' + w
+    element.url = element.url + '?x-oss-process=image/format,webp/quality,Q_80/resize,m_fill,h_' + h + ',w_' + w
   } else {
-    element.url = element.url + '?x-oss-process=image/format,jpg/quality,Q_80/resize,m_fixed,h_' + h + ',w_' + w
+    element.url = element.url + '?x-oss-process=image/format,jpg/quality,Q_80/resize,m_fill,h_' + h + ',w_' + w
   }
   return element.url
 }

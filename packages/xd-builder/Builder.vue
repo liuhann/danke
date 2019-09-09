@@ -14,10 +14,10 @@
           <!--图片渲染-->
           <img v-if="element.type === TypeEnum.IMAGE || element.type === TypeEnum.SVG" :src="element.url" :style="element.innerStyle || ''">
           <!--文本渲染情况下 文本内容-->
-          <span v-if="element.type === TypeEnum.TEXT && element!==currentElement" v-html="$options.filters.newline(element.text)"></span>
+          <span v-if="element.type === TypeEnum.TEXT && (multipleElements.length > 1 || element!==currentElement)" v-html="$options.filters.newline(element.text)"></span>
+          <span v-if="element.type === TypeEnum.TEXT && multipleElements.length === 1 && element === currentElement" @input="contentChange" class="content-editable" contenteditable v-html="$options.filters.newline(element.text)"></span>
           <!--文件被选中的遮罩-->
           <div class="mask" v-if="multipleElements.indexOf(element) > -1">
-            <span @input="contentChange" class="content-editable" contenteditable v-if="element.type === TypeEnum.TEXT && multipleElements.length === 1" v-html="$options.filters.newline(element.text)"></span>
             <!--右下角corner-->
             <div class="corner-rb" v-if="multipleElements.length === 1 && element===currentElement"></div>
           </div>
@@ -170,7 +170,12 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
           outline-offset: 0;
           z-index: 9999;
         }
+        span.content-editable {
+          outline:none;
+          -webkit-user-modify: read-write-plaintext-only;
+        }
         .mask {
+          z-index: -1;
           position: absolute;
           left: -2px;
           top: -2px;
@@ -178,10 +183,6 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
           height: calc(100% + 2px);
           border: 1px solid #87b1f1;
           box-sizing: content-box;
-          span {
-            outline:none;
-            -webkit-user-modify: read-write-plaintext-only;
-          }
           .corner-rb {
             background-color: #87b1f1;
             position: absolute;
