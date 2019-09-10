@@ -7,6 +7,9 @@
     <div class="control">
       <span class="button is-small" @click="showMaskList = !showMaskList">选择</span>
     </div>
+    <div class="control" v-if="mask.url">
+      <span class="button is-small is-danger icon-trash-empty" @click="mask.url = ''"></span>
+    </div>
     <div class="control">
       <div class="select is-small">
         <select v-model="mask.size">

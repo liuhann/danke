@@ -9,6 +9,7 @@ export default {
         title: '',
         categories: [],
         desc: '',
+        audios: [],
         resources: [],
         scenes: []
       },

@@ -1,6 +1,6 @@
 <template>
   <div id="xd">
-    <top-bar></top-bar>
+    <top-bar :work="work"></top-bar>
     <tool-bar></tool-bar>
     <transition name="slide-left">
       <left-toggle-menu v-if="showLeftToggleMenu" @menu-clicked="showLeftToggleMenu = false"></left-toggle-menu>

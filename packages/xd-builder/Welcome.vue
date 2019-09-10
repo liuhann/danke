@@ -161,7 +161,7 @@ export default {
     },
 
     playWork (work) {
-      window.open('/play/' + work._id)
+      window.open('/play/full/' + work._id)
     },
     chooseFromTemplateWork () {
 

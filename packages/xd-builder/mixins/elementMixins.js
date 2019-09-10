@@ -176,17 +176,17 @@ export default {
       clonedElement.id = shortid()
       clonedElement.name = '图片'
       clonedElement.visible = true
-      clonedElement.position.horizontal = 'left'
-      clonedElement.position.vertical = 'top'
+      clonedElement.position.horizontal = 'center'
+      clonedElement.position.vertical = 'center'
       clonedElement.border.width = 0
       clonedElement.size.width = '50vw'
-      clonedElement.size.height = Math.floor(20 / width * height) + 'vw'
+      clonedElement.size.height = '50vw'
       clonedElement.url = URL.createObjectURL(file)
       clonedElement.blob = file
       const style = getElementStyle(clonedElement, this.device)
       clonedElement.style = style
       this.currentScene.elements.push(clonedElement)
-      this.currentElement = clonedElement
+      this.chooseElement(clonedElement)
     },
 
     deleteElement (element) {

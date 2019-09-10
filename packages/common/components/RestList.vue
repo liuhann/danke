@@ -11,7 +11,7 @@
     <a class="pagination-previous"  @click="previousPage">上一页</a>
     <a class="pagination-next" @click="nextPage">下一页</a>
     <ul class="pagination-list">
-      {{this.pageNumber}}
+      {{this.pageNumber}}/ {{this.total}}
     </ul>
   </nav>
 </div>

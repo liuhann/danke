@@ -20,7 +20,7 @@ import Vue from 'vue'
 Vue.use(Dialog)
 export default {
   name: 'ModelChooseFrame',
-  components: { FrameBox, Dialog },
+  components: { FrameBox },
   props: {
 
   },

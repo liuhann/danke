@@ -150,7 +150,6 @@ export default {
     async exportWork () {
       const JSZip = (await import(/* webpackChunkName: "jszip" */'jszip')).default
       const { saveAs } = (await import(/* webpackChunkName: "jszip" */'file-saver')).default
-      debugger
       const zip = new JSZip()
       zip.file('work.json', JSON.stringify(this.getWorkConfig()), '\n\r', 2)
       const img = zip.folder('images')
@@ -166,10 +165,6 @@ export default {
         type: 'warning'
       }).then(async ()=> {
         await this.saveWork(true)
-        await this.linkdao.create({
-          work: this.work._id,
-          link: shortid(6)
-        })
       })
     }
   }
