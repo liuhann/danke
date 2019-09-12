@@ -3,6 +3,18 @@ export default class ImageDAO {
     this.ctx = ctx
   }
 
+  async uploadAndCutMp3 (blob, path, start, end) {
+    // check file size
+    const formData = new window.FormData()
+    if (!blob.lastModifiedDate) {
+      blob.lastModifiedDate = new Date()
+    }
+    formData.append('file', blob, blob.filename)
+    return this.ctx.post(`mp3/upload?path=${path}&start=${start}&end=${end}`, {
+      body: formData
+    }).json()
+  }
+
   async uploadBlob (blob, path) {
     // check file size
     const formData = new window.FormData()

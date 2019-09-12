@@ -2,42 +2,45 @@
 <el-dialog
   title="选择音频"
  :visible.sync="dialogVisible">
-  <tabs :tabs="tabs" v-model="currentTab"></tabs>
+  <tabs :tabs="tabs" size="is-small" v-model="currentTab"></tabs>
   <div class="new-audio">
     <a class="file">
       <label class="file-label">
         <input class="file-input" type="file" name="resume" @input="audioChoosed">
-        <span class="button is-white">上传音频</span>
+        <a class="button is-small">上传音频</a>
       </label>
     </a>
     <div class="progress-container" v-if="audioUrl">
       <progress v-if="audioUrl" class="progress is-success" :value="autioPercent" max="100">{{autioPercent}}%</progress>
     </div>
-    <div class="ticks-info">
-
-    </div>
-
-    <div class="field has-addons">
+    <div class="field has-addons" v-if="audioUrl">
       <div class="control field-lb">
         名称
       </div>
       <div class="control">
-        <input v-model="audioName"></input>
+        <input class="input is-small" style="width: 280px;" v-model="audioName">
       </div>
     </div>
-
-    <div v-if="audioUrl">
+    <div class="ticks-info" v-if="audioUrl">
+      <input class="input is-small" type="number" style="width: 80px;" v-model.number="audioCurrentSeconds" @change="changeAudioCurrentSeconds"> / {{Math.floor(this.audioTotalSeconds)}} 秒
+      <ul>
+        <li>开始秒数{{audioStartPoint}}</li>
+        <li>节拍点{{audioTicks.join(',')}}</li>
+        <li>结束秒数{{audioEndPoint}}</li>
+        <li>音频长度{{audioEndPoint}}</li>
+      </ul>
+    </div>
+    <div class="audio-actions">
       <span class="button is-white" @click="pause">暂停</span>
       <span class="button is-white" @click="play">播放</span>
+      <span class="button is-primary" @click="setStartPoint">设为开始点</span>
+      <span class="button is-white" @click="setTickPoint">节拍</span>
+      <span class="button is-white" @click="audioTicks = []">清空节拍</span>
+      <span class="button is-primary" @click="setEndPoint">设为结束点</span>
     </div>
   </div>
 
-  <div class="columns is-mobile is-multiline">
-  </div>
   <span slot="footer" class="dialog-footer">
-    <a class="button is-small" @click="dialogVisible = false">
-        取 消
-    </a>
     <a class="button is-small is-primary" @click="confirm">
         确 定
     </a>
@@ -69,6 +72,9 @@ export default {
       dialogVisible: false,
       audioUrl: '',
       isPlaying: false,
+      audioStartPoint: 0,
+      audioEndPoint: 0,
+      audioTicks: [],
       audioTotalSeconds: 0,
       audioCurrentSeconds: 0,
       audios: []
@@ -77,6 +83,21 @@ export default {
   created () {
     this.uploaddao = new ImageDAO(this.ctx)
     this.audiodao = new RestDAO(this.ctx, 'danke/audio')
+  },
+  watch: {
+    'dialogVisible': function () {
+      if (!this.dialogVisible) {
+        if (this.sound) {
+          this.sound.unload()
+        }
+        if (this.inteval) {
+          clearInterval(this.inteval)
+        }
+      }
+    }
+  },
+  beforeDestroy () {
+    
   },
   computed: {
     autioPercent () {
@@ -88,6 +109,24 @@ export default {
     }
   },
   methods: {
+    clearSound () {
+      if (this.sound) {
+        this.sound.unload()
+      }
+      if (this.inteval) {
+        clearInterval(this.inteval)
+      }
+      this.audioUrl = ''
+      this.audioStartPoint = 0
+      this.audioEndPoint = 0
+      this.audioTicks = []
+      this.audioTotalSeconds = 0
+      this.audioCurrentSeconds = 0
+
+    },
+    changeAudioCurrentSeconds () {
+      this.sound.seek(this.audioCurrentSeconds)
+    },
     open (work) {
       this.audios = work.audios
       this.dialogVisible = true
@@ -104,7 +143,6 @@ export default {
         }
       }, 500)
     },
-
     pause () {
       this.sound.pause()
     },
@@ -117,6 +155,7 @@ export default {
           this.sound.unload()
         }
         const file = e.currentTarget.files[0]
+        this.audioFile = file
         this.audioUrl = URL.createObjectURL(file)
         this.audioName = file.name
         this.sound = new Howl({
@@ -126,6 +165,7 @@ export default {
         })
         this.sound.on('load', () => {
           this.audioTotalSeconds = this.sound.duration()
+          this.audioEndPoint = this.audioTotalSeconds
         })
         this.startTick()
         this.sound.play()
@@ -135,13 +175,39 @@ export default {
         // }
       }
     },
-    confirm () {
+    setStartPoint () {
+      this.audioStartPoint = this.audioCurrentSeconds
+    },
+    setEndPoint () {
+      this.audioEndPoint = this.audioCurrentSeconds
+    },
+    setTickPoint () {
+      this.audioTicks.push(this.audioCurrentSeconds)
+    },
+    async confirm () {
+      if (this.audioUrl) {
+        const result = await this.uploaddao.uploadAndCutMp3(this.audioFile, this.audioName, this.audioStartPoint, this.audioEndPoint)
+
+        const audioCuttie = {
+          name: this.audioName,
+          ticks: this.audioTicks.map(value => value - this.audioStartPoint),
+          audioUrl: result.name
+        }
+        const audioResult = await this.audiodao.create(audioCuttie)
+        this.$emit('audio', audioResult)
+      }
       this.dialogVisible = false
     }
   }
 }
 </script>
 
-<style scoped>
+<style lang="scss">
+.new-audio {
+  padding: 10px;
+  .progress-container {
+    padding: 10px 0;
+  }
+}
 
 </style>
