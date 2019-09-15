@@ -68,6 +68,13 @@ export default {
   inject: ['zoomIn', 'zoomOut', 'previewScene', 'zoom', 'deleteCurrentScene', 'previousScene', 'nextScene', 'clipboard', 'pasteElement', 'copyScene'],
   data () {
     return {
+      switchTabs: [{
+        key: 'scene',
+        title: '场景'
+      }, {
+        key: 'work',
+        title: '作品'
+      }],
       animationType: 'in',
       animationTabs: [{
         title: '进入',
@@ -80,8 +87,6 @@ export default {
         key: 'out'
       }]
     }
-  },
-  watch: {
   },
   computed: {
   },

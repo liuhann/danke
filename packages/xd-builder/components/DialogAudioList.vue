@@ -2,18 +2,17 @@
 <el-dialog
   title="选择音频"
  :visible.sync="dialogVisible">
-  <tabs :tabs="tabs" size="is-small" v-model="currentTab"></tabs>
   <div class="new-audio">
-    <a class="file">
+    <div class="file is-success" style="margin-bottom: 10px;">
       <label class="file-label">
-        <input class="file-input" type="file" name="resume" @input="audioChoosed">
-        <a class="button is-small">上传音频</a>
+        <input class="file-input" type="file" name="chooseaudio" @input="audioChoosed">
+        <span class="file-cta">
+          <span class="file-label">上传音频</span>
+        </span>
       </label>
-    </a>
-    <div class="progress-container" v-if="audioUrl">
-      <progress v-if="audioUrl" class="progress is-success" :value="autioPercent" max="100">{{autioPercent}}%</progress>
     </div>
-    <div class="field has-addons" v-if="audioUrl">
+    
+    <div class="field has-addons" v-if="audioUrl" style="margin-bottom: 10px;">
       <div class="control field-lb">
         名称
       </div>
@@ -21,22 +20,29 @@
         <input class="input is-small" style="width: 280px;" v-model="audioName">
       </div>
     </div>
-    <div class="ticks-info" v-if="audioUrl">
-      <input class="input is-small" type="number" style="width: 80px;" v-model.number="audioCurrentSeconds" @change="changeAudioCurrentSeconds"> / {{Math.floor(this.audioTotalSeconds)}} 秒
-      <ul>
-        <li>开始秒数{{audioStartPoint}}</li>
-        <li>节拍点{{audioTicks.join(',')}}</li>
-        <li>结束秒数{{audioEndPoint}}</li>
-        <li>音频长度{{audioEndPoint}}</li>
-      </ul>
+
+    <div class="audio-box" v-if="audioUrl" style="margin-bottom: 10px;" @click="boxClicked">
+      <div class="cut-box" :style="'left:' + (100 * audioStartPoint / audioTotalSeconds) + '%;'
+      + 'right:' + (100 * (audioTotalSeconds - audioEndPoint) / audioTotalSeconds) + '%'"/>
+      <div class="start ver-line" :style="'left:' + (100 * audioStartPoint / audioTotalSeconds) + '%'"></div>
+      <div class="start dura"  :style="'left:' + (100 * audioStartPoint / audioTotalSeconds) + '%'">{{timeFormat(audioStartPoint)}}</div>
+
+      <div class="end ver-line" :style="'left:' + (100 * audioEndPoint / audioTotalSeconds) + '%'"></div>
+      <div class="end dura"  :style="'left:' + (100 * audioEndPoint / audioTotalSeconds) + '%'">{{timeFormat(audioEndPoint)}}</div>
+
+      <div class="current ver-line" :style="'left:' + (100 * audioCurrentSeconds / audioTotalSeconds) + '%'"></div>
+      <div class="current dura"  :style="'left:' + (100 * audioCurrentSeconds / audioTotalSeconds) + '%'">{{timeFormat(audioCurrentSeconds)}}</div>
+      
+      <div class="tick" v-for="tick in audioTicks" :key="tick"
+        :style="'left:' + (100 * tick / audioTotalSeconds) + '%'" />
     </div>
-    <div class="audio-actions">
-      <span class="button is-white" @click="pause">暂停</span>
-      <span class="button is-white" @click="play">播放</span>
-      <span class="button is-primary" @click="setStartPoint">设为开始点</span>
-      <span class="button is-white" @click="setTickPoint">节拍</span>
-      <span class="button is-white" @click="audioTicks = []">清空节拍</span>
-      <span class="button is-primary" @click="setEndPoint">设为结束点</span>
+    <div class="audio-actions buttons has-addons is-small" v-if="audioUrl">
+      <span class="button is-info is-small" v-if="isPlaying" @click="pause">暂停</span>
+      <span class="button s-info is-small" v-if="!isPlaying" @click="play">播放</span>
+      <span class="button is-small" @click="setStartPoint">设为开始点</span>
+      <span class="button is-small is-primary" @click="setTickPoint">节拍</span>
+      <span class="button is-small" @click="audioTicks = []">清空节拍</span>
+      <span class="button is-small" @click="setEndPoint">设为结束点</span>
     </div>
   </div>
 
@@ -52,7 +58,7 @@
 import ImageDAO from '../../common/dao/imagedao'
 import RestDAO from '../../common/dao/restdao'
 import Tabs from '../../common/components/Tabs.vue'
-import {Howl, Howler} from 'howler'
+import { Howl, Howler } from 'howler'
 export default {
   name: 'DialogAudioList',
   components: {
@@ -97,7 +103,6 @@ export default {
     }
   },
   beforeDestroy () {
-    
   },
   computed: {
     autioPercent () {
@@ -108,7 +113,23 @@ export default {
       }
     }
   },
+  filters: {
+    
+  },
   methods: {
+    timeFormat: function (t) {
+      try {
+        const i = parseInt(t)
+        const subs = Math.floor((t * 10) % 10)
+        if (isNaN(i)) {
+          return '0:00'
+        } else {
+          return Math.floor(i / 60) + ':' + ((i % 60 < 10) ? `0${i % 60}` : (i % 60)) + '.' + subs
+        }
+      } catch (e) {
+        return '未知'
+      }
+    },
     clearSound () {
       if (this.sound) {
         this.sound.unload()
@@ -122,7 +143,11 @@ export default {
       this.audioTicks = []
       this.audioTotalSeconds = 0
       this.audioCurrentSeconds = 0
-
+    },
+    boxClicked (e) {
+      const percent = e.offsetX / e.srcElement.clientWidth
+      this.audioCurrentSeconds = percent * this.audioTotalSeconds
+      this.sound.seek(this.audioCurrentSeconds)
     },
     changeAudioCurrentSeconds () {
       this.sound.seek(this.audioCurrentSeconds)
@@ -141,7 +166,7 @@ export default {
           _this.isPlaying = _this.sound.playing()
           _this.audioCurrentSeconds = _this.sound.seek()
         }
-      }, 500)
+      }, 300)
     },
     pause () {
       this.sound.pause()
@@ -180,6 +205,7 @@ export default {
     },
     setEndPoint () {
       this.audioEndPoint = this.audioCurrentSeconds
+      this.pause()
     },
     setTickPoint () {
       this.audioTicks.push(this.audioCurrentSeconds)
@@ -205,8 +231,51 @@ export default {
 <style lang="scss">
 .new-audio {
   padding: 10px;
-  .progress-container {
-    padding: 10px 0;
+}
+
+.audio-box {
+  position: relative;
+  height: 80px;
+  background-color: #efefef;
+
+  .cut-box {
+    background: #32fd252e;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+  }
+
+  .dura {
+    position: absolute;
+    bottom: 0;
+    font-size: 9px;
+    padding-left: 5px;
+    &.end {
+      margin-left: -30px;
+    }
+    &.current {
+      top: 0;
+    }
+  }
+
+  .tick {
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    width: 3px;
+    background-color: #20c8eeb3;
+    margin-left: -1px;
+  }
+
+  .ver-line {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    width: 1px;
+    background-color: #999;
+    &.current {
+      background-color: #3ec805;
+    }
   }
 }
 
