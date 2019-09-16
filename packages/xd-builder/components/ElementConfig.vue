@@ -59,7 +59,7 @@ import EditShadow from './props/EditShadow.vue'
 import EditAnimation from './props/EditAnimation.vue'
 import { TypeEnum } from '../../danke-core/elements/index'
 import { Shapes } from '../../danke-core/css-model/shapeclip'
-import EditMask from './props/EditMask'
+import EditMask from './props/EditMask.vue'
 import Tabs from '../../common/components/Tabs.vue'
 
 export default {

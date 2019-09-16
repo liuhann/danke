@@ -4,6 +4,7 @@ export default function initClient (ctx, prefixUrl) {
   const client = ky.extend({
     prefixUrl,
     throwHttpErrors: false,
+    timeout: 100000,
     hooks: {
       beforeRequest: [(options) => {
         options.headers.append('token', ctx.token)

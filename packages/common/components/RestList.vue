@@ -1,15 +1,16 @@
 <template>
 <div class="rest-list">
-  <div class="columns is-mobile is-multiline">
+  <div class="columns is-mobile is-multiline is-gapless">
     <div class="column" :class="column" v-for="(item, index) in listData" :key="index">
       <slot name="item" v-bind:item="item">
         {{ item }}
       </slot>
     </div>
   </div>
-  <nav class="pagination is-rounded" role="navigation" aria-label="pagination">
-    <a class="pagination-previous"  @click="previousPage">上一页</a>
-    <a class="pagination-next" @click="nextPage">下一页</a>
+  <nav class="pagination is-rounded is-small" role="navigation" aria-label="pagination">
+    <a class="pagination-previous is-small" @click="previousPage">上一页</a>
+    <a class="pagination-next is-small" @click="nextPage">下一页</a>
+    <a class="pagination-next is-small is-primary" @click="closeList">关闭</a>
     <ul class="pagination-list">
       {{this.pageNumber}}/ {{this.total}}
     </ul>
@@ -25,6 +26,9 @@ export default {
   props: {
     rest: {
       type: String
+    },
+    query: {
+      type: Object
     },
     localList: {
       type: Array
@@ -55,10 +59,10 @@ export default {
   },
   methods: {
     async list () {
-      const result = await this.restdao.list({
+      const result = await this.restdao.list(Object.assign({
         page: this.pageNumber,
         count: this.pageSize
-      })
+      }, this.query))
       this.listData = result.list
       this.total = result.total
     },
@@ -75,6 +79,9 @@ export default {
     async refresh () {
       this.pageNumber = 1
       this.list()
+    },
+    async closeList () {
+      this.$emit('close')
     }
   }
 }

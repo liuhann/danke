@@ -36,13 +36,12 @@
     </div>
     <div class="aside">
       <element-config :element="currentElement" v-if="currentElement"></element-config>
-      <scene-config :scene="currentScene" v-if="!currentElement && currentScene.id"></scene-config>
+      <work-scene-config :scene="currentScene" :work="work" v-if="!currentElement && currentScene.id" />
     </div>
     <!-- float 切换显示 -->
     <list-config v-show="showElementsLayer" :current-scene="currentScene" :current-element="currentElement"></list-config>
     <image-cropper ref="cropper"></image-cropper>
     <dialog-work-list ref="dialogWorkList" @choose="openWork"></dialog-work-list>
-    <dialog-edit-work ref="dialogEditWork" @save="saveWorkDesc"></dialog-edit-work>
   </div>
 </template>
 
@@ -52,7 +51,6 @@ import saveShareMixin from './mixins/saveShare'
 import sceneMixin from './mixins/sceneMixins'
 import layoutMixin from './mixins/layoutMixin'
 import keyBindMixin from './mixins/key-binds'
-import dataProvideMixin from './mixins/dataProvides'
 import initMixin from './mixins/init'
 
 import ImageCropper from './components/ImageCropper'
@@ -60,33 +58,64 @@ import LeftToggleMenu from './components/LeftToggleMenu.vue'
 import TopBar from './components/TopBar.vue'
 import ElementConfig from './components/ElementConfig.vue'
 import ListConfig from './components/ListConfig.vue'
-import SceneConfig from './components/SceneConfig.vue'
+import WorkSceneConfig from './components/WorkSceneConfig.vue'
 import DialogWorkList from './components/DialogWorkList.vue'
-import DialogEditWork from './components/DialogEditWork.vue'
 import ToolBar from './components/ToolBar.vue'
+import { TypeEnum } from '../danke-core/elements/index'
 export default {
   name: 'Builder',
   components: {
     ToolBar,
     TopBar,
-    DialogEditWork,
     ListConfig,
     ElementConfig,
     ImageCropper,
     LeftToggleMenu,
-    SceneConfig,
+    WorkSceneConfig,
     DialogWorkList
   },
-  mixins: [initMixin, elementMixin, saveShareMixin, sceneMixin, keyBindMixin, layoutMixin, dataProvideMixin],
+  mixins: [initMixin, elementMixin, saveShareMixin, sceneMixin, keyBindMixin, layoutMixin],
   props: {
   },
   data () {
     return {
+      // 作品概要信息
+      work: {
+        ratio: '',
+        id: '',
+        title: '',
+        categories: [],
+        desc: '',
+        audioUrl: '',
+        audioName: '',
+        audioTicks: [],
+        duration: 0,
+        resources: [],
+        scenes: []
+      },
+      currentScene: {},
+      currentElement: null,
+      multipleElements: [],
+      TypeEnum,
+      showLeftToggleMenu: false,
+      showElementsLayer: false,
       interactEnabled: true,
       devicePadding: [40, 20]
     }
   },
   created () {
+  },
+  provide () {
+    return {
+      work: this.work,
+      showElementsLayer: this.showElementsLayer,
+      multipleElements: this.multipleElements,
+      currentElement: this.currentElement,
+      currentScene: this.currentScene,
+      // provide methods
+      hideLeftToggleMenu: this.hideLeftToggleMenu,
+      sceneClick: this.sceneClick
+    }
   },
   methods: {
     sceneClick () {

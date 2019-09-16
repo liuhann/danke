@@ -37,12 +37,12 @@
         :style="'left:' + (100 * tick / audioTotalSeconds) + '%'" />
     </div>
     <div class="audio-actions buttons has-addons is-small" v-if="audioUrl">
-      <span class="button is-info is-small" v-if="isPlaying" @click="pause">暂停</span>
-      <span class="button s-info is-small" v-if="!isPlaying" @click="play">播放</span>
-      <span class="button is-small" @click="setStartPoint">设为开始点</span>
       <span class="button is-small is-primary" @click="setTickPoint">节拍</span>
+      <span class="button is-small" @click="setStartPoint">设为开始点</span>
       <span class="button is-small" @click="audioTicks = []">清空节拍</span>
       <span class="button is-small" @click="setEndPoint">设为结束点</span>
+      <span class="button is-info is-small" v-if="isPlaying" @click="pause">暂停</span>
+      <span class="button s-info is-small" v-if="!isPlaying" @click="play">播放</span>
     </div>
   </div>
 
@@ -60,7 +60,7 @@ import RestDAO from '../../common/dao/restdao'
 import Tabs from '../../common/components/Tabs.vue'
 import { Howl, Howler } from 'howler'
 export default {
-  name: 'DialogAudioList',
+  name: 'DialogAudioTap',
   components: {
     Tabs
   },
@@ -194,10 +194,6 @@ export default {
         })
         this.startTick()
         this.sound.play()
-        // const uploaded = await this.uploaddao.uploadBlob(file, 'audios')
-        // const audio = {
-        //   url: uploaded.name
-        // }
       }
     },
     setStartPoint () {
@@ -217,7 +213,8 @@ export default {
         const audioCuttie = {
           name: this.audioName,
           ticks: this.audioTicks.map(value => value - this.audioStartPoint),
-          audioUrl: result.name
+          audioUrl: result.name,
+          dura: this.audioStartPoint - this.audioEndPoint
         }
         const audioResult = await this.audiodao.create(audioCuttie)
         this.$emit('audio', audioResult)
