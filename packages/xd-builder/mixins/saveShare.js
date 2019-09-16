@@ -75,17 +75,11 @@ export default {
     },
     openWork (o) {
       const work = clone(o)
-      this.work.scenes = work.scenes
-      this.work.id = work.id
-      this.work._id = work._id
+      this.work = work
       this.work.isNew = false
-      this.work.title = work.title
-      this.work.ratio = work.ratio
-      this.work.categories = work.categories
       if (is.str(work.categories)) {
         this.work.categories = this.work.categories.split(',')
       }
-      this.work.desc = work.desc
       this.currentScene = this.work.scenes[0]
       this.currentElement = null
       this.zoomCenter()
@@ -143,7 +137,7 @@ export default {
     },
     async runWork () {
       await this.saveWork()
-      window.open('/play/' + this.work._id)
+      window.open('/play/fit/' + this.work._id)
     },
     importWork () {
     },

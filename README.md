@@ -36,7 +36,9 @@ npm run lint
 + 背景音乐功能
     √ 音频Dialog 音频上传、编辑功能
     √ 音频应用到作品上
-    + 作品中加载音频
+    √ 音频保存后立刻使用功能
+    √ 作品中加载音频
++ 场景默认背景颜色为透明色    
 
 √ 作品信息附加到场景右侧
 + 图片Dialog，保存所有已经上传的图片，图片可更换
@@ -50,10 +52,18 @@ npm run lint
 √ 顺序添加动画 - OK
 - 动画仅复制功能
 
++ 生成弹跳的动画指标
++ 
 
 ## appearance
 - 我的首页列表
 - 增加devider组件
+
+
+# DankE SLIDE
+## work
++ http://collectui.com/designers/pixbugius/image-slider
+
 
 ## Products
 ### Image Slide (embed)

@@ -97,7 +97,7 @@
       <a class="button is-small" @click="applyTicks">应用节拍到场景切换</a>
     </div>
   </div>
-  <dialog-audio-tap ref="dialogAudioList" />
+  <dialog-audio-tap ref="dialogAudioList" @audio="chooseAudio"/>
 </nav>
 </template>
 
@@ -155,7 +155,7 @@ export default {
   },
   methods: {
     chooseAudio (audioItem) {
-      this.work.audioUrl = audioItem.url
+      this.work.audioUrl = audioItem.audioUrl
       this.work.audioName = audioItem.name
       this.work.audioTicks = audioItem.ticks
     },

@@ -209,15 +209,14 @@ export default {
     async confirm () {
       if (this.audioUrl) {
         const result = await this.uploaddao.uploadAndCutMp3(this.audioFile, this.audioName, this.audioStartPoint, this.audioEndPoint)
-
         const audioCuttie = {
           name: this.audioName,
           ticks: this.audioTicks.map(value => value - this.audioStartPoint),
           audioUrl: result.name,
-          dura: this.audioStartPoint - this.audioEndPoint
+          dura: Math.floor(this.audioEndPoint - this.audioStartPoint)
         }
-        const audioResult = await this.audiodao.create(audioCuttie)
-        this.$emit('audio', audioResult)
+        await this.audiodao.create(audioCuttie)
+        this.$emit('audio', audioCuttie)
       }
       this.dialogVisible = false
     }

@@ -59,9 +59,16 @@ export default {
 
   methods: {
     async startEngine () {
-      this.isLoading = false
       this.engine = new DankeEngine(this.work.scenes, this.device)
+      if (this.work.audioUrl) {
+        await this.loadAudio('http://image.danke.fun/' + this.work.audioUrl)
+        this.audio = new Audio('http://image.danke.fun/' + this.work.audioUrl)
+      }
+      this.isLoading = false
       this.engine.play()
+      if (this.audio) {
+        this.audio.play()
+      }
       this.engine.setDeviceEl(this.$el)
     },
 
@@ -71,6 +78,28 @@ export default {
         if (!load.loaded) return
       }
       this.startEngine()
+    },
+
+    async loadAudio (url) {
+      const audio = new Audio(url)
+      return new Promise((resolve, reject) => {
+        audio.addEventListener('canplaythrough', () => {
+          resolve()
+        }, false)
+      })
+    },
+    async xhrLoad (url) {
+      const request = new XMLHttpRequest()
+      request.open('GET', url, true)
+      request.responseType = 'blob'
+      return new Promise((resolve, reject) => {
+        request.onload = function () {
+          if (this.status === 200) {
+            resolve()
+          }
+        }
+        request.send()
+      })
     },
 
     getWorkImagesInDevice (work, device) {
