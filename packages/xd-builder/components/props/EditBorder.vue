@@ -87,5 +87,6 @@ export default {
 
 <style lang="scss">
 .edit-border {
+  
 }
 </style>

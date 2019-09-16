@@ -8,13 +8,13 @@
       <color-pickr v-for="(color, index) of background.colors" :key="index" v-model="background.colors[index]" @remove="removeColor(index)"></color-pickr>
       <a class="icon-plus-1" @click="addColor"></a>
     </p>
-    <p class="control">
+    <div class="control">
       <div class="select is-small" v-if="multipleColor">
         <select v-model="background.angle">
           <option v-for="option in gradientAngle" :value="option.key" :key="option.key">{{option.value}}</option>
         </select>
       </div>
-    </p>
+    </div>
   </div>
 </div>
 </template>

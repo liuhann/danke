@@ -148,7 +148,7 @@ export default {
           resolve()
         }, mill)
       })
-    },
+    }
   }
 }
 </script>
