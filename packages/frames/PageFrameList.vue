@@ -13,7 +13,7 @@
 <script>
 import NavBar from '../site/components/NavBar'
 import { createSheet, addAnimationStyle } from './keyframe'
-import FrameBox from './FrameBox'
+import FrameBox from './FrameBox.vue'
 import NavFooter from '../site/components/NavFooter'
 export default {
   name: 'PageFrameList',

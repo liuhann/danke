@@ -3,9 +3,10 @@
   <div class="column">
     <div class="frame-preview" :class="[previewType!=='文字'?'shadow': '']">
       <span class="buttons has-addons edit-button" v-if="isEdit" >
-        <span class="button icon-cw is-small" @click="refreshFrame">刷新</span>
-        <span class="button icon-edit is-info is-small" @click="editFrame">编辑</span>
-        <span class="button icon-trash is-danger is-small" v-if="currentAnimation.userid === user.id" @click="removeFrame">删除</span>
+        <router-link to="/frame/edit" class="button is-small is-info">创建</router-link>
+        <span class="button is-small" @click="refreshFrame">刷新</span>
+        <span class="button is-small" @click="editFrame">编辑</span>
+        <span class="button is-danger is-small" v-if="currentAnimation.userid === user.id" @click="removeFrame">删除</span>
       </span>
       <div v-if="currentAnimation && previewType==='rect'" class="preview-box" :class="currentAnimation.name"></div>
       <div v-if="currentAnimation && previewType==='text'" class="preview-text" :class="currentAnimation.name">frames@danke</div>
@@ -19,11 +20,9 @@
         </li>
       </ul>
     </div>
-    <router-link to="/frame/edit" class="button icon-plus is-small is-info is-rtl">创建</router-link>
     <div class="tags" style="margin-bottom: .5rem;">
       <span class="tag is-light" :class="[key.en === filterKey? 'is-info': '']" v-for="key in currentKeyWords" :key="key.en" @click="filter(key.en)">{{key.zh}}</span>
     </div>
-
     <nav class="panel frames-list">
       <div class="panel-body">
         <div class="animations">
@@ -48,6 +47,10 @@ export default {
   props: {
     isEdit: {
       type: Boolean
+    },
+    height: {
+      type: Number,
+      default: 420
     },
     previewType: {
       type: String,
