@@ -67,12 +67,12 @@ export default {
       this.total = result.total
     },
     async nextPage () {
-      this.pageNumber ++
+      this.pageNumber++
       this.list()
     },
     async previousPage () {
       if (this.pageNumber > 0) {
-        this.pageNumber --
+        this.pageNumber--
       }
       this.list()
     },

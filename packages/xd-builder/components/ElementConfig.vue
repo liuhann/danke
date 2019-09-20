@@ -8,6 +8,7 @@
       <span class="icon-paste" :class="[clipboard.elements.length > 0? 'has-clipboard': '']" @click="pasteElement"></span>
     </div>
   </div> -->
+  <tabs size="is-small" v-model="configTab" :tabs="configTabs"></tabs>
   <edit-font v-if="element.font" v-model="element.font"></edit-font>
   <edit-background v-model="element.background" v-if="element.background"></edit-background>
   <edit-position v-model="element.position"></edit-position>
@@ -89,7 +90,16 @@ export default {
   inject: ['moveUp', 'moveDown', 'moveTop', 'moveBottom', 'clipboard', 'cutElement', 'copyElement', 'pasteElement'],
   data () {
     return {
-      animationTabs: [{
+      configTab: 'basic',
+      animationType: 'in',
+      shapeOptions: Shapes,
+      TypeEnum,
+      fileUrl: ''
+    }
+  },
+  computed: {
+    animationTabs () {
+      return [{
         title: '进入',
         key: 'in'
       }, {
@@ -98,11 +108,19 @@ export default {
       }, {
         title: '离开',
         key: 'out'
-      }],
-      animationType: 'in',
-      shapeOptions: Shapes,
-      TypeEnum,
-      fileUrl: ''
+      }]
+    },
+    configTabs () {
+      return [{
+        title: '基础',
+        key: 'basic'
+      }, {
+        title: '动画',
+        key: 'animation'
+      }, {
+        title: '其他',
+        key: 'other'
+      }]
     }
   },
   watch: {
@@ -111,11 +129,6 @@ export default {
       handler () {
         this.$emit('element-change')
       }
-    }
-  },
-  computed: {
-    tabsName () {
-      return ['样式', '动画']
     }
   },
   methods: {
