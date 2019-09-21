@@ -9,44 +9,47 @@
     </div>
   </div> -->
   <tabs size="is-small" v-model="configTab" :tabs="configTabs"></tabs>
-  <edit-font v-if="element.font" v-model="element.font"></edit-font>
-  <edit-background v-model="element.background" v-if="element.background"></edit-background>
-  <edit-position v-model="element.position"></edit-position>
-  <edit-size v-model="element.size"></edit-size>
-  <edit-border v-model="element.border" v-if="element.border"></edit-border>
-  <edit-shadow v-model="element.shadow" v-if="element.shadow"></edit-shadow>
-
-  <tabs size="is-small" v-model="animationType" :tabs="animationTabs"></tabs>
-  <edit-animation v-if="animationType==='in'" :animation="element.animation.in" animation-type="in"></edit-animation>
-  <edit-animation v-if="animationType==='dura'" :animation="element.animation.dura" animation-type="dura"></edit-animation>
-  <edit-animation v-if="animationType==='out'" :animation="element.animation.out" animation-type="out"class="bottom-line"></edit-animation>
-
-  <edit-mask v-model="element.mask" v-if="element.mask"></edit-mask>
-  <edit-clip-path v-model="element.clip" v-if="element.clip"></edit-clip-path>
-
-  <div class="buttons has-addons">
-    <span class="button is-small" @click="moveDown(element)">
-      <span class="icon is-small" >
-        <i class="icon-angle-up"></i>
+  <div class="basic" v-if="configTab === 'basic'">
+    <edit-font v-if="element.font" v-model="element.font"></edit-font>
+    <edit-background v-model="element.background" v-if="element.background"></edit-background>
+    <edit-position v-model="element.position"></edit-position>
+    <edit-size v-model="element.size"></edit-size>
+    <span class="button is-small" @click="copyStyle">样式复制</span>
+    <span class="button is-small">样式粘贴</span>
+    <div class="buttons has-addons">
+      <span class="button is-small" @click="moveDown(element)">
+        向下
       </span>
-    </span>
-    <span class="button is-small" @click="moveUp(element)">
-      <span class="icon is-small" >
-        <i class="icon-angle-down"></i>
+      <span class="button is-small" @click="moveUp(element)">
+        向上
       </span>
-    </span>
-    <span class="button is-small" @click="moveBottom(element)">
-      <span class="icon is-small" >
-        <i class="icon-angle-double-up"></i>
+      <span class="button is-small" @click="moveBottom(element)">
+        最底层
       </span>
-    </span>
-    <span class="button is-small" @click="moveTop(element)">
-      <span class="icon is-small" >
-        <i class="icon-angle-double-down"></i>
+      <span class="button is-small" @click="moveTop(element)">
+        最顶层
       </span>
-    </span>
+      <span class="button is-small" @click="copyElement(element)">
+        复制
+      </span>
+      <span class="button is-small" @click="cutElement(element)">
+        剪切
+      </span>
+    </div>
   </div>
 
+  <div class="animation" v-if="configTab === 'animation'">
+    <edit-animation :animation="element.animation.in" animation-type="in"></edit-animation>
+    <edit-animation :animation="element.animation.dura" animation-type="dura"></edit-animation>
+    <edit-animation :animation="element.animation.out" animation-type="out"></edit-animation>
+  </div>
+
+  <div class="extra" v-if="configTab === 'other'">
+    <edit-border v-model="element.border" v-if="element.border"></edit-border>
+    <edit-shadow v-model="element.shadow" v-if="element.shadow"></edit-shadow>
+    <edit-mask v-model="element.mask" v-if="element.mask"></edit-mask>
+    <edit-clip-path v-model="element.clip" v-if="element.clip"></edit-clip-path>
+  </div>
 </nav>
 </template>
 <script>
@@ -132,6 +135,12 @@ export default {
     }
   },
   methods: {
+    copyStyle () {
+      
+    },
+    pasteStyle () {
+
+    }
   }
 }
 </script>
