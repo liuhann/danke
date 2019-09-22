@@ -11,37 +11,55 @@
   <tabs size="is-small" v-model="configTab" :tabs="configTabs"></tabs>
   <div class="basic" v-if="configTab === 'basic'">
     <edit-font v-if="element.font" v-model="element.font"></edit-font>
+    <edit-image v-if="element.url" v-model="element.url" @blob="imageUpdated"></edit-image>
     <edit-background v-model="element.background" v-if="element.background"></edit-background>
     <edit-position v-model="element.position"></edit-position>
     <edit-size v-model="element.size"></edit-size>
-    <span class="button is-small" @click="copyStyle">样式复制</span>
-    <span class="button is-small">样式粘贴</span>
-    <div class="buttons has-addons">
-      <span class="button is-small" @click="moveDown(element)">
-        向下
-      </span>
-      <span class="button is-small" @click="moveUp(element)">
-        向上
-      </span>
-      <span class="button is-small" @click="moveBottom(element)">
-        最底层
-      </span>
-      <span class="button is-small" @click="moveTop(element)">
-        最顶层
-      </span>
-      <span class="button is-small" @click="copyElement(element)">
-        复制
-      </span>
-      <span class="button is-small" @click="cutElement(element)">
-        剪切
-      </span>
+
+    <div class="field has-addons">
+      <div class="control field-lb">
+        层次
+      </div>
+      <div class="control">
+        <div class="buttons has-addons">
+          <span class="button is-small" @click="moveDown(element)">
+            向下
+          </span>
+          <span class="button is-small" @click="moveUp(element)">
+            向上
+          </span>
+          <span class="button is-small" @click="moveBottom(element)">
+            最底层
+          </span>
+          <span class="button is-small" @click="moveTop(element)">
+            最顶层
+          </span>
+        </div>
+      </div>
     </div>
+
+    <div class="field has-addons">
+      <div class="control field-lb">
+        复制
+      </div>
+      <div class="control">
+        <div class="buttons has-addons">
+          <span class="button is-small" @click="copyElement(element)">
+            复制
+          </span>
+          <span class="button is-small" @click="copyStyle">仅样式</span>
+          <span class="button is-small">样式粘贴</span>
+        </div>
+      </div>
+    </div>
+    <tabs size="is-small" v-model="animationType" :tabs="animationTabs"></tabs>
+    <edit-animation v-if="animationType==='in'" :animation="element.animation.in" animation-type="in"></edit-animation>
+    <edit-animation v-if="animationType==='dura'" :animation="element.animation.dura" animation-type="dura"></edit-animation>
+    <edit-animation v-if="animationType==='out'" :animation="element.animation.out" animation-type="out"></edit-animation>
   </div>
 
   <div class="animation" v-if="configTab === 'animation'">
-    <edit-animation :animation="element.animation.in" animation-type="in"></edit-animation>
-    <edit-animation :animation="element.animation.dura" animation-type="dura"></edit-animation>
-    <edit-animation :animation="element.animation.out" animation-type="out"></edit-animation>
+
   </div>
 
   <div class="extra" v-if="configTab === 'other'">
@@ -66,6 +84,8 @@ import { TypeEnum } from '../../danke-core/elements/index'
 import { Shapes } from '../../danke-core/css-model/shapeclip'
 import EditMask from './props/EditMask.vue'
 import Tabs from '../../common/components/Tabs.vue'
+import { Divider } from 'element-ui'
+import EditImage from './props/EditImage'
 
 export default {
   name: 'ElementConfig',
@@ -78,6 +98,8 @@ export default {
     }
   },
   components: {
+    EditImage,
+    Divider,
     Tabs,
     EditMask,
     EditAnimation,
@@ -103,7 +125,7 @@ export default {
   computed: {
     animationTabs () {
       return [{
-        title: '进入',
+        title: '入场动画',
         key: 'in'
       }, {
         title: '持续',
@@ -117,9 +139,6 @@ export default {
       return [{
         title: '基础',
         key: 'basic'
-      }, {
-        title: '动画',
-        key: 'animation'
       }, {
         title: '其他',
         key: 'other'
@@ -135,8 +154,12 @@ export default {
     }
   },
   methods: {
+    imageUpdated (file) {
+      this.element.blob = file
+    },
+
     copyStyle () {
-      
+
     },
     pasteStyle () {
 
