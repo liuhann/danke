@@ -5,15 +5,13 @@
 </template>
 
 <script>
-  export default {
-    name: 'Devider'
-  }
+export default {
+  name: 'Devider'
+}
 </script>
 
 <style>
 .divider {
 
 }
-
-
 </style>

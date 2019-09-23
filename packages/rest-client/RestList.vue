@@ -1,6 +1,5 @@
 <template>
 <div class="rest-list">
-
   <el-table
     :data="tableData"
     style="width: 100%">
@@ -19,7 +18,6 @@
       label="地址">
     </el-table-column>
   </el-table>
-
   <div class="work-list">
     <table>
       <tr>

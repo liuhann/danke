@@ -1,8 +1,8 @@
 <template>
 <div class="edit-position field-group">
   <div class="field has-addons">
-    <div class="control icon-label" @click="copyPositionStyle">
-      <i class="icon-move"></i>
+    <div class="control field-lb" @click="copyPositionStyle">
+      位置
     </div>
     <div class="control">
       <div class="select is-small">
@@ -19,8 +19,7 @@
     </div>
   </div>
   <div class="field has-addons">
-    <div class="control icon-label">
-      <i class="icon-empty"></i>
+    <div class="control field-lb">
     </div>
     <div class="control">
       <div class="select is-small">

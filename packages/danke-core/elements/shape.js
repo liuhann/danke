@@ -4,6 +4,7 @@ import SIZE from '../css-model/size'
 import ANIMATION from '../css-model/animation'
 import BORDER from '../css-model/border'
 import SHADOW from '../css-model/shadow'
+import CLIP from '../css-model/clippath'
 const shape = {
   version: '1.2',
   type: 3,
@@ -14,6 +15,7 @@ const shape = {
   background: BACKGROUND,
   border: BORDER,
   shadow: SHADOW,
+  clip: CLIP,
   animation: {
     in: ANIMATION,
     dura: ANIMATION,

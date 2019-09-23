@@ -1,8 +1,8 @@
 <template>
   <div class="edit-clip-path">
     <div class="field has-addons">
-      <div class="control icon-label">
-        <i clas="icon-crop"></i>
+      <div class="control field-lb">
+        裁切
       </div>
       <div class="control">
         <div class="select is-small">
@@ -13,8 +13,8 @@
       </div>
     </div>
     <div class="field is-horizontal clip-path-point" v-for="(point, index) of clip.points" :key="index">
-      <div class="control order">
-        {{index+1}}.
+      <div class="control field-lb">
+         {{index+1}}.
       </div>
       <div class="control">
          <input class="input is-small" v-model.number="point[0]" type="number">

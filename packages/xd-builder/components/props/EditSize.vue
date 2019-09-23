@@ -1,10 +1,10 @@
 <template>
 <div class="field has-addons">
-  <p class="control icon-label" @click="copySizeStyle">
-    <i class="icon-resize-full"></i>
+  <p class="control field-lb" @click="copySizeStyle">
+    宽高
   </p>
   <p class="control">
-    <input class="input is-small" type="number" style="width: 65px;" v-model="size.width">
+    <input class="input is-small" type="number" style="width: 55px;" v-model="size.width">
   </p>
   <p class="control">
     <span class="select is-small">
@@ -14,7 +14,7 @@
     </span>
   </p>
   <p class="control">
-    <input class="input is-small" type="number" style="width: 65px;" v-model="size.height">
+    <input class="input is-small" type="number" style="width: 55px;" v-model="size.height">
   </p>
   <p class="control">
     <span class="select is-small">

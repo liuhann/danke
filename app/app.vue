@@ -1,19 +1,11 @@
 <template>
 <router-view></router-view>
 </template>
-
 <script>
 export default {
-  name: 'view.vue',
+  name: 'app',
   data () {
-    return {
-    }
-  },
-  computed: {
+    return { }
   }
 }
 </script>
-
-<style>
-
-</style>

@@ -167,6 +167,7 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
       position: absolute;
       left: 20px;
       background-color: #fff;
+      border: 1px solid #ccc;
       z-index: 10;
       .element {
         position: absolute;
