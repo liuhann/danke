@@ -1,8 +1,8 @@
 <template>
   <div class="edit-transform">
     <div class="field has-addons">
-      <div class="field-label is-small">
-        <label class="label">移动(%)</label>
+      <div class="control field-lb">
+        移动(%)
       </div>
       <div class="field-body transform-xyz">
           <p class="control is-small">
@@ -17,8 +17,8 @@
       </div>
     </div>
     <div class="field is-horizontal">
-      <div class="field-label is-small">
-        <label class="label">旋转</label>
+      <div class="control field-lb">
+        旋转
       </div>
       <div class="field-body transform-xyz">
         <p class="control is-small">
@@ -33,8 +33,8 @@
       </div>
     </div>
     <div class="field has-addons" v-if="transform.origin">
-			<div class="field-label is-small">
-				<label class="label">横向</label>
+			<div class="control field-lb">
+				横向
 			</div>
       <div class="control">
         <div class="select is-small">
@@ -43,8 +43,8 @@
           </select>
         </div>
       </div>
-			<div class="field-label is-small">
-				<label class="label">纵向</label>
+			<div class="control field-lb">
+				纵向
 			</div>
 			<div class="control">
 				<div class="select is-small">
@@ -54,19 +54,43 @@
 				</div>
 			</div>
     </div>
-    <form-field v-model.number="transform.opacity" label="透明度" type="number" width="70px" unit="%"></form-field>
-    <form-field v-model.number="transform.psp" label="视角" type="number" width="70px" unit="像素"></form-field>
-    <form-field v-model.number="transform.scale" label="缩放" type="number" width="70px" unit="%">
-    </form-field>
+    <div class="field has-addons">
+			<div class="control field-lb">
+				透明度
+			</div>
+      <div class="control">
+         <input class="input is-small" v-model.number="transform.opacity" type="number">
+      </div>
+      <div class="control">
+        <a class="button is-static is-small">%</a>
+      </div>
+    </div>
+    <div class="field has-addons">
+			<div class="control field-lb">
+				视角
+			</div>
+      <div class="control">
+         <input class="input is-small" v-model.number="transform.psp" type="number">
+      </div>
+      <div class="control">
+        <a class="button is-static is-small">像素</a>
+      </div>
+    </div>
+    <div class="field has-addons">
+			<div class="control field-lb">
+				缩放
+			</div>
+      <div class="control">
+         <input class="input is-small" v-model.number="transform.scale" type="number">
+      </div>
+    </div>
 </div>
 </template>
 
 <script>
-import EditLen from './EditLen'
-import FormField from './FormField'
 export default {
   name: 'EditTransform',
-  components: { FormField, EditLen },
+  components: { },
   props: {
     value: {
       type: Object

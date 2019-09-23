@@ -1,19 +1,19 @@
 <template>
-<div class="columns frame-box-columns is-gapless">
+<div class="columns frame-box-columns is-gapless" :style="'height:' + height ">
   <div class="column">
     <div class="frame-preview" :class="[previewType!=='文字'?'shadow': '']">
       <span class="buttons has-addons edit-button" v-if="isEdit" >
         <router-link to="/frame/edit" class="button is-small is-info">创建</router-link>
         <span class="button is-small" @click="refreshFrame">刷新</span>
         <span class="button is-small" @click="editFrame">编辑</span>
-        <span class="button is-danger is-small" v-if="currentAnimation.userid === user.id" @click="removeFrame">删除</span>
+        <span class="button is-danger is-small" v-if="currentAnimation && currentAnimation.userid === user.id" @click="removeFrame">删除</span>
       </span>
       <div v-if="currentAnimation && previewType==='rect'" class="preview-box" :class="currentAnimation.name"></div>
       <div v-if="currentAnimation && previewType==='text'" class="preview-text" :class="currentAnimation.name">frames@danke</div>
     </div>
   </div>
   <div class="column is-narrow-tablet frame-navigation">
-    <div class="tabs" style="margin-bottom: .5rem;">
+    <div class="tabs is-small" style="margin-bottom: .5rem;">
       <ul>
         <li v-for="(type, index) in animationTypes" :key="index" :class="currentType === type.key? 'is-active': ''">
           <a @click="changeType(type)" >{{type.value}}</a>
@@ -28,8 +28,7 @@
         <div class="animations">
           <div v-for="animation in filteredAnimations" :key="animation.name" class="animation" @click="setAnimation(animation)"
              :class="currentAnimation.name === animation.name? 'is-active': ''">
-            <div class="en-name">{{animation.name}}</div>
-            <div class="zh-name">{{animation.desc}}</div>
+            <div class="zh-name" style="flex: 1;">{{animation.desc}}</div><div class="en-name" style="width: 100px;overflow:hidden;">{{animation.name}}</div>
           </div>
         </div>
       </div>
@@ -40,16 +39,19 @@
 
 <script>
 import RestDAO from '../common/dao/restdao'
+import Tabs from '../common/components/Tabs.vue'
 import { Message } from 'element-ui'
 import { addAnimationStyle, createSheet } from './keyframe'
 export default {
   name: 'FrameBox',
+  components: {
+    Tabs
+  },
   props: {
     isEdit: {
       type: Boolean
     },
     height: {
-      type: Number,
       default: 420
     },
     previewType: {
@@ -88,6 +90,9 @@ export default {
         }, {
           en: 'rotate',
           zh: '旋转'
+        }, {
+          en: 'slide',
+          zh: '滑动'
         }],
         value: '进入'
       }, {
@@ -143,6 +148,7 @@ export default {
   },
   methods: {
     setAnimation (animation) {
+      debugger
       addAnimationStyle(this.sheet, animation)
       this.currentAnimation = animation
     },
@@ -221,7 +227,8 @@ export default {
   .preview-box {
     width: 160px;
     height: 160px;
-    background-color: #FF4B4B;
+
+    // background-color: #FF4B4B;
   }
   .animation-provider {
     position: absolute;
@@ -244,6 +251,7 @@ export default {
   .animations {
     width: 100%;
     .animation {
+      display: flex;
       cursor: pointer;
       &:hover {
         background: #efefef;
@@ -252,13 +260,8 @@ export default {
         background-color: #209cee;
         color: #fff;
       }
-      display: inline-block;
-      border: 1px solid #eee;
-      padding: 8px;
-      margin: 5px;
-      .en-name {
-        font-size: 14px;
-      }
+      border-bottom: 1px solid #eee;
+      padding: 4px 10px;
     }
   }
 }

@@ -12,7 +12,7 @@ html, body {
   font-family: 'Karla',Microsoft YaHei,tahoma,arial,Hiragino Sans GB,sans-serif;
   height: 100%;
 }
-@import "./overrides.css";
+@import "./overrides.scss";
 .centering {
   display: flex;
   justify-content: center;

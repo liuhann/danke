@@ -37,12 +37,10 @@
       </div>
     </section>
     <section class="section">
-      <div class="container">
         <h4 class="subtitle is-4">打开草稿</h4>
         <works-column :works="drafts.widescreens" @edit="chooseDraftWork" @play="playWork" @delete="deleteWorkDraft"></works-column>
         <works-column :works="drafts.mobiles" @edit="chooseDraftWork" @play="playWork" @delete="deleteWorkDraft"></works-column>
         <works-column :works="drafts.books" @edit="chooseDraftWork" @play="playWork" @delete="deleteWorkDraft"></works-column>
-      </div>
     </section>
     <section class="section">
       <div class="container">
@@ -61,8 +59,8 @@ import Tabs from '../common/components/Tabs.vue'
 import NavBar from '../site/components/NavBar'
 import RestDAO from '../common/dao/restdao'
 import dayjs from 'dayjs'
-import WorkCover from './components/WorkCover'
-import WorksColumn from './components/WorksColumn'
+import WorkCover from './components/WorkCover.vue'
+import WorksColumn from './components/WorksColumn.vue'
 
 const welcomeRatios = {
   '9:16': '2:3',
@@ -188,6 +186,9 @@ export default {
 </script>
 
 <style lang="scss">
+.section {
+  background-color: #f4f4f4;
+}
 .add-work {
   display: flex;
   align-items: center;

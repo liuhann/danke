@@ -1,20 +1,60 @@
 <template>
 <div class="animation-config box">
   <div class="frames">
-    <form-field v-model="animation.name" label="名称" type="text" :disabled="isEdit">
-    </form-field>
-    <form-field v-model="animation.desc" label="描述" type="text">
-    </form-field>
-    <form-field v-model="animation.type" label="类型" type="select" :options="animationTypes">
-    </form-field>
-    <form-field v-model="animation.duration" width="70px" label="时长" placeholder="动画时长" unit="毫秒" type="number">
-    </form-field>
-    <form-field v-model="animation.timing" label="曲线" type="select" :options="cubicBeziers">
-    </form-field>
-    <form-field v-model="animation.delay" width="70px" label="延迟" placeholder="动画时长" unit="毫秒" type="number">
-    </form-field>
-    <form-field v-model="animation.iteration" width="80px" label="次数"  unit="次" type="number">
-    </form-field>
+    <div class="field has-addons">
+      <div class="control field-lb">
+        名称
+      </div>
+      <div class="control">
+        <input class="input is-small" v-model="animation.name">
+      </div>
+    </div>
+    <div class="field has-addons">
+      <div class="control field-lb">
+        描述
+      </div>
+      <div class="control">
+        <input class="input is-small" style="width: 200px;" v-model="animation.desc">
+      </div>
+    </div>
+    <div class="field has-addons">
+      <div class="control field-lb">
+        类型
+      </div>
+      <div class="control">
+        <div class="select is-small">
+          <select v-model="animation.type">
+            <option v-for="option in animationTypes" :value="option.key" :key="option.key">{{option.value}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="tags" style="margin-bottom: .5rem;">
+      <span class="tag is-light" v-for="key in currentKeyWords" :key="key.en" @click="addKeyWord(key.en, key.zh)">{{key.zh}}</span>
+    </div>
+    <div class="field has-addons">
+      <div class="control field-lb">
+        时长
+      </div>
+      <div class="control">
+        <input class="input is-small" style="width: 80px;" type="number" v-model="animation.duration">
+      </div>
+      <div class="control">
+        <a class="button is-static is-small">ms</a>
+      </div>
+    </div>
+    <div class="field has-addons">
+      <div class="control field-lb">
+        过渡曲线
+      </div>
+      <div class="control">
+        <div class="select is-small">
+          <select v-model="animation.timing">
+            <option v-for="(value, key) of cubicBeziers" :value="key" :key="key">{{key}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
 
     <div class="timeline">
       <div class="timeline-item"
@@ -45,13 +85,14 @@
 
 <script>
 import './bulma-timeline.css'
-import EditTransform from '../xd-builder/components/props/EditTransform'
+import EditTransform from '../xd-builder/components/props/EditTransform.vue'
 import EditClipPath from '../xd-builder/components/props/EditClipPath'
 import EditLen from '../xd-builder/components/props/EditLen'
 import FormField from '../xd-builder/components/props/FormField.vue'
 import { clone } from '../utils/object'
 import FRAME from './model/frame'
-import cubicBeziers from './model/cubic-beziers'
+import cubicBeziers from './model/cubic-beziers.js'
+import animationTypes from './model/animation-type.js'
 export default {
   name: 'FramesConfig',
   props: {
@@ -65,25 +106,21 @@ export default {
   components: { FormField, EditTransform, EditClipPath, EditLen },
   data () {
     return {
-      cubicBeziers: cubicBeziers,
+      animationTypes,
+      cubicBeziers,
       activeNames: [],
       currentFrameIndex: 0,
       dialogVisible: false
     }
   },
-
   computed: {
-    animationTypes () {
-      return [{
-        key: '1',
-        value: '进入'
-      }, {
-        key: '2',
-        value: '离开'
-      }, {
-        key: '3',
-        value: '持续'
-      }]
+    currentKeyWords: function () {
+      for (let animation of animationTypes) {
+        if (this.animation.type === animation.key) {
+          return animation.keyword
+        }
+      }
+      return []
     }
   },
   watch: {
@@ -95,6 +132,10 @@ export default {
     }
   },
   methods: {
+    addKeyWord (en, zh) {
+      this.animation.name += en + '-'
+      this.animation.desc += zh
+    },
     appendFrame (index) {
       const newFrame = clone(FRAME)
       newFrame.percent = 50

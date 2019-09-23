@@ -71,9 +71,7 @@ export default {
     }
   },
   data () {
-    return {
-
-    }
+    return { }
   },
   computed: {
     optionsArray () {
@@ -116,10 +114,10 @@ export default {
           width: this.width
         }
       } else {
-          return {}
-        }
+        return {}
       }
-    },
+    }
+  },
   methods: {
     changeRadioValue (v) {
       this.fieldValue = v

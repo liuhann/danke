@@ -1,30 +1,30 @@
 <template>
-  <div class="device cover" :style="scene.style" @mouseover="mouseOn = true" @mouseout="mouseOn = false">
-    <div v-for="(element) in scene.elements" :key="element.id" class="element" :class="['type' + element.type]"
-         :style="element.style">
-      <img v-if="element.url" :src="element.url">
-      <span v-if="element.type === TypeEnum.TEXT && element.font.size >= textAdjust" v-html="$options.filters.newline(element.text)"></span>
-    </div>
-    <div class="hover-mask" :class="mouseOn? 'on': ''">
-      <div class="centering">
-        <a class="button is-medium is-success" @click="play">
-          <span class="icon">
-            <i class="icon-play"></i>
-          </span>
-        </a>
-        <a v-if="work.isDraft" class="button is-medium is-info" style="margin-left: 20px;" @click="edit">
-          <span class="icon">
-            <i class="icon-pencil"></i>
-          </span>
-        </a>
-        <a v-if="!work.isDraft" class="button is-medium is-info" style="margin-left: 20px;" @click="shareLink">
-          <span class="icon">
-            <i class="icon-cube"></i>
-          </span>
-        </a>
-      </div>
+<div class="work-cover" :style="scene.style" @mouseover="mouseOn = true" @mouseout="mouseOn = false">
+  <div v-for="(element) in scene.elements" :key="element.id" class="element" :class="['type' + element.type]"
+        :style="element.style">
+    <img v-if="element.url" :src="element.url">
+    <span v-if="element.type === TypeEnum.TEXT && element.font.size >= textAdjust" v-html="$options.filters.newline(element.text)"></span>
+  </div>
+  <div class="hover-mask" :class="mouseOn? 'on': ''">
+    <div class="centering">
+      <a class="button is-medium is-success" @click="play">
+        <span class="icon">
+          <i class="icon-play"></i>
+        </span>
+      </a>
+      <a v-if="work.isDraft" class="button is-medium is-info" style="margin-left: 20px;" @click="edit">
+        <span class="icon">
+          <i class="icon-pencil"></i>
+        </span>
+      </a>
+      <a v-if="!work.isDraft" class="button is-medium is-info" style="margin-left: 20px;" @click="shareLink">
+        <span class="icon">
+          <i class="icon-cube"></i>
+        </span>
+      </a>
     </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -109,12 +109,12 @@ export default {
 </script>
 
 <style lang="less">
-.device.cover {
+.work-cover {
   position: relative;
   overflow: hidden;
-  border: 1px solid #eee;
-  box-shadow: 0 0 4px 0px #eee;
-  border-radius: 5px;
+  // border: 1px solid #eee;
+  // box-shadow: 0 0 4px 0px #eee;
+  // border-radius: 5px;
   .scene {
     position: absolute;
     left: 0;

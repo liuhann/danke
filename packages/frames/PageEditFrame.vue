@@ -175,7 +175,7 @@ export default {
 <style lang="scss">
 #preview {
   position: relative;
-  background-image: linear-gradient(90deg, #592D2D, #592D2D);
+  background-image: linear-gradient(90deg, #aaa, #a4a4a4);
   flex: 1;
   display: flex;
   justify-content: center;
@@ -185,7 +185,7 @@ export default {
   background-repeat: no-repeat;
   height: calc(100vh - 8rem);
   .preview-box {
-    background-color: #FF4B4B;
+    background-color: #666;
     width: 160px;
     height: 160px;
     overflow: hidden;

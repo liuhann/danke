@@ -1,31 +1,47 @@
 <template>
-<div class="columns is-mobile is-multiline is-1 work-columns">
+<div class="columns is-mobile is-multiline is-3 work-columns">
   <div
     v-for="work in works"
     :key="work.id"
     :class="work.ratio | workSize"
     class="column">
-    <work-cover
-      :work="work"
-      :ratio="work.ratio"
-      :height="0"
-      @link="shareLink(work)"
-      @play="playWork(work)"
-      @edit="chooseDraftWork(work)"/>
-    <div class="work-info">
-      <div class="work-title">
-        {{ work.title }}
+    <div class="cover-container">
+      <div class="device">
+        <work-cover
+          :work="work"
+          :ratio="work.ratio"
+          :height="0"
+          @link="shareLink(work)"
+          @play="playWork(work)"
+          @edit="chooseDraftWork(work)"/>
+        <div class="work-info">
+          <span class="button is-small is-white has-text-grey-dark" @click='chooseDraftWork(work)'>
+            <span class="icon">
+              <i class="icon-pencil"></i>
+            </span>
+            <span>编辑</span>
+          </span>
+          <span class="button is-small is-white has-text-grey-dark" @click='chooseDraftWork(work)'>
+            <span class="icon">
+              <i class="icon-eye"></i>
+            </span>
+            <span>预览</span>
+          </span>
+          <a class="button is-small is-white has-text-danger is-pulled-right" @click='deleteWork(work)'>
+            <span class="icon">
+              <i class="icon-trash-empty"></i>
+            </span>
+            <span>删除</span>
+          </a>
+        </div>
       </div>
-      <div class="operation"><i
-        class="icon-trash-empty"
-        @click="deleteWork(work)"/></div>
     </div>
   </div>
 </div>
 </template>
 
 <script>
-import WorkCover from './WorkCover'
+import WorkCover from './WorkCover.vue'
 export default {
   name: 'WorksColumn',
   components: { WorkCover },
@@ -64,6 +80,11 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style>
+.cover-container {
+  padding: 10px;
+  background: #fff;
+  border-radius: 2px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.07);
+}
 </style>

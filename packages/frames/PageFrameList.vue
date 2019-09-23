@@ -3,7 +3,7 @@
   <nav-bar></nav-bar>
   <div class="section">
     <div class="container">
-      <frame-box :is-edit="true"></frame-box>
+      <frame-box :is-edit="true" height="calc(100% - 200px)"></frame-box>
     </div>
   </div>
   <nav-footer></nav-footer>
@@ -133,37 +133,9 @@ export default {
 
 <style lang="scss">
 #page-frame-list {
-  .play-area {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    background-color: rgba(0, 0, 0, .2);
-    .preview-box {
-      background-color: #FF4B4B;
-      width: 80px;
-      height: 80px;
-      overflow: hidden;
-      box-sizing: border-box;
-      .modal-background {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-    }
-    &:hover {
-      background-color: rgba(0, 0, 0, .5);
-    }
-  }
-  .card-content {
-    padding: .5em;
-    background-color: rgba(0, 0, 0, .4);
-  }
-  .play-area:before {
-    content: "";
-    display: block;
-    padding-top: 100%;  /* ratio of 1:1*/
+  height: 100%;
+  .section {
+    height: calc(100% - 200px)
   }
 }
 </style>
