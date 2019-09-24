@@ -31,7 +31,7 @@ export default class StoryDAO {
     size,
     query
   }) {
-    const result = await this.ctx.get('/api/story/admin/list?skip=' + (page - 1) * this.pageSize + '&limit=' + this.pageSize);
+    const result = await this.ctx.get('/api/story/admin/list?skip=' + (page - 1) * this.pageSize + '&limit=' + this.pageSize)
     return result
   }
 

@@ -1,5 +1,5 @@
 <template>
-<div class="columns frame-box-columns is-gapless" :style="'height:' + height ">
+<div class="columns frame-box-columns is-gapless">
   <div class="column">
     <div class="frame-preview" :class="[previewType!=='文字'?'shadow': '']">
       <span class="buttons has-addons edit-button" v-if="isEdit" >
@@ -28,7 +28,8 @@
         <div class="animations">
           <div v-for="animation in filteredAnimations" :key="animation.name" class="animation" @click="setAnimation(animation)"
              :class="currentAnimation.name === animation.name? 'is-active': ''">
-            <div class="zh-name" style="flex: 1;">{{animation.desc}}</div><div class="en-name" style="width: 100px;overflow:hidden;">{{animation.name}}</div>
+            <div class="zh-name">{{animation.desc}}</div>
+            <div class="en-name">{{animation.name}}</div>
           </div>
         </div>
       </div>
@@ -148,7 +149,6 @@ export default {
   },
   methods: {
     setAnimation (animation) {
-      debugger
       addAnimationStyle(this.sheet, animation)
       this.currentAnimation = animation
     },
@@ -197,8 +197,11 @@ export default {
 
 
 <style lang="scss">
+.frame-box-columns {
+  height: 100%;
+}
 .frame-preview {
-  min-height: 400px;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -227,8 +230,7 @@ export default {
   .preview-box {
     width: 160px;
     height: 160px;
-
-    // background-color: #FF4B4B;
+    background-color: #FF4B4B;
   }
   .animation-provider {
     position: absolute;
@@ -241,9 +243,10 @@ export default {
 
 .frames-list {
   width: 320px;
+  height: calc(100% - 80px);
+  overflow: auto;
   .panel-body {
     width: 100%;
-    height: 420px;
     overflow-x: hidden;
     overflow-y: auto;
     border: 1px solid #eee;
@@ -251,17 +254,18 @@ export default {
   .animations {
     width: 100%;
     .animation {
-      display: flex;
       cursor: pointer;
       &:hover {
-        background: #efefef;
+        background: #fefefe;
       }
       &.is-active {
-        background-color: #209cee;
-        color: #fff;
+        background-color: #eee;
       }
       border-bottom: 1px solid #eee;
       padding: 4px 10px;
+      .en-name {
+        color: #666;
+      }
     }
   }
 }

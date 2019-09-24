@@ -85,7 +85,7 @@ import { Shapes } from '../../danke-core/css-model/shapeclip'
 import EditMask from './props/EditMask.vue'
 import Tabs from '../../common/components/Tabs.vue'
 import { Divider } from 'element-ui'
-import EditImage from './props/EditImage'
+import EditImage from './props/EditImage.vue'
 
 export default {
   name: 'ElementConfig',

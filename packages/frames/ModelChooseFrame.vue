@@ -5,9 +5,10 @@
   top="0"
   :fullscreen="isMobile? true: false"
   :visible.sync="centerDialogVisible">
-  <frame-box ref="frameBox"></frame-box>
+  <div class="frame-container">
+    <frame-box ref="frameBox"></frame-box>
+  </div>
   <span slot="footer" class="dialog-footer">
-    <button class="button icon-plus is-info">创建</button>
     <button class="button is-link is-outlined" @click="choose">选择</button>
   </span>
 </el-dialog>
@@ -69,6 +70,10 @@ export default {
   }
   .modal-content {
     background-color: #fff;
+  }
+
+  .frame-container {
+    height: calc(100% - 200px);
   }
 
   .frame-box-columns {

@@ -1,9 +1,10 @@
 <template>
 <el-dialog
-  title="选择音频"
+  title="编辑音频节拍"
+  :fullscreen="fullscreen"
  :visible.sync="dialogVisible">
   <div class="new-audio">
-    <div class="file is-success" style="margin-bottom: 10px;">
+    <div v-if="!audioUrl" class="file is-success" style="margin-bottom: 10px;">
       <label class="file-label">
         <input class="file-input" type="file" name="chooseaudio" @input="audioChoosed">
         <span class="file-cta">
@@ -11,8 +12,7 @@
         </span>
       </label>
     </div>
-    
-    <div class="field has-addons" v-if="audioUrl" style="margin-bottom: 10px;">
+    <div class="field has-addons" v-if="setName" style="margin-bottom: 10px;">
       <div class="control field-lb">
         名称
       </div>
@@ -20,15 +20,15 @@
         <input class="input is-small" style="width: 280px;" v-model="audioName">
       </div>
     </div>
-
+    开始点： {{timeFormat(audioStartPoint)}}
     <div class="audio-box" v-if="audioUrl" style="margin-bottom: 10px;" @click="boxClicked">
       <div class="cut-box" :style="'left:' + (100 * audioStartPoint / audioTotalSeconds) + '%;'
       + 'right:' + (100 * (audioTotalSeconds - audioEndPoint) / audioTotalSeconds) + '%'"/>
       <div class="start ver-line" :style="'left:' + (100 * audioStartPoint / audioTotalSeconds) + '%'"></div>
-      <div class="start dura"  :style="'left:' + (100 * audioStartPoint / audioTotalSeconds) + '%'">{{timeFormat(audioStartPoint)}}</div>
+      <div class="start dura"  :style="'left:' + (100 * audioStartPoint / audioTotalSeconds) + '%'"></div>
 
       <div class="end ver-line" :style="'left:' + (100 * audioEndPoint / audioTotalSeconds) + '%'"></div>
-      <div class="end dura"  :style="'left:' + (100 * audioEndPoint / audioTotalSeconds) + '%'">{{timeFormat(audioEndPoint)}}</div>
+      <div class="end dura"  :style="'left:' + (100 * audioEndPoint / audioTotalSeconds) + '%'"></div>
 
       <div class="current ver-line" :style="'left:' + (100 * audioCurrentSeconds / audioTotalSeconds) + '%'"></div>
       <div class="current dura"  :style="'left:' + (100 * audioCurrentSeconds / audioTotalSeconds) + '%'">{{timeFormat(audioCurrentSeconds)}}</div>
@@ -36,18 +36,18 @@
       <div class="tick" v-for="tick in audioTicks" :key="tick"
         :style="'left:' + (100 * tick / audioTotalSeconds) + '%'" />
     </div>
+    结束点：{{timeFormat(audioEndPoint)}}
     <div class="audio-actions buttons has-addons is-small" v-if="audioUrl">
-      <span class="button is-small is-primary" @click="setTickPoint">节拍</span>
-      <span class="button is-small" @click="setStartPoint">设为开始点</span>
-      <span class="button is-small" @click="audioTicks = []">清空节拍</span>
-      <span class="button is-small" @click="setEndPoint">设为结束点</span>
-      <span class="button is-info is-small" v-if="isPlaying" @click="pause">暂停</span>
-      <span class="button s-info is-small" v-if="!isPlaying" @click="play">播放</span>
+      <span class="button is-primary" @click="setTickPoint">节拍</span>
+      <span class="button" @click="setStartPoint">设为开始点</span>
+      <span class="button" @click="audioTicks = []">清空节拍</span>
+      <span class="button" @click="setEndPoint">设为结束点</span>
+      <span class="button is-info" v-if="isPlaying" @click="pause">暂停</span>
+      <span class="button s-info" v-if="!isPlaying" @click="play">播放</span>
     </div>
   </div>
-
   <span slot="footer" class="dialog-footer">
-    <a class="button is-small is-primary" @click="confirm">
+    <a class="button is-primary" @click="confirm">
         确 定
     </a>
   </span>
@@ -55,14 +55,26 @@
 </template>
 
 <script>
+import { Dialog } from 'element-ui'
 import ImageDAO from '../../common/dao/imagedao'
 import RestDAO from '../../common/dao/restdao'
 import Tabs from '../../common/components/Tabs.vue'
 import { Howl, Howler } from 'howler'
 export default {
   name: 'DialogAudioTap',
+  props: {
+    fullscreen: {
+      type: Boolean,
+      default: false
+    },
+    setName: {
+      type: Boolean,
+      default: true
+    }
+  },
   components: {
-    Tabs
+    Tabs, 
+    [Dialog.name]: Dialog
   },
   data () {
     return {
@@ -174,6 +186,25 @@ export default {
     play () {
       this.sound.play()
     },
+
+    async openWithAudioFile (file) {
+      this.dialogVisible = true
+      this.audioFile = file
+      this.audioUrl = URL.createObjectURL(file)
+      this.audioName = file.name
+      this.sound = new Howl({
+        src: this.audioUrl,
+        html5: true,
+        format: ['mp3']
+      })
+      this.sound.on('load', () => {
+        this.audioTotalSeconds = this.sound.duration()
+        this.audioEndPoint = this.audioTotalSeconds
+      })
+      this.startTick()
+      this.sound.play()
+    },
+
     async audioChoosed (e) {
       if (e.currentTarget.files.length) {
         if (this.sound) {

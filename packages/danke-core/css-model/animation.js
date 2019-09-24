@@ -6,6 +6,7 @@ export default {
   delay: 0,
   iteration: 1,
   infinite: false,
+  srcFrame: '',
   direction: 'normal',
   fillMode: 'both'
 }

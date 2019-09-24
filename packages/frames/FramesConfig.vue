@@ -55,8 +55,16 @@
         </div>
       </div>
     </div>
+    <div class="field has-addons" v-if="editMode === 'css'">
+      <div class="control field-lb">
+        动画CSS
+      </div>
+    </div>
+    <div class="field has-addons" style="height: 220px;" v-if="editMode === 'css'"> 
+      <textarea v-model="animation.cssFrame" style="width: 100%; height: 200px;"></textarea>
+    </div>
 
-    <div class="timeline">
+    <div class="timeline" v-if="editMode === 'timeline'">
       <div class="timeline-item"
            v-for="(frame, index) in animation.frames" :key="index">
         <div class="timeline-marker"></div>
@@ -79,6 +87,12 @@
         </div>
       </div>
     </div>
+
+    <div class="field has-addons">
+      <a class="button is-success is-small" v-if="editMode === 'timeline'" @click="editMode='css'">源代码编辑</a>  
+      <a class="button is-success is-small" v-if="editMode === 'css'" @click="editMode='timeline';animation.cssFrame=''">时间线编辑</a>  
+    </div>
+
   </div>
 </div>
 </template>
@@ -110,6 +124,7 @@ export default {
       cubicBeziers,
       activeNames: [],
       currentFrameIndex: 0,
+      editMode: 'timeline',
       dialogVisible: false
     }
   },

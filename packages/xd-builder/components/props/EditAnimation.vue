@@ -97,6 +97,7 @@ export default {
         if (!this.animation.delay) {
           this.animation.delay = animation.delay
         }
+        this.animation.srcFrame = animation.srcFrame
         this.animation.timing = animation.timing
         this.animation.frames = animation.frames
       })

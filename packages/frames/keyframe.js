@@ -47,12 +47,21 @@ function clearAnimation (sheet) {
 }
 
 function addAnimationStyle (sheet, animation) {
-  addKeyFrames(sheet, animation.name, generateKeyFrames(animation.frames))
+  if (animation.cssFrame) {
+    addKeyFrames(sheet, animation.name, animation.cssFrame)
+  } else {
+    addKeyFrames(sheet, animation.name, generateKeyFrames(animation.frames))
+  }
   addAnimation(sheet, animation)
 }
 
 function getAnimationSourceCode (sheet, animation) {
-  const frames = generateKeyFrames(animation.frames)
+  let frames = ''
+  if (animation.cssFrame) {
+    frames = animation.cssFrame
+  } else {
+    frames = generateKeyFrames(animation.frames)
+  }
   return `.${animation.name} {
     animation: ${animation.name} ${animation.duration}ms ${animation.timing} ${animation.infinite ? 'infinite' : animation.iteration} both
   }

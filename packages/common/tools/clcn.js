@@ -3,7 +3,7 @@ if (!window.chapters) {
 }
 var sheets = $('.sheet.pre-paginated')
 
-for (let i = 0; i<sheets.length; i++) {
+for (let i = 0; i < sheets.length; i++) {
   var sheet = sheets[i]
   const id = $(sheet).attr('id')
   // var img = $(sheet).find('iframe').contents().find('div img')

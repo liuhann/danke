@@ -99,6 +99,7 @@ export default {
       isEdit: false,
       animation: {
         name: 'my-animation',
+        cssFrame: '',
         desc: '',
         type: '1',
         duration: 600,
@@ -116,7 +117,6 @@ export default {
   created () {
 
   },
-
   mounted () {
     if (this.ctx.editAnimation) {
       this.isEdit = true
@@ -126,7 +126,6 @@ export default {
       this.isEdit = false
     }
   },
-
   methods: {
     play () {
       if (this.sheet) {
