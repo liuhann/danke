@@ -14,6 +14,7 @@
       </div>
     </div>
   </div>
+  <img src="./arrow-btn.png">
 
   <a class="button is-success next">
     <span class="icon is-small">
