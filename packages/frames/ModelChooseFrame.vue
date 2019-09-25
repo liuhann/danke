@@ -17,11 +17,9 @@
 <script>
 import { Dialog } from 'element-ui'
 import FrameBox from './FrameBox.vue'
-import Vue from 'vue'
-Vue.use(Dialog)
 export default {
   name: 'ModelChooseFrame',
-  components: { FrameBox },
+  components: { FrameBox, Dialog },
   props: {
 
   },

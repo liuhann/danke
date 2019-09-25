@@ -21,7 +21,7 @@
       </div>
     </div>
     开始点： {{timeFormat(audioStartPoint)}}
-    <div class="audio-box" v-if="audioUrl" style="margin-bottom: 10px;" @click="boxClicked">
+    <div class="audio-box" v-if="audioUrl" ref="audioBox" style="margin-bottom: 10px;" @click="boxClicked">
       <div class="cut-box" :style="'left:' + (100 * audioStartPoint / audioTotalSeconds) + '%;'
       + 'right:' + (100 * (audioTotalSeconds - audioEndPoint) / audioTotalSeconds) + '%'"/>
       <div class="start ver-line" :style="'left:' + (100 * audioStartPoint / audioTotalSeconds) + '%'"></div>
@@ -32,7 +32,6 @@
 
       <div class="current ver-line" :style="'left:' + (100 * audioCurrentSeconds / audioTotalSeconds) + '%'"></div>
       <div class="current dura"  :style="'left:' + (100 * audioCurrentSeconds / audioTotalSeconds) + '%'">{{timeFormat(audioCurrentSeconds)}}</div>
-      
       <div class="tick" v-for="tick in audioTicks" :key="tick"
         :style="'left:' + (100 * tick / audioTotalSeconds) + '%'" />
     </div>
@@ -59,7 +58,7 @@ import { Dialog } from 'element-ui'
 import ImageDAO from '../../common/dao/imagedao'
 import RestDAO from '../../common/dao/restdao'
 import Tabs from '../../common/components/Tabs.vue'
-import { Howl, Howler } from 'howler'
+import { Howl } from 'howler'
 export default {
   name: 'DialogAudioTap',
   props: {
@@ -70,10 +69,14 @@ export default {
     setName: {
       type: Boolean,
       default: true
+    },
+    audioPath: {
+      type: String,
+      default: ''
     }
   },
   components: {
-    Tabs, 
+    Tabs,
     [Dialog.name]: Dialog
   },
   data () {
@@ -100,7 +103,7 @@ export default {
   },
   created () {
     this.uploaddao = new ImageDAO(this.ctx)
-    this.audiodao = new RestDAO(this.ctx, 'danke/audio')
+    this.audiodao = new RestDAO(this.ctx, 'danke/oaudio')
   },
   watch: {
     'dialogVisible': function () {
@@ -126,7 +129,6 @@ export default {
     }
   },
   filters: {
-    
   },
   methods: {
     timeFormat: function (t) {
@@ -157,7 +159,7 @@ export default {
       this.audioCurrentSeconds = 0
     },
     boxClicked (e) {
-      const percent = e.offsetX / e.srcElement.clientWidth
+      const percent = (e.pageX - e.currentTarget.offsetLeft) / e.currentTarget.clientWidth
       this.audioCurrentSeconds = percent * this.audioTotalSeconds
       this.sound.seek(this.audioCurrentSeconds)
     },
@@ -239,14 +241,14 @@ export default {
     },
     async confirm () {
       if (this.audioUrl) {
-        const result = await this.uploaddao.uploadAndCutMp3(this.audioFile, this.audioName, this.audioStartPoint, this.audioEndPoint)
+        const result = await this.uploaddao.uploadAndCutMp3(this.audioFile, this.audioPath + '/' + this.audioName, this.audioStartPoint, this.audioEndPoint)
         const audioCuttie = {
           name: this.audioName,
           ticks: this.audioTicks.map(value => value - this.audioStartPoint),
           audioUrl: result.name,
           dura: Math.floor(this.audioEndPoint - this.audioStartPoint)
         }
-        await this.audiodao.create(audioCuttie)
+        // await this.audiodao.create(audioCuttie)
         this.$emit('audio', audioCuttie)
       }
       this.dialogVisible = false
