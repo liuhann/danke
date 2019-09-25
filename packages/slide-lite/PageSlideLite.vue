@@ -25,7 +25,7 @@
       <a class="button is-link">大小</a>
     </div>
     <div class="column is-narrow">
-      <a class="button is-info">效果</a>
+      <a class="button is-info" @click="chooseAnimation">效果</a>
     </div>
     <div class="column is-narrow">
       <div class="file is-success">
@@ -106,6 +106,10 @@ export default {
       this.work.audioName = audioItem.name
       this.work.duration = audioItem.dura
       this.work.audioTicks = audioItem.ticks
+    },
+
+    chooseAnimation () {
+      this.$refs.dialogFrameChoose.chooseFrame('in')
     },
 
     addNewScene () {

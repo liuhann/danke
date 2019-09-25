@@ -34,6 +34,9 @@
         </div>
       </div>
     </nav>
+    <div class="speed" v-if="element">
+      <span class="tag is-light" :class="[speed.value === element.animation[currentType].name? 'is-info': '']" v-for="speed in animationSpeeds" :key="speed.value" @click="chooseSpeed(speed)">{{speed.label}}</span>
+    </div>
   </div>
 </div>
 </template>
@@ -43,6 +46,7 @@ import RestDAO from '../common/dao/restdao'
 import Tabs from '../common/components/Tabs.vue'
 import { Message } from 'element-ui'
 import { addAnimationStyle, createSheet } from './keyframe'
+import animationTypes from './model/animation-type.js'
 export default {
   name: 'FrameBox',
   components: {
@@ -59,6 +63,9 @@ export default {
       type: String,
       default: 'rect'
     },
+    element: {  // 需要配置的元素
+      type: Object
+    },
     select: {
       type: Boolean,
       default: false
@@ -67,77 +74,34 @@ export default {
   data () {
     return {
       user: this.ctx.user,
+      speed: [{
+        
+      }],
       previewTypes: ['方块', '文字', '图片'],
-      currentType: '1',
+      currentType: 'in',
       currentAnimation: null,
       animations: [],
       currentKeyWords: [],
       filterKey: '',
-      animationTypes: [{
-        key: '1',
-        icon: 'icon-left-small',
-        keywords: [{
-          en: 'fade',
-          zh: '淡入'
-        }, {
-          en: 'flip',
-          zh: '翻转'
-        }, {
-          en: 'crop',
-          zh: '裁切'
-        }, {
-          en: 'scale',
-          zh: '缩放'
-        }, {
-          en: 'rotate',
-          zh: '旋转'
-        }, {
-          en: 'slide',
-          zh: '滑动'
-        }],
-        value: '进入'
-      }, {
-        key: '2',
-        value: '离开',
-        keywords: [{
-          en: 'fade',
-          zh: '淡出'
-        }, {
-          en: 'flip',
-          zh: '翻转'
-        }, {
-          en: 'crop',
-          zh: '裁切'
-        }, {
-          en: 'scale',
-          zh: '缩放'
-        }, {
-          en: 'rotate',
-          zh: '旋转'
-        }]
-      }, {
-        key: '3',
-        value: '持续',
-        keywords: [{
-          en: 'fade',
-          zh: '淡入'
-        }, {
-          en: 'flip',
-          zh: '翻转'
-        }, {
-          en: 'crop',
-          zh: '裁切'
-        }, {
-          en: 'scale',
-          zh: '缩放'
-        }, {
-          en: 'rotate',
-          zh: '旋转'
-        }]
-      }]
+      animationTypes
     }
   },
   computed: {
+    animationSpeeds () {
+      return [{
+        label: '极快',
+        value: 100
+      }, {
+        label: '快速',
+        value: 300
+      }, {
+        label: '中速',
+        value: 600
+      }, {
+        label: '慢速',
+        value: 1000
+      }]
+    },
     filteredAnimations () {
       return this.animations.filter( animation => animation.name.indexOf(this.filterKey) > -1)
     }
@@ -151,6 +115,9 @@ export default {
     setAnimation (animation) {
       addAnimationStyle(this.sheet, animation)
       this.currentAnimation = animation
+      if (this.element) {
+        this.element.animation[this.currentType].name = animation.name
+      }
     },
     async loadAnimation () {
       const query = {}
@@ -164,7 +131,6 @@ export default {
         this.currentAnimation = this.animations[0]
       }
     },
-
     refreshFrame () {
 
     },
@@ -185,9 +151,15 @@ export default {
       this.filterKey = key
     },
 
+    chooseSpeed (speed) {
+      if (this.element) {
+        this.element.animation[this.currentType].duration = speed.value
+      }
+    },
+
     changeType (type) {
       this.currentType = type.key
-      this.currentKeyWords = this.animationTypes.filter(at => at.key === type.key)[0].keywords
+      this.currentKeyWords = this.animationTypes.filter(at => at.key === type.key)[0].keyword
       this.filterKey = ''
       this.loadAnimation()
     }
@@ -279,7 +251,7 @@ export default {
     padding: 10px;
   }
   .frames-list {
-    width: 100vw;
+    width: 100%;
   }
   .frame-preview {
     height: 40vw;

@@ -19,7 +19,10 @@ import { Dialog } from 'element-ui'
 import FrameBox from './FrameBox.vue'
 export default {
   name: 'ModelChooseFrame',
-  components: { FrameBox, Dialog },
+  components: { 
+    FrameBox,
+    [Dialog.name]: Dialog
+  },
   props: {
 
   },
@@ -74,6 +77,17 @@ export default {
     height: calc(100% - 200px);
   }
 
+  @media screen and (max-width: 640px) {
+    .frame-container {
+      height: 100%;
+      overflow: auto;
+    }
+    .frame-navigation {
+      height: calc(100% - 160px);
+    }
+  }
+
+
   .frame-box-columns {
     overflow: hidden;
     .column-list {
@@ -102,5 +116,6 @@ export default {
     padding-top: 100%;  /* ratio of 1:1*/
   }
 }
+
 
 </style>

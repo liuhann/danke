@@ -33,10 +33,7 @@ input[type='number'] {
 .el-dialog__body {
   padding: 10px;
 }
-@media screen and (max-width: 640px) {
-  .el-dialog__body {
-  }
-}
+
 .flex-column {
   flex-direction: column;
 }

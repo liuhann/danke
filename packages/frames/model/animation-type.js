@@ -64,15 +64,15 @@ export const out = [{
   zh: '回弹'
 }]
 export default [{
-  key: '1',
+  key: 'in',
   value: '进入',
   keyword: enter
 }, {
-  key: '2',
+  key: 'out',
   value: '离开',
   keyword: out
 }, {
-  key: '3',
+  key: 'dura',
   value: '持续',
   keyword: dura
 }]
