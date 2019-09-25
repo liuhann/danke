@@ -6,7 +6,7 @@
   :fullscreen="isMobile? true: false"
   :visible.sync="centerDialogVisible">
   <div class="frame-container">
-    <frame-box ref="frameBox"></frame-box>
+    <frame-box ref="frameBox" :element="element"></frame-box>
   </div>
   <span slot="footer" class="dialog-footer">
     <button class="button is-link is-outlined" @click="choose">选择</button>
@@ -24,7 +24,9 @@ export default {
     [Dialog.name]: Dialog
   },
   props: {
-
+    element: {
+      type: Object
+    }
   },
   mounted () {
   },

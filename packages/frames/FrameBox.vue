@@ -35,7 +35,11 @@
       </div>
     </nav>
     <div class="speed" v-if="element">
-      <span class="tag is-light" :class="[speed.value === element.animation[currentType].name? 'is-info': '']" v-for="speed in animationSpeeds" :key="speed.value" @click="chooseSpeed(speed)">{{speed.label}}</span>
+      <span v-for="speed in animationSpeeds"
+        :key="speed.value" @click="chooseSpeed(speed)"
+        class="tag is-light" :class="[speed.value === element.animation[currentType].name? 'is-info': '']">
+        {{speed.label}}
+      </span>
     </div>
   </div>
 </div>

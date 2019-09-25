@@ -22,7 +22,7 @@
   </div>
   <div class="tri-button columns is-mobile is-centered">
     <div class="column is-narrow">
-      <a class="button is-link">大小</a>
+      <a class="button is-link">位置</a>
     </div>
     <div class="column is-narrow">
       <a class="button is-info" @click="chooseAnimation">效果</a>
@@ -39,7 +39,7 @@
     </div>
   </div>
   <dialog-audio-tap :setName="false" audioPath="tickAudio" :fullscreen="true" ref="dialogAudioList" @audio="chooseAudio"></dialog-audio-tap>
-  <model-choose-frame ref="dialogFrameChoose"></model-choose-frame>
+  <model-choose-frame ref="dialogFrameChoose" :element="currentElement"></model-choose-frame>
 </div>
 </template>
 
