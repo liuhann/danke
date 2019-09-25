@@ -1,6 +1,18 @@
 <template>
 <div class="slide-lite">
   <div class="device-container" :style="containerStyle">
+    <div class="scene" :style="currentScene.style">
+      <div v-for="(element, index) of currentScene.elements" :key="element.id" :id="'element-' + element.id"
+           class="element" :class="[element.visible?'':'hidden', 'type' + element.type]" :style="element.style + ';' + 'z-index:' + index + ';'"
+           @click="chooseElement(element, $event)">
+        <!--图片渲染-->
+        <img v-if="element.type === TypeEnum.IMAGE || element.type === TypeEnum.SVG" :src="element.url" :style="element.innerStyle || ''">
+        <!--文本渲染情况下 文本内容-->
+        <span v-if="element.type === TypeEnum.TEXT" v-html="newline(element.text)"></span>
+      </div>
+    </div>
+  </div>
+  <div class="upload-image-container" :style="containerStyle" v-if="currentScene.elements.length === 0">
     <div class="field upload-image">
       <div class="file is-primary is-medium">
         <label class="file-label">
@@ -46,11 +58,14 @@
 <script>
 import { Dialog } from 'element-ui'
 import { clone } from '../utils/object'
-import { getSceneStyle } from '../danke-core/utils/styles'
+import { getElementStyle, getSceneStyle, getImageWebUrl } from '../danke-core/utils/styles'
 import { shortid } from '../utils/string'
+import { TypeEnum, IMAGE } from '../danke-core/elements'
 import SCENE from '../danke-core/elements/scene'
 import DialogAudioTap from '../xd-builder/components/DialogAudioTap.vue'
 import ModelChooseFrame from '../frames/ModelChooseFrame.vue'
+import ImageDAO from '../common/dao/imagedao'
+import getImageSize from '../common/utils/getImageSize'
 
 export default {
   components: { DialogAudioTap, Dialog, ModelChooseFrame },
@@ -73,6 +88,7 @@ export default {
         width: 100,
         height: 100
       },
+      TypeEnum,
       currentScene: {},
       currentElement: null
     }
@@ -83,10 +99,28 @@ export default {
         width: this.device.width + 'px',
         height: this.device.height + 'px'
       }
+    },
+    sceneStyle () {
+      return {}
+    },
+    fixAppearances () {
+      return [{
+        horizontal: 'center',
+        vertical: 'center',
+        width: '100vw',
+        height: '100vw',
+        left: 0,
+        top: 0
+      }]
     }
   },
-  mounted () {
+
+  created () {
+    this.imagedao = new ImageDAO(this.ctx)
     this.work.id = shortid()
+    this.addNewScene()
+  },
+  mounted () {
     this.device.width = window.screen.availWidth * 0.7
     this.device.height = window.screen.availHeight * 0.7
   },
@@ -123,7 +157,9 @@ export default {
     applyWorkTicksToScenes () {
 
     },
-
+    newline (val) {
+      return val.replace(/\n/g, '<br>')
+    },
     nextScene () {
 
     },
@@ -143,10 +179,38 @@ export default {
     async imageChoosed (e) {
       if (e.currentTarget.files.length) {
         const file = e.currentTarget.files[0]
-        this.$emit('input', URL.createObjectURL(file))
-        this.$emit('blob', file)
+        const size = await getImageSize(file)
+        const result = await this.imagedao.uploadBlob(file, this.work.id)
+        debugger
+        this.insertRawImage(result.name, size)
       }
+    },
+
+    async getImageSize () {
+
+    },
+    insertRawImage (url, size) {
+      const clonedElement = clone(IMAGE)
+      clonedElement.id = shortid()
+      clonedElement.name = '图片'
+      clonedElement.visible = true
+      clonedElement.border.width = 0
+      clonedElement.owidth = size.width
+      clonedElement.oheight = size.height
+      clonedElement.position.horizontal = this.fixAppearances[0].horizontal
+      clonedElement.position.vertical = this.fixAppearances[0].vertical
+      clonedElement.size.width = this.fixAppearances[0].width
+      clonedElement.size.height = this.fixAppearances[0].height
+      clonedElement.size.left = this.fixAppearances[0].left
+      clonedElement.size.top = this.fixAppearances[0].top
+      clonedElement.imgPath = url
+      clonedElement.url = getImageWebUrl(clonedElement, this.device)
+      const style = getElementStyle(clonedElement, this.device)
+      clonedElement.style = style
+      this.currentScene.elements.push(clonedElement)
+      this.chooseElement(clonedElement)
     }
+
   }
 }
 </script>
@@ -168,6 +232,14 @@ export default {
     position: absolute;
     border-radius: 20px;
     width: 70vw;
+  }
+  .upload-image-container {
+    position: absolute;
+    left: 15vw;
+    top: 5vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   .btn-next {
     position: absolute;
