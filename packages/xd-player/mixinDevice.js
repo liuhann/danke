@@ -35,6 +35,13 @@ export default {
     }
   },
   methods: {
+    /**
+     * 处理逻辑
+     * 1 首选 deviceSet设置
+     * 2 如果设置了宽度或者高度， 就按ratio计算
+     * 3 宽度与高度都没设置， 就按容器 宽、高+ratio计算 都提供的话适应小的 如果定宽或者定高需要设置另一项为0
+     * 容器不能有padding  如果有就再嵌套一层容器
+     */
     getDevice () {
       if (this.deviceSet) {
         return this.deviceSet

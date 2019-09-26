@@ -1,5 +1,5 @@
 <template>
-<div class="work-cover" :style="scene.style" @mouseover="mouseOn = true" @mouseout="mouseOn = false">
+<div class="work-cover" style="background-color: #fff" :style="scene.style" @mouseover="mouseOn = true" @mouseout="mouseOn = false">
   <div v-for="(element) in scene.elements" :key="element.id" class="element" :class="['type' + element.type]"
         :style="element.style">
     <img v-if="element.url" :src="element.url">
@@ -44,17 +44,8 @@ export default {
     deviceSet: {
       type: Object
     },
-    width: {
-      type: Number
-    },
-    ratio: {
-      type: String
-    },
-    height: {
-      type: Number
-    },
     enableMask: {
-      type: Object,
+      type: Boolean,
       default: true
     },
     // 字体样式，小于指定数字的字体不进行展示

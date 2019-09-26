@@ -360,6 +360,7 @@ export default {
         }
         scene.style = ''
       }
+      work.token = this.ctx.token
       return work
     },
 
