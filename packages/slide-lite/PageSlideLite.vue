@@ -121,19 +121,19 @@ export default {
     },
     fixAppearances () {
       return [{
-        label: '正中横向全屏,正方形裁剪',
-        horizontal: 'center',
-        vertical: 'center',
-        width: '100vw',
-        height: '100vw',
-        left: 0,
-        top: 0
-      }, {
         label: '正中横向全屏,高度自适应',
         horizontal: 'center',
         vertical: 'center',
         width: '100vw',
         height: 'auto',
+        left: 0,
+        top: 0
+      }, {
+        label: '正中横向全屏,正方形裁剪',
+        horizontal: 'center',
+        vertical: 'center',
+        width: '100vw',
+        height: '100vw',
         left: 0,
         top: 0
       }, {
@@ -177,6 +177,7 @@ export default {
     },
     chooseAnimation () {
       this.$refs.dialogFrameChoose.chooseFrame('in')
+      this.elementMenuDialog = false
     },
     /**
      * 增加新的空白场景
@@ -197,7 +198,7 @@ export default {
         this.currentSceneIndex = 0
       } else {
         if (this.currentSceneIndex > 0) {
-          this.currentSceneIndex --
+          this.currentSceneIndex--
         }
         this.chooseScene()
       }
@@ -245,7 +246,7 @@ export default {
         Message.success({
           message: '按照音乐与节拍，您还需补充' + (this.work.audioTicks.length - this.work.scenes.length) + '张图片'
         })
-        for (let i = this.work.scenes.length; i < this.work.audioTicks.length; i++ ) {
+        for (let i = this.work.scenes.length; i < this.work.audioTicks.length; i++) {
           this.addNewScene()
           this.work.scenes[i].leave = Math.floor(this.work.audioTicks[i] * 1000) - last
           last = Math.floor(this.work.audioTicks[i] * 1000)
@@ -316,18 +317,12 @@ export default {
       clonedElement.border.width = 0
       clonedElement.owidth = size.width
       clonedElement.oheight = size.height
-      clonedElement.position.horizontal = this.fixAppearances[0].horizontal
-      clonedElement.position.vertical = this.fixAppearances[0].vertical
-      clonedElement.size.width = this.fixAppearances[0].width
-      clonedElement.size.height = this.fixAppearances[0].height
-      clonedElement.size.left = this.fixAppearances[0].left
-      clonedElement.size.top = this.fixAppearances[0].top
       clonedElement.imgPath = url
       // 这里还是使用本地地址
       clonedElement.url = URL.createObjectURL(file)
-      const style = getElementStyle(clonedElement, this.device)
-      clonedElement.style = style
       this.currentScene.elements.push(clonedElement)
+      this.currentElement = clonedElement
+      this.setElementAppearance(this.fixAppearances[0])
     },
 
     /**

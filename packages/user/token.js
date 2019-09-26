@@ -11,7 +11,7 @@ function randomRangeId (num) {
 function getToken () {
   let token = window.localStorage.getItem('token')
   if (!token) {
-    token = randomRangeId(10)
+    token = randomRangeId(16)
     window.localStorage.setItem('token', token)
   }
   return token
