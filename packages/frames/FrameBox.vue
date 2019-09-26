@@ -34,13 +34,6 @@
         </div>
       </div>
     </nav>
-    <div class="speed" v-if="element">
-      <span v-for="speed in animationSpeeds"
-        :key="speed.value" @click="chooseSpeed(speed)"
-        class="tag is-light" :class="[speed.value === element.animation[currentType].name? 'is-info': '']">
-        {{speed.label}}
-      </span>
-    </div>
   </div>
 </div>
 </template>
@@ -67,9 +60,6 @@ export default {
       type: String,
       default: 'rect'
     },
-    element: {  // 需要配置的元素
-      type: Object
-    },
     select: {
       type: Boolean,
       default: false
@@ -78,9 +68,6 @@ export default {
   data () {
     return {
       user: this.ctx.user,
-      speed: [{
-        
-      }],
       previewTypes: ['方块', '文字', '图片'],
       currentType: 'in',
       currentAnimation: null,
@@ -91,21 +78,6 @@ export default {
     }
   },
   computed: {
-    animationSpeeds () {
-      return [{
-        label: '极快',
-        value: 100
-      }, {
-        label: '快速',
-        value: 300
-      }, {
-        label: '中速',
-        value: 600
-      }, {
-        label: '慢速',
-        value: 1000
-      }]
-    },
     filteredAnimations () {
       return this.animations.filter( animation => animation.name.indexOf(this.filterKey) > -1)
     }
@@ -119,9 +91,10 @@ export default {
     setAnimation (animation) {
       addAnimationStyle(this.sheet, animation)
       this.currentAnimation = animation
-      if (this.element) {
-        this.element.animation[this.currentType].name = animation.name
-      }
+      this.$emit('choose-animation', {
+        type: this.currentType,
+        animation: animation
+      })
     },
     async loadAnimation () {
       const query = {}
@@ -149,18 +122,9 @@ export default {
       this.ctx.editAnimation = this.currentAnimation
       this.$router.push('/frame/edit')
     },
-
-
     filter (key) {
       this.filterKey = key
     },
-
-    chooseSpeed (speed) {
-      if (this.element) {
-        this.element.animation[this.currentType].duration = speed.value
-      }
-    },
-
     changeType (type) {
       this.currentType = type.key
       this.currentKeyWords = this.animationTypes.filter(at => at.key === type.key)[0].keyword

@@ -3,12 +3,19 @@
   title="选择动画效果"
   class="modal-frame-choose"
   top="0"
-  :fullscreen="isMobile? true: false"
+  :fullscreen="fullscreen"
   :visible.sync="centerDialogVisible">
   <div class="frame-container">
-    <frame-box ref="frameBox" :element="element"></frame-box>
+    <frame-box ref="frameBox" :element="element" @choose-animation="chooseAnimation"></frame-box>
   </div>
   <span slot="footer" class="dialog-footer">
+    <div class="speed" v-if="element">
+      <span v-for="speed in animationSpeeds"
+            :key="speed.value" @click="chooseSpeed(speed)"
+            class="tag is-light" :class="[speed.value === element.animation[currentType].duration? 'is-info': '']">
+        {{speed.label}}
+      </span>
+    </div>
     <button class="button is-link is-outlined" @click="choose">选择</button>
   </span>
 </el-dialog>
@@ -19,13 +26,17 @@ import { Dialog } from 'element-ui'
 import FrameBox from './FrameBox.vue'
 export default {
   name: 'ModelChooseFrame',
-  components: { 
+  components: {
     FrameBox,
     [Dialog.name]: Dialog
   },
   props: {
     element: {
       type: Object
+    },
+    fullscreen: {
+      type: Boolean,
+      default: true
     }
   },
   mounted () {
@@ -33,23 +44,49 @@ export default {
   data () {
     return {
       centerDialogVisible: false,
-      isMobile: window.outerWidth < 769,
       isShow: false,
       type: '',
-      skip: 0,
-      total: 0,
-      animations: []
+      currentType: '',
+      animationSpeeds: [{
+        label: '极快',
+        value: 100
+      }, {
+        label: '快速',
+        value: 300
+      }, {
+        label: '中速',
+        value: 600
+      }, {
+        label: '慢速',
+        value: 1000
+      }]
     }
   },
   created () {
 
   },
   methods: {
+    chooseSpeed (speed) {
+      if (this.element) {
+        this.element.animation[this.currentType].duration = speed.value
+      }
+    },
+    chooseAnimation ({ animation, type }) {
+      this.currentType = type
+      if (this.element) {
+        const elementAnimation = this.element.animation[this.currentType]
+        elementAnimation.name = animation.name
+        elementAnimation.desc = animation.desc
+        if (!elementAnimation.duration) {
+          elementAnimation.duration = animation.duration
+        }
+        elementAnimation.cssFrame = animation.cssFrame
+        elementAnimation.timing = animation.timing
+        elementAnimation.frames = animation.frames
+      }
+    },
     chooseFrame (type, choosedCallback) {
-      this.type = type
-      this.skip = 0
-      this.animations = []
-      this.total = 0
+      this.currentType = type || 'in'
       this.centerDialogVisible = true
       this.choosedCallback = choosedCallback
     },
@@ -65,11 +102,9 @@ export default {
 <style lang="scss">
 .modal-frame-choose {
   z-index: 10001;
-  .el-dialog__header {
-    padding: 10px 20px 5px 20px;
-  }
-  .el-dialog__body {
-    padding: 10px 20px;
+
+  .speed {
+    float: left;
   }
   .modal-content {
     background-color: #fff;
