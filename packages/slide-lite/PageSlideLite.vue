@@ -6,11 +6,15 @@
            class="element" :class="[element.visible?'':'hidden', 'type' + element.type]" :style="element.style + ';' + 'z-index:' + index + ';'"
            @click="chooseElement(element, $event)">
         <!--图片渲染-->
-        <img v-if="element.type === TypeEnum.IMAGE || element.type === TypeEnum.SVG" :src="element.url" :style="element.innerStyle || ''">
+        {{element.url}}
+        <img v-if="element.type === TypeEnum.IMAGE || element.type === TypeEnum.SVG"
+             :src="element.url" :style="element.innerStyle || ''"
+             crossOrigin="true">
         <!--文本渲染情况下 文本内容-->
         <span v-if="element.type === TypeEnum.TEXT" v-html="newline(element.text)"></span>
       </div>
     </div>
+    <a v-if="currentScene.elements.length" @click="deleteScene" class="delete is-large"></a>
   </div>
   <div class="upload-image-container" :style="containerStyle" v-if="currentScene.elements.length === 0">
     <div class="field upload-image">
@@ -34,7 +38,7 @@
   </div>
   <div class="tri-button columns is-mobile is-centered">
     <div class="column is-narrow">
-      <a class="button is-link">位置</a>
+      <a class="button is-link" @click="setImageSize">图片尺寸</a>
     </div>
     <div class="column is-narrow">
       <a class="button is-info" @click="chooseAnimation">效果</a>
@@ -50,6 +54,13 @@
       </div>
     </div>
   </div>
+  <el-dialog :visible.sync="chooseSizeDialog" title="设置图片位置和大小" width="100%" top="50vh" custom-class="dialog-image-size">
+    <div class="fix-appearances">
+      <div v-for="(appearance, index) in fixAppearances" :key="index" class="appearance" @click="setElementAppearance(appearance)">
+        {{appearance.label}}
+      </div>
+    </div>
+  </el-dialog>
   <dialog-audio-tap :setName="false" audioPath="tickAudio" :fullscreen="true" ref="dialogAudioList" @audio="chooseAudio"></dialog-audio-tap>
   <model-choose-frame ref="dialogFrameChoose" :element="currentElement"></model-choose-frame>
 </div>
@@ -58,7 +69,7 @@
 <script>
 import { Dialog } from 'element-ui'
 import { clone } from '../utils/object'
-import { getElementStyle, getSceneStyle, getImageWebUrl } from '../danke-core/utils/styles'
+import { getElementStyle, getSceneStyle, getImageWebUrl, getLenSplits } from '../danke-core/utils/styles'
 import { shortid } from '../utils/string'
 import { TypeEnum, IMAGE } from '../danke-core/elements'
 import SCENE from '../danke-core/elements/scene'
@@ -68,7 +79,7 @@ import ImageDAO from '../common/dao/imagedao'
 import getImageSize from '../common/utils/getImageSize'
 
 export default {
-  components: { DialogAudioTap, Dialog, ModelChooseFrame },
+  components: { DialogAudioTap, [Dialog.name]: Dialog, ModelChooseFrame },
   data () {
     return {
       work: {
@@ -90,7 +101,8 @@ export default {
       },
       TypeEnum,
       currentScene: {},
-      currentElement: null
+      currentElement: null,
+      chooseSizeDialog: false
     }
   },
   computed: {
@@ -105,10 +117,27 @@ export default {
     },
     fixAppearances () {
       return [{
+        label: '正中横向全屏,正方形裁剪',
         horizontal: 'center',
         vertical: 'center',
         width: '100vw',
         height: '100vw',
+        left: 0,
+        top: 0
+      }, {
+        label: '正中横向全屏,高度自适应',
+        horizontal: 'center',
+        vertical: 'center',
+        width: '100vw',
+        height: 'auto',
+        left: 0,
+        top: 0
+      }, {
+        label: '自适应全屏显示',
+        horizontal: 'center',
+        vertical: 'center',
+        width: '100vw',
+        height: '100vh',
         left: 0,
         top: 0
       }]
@@ -154,6 +183,10 @@ export default {
       this.work.scenes.push(scene)
       this.chooseScene(scene)
     },
+
+    deleteScene () {
+
+    },
     applyWorkTicksToScenes () {
 
     },
@@ -181,15 +214,37 @@ export default {
         const file = e.currentTarget.files[0]
         const size = await getImageSize(file)
         const result = await this.imagedao.uploadBlob(file, this.work.id)
-        debugger
-        this.insertRawImage(result.name, size)
+        this.insertRawImage(result.name, size, file)
+      }
+    },
+
+    setImageSize () {
+      this.chooseSizeDialog = true
+    },
+
+    setElementAppearance (appearance) {
+      if (this.currentElement) {
+        this.currentElement.position.horizontal = appearance.horizontal
+        this.currentElement.position.vertical = appearance.vertical
+        this.currentElement.size.width = appearance.width
+        this.currentElement.size.left = appearance.left
+        this.currentElement.size.top = appearance.top
+        if (appearance.height === 'auto') {
+          this.currentElement.size.height = ((this.currentElement.oheight / this.currentElement.owidth) *
+            getLenSplits(appearance.width).len) + 'vw'
+        } else {
+          this.currentElement.size.height = appearance.height
+        }
+        // this.currentElement.url = getImageWebUrl(this.currentElement, this.device)
+        const style = getElementStyle(this.currentElement, this.device)
+        this.currentElement.style = style
       }
     },
 
     async getImageSize () {
 
     },
-    insertRawImage (url, size) {
+    insertRawImage (url, size, file) {
       const clonedElement = clone(IMAGE)
       clonedElement.id = shortid()
       clonedElement.name = '图片'
@@ -204,11 +259,15 @@ export default {
       clonedElement.size.left = this.fixAppearances[0].left
       clonedElement.size.top = this.fixAppearances[0].top
       clonedElement.imgPath = url
-      clonedElement.url = getImageWebUrl(clonedElement, this.device)
+      // clonedElement.url = getImageWebUrl(clonedElement, this.device)
       const style = getElementStyle(clonedElement, this.device)
       clonedElement.style = style
       this.currentScene.elements.push(clonedElement)
       this.chooseElement(clonedElement)
+
+      this.$nextTick(() => {
+        this.currentElement.url = URL.createObjectURL(file)
+      })
     }
 
   }
@@ -232,6 +291,11 @@ export default {
     position: absolute;
     border-radius: 20px;
     width: 70vw;
+    .delete.is-large {
+      position: absolute;
+      bottom: 5vw;
+      left: calc(50% - 16px);
+    }
   }
   .upload-image-container {
     position: absolute;
@@ -263,13 +327,15 @@ export default {
     width: 100vw;
   }
 
-  .btn {
-    padding: 1rem;
-    border-radius: 1.5rem;
-    background-color: #f6e58d;
-    color: #000;
-    transition: all .5s ease 0s;
-    box-shadow: 0 10px #f9ca24;
+  .dialog-image-size {
+    height: 50vh;
+    margin-bottom: 0;
+  }
+  .fix-appearances {
+    .appearance {
+      padding: 10px 20px;
+      border-bottom: 1px solid #efefef;
+    }
   }
 }
 </style>
