@@ -6,7 +6,13 @@
         <img :src="load.url" @load="imageLoaded(index)"/>
       </div>
     </div>
-    <div v-if="!isLoading">
+    <div class="play-interaction" v-if="!isLoading && !playConfirmed" @click="startEngine">
+      <work-cover :enable-mask="false" :work="work" :device-set="device"></work-cover>
+      <div class="interaction-mask">
+        <div class="text">点击播放</div>
+      </div>
+    </div>
+    <div v-if="playConfirmed">
       <div v-for="scene in work.scenes" :key="scene.id"
         :style="scene.style" class="scene">
         <div v-for="(element) in scene.elements" :key="element.id"
@@ -26,9 +32,12 @@ import { getImageWebUrl } from '../danke-core/utils/styles'
 import { TypeEnum } from '../danke-core/elements/index'
 import DankeEngine from '../danke-core/engine'
 import mixinDevice from './mixinDevice'
+import sleep from '../common/utils/sleep'
+import WorkCover from '../xd-builder/components/WorkCover'
 export default {
   name: 'Player',
   components: {
+    WorkCover
   },
   mixins: [ mixinDevice ],
   filters: {
@@ -45,6 +54,7 @@ export default {
     return {
       imagePreloads: [],
       isLoading: true,
+      playConfirmed: false,
       TypeEnum,
       sceneTypeEnum
     }
@@ -53,22 +63,34 @@ export default {
   mounted () {
     this.imagePreloads = this.getWorkImagesInDevice(this.work, this.device)
     if (this.imagePreloads.length === 0) {
-      this.startEngine()
+      this.isLoading = false
+      // this.startEngine()
     }
   },
 
   methods: {
     async startEngine () {
+      const _this = this
+      this.playConfirmed = true
       this.engine = new DankeEngine(this.work.scenes, this.device)
       if (this.work.audioUrl) {
-        await this.loadAudio('http://image.danke.fun/' + this.work.audioUrl)
+        // await this.loadAudio('http://image.danke.fun/' + this.work.audioUrl)
         this.audio = new Audio('http://image.danke.fun/' + this.work.audioUrl)
+        // this.audio.load()
+        // const audioFetched = await fetch('http://image.danke.fun/' + this.work.audioUrl)
+        // const blob = await audioFetched.blob()
+        // this.audio.src = URL.createObjectURL(blob)
+        const playPromise = this.audio.play()
+        if (playPromise !== undefined) {
+          await playPromise
+        }
+        this.audio.onended = async function() {
+          await sleep(500)
+          _this.startEngine()
+        }
       }
       this.isLoading = false
       this.engine.play()
-      if (this.audio) {
-        this.audio.play()
-      }
       this.engine.setDeviceEl(this.$el)
     },
 
@@ -77,13 +99,14 @@ export default {
       for (let load of this.imagePreloads) {
         if (!load.loaded) return
       }
-      this.startEngine()
+      this.isLoading = false
     },
 
     async loadAudio (url) {
       const audio = new Audio(url)
       return new Promise((resolve, reject) => {
         audio.addEventListener('canplaythrough', () => {
+          debugger
           resolve()
         }, false)
       })
@@ -136,6 +159,29 @@ export default {
 .device.player {
   position: relative;
   overflow: hidden;
+  background: #fff;
+
+  .play-interaction {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    .interaction-mask {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0, .7);
+      z-index: 9999;
+      color: #fff;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
   .image-preloads {
     opacity: 0;
   }

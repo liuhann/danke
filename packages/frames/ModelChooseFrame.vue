@@ -46,7 +46,7 @@ export default {
       centerDialogVisible: false,
       isShow: false,
       type: '',
-      currentType: '',
+      currentType: 'in',
       animationSpeeds: [{
         label: '极快',
         value: 100

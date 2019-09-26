@@ -5,7 +5,7 @@
     <img v-if="element.url" :src="element.url">
     <span v-if="element.type === TypeEnum.TEXT && element.font.size >= textAdjust" v-html="$options.filters.newline(element.text)"></span>
   </div>
-  <div class="hover-mask" :class="mouseOn? 'on': ''">
+  <div v-if="enableMask" class="hover-mask" :class="mouseOn? 'on': ''">
     <div class="centering">
       <a class="button is-medium is-success" @click="play">
         <span class="icon">
@@ -52,6 +52,10 @@ export default {
     },
     height: {
       type: Number
+    },
+    enableMask: {
+      type: Object,
+      default: true
     },
     // 字体样式，小于指定数字的字体不进行展示
     textAdjust: {

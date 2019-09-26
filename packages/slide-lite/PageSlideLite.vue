@@ -36,10 +36,7 @@
   <div class="btn-prev" @click="prevScene">
     <img src="./arrow-btn.png">
   </div>
-  <div class="tri-button columns is-mobile">
-    <div class="column is-narrow is-centered">
-      <a class="button is-info" @click="chooseAnimation">效果</a>
-    </div>
+  <div class="tri-button columns is-mobile is-centered">
     <div class="column is-narrow">
       <div class="file is-success">
         <label class="file-label">
@@ -54,6 +51,8 @@
       <a class="button is-info" @click="runWork">运行</a>
     </div>
   </div>
+
+  <!--  操作图片的对话框-->
   <el-dialog :visible.sync="elementMenuDialog" title="设置图片" width="75%" top="30vh" custom-class="dialog-edit-menu">
     <a class="button is-medium is-fullwidth" @click="setImageSize">位置及大小</a>
     <a class="button is-medium is-fullwidth" @click="chooseAnimation">动画</a>
@@ -228,10 +227,18 @@ export default {
         this.currentScene = scene
       }
     },
+
+    /**
+     * 设置音乐的节拍到每个场景切换之上， 同时自动补齐所需的图片数量
+     **/
     applyWorkTicksToScenes () {
-      for (let i = 0; i < this.work.scenes.length; i++ ) {
-        if (this.work.audioTicks[i]) {
-          this.work.scenes[i].leave = this.work.audioTicks[i]
+      let last = 0
+      if (this.work.audioTicks) {
+        for (let i = 0; i < this.work.audioTicks.length; i++) {
+          if (this.work.scenes[i]) {
+            this.work.scenes[i].leave = Math.floor(this.work.audioTicks[i] * 1000) - last
+            last = Math.floor(this.work.audioTicks[i] * 1000)
+          }
         }
       }
       if (this.work.scenes.length < this.work.audioTicks.length ) {
@@ -240,7 +247,8 @@ export default {
         })
         for (let i = this.work.scenes.length; i < this.work.audioTicks.length; i++ ) {
           this.addNewScene()
-          this.work.scenes[i].leave = this.work.audioTicks[i]
+          this.work.scenes[i].leave = Math.floor(this.work.audioTicks[i] * 1000) - last
+          last = Math.floor(this.work.audioTicks[i] * 1000)
         }
       } else if (this.work.scenes.length > this.work.audioTicks.length) {
         Message.warning({
@@ -258,9 +266,16 @@ export default {
     async imageChoosed (e) {
       if (e.currentTarget.files.length) {
         const file = e.currentTarget.files[0]
+        const loading = Loading.service({
+          lock: true,
+          text: '正在保存图片',
+          fullscreen: true,
+          background: 'rgba(255, 255, 255, 0.6)'
+        })
         const size = await getImageSize(file)
         const result = await this.imagedao.uploadBlob(file, this.work.id)
         this.insertRawImage(result.name, size, file)
+        loading.close()
       }
     },
 
@@ -289,7 +304,11 @@ export default {
         this.currentElement.style = style
       }
     },
-    insertRawImage (url, size, file) {
+
+    /**
+     * 给当前画面插入新的图片
+     **/
+    insertRawImage: function (url, size, file) {
       const clonedElement = clone(IMAGE)
       clonedElement.id = shortid()
       clonedElement.name = '图片'
@@ -304,15 +323,11 @@ export default {
       clonedElement.size.left = this.fixAppearances[0].left
       clonedElement.size.top = this.fixAppearances[0].top
       clonedElement.imgPath = url
-      // clonedElement.url = getImageWebUrl(clonedElement, this.device)
+      // 这里还是使用本地地址
+      clonedElement.url = URL.createObjectURL(file)
       const style = getElementStyle(clonedElement, this.device)
       clonedElement.style = style
       this.currentScene.elements.push(clonedElement)
-      this.chooseElement(clonedElement)
-
-      this.$nextTick(() => {
-        this.currentElement.url = URL.createObjectURL(file)
-      })
     },
 
     /**
