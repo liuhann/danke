@@ -46,7 +46,7 @@ async function checkWebpFeature (feature) {
 }
 
 let sheet = createSheet()
-let supportWebP = false
+let supportWebP = true
 checkWebpFeature('lossy').then((feature) => {
   // supportWebP = feature
 })
@@ -151,9 +151,9 @@ function getImageWebUrl (element, device) {
   let h = getLength(element.size.height, device)
   element.url = element.imgPath ? `${DANKE_IMG_CDN}${element.imgPath}` : element.url
   if (supportWebP) {
-    element.url = element.url + '?x-oss-process=image/format,webp/quality,Q_80/resize,m_fill,h_' + h + ',w_' + w
+    element.url = element.url + '?x-oss-process=image/format,webp/quality,Q_80/resize,m_fill,h_' + (h * 2) + ',w_' + (w * 2)
   } else {
-    element.url = element.url + '?x-oss-process=image/format,jpg/quality,Q_80/resize,m_fill,h_' + h + ',w_' + w
+    element.url = element.url + '?x-oss-process=image/format,jpg/quality,Q_80/resize,m_fill,h_' + (h * 2) + ',w_' + (w * 2)
   }
   return element.url
 }
