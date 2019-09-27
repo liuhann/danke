@@ -20,7 +20,6 @@
         <input class="input is-small" style="width: 280px;" v-model="audioName">
       </div>
     </div>
-    开始点： {{timeFormat(audioStartPoint)}}
     <div class="audio-box" v-if="audioUrl" ref="audioBox" style="margin-bottom: 10px;" @click="boxClicked">
       <div class="cut-box" :style="'left:' + (100 * audioStartPoint / audioTotalSeconds) + '%;'
       + 'right:' + (100 * (audioTotalSeconds - audioEndPoint) / audioTotalSeconds) + '%'"/>
@@ -35,18 +34,25 @@
       <div class="tick" v-for="tick in audioTicks" :key="tick"
         :style="'left:' + (100 * tick / audioTotalSeconds) + '%'" />
     </div>
-    结束点：{{timeFormat(audioEndPoint)}}
-    <div class="audio-actions buttons has-addons is-small" v-if="audioUrl">
-      <span class="button is-primary" @click="setTickPoint">节拍</span>
-      <span class="button" @click="setStartPoint">设为开始点</span>
-      <span class="button" @click="audioTicks = []">清空节拍</span>
-      <span class="button" @click="setEndPoint">设为结束点</span>
-      <span class="button is-info" v-if="isPlaying" @click="pause">暂停</span>
-      <span class="button s-info" v-if="!isPlaying" @click="play">播放</span>
+    <div class="tags has-addons is-medium">
+      <span class="tag is-dark is-medium" @click="setStartPoint">设置开始时间</span>
+      <span class="tag is-success is-medium">{{timeFormat(audioStartPoint)}}</span>
+    </div>
+    <div class="tags has-addons is-medium">
+      <span class="tag is-dark is-medium" @click="setEndPoint">设为结束时间</span>
+      <span class="tag is-success is-medium">{{timeFormat(audioEndPoint)}}</span>
+    </div>
+    <div class="buttons has-addons">
+      <span class="button is-medium" @click="audioTicks = []">清空节拍</span>
+      <span class="button is-info is-medium" v-if="isPlaying" @click="pause">暂停</span>
+      <span class="button s-info is-medium" v-if="!isPlaying" @click="play">播放</span>
+    </div>
+    <div class="is-justify-center is-center is-centered">
+      <span class="button is-primary is-large is-fullwidth" @click="setTickPoint">节拍</span>
     </div>
   </div>
   <span slot="footer" class="dialog-footer">
-    <a class="button is-primary" @click="confirm">
+    <a class="button is-primary is-medium" @click="confirm">
         确 定
     </a>
   </span>
@@ -54,10 +60,9 @@
 </template>
 
 <script>
-import { Dialog } from 'element-ui'
+import { Dialog, Loading } from 'element-ui'
 import ImageDAO from '../../common/dao/imagedao'
 import RestDAO from '../../common/dao/restdao'
-import Tabs from '../../common/components/Tabs.vue'
 import { Howl } from 'howler'
 export default {
   name: 'DialogAudioTap',
@@ -76,7 +81,6 @@ export default {
     }
   },
   components: {
-    Tabs,
     [Dialog.name]: Dialog
   },
   data () {
@@ -108,12 +112,7 @@ export default {
   watch: {
     'dialogVisible': function () {
       if (!this.dialogVisible) {
-        if (this.sound) {
-          this.sound.unload()
-        }
-        if (this.inteval) {
-          clearInterval(this.inteval)
-        }
+        this.clearSound()
       }
     }
   },
@@ -237,10 +236,16 @@ export default {
       this.pause()
     },
     setTickPoint () {
-      this.audioTicks.push(this.audioCurrentSeconds)
+      this.audioTicks.push(this.sound.seek())
     },
     async confirm () {
       if (this.audioUrl) {
+        const loading = Loading.service({
+          lock: true,
+          text: '上传音频文件并剪切中',
+          fullscreen: true,
+          background: 'rgba(255, 255, 255, 0.6)'
+        })
         const result = await this.uploaddao.uploadAndCutMp3(this.audioFile, this.audioPath + '/' + this.audioName, this.audioStartPoint, this.audioEndPoint)
         const audioCuttie = {
           name: this.audioName,
@@ -249,6 +254,7 @@ export default {
           dura: Math.floor(this.audioEndPoint - this.audioStartPoint)
         }
         // await this.audiodao.create(audioCuttie)
+        loading.close()
         this.$emit('audio', audioCuttie)
       }
       this.dialogVisible = false

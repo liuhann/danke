@@ -6,11 +6,14 @@
       <div class="device-container">
         <work-cover :work="work" :enable-mask="false" :ratio="'9:16'" :height="0"></work-cover>
         <div class="btns is-justify-center">
-          <a class="button is-small is-info">编辑</a>
-          <a class="button is-small is-danger">删除</a>
+          <a class="button is-small is-info" @click="editSlide(work)">编辑</a>
+          <a class="button is-small is-danger" @click="removeSlide(work)">删除</a>
         </div>
       </div>
     </div>
+  </div>
+  <div class="empty" v-if="workList.length === 0" style="color: #fff; font-size: 24px;font-weight: bold;text-align: center;margin-top: 40vh;">
+    作品列表为空
   </div>
 </div>
 </template>
@@ -18,6 +21,7 @@
 <script>
 import RestDAO from '../common/dao/restdao'
 import WorkCover from '../xd-builder/components/WorkCover'
+import { MessageBox, Loading } from 'element-ui'
 
 export default {
   name: 'PageSlideLiteList',
@@ -39,10 +43,35 @@ export default {
   },
   methods: {
     async loadTokenList () {
+      const loading = Loading.service({
+        lock: true,
+        text: '正在读取列表',
+        fullscreen: true,
+        background: 'rgba(255, 255, 255, 0.6)'
+      })
       const result = await this.workdao.list({
         token: this.ctx.token
       })
       this.workList = result.list
+      loading.close()
+    },
+    editSlide (work) {
+      this.ctx.editWork = work
+      this.$router.push('/slide/lite')
+    },
+    async removeSlide (work) {
+      await MessageBox.confirm('删除作品后不可恢复 是否继续？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+      await this.workdao.delete(work)
+      for (let i = 0; i < this.workList.length; i++) {
+        if (this.workList[i]._id === work._id) {
+          this.workList.splice(i, 1)
+          break
+        }
+      }
     },
     newSlide () {
       this.$router.push('/slide/lite')

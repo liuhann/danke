@@ -31,6 +31,7 @@ import { sceneTypeEnum } from '../danke-core/elements/scene'
 import { getImageWebUrl } from '../danke-core/utils/styles'
 import { TypeEnum } from '../danke-core/elements/index'
 import DankeEngine from '../danke-core/engine'
+import AudioDanke from '../danke-core/audio-engine'
 import mixinDevice from './mixinDevice'
 import sleep from '../common/utils/sleep'
 import WorkCover from '../xd-builder/components/WorkCover'
@@ -46,6 +47,10 @@ export default {
     }
   },
   props: {
+    isAudio: {
+      type: Boolean,
+      default: false
+    },
     work: {
       type: Object
     }
@@ -64,7 +69,6 @@ export default {
     this.imagePreloads = this.getWorkImagesInDevice(this.work, this.device)
     if (this.imagePreloads.length === 0) {
       this.isLoading = false
-      // this.startEngine()
     }
   },
 
@@ -72,26 +76,24 @@ export default {
     async startEngine () {
       const _this = this
       this.playConfirmed = true
-      this.engine = new DankeEngine(this.work.scenes, this.device)
+      this.engine = null
       if (this.work.audioUrl) {
-        // await this.loadAudio('http://image.danke.fun/' + this.work.audioUrl)
         this.audio = new Audio('http://image.danke.fun/' + this.work.audioUrl)
-        // this.audio.load()
-        // const audioFetched = await fetch('http://image.danke.fun/' + this.work.audioUrl)
-        // const blob = await audioFetched.blob()
-        // this.audio.src = URL.createObjectURL(blob)
         const playPromise = this.audio.play()
         if (playPromise !== undefined) {
           await playPromise
         }
-        this.audio.onended = async function() {
-          await sleep(500)
-          _this.startEngine()
-        }
+        // this.audio.onended = async function () {
+        //   await sleep(500)
+        //   _this.startEngine()
+        // }
+        this.engine = new AudioDanke(this.work, this.device, this.audio)
+        this.engine.play()
+      } else {
+        this.engine = new DankeEngine(this.work.scenes, this.device)
+        this.engine.play()
+        this.engine.setDeviceEl(this.$el)
       }
-      this.isLoading = false
-      this.engine.play()
-      this.engine.setDeviceEl(this.$el)
     },
 
     imageLoaded (index) {
@@ -236,7 +238,7 @@ export default {
   content: '';
   width: 50px;
   height: 50px;
-  background: #fcffad;
+  background: #ff9d29;
   animation: animate .5s linear infinite;
   position: absolute;
   top: 0;

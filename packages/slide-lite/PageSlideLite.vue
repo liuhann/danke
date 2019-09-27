@@ -1,7 +1,8 @@
 <template>
 <div class="slide-lite">
+  <a class="button is-medium is-info btn-home" @click="$router.replace('/slide/lite/list')">首页</a>
   <div class="device-container" :style="containerStyle">
-    <div class="scene" :style="currentScene.style">
+    <div class="scene" :style="currentScene.style" @click.self="setBackground">
       <div v-for="(element, index) of currentScene.elements" :key="element.id" :id="'element-' + element.id"
            class="element" :class="[element.visible?'':'hidden', 'type' + element.type]" :style="element.style + ';' + 'z-index:' + index + ';'"
            @click="chooseElement(element)">
@@ -14,21 +15,10 @@
       </div>
     </div>
     <span class="tag is-light tag-page">{{this.currentSceneIndex + 1}}/ {{this.work.scenes.length}}</span>
-    <a v-if="currentScene.elements.length" @click="deleteScene" class="delete is-large"></a>
+    <a v-if="currentScene.elements.length === 0" @click="deleteScene" class="delete is-large"></a>
   </div>
   <div class="upload-image-container" :style="containerStyle" v-if="currentScene.elements.length === 0">
-    <div class="field upload-image">
-      <div class="file is-primary is-medium">
-        <label class="file-label">
-          <input class="file-input" type="file" name="resume" @input="imageChoosed">
-          <span class="file-cta">
-            <span class="file-label">
-              选择图片
-            </span>
-          </span>
-        </label>
-      </div>
-    </div>
+    <upload-button btn-style="is-primary is-medium" @file="imageChoosed"></upload-button>
   </div>
   <div class="btn-next">
     <img src="./arrow-btn.png" @click="nextScene">
@@ -36,55 +26,59 @@
   <div class="btn-prev" @click="prevScene">
     <img src="./arrow-btn.png">
   </div>
+
   <div class="tri-button columns is-mobile is-centered">
     <div class="column is-narrow">
-      <div class="file is-success">
-        <label class="file-label">
-          <input class="file-input" type="file" name="chooseaudio" @input="audioChoosed">
-          <span class="file-cta">
-          <span class="file-label">上传音频</span>
-        </span>
-        </label>
-      </div>
+      <upload-button btn-style="is-primary is-medium" @file="audioChoosed">上传音频</upload-button>
+    </div>
+    <div class="column is-narrow" v-if="work.audioUrl">
+      <a class="button is-info is-medium" @click="playAndSetTicks">{{ticksEditing ? '停止': '校准'}}</a>
     </div>
     <div class="column is-narrow">
-      <a class="button is-info" @click="runWork">运行</a>
+      <a class="button is-info is-medium" @click="runWork">运行</a>
     </div>
   </div>
-
   <!--  操作图片的对话框-->
-  <el-dialog :visible.sync="elementMenuDialog" title="设置图片" width="75%" top="30vh" custom-class="dialog-edit-menu">
-    <a class="button is-medium is-fullwidth" @click="setImageSize">位置及大小</a>
-    <a class="button is-medium is-fullwidth" @click="chooseAnimation">动画</a>
-    <a class="button is-medium is-fullwidth">滤镜效果</a>
+  <el-dialog :visible.sync="dialogShowElementMenu" title="设置图片" width="75%" top="30vh" custom-class="dialog-edit-menu">
+    <a class="button is-medium is-fullwidth" @click="setBackground">背景设置</a>
+    <a class="button is-medium is-fullwidth" @click="setImageSize">图片位置及大小</a>
+    <a class="button is-medium is-fullwidth" @click="chooseAnimation">动画特效</a>
   </el-dialog>
-  <el-dialog :visible.sync="chooseSizeDialog" title="设置图片位置和大小" width="100%" top="50vh" custom-class="dialog-image-size">
-    <div class="fix-appearances">
-      <div v-for="(appearance, index) in fixAppearances" :key="index" class="appearance" @click="setElementAppearance(appearance)">
-        {{appearance.label}}
-      </div>
+  <el-dialog :visible.sync="dialogShowChooseSize" title="设置图片位置和大小" width="100%" top="50vh" custom-class="dialog-image-size">
+    <a class="button is-medium is-fullwidth" v-for="(appearance, index) in fixAppearances" :key="index" @click="setAppearance(appearance)">{{appearance.label}}</a>
+  </el-dialog>
+  <el-dialog :visible.sync="dialogShowSetBackground"  title="设置背景" width="100%" top="0" custom-class="dialog-set-background">
+    <div class="palettes">
+      <div v-for="(color, key) in paletteColors" :key="key" class="color"
+           @click="setBackgroundColor(color)"
+           :style="{
+            backgroundColor: color
+           }">{{key}}</div>
+      <a class="button is-full-widescreen is-medium">虚化的图片</a>
+      <a class="button is-full-widescreen is-medium">本页虚化图片</a>
     </div>
   </el-dialog>
   <dialog-audio-tap :setName="false" audioPath="tickAudio" :fullscreen="true" ref="dialogAudioList" @audio="chooseAudio"></dialog-audio-tap>
-  <model-choose-frame ref="dialogFrameChoose" :element="currentElement"></model-choose-frame>
+  <model-choose-frame ref="dialogFrameChoose" @current="setCurrentAnimation" @all="setAllAnimation"></model-choose-frame>
 </div>
 </template>
 
 <script>
 import { Dialog, Message, Loading } from 'element-ui'
 import { clone } from '../utils/object'
-import { getElementStyle, getSceneStyle, getImageWebUrl, getLenSplits } from '../danke-core/utils/styles'
+import { getElementStyle, getImageWebUrl, getSceneStyle } from '../danke-core/utils/styles'
 import { shortid } from '../utils/string'
 import { TypeEnum, IMAGE } from '../danke-core/elements'
 import SCENE from '../danke-core/elements/scene'
 import DialogAudioTap from '../xd-builder/components/DialogAudioTap.vue'
 import ModelChooseFrame from '../frames/ModelChooseFrame.vue'
 import ImageDAO from '../common/dao/imagedao'
-import getImageSize from '../common/utils/getImageSize'
 import RestDAO from '../common/dao/restdao'
+import UploadButton from './UploadButton.vue'
+import fixedAppearances from './fixedAppearances'
 
 export default {
-  components: { DialogAudioTap, [Dialog.name]: Dialog, ModelChooseFrame },
+  components: { UploadButton, DialogAudioTap, [Dialog.name]: Dialog, ModelChooseFrame },
   data () {
     return {
       work: {
@@ -108,65 +102,72 @@ export default {
       currentSceneIndex: 0,
       currentScene: {},
       currentElement: null,
-      chooseSizeDialog: false,
-      elementMenuDialog: false
+      currentAppearance: fixedAppearances[1],
+      currentBackground: '#ffffff',
+      fixAppearances: fixedAppearances,
+      paletteColors: {
+        aqua: '#7fdbff',
+        blue: '#0074d9',
+        navy: '#001f3f',
+        teal: '#39cccc',
+        olive: '#3d9970',
+        green: '#2ecc40',
+        red: '#ff4136',
+        maroon: '#85144b',
+        orange: '#ff851b',
+        purple: '#b10dc9',
+        yellow: '#ffdc00',
+        fuchsia: '#f012be',
+        gray: '#aaaaaa',
+        white: '#ffffff',
+        black: '#111111',
+        silver: '#dddddd'
+      },
+      ticksEditing: false,
+      dialogShowChooseSize: false,
+      dialogShowElementMenu: false,
+      dialogShowSetBackground: false
     }
   },
   computed: {
     containerStyle () {
       return {
+        backgroundColor: this.currentBackground,
         width: this.device.width + 'px',
         height: this.device.height + 'px'
       }
-    },
-    fixAppearances () {
-      return [{
-        label: '正中横向全屏,高度自适应',
-        horizontal: 'center',
-        vertical: 'center',
-        width: '100vw',
-        height: 'auto',
-        left: 0,
-        top: 0
-      }, {
-        label: '正中横向全屏,正方形裁剪',
-        horizontal: 'center',
-        vertical: 'center',
-        width: '100vw',
-        height: '100vw',
-        left: 0,
-        top: 0
-      }, {
-        label: '自适应全屏显示',
-        horizontal: 'center',
-        vertical: 'center',
-        width: '100vw',
-        height: '100vh',
-        left: 0,
-        top: 0
-      }]
     }
   },
 
   created () {
+    this.device.width = window.screen.availWidth * 0.7
+    this.device.height = window.screen.availHeight * 0.7
     this.imagedao = new ImageDAO(this.ctx)
     this.workdao = new RestDAO(this.ctx, 'danke/work')
-    this.work.id = shortid()
-    this.addNewScene()
+    const work = this.ctx.editWork
+    if (work) {
+      this.work = work
+      this.initWorkStyle()
+    } else {
+      this.newWork()
+    }
     this.currentSceneIndex = 0
     this.chooseScene()
   },
   mounted () {
-    this.device.width = window.screen.availWidth * 0.7
-    this.device.height = window.screen.availHeight * 0.7
   },
-
   methods: {
-    audioChoosed (e) {
-      if (e.currentTarget.files.length) {
-        const file = e.currentTarget.files[0]
-        this.$refs.dialogAudioList.openWithAudioFile(file)
+    initWorkStyle () {
+      for (const scene of this.work.scenes) {
+        for (const element of scene.elements) {
+          element.url = getImageWebUrl(element, this.device)
+          element.style = getElementStyle(element, this.device)
+        }
+        scene.style = getSceneStyle(scene, this.device)
       }
+    },
+    audioChoosed (file) {
+      this.$refs.dialogAudioList.openWithAudioFile(file)
     },
     chooseAudio (audioItem) {
       this.work.audioUrl = audioItem.audioUrl
@@ -177,14 +178,37 @@ export default {
     },
     chooseAnimation () {
       this.$refs.dialogFrameChoose.chooseFrame('in')
-      this.elementMenuDialog = false
+      this.dialogShowElementMenu = false
+    },
+
+    setCurrentAnimation (animationSet, speed) {
+      this.setElementAnimation(this.currentElement, animationSet, speed)
+    },
+    setAllAnimation (animationSet, speed) {
+      for (let scene of this.work.scenes) {
+        for (let element of scene.elements) {
+          this.setElementAnimation(element, animationSet, speed)
+        }
+      }
+    },
+    setElementAnimation (element, animationSet, speed) {
+      for (let type in animationSet) {
+        const elementAnimation = element.animation[type]
+        const animation = animationSet[type]
+        elementAnimation.name = animation.name
+        elementAnimation.desc = animation.desc
+        elementAnimation.duration = speed[type]
+        elementAnimation.cssFrame = animation.cssFrame
+        elementAnimation.timing = animation.timing
+        elementAnimation.frames = animation.frames
+      }
     },
     /**
      * 增加新的空白场景
      */
     addNewScene () {
       const scene = clone(SCENE)
-      scene.background.color = ['#f0f8ff']
+      scene.background.colors = [this.currentBackground]
       scene.name = '场景 ' + (this.work.scenes.length + 1)
       scene.id = shortid()
       scene.style = getSceneStyle(scene, this.device)
@@ -204,19 +228,28 @@ export default {
       }
     },
     nextScene () {
+      if (this.ticksEditing) {
+        this.work.audioTicks.push(this.audio.currentTime)
+      }
       if (this.currentSceneIndex === this.work.scenes.length - 1) {
         this.addNewScene()
       }
-      this.currentSceneIndex ++
+      this.currentSceneIndex++
       this.chooseScene()
+      this.renderScene(this.currentScene, 'in')
+      this.renderScene(this.work.scenes[this.currentSceneIndex - 1], 'out')
     },
     prevScene () {
+      if (this.ticksEditing) {
+        return
+      }
       if (this.currentSceneIndex > 0) {
-        this.currentSceneIndex --
+        this.currentSceneIndex--
         this.chooseScene()
+        this.renderScene(this.currentScene, 'in')
+        this.renderScene(this.work.scenes[this.currentSceneIndex + 1], 'out')
       }
     },
-
     /**
      * 选择到某个场景
      * @param scene
@@ -228,7 +261,12 @@ export default {
         this.currentScene = scene
       }
     },
-
+    renderScene (scene, stage) {
+      for (let element of scene.elements) {
+        element.style = getElementStyle(element, this.device, stage)
+      }
+      scene.style = `display: inherit; ${getSceneStyle(scene, this.device, stage)}`
+    },
     /**
      * 设置音乐的节拍到每个场景切换之上， 同时自动补齐所需的图片数量
      **/
@@ -242,7 +280,7 @@ export default {
           }
         }
       }
-      if (this.work.scenes.length < this.work.audioTicks.length ) {
+      if (this.work.scenes.length < this.work.audioTicks.length) {
         Message.success({
           message: '按照音乐与节拍，您还需补充' + (this.work.audioTicks.length - this.work.scenes.length) + '张图片'
         })
@@ -253,7 +291,7 @@ export default {
         }
       } else if (this.work.scenes.length > this.work.audioTicks.length) {
         Message.warning({
-          message: '注意:您有' + (this.work.scenes.length - this.work.audioTicks.length ) + '张图片没有默认节拍'
+          message: '注意:您有' + (this.work.scenes.length - this.work.audioTicks.length) + '张图片没有默认节拍'
         })
       }
     },
@@ -262,67 +300,79 @@ export default {
     },
     chooseElement (element, event) {
       this.currentElement = element
-      this.elementMenuDialog = true
+      this.dialogShowElementMenu = true
     },
-    async imageChoosed (e) {
-      if (e.currentTarget.files.length) {
-        const file = e.currentTarget.files[0]
-        const loading = Loading.service({
-          lock: true,
-          text: '正在保存图片',
-          fullscreen: true,
-          background: 'rgba(255, 255, 255, 0.6)'
-        })
-        const size = await getImageSize(file)
-        const result = await this.imagedao.uploadBlob(file, this.work.id)
-        this.insertRawImage(result.name, size, file)
-        loading.close()
-      }
+    async imageChoosed (file) {
+      const loading = Loading.service({
+        lock: true,
+        text: '正在保存图片',
+        fullscreen: true,
+        background: 'rgba(255, 255, 255, 0.6)'
+      })
+      const result = await this.imagedao.uploadBlob(file, this.work.id)
+      this.insertRawImage(result.name, file)
+      loading.close()
     },
-
     /**
      * 设置图片的大小及位置
      */
     setImageSize () {
-      this.chooseSizeDialog = true
-      this.elementMenuDialog = false
+      this.dialogShowChooseSize = true
+      this.dialogShowElementMenu = false
     },
-    setElementAppearance (appearance) {
-      if (this.currentElement) {
-        this.currentElement.position.horizontal = appearance.horizontal
-        this.currentElement.position.vertical = appearance.vertical
-        this.currentElement.size.width = appearance.width
-        this.currentElement.size.left = appearance.left
-        this.currentElement.size.top = appearance.top
-        if (appearance.height === 'auto') {
-          this.currentElement.size.height = ((this.currentElement.oheight / this.currentElement.owidth) *
-            getLenSplits(appearance.width).len) + 'vw'
-        } else {
-          this.currentElement.size.height = appearance.height
+    setAppearance (appearance) {
+      this.currentAppearance = appearance
+      for (const scene of this.work.scenes) {
+        for (const element of scene.elements) {
+          if (element.type === TypeEnum.IMAGE) {
+            this.setElementAppearance(element, appearance, this.device)
+          }
         }
-        // this.currentElement.url = getImageWebUrl(this.currentElement, this.device)
-        const style = getElementStyle(this.currentElement, this.device)
-        this.currentElement.style = style
       }
+      this.dialogShowChooseSize = false
+    },
+    /**
+     * 设置元素位置大小到指定样式
+     **/
+    setElementAppearance (element, appearance, device) {
+      element.position.horizontal = appearance.horizontal
+      element.position.vertical = appearance.vertical
+      element.size.width = appearance.width
+      element.size.left = appearance.left
+      element.size.top = appearance.top
+      element.size.height = appearance.height
+      // this.currentElement.url = getImageWebUrl(this.currentElement, this.device)
+      const style = getElementStyle(element, device)
+      element.style = style
     },
 
+    setBackground () {
+      this.dialogShowSetBackground = true
+      this.dialogShowElementMenu = false
+    },
+    setBackgroundColor (color) {
+      this.currentBackground = color
+      for (const scene of this.work.scenes) {
+        scene.background.colors = [color]
+        scene.style = getSceneStyle(scene, this.device)
+      }
+      this.dialogShowSetBackground = false
+    },
     /**
      * 给当前画面插入新的图片
      **/
-    insertRawImage: function (url, size, file) {
+    insertRawImage: function (url, file) {
       const clonedElement = clone(IMAGE)
       clonedElement.id = shortid()
       clonedElement.name = '图片'
       clonedElement.visible = true
       clonedElement.border.width = 0
-      clonedElement.owidth = size.width
-      clonedElement.oheight = size.height
       clonedElement.imgPath = url
-      // 这里还是使用本地地址
+      // 这里还是使用本地地址, 因为微信不显示远程动态加载的图片
       clonedElement.url = URL.createObjectURL(file)
       this.currentScene.elements.push(clonedElement)
       this.currentElement = clonedElement
-      this.setElementAppearance(this.fixAppearances[0])
+      this.setElementAppearance(clonedElement, this.currentAppearance, this.device)
     },
 
     /**
@@ -367,6 +417,31 @@ export default {
     async runWork () {
       await this.saveWork()
       window.open('/play/full/' + this.work._id)
+    },
+
+    async playAndSetTicks () {
+      const editor = this
+      if (!this.ticksEditing) {
+        this.currentSceneIndex = 0
+        this.chooseScene()
+        this.ticksEditing = true
+        this.work.audioTicks = []
+        if (this.work.audioUrl) {
+          this.audio = new Audio('http://image.danke.fun/' + this.work.audioUrl)
+          const playPromise = this.audio.play()
+          if (playPromise !== undefined) {
+            await playPromise
+          }
+          this.audio.onended = async function () {
+            editor.ticksEditing = false
+          }
+        }
+      } else {
+        this.ticksEditing = false
+        if (this.audio) {
+          this.audio.pause()
+        }
+      }
     }
   }
 }
@@ -383,9 +458,10 @@ export default {
   background-size: cover;
   .device-container {
     background-color: aliceblue;
+    overflow: hidden;
     height: 140vw;
     left: 15vw;
-    top: 5vw;
+    top: 14vw;
     position: absolute;
     border-radius: 20px;
     width: 70vw;
@@ -403,22 +479,33 @@ export default {
   .upload-image-container {
     position: absolute;
     left: 15vw;
-    top: 5vw;
+    top: 14vw;
     display: flex;
+    border-radius: 20px;
     justify-content: center;
     align-items: center;
+  }
+  .btn-home {
+    position: absolute;
+    left: 1vw;
+    top: 1vw;
+  }
+  .btn-new {
+    position: absolute;
+    right: 1vw;
+    top: 1vw;
   }
   .btn-next {
     position: absolute;
     right: 3vw;
-    top: 65vw;
+    top: 75vw;
     width: 10vw;
   }
 
   .btn-prev {
     position: absolute;
     left: 3vw;
-    top: 65vw;
+    top: 75vw;
     width: 10vw;
     transform: rotate(180deg);
   }
@@ -443,11 +530,22 @@ export default {
     height: 50vh;
     margin-bottom: 0;
   }
-  .fix-appearances {
-    .appearance {
-      padding: 10px 20px;
-      border-bottom: 1px solid #efefef;
+  .dialog-set-background {
+    .palettes {
+      flex-wrap: wrap;
+      display: flex;
+      justify-content: center;
+      .color {
+        margin: 3px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 14px;
+        width: 20vw;
+        height: 20vw;
+      }
     }
   }
+
 }
 </style>

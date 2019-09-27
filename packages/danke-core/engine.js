@@ -20,12 +20,13 @@ export default class Danke {
     this.index = -1
     this.initSceneStyleAttr()
   }
-
   setDevice (device) {
     this.device = device
   }
 
-  play () {
+  play (audio) {
+    setInterval(() => {
+    }, 1000)
     this.next()
   }
   pause () {

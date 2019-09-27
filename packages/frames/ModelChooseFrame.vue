@@ -6,17 +6,18 @@
   :fullscreen="fullscreen"
   :visible.sync="centerDialogVisible">
   <div class="frame-container">
-    <frame-box ref="frameBox" :element="element" @choose-animation="chooseAnimation"></frame-box>
+    <frame-box ref="frameBox" :element="element"></frame-box>
   </div>
   <span slot="footer" class="dialog-footer">
-    <div class="speed" v-if="element">
+    <div class="speed">
       <span v-for="speed in animationSpeeds"
             :key="speed.value" @click="chooseSpeed(speed)"
-            class="tag is-light" :class="[speed.value === element.animation[currentType].duration? 'is-info': '']">
+            class="tag is-light" :class="[speed.value === speeds[currentType]? 'is-info': '']">
         {{speed.label}}
       </span>
     </div>
-    <button class="button is-link is-outlined" @click="choose">选择</button>
+    <button class="button is-link is-outlined" @click="choose">应用</button>
+    <button class="button is-link is-outlined" @click="chooseForAll">应用到所有</button>
   </span>
 </el-dialog>
 </template>
@@ -47,12 +48,17 @@ export default {
       isShow: false,
       type: '',
       currentType: 'in',
+      speeds: {
+        'in': 200,
+        'out': 200,
+        'dura': 200
+      },
       animationSpeeds: [{
         label: '极快',
-        value: 100
+        value: 200
       }, {
         label: '快速',
-        value: 300
+        value: 400
       }, {
         label: '中速',
         value: 600
@@ -67,9 +73,7 @@ export default {
   },
   methods: {
     chooseSpeed (speed) {
-      if (this.element) {
-        this.element.animation[this.currentType].duration = speed.value
-      }
+      this.speeds[this.currentType] = speed.value
     },
     chooseAnimation ({ animation, type }) {
       this.currentType = type
@@ -84,16 +88,23 @@ export default {
         elementAnimation.timing = animation.timing
         elementAnimation.frames = animation.frames
       }
+      this.$emit('animation', {
+        animation: animation,
+        type: type
+      })
     },
     chooseFrame (type, choosedCallback) {
       this.currentType = type || 'in'
       this.centerDialogVisible = true
       this.choosedCallback = choosedCallback
     },
+    chooseForAll () {
+      this.centerDialogVisible = false
+      this.$emit('all', this.$refs.frameBox.animationSet, this.speeds)
+    },
     choose () {
       this.centerDialogVisible = false
-      let animation = this.$refs.frameBox.currentAnimation
-      this.choosedCallback(animation)
+      this.$emit('current', this.$refs.frameBox.animationSet, this.speeds)
     }
   }
 }
@@ -123,8 +134,6 @@ export default {
       height: calc(100% - 160px);
     }
   }
-
-
   .frame-box-columns {
     overflow: hidden;
     .column-list {

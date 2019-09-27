@@ -40,14 +40,12 @@
 
 <script>
 import RestDAO from '../common/dao/restdao'
-import Tabs from '../common/components/Tabs.vue'
 import { Message } from 'element-ui'
 import { addAnimationStyle, createSheet } from './keyframe'
 import animationTypes from './model/animation-type.js'
 export default {
   name: 'FrameBox',
   components: {
-    Tabs
   },
   props: {
     isEdit: {
@@ -67,6 +65,7 @@ export default {
   },
   data () {
     return {
+      animationSet: {},
       user: this.ctx.user,
       previewTypes: ['方块', '文字', '图片'],
       currentType: 'in',
@@ -79,7 +78,7 @@ export default {
   },
   computed: {
     filteredAnimations () {
-      return this.animations.filter( animation => animation.name.indexOf(this.filterKey) > -1)
+      return this.animations.filter(animation => animation.name.indexOf(this.filterKey) > -1)
     }
   },
   created () {
@@ -91,10 +90,7 @@ export default {
     setAnimation (animation) {
       addAnimationStyle(this.sheet, animation)
       this.currentAnimation = animation
-      this.$emit('choose-animation', {
-        type: this.currentType,
-        animation: animation
-      })
+      this.animationSet[this.currentType] = animation
     },
     async loadAnimation () {
       const query = {}
