@@ -7,12 +7,13 @@
       </div>
     </div>
     <div class="play-interaction" v-if="!isLoading && !playConfirmed" @click="startEngine">
-      <work-cover :enable-mask="false" :work="work" :device-set="device"></work-cover>
+      <img v-if="imagePreloads.length" class="blur" :src="imagePreloads[0].url">
+      <!--<work-cover :enable-mask="false" :work="work" :device-set="device"></work-cover>-->
       <div class="interaction-mask">
-        <div class="text">点击播放</div>
+        <a class="button is-primary is-large">点击播放</a>
       </div>
     </div>
-    <div v-if="playConfirmed">
+    <div v-if="playConfirmed && !playFinished">
       <div v-for="scene in work.scenes" :key="scene.id"
         :style="scene.style" class="scene">
         <div v-for="(element) in scene.elements" :key="element.id"
@@ -21,6 +22,16 @@
           <img v-if="element.url" :src="element.url" :style="element.innerStyle||''">
           <span v-if="element.type === TypeEnum.TEXT" v-html="$options.filters.newline(element.text)"/>
         </div>
+      </div>
+    </div>
+    <div class="play-finished" v-if="playFinished">
+      <img v-if="imagePreloads.length" class="blur" :src="imagePreloads[imagePreloads.length - 1].url">
+      <div class="interaction-mask">
+        <div class="qrcode">
+          <img src="./qrcode.png">
+        </div>
+        <a class="button is-primary is-medium" @click="startEngine">重新播放</a>
+        <a class="button is-success is-medium" @click="$router.push('/slide/lite')">我也要制作</a>
       </div>
     </div>
   </div>
@@ -60,6 +71,7 @@ export default {
       imagePreloads: [],
       isLoading: true,
       playConfirmed: false,
+      playFinished: false,
       TypeEnum,
       sceneTypeEnum
     }
@@ -76,6 +88,7 @@ export default {
     async startEngine () {
       const _this = this
       this.playConfirmed = true
+      this.playFinished = false
       this.engine = null
       if (this.work.audioUrl) {
         this.audio = new Audio('http://image.danke.fun/' + this.work.audioUrl)
@@ -83,10 +96,11 @@ export default {
         if (playPromise !== undefined) {
           await playPromise
         }
-        // this.audio.onended = async function () {
-        //   await sleep(500)
-        //   _this.startEngine()
-        // }
+        this.audio.onended = async function () {
+          _this.playFinished = true
+          // await sleep(500)
+          // _this.startEngine()
+        }
         this.engine = new AudioDanke(this.work, this.device, this.audio)
         this.engine.play()
       } else {
@@ -157,113 +171,159 @@ export default {
 }
 </script>
 
-<style lang="less">
-.device.player {
-  position: relative;
-  overflow: hidden;
-  background: #fff;
 
-  .play-interaction {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    .interaction-mask {
+
+<style lang="less">
+  .device.player {
+    position: relative;
+    overflow: hidden;
+    background: #fff;
+
+    .play-interaction {
       position: absolute;
       left: 0;
       top: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0, .7);
-      z-index: 9999;
-      color: #fff;
-      font-size: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-  }
-  .image-preloads {
-    opacity: 0;
-  }
-  .scene {
-    position: absolute;
-    left: 0;
-    top: 0;
-  }
-  .element {
-    position: absolute;
-    &.type1 {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    &.type2 {
-      display: flex;
-      align-items: center;
-      span {
+      img.blur {
         width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: blur(6px);
+      }
+      .interaction-mask {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0, .2);
+        z-index: 9999;
+        color: #fff;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
     }
-    img {
+
+    .play-finished {
+      position: absolute;
+      left: 0;
+      top: 0;
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      img.blur {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: blur(6px);
+      }
+      .interaction-mask {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0, .2);
+        z-index: 9999;
+        color: #fff;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        .qrcode {
+          width: 160px;
+          height: 160px;
+          padding: 10px;
+          background-color: #fff;
+        }
+        .button {
+          margin-top: 20px;
+        }
+      }
+    }
+    .image-preloads {
+      opacity: 0;
+    }
+    .scene {
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+    .element {
+      position: absolute;
+      &.type1 {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      &.type2 {
+        display: flex;
+        align-items: center;
+        span {
+          width: 100%;
+        }
+      }
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
     }
   }
-}
 
-.boxLoading {
-  width: 50px;
-  height: 50px;
-  margin: auto;
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0; }
-.boxLoading:before {
-  content: '';
-  width: 50px;
-  height: 5px;
-  background: #000;
-  opacity: 0.1;
-  position: absolute;
-  top: 59px;
-  left: 0;
-  border-radius: 50%;
-  animation: shadow .5s linear infinite; }
-.boxLoading:after {
-  content: '';
-  width: 50px;
-  height: 50px;
-  background: #ff9d29;
-  animation: animate .5s linear infinite;
-  position: absolute;
-  top: 0;
-  left: 0;
-  border-radius: 3px; }
+  .boxLoading {
+    width: 50px;
+    height: 50px;
+    margin: auto;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0; }
+  .boxLoading:before {
+    content: '';
+    width: 50px;
+    height: 5px;
+    background: #000;
+    opacity: 0.1;
+    position: absolute;
+    top: 59px;
+    left: 0;
+    border-radius: 50%;
+    animation: shadow .5s linear infinite; }
+  .boxLoading:after {
+    content: '';
+    width: 50px;
+    height: 50px;
+    background: #ff9d29;
+    animation: animate .5s linear infinite;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 3px; }
 
-.boxLoading-dark:after {
-  background: #74b1e4; }
+  .boxLoading-dark:after {
+    background: #74b1e4; }
 
-@keyframes animate {
-  17% {
-    border-bottom-right-radius: 3px; }
-  25% {
-    transform: translateY(9px) rotate(22.5deg); }
-  50% {
-    transform: translateY(18px) scale(1, 0.9) rotate(45deg);
-    border-bottom-right-radius: 40px; }
-  75% {
-    transform: translateY(9px) rotate(67.5deg); }
-  100% {
-    transform: translateY(0) rotate(90deg); } }
+  @keyframes animate {
+    17% {
+      border-bottom-right-radius: 3px; }
+    25% {
+      transform: translateY(9px) rotate(22.5deg); }
+    50% {
+      transform: translateY(18px) scale(1, 0.9) rotate(45deg);
+      border-bottom-right-radius: 40px; }
+    75% {
+      transform: translateY(9px) rotate(67.5deg); }
+    100% {
+      transform: translateY(0) rotate(90deg); } }
 
-@keyframes shadow {
-  0%, 100% {
-    transform: scale(1, 1); }
-  50% {
-    transform: scale(1.2, 1); } }
+  @keyframes shadow {
+    0%, 100% {
+      transform: scale(1, 1); }
+    50% {
+      transform: scale(1.2, 1); } }
 </style>

@@ -1,6 +1,5 @@
 <template>
 <div class="slide-lite">
-  <a class="button is-medium is-info btn-home" @click="$router.replace('/slide/lite/list')">首页</a>
   <div class="device-container" :style="containerStyle">
     <div class="scene" :style="currentScene.style" @click.self="setBackground">
       <div v-for="(element, index) of currentScene.elements" :key="element.id" :id="'element-' + element.id"
@@ -15,10 +14,11 @@
       </div>
     </div>
     <span class="tag is-light tag-page">{{this.currentSceneIndex + 1}}/ {{this.work.scenes.length}}</span>
-    <a v-if="currentScene.elements.length === 0" @click="deleteScene" class="delete is-large"></a>
+    <a v-if="currentScene.elements.length" @click="deleteScene" class="delete is-large"></a>
   </div>
   <div class="upload-image-container" :style="containerStyle" v-if="currentScene.elements.length === 0">
     <upload-button btn-style="is-primary is-medium" @file="imageChoosed"></upload-button>
+    <span class="tag is-light tag-page">{{this.currentSceneIndex + 1}}/ {{this.work.scenes.length}}</span>
   </div>
   <div class="btn-next">
     <img src="./arrow-btn.png" @click="nextScene">
@@ -28,6 +28,10 @@
   </div>
 
   <div class="tri-button columns is-mobile is-centered">
+    <div class="column is-narrow">
+      <a class="button is-medium is-info btn-home" @click="$router.replace('/slide/lite/list')">首页</a>
+    </div>
+
     <div class="column is-narrow">
       <upload-button btn-style="is-primary is-medium" @file="audioChoosed">上传音频</upload-button>
     </div>
@@ -44,7 +48,7 @@
     <a class="button is-medium is-fullwidth" @click="setImageSize">图片位置及大小</a>
     <a class="button is-medium is-fullwidth" @click="chooseAnimation">动画特效</a>
   </el-dialog>
-  <el-dialog :visible.sync="dialogShowChooseSize" title="设置图片位置和大小" width="100%" top="50vh" custom-class="dialog-image-size">
+  <el-dialog :visible.sync="dialogShowChooseSize" title="设置图片位置和大小" width="100%" top="20vh" custom-class="dialog-image-size">
     <a class="button is-medium is-fullwidth" v-for="(appearance, index) in fixAppearances" :key="index" @click="setAppearance(appearance)">{{appearance.label}}</a>
   </el-dialog>
   <el-dialog :visible.sync="dialogShowSetBackground"  title="设置背景" width="100%" top="0" custom-class="dialog-set-background">
@@ -54,8 +58,6 @@
            :style="{
             backgroundColor: color
            }">{{key}}</div>
-      <a class="button is-full-widescreen is-medium">虚化的图片</a>
-      <a class="button is-full-widescreen is-medium">本页虚化图片</a>
     </div>
   </el-dialog>
   <dialog-audio-tap :setName="false" audioPath="tickAudio" :fullscreen="true" ref="dialogAudioList" @audio="chooseAudio"></dialog-audio-tap>
@@ -149,7 +151,8 @@ export default {
       this.work = work
       this.initWorkStyle()
     } else {
-      this.newWork()
+      this.work.id = shortid()
+      this.addNewScene()
     }
     this.currentSceneIndex = 0
     this.chooseScene()
@@ -461,7 +464,7 @@ export default {
     overflow: hidden;
     height: 140vw;
     left: 15vw;
-    top: 14vw;
+    top: 5vw;
     position: absolute;
     border-radius: 20px;
     width: 70vw;
@@ -479,16 +482,16 @@ export default {
   .upload-image-container {
     position: absolute;
     left: 15vw;
-    top: 14vw;
+    top: 5vw;
     display: flex;
     border-radius: 20px;
     justify-content: center;
     align-items: center;
-  }
-  .btn-home {
-    position: absolute;
-    left: 1vw;
-    top: 1vw;
+    .tag-page {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+    }
   }
   .btn-new {
     position: absolute;
