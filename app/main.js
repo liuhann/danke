@@ -9,6 +9,7 @@ import VueRouter from 'vue-router'
 import site from '../packages/site'
 import user from '../packages/user'
 import frameTool from '../packages/frames'
+import restclient from '../packages/rest-client'
 // import ybstory from '../packages/story'
 import xd from '../packages/xd-builder'
 import player from '../packages/xd-player'
@@ -32,7 +33,7 @@ const boot = new AsyncBoot({
   IMG_SERVER: 'http://image.danke.fun',
   mount: '#app',
   packages: [
-    site, user, frameTool, xd, player, adminDanke, vectors, slideLite
+    site, user, frameTool, xd, player, adminDanke, vectors, slideLite, restclient
   ],
   started: async (ctx, next) => {
     ctx._router.beforeEach((to, from, next) => {

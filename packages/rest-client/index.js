@@ -1,5 +1,5 @@
 const beforeEnter = (to, from, next) => {
-  if (false) {
+  if (to.meta.ctx.user.id!=='15011245191') {
     next('/')
   } else {
     next()

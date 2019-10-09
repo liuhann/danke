@@ -25,7 +25,7 @@
 import RestDAO from '../common/dao/restdao.js'
 export default {
   name: 'DankeAdmin',
-  data() {
+  data () {
     return {
       loading: false,
       currentPage: 1,
@@ -53,7 +53,7 @@ export default {
     async setAsRecommendation (work) {
       await this.workdao.patch(work._id, {
         system: {
-          top4: "1"
+          top4: '1'
         }
       })
     }

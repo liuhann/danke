@@ -3,83 +3,70 @@
   <el-table
     :data="tableData"
     style="width: 100%">
-    <el-table-column
-      prop="date"
-      label="日期"
-      width="180">
+    <el-table-column v-for="column of columns" :key="column"
+      :prop="column"
+      :label="column">
+      <template slot-scope="scope">
+        <el-input v-model="scope.row[column]"></el-input>
+      </template>
     </el-table-column>
-    <el-table-column
-      prop="name"
-      label="姓名"
-      width="180">
+    <el-table-column>
+      <template slot-scope="scope">
+        <el-button @click="showRow(scope.row)"></el-button>
+      </template>
     </el-table-column>
-    <el-table-column
-      prop="address"
-      label="地址">
-    </el-table-column>
+
   </el-table>
-  <div class="work-list">
-    <table>
-      <tr>
-        <th style="width: 160px">操作</th>
-        <th>标题</th>
-        <th>创建者</th>
-        <th>shi</th>
-      </tr>
-      <tr class="one-story" v-for="work in works" :key="work._id">
-        <td>
-          <a @click="setAsRecommendation(work)">推荐</a>
-        </td>
-        <td><input style="width: 300px;" v-model="work.title"></td>
-        <td>{{work.creator}}</td>
-        <td><input v-model="work.updated"></td>
-      </tr>
-    </table>
-  </div>
+  <el-pagination></el-pagination>
 </div>
 </template>
 
 <script>
-import { Table, TableColumn, Pagination } from 'element-ui'
+import { Table, TableColumn, Pagination, Input, Button } from 'element-ui'
 import RestDAO from '../common/dao/restdao.js'
 export default {
   name: 'DankeAdmin',
   components: {
-    Table,
-    TableColumn,
-    Pagination
+    [Table.name]: Table,
+    [TableColumn.name]: TableColumn,
+    [Pagination.name]: Pagination,
+    [Input.name]: Input,
+    [Button.name]: Button
   },
-  data() {
+  data () {
     return {
       loading: false,
       currentPage: 1,
       pageSize: 50,
       total: 0,
+      projection: 'creator',
       tableData: []
     }
   },
+  computed: {
+    columns () {
+      return this.projection.split(',')
+    }
+  },
   created () {
-    this.workdao = new RestDAO(this.ctx, 'danke/work')
-    this.loadWorks()
+    this.restdao = new RestDAO(this.ctx, this.$route.query.path)
+    this.projection = this.$route.query.projection
+    this.load()
   },
   methods: {
-    async loadWorks () {
+    async load () {
       this.loading = true
-      const result = await this.workdao.list({
+      const result = await this.restdao.list({
         page: this.currentPage,
         count: this.pageSize,
-        projection: 'title,creator,updated,system'
+        projection: this.projection
       })
       this.loading = false
-      this.works = result.list
+      this.tableData = result.list
       this.total = result.total
     },
-    async setAsRecommendation (work) {
-      await this.workdao.patch(work._id, {
-        system: {
-          top4: "1"
-        }
-      })
+    showRow (r) {
+      alert(JSON.stringify(r))
     }
   }
 }
