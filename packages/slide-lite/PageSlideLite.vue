@@ -45,220 +45,7 @@
   <!--  操作图片的对话框-->
   <el-dialog :visible.sync="dialogShowElementMenu" title="设置图片" width="75%" top="30vh" custom-class="dialog-edit-menu">
     <a class="button is-medium is-fullwidth" @click="setBackground">背景设置</a>
-    <a class="button is-medium is-fullwidth" @click="setImageSize">图片位置及大小</a>
-    <a class="button is-medium is-fullwidth" @click="chooseAnimation">动画特效</a>
-  </el-dialog>
-  <el-dialog :visible.sync="dialogShowChooseSize" title="设置图片位置和大小" width="100%" top="20vh" custom-class="dialog-image-size">
-    <a class="button is-medium is-fullwidth" v-for="(appearance, index) in fixAppearances" :key="index" @click="setAppearance(appearance)">{{appearance.label}}</a>
-  </el-dialog>
-  <el-dialog :visible.sync="dialogShowSetBackground"  title="设置背景" width="100%" top="0" custom-class="dialog-set-background">
-    <div class="palettes">
-      <div v-for="(color, key) in paletteColors" :key="key" class="color"
-           @click="setBackgroundColor(color)"
-           :style="{
-            backgroundColor: color
-           }">{{key}}</div>
-    </div>
-  </el-dialog>
-  <dialog-audio-tap :setName="false" audioPath="tickAudio" :fullscreen="true" ref="dialogAudioList" @audio="chooseAudio"></dialog-audio-tap>
-  <model-choose-frame ref="dialogFrameChoose" @current="setCurrentAnimation" @all="setAllAnimation"></model-choose-frame>
-</div>
-</template>
-
-<script>
-import { Dialog, Message, Loading } from 'element-ui'
-import { clone } from '../utils/object'
-import { getElementStyle, getImageWebUrl, getSceneStyle } from '../danke-core/utils/styles'
-import { shortid } from '../utils/string'
-import { TypeEnum, IMAGE } from '../danke-core/elements'
-import SCENE from '../danke-core/elements/scene'
-import DialogAudioTap from '../xd-builder/components/DialogAudioTap.vue'
-import ModelChooseFrame from '../frames/ModelChooseFrame.vue'
-import ImageDAO from '../common/dao/imagedao'
-import RestDAO from '../common/dao/restdao'
-import UploadButton from './UploadButton.vue'
-import fixedAppearances from './fixedAppearances'
-
-export default {
-  components: { UploadButton, DialogAudioTap, [Dialog.name]: Dialog, ModelChooseFrame },
-  data () {
-    return {
-      work: {
-        ratio: '9:16',
-        id: '',
-        title: '',
-        categories: [],
-        desc: '',
-        audioUrl: '',
-        audioName: '',
-        audioTicks: [],
-        duration: 0,
-        resources: [],
-        scenes: []
-      },
-      device: {
-        width: 100,
-        height: 100
-      },
-      TypeEnum,
-      currentSceneIndex: 0,
-      currentScene: {},
-      currentElement: null,
-      currentAppearance: fixedAppearances[1],
-      currentBackground: '#ffffff',
-      fixAppearances: fixedAppearances,
-      paletteColors: {
-        aqua: '#7fdbff',
-        blue: '#0074d9',
-        navy: '#001f3f',
-        teal: '#39cccc',
-        olive: '#3d9970',
-        green: '#2ecc40',
-        red: '#ff4136',
-        maroon: '#85144b',
-        orange: '#ff851b',
-        purple: '#b10dc9',
-        yellow: '#ffdc00',
-        fuchsia: '#f012be',
-        gray: '#aaaaaa',
-        white: '#ffffff',
-        black: '#111111',
-        silver: '#dddddd'
-      },
-      ticksEditing: false,
-      dialogShowChooseSize: false,
-      dialogShowElementMenu: false,
-      dialogShowSetBackground: false
-    }
-  },
-  computed: {
-    containerStyle () {
-      return {
-        backgroundColor: this.currentBackground,
-        width: this.device.width + 'px',
-        height: this.device.height + 'px'
-      }
-    }
-  },
-
-  created () {
-    this.device.width = window.screen.availWidth * 0.7
-    this.device.height = window.screen.availHeight * 0.7
-    this.imagedao = new ImageDAO(this.ctx)
-    this.workdao = new RestDAO(this.ctx, 'danke/work')
-    const work = this.ctx.editWork
-    if (work) {
-      this.work = work
-      this.initWorkStyle()
-    } else {
-      this.work.id = shortid()
-      this.addNewScene()
-    }
-    this.currentSceneIndex = 0
-    this.chooseScene()
-  },
-  mounted () {
-  },
-  methods: {
-    initWorkStyle () {
-      for (const scene of this.work.scenes) {
-        for (const element of scene.elements) {
-          element.url = getImageWebUrl(element, this.device)
-          element.style = getElementStyle(element, this.device)
-        }
-        scene.style = getSceneStyle(scene, this.device)
-      }
-    },
-    audioChoosed (file) {
-      this.$refs.dialogAudioList.openWithAudioFile(file)
-    },
-    chooseAudio (audioItem) {
-      this.work.audioUrl = audioItem.audioUrl
-      this.work.audioName = audioItem.name
-      this.work.duration = audioItem.dura
-      this.work.audioTicks = audioItem.ticks
-      this.applyWorkTicksToScenes()
-    },
-    chooseAnimation () {
-      this.$refs.dialogFrameChoose.chooseFrame('in')
-      this.dialogShowElementMenu = false
-    },
-
-    setCurrentAnimation (animationSet, speed) {
-      this.setElementAnimation(this.currentElement, animationSet, speed)
-    },
-    setAllAnimation (animationSet, speed) {
-      for (let scene of this.work.scenes) {
-        for (let element of scene.elements) {
-          this.setElementAnimation(element, animationSet, speed)
-        }
-      }
-    },
-    setElementAnimation (element, animationSet, speed) {
-      for (let type in animationSet) {
-        const elementAnimation = element.animation[type]
-        const animation = animationSet[type]
-        elementAnimation.name = animation.name
-        elementAnimation.desc = animation.desc
-        elementAnimation.duration = speed[type]
-        elementAnimation.cssFrame = animation.cssFrame
-        elementAnimation.timing = animation.timing
-        elementAnimation.frames = animation.frames
-      }
-    },
-    /**
-     * 增加新的空白场景
-     */
-    addNewScene () {
-      const scene = clone(SCENE)
-      scene.background.colors = [this.currentBackground]
-      scene.name = '场景 ' + (this.work.scenes.length + 1)
-      scene.id = shortid()
-      scene.style = getSceneStyle(scene, this.device)
-      this.work.scenes.push(scene)
-    },
-
-    deleteScene () {
-      this.work.scenes.splice(this.currentSceneIndex, 1)
-      if (this.work.scenes.length === 0) {
-        this.addNewScene()
-        this.currentSceneIndex = 0
-      } else {
-        if (this.currentSceneIndex > 0) {
-          this.currentSceneIndex--
-        }
-        this.chooseScene()
-      }
-    },
-    nextScene () {
-      if (this.ticksEditing) {
-        this.work.audioTicks.push(this.audio.currentTime)
-      }
-      if (this.currentSceneIndex === this.work.scenes.length - 1) {
-        this.addNewScene()
-      }
-      this.currentSceneIndex++
-      this.chooseScene()
-      this.renderScene(this.currentScene, 'in')
-      this.renderScene(this.work.scenes[this.currentSceneIndex - 1], 'out')
-    },
-    prevScene () {
-      if (this.ticksEditing) {
-        return
-      }
-      if (this.currentSceneIndex > 0) {
-        this.currentSceneIndex--
-        this.chooseScene()
-        this.renderScene(this.currentScene, 'in')
-        this.renderScene(this.work.scenes[this.currentSceneIndex + 1], 'out')
-      }
-    },
-    /**
-     * 选择到某个场景
-     * @param scene
-     */
-    chooseScene (scene) {
-      if (scene == null) {
+    <a class="butto    if (scene == null) {
         this.currentScene = this.work.scenes[this.currentSceneIndex]
       } else {
         this.currentScene = scene
@@ -266,7 +53,220 @@ export default {
     },
     renderScene (scene, stage) {
       for (let element of scene.elements) {
-        element.style = getElementStyle(element, this.device, stage)
+        n is-medium is-fullwidth" @click="setImageSize">图片位置及大小</a>
+        <a class="button is-medium is-fullwidth" @click="chooseAnimation">动画特效</a>
+          </el-dialog>
+          <el-dialog :visible.sync="dialogShowChooseSize" title="设置图片位置和大小" width="100%" top="20vh" custom-class="dialog-image-size">
+          <a class="button is-medium is-fullwidth" v-for="(appearance, index) in fixAppearances" :key="index" @click="setAppearance(appearance)">{{appearance.label}}</a>
+        </el-dialog>
+        <el-dialog :visible.sync="dialogShowSetBackground"  title="设置背景" width="100%" top="0" custom-class="dialog-set-background">
+          <div class="palettes">
+          <div v-for="(color, key) in paletteColors" :key="key" class="color"
+      @click="setBackgroundColor(color)"
+      :style="{
+        backgroundColor: color
+      }">{{key}}</div>
+      </div>
+      </el-dialog>
+      <dialog-audio-tap :setName="false" audioPath="tickAudio" :fullscreen="true" ref="dialogAudioList" @audio="chooseAudio"></dialog-audio-tap>
+        <model-choose-frame ref="dialogFrameChoose" @current="setCurrentAnimation" @all="setAllAnimation"></model-choose-frame>
+        </div>
+        </template>
+
+        <script>
+      import { Dialog, Message, Loading } from 'element-ui'
+      import { clone } from '../utils/object'
+      import { getElementStyle, getImageWebUrl, getSceneStyle } from '../danke-core/utils/styles'
+      import { shortid } from '../utils/string'
+      import { TypeEnum, IMAGE } from '../danke-core/elements'
+      import SCENE from '../danke-core/elements/scene'
+      import DialogAudioTap from '../xd-builder/components/DialogAudioTap.vue'
+      import ModelChooseFrame from '../frames/ModelChooseFrame.vue'
+      import ImageDAO from '../common/dao/imagedao'
+      import RestDAO from '../common/dao/restdao'
+      import UploadButton from './UploadButton.vue'
+      import fixedAppearances from './fixedAppearances'
+
+      export default {
+        components: { UploadButton, DialogAudioTap, [Dialog.name]: Dialog, ModelChooseFrame },
+        data () {
+          return {
+            work: {
+              ratio: '9:16',
+              id: '',
+              title: '',
+              categories: [],
+              desc: '',
+              audioUrl: '',
+              audioName: '',
+              audioTicks: [],
+              duration: 0,
+              resources: [],
+              scenes: []
+            },
+            device: {
+              width: 100,
+              height: 100
+            },
+            TypeEnum,
+            currentSceneIndex: 0,
+            currentScene: {},
+            currentElement: null,
+            currentAppearance: fixedAppearances[1],
+            currentBackground: '#ffffff',
+            fixAppearances: fixedAppearances,
+            paletteColors: {
+              aqua: '#7fdbff',
+              blue: '#0074d9',
+              navy: '#001f3f',
+              teal: '#39cccc',
+              olive: '#3d9970',
+              green: '#2ecc40',
+              red: '#ff4136',
+              maroon: '#85144b',
+              orange: '#ff851b',
+              purple: '#b10dc9',
+              yellow: '#ffdc00',
+              fuchsia: '#f012be',
+              gray: '#aaaaaa',
+              white: '#ffffff',
+              black: '#111111',
+              silver: '#dddddd'
+            },
+            ticksEditing: false,
+            dialogShowChooseSize: false,
+            dialogShowElementMenu: false,
+            dialogShowSetBackground: false
+          }
+        },
+        computed: {
+          containerStyle () {
+            return {
+              backgroundColor: this.currentBackground,
+              width: this.device.width + 'px',
+              height: this.device.height + 'px'
+            }
+          }
+        },
+
+        created () {
+          this.device.width = window.screen.availWidth * 0.7
+          this.device.height = window.screen.availHeight * 0.7
+          this.imagedao = new ImageDAO(this.ctx)
+          this.workdao = new RestDAO(this.ctx, 'danke/work')
+          const work = this.ctx.editWork
+          if (work) {
+            this.work = work
+            this.initWorkStyle()
+          } else {
+            this.work.id = shortid()
+            this.addNewScene()
+          }
+          this.currentSceneIndex = 0
+          this.chooseScene()
+        },
+        mounted () {
+        },
+        methods: {
+          initWorkStyle () {
+            for (const scene of this.work.scenes) {
+              for (const element of scene.elements) {
+                element.url = getImageWebUrl(element, this.device)
+                element.style = getElementStyle(element, this.device)
+              }
+              scene.style = getSceneStyle(scene, this.device)
+            }
+          },
+          audioChoosed (file) {
+            this.$refs.dialogAudioList.openWithAudioFile(file)
+          },
+          chooseAudio (audioItem) {
+            this.work.audioUrl = audioItem.audioUrl
+            this.work.audioName = audioItem.name
+            this.work.duration = audioItem.dura
+            this.work.audioTicks = audioItem.ticks
+            this.applyWorkTicksToScenes()
+          },
+          chooseAnimation () {
+            this.$refs.dialogFrameChoose.chooseFrame('in')
+            this.dialogShowElementMenu = false
+          },
+
+          setCurrentAnimation (animationSet, speed) {
+            this.setElementAnimation(this.currentElement, animationSet, speed)
+          },
+          setAllAnimation (animationSet, speed) {
+            for (let scene of this.work.scenes) {
+              for (let element of scene.elements) {
+                this.setElementAnimation(element, animationSet, speed)
+              }
+            }
+          },
+          setElementAnimation (element, animationSet, speed) {
+            for (let type in animationSet) {
+              const elementAnimation = element.animation[type]
+              const animation = animationSet[type]
+              elementAnimation.name = animation.name
+              elementAnimation.desc = animation.desc
+              elementAnimation.duration = speed[type]
+              elementAnimation.cssFrame = animation.cssFrame
+              elementAnimation.timing = animation.timing
+              elementAnimation.frames = animation.frames
+            }
+          },
+          /**
+           * 增加新的空白场景
+           */
+          addNewScene () {
+            const scene = clone(SCENE)
+            scene.background.colors = [this.currentBackground]
+            scene.name = '场景 ' + (this.work.scenes.length + 1)
+            scene.id = shortid()
+            scene.style = getSceneStyle(scene, this.device)
+            this.work.scenes.push(scene)
+          },
+
+          deleteScene () {
+            this.work.scenes.splice(this.currentSceneIndex, 1)
+            if (this.work.scenes.length === 0) {
+              this.addNewScene()
+              this.currentSceneIndex = 0
+            } else {
+              if (this.currentSceneIndex > 0) {
+                this.currentSceneIndex--
+              }
+              this.chooseScene()
+            }
+          },
+          nextScene () {
+            if (this.ticksEditing) {
+              this.work.audioTicks.push(this.audio.currentTime)
+            }
+            if (this.currentSceneIndex === this.work.scenes.length - 1) {
+              this.addNewScene()
+            }
+            this.currentSceneIndex++
+            this.chooseScene()
+            this.renderScene(this.currentScene, 'in')
+            this.renderScene(this.work.scenes[this.currentSceneIndex - 1], 'out')
+          },
+          prevScene () {
+            if (this.ticksEditing) {
+              return
+            }
+            if (this.currentSceneIndex > 0) {
+              this.currentSceneIndex--
+              this.chooseScene()
+              this.renderScene(this.currentScene, 'in')
+              this.renderScene(this.work.scenes[this.currentSceneIndex + 1], 'out')
+            }
+          },
+          /**
+           * 选择到某个场景
+           * @param scene
+           */
+          chooseScene (scene) {
+            element.style = getElementStyle(element, this.device, stage)
       }
       scene.style = `display: inherit; ${getSceneStyle(scene, this.device, stage)}`
     },
@@ -298,14 +298,14 @@ export default {
         })
       }
     },
-    newline (val) {
-      return val.replace(/\n/g, '<br>')
-    },
-    chooseElement (element, event) {
-      this.currentElement = element
-      this.dialogShowElementMenu = true
-    },
-    async imageChoosed (file) {
+    newline (val) {n/g, '<br>')
+      },
+      chooseElement (element, event) {
+        this.currentElement = element
+        this.dialogShowElementMenu = true
+      },
+      async imageChoosed (file) {
+      return val.replace(/\
       const loading = Loading.service({
         lock: true,
         text: '正在保存图片',
@@ -438,7 +438,7 @@ export default {
           this.audio.onended = async function () {
             editor.ticksEditing = false
           }
-        }
+         }
       } else {
         this.ticksEditing = false
         if (this.audio) {
@@ -450,27 +450,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
-.slide-lite {
-  width: 100vw;
-  height: 100vh;
-  position: absolute;
-  left: 0;
-  top: 0;
-  background: url('./bg.png');
-  background-size: cover;
-  .device-container {
-    background-color: aliceblue;
-    overflow: hidden;
-    height: 140vw;
-    left: 15vw;
-    top: 5vw;
-    position: absolute;
-    border-radius: 20px;
-    width: 70vw;
-    .delete.is-large {
-      position: absolute;
-      bottom: 3vw;
+<style lang="scss">po'd'      bottom: 3vw;
       left: calc(50% - 16px);
     }
     .tag-page {
