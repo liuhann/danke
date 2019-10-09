@@ -29,6 +29,7 @@
             </a>
             <div class="navbar-dropdown">
               <router-link class="navbar-item" to="/frames">动画</router-link>
+              <router-link class="navbar-item" to="/slide/lite/list">卡点</router-link>
               <router-link class="navbar-item" to="/scenes">页面</router-link>
               <router-link class="navbar-item" to="/works">展示</router-link>
             </div>
