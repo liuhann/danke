@@ -8,14 +8,14 @@
   <div class="frame-container">
     <frame-box ref="frameBox" :element="element"></frame-box>
   </div>
+  <div class="speed">
+    <span v-for="speed in animationSpeeds"
+          :key="speed.value" @click="chooseSpeed(speed)"
+          class="tag is-light" :class="[speed.value === speeds[currentType]? 'is-info': '']">
+      {{speed.label}}
+    </span>
+  </div>
   <span slot="footer" class="dialog-footer">
-    <div class="speed">
-      <span v-for="speed in animationSpeeds"
-            :key="speed.value" @click="chooseSpeed(speed)"
-            class="tag is-light" :class="[speed.value === speeds[currentType]? 'is-info': '']">
-        {{speed.label}}
-      </span>
-    </div>
     <button class="button is-link is-outlined" @click="choose">应用</button>
     <button class="button is-link is-outlined" @click="chooseForAll">应用到所有</button>
   </span>
@@ -127,11 +127,11 @@ export default {
 
   @media screen and (max-width: 640px) {
     .frame-container {
-      height: 100%;
+      height: calc(100% - 40px);
       overflow: auto;
     }
     .frame-navigation {
-      height: calc(100% - 160px);
+      height: calc(100% - 96px);
     }
   }
   .frame-box-columns {

@@ -1,6 +1,6 @@
 <template>
 <div class="columns frame-box-columns is-gapless">
-  <div class="column">
+  <div class="column preview">
     <div class="frame-preview" :class="[previewType!=='文字'?'shadow': '']">
       <span class="buttons has-addons edit-button" v-if="isEdit" >
         <router-link to="/frame/edit" class="button is-small is-info">创建</router-link>
@@ -13,15 +13,12 @@
     </div>
   </div>
   <div class="column is-narrow-tablet frame-navigation">
-    <div class="tabs is-small" style="margin-bottom: .5rem;">
+    <div class="tabs is-small" style="margin: .5rem 0 0;">
       <ul>
         <li v-for="(type, index) in animationTypes" :key="index" :class="currentType === type.key? 'is-active': ''">
           <a @click="changeType(type)" >{{type.value}}</a>
         </li>
       </ul>
-    </div>
-    <div class="tags" style="margin-bottom: .5rem;">
-      <span class="tag is-light" :class="[key.en === filterKey? 'is-info': '']" v-for="key in currentKeyWords" :key="key.en" @click="filter(key.en)">{{key.zh}}</span>
     </div>
     <nav class="panel frames-list">
       <div class="panel-body">
@@ -179,7 +176,7 @@ export default {
 
 .frames-list {
   width: 320px;
-  height: calc(100% - 80px);
+  height: calc(100% - 40px);
   overflow: auto;
   .panel-body {
     width: 100%;
@@ -217,17 +214,20 @@ export default {
   .frames-list {
     width: 100%;
   }
+  .column.preview {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+  }
   .frame-preview {
-    height: 40vw;
-    min-height: 40vw;
-    &.shadow {
-      background-image: linear-gradient(90deg, #592D2D, #592D2D);
-      background-size: 24vw 24vw;
-      background-color: #f5f5f5;
-    }
+    margin: 10px;
+    height: 80px;
+    width: 80px;
+    background-image: linear-gradient(90deg, #592D2D, #592D2D);
     .preview-box {
-      width: 24vw;
-      height: 24vw;
+      width: 80px;
+      height: 80px;
       background-color: #FF4B4B;
     }
   }
