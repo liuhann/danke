@@ -2,12 +2,14 @@
 <div class="field upload-image">
   <div class="file" :class="btnStyle">
     <label class="file-label">
-      <input class="file-input" type="file" name="resume" @input="fileChoosed">
+      <input class="file-input" type="file" name="resume" @input="fileChoosed" :multiple="isMultiple">
+        <slot>
       <span class="file-cta">
           <span class="file-label">
-            <slot>选择图片</slot>
+            <slot>{{label}}</slot>
           </span>
-        </span>
+      </span>
+        </slot>
     </label>
   </div>
 </div>
@@ -17,6 +19,14 @@
 export default {
   name: 'UploadButton.vue',
   props: {
+    isMultiple: {
+      type: Boolean,
+      default: false
+    },
+    label: {
+      type: String,
+      default: '选择图片'
+    }
     btnStyle: {
       type: String,
       default: 'medium'
@@ -24,9 +34,11 @@ export default {
   },
   methods: {
     fileChoosed (event) {
-      if (event.currentTarget.files.length) {
+      if (event.currentTarget.files.length === 1) {
         const file = event.currentTarget.files[0]
         this.$emit('file', file)
+      } else {
+        this.$emit('files', event.currentTarget.files)
       }
     }
   }

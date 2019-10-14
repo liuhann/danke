@@ -50,7 +50,7 @@ export default {
         background: 'rgba(255, 255, 255, 0.6)'
       })
       const result = await this.workdao.list({
-        token: this.ctx.token
+        user: this.ctx.user.id
       })
       this.workList = result.list
       loading.close()

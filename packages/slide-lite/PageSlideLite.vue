@@ -17,7 +17,7 @@
     <a v-if="currentScene.elements.length" @click="deleteScene" class="delete is-large"></a>
   </div>
   <div class="upload-image-container" :style="containerStyle" v-if="currentScene.elements.length === 0">
-    <upload-button btn-style="is-primary is-medium" @file="imageChoosed"></upload-button>
+    <upload-button btn-style="is-primary is-medium" @files="imageChoosed" :isMultiple="true"></upload-button>
     <span class="tag is-light tag-page">{{this.currentSceneIndex + 1}}/ {{this.work.scenes.length}}</span>
   </div>
   <div class="btn-next">
@@ -31,7 +31,6 @@
     <div class="column is-narrow">
       <a class="button is-medium is-info btn-home" @click="$router.replace('/slide/lite/list')">首页</a>
     </div>
-
     <div class="column is-narrow">
       <upload-button btn-style="is-primary is-medium" @file="audioChoosed">上传音频</upload-button>
     </div>
@@ -46,6 +45,7 @@
   <el-dialog :visible.sync="dialogShowElementMenu" title="设置图片" width="75%" top="30vh" custom-class="dialog-edit-menu">
     <a class="button is-medium is-fullwidth" @click="setBackground">背景设置</a>
     <a class="button is-medium is-fullwidth" @click="setImageSize">图片位置及大小</a>
+    <upload-button btn-style="is-primary is-medium" @file="imageReplaced" label="更换图片" />
     <a class="button is-medium is-fullwidth" @click="chooseAnimation">动画特效</a>
   </el-dialog>
   <el-dialog :visible.sync="dialogShowChooseSize" title="设置图片位置和大小" width="100%" top="20vh" custom-class="dialog-image-size">
@@ -305,15 +305,47 @@ export default {
       this.currentElement = element
       this.dialogShowElementMenu = true
     },
-    async imageChoosed (file) {
+    async imageChoosed (files) {
       const loading = Loading.service({
         lock: true,
         text: '正在保存图片',
         fullscreen: true,
         background: 'rgba(255, 255, 255, 0.6)'
       })
+      let isFirst = true
+      for (let file of files) {
+        const result = await this.imagedao.uploadBlob(file, this.work.id)
+        if (isFirst) {
+          this.insertRawImage(result.name, file)
+          isFirst = false
+        } else {
+          // 新增场景并插入图片
+          this.addNewScene()
+          this.currentSceneIndex = this.work.scenes.length - 1
+          this.chooseScene()
+          this.insertRawImage(result.name, file)
+        }
+      }
+      loading.close()
+    },
+
+    // 选择更换当前的图片
+    async imageReplaced (file) {
+      const loading = Loading.service({
+        lock: true,
+        text: '正在更换图片',
+        fullscreen: true,
+        background: 'rgba(255, 255, 255, 0.6)'
+      })
       const result = await this.imagedao.uploadBlob(file, this.work.id)
-      this.insertRawImage(result.name, file)
+      if (this.currentScene.elements.length) {
+        const clonedElement = this.currentScene.elements[0]
+        clonedElement.id = shortid()
+        clonedElement.imgPath = result.name
+        // 这里还是使用本地地址, 因为微信不显示远程动态加载的图片
+        clonedElement.url = URL.createObjectURL(file)
+        this.setElementAppearance(clonedElement, this.currentAppearance, this.device)
+      }
       loading.close()
     },
     /**
@@ -406,6 +438,7 @@ export default {
      */
     getWorkConfig () {
       const work = JSON.parse(JSON.stringify(this.work))
+      work.user = this.ctx.user.id
       for (let i = 0; i < work.scenes.length; i++) {
         const scene = work.scenes[i]
         for (let element of scene.elements) {
