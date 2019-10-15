@@ -1,5 +1,10 @@
 <template>
 <div class="slide-lite">
+  <div class="top-layer">
+    <a class="button is-info btn-home is-medium" @click="$router.replace('/slide/lite/list')">首页</a>
+    <a @click="deleteScene" class="delete is-large"></a>
+    <span class="tag is-light tag-page">{{this.currentSceneIndex + 1}}/ {{this.work.scenes.length}}</span>
+  </div>
   <div class="device-container" :style="containerStyle">
     <div class="scene" :style="currentScene.style" @click.self="setBackground">
       <div v-for="(element, index) of currentScene.elements" :key="element.id" :id="'element-' + element.id"
@@ -13,12 +18,9 @@
         <span v-if="element.type === TypeEnum.TEXT" v-html="newline(element.text)"></span>
       </div>
     </div>
-    <span class="tag is-light tag-page">{{this.currentSceneIndex + 1}}/ {{this.work.scenes.length}}</span>
-    <a v-if="currentScene.elements.length" @click="deleteScene" class="delete is-large"></a>
   </div>
   <div class="upload-image-container" :style="containerStyle" v-if="currentScene.elements.length === 0">
     <upload-button btn-style="is-primary is-medium" @files="imageChoosed" :isMultiple="true"></upload-button>
-    <span class="tag is-light tag-page">{{this.currentSceneIndex + 1}}/ {{this.work.scenes.length}}</span>
   </div>
   <div class="btn-next">
     <img src="./arrow-btn.png" @click="nextScene">
@@ -29,27 +31,24 @@
 
   <div class="tri-button columns is-mobile is-centered">
     <div class="column is-narrow">
-      <a class="button is-medium is-info btn-home" @click="$router.replace('/slide/lite/list')">首页</a>
-    </div>
-    <div class="column is-narrow">
-      <upload-button btn-style="is-primary is-medium" @file="audioChoosed">上传音频</upload-button>
+      <upload-button btn-style="is-primary is-small" @file="audioChoosed" label="上传音频"></upload-button>
     </div>
     <div class="column is-narrow" v-if="work.audioUrl">
-      <a class="button is-info is-medium" @click="playAndSetTicks">{{ticksEditing ? '停止': '校准'}}</a>
+      <a class="button is-info is-small" @click="playAndSetTicks">{{ticksEditing ? '停止': '校准'}}</a>
     </div>
     <div class="column is-narrow">
-      <a class="button is-info is-medium" @click="runWork">运行</a>
+      <a class="button is-info is-small" @click="runWork">运行</a>
     </div>
   </div>
   <!--  操作图片的对话框-->
   <el-dialog :visible.sync="dialogShowElementMenu" title="设置图片" width="75%" top="30vh" custom-class="dialog-edit-menu">
+    <upload-button btn-style="is-primary is-medium" @file="imageReplaced" label="更换图片" />
     <a class="button is-medium is-fullwidth" @click="setBackground">背景设置</a>
     <a class="button is-medium is-fullwidth" @click="setImageSize">图片位置及大小</a>
-    <upload-button btn-style="is-primary is-medium" @file="imageReplaced" label="更换图片" />
     <a class="button is-medium is-fullwidth" @click="chooseAnimation">动画特效</a>
   </el-dialog>
   <el-dialog :visible.sync="dialogShowChooseSize" title="设置图片位置和大小" width="100%" top="20vh" custom-class="dialog-image-size">
-    <a class="button is-medium is-fullwidth" v-for="(appearance, index) in fixAppearances" :key="index" @click="setAppearance(appearance)">{{appearance.label}}</a>
+    <a class="button is-small is-fullwidth" v-for="(appearance, index) in fixAppearances" :key="index" @click="setAppearance(appearance)">{{appearance.label}}</a>
   </el-dialog>
   <el-dialog :visible.sync="dialogShowSetBackground"  title="设置背景" width="100%" top="0" custom-class="dialog-set-background">
     <div class="palettes">
@@ -142,8 +141,8 @@ export default {
   },
 
   created () {
-    this.device.width = window.screen.availWidth * 0.7
-    this.device.height = window.screen.availHeight * 0.7
+    this.device.width = window.screen.availWidth
+    this.device.height = window.screen.availHeight
     this.imagedao = new ImageDAO(this.ctx)
     this.workdao = new RestDAO(this.ctx, 'danke/work')
     const work = this.ctx.editWork
@@ -180,7 +179,7 @@ export default {
       this.applyWorkTicksToScenes()
     },
     chooseAnimation () {
-      this.$refs.dialogFrameChoose.chooseFrame('in')
+      this.$refs.dialogFrameChoose.chooseFrame(this.currentElement)
       this.dialogShowElementMenu = false
     },
 
@@ -490,41 +489,38 @@ export default {
   position: absolute;
   left: 0;
   top: 0;
-  background: url('./bg.png');
+  // background: url('./bg.png');
   background-size: cover;
-  .device-container {
-    background-color: aliceblue;
-    overflow: hidden;
-    height: 140vw;
-    left: 15vw;
-    top: 5vw;
+  .top-layer {
     position: absolute;
-    border-radius: 20px;
-    width: 70vw;
+    z-index: 9;
+    width: 100%;
+    height: 20%;
     .delete.is-large {
       position: absolute;
-      bottom: 3vw;
-      left: calc(50% - 16px);
+      top: 4vw;
+      right: 4vw;
     }
     .tag-page {
       position: absolute;
-      right: 10px;
-      bottom: 10px;
+      top: 4vw;
+      left: 46vw;
     }
+  }
+  .device-container {
+    background-color: aliceblue;
+    overflow: hidden;
+    position: absolute;
+    border-radius: 20px;
   }
   .upload-image-container {
     position: absolute;
-    left: 15vw;
-    top: 5vw;
+    left: 0;
+    top: 0;
     display: flex;
     border-radius: 20px;
     justify-content: center;
     align-items: center;
-    .tag-page {
-      position: absolute;
-      right: 10px;
-      bottom: 10px;
-    }
   }
   .btn-new {
     position: absolute;
@@ -534,14 +530,14 @@ export default {
   .btn-next {
     position: absolute;
     right: 3vw;
-    top: 75vw;
+    top: 48vh;
     width: 10vw;
   }
 
   .btn-prev {
     position: absolute;
     left: 3vw;
-    top: 75vw;
+    top: 48vh;
     width: 10vw;
     transform: rotate(180deg);
   }
@@ -562,8 +558,11 @@ export default {
     }
   }
 
+  .dialog-edit-menu {
+    text-align: center;
+  }
   .dialog-image-size {
-    height: 50vh;
+    height: 100%;
     margin-bottom: 0;
   }
   .dialog-set-background {
@@ -580,6 +579,16 @@ export default {
         width: 20vw;
         height: 20vw;
       }
+    }
+  }
+
+  .file-label {
+    width: 100%;
+    justify-content: center;
+    .file-cta {
+      width: 100%;
+      display: flex;
+      justify-content: center;
     }
   }
 }

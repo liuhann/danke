@@ -1,6 +1,6 @@
 <template>
 <div class="field upload-image">
-  <div class="file" :class="btnStyle">
+  <div class="file is-centered" :class="btnStyle">
     <label class="file-label">
       <input class="file-input" type="file" name="resume" @input="fileChoosed" :multiple="isMultiple">
         <slot>
@@ -26,7 +26,7 @@ export default {
     label: {
       type: String,
       default: '选择图片'
-    }
+    },
     btnStyle: {
       type: String,
       default: 'medium'
@@ -34,11 +34,11 @@ export default {
   },
   methods: {
     fileChoosed (event) {
-      if (event.currentTarget.files.length === 1) {
+      if (this.isMultiple) {
+        this.$emit('files', event.currentTarget.files)
+      } else {
         const file = event.currentTarget.files[0]
         this.$emit('file', file)
-      } else {
-        this.$emit('files', event.currentTarget.files)
       }
     }
   }

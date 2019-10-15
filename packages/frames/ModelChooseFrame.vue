@@ -16,8 +16,8 @@
     </span>
   </div>
   <span slot="footer" class="dialog-footer">
-    <button class="button is-link is-outlined" @click="choose">应用</button>
-    <button class="button is-link is-outlined" @click="chooseForAll">应用到所有</button>
+    <button class="button is-text" @click="choose">应用</button>
+    <button class="button" @click="chooseForAll">应用到所有</button>
   </span>
 </el-dialog>
 </template>
@@ -93,7 +93,8 @@ export default {
         type: type
       })
     },
-    chooseFrame (type, choosedCallback) {
+    // 设置一个元素的进入离开帧
+    chooseFrame (element, choosedCallback) {
       this.currentType = type || 'in'
       this.centerDialogVisible = true
       this.choosedCallback = choosedCallback
@@ -115,6 +116,7 @@ export default {
   z-index: 10001;
 
   .speed {
+    margin-top: 10px;
     float: left;
   }
   .modal-content {

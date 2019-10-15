@@ -1,6 +1,6 @@
 <template>
 <div class="page-slide-lite-list section">
-  <a class="button is-medium is-primary" @click="newSlide" style="margin-bottom: 2rem">新增</a>
+  <a class="button is-small is-primary" @click="newSlide" style="margin-bottom: 1rem">新增</a>
   <div class="columns is-mobile is-multiline" >
     <div v-for="work in workList" :key="work.id" class="column is-half-mobile">
       <div class="device-container">
