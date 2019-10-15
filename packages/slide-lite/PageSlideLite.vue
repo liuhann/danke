@@ -31,13 +31,13 @@
 
   <div class="tri-button columns is-mobile is-centered">
     <div class="column is-narrow">
-      <upload-button btn-style="is-primary is-small" @file="audioChoosed" label="上传音频"></upload-button>
+      <upload-button btn-style="is-primary is-medium" @file="audioChoosed" label="上传音频"></upload-button>
     </div>
     <div class="column is-narrow" v-if="work.audioUrl">
-      <a class="button is-info is-small" @click="playAndSetTicks">{{ticksEditing ? '停止': '校准'}}</a>
+      <a class="button is-info is-medium" @click="playAndSetTicks">{{ticksEditing ? '停止': '校准'}}</a>
     </div>
     <div class="column is-narrow">
-      <a class="button is-info is-small" @click="runWork">运行</a>
+      <a class="button is-info is-medium" @click="runWork">运行</a>
     </div>
   </div>
   <!--  操作图片的对话框-->
@@ -48,7 +48,7 @@
     <a class="button is-medium is-fullwidth" @click="chooseAnimation">动画特效</a>
   </el-dialog>
   <el-dialog :visible.sync="dialogShowChooseSize" title="设置图片位置和大小" width="100%" top="20vh" custom-class="dialog-image-size">
-    <a class="button is-small is-fullwidth" v-for="(appearance, index) in fixAppearances" :key="index" @click="setAppearance(appearance)">{{appearance.label}}</a>
+    <a class="button is-medium is-fullwidth" v-for="(appearance, index) in fixAppearances" :key="index" @click="setAppearance(appearance)">{{appearance.label}}</a>
   </el-dialog>
   <el-dialog :visible.sync="dialogShowSetBackground"  title="设置背景" width="100%" top="0" custom-class="dialog-set-background">
     <div class="palettes">
@@ -141,8 +141,8 @@ export default {
   },
 
   created () {
-    this.device.width = window.screen.availWidth
-    this.device.height = window.screen.availHeight
+    this.device.width = window.innerWidth
+    this.device.height = window.innerHeight
     this.imagedao = new ImageDAO(this.ctx)
     this.workdao = new RestDAO(this.ctx, 'danke/work')
     const work = this.ctx.editWork
@@ -496,6 +496,11 @@ export default {
     z-index: 9;
     width: 100%;
     height: 20%;
+    .btn-home {
+      position: absolute;
+      top: 4vw;
+      left: 4vw;
+    }
     .delete.is-large {
       position: absolute;
       top: 4vw;
