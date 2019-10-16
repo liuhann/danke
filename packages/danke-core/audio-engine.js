@@ -1,4 +1,4 @@
-import { getElementInnerStyle, getElementStyle, getSceneStyle } from './utils/styles'
+import { getElementInnerStyle, getElementStyle, getSceneStyle, getAnimationStyle } from './utils/styles'
 /**
  * Loading scenes and  resources then init ticker + views
  */
@@ -65,11 +65,12 @@ export default class AudioDanke {
   renderEnter (scene) {
     // 处理每个元素的入场动画
     for (let element of scene.elements) {
-      element.style = getElementStyle(element, this.device, 'in')
-      element.innerStyle = getElementInnerStyle(element, this.device)
+      element.style = getElementStyle(element, this.device)
+      element.innerStyle = getElementInnerStyle(element, this.device) + ';' + getAnimationStyle(element, 'in')
       if (element.animation.dura.name && element.animation.dura.duration) {
         setTimeout(() => {
           element.style = getElementStyle(element, this.device, 'dura')
+          element.innerStyle = getElementInnerStyle(element, this.device) + ';' + getAnimationStyle(element, 'dura')
         }, element.animation.in.duration + element.animation.in.delay)
       }
     }
@@ -83,6 +84,7 @@ export default class AudioDanke {
   renderLeave (scene) {
     for (let element of scene.elements) {
       element.style = getElementStyle(element, this.device, 'out')
+      element.innerStyle = getElementInnerStyle(element, this.device) + ';' + getAnimationStyle(element, 'out')
     }
     scene.style = `display: inherit; ${getSceneStyle(scene, this.device, 'out')}`
   }

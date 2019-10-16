@@ -65,6 +65,9 @@ export default {
       }, {
         label: '慢速',
         value: 1000
+      }, {
+        label: '极慢',
+        value: 2000
       }]
     }
   },
@@ -95,7 +98,7 @@ export default {
     },
     // 设置一个元素的进入离开帧
     chooseFrame (element, choosedCallback) {
-      this.currentType = type || 'in'
+      this.currentType = 'in'
       this.centerDialogVisible = true
       this.choosedCallback = choosedCallback
     },

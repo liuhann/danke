@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import Player from './Player'
+import Player from './Player.vue'
 import RestDAO from '../common/dao/restdao'
 export default {
   name: 'PagePlayVue',

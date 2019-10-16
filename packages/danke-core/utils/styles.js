@@ -70,13 +70,23 @@ function getElementStyle (element, device, animation) {
     .concat(getClipPathStyle(element, device))
     .concat(getTransformStyle(element, device))
     .concat(getShapeStyle(element, device))
-
-  if (animation && element.animation[animation] && element.animation[animation].name) {
-    const animationDef = element.animation[animation]
-    styles.push(`animation: ${animationDef.name} ${animationDef.duration}ms ${animationDef.timing} ${animationDef.delay}ms ${animationDef.iteration} normal both running`)
-    addAnimationStyle(sheet, animationDef)
-  }
+  // if (animation && element.animation[animation] && element.animation[animation].name) {
+  //   const animationDef = element.animation[animation]
+  //   styles.push(`animation: ${animationDef.name} ${animationDef.duration}ms ${animationDef.timing} ${animationDef.delay}ms ${animationDef.iteration} normal both running`)
+  //   addAnimationStyle(sheet, animationDef)
+  // }
   return styles.filter(n => n).join(';')
+}
+
+/**
+ * 获取元素的动画样式
+ */
+function getAnimationStyle (element, stage) {
+  if (stage && element.animation[stage] && element.animation[stage].name) {
+    const animationDef = element.animation[stage]
+    addAnimationStyle(sheet, animationDef)
+    return `animation: ${animationDef.name} ${animationDef.duration}ms ${animationDef.timing} ${animationDef.delay}ms ${animationDef.iteration} normal both running`
+  }
 }
 
 /**
@@ -163,6 +173,7 @@ export {
   getLenSplits,
   renderSceneStage,
   getElementStyle,
+  getAnimationStyle,
   getWorkStyle,
   getSceneStyle,
   getImageWebUrl,

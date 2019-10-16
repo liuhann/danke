@@ -13,6 +13,7 @@
         <!--图片渲染-->
         <img v-if="element.type === TypeEnum.IMAGE || element.type === TypeEnum.SVG"
              :src="element.url"
+             :style="element.animationStyle"
              crossOrigin="true">
         <!--文本渲染情况下 文本内容-->
         <span v-if="element.type === TypeEnum.TEXT" v-html="newline(element.text)"></span>
@@ -67,7 +68,7 @@
 <script>
 import { Dialog, Message, Loading } from 'element-ui'
 import { clone } from '../utils/object'
-import { getElementStyle, getImageWebUrl, getSceneStyle } from '../danke-core/utils/styles'
+import { getElementStyle, getImageWebUrl, getSceneStyle, getAnimationStyle } from '../danke-core/utils/styles'
 import { shortid } from '../utils/string'
 import { TypeEnum, IMAGE } from '../danke-core/elements'
 import SCENE from '../danke-core/elements/scene'
@@ -265,7 +266,8 @@ export default {
     },
     renderScene (scene, stage) {
       for (let element of scene.elements) {
-        element.style = getElementStyle(element, this.device, stage)
+        element.style = getElementStyle(element, this.device)
+        element.animationStyle = getAnimationStyle(element, stage)
       }
       scene.style = `display: inherit; ${getSceneStyle(scene, this.device, stage)}`
     },
@@ -555,6 +557,7 @@ export default {
   }
   .scene {
     .element {
+      overflow: hidden;
       img {
         width: 100%;
         height: 100%;

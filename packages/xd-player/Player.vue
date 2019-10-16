@@ -254,6 +254,7 @@ export default {
     }
     .element {
       position: absolute;
+      overflow: hidden;
       &.type1 {
         display: flex;
         justify-content: center;
