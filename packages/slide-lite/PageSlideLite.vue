@@ -8,6 +8,7 @@
   <div class="device-container" :style="containerStyle">
     <div class="scene" :style="currentScene.style" @click.self="setBackground">
       <div v-for="(element, index) of currentScene.elements" :key="element.id" :id="'element-' + element.id"
+           :ref="element.id"
            class="element" :class="[element.visible?'':'hidden', 'type' + element.type]" :style="element.style + ';' + 'z-index:' + index + ';'"
            @click="chooseElement(element)">
         <!--图片渲染-->
@@ -268,7 +269,21 @@ export default {
       for (let element of scene.elements) {
         element.style = getElementStyle(element, this.device)
         element.animationStyle = getAnimationStyle(element, stage)
+        this.$nextTick(() => {
+          console.log(this.$refs[element.id][0])
+          const newdiv = document.createElement('div')
+          newdiv.style = `position: absolute;
+            width: 100%;
+            left: 0;
+            top: 0;
+            background: rgba(0,0,0,.2);
+            transform: rotate(5deg) scaleX(.01) scaleY(2);
+            height: 100%;
+            transition: transform 1s;`
+          this.$refs[element.id][0].appendChild(newdiv)
+        })
       }
+
       scene.style = `display: inherit; ${getSceneStyle(scene, this.device, stage)}`
     },
     /**
