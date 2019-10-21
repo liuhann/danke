@@ -211,7 +211,7 @@ export default {
      * 增加新的空白场景
      */
     addNewScene () {
-      const scene = clone(SCENE)
+      const scene = JSON.parse(JSON.strigify(SCENE))
       scene.background.colors = [this.currentBackground]
       scene.name = '场景 ' + (this.work.scenes.length + 1)
       scene.id = shortid()

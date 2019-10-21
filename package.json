@@ -29,7 +29,8 @@
     "pauseable": "^0.3.1",
     "resource-loader": "^3.0.1",
     "vue": "^2.6.10",
-    "vue-router": "^3.1.2"
+    "vue-router": "^3.1.2",
+    "vuetify": "^2.1.5"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.11.0",
