@@ -5,21 +5,11 @@
     <img v-if="element.url" :src="element.url">
     <span v-if="element.type === TypeEnum.TEXT && element.font.size >= textAdjust" v-html="$options.filters.newline(element.text)"></span>
   </div>
-  <div v-if="enableMask" class="hover-mask" :class="mouseOn? 'on': ''">
+  <div class="hover-mask on" :class="mouseOn? 'on': ''">
     <div class="centering">
-      <a class="button is-medium is-success" @click="play">
+      <a class="button is-small is-success" @click="play">
         <span class="icon">
           <i class="icon-play"></i>
-        </span>
-      </a>
-      <a v-if="work.isDraft" class="button is-medium is-info" style="margin-left: 20px;" @click="edit">
-        <span class="icon">
-          <i class="icon-pencil"></i>
-        </span>
-      </a>
-      <a v-if="!work.isDraft" class="button is-medium is-info" style="margin-left: 20px;" @click="shareLink">
-        <span class="icon">
-          <i class="icon-cube"></i>
         </span>
       </a>
     </div>
@@ -137,21 +127,16 @@ export default {
   }
 
   .hover-mask {
-    opacity: 0;
     transition: opacity .2s ease-out;
     position: absolute;
     left: 0;
     top: 0;
     width: 100%;
-    background-color: #0a0a0a;
-    // background-color: rgba(0,0,0, .75);
+    background-color: rgba(0,0,0, .4);
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    &.on {
-      opacity: .75;
-    }
   }
 }
 </style>

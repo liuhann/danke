@@ -18,9 +18,6 @@
       </label>
     </a>
   </div>
-  <div class="bottom" :class="[vertical? 'flex-column': '']">
-    <a class="button is-white icon-th-list" :class="$parent.showElementsLayer? 'on': ''" @click="$parent.showElementsLayer = !$parent.showElementsLayer"></a>
-  </div>
 </div>
 </template>
 <script>

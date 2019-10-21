@@ -27,15 +27,15 @@
     line-height: 28px;
   }
 }
-
-@media screen and (max-width: 640px) {
-  .el-dialog__body {
-    height: calc(100% - 110px);
-  }
-  .el-dialog__header {
-    padding: 10px 20px 5px 20px;
-  }
-  .el-dialog__body {
-    padding: 10px 20px;
-  }
+.el-dialog.is-fullscreen {
+  overflow: hidden;
+}
+.el-dialog__body {
+  height: calc(100% - 110px);
+}
+.el-dialog__header {
+  padding: 10px 20px 5px 20px;
+}
+.el-dialog__body {
+  padding: 10px 20px;
 }

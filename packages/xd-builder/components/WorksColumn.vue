@@ -14,25 +14,17 @@
           @link="shareLink(work)"
           @play="playWork(work)"
           @edit="chooseDraftWork(work)"/>
-        <div class="work-info">
-          <span class="button is-small is-white has-text-grey-dark" @click='chooseDraftWork(work)'>
-            <span class="icon">
-              <i class="icon-pencil"></i>
-            </span>
-            <span>编辑</span>
-          </span>
-          <span class="button is-small is-white has-text-grey-dark" @click='chooseDraftWork(work)'>
-            <span class="icon">
-              <i class="icon-eye"></i>
-            </span>
-            <span>预览</span>
-          </span>
-          <a class="button is-small is-white has-text-danger is-pulled-right" @click='deleteWork(work)'>
+        <div class="work-info" style="height: 28px;">
+          <a class="button is-white has-text-danger is-pulled-right" @click='deleteWork(work)'>
             <span class="icon">
               <i class="icon-trash-empty"></i>
             </span>
-            <span>删除</span>
           </a>
+          <span class="button is-white has-text-info is-pulled-right" @click='chooseDraftWork(work)'>
+            <span class="icon">
+              <i class="icon-pencil"></i>
+            </span>
+          </span>
         </div>
       </div>
     </div>

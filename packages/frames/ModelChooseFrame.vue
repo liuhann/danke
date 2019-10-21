@@ -95,6 +95,7 @@ export default {
         animation: animation,
         type: type
       })
+      this.choosedCallback && this.choosedCallback(animation)
     },
     // 设置一个元素的进入离开帧
     chooseFrame (element, choosedCallback) {
@@ -109,6 +110,7 @@ export default {
     choose () {
       this.centerDialogVisible = false
       this.$emit('current', this.$refs.frameBox.animationSet, this.speeds)
+      this.choosedCallback && this.choosedCallback(this.$refs.frameBox.currentAnimation)
     }
   }
 }
@@ -127,7 +129,7 @@ export default {
   }
 
   .frame-container {
-    height: calc(100% - 200px);
+    height: calc(100% - 30px);
   }
 
   @media screen and (max-width: 640px) {
@@ -167,6 +169,4 @@ export default {
     padding-top: 100%;  /* ratio of 1:1*/
   }
 }
-
-
 </style>

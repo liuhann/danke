@@ -41,7 +41,6 @@
     <!-- float 切换显示 -->
     <list-config v-show="showElementsLayer" :current-scene="currentScene" :current-element="currentElement"></list-config>
     <image-cropper ref="cropper"></image-cropper>
-    <dialog-work-list ref="dialogWorkList" @choose="openWork"></dialog-work-list>
   </div>
 </template>
 
@@ -71,8 +70,7 @@ export default {
     ElementConfig,
     ImageCropper,
     LeftToggleMenu,
-    WorkSceneConfig,
-    DialogWorkList
+    WorkSceneConfig
   },
   mixins: [initMixin, elementMixin, saveShareMixin, sceneMixin, keyBindMixin, layoutMixin],
   props: {

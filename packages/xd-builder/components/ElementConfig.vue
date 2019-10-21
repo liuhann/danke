@@ -1,13 +1,5 @@
 <template>
 <nav class="element-prop-config">
-  <!-- <div class="form-title">
-    <div class="text">元素配置</div>
-    <div class="opers">
-      <span class="icon-clone" @click="copyElement"></span>
-      <span class="icon-scissors" @click="cutElement"></span>
-      <span class="icon-paste" :class="[clipboard.elements.length > 0? 'has-clipboard': '']" @click="pasteElement"></span>
-    </div>
-  </div> -->
   <tabs size="is-small" v-model="configTab" :tabs="configTabs"></tabs>
   <div class="basic" v-if="configTab === 'basic'">
     <edit-font v-if="element.font" v-model="element.font"></edit-font>

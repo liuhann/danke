@@ -4,7 +4,6 @@
     <div class="frame-preview" :class="[previewType!=='文字'?'shadow': '']">
       <span class="buttons has-addons edit-button" v-if="isEdit" >
         <router-link to="/frame/edit" class="button is-small is-info">创建</router-link>
-        <span class="button is-small" @click="refreshFrame">刷新</span>
         <span class="button is-small" @click="editFrame">编辑</span>
         <span class="button is-danger is-small" v-if="currentAnimation && currentAnimation.userid === user.id" @click="removeFrame">删除</span>
       </span>

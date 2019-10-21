@@ -89,6 +89,7 @@ export default {
     },
     chooseAnimation (type) {
       frameModel.choose(type, (animation) => {
+        console.log('choose animation', animation)
         this.animation.name = animation.name
         this.animation.desc = animation.desc
         if (!this.animation.duration) {
@@ -97,9 +98,14 @@ export default {
         if (!this.animation.delay) {
           this.animation.delay = animation.delay
         }
-        this.animation.srcFrame = animation.srcFrame
         this.animation.timing = animation.timing
-        this.animation.frames = animation.frames
+        if (!animation.cssFrame) {
+          debugger
+          this.animation.cssFrame = ''
+          this.animation.frames = animation.frames
+        } else {
+          this.animation.cssFrame = animation.cssFrame
+        }
       })
     },
 

@@ -37,16 +37,10 @@
       </div>
     </section>
     <section class="section">
-        <h4 class="subtitle is-4">打开草稿</h4>
-        <works-column :works="drafts.widescreens" @edit="chooseDraftWork" @play="playWork" @delete="deleteWorkDraft"></works-column>
-        <works-column :works="drafts.mobiles" @edit="chooseDraftWork" @play="playWork" @delete="deleteWorkDraft"></works-column>
-        <works-column :works="drafts.books" @edit="chooseDraftWork" @play="playWork" @delete="deleteWorkDraft"></works-column>
-    </section>
-    <section class="section">
       <div class="container">
-        <h4 class="subtitle is-4">我发布的作品</h4>
-        <works-column :works="shares.widescreens" @share-info="goShareLink" @play="playWork" @delete="deleteWorkDraft"></works-column>
-        <works-column :works="shares.mobiles" @share-info="goShareLink" @play="playWork" @delete="deleteWorkDraft"></works-column>
+        <h4 class="subtitle is-4">我的作品</h4>
+        <works-column :works="shares.widescreens"  @play="playWork" @delete="deleteWorkDraft"></works-column>
+        <works-column :works="shares.mobiles" @edit="chooseDraftWork" @play="playWork" @delete="deleteWorkDraft"></works-column>
         <works-column :works="shares.books" @share-info="goShareLink" @play="playWork" @delete="deleteWorkDraft"></works-column>
       </div>
     </section>
