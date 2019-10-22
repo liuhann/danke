@@ -2,7 +2,7 @@ import { MessageBox } from 'element-ui'
 import { clone } from '../../utils/object'
 import { shortid } from '../../utils/string'
 import SCENE from '../../danke-core/elements/scene'
-import { getSceneStyle, renderSceneStage } from '../../danke-core/utils/styles'
+import { getElementInnerStyle, getElementStyle, getSceneStyle, renderSceneStage } from '../../danke-core/utils/styles'
 export default {
   provide () {
     return {
@@ -33,7 +33,7 @@ export default {
       this.work.scenes.push(scene)
       this.chooseScene(scene)
     },
-    chooseScene (scene) {
+    chooseScene (scene, index) {
       this.chooseElement(null)
       this.currentScene = scene
     },
@@ -41,10 +41,18 @@ export default {
       for (let i = 0; i < this.work.scenes.length; i++) {
         if (this.currentScene === this.work.scenes[i]) {
           if (i < this.work.scenes.length - 1) {
-            this.chooseScene(this.work.scenes[i + 1])
+            this.chooseScene(this.work.scenes[i + 1], i + 1)
+            this.renderScene(this.work.scenes[i + 1], 'in')
+            this.renderScene(this.work.scenes[i], 'out')
             break
           }
         }
+      }
+    },
+    renderScene (scene, stage) {
+      for (let element of scene.elements) {
+        element.style = getElementStyle(element, this.device, stage)
+        element.innerStyle = getElementInnerStyle(element, this.device, stage)
       }
     },
     previousScene () {
@@ -52,6 +60,8 @@ export default {
         if (this.currentScene === this.work.scenes[i]) {
           if (i > 0) {
             this.chooseScene(this.work.scenes[i - 1])
+            this.renderScene(this.work.scenes[i - 1], 'in')
+            this.renderScene(this.work.scenes[i], 'out')
             break
           }
         }

@@ -7,6 +7,7 @@ export default {
   iteration: 1,
   infinite: false,
   srcFrame: '',
+  overflow: true,
   direction: 'normal',
   fillMode: 'both'
 }

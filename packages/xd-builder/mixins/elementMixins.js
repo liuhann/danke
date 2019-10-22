@@ -164,8 +164,8 @@ export default {
         const resourceUrl = URL.createObjectURL(blob)
         clonedElement.url = resourceUrl
         clonedElement.blob = blob
-        const style = getElementStyle(clonedElement, this.device)
-        clonedElement.style = style
+        clonedElement.style = getElementStyle(clonedElement, this.device)
+        clonedElement.innerStyle = getElementInnerStyle(clonedElement, this.device)
         this.currentScene.elements.push(clonedElement)
         elements.push(clonedElement)
         blob.filename = this.croppingFileName

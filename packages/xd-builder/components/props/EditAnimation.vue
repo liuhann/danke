@@ -41,6 +41,15 @@
   </div>
   <div class="field has-addons">
     <div class="control field-lb">
+      溢出
+    </div>
+    <div class="control">
+      <input type="checkbox" :value="animation.overflow" />
+    </div>
+  </div>
+
+  <div class="field has-addons">
+    <div class="control field-lb">
       复制样式
     </div>
     <div class="control">

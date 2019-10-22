@@ -70,11 +70,12 @@ function getElementStyle (element, device, animation) {
     .concat(getClipPathStyle(element, device))
     .concat(getTransformStyle(element, device))
     .concat(getShapeStyle(element, device))
-  // if (animation && element.animation[animation] && element.animation[animation].name) {
-  //   const animationDef = element.animation[animation]
-  //   styles.push(`animation: ${animationDef.name} ${animationDef.duration}ms ${animationDef.timing} ${animationDef.delay}ms ${animationDef.iteration} normal both running`)
-  //   addAnimationStyle(sheet, animationDef)
-  // }
+
+  if (animation && animation.overflow && element.animation[animation] && element.animation[animation].name) {
+    const animationDef = element.animation[animation]
+    styles.push(`animation: ${animationDef.name} ${animationDef.duration}ms ${animationDef.timing} ${animationDef.delay}ms ${animationDef.iteration} normal both running`)
+    addAnimationStyle(sheet, animationDef)
+  }
   return styles.filter(n => n).join(';')
 }
 
@@ -99,6 +100,11 @@ function getAnimationStyle (element, stage) {
 function getElementInnerStyle (element, device, animation) {
   let styles = []
   styles = styles.concat(getMaskStyle(element, device))
+  if (animation && !animation.overflow && element.animation[animation] && element.animation[animation].name) {
+    const animationDef = element.animation[animation]
+    addAnimationStyle(sheet, animationDef)
+    styles.push(`animation: ${animationDef.name} ${animationDef.duration}ms ${animationDef.timing} ${animationDef.delay}ms ${animationDef.iteration} normal both running`)
+  }
   return styles.filter(n => n).join(';')
 }
 
