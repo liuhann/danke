@@ -6,7 +6,6 @@
       <left-toggle-menu v-if="showLeftToggleMenu" @menu-clicked="showLeftToggleMenu = false"></left-toggle-menu>
     </transition>
     <div class="scene-container" ref="sceneContainer">
-      <div class="device-drag" ref="deviceDrag" @click="sceneClick"></div>
       <div class="device" ref="device" v-if="currentScene" :style="currentScene.style" @click.self="sceneClick">
         <div v-for="(element, index) of currentScene.elements" :key="element.id" :id="'element-' + element.id"
              class="element" :class="[element.visible?'':'hidden', 'type' + element.type, multipleElements.indexOf(element) > -1? 'selected': '']" :style="element.style + ';' + 'z-index:' + index + ';'"
@@ -14,25 +13,26 @@
           <!--图片渲染-->
           <img v-if="element.type === TypeEnum.IMAGE || element.type === TypeEnum.SVG" :src="element.url" :style="element.innerStyle || ''">
           <!--文本渲染情况下 文本内容-->
-          <span v-if="element.type === TypeEnum.TEXT && (multipleElements.length > 1 || element!==currentElement)" v-html="$options.filters.newline(element.text)"></span>
-          <span v-if="element.type === TypeEnum.TEXT && multipleElements.length === 1 && element === currentElement" @input="contentChange" class="content-editable" contenteditable v-html="$options.filters.newline(element.text)"></span>
+          <span v-if="element.type === TypeEnum.TEXT" v-html="element.text"></span>
           <!--文件被选中的遮罩-->
           <div class="mask" v-if="multipleElements.indexOf(element) > -1">
             <!--右下角corner-->
             <div class="corner-rb" v-if="multipleElements.length === 1 && element===currentElement"></div>
           </div>
         </div>
-        <div class="scene-options">
-          <span class="tag is-info">{{work.scenes.indexOf(currentScene)+1}}/{{work.scenes.length}}</span>
-          <a class="button is-small" @click="previousScene" style="margin-top: 5px;">
-            向前
-          </a>
-          <a class="button is-small" @click="nextScene" style="margin-top: 5px;">
-            向后
-          </a>
-          <a class="button is-success is-small" @click="addNewScene" style="margin-top: 5px;">新增</a>
-        </div>
       </div>
+      <div class="scene-options">
+        <span class="tag is-info">{{work.scenes.indexOf(currentScene)+1}}/{{work.scenes.length}}</span>
+        <a class="button is-small" @click="previousScene" style="margin-top: 5px;">
+          向前
+        </a>
+        <a class="button is-small" @click="nextScene" style="margin-top: 5px;">
+          向后
+        </a>
+        <a class="button is-success is-small" @click="addNewScene" style="margin-top: 5px;">新增</a>
+      </div>
+      <div class="mask-right" :style="maskRightStyle"/>
+      <div class="mask-bottom" :style="maskBottomStyle"/>
     </div>
     <div class="aside">
       <element-config :element="currentElement" v-if="currentElement"></element-config>
@@ -41,6 +41,7 @@
     <!-- float 切换显示 -->
     <list-config v-show="showElementsLayer" :current-scene="currentScene" :current-element="currentElement"></list-config>
     <image-cropper ref="cropper"></image-cropper>
+    <dialog-edit-text ref="dialogEditText" @input="setElementText"/>
   </div>
 </template>
 
@@ -56,9 +57,9 @@ import ImageCropper from './components/ImageCropper'
 import LeftToggleMenu from './components/LeftToggleMenu.vue'
 import TopBar from './components/TopBar.vue'
 import ElementConfig from './components/ElementConfig.vue'
+import DialogEditText from './components/DialogEditText.vue'
 import ListConfig from './components/ListConfig.vue'
 import WorkSceneConfig from './components/WorkSceneConfig.vue'
-import DialogWorkList from './components/DialogWorkList.vue'
 import ToolBar from './components/ToolBar.vue'
 import { TypeEnum } from '../danke-core/elements/index'
 export default {
@@ -70,7 +71,8 @@ export default {
     ElementConfig,
     ImageCropper,
     LeftToggleMenu,
-    WorkSceneConfig
+    WorkSceneConfig,
+    DialogEditText
   },
   mixins: [initMixin, elementMixin, saveShareMixin, sceneMixin, keyBindMixin, layoutMixin],
   props: {
@@ -97,8 +99,7 @@ export default {
       TypeEnum,
       showLeftToggleMenu: false,
       showElementsLayer: false,
-      interactEnabled: true,
-      devicePadding: [40, 20]
+      interactEnabled: true
     }
   },
   created () {
@@ -152,18 +153,23 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
     bottom: 0;
     right: 320px;
     overflow: auto;
-    .device-drag {
+    .mask-right, .mask-bottom {
+      z-index: 201;
+      background-color: rgba(255,255,255, .6);
+    }
+    .scene-options {
       position: absolute;
-      top: 0;
-      left: 0;
-      bottom: 0;
       right: 0;
-      z-index: 1;
+      display: flex;
+      z-index: 202;
+      flex-direction: column;
+      top: 0;
+      width: 40px;
+      height: 300px;
     }
     .device {
       touch-action: none;
       position: absolute;
-      left: 20px;
       background-color: #fff;
       border: 1px solid #ccc;
       z-index: 10;
@@ -221,15 +227,7 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
           }
         }
       }
-      .scene-options {
-        position: absolute;
-        right: -42px;
-        display: flex;
-        flex-direction: column;
-        top: 0;
-        width: 40px;
-        height: 300px;
-      }
+      
       .ti {
         position: absolute;
         background-color: #0a0a0a;

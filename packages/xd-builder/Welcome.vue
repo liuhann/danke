@@ -38,6 +38,11 @@
     </section>
     <section class="section">
       <div class="container">
+        <works-column :works="myWorks" @edit="chooseDraftWork" @play="playWork" @delete="deleteWorkDraft" />
+      </div>
+    </section>
+    <section class="section">
+      <div class="container">
         <h4 class="subtitle is-4">我的作品</h4>
         <works-column :works="shares.widescreens"  @play="playWork" @delete="deleteWorkDraft"></works-column>
         <works-column :works="shares.mobiles" @edit="chooseDraftWork" @play="playWork" @delete="deleteWorkDraft"></works-column>
@@ -89,6 +94,7 @@ export default {
   },
   data () {
     return {
+      myWorks: [],
       isMobile: screen.width < screen.height,
       startNav: 'mobile',
       templates: {
@@ -136,6 +142,7 @@ export default {
   methods: {
     async loadDraftWorks () {
       const result = await this.workdao.list()
+      this.myWorks = result.list
       this.drafts.widescreens = result.list.filter(work => work.ratio === '16:9' && work.isDraft)
       this.drafts.mobiles = result.list.filter(work => work.ratio === '9:16' && work.isDraft)
       this.drafts.books = result.list.filter(work => work.ratio === '4:3' && work.isDraft)

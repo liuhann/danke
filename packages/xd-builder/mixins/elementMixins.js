@@ -130,20 +130,29 @@ export default {
       this.currentScene.elements.push(clonedElement)
       this.chooseElement(clonedElement)
     },
-    insertText (text) {
-      const clonedElement = clone(TEXT)
-      clonedElement.id = shortid()
-      clonedElement.visible = true
-      clonedElement.text = text || '请输入文本内容'
-      clonedElement.size.width = '50vw'
-      clonedElement.size.height = '30px'
-      if (this.ctx.fontCopied) {
-        clonedElement.font = JSON.parse(JSON.stringify(this.ctx.fontCopied))
+
+    setElementText (text) {
+      if (this.currentElement) {
+        this.currentElement.text = text
+      } else {
+        const clonedElement = clone(TEXT)
+        clonedElement.id = shortid()
+        clonedElement.visible = true
+        clonedElement.text = text
+        clonedElement.size.width = '50vw'
+        clonedElement.size.height = '30px'
+        if (this.ctx.fontCopied) {
+          clonedElement.font = JSON.parse(JSON.stringify(this.ctx.fontCopied))
+        }
+        clonedElement.style = getElementStyle(clonedElement, this.device)
+        this.inc++
+        this.currentScene.elements.push(clonedElement)
+        this.chooseElement(clonedElement)
       }
-      clonedElement.style = getElementStyle(clonedElement, this.device)
-      this.inc++
-      this.currentScene.elements.push(clonedElement)
-      this.chooseElement(clonedElement)
+    },
+    insertText (text) {
+      this.chooseElement(null)
+      this.$refs.dialogEditText.open('')
     },
     insertImage (croppedList, cropScreenSize) {
       const elements = []

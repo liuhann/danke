@@ -11,7 +11,8 @@ export default {
       deviceOrigin: {
         width: 360,
         height: 640
-      }
+      },
+      devicePadding: [0, 20]
     }
   },
   provide () {
@@ -36,6 +37,24 @@ export default {
         width: this.device.width + 'px',
         height: this.device.height + 'px'
       }
+    },
+    maskRightStyle () {
+      return {
+        position: 'absolute',
+        right: 0,
+        left: this.device.width + 'px',
+        top: 0,
+        bottom: 0
+      }
+    },
+    maskBottomStyle () {
+      return {
+        position: 'absolute',
+        right: this.device.width + 'px',
+        left: 0,
+        top: this.device.height + 'px',
+        bottom: 0
+      }
     }
   },
   mounted () {
@@ -49,7 +68,6 @@ export default {
       this.showLeftToggleMenu = false
     },
     initSceneContainer () {
-      intereactWith(this.$refs.deviceDrag, this.$refs.device)
       this.zoomCenter()
     },
     zoomIn () {
@@ -67,10 +85,10 @@ export default {
       this.zoom = 1
       this.deviceOrigin = fitToContainer(ratio, containerEl.clientWidth - paddings[0] * 2, containerEl.clientHeight - paddings[1] * 2)
       this.$nextTick(() => {
-        let x = (containerEl.clientWidth - paddings[0] * 2 - this.deviceOrigin.width) / 2
-        let y = paddings[1]
-        this.$refs.device.style.transform = 'translate(' + x + 'px, ' + y + 'px)'
-        intereactWith(this.$refs.deviceDrag || this.$refs.device, this.$refs.device)
+        let x = 0 //(containerEl.clientWidth - paddings[0] * 2 - this.deviceOrigin.width) / 2
+        let y = 0 //paddings[1]
+        // this.$refs.device.style.transform = 'translate(' + x + 'px, ' + y + 'px)'
+        // intereactWith(this.$refs.deviceDrag || this.$refs.device, this.$refs.device)
       })
     }
   }
