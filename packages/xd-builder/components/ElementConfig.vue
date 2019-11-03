@@ -44,14 +44,23 @@
         </div>
       </div>
     </div>
-    <tabs size="is-small" v-model="animationType" :tabs="animationTabs"></tabs>
-    <edit-animation v-if="animationType==='in'" :animation="element.animation.in" animation-type="in"></edit-animation>
-    <edit-animation v-if="animationType==='dura'" :animation="element.animation.dura" animation-type="dura"></edit-animation>
-    <edit-animation v-if="animationType==='out'" :animation="element.animation.out" animation-type="out"></edit-animation>
   </div>
 
   <div class="animation" v-if="configTab === 'animation'">
-
+    <edit-animation :animation="element.animation.in" animation-type="in" />
+    <edit-animation :animation="element.animation.dura" animation-type="dura" />
+    <edit-animation :animation="element.animation.out" animation-type="out" />
+    <div class="field has-addons">
+      <div class="control field-lb">
+        复制样式
+      </div>
+      <div class="control">
+        <span class="button is-small" @click="copyAnimation">复制</span>
+      </div>
+      <div class="control">
+        <span class="button is-small" @click="pasteAnimation">粘贴</span>
+      </div>
+    </div>
   </div>
 
   <div class="extra" v-if="configTab === 'other'">
@@ -132,6 +141,9 @@ export default {
         title: '基础',
         key: 'basic'
       }, {
+        title: '动画',
+        key: 'animation'
+      }, {
         title: '其他',
         key: 'other'
       }]
@@ -148,6 +160,16 @@ export default {
   methods: {
     imageUpdated (file) {
       this.element.blob = file
+    },
+
+    copyAnimation () {
+      this.ctx.animationCopied = JSON.parse(JSON.stringify(this.element.animation))
+    },
+
+    pasteAnimation () {
+      if (this.ctx.animationCopied) {
+        this.element.animation = this.ctx.animationCopied
+      }
     },
 
     copyStyle () {

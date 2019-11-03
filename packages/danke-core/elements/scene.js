@@ -22,6 +22,7 @@ export default {
   type: 1,
   background,
   elements: [],
+  res: {},
   leave: 3000,
   z: 100, // 场景的层次
   manual: false,

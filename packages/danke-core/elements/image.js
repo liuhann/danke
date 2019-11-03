@@ -20,6 +20,7 @@ const image = {
   size: SIZE,
   shadow: SHADOW,
   mask: MASK,
+  
   animation: {
     in: ANIMATION,
     dura: ANIMATION,

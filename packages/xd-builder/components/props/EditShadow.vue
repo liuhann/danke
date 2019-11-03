@@ -4,7 +4,7 @@
     <div class="control field-lb">
       阴影
     </div>
-    <div class="control">
+    <!-- <div class="control">
       <a class="button is-static is-small">X</a>
     </div>
     <div class="control">
@@ -18,9 +18,15 @@
     </div>
      <div class="control">
       <a class="button is-static is-small">B</a>
-    </div>
+    </div> -->
     <div class="control">
       <input class="input is-small" style="width: 48px;" type="number" v-model="shadow.b">
+    </div>
+    <div class="control">
+      <a class="button is-static is-small">内阴影 
+        {{shadow.i}}
+      </a>
+      <input class="checkbox is-small" type="checkbox" v-model="shadow.i">
     </div>
     <div class="control">
       <color-pickr v-model="shadow.color"></color-pickr>

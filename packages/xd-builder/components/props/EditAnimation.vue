@@ -47,22 +47,6 @@
       <input type="checkbox" :value="animation.overflow" />
     </div>
   </div>
-
-  <div class="field has-addons">
-    <div class="control field-lb">
-      复制样式
-    </div>
-    <div class="control">
-      <span class="button is-small" @click="copyAnimation">复制</span>
-    </div>
-    <div class="control">
-      <span class="button is-small" @click="pasteAnimation">粘贴</span>
-    </div>
-    <div class="control">
-      <span class="button is-small" @click="pasteDelayAnimation">延迟粘贴</span>
-    </div>
-  </div>
-
 </div>
 </template>
 

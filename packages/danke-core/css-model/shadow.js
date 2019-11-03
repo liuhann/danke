@@ -3,6 +3,7 @@ export default {
   x: 0,
   y: 0,
   b: 0,
+  i: false,
   color: 'rgba(0,0,0,0.8)'
 }
 export const boxShadows = {
@@ -21,9 +22,9 @@ export function getBoxShadowStyle ({ shadow, type }) {
       return []
     }
     if (type === TypeEnum.TEXT) {
-      return [`text-shadow: ${shadow.x}px ${shadow.y}px ${shadow.b}px ${shadow.color}`]
+      return [`text-shadow: ${shadow.x}px ${shadow.y}px ${shadow.b}px ${shadow.color} ${shadow.i ? 'inset' : ''}`]
     } else {
-      return [`box-shadow: ${shadow.x}px ${shadow.y}px ${shadow.b}px ${shadow.color}`]
+      return [`box-shadow: ${shadow.x}px ${shadow.y}px ${shadow.b}px ${shadow.color} ${shadow.i ? 'inset' : ''}`]
     }
   } else {
     return []

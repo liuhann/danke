@@ -178,7 +178,9 @@ export default {
         this.currentScene.elements.push(clonedElement)
         elements.push(clonedElement)
         blob.filename = this.croppingFileName
+        console.log('inserted', clonedElement)
       }
+
     },
     insertRawImage (file, width, height) {
       const clonedElement = clone(IMAGE)
@@ -196,6 +198,7 @@ export default {
       clonedElement.style = style
       this.currentScene.elements.push(clonedElement)
       this.chooseElement(clonedElement)
+      console.log('inserted', clonedElement)
     },
 
     deleteElement (element) {
@@ -266,7 +269,7 @@ export default {
       this.currentScene.elements.push(clonedElement)
       this.chooseElement(clonedElement)
     },
-    moveUp (element) {
+    moveDown (element) {
       const elementIndex = this.currentScene.elements.indexOf(element)
       if (elementIndex === 0) {
         return
@@ -275,7 +278,7 @@ export default {
       this.$set(this.currentScene.elements, elementIndex - 1, this.currentElement)
     },
 
-    moveDown (element) {
+    moveUp (element) {
       const elementIndex = this.currentScene.elements.indexOf(element)
       if (elementIndex === this.currentScene.elements.length - 1) {
         return

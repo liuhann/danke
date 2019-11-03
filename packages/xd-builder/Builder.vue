@@ -31,7 +31,7 @@
         </a>
         <a class="button is-success is-small" @click="addNewScene" style="margin-top: 5px;">新增</a>
       </div>
-      <div class="mask-right" :style="maskRightStyle"/>
+      <div class="mask-right" @click="sceneClick" :style="maskRightStyle"/>
       <div class="mask-bottom" :style="maskBottomStyle"/>
     </div>
     <div class="aside">
