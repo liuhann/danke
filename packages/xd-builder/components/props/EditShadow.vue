@@ -23,10 +23,7 @@
       <input class="input is-small" style="width: 48px;" type="number" v-model="shadow.b">
     </div>
     <div class="control">
-      <a class="button is-static is-small">内阴影 
-        {{shadow.i}}
-      </a>
-      <input class="checkbox is-small" type="checkbox" v-model="shadow.i">
+      内阴影<input class="checkbox is-small" type="checkbox" v-model="shadow.i">
     </div>
     <div class="control">
       <color-pickr v-model="shadow.color"></color-pickr>
