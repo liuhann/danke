@@ -12,6 +12,7 @@ import { getPositionStyle } from '../css-model/position'
 import { getSizingStyle } from '../css-model/size'
 import { sceneTypeEnum } from '../elements/scene'
 import { getMaskStyle } from '../css-model/mask'
+import { getFilterStyle } from '../css-model/filter'
 
 function revertLength (value, currentLen, device) {
   const { unit } = getLenSplits(currentLen)
@@ -70,6 +71,7 @@ function getElementStyle (element, device, animation) {
     .concat(getClipPathStyle(element, device))
     .concat(getTransformStyle(element, device))
     .concat(getShapeStyle(element, device))
+    .concat(getFilterStyle(element, device))
 
   if (animation && animation.overflow && element.animation[animation] && element.animation[animation].name) {
     const animationDef = element.animation[animation]

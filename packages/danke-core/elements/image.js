@@ -6,6 +6,7 @@ import SIZE from '../css-model/size'
 import SHADOW from '../css-model/shadow'
 import ANIMATION from '../css-model/animation'
 import MASK from '../css-model/mask'
+import FILTER from '../css-model/filter'
 import { resumeCompare, trimCompare } from '../utils/common'
 const image = {
   version: '1.2',
@@ -18,9 +19,9 @@ const image = {
   border: BORDER,
   clip: CLIPPATH,
   size: SIZE,
+  filter: FILTER,
   shadow: SHADOW,
   mask: MASK,
-  
   animation: {
     in: ANIMATION,
     dura: ANIMATION,

@@ -67,6 +67,7 @@
     <edit-border v-model="element.border" v-if="element.border"></edit-border>
     <edit-shadow v-model="element.shadow" v-if="element.shadow"></edit-shadow>
     <edit-mask v-model="element.mask" v-if="element.mask"></edit-mask>
+    <edit-filter v-model="element.filter" v-if="element.filter" />
     <edit-clip-path v-model="element.clip" v-if="element.clip"></edit-clip-path>
   </div>
 </nav>
@@ -84,6 +85,7 @@ import EditAnimation from './props/EditAnimation.vue'
 import { TypeEnum } from '../../danke-core/elements/index'
 import { Shapes } from '../../danke-core/css-model/shapeclip'
 import EditMask from './props/EditMask.vue'
+import EditFilter from './props/EditFilter.vue'
 import Tabs from '../../common/components/Tabs.vue'
 import { Divider } from 'element-ui'
 import EditImage from './props/EditImage.vue'
@@ -111,6 +113,7 @@ export default {
     EditBackground,
     EditPosition,
     EditShadow,
+    EditFilter,
     EditFont
   },
   inject: ['moveUp', 'moveDown', 'moveTop', 'moveBottom', 'clipboard', 'cutElement', 'copyElement', 'pasteElement'],
