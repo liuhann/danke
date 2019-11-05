@@ -44,6 +44,12 @@
       <a @click="deleteCurrentScene">删除</a>
     </div>
   </div>
+  <div class="element-list" v-if="rootTab === 'elements'">
+    <div class="element" v-for="element in scene.elements" :key="element.id" @click="chooseElement(element)">
+      <div class="name">{{element.name}}</div>
+      <div class="type">{{element.type}}</div>
+    </div>
+  </div>
   <div class="work-props" v-if="rootTab === 'work'">
     <div class="field has-addons">
       <p class="control field-lb">
@@ -134,6 +140,9 @@ export default {
         key: 'scene',
         title: '场景'
       }, {
+        key: 'elements',
+        title: '列表'
+      }, {
         key: 'work',
         title: '作品'
       }],
@@ -166,6 +175,10 @@ export default {
     },
     openAudioDialog () {
       this.$refs.dialogAudioList.open(this.work)
+    },
+
+    chooseElement (element) {
+      this.$emit('choose-element', element)
     },
     applyTicks () {
       if (this.work.audioTicks) {
@@ -219,6 +232,21 @@ export default {
     .name {
       flex: 1;
       margin: 0 5px;
+    }
+  }
+  .element-list {
+    .element {
+      display: flex;
+      font-size: 12px;
+      border-bottom: 1px solid #efefef;
+      padding: 5px 5px;
+      .name {
+        flex: 1;
+      }
+      &:hover {
+        background: #fcfcfc;
+        cursor: pointer;
+      }
     }
   }
 }

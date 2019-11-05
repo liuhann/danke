@@ -36,7 +36,8 @@
     </div>
     <div class="aside">
       <element-config :element="currentElement" v-if="currentElement"></element-config>
-      <work-scene-config :scene="currentScene" :work="work" v-if="!currentElement && currentScene.id" />
+      <work-scene-config :scene="currentScene" :work="work" v-if="!currentElement && currentScene.id"
+        @choose-element="chooseElement"/>
     </div>
     <!-- float 切换显示 -->
     <list-config v-show="showElementsLayer" :current-scene="currentScene" :current-element="currentElement"></list-config>
@@ -172,6 +173,7 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
       position: absolute;
       background-color: #fff;
       border: 1px solid #ccc;
+      overflow: hidden;
       z-index: 10;
       .element {
         position: absolute;
@@ -220,10 +222,10 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
           .corner-rb {
             background-color: #87b1f1;
             position: absolute;
-            right: -6px;
-            bottom: -6px;
-            width: 12px;
-            height: 12px;
+            right: 0;
+            bottom: 0;
+            width: 10px;
+            height: 10px;
           }
         }
       }

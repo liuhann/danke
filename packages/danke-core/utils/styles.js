@@ -73,7 +73,7 @@ function getElementStyle (element, device, animation) {
     .concat(getShapeStyle(element, device))
     .concat(getFilterStyle(element, device))
 
-  if (animation && animation.overflow && element.animation[animation] && element.animation[animation].name) {
+  if (animation && element.animation[animation].overflow && element.animation[animation] && element.animation[animation].name) {
     const animationDef = element.animation[animation]
     styles.push(`animation: ${animationDef.name} ${animationDef.duration}ms ${animationDef.timing} ${animationDef.delay}ms ${animationDef.iteration} normal both running`)
     addAnimationStyle(sheet, animationDef)
