@@ -13,6 +13,7 @@ import { getSizingStyle } from '../css-model/size'
 import { sceneTypeEnum } from '../elements/scene'
 import { getMaskStyle } from '../css-model/mask'
 import { getFilterStyle } from '../css-model/filter'
+import { TypeEnum } from '../elements'
 
 function revertLength (value, currentLen, device) {
   const { unit } = getLenSplits(currentLen)
@@ -56,10 +57,10 @@ checkWebpFeature('lossy').then((feature) => {
  * 获取整个元素的样式
  * @param element
  * @param device
- * @param animation
+ * @param stage
  * @returns {string}
  */
-function getElementStyle (element, device, animation) {
+function getElementStyle (element, device, stage) {
   let styles = []
   // position and size
   styles = styles.concat(getPositionStyle(element, device))
@@ -73,8 +74,9 @@ function getElementStyle (element, device, animation) {
     .concat(getShapeStyle(element, device))
     .concat(getFilterStyle(element, device))
 
-  if (animation && element.animation[animation].overflow && element.animation[animation] && element.animation[animation].name) {
-    const animationDef = element.animation[animation]
+  // 对于动画并且设置为overflow = true (默认)的
+  if (stage && element.animation[stage] && element.animation[stage].overflow && element.animation[stage].name) {
+    const animationDef = element.animation[stage]
     styles.push(`animation: ${animationDef.name} ${animationDef.duration}ms ${animationDef.timing} ${animationDef.delay}ms ${animationDef.iteration} normal both running`)
     addAnimationStyle(sheet, animationDef)
   }
@@ -99,14 +101,18 @@ function getAnimationStyle (element, stage) {
  * @param device
  * @param animation
  */
-function getElementInnerStyle (element, device, animation) {
+function getElementInnerStyle (element, device, stage) {
   let styles = []
   styles = styles.concat(getMaskStyle(element, device))
-  if (animation && !animation.overflow && element.animation[animation] && element.animation[animation].name) {
-    const animationDef = element.animation[animation]
-    addAnimationStyle(sheet, animationDef)
-    styles.push(`animation: ${animationDef.name} ${animationDef.duration}ms ${animationDef.timing} ${animationDef.delay}ms ${animationDef.iteration} normal both running`)
+  if (element.type === TypeEnum.IMAGE && stage && element.animation[stage] && element.animation[stage].name) {
+    // 图片存在动画
+    if (!element.animation[stage].overflow) {
+      const animationDef = element.animation[stage]
+      styles.push(`animation: ${animationDef.name} ${animationDef.duration}ms ${animationDef.timing} ${animationDef.delay}ms ${animationDef.iteration} normal both running`)
+      addAnimationStyle(sheet, animationDef)
+    }
   }
+
   return styles.filter(n => n).join(';')
 }
 

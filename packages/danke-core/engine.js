@@ -1,6 +1,6 @@
 import { sceneTypeEnum } from './elements/scene'
 import { getElementInnerStyle, getElementStyle, getSceneStyle, getAnimationStyle } from './utils/styles'
-import pauseable from 'pauseable'
+import { TypeEnum } from './elements'
 /**
  * Loading scenes and  resources then init ticker + views
  */
@@ -124,17 +124,25 @@ export default class Danke {
     this.renderEnter(scene)
     this.sceneEnterCallback && this.sceneEnterCallback(this)
     if (!scene.manual) {
-      this.pauseForLeave = pauseable.setTimeout(this.next.bind(this), scene.leave || 3000)
+      this.pauseForLeave = setTimeout(this.next.bind(this), scene.leave || 3000)
     }
   }
 
+  /**
+   * 渲染场景进入相关元素
+   * @param scene
+   */
   renderEnter (scene) {
     // 处理每个元素的入场动画
     for (let element of scene.elements) {
-      element.style = getElementStyle(element, this.device)
-      element.innerStyle = getElementInnerStyle(element, this.device) + ';' + getAnimationStyle(element, 'in')
+      element.style = getElementStyle(element, this.device, 'in')
+      if (element.type === TypeEnum.IMAGE) {
+        // 因为图片是单独的一个内部元素，这里主要是处理动画是否overflow、clip等
+        element.innerStyle = getElementInnerStyle(element, this.device, 'in')
+      }
+      // 设置延时动画
       if (element.animation.dura.name && element.animation.dura.duration) {
-        pauseable.setTimeout(() => {
+        setTimeout(() => {
           element.style = getElementStyle(element, this.device, 'dura')
         }, element.animation.in.duration + element.animation.in.delay)
       }
@@ -145,14 +153,13 @@ export default class Danke {
   leaveScene (scene) {
     this.renderLeave(scene)
     this.sceneLeaveCallback && this.sceneLeaveCallback(this)
-    pauseable.setTimeout(() => {
-      // scene.style = `display: none`
+    setTimeout(() => {
+      scene.style = `display: none`
       this.sceneHideCallback && this.sceneHideCallback(this)
     }, scene.hideDelay || 3000)
   }
 
   renderLeave (scene) {
-    debugger
     for (let element of scene.elements) {
       element.style = getElementStyle(element, this.device, 'out')
     }

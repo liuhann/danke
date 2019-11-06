@@ -1,12 +1,12 @@
 export default {
-  blur: 1,
-  grayscale: 1
+  blur: 0,
+  grayscale: 0
 }
 
 export function getFilterStyle ({ filter }, device) {
   const filtered = []
   if (filter) {
-    if (filter.blur !== 1) {
+    if (filter.blur > 0) {
       filtered.push(`blur(${filter.blur}px)`)
     }
     if (filter.grayscale) {
