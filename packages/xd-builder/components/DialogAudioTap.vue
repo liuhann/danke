@@ -216,19 +216,11 @@ export default {
       }
     },
     setStartPoint () {
-      if (this.audioStartPoint) {
-        this.audioStartPoint = 0
-      } else {
-        this.audioStartPoint = this.audioCurrentSeconds
-      }
+      this.audioStartPoint = this.audioCurrentSeconds
     },
     setEndPoint () {
-      if (this.audioEndPoint === this.audioTotalSeconds) {
-        this.audioEndPoint = this.audioCurrentSeconds
-        this.pause()
-      } else {
-        this.audioEndPoint = this.audioTotalSeconds
-      }
+      this.audioEndPoint = this.audioCurrentSeconds
+      this.pause()
     },
     setTickPoint () {
       this.audioTicks.push(this.sound.seek())
