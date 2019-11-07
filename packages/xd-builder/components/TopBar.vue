@@ -1,28 +1,36 @@
 <template>
 <div class="top-bar is-clearfix">
-  <div class="flex-1">
-    <a class="button is-white icon-menu" @click="setLeftToggleShow"></a>
-  </div>
-  <div class="tools-bar">
-   
+  <div class="tools-bar flex-1">
+    <div>
+      <a class="file">
+        <label class="file-label">
+          <input class="file-input" type="file" name="resume" @input="imageFileChoosed">
+          <span class="button is-white icon-picture-1">
+          </span>
+        </label>
+      </a>
+    </div>
+    <a class="button is-white icon-doc-landscape" @click="insertShape('rect')"></a>
+    <a class="button is-white icon-circle-thin" @click="insertShape('circle')"></a>
+    <a class="button is-white icon-sort-alphabet" @click="insertText"></a>
   </div>
   <div class="right-buttons">
-    <a class="button is-white is-small" @click="zoomIn">
-      <i class="icon-minus-1"></i>
-    </a>
-    <span style="line-height: 38px;">{{Math.round($parent.zoom * 100)}}%</span>
-    <a class="button is-white is-small" @click="zoomOut">
-      <i class="icon-plus-1"></i>
-    </a>
+<!--    <a class="button is-white is-small" @click="zoomIn">-->
+<!--      <i class="icon-minus-1"></i>-->
+<!--    </a>-->
+<!--    <span style="line-height: 38px;">{{Math.round($parent.zoom * 100)}}%</span>-->
+<!--    <a class="button is-white is-small" @click="zoomOut">-->
+<!--      <i class="icon-plus-1"></i>-->
+<!--    </a>-->
     <a class="button is-small" @click="runWork">
       预览
     </a>
-    <a class="button is-success is-rounded is-small button-share" @click="publishShareWork">发布</a>
+<!--    <a class="button is-success is-rounded is-small button-share" @click="publishShareWork">发布</a>-->
   </div>
 </div>
 </template>
 <script>
-import { Dialog } from 'element-ui'
+import { Dialog, Message } from 'element-ui'
 export default {
   name: 'TopBar',
   props: {
@@ -38,9 +46,32 @@ export default {
       isEditName: false
     }
   },
-  inject: ['zoomIn', 'zoomOut', 'runWork', 'zoom', 'setLeftToggleShow', 'publishShareWork'],
   methods: {
-    
+    imageFileChoosed (e) {
+      if (e.currentTarget.files.length) {
+        const file = e.currentTarget.files[0]
+        if (file.size > this.ctx.upload.maxSize) {
+          Message.error('文件最大为' + Math.floor(this.ctx.upload.maxSize / (1024 * 1024)) + 'M')
+          return
+        }
+        const image = new Image()
+        image.onload = () => {
+          this.$emit('insert-image', file)
+          // builder.insertRawImage(file, this.width, this.height)
+        }
+        image.src = URL.createObjectURL(file)
+      }
+    },
+    insertShape (type) {
+      this.$emit('insert-shape', type)
+    },
+
+    insertText () {
+      this.$emit('insert-text')
+    },
+    runWork () {
+      this.$emit('run')
+    }
   }
 }
 </script>
@@ -60,6 +91,9 @@ export default {
     }
     .flex-1 {
       flex: 1;
+    }
+    .tools-bar {
+      display: flex;
     }
     .button-share {
       margin: .25em 1em;

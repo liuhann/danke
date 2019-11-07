@@ -13,7 +13,6 @@ export default {
       openWorkListDialog: this.openWorkListDialog,
       openEditWorkDialog: this.openEditWorkDialog,
       editWork: this.editWork,
-      runWork: this.runWork,
       exportWork: this.exportWork,
       publishShareWork: this.publishShareWork
     }

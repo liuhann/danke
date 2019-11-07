@@ -36,31 +36,30 @@
       </div>
       <div class="control">
         <div class="buttons has-addons">
-          <span class="button is-small" @click="copyElement(element)">
-            复制
-          </span>
-          <span class="button is-small" @click="copyStyle">仅样式</span>
-          <span class="button is-small">样式粘贴</span>
+          <span class="button is-small" @click="copyElement">元素</span>
+          <span class="button is-small" @click="copyPosition">位置</span>
+          <span class="button is-small" @click="copyAnimation">动画</span>
+        </div>
+      </div>
+    </div>
+    <div class="field has-addons">
+      <div class="control field-lb">
+        粘贴
+      </div>
+      <div class="control">
+        <div class="buttons has-addons">
+          <span class="button is-small" @click="pasteElement">元素</span>
+          <span class="button is-small" @click="pastePosition">位置</span>
+          <span class="button is-small" @click="pasteAnimation">动画</span>
         </div>
       </div>
     </div>
   </div>
 
   <div class="animation" v-if="configTab === 'animation'">
-    <edit-animation :animation="element.animation.in" animation-type="in" />
-    <edit-animation :animation="element.animation.dura" animation-type="dura" />
-    <edit-animation :animation="element.animation.out" animation-type="out" />
-    <div class="field has-addons">
-      <div class="control field-lb">
-        复制样式
-      </div>
-      <div class="control">
-        <span class="button is-small" @click="copyAnimation">复制</span>
-      </div>
-      <div class="control">
-        <span class="button is-small" @click="pasteAnimation">粘贴</span>
-      </div>
-    </div>
+    <edit-animation :animation="element.animation.in" label="进入" animation-type="in" />
+    <edit-animation :animation="element.animation.dura" label="持续" animation-type="dura" />
+    <edit-animation :animation="element.animation.out" label="离开" animation-type="out" />
   </div>
 
   <div class="extra" v-if="configTab === 'other'">
@@ -79,7 +78,6 @@ import EditBackground from './props/EditBackground.vue'
 import EditBorder from './props/EditBorder.vue'
 import EditClipPath from './props/EditClipPath.vue'
 import EditSize from './props/EditSize.vue'
-import EditTransform from './props/EditTransform.vue'
 import EditShadow from './props/EditShadow.vue'
 import EditAnimation from './props/EditAnimation.vue'
 import { TypeEnum } from '../../danke-core/elements/index'
@@ -87,13 +85,17 @@ import { Shapes } from '../../danke-core/css-model/shapeclip'
 import EditMask from './props/EditMask.vue'
 import EditFilter from './props/EditFilter.vue'
 import Tabs from '../../common/components/Tabs.vue'
-import { Divider } from 'element-ui'
 import EditImage from './props/EditImage.vue'
+import { shortid } from '../../utils/string'
+import { Message } from 'element-ui'
 
 export default {
   name: 'ElementConfig',
   props: {
     element: {
+      type: Object
+    },
+    scene: {
       type: Object
     },
     animations: {
@@ -102,11 +104,9 @@ export default {
   },
   components: {
     EditImage,
-    Divider,
     Tabs,
     EditMask,
     EditAnimation,
-    EditTransform,
     EditSize,
     EditClipPath,
     EditBorder,
@@ -116,7 +116,6 @@ export default {
     EditFilter,
     EditFont
   },
-  inject: ['moveUp', 'moveDown', 'moveTop', 'moveBottom', 'clipboard', 'cutElement', 'copyElement', 'pasteElement'],
   data () {
     return {
       configTab: 'basic',
@@ -165,21 +164,43 @@ export default {
       this.element.blob = file
     },
 
+    copyElement () {
+      this.ctx.copiedElement = this.element
+    },
+
+    copyPosition () {
+      this.ctx.copiedPosition = this.element
+    },
+
     copyAnimation () {
-      this.ctx.animationCopied = JSON.parse(JSON.stringify(this.element.animation))
+      this.ctx.copiedAnimation = this.element
     },
 
     pasteAnimation () {
-      if (this.ctx.animationCopied) {
-        this.element.animation = this.ctx.animationCopied
+      if (this.ctx.copiedAnimation) {
+        this.element.animation = JSON.parse(JSON.stringify(this.ctx.copiedAnimation))
       }
     },
-
-    copyStyle () {
-
+    // 从剪切板粘贴 可能跨场景
+    pasteElement () {
+      if (this.copiedElement) {
+        const cloned = JSON.parse(JSON.stringify(this.copiedElement))
+        cloned.from = cloned.id
+        cloned.id = shortid()
+        this.scene.elements.push(cloned)
+      }
+      Message.info('元素已经粘贴')
     },
-    pasteStyle () {
 
+    pastePosition () {
+      if (this.ctx.styledFrom) {
+        this.element.position.offsetX = this.ctx.copiedPosition.position.offsetX
+        this.element.position.offsetY = this.ctx.copiedPosition.position.offsetY
+        this.element.position.horizontal = this.ctx.copiedPosition.position.horizontal
+        this.element.position.vertical = this.ctx.copiedPosition.position.vertical
+        this.element.size.width = this.ctx.copiedPosition.size.width
+        this.element.size.height = this.ctx.copiedPosition.size.height
+      }
     }
   }
 }

@@ -38,9 +38,7 @@
     <edit-animation :animation="scene.animation[animationType]" :animation-type="animationType"></edit-animation>
     <divider></divider>
     <div class="scene-buttons">
-      <a @click="previewScene">预览</a>
       <a @click="copyScene"> 复制场景</a>
-      <a @click="pasteElement"> 粘贴元素</a>
       <a @click="deleteCurrentScene">删除</a>
     </div>
   </div>
@@ -113,7 +111,10 @@ import EditAnimation from './props/EditAnimation.vue'
 import Tabs from '../../common/components/Tabs.vue'
 import DialogAudioTap from './DialogAudioTap.vue'
 import RestList from '../../common/components/RestList.vue'
-import { Divider } from 'element-ui'
+import { Divider, MessageBox } from 'element-ui'
+import { clone } from '../../utils/object'
+import { shortid } from '../../utils/string'
+import { getSceneStyle } from '../../danke-core/utils/styles'
 export default {
   name: 'WorkSceneConfig',
   props: {
@@ -132,7 +133,6 @@ export default {
     RestList,
     Divider
   },
-  inject: ['zoomIn', 'zoomOut', 'previewScene', 'zoom', 'deleteCurrentScene', 'previousScene', 'nextScene', 'clipboard', 'pasteElement', 'copyScene'],
   data () {
     return {
       showAudioSelection: false,
@@ -190,6 +190,37 @@ export default {
           }
         }
       }
+    },
+    copyScene () {
+      const scene = clone(this.currentScene)
+      scene.name = '场景 ' + (this.work.scenes.length + 1)
+      scene.id = shortid()
+      scene.style = getSceneStyle(scene, this.device)
+      this.work.scenes.push(scene)
+      this.chooseScene(scene)
+    },
+    deleteCurrentScene () {
+      if (this.work.scenes.length === 1) {
+        MessageBox.prompt('无法删除: 请至少保留一个场景')
+        return
+      }
+      MessageBox.confirm('删除场景后不可恢复，是否确认？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        for (let i = 0; i < this.work.scenes.length; i++) {
+          if (this.work.scenes[i].id === this.currentScene.id) {
+            this.work.scenes.splice(i, 1)
+            if (i > 0) {
+              this.currentScene = this.work.scenes[i - 1]
+            } else {
+              this.currentScene = this.work.scenes[0]
+            }
+            break
+          }
+        }
+      })
     }
   }
 }

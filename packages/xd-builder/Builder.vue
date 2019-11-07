@@ -1,7 +1,10 @@
 <template>
   <div id="xd">
-    <top-bar :work="work"></top-bar>
-    <tool-bar></tool-bar>
+    <top-bar :work="work"
+      @insert-image="insertRawImage"
+      @insert-shape="insertShape"
+      @insert-text="insertText"
+      @run="runWork"></top-bar>
     <transition name="slide-left">
       <left-toggle-menu v-if="showLeftToggleMenu" @menu-clicked="showLeftToggleMenu = false"></left-toggle-menu>
     </transition>
@@ -35,12 +38,11 @@
       <div class="mask-bottom" :style="maskBottomStyle"/>
     </div>
     <div class="aside">
-      <element-config :element="currentElement" v-if="currentElement"></element-config>
+      <element-config :element="currentElement" :scene="currentScene" v-if="currentElement"></element-config>
       <work-scene-config :scene="currentScene" :work="work" v-if="!currentElement && currentScene.id"
         @choose-element="chooseElement"/>
     </div>
     <!-- float 切换显示 -->
-    <list-config v-show="showElementsLayer" :current-scene="currentScene" :current-element="currentElement"></list-config>
     <image-cropper ref="cropper"></image-cropper>
     <dialog-edit-text ref="dialogEditText" @input="setElementText"/>
   </div>
@@ -59,7 +61,6 @@ import LeftToggleMenu from './components/LeftToggleMenu.vue'
 import TopBar from './components/TopBar.vue'
 import ElementConfig from './components/ElementConfig.vue'
 import DialogEditText from './components/DialogEditText.vue'
-import ListConfig from './components/ListConfig.vue'
 import WorkSceneConfig from './components/WorkSceneConfig.vue'
 import ToolBar from './components/ToolBar.vue'
 import { TypeEnum } from '../danke-core/elements/index'
@@ -68,7 +69,6 @@ export default {
   components: {
     ToolBar,
     TopBar,
-    ListConfig,
     ElementConfig,
     ImageCropper,
     LeftToggleMenu,
@@ -105,18 +105,6 @@ export default {
   },
   created () {
   },
-  provide () {
-    return {
-      work: this.work,
-      showElementsLayer: this.showElementsLayer,
-      multipleElements: this.multipleElements,
-      currentElement: this.currentElement,
-      currentScene: this.currentScene,
-      // provide methods
-      hideLeftToggleMenu: this.hideLeftToggleMenu,
-      sceneClick: this.sceneClick
-    }
-  },
   methods: {
     sceneClick () {
       this.hideLeftToggleMenu()
@@ -149,15 +137,11 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
   }
   .scene-container {
     position: absolute;
-    left: 48px;
+    left: 0;
     top: 40px;
     bottom: 0;
     right: 320px;
     overflow: auto;
-    .mask-right, .mask-bottom {
-      z-index: 201;
-      background-color: rgba(255,255,255, .6);
-    }
     .scene-options {
       position: absolute;
       right: 0;
@@ -229,7 +213,7 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
           }
         }
       }
-      
+
       .ti {
         position: absolute;
         background-color: #0a0a0a;

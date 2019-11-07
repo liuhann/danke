@@ -31,7 +31,6 @@ export default {
       moveBottom: this.moveBottom,
       cutElement: this.cutElement,
       copyElement: this.copyElement,
-      pasteElement: this.pasteElement,
       clipboard: this.clipboard
     }
   },
@@ -76,22 +75,6 @@ export default {
         this.insertText()
       } else if (menu.label === '形状') {
         this.insertShape()
-      }
-    },
-
-    svgFileChoosed (e) {
-      const builder = this
-      if (e.currentTarget.files.length) {
-        const file = e.currentTarget.files[0]
-        if (file.size > this.ctx.upload.maxSize) {
-          Message.error('文件最大为' + Math.floor(this.ctx.upload.maxSize / (1024 * 1024)) + 'M')
-          return
-        }
-        const image = new Image()
-        image.onload = function () {
-          builder.insertRawImage(file, this.width, this.height)
-        }
-        image.src = URL.createObjectURL(file)
       }
     },
 
@@ -180,9 +163,8 @@ export default {
         blob.filename = this.croppingFileName
         console.log('inserted', clonedElement)
       }
-
     },
-    insertRawImage (file, width, height) {
+    insertRawImage (file) {
       const clonedElement = clone(IMAGE)
       clonedElement.id = shortid()
       clonedElement.name = '图片'
@@ -198,7 +180,6 @@ export default {
       clonedElement.style = style
       this.currentScene.elements.push(clonedElement)
       this.chooseElement(clonedElement)
-      console.log('inserted', clonedElement)
     },
 
     deleteElement (element) {
@@ -314,23 +295,6 @@ export default {
       this.clipboard.elements = this.multipleElements
       this.clipboard.cutFrom = this.currentScene
       Message.info('元素已经剪切到剪贴板')
-    },
-    // 从剪切板粘贴 可能跨场景
-    pasteElement () {
-      if (this.clipboard.cutFrom) {
-        for (let element of this.clipboard.elements) {
-          this.clipboard.cutFrom.elements.splice(this.clipboard.cutFrom.elements.indexOf(element), 1)
-          this.currentScene.elements.push(element)
-        }
-      } else {
-        for (let element of this.clipboard.elements) {
-          const cloned = JSON.parse(JSON.stringify(element))
-          cloned.id = shortid()
-          this.currentScene.elements.push(cloned)
-        }
-      }
-      Message.info('元素已经粘贴')
-      this.clipboard.elements = []
     },
 
     reflow () {

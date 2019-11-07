@@ -2,7 +2,7 @@
 <div class="edit-animation">
   <div class="field has-addons">
     <div class="control field-lb">
-      效果
+      {{label}}效果
     </div>
     <div class="control">
       <span class="button is-small" @click="chooseAnimation(animationType)">{{animation.desc || '选择'}}</span>
@@ -62,6 +62,9 @@ export default {
   props: {
     animation: {
       type: Object
+    },
+    label: {
+      type: String
     },
     animationType: {
       type: String
