@@ -13,6 +13,14 @@
     <a class="button is-white icon-doc-landscape" @click="insertShape('rect')"></a>
     <a class="button is-white icon-circle-thin" @click="insertShape('circle')"></a>
     <a class="button is-white icon-sort-alphabet" @click="insertText"></a>
+    <div>
+      <a class="file">
+        <label class="file-label">
+          <input class="file-input" type="file" name="crop" @input="fileChoosed">
+          <span class="button icon-crop is-white"></span>
+        </label>
+      </a>
+    </div>
   </div>
   <div class="right-buttons">
 <!--    <a class="button is-white is-small" @click="zoomIn">-->
@@ -30,17 +38,11 @@
 </div>
 </template>
 <script>
-import { Dialog, Message } from 'element-ui'
+import { Message } from 'element-ui'
 export default {
   name: 'TopBar',
-  props: {
-    work: {
-      type: Object
-    }
-  },
-  components: {
-    Dialog
-  },
+  props: { },
+  components: { },
   data () {
     return {
       isEditName: false
@@ -60,6 +62,20 @@ export default {
           // builder.insertRawImage(file, this.width, this.height)
         }
         image.src = URL.createObjectURL(file)
+      }
+    },
+
+    fileChoosed (e) {
+      if (e.currentTarget.files.length) {
+        const file = e.currentTarget.files[0]
+        if (file.size > this.ctx.upload.maxSize) {
+          this.error = '文件最大为' + this.ctx.upload.maxSize
+        }
+        this.$emit('crop', file)
+        this.croppingFileName = file.name
+        this.$refs.cropper.open(file, this.ratio || '16:9')
+        this.$refs.cropper.cropCompleteCallback = this.insertImage
+        e.currentTarget.value = ''
       }
     },
     insertShape (type) {

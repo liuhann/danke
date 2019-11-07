@@ -14,26 +14,6 @@ export default {
       }
     }
   },
-  provide () {
-    return {
-      chooseElement: this.chooseElement,
-      insertImage: this.insertImage,
-      insertShape: this.insertShape,
-      insertText: this.insertText,
-      insertLayout: this.insertLayout,
-      deleteElement: this.deleteElement,
-      fileChoosed: this.fileChoosed,
-      svgFileChoosed: this.svgFileChoosed,
-      cloneElement: this.cloneElement,
-      moveUp: this.moveUp,
-      moveDown: this.moveDown,
-      moveTop: this.moveTop,
-      moveBottom: this.moveBottom,
-      cutElement: this.cutElement,
-      copyElement: this.copyElement,
-      clipboard: this.clipboard
-    }
-  },
   watch: {
     currentElement: {
       deep: true,
@@ -77,20 +57,11 @@ export default {
         this.insertShape()
       }
     },
-
-    fileChoosed (e) {
-      if (e.currentTarget.files.length) {
-        const file = e.currentTarget.files[0]
-        if (file.size > this.ctx.upload.maxSize) {
-          this.error = '文件最大为' + this.ctx.upload.maxSize
-        }
-        this.croppingFileName = file.name
-        this.$refs.cropper.open(file, this.ratio || '16:9')
-        this.$refs.cropper.cropCompleteCallback = this.insertImage
-        e.currentTarget.value = ''
-      }
+    cropImage (file) {
+      this.croppingFileName = file.name
+      this.$refs.cropper.open(file, this.ratio || '16:9')
+      this.$refs.cropper.cropCompleteCallback = this.insertImage
     },
-
     insertLayout (template) {
       const cloned = clone(LAYOUT)
       Object.assign(cloned, template)

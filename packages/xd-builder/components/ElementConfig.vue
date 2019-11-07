@@ -164,24 +164,12 @@ export default {
       this.element.blob = file
     },
 
+    /**
+     * 全面复制整个元素信息
+     * */
     copyElement () {
       this.ctx.copiedElement = this.element
     },
-
-    copyPosition () {
-      this.ctx.copiedPosition = this.element
-    },
-
-    copyAnimation () {
-      this.ctx.copiedAnimation = this.element
-    },
-
-    pasteAnimation () {
-      if (this.ctx.copiedAnimation) {
-        this.element.animation = JSON.parse(JSON.stringify(this.ctx.copiedAnimation))
-      }
-    },
-    // 从剪切板粘贴 可能跨场景
     pasteElement () {
       if (this.copiedElement) {
         const cloned = JSON.parse(JSON.stringify(this.copiedElement))
@@ -191,15 +179,34 @@ export default {
       }
       Message.info('元素已经粘贴')
     },
+    /**
+     * 复制元素的位置、大小属性
+     */
+    copyPosition () {
+      this.ctx.copiedPosition = this.element
+    },
 
     pastePosition () {
-      if (this.ctx.styledFrom) {
+      if (this.ctx.copiedPosition) {
         this.element.position.offsetX = this.ctx.copiedPosition.position.offsetX
         this.element.position.offsetY = this.ctx.copiedPosition.position.offsetY
         this.element.position.horizontal = this.ctx.copiedPosition.position.horizontal
         this.element.position.vertical = this.ctx.copiedPosition.position.vertical
         this.element.size.width = this.ctx.copiedPosition.size.width
         this.element.size.height = this.ctx.copiedPosition.size.height
+      }
+    },
+
+    /**
+     * 复制元素的动画属性，复制内容包括进入、持续、离开动画
+     */
+    copyAnimation () {
+      this.ctx.copiedAnimation = this.element
+    },
+
+    pasteAnimation () {
+      if (this.ctx.copiedAnimation) {
+        this.element.animation = JSON.parse(JSON.stringify(this.ctx.copiedAnimation))
       }
     }
   }

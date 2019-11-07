@@ -1,24 +1,16 @@
 <template>
 <el-dialog
   title="编辑音频节拍"
-  :fullscreen="fullscreen"
+  :fullscreen="true"
  :visible.sync="dialogVisible">
   <div class="new-audio">
     <div v-if="!audioUrl" class="file is-success" style="margin-bottom: 10px;">
       <label class="file-label">
-        <input class="file-input" type="file" name="chooseaudio" @input="audioChoosed">
+        <input class="file-input" type="file" @input="audioChoosed">
         <span class="file-cta">
           <span class="file-label">上传音频</span>
         </span>
       </label>
-    </div>
-    <div class="field has-addons" v-if="setName" style="margin-bottom: 10px;">
-      <div class="control field-lb">
-        名称
-      </div>
-      <div class="control">
-        <input class="input is-small" style="width: 280px;" v-model="audioName">
-      </div>
     </div>
     <div class="audio-box" v-if="audioUrl" ref="audioBox" style="margin-bottom: 10px;" @click="boxClicked">
       <div class="cut-box" :style="'left:' + (100 * audioStartPoint / audioTotalSeconds) + '%;'
@@ -28,31 +20,26 @@
 
       <div class="end ver-line" :style="'left:' + (100 * audioEndPoint / audioTotalSeconds) + '%'"></div>
       <div class="end dura"  :style="'left:' + (100 * audioEndPoint / audioTotalSeconds) + '%'"></div>
-
       <div class="current ver-line" :style="'left:' + (100 * audioCurrentSeconds / audioTotalSeconds) + '%'"></div>
       <div class="current dura"  :style="'left:' + (100 * audioCurrentSeconds / audioTotalSeconds) + '%'">{{timeFormat(audioCurrentSeconds)}}</div>
       <div class="tick" v-for="tick in audioTicks" :key="tick"
         :style="'left:' + (100 * tick / audioTotalSeconds) + '%'" />
     </div>
-    <div class="tags has-addons is-medium">
-      <span class="tag is-dark is-medium" @click="setStartPoint">设置开始时间</span>
-      <span class="tag is-success is-medium">{{timeFormat(audioStartPoint)}}</span>
+    <div class="tags has-addons" v-if="audioUrl">
+      <span class="tag is-dark is-small" @click="setStartPoint">设置开始时间</span>
+      <span class="tag is-success is-small">{{timeFormat(audioStartPoint)}}</span>
     </div>
-    <div class="tags has-addons is-medium">
-      <span class="tag is-dark is-medium" @click="setEndPoint">设为结束时间</span>
-      <span class="tag is-success is-medium">{{timeFormat(audioEndPoint)}}</span>
+    <div class="tags has-addons" v-if="audioUrl">
+      <span class="tag is-dark is-small" @click="setEndPoint">设为结束时间</span>
+      <span class="tag is-success is-small">{{timeFormat(audioEndPoint)}}</span>
     </div>
-    <div class="buttons has-addons">
-      <span class="button is-medium" @click="audioTicks = []">清空节拍</span>
-      <span class="button is-info is-medium" v-if="isPlaying" @click="pause">暂停</span>
-      <span class="button s-info is-medium" v-if="!isPlaying" @click="play">播放</span>
-    </div>
-    <div class="is-justify-center is-center is-centered">
-      <span class="button is-primary is-large is-fullwidth" @click="setTickPoint">节拍</span>
+    <div class="buttons has-addons" v-if="audioUrl">
+      <span class="button is-info is-small" v-if="isPlaying" @click="pause">暂停</span>
+      <span class="button s-info is-small" v-if="!isPlaying" @click="play">播放</span>
     </div>
   </div>
   <span slot="footer" class="dialog-footer">
-    <a class="button is-primary is-medium" @click="confirm">
+    <a class="button is-primary is-small" @click="confirm">
         确 定
     </a>
   </span>
@@ -229,11 +216,19 @@ export default {
       }
     },
     setStartPoint () {
-      this.audioStartPoint = this.audioCurrentSeconds
+      if (this.audioStartPoint) {
+        this.audioStartPoint = 0
+      } else {
+        this.audioStartPoint = this.audioCurrentSeconds
+      }
     },
     setEndPoint () {
-      this.audioEndPoint = this.audioCurrentSeconds
-      this.pause()
+      if (this.audioEndPoint === this.audioTotalSeconds) {
+        this.audioEndPoint = this.audioCurrentSeconds
+        this.pause()
+      } else {
+        this.audioEndPoint = this.audioTotalSeconds
+      }
     },
     setTickPoint () {
       this.audioTicks.push(this.sound.seek())

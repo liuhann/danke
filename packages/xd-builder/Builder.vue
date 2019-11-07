@@ -1,13 +1,11 @@
 <template>
   <div id="xd">
-    <top-bar :work="work"
+    <top-bar
       @insert-image="insertRawImage"
       @insert-shape="insertShape"
       @insert-text="insertText"
+      @crop="cropImage"
       @run="runWork"></top-bar>
-    <transition name="slide-left">
-      <left-toggle-menu v-if="showLeftToggleMenu" @menu-clicked="showLeftToggleMenu = false"></left-toggle-menu>
-    </transition>
     <div class="scene-container" ref="sceneContainer">
       <div class="device" ref="device" v-if="currentScene" :style="currentScene.style" @click.self="sceneClick">
         <div v-for="(element, index) of currentScene.elements" :key="element.id" :id="'element-' + element.id"
@@ -40,7 +38,7 @@
     <div class="aside">
       <element-config :element="currentElement" :scene="currentScene" v-if="currentElement"></element-config>
       <work-scene-config :scene="currentScene" :work="work" v-if="!currentElement && currentScene.id"
-        @choose-element="chooseElement"/>
+        @choose-element="chooseElement" @choose-scene="chooseScene" @edit-tick="editTicking"/>
     </div>
     <!-- float 切换显示 -->
     <image-cropper ref="cropper"></image-cropper>
@@ -57,21 +55,17 @@ import keyBindMixin from './mixins/key-binds'
 import initMixin from './mixins/init'
 
 import ImageCropper from './components/ImageCropper'
-import LeftToggleMenu from './components/LeftToggleMenu.vue'
 import TopBar from './components/TopBar.vue'
 import ElementConfig from './components/ElementConfig.vue'
 import DialogEditText from './components/DialogEditText.vue'
 import WorkSceneConfig from './components/WorkSceneConfig.vue'
-import ToolBar from './components/ToolBar.vue'
 import { TypeEnum } from '../danke-core/elements/index'
 export default {
   name: 'Builder',
   components: {
-    ToolBar,
     TopBar,
     ElementConfig,
     ImageCropper,
-    LeftToggleMenu,
     WorkSceneConfig,
     DialogEditText
   },
@@ -100,7 +94,8 @@ export default {
       TypeEnum,
       showLeftToggleMenu: false,
       showElementsLayer: false,
-      interactEnabled: true
+      interactEnabled: true,
+      ticksEditing: false
     }
   },
   created () {
