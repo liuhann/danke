@@ -8,19 +8,13 @@
       @run="runWork"></top-bar>
     <div class="scene-container" ref="sceneContainer">
       <div class="device" ref="device" v-if="currentScene" :style="currentScene.style" @click.self="sceneClick">
-        <div v-for="(element, index) of currentScene.elements" :key="element.id" :id="'element-' + element.id"
-             class="element" :class="[element.visible?'':'hidden', 'type' + element.type, multipleElements.indexOf(element) > -1? 'selected': '']" :style="element.style + ';' + 'z-index:' + index + ';'"
-             @click="chooseElement(element, $event)">
-          <!--图片渲染-->
-          <img v-if="element.type === TypeEnum.IMAGE || element.type === TypeEnum.SVG" :src="element.url" :style="element.innerStyle || ''">
-          <!--文本渲染情况下 文本内容-->
-          <span v-if="element.type === TypeEnum.TEXT" v-html="element.text"></span>
-          <!--文件被选中的遮罩-->
-          <div class="mask" v-if="multipleElements.indexOf(element) > -1">
-            <!--右下角corner-->
-            <div class="corner-rb" v-if="multipleElements.length === 1 && element===currentElement"></div>
-          </div>
-        </div>
+        <render-element
+          v-for="(element, index) of currentScene.elements"
+          :element="element"
+          :key="element.id"
+          :index="index"
+          :selected="currentElement === element"
+          @click="chooseElement(element, $event)"/>
       </div>
       <div class="scene-options">
         <span class="tag is-info">{{work.scenes.indexOf(currentScene)+1}}/{{work.scenes.length}}</span>
@@ -60,9 +54,11 @@ import ElementConfig from './components/ElementConfig.vue'
 import DialogEditText from './components/DialogEditText.vue'
 import WorkSceneConfig from './components/WorkSceneConfig.vue'
 import { TypeEnum } from '../danke-core/elements/index'
+import RenderElement from './RenderElement.vue'
 export default {
   name: 'Builder',
   components: {
+    RenderElement,
     TopBar,
     ElementConfig,
     ImageCropper,
@@ -190,15 +186,16 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
           -webkit-user-modify: read-write-plaintext-only;
         }
         .mask {
-          z-index: -1;
+          z-index: 1;
           position: absolute;
-          left: -2px;
-          top: -2px;
-          width: calc(100% + 2px);
-          height: calc(100% + 2px);
-          border: 1px solid #87b1f1;
-          box-sizing: content-box;
+          left: 0;
+          top: 0;
+          width: calc(100% - 2px);
+          height: calc(100% - 2px);
+          border: 2px dashed #87b1f1;
+          box-sizing: border-box;
           .corner-rb {
+            display: none;
             background-color: #87b1f1;
             position: absolute;
             right: 0;

@@ -11,4 +11,5 @@ const TypeEnum = {
   VIDEO: 6,
   SVG: 7
 }
+
 export { TypeEnum, IMAGE, SHAPE, TEXT, SVG, LAYOUT }

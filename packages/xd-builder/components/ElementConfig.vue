@@ -57,7 +57,7 @@
   </div>
 
   <div class="animation" v-if="configTab === 'animation'">
-    <edit-animation :animation="element.animation.in" label="进入" animation-type="in" />
+    <edit-animation :animation="element.animation.in" label="进入" animation-type="in"/>
     <edit-animation :animation="element.animation.dura" label="持续" animation-type="dura" />
     <edit-animation :animation="element.animation.out" label="离开" animation-type="out" />
   </div>
@@ -206,8 +206,16 @@ export default {
 
     pasteAnimation () {
       if (this.ctx.copiedAnimation) {
-        this.element.animation = JSON.parse(JSON.stringify(this.ctx.copiedAnimation))
+        this.element.animation = JSON.parse(JSON.stringify(this.ctx.copiedAnimation.animation))
       }
+    },
+
+    /**
+     * 应用当前的动画到所有的元素
+     * @param stage
+     */
+    applyAnimationToAll (stage) {
+
     }
   }
 }

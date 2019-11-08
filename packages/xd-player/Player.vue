@@ -16,12 +16,11 @@
     <div v-if="playConfirmed && !playFinished">
       <div v-for="scene in work.scenes" :key="scene.id"
         :style="scene.style" class="scene">
-        <div v-for="(element) in scene.elements" :key="element.id"
-          :class="['type' + element.type]"
-          :style="element.style" class="element">
-          <img v-if="element.url" :src="element.url" :style="element.innerStyle||''">
-          <span v-if="element.type === TypeEnum.TEXT" v-html="$options.filters.newline(element.text)"/>
-        </div>
+        <render-element
+          v-for="(element) in scene.elements"
+          :element="element"
+          :key="element.id"
+          :index="index"/>
       </div>
     </div>
     <div class="play-finished" v-if="playFinished">
@@ -44,12 +43,13 @@ import { TypeEnum } from '../danke-core/elements/index'
 import DankeEngine from '../danke-core/engine'
 import AudioDanke from '../danke-core/audio-engine'
 import mixinDevice from './mixinDevice'
-import sleep from '../common/utils/sleep'
 import WorkCover from '../xd-builder/components/WorkCover'
+import RenderElement from '../xd-builder/RenderElement'
 export default {
   name: 'Player',
   components: {
-    WorkCover
+    WorkCover,
+    RenderElement
   },
   mixins: [ mixinDevice ],
   filters: {

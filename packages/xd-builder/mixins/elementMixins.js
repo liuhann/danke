@@ -1,7 +1,6 @@
 import { IMAGE, SHAPE, TEXT, TypeEnum, LAYOUT } from '../../danke-core/elements/index'
 import { clone } from '../../utils/object'
 import { getElementInnerStyle, getElementStyle, getSceneStyle } from '../../danke-core/utils/styles'
-import { interactElement, destoryInteraction } from '../utils/interact'
 import { shortid } from '../../utils/string'
 import { MessageBox, Message } from 'element-ui'
 
@@ -174,39 +173,21 @@ export default {
     contentChange (e) {
       this.editedText = e.target.innerHTML.replace(/<br>/g, '\n')
     },
-    chooseElement (element, event) {
+
+    /**
+     * 选择一个元素， 可以为空
+     * @param element
+     * @param event
+     */
+    chooseElement (element) {
       this.elementChoosed && this.elementChoosed()
       // 选择的就是当前元素、忽略
       if (this.currentElement && element && this.currentElement.id === element.id) {
         return
       }
-      // 销毁现有推拽
-      if (this.currentElement && this.interactEnabled) {
-        destoryInteraction(document.getElementById('element-' + this.currentElement.id))
-      }
-      if (event && event.ctrlKey && this.multipleElements.length > 0) {
-        this.addMultipleElement(element)
-      } else {
-        if (this.currentElement && this.currentElement.type === TypeEnum.TEXT && this.editedText) {
-          this.currentElement.text = this.editedText
-          this.editedText = null
-        }
-        if (this.currentElement && this.currentElement.type === TypeEnum.TEXT && this.currentElement.text === '') {
-          this.currentElement.text = ' '
-        }
-        this.currentElement = element
-        if (element) {
-          this.multipleElements = [element]
-          if (this.interactEnabled) {
-            this.$nextTick(() => {
-              interactElement(document.getElementById('element-' + element.id), element, this)
-            })
-          }
-        } else {
-          this.multipleElements = []
-        }
-      }
+      this.currentElement = element
     },
+
     addMultipleElement (element) {
       if (element) {
         this.multipleElements.push(element)
