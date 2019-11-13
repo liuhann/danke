@@ -39,7 +39,7 @@
     <divider></divider>
     <div class="scene-buttons">
       <a @click="copyScene"> 复制场景</a>
-      <a @click="deleteCurrentScene">删除</a>
+      <a @click="$emit('delete-scene')">删除</a>
     </div>
   </div>
   <div class="element-list" v-if="rootTab === 'elements'">
@@ -177,29 +177,6 @@ export default {
       scene.style = getSceneStyle(scene, this.device)
       this.work.scenes.push(scene)
       this.chooseScene(scene)
-    },
-    deleteCurrentScene () {
-      if (this.work.scenes.length === 1) {
-        MessageBox.prompt('无法删除: 请至少保留一个场景')
-        return
-      }
-      MessageBox.confirm('删除场景后不可恢复，是否确认？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        for (let i = 0; i < this.work.scenes.length; i++) {
-          if (this.work.scenes[i].id === this.currentScene.id) {
-            this.work.scenes.splice(i, 1)
-            if (i > 0) {
-              this.currentScene = this.work.scenes[i - 1]
-            } else {
-              this.currentScene = this.work.scenes[0]
-            }
-            break
-          }
-        }
-      })
     }
   }
 }

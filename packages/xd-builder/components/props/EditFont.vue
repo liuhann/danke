@@ -1,12 +1,10 @@
 <template>
 <div class="edit-font field-group">
   <div class="field has-addons">
-    <div class="control icon-label" @click="copySizeStyle">
-      <i class="icon-fontsize"></i>
+    <div class="control field-lb">
+      字体
     </div>
-    <p class="control">
-      <edit-len v-model="font.size" unit-label="倍" :with-unit="false" :step="0.2"></edit-len>
-    </p>
+    <edit-len v-model="font.size" unit-label="倍" :with-unit="false" :step="0.2"></edit-len>
     <p class="control space">
     </p>
     <p class="control">
@@ -17,14 +15,24 @@
     <p class="control">
       <toggle-button v-model="font.bold" icon="icon-bold"></toggle-button>
     </p>
-    <p class="control space">
-    </p>
+  </div>
+  <div class="field has-addons">
+    <div class="control field-lb">
+      对齐
+    </div>
     <p class="control">
       <toggle-grouped-button :options="aligns" v-model="font.align"></toggle-grouped-button>
     </p>
-    <div v-if="copied" class="control paste" @click="pasteStyle">
-      <i class="icon-paste"></i>
+  </div>
+  <div class="field has-addons">
+    <div class="control field-lb">
+      字体复制
     </div>
+    <p class="control">
+      <a class="button is-success is-small" @click="$emit('edit')">编辑</a>
+      <a class="button is-small" @click="$emit('copy')">样式复制</a>
+      <a class="button is-small" @click="$emit('paste')">粘贴</a>
+    </p>
   </div>
 </div>
 </template>
@@ -41,7 +49,6 @@ export default {
   mixins: [ pastable ],
   components: {
     ColorPickr,
-    FormField,
     EditLen,
     ToggleButton,
     ToggleGroupedButton
@@ -89,16 +96,17 @@ export default {
     }
   },
   methods: {
-    copySizeStyle () {
-      this.copied = {
-        font: JSON.parse(JSON.stringify(this.font))
-      }
-      this.ctx.fontCopied = this.copied
+    applyFontToAll () {
+      this.$emit('apply-to-all')
     }
   }
 }
 </script>
 
-<style>
-
+<style lang="scss">
+.edit-font {
+  .control {
+    height: 28px;
+  }
+}
 </style>

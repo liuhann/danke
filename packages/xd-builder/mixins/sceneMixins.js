@@ -24,7 +24,7 @@ export default {
       const scene = clone(SCENE)
       scene.name = '场景 ' + (this.work.scenes.length + 1)
       scene.id = shortid()
-      scene.background.colors = ['rgba(0,0,0,0)']
+      scene.background.colors = this.currentScene.background.colors || ['rgba(0,0,0,0)']
       scene.style = getSceneStyle(scene, this.device)
       this.work.scenes.push(scene)
       this.chooseScene(scene)
@@ -65,6 +65,25 @@ export default {
           }
         }
       }
+    },
+
+    /**
+     * 删除当前场景
+     */
+    deleteCurrentScene () {
+      if (this.work.scenes.length === 1) {
+        MessageBox.prompt('无法删除: 请至少保留一个场景')
+        return
+      }
+      MessageBox.confirm('删除场景后不可恢复，是否确认？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const sceneIndex = this.work.scenes.indexOf(this.currentScene)
+        this.work.scenes.splice(sceneIndex, 1)
+        this.currentScene = this.work.scenes[sceneIndex - 1] || this.work.scenes[0]
+      })
     },
 
     /**

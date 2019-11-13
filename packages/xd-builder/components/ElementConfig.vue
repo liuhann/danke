@@ -2,7 +2,7 @@
 <nav class="element-prop-config">
   <tabs size="is-small" v-model="configTab" :tabs="configTabs"></tabs>
   <div class="basic" v-if="configTab === 'basic'">
-    <edit-font v-if="element.font" v-model="element.font"></edit-font>
+    <edit-font v-if="element.font" v-model="element.font" @apply-to-all="applyFontToAll" @copy="copyFontStyle" @paste="pasteFontStyle"></edit-font>
     <edit-image v-if="element.url" v-model="element.url" @blob="imageUpdated"></edit-image>
     <edit-background v-model="element.background" v-if="element.background"></edit-background>
     <edit-position v-model="element.position"></edit-position>
@@ -96,6 +96,9 @@ export default {
       type: Object
     },
     scene: {
+      type: Object
+    },
+    work: { // 整个作品对象，这里传入后以便元素样式等方面复制可以直接操作进行
       type: Object
     },
     animations: {
@@ -211,10 +214,27 @@ export default {
     },
 
     /**
+     * 复制元素的字体属性
+     **/
+    copyFontStyle () {
+      this.ctx.copiedFont = this.element
+    },
+
+    pasteFontStyle () {
+      this.element.font = JSON.parse(JSON.stringify(this.ctx.copiedFont.font))
+    },
+    /**
      * 应用当前的动画到所有的元素
      * @param stage
      */
     applyAnimationToAll (stage) {
+
+    },
+
+    /**
+     * 应用字体配置到作品的所有文字之上
+     */
+    applyFontToAll () {
 
     }
   }

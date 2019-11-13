@@ -1,7 +1,5 @@
 <template>
-  <div class="color-picker">
-    <el-color-picker v-model="psColor" @change="colorChange" size="mini" :show-alpha="true" :predefine="predefineColors"></el-color-picker>
-  </div>
+  <el-color-picker v-model="psColor" @change="colorChange" size="mini" :show-alpha="true" :predefine="predefineColors"></el-color-picker>
 </template>
 
 <script>
