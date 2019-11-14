@@ -30,7 +30,7 @@
       <div class="mask-bottom" :style="maskBottomStyle"/>
     </div>
     <div class="aside">
-      <element-config :element="currentElement" :scene="currentScene" v-if="currentElement" :work="work"></element-config>
+      <element-config :element="currentElement" :scene="currentScene" v-if="currentElement" :work="work" @remove="deleteElement"></element-config>
       <work-scene-config :scene="currentScene" :work="work" v-if="!currentElement && currentScene.id"
         @choose-element="chooseElement" @choose-scene="chooseScene" @edit-tick="editTicking" @delete-scene="deleteCurrentScene"/>
     </div>

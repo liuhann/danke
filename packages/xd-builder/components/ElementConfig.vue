@@ -54,6 +54,17 @@
         </div>
       </div>
     </div>
+
+    <div class="field has-addons">
+      <div class="control field-lb">
+      </div>
+      <div class="control">
+        <div class="buttons has-addons">
+          <span class="button is-small is-danger" @click="removeElement">删除</span>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <div class="animation" v-if="configTab === 'animation'">
@@ -174,8 +185,8 @@ export default {
       this.ctx.copiedElement = this.element
     },
     pasteElement () {
-      if (this.copiedElement) {
-        const cloned = JSON.parse(JSON.stringify(this.copiedElement))
+      if (this.ctx.copiedElement) {
+        const cloned = JSON.parse(JSON.stringify(this.ctx.copiedElement))
         cloned.from = cloned.id
         cloned.id = shortid()
         this.scene.elements.push(cloned)
@@ -222,6 +233,13 @@ export default {
 
     pasteFontStyle () {
       this.element.font = JSON.parse(JSON.stringify(this.ctx.copiedFont.font))
+    },
+
+    /**
+     * 删除元素
+     **/
+    removeElement () {
+      this.$emit('remove')
     },
     /**
      * 应用当前的动画到所有的元素

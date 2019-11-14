@@ -44,7 +44,7 @@
       溢出
     </div>
     <div class="control">
-      <input type="checkbox" :value="animation.overflow" />
+      <input type="checkbox" v-model="animation.overflow" />
     </div>
   </div>
 </div>

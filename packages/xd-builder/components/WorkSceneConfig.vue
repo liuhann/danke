@@ -38,8 +38,8 @@
     <edit-animation :animation="scene.animation[animationType]" :animation-type="animationType"></edit-animation>
     <divider></divider>
     <div class="scene-buttons">
-      <a @click="copyScene"> 复制场景</a>
-      <a @click="$emit('delete-scene')">删除</a>
+      <a class="button is-small" @click="copyScene">复制场景</a>
+      <a class="button is-small is-danger" @click="$emit('delete-scene')">删除</a>
     </div>
   </div>
   <div class="element-list" v-if="rootTab === 'elements'">

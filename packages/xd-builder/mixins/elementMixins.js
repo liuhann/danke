@@ -158,16 +158,10 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        if (this.currentElement.id === element.id) {
-          this.currentElement = null
-          this.multipleElements = []
-        }
-        for (let i = 0; i < this.currentScene.elements.length; i++) {
-          if (this.currentScene.elements[i].id === element.id) {
-            this.currentScene.elements.splice(i, 1)
-            break
-          }
-        }
+        const removeTarget = element || this.currentElement
+        const targetIndex = this.currentScene.elements.indexOf(removeTarget)
+        this.currentScene.elements.splice(targetIndex, 1)
+        this.currentElement = null
       })
     },
     contentChange (e) {
