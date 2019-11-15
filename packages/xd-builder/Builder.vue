@@ -46,7 +46,6 @@ import saveShareMixin from './mixins/saveShare'
 import sceneMixin from './mixins/sceneMixins'
 import layoutMixin from './mixins/layoutMixin'
 import keyBindMixin from './mixins/key-binds'
-import initMixin from './mixins/init'
 
 import ImageCropper from './components/ImageCropper'
 import TopBar from './components/TopBar.vue'
@@ -55,6 +54,8 @@ import DialogEditText from './components/DialogEditText.vue'
 import WorkSceneConfig from './components/WorkSceneConfig.vue'
 import { TypeEnum } from '../danke-core/elements/index'
 import RenderElement from './RenderElement.vue'
+import ImageDAO from '../common/dao/imagedao'
+import RestDAO from '../common/dao/restdao'
 export default {
   name: 'Builder',
   components: {
@@ -65,7 +66,7 @@ export default {
     WorkSceneConfig,
     DialogEditText
   },
-  mixins: [initMixin, elementMixin, saveShareMixin, sceneMixin, keyBindMixin, layoutMixin],
+  mixins: [elementMixin, saveShareMixin, sceneMixin, keyBindMixin, layoutMixin],
   props: {
   },
   data () {
@@ -95,8 +96,25 @@ export default {
     }
   },
   created () {
+    this.imagedao = new ImageDAO(this.ctx)
+    this.workdao = new RestDAO(this.ctx, 'danke/work')
+  },
+  mounted () {
+    const workId = this.$route.query.work
+    const ratio = this.$route.query.ratio
+    if (workId === 'new') {
+      this.newWork(ratio)
+    } else {
+      this.fetchWork(workId)
+    }
   },
   methods: {
+    async fetchWork (workId) {
+      const work = await this.workdao.getOne(workId)
+      this.openWork(work)
+      this.chooseScene(this.work.scenes[0])
+      this.renderScene(this.currentScene, 'in')
+    },
     sceneClick () {
       this.hideLeftToggleMenu()
       this.chooseElement(null)

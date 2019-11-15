@@ -1,22 +1,10 @@
 /**
- * 保存加载相关处理
+ * 保存、加载作品通用方法
  */
 import { Loading, Message, MessageBox } from 'element-ui'
-import { intereactWith } from '../utils/interact'
 import { clone } from '../../utils/object'
-import is from '../../utils/is'
 import { shortid } from '../../utils/string'
 export default {
-  provide () {
-    return {
-      saveWork: this.saveWork,
-      openWorkListDialog: this.openWorkListDialog,
-      openEditWorkDialog: this.openEditWorkDialog,
-      editWork: this.editWork,
-      exportWork: this.exportWork,
-      publishShareWork: this.publishShareWork
-    }
-  },
   methods: {
     /**
      * 新增作品
@@ -28,20 +16,9 @@ export default {
       this.work.title = '我的作品'
       this.work.isNew = true
       this.addNewScene()
-      if (this.interactEnabled) {
-        this.$nextTick(() => {
-          intereactWith(this.$refs.deviceDrag, this.$refs.device)
-        })
-      }
     },
-    async fetchWork (workId) {
-      const work = await this.workdao.getOne(workId)
-      this.openWork(work)
-    },
-    editWork () {
-    },
+
     async saveWork (isPublish) {
-      this.hideLeftToggleMenu()
       if (this.savingWork) {
         return
       }
@@ -72,18 +49,13 @@ export default {
       Message.success('保存完成')
       this.savingWork = false
     },
+
     openWork (o) {
       const work = clone(o)
       this.work = work
       this.work.isNew = false
-      if (is.str(work.categories)) {
-        this.work.categories = this.work.categories.split(',')
-      }
-      this.currentScene = this.work.scenes[0]
-      this.currentElement = null
-      this.zoomCenter()
-      this.reflow(work.scenes)
     },
+
     async saveImages () {
       for (let scene of this.work.scenes) {
         for (let element of scene.elements) {
@@ -95,16 +67,10 @@ export default {
         }
       }
     },
-    /*async saveCover () {
-      const html2Canvas = (await import(/!* webpackChunkName: "html2canvas" *!/'html2canvas/dist/html2canvas.esm.js')).default
-      const previewBlob = await this.getCanvasBlob(await html2Canvas(this.$refs.device, {
-        allowTaint: true,
-        useCORS: true
-      }))
-      const previewUpload = await this.imagedao.uploadBlob(previewBlob)
-      return previewUpload.url.replace(/http[s]*:\/\/[^/]+/g, '')
-    },*/
-    // extract work info
+    /**
+     * 获取Work信息
+     * @returns {any}
+     */
     getWorkConfig () {
       const work = JSON.parse(JSON.stringify(this.work))
       for (let i = 0; i < work.scenes.length; i++) {
@@ -116,27 +82,13 @@ export default {
       }
       return work
     },
-    openWorkListDialog () {
-      this.hideLeftToggleMenu()
-      this.$refs.dialogWorkList.open()
-    },
-    // open dialog and edit work title
-    openEditWorkDialog () {
-      this.hideLeftToggleMenu()
-      this.$refs.dialogEditWork.open(this.work)
-    },
-    // save work title & desc
-    saveWorkDesc (work) {
-      this.work.title = work.title
-      this.work.categories = work.categories
-      this.work.desc = work.desc
-    },
+
+
     async runWork () {
       await this.saveWork()
       window.open('/play/fit/' + this.work._id)
     },
-    importWork () {
-    },
+
     async exportWork () {
       const JSZip = (await import(/* webpackChunkName: "jszip" */'jszip')).default
       const { saveAs } = (await import(/* webpackChunkName: "jszip" */'file-saver')).default
@@ -146,15 +98,6 @@ export default {
       zip.generateAsync({ type: 'blob' }).then(function (content) {
         // see FileSaver.js
         saveAs(content, 'example.zip')
-      })
-    },
-    async publishShareWork () {
-      MessageBox.confirm('是否确认发布作品?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(async ()=> {
-        await this.saveWork(true)
       })
     }
   }

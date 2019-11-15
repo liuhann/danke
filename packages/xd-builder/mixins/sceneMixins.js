@@ -1,72 +1,72 @@
 import { clone } from '../../utils/object'
 import { shortid } from '../../utils/string'
 import SCENE from '../../danke-core/elements/scene'
-import { getElementInnerStyle, getElementStyle, getSceneStyle, renderSceneStage } from '../../danke-core/utils/styles'
+import { getElementInnerStyle, getElementStyle, getSceneStyle } from '../../danke-core/utils/styles'
 import { MessageBox } from 'element-ui'
 export default {
-  provide () {
-    return {
-      nextScene: this.nextScene,
-      copyScene: this.copyScene,
-      previousScene: this.previousScene
-    }
-  },
   watch: {
     'currentScene.background': {
       deep: true,
       handler () {
-        this.currentScene.style = getSceneStyle(this.currentScene, this.device)
+        if (this.currentScene) {
+          this.currentScene.style = getSceneStyle(this.currentScene, this.device)
+        }
       }
     }
   },
   methods: {
+    /**
+     * 增加新的场景
+     */
     addNewScene () {
       const scene = clone(SCENE)
+      // 设置默认名称与ID
       scene.name = '场景 ' + (this.work.scenes.length + 1)
       scene.id = shortid()
+      // 继承使用之前的颜色
       scene.background.colors = this.currentScene.background.colors || ['rgba(0,0,0,0)']
       scene.style = getSceneStyle(scene, this.device)
       this.work.scenes.push(scene)
       this.chooseScene(scene)
     },
     chooseScene (scene, index) {
-      this.chooseElement(null)
+      if (this.chooseElement) {
+        this.chooseElement(null)
+      }
       this.currentScene = scene
     },
     nextScene () {
       if (this.ticksEditing) {
         this.work.audioTicks.push(this.audio.currentTime)
       }
-      for (let i = 0; i < this.work.scenes.length; i++) {
-        if (this.currentScene === this.work.scenes[i]) {
-          if (i < this.work.scenes.length - 1) {
-            this.chooseScene(this.work.scenes[i + 1], i + 1)
-            this.renderScene(this.work.scenes[i + 1], 'in')
-            this.renderScene(this.work.scenes[i], 'out')
-            break
-          }
+      if (this.currentScene) {
+        const currrentSceneIndex = this.work.scenes.indexOf(this.currentScene)
+        if (currrentSceneIndex < this.work.scenes.length - 1) {
+          this.chooseScene(this.work.scenes[currrentSceneIndex + 1])
+          this.renderScene(this.work.scenes[currrentSceneIndex + 1], 'in')
+          this.renderScene(this.work.scenes[currrentSceneIndex], 'out')
         }
       }
     },
     renderScene (scene, stage) {
       for (let element of scene.elements) {
+        if (element.imgPath) {
+          element.url = this.ctx.IMG_SERVER + '/' + element.imgPath
+        }
         element.style = getElementStyle(element, this.device, stage)
         element.innerStyle = getElementInnerStyle(element, this.device, stage)
       }
     },
     previousScene () {
-      for (let i = 0; i < this.work.scenes.length; i++) {
-        if (this.currentScene === this.work.scenes[i]) {
-          if (i > 0) {
-            this.chooseScene(this.work.scenes[i - 1])
-            this.renderScene(this.work.scenes[i - 1], 'in')
-            this.renderScene(this.work.scenes[i], 'out')
-            break
-          }
+      if (this.currentScene) {
+        const currrentSceneIndex = this.work.scenes.indexOf(this.currentScene)
+        if (currrentSceneIndex > 0) {
+          this.chooseScene(this.work.scenes[currrentSceneIndex - 1])
+          this.renderScene(this.work.scenes[currrentSceneIndex - 1], 'in')
+          this.renderScene(this.work.scenes[currrentSceneIndex], 'out')
         }
       }
     },
-
     /**
      * 删除当前场景
      */

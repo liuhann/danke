@@ -20,9 +20,9 @@ export default {
     beforeEnter,
     component: () => import(/* webpackChunkName: "xd" */'./Builder.vue')
   }, {
-    path: '/xdm',
+    path: '/xdt',
     beforeEnter,
-    component: () => import(/* webpackChunkName: "xd-mobile" */'./MBuilder.vue')
+    component: () => import(/* webpackChunkName: "xd-template" */'./TemplatedBuilder.vue')
   }, {
     path: '/shared/:link',
     component: () => import(/* webpackChunkName: "xd-welcome" */'./SharedLink.vue')
