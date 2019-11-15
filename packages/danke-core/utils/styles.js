@@ -77,7 +77,7 @@ function getElementStyle (element, device, stage) {
   // 对于动画并且设置为overflow = true (默认)的
   if (stage && element.animation[stage] && element.animation[stage].overflow && element.animation[stage].name) {
     const animationDef = element.animation[stage]
-    styles.push(`animation: ${animationDef.name} ${animationDef.duration}ms ${animationDef.timing} ${animationDef.delay}ms ${animationDef.iteration} normal both running`)
+    styles.push(`animation: ${animationDef.name} ${animationDef.duration}ms ${animationDef.timing} ${animationDef.delay}ms ${animationDef.infinite ? 'infinite' : animationDef.iteration} normal both running`)
     addAnimationStyle(sheet, animationDef)
   }
   return styles.filter(n => n).join(';')

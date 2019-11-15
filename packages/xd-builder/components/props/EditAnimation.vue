@@ -46,6 +46,12 @@
     <div class="control">
       <input type="checkbox" v-model="animation.overflow" />
     </div>
+    <div class="control field-lb">
+      重复
+    </div>
+    <div class="control">
+      <input type="checkbox" v-model="animation.infinite" />
+    </div>
   </div>
 </div>
 </template>

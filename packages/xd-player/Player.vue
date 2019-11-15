@@ -17,7 +17,7 @@
       <div v-for="scene in work.scenes" :key="scene.id"
         :style="scene.style" class="scene">
         <render-element
-          v-for="(element) in scene.elements"
+          v-for="(element, index) in scene.elements"
           :element="element"
           :key="element.id"
           :index="index"/>

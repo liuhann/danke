@@ -65,7 +65,7 @@ export default class AudioDanke {
   renderEnter (scene) {
     // 处理每个元素的入场动画
     for (let element of scene.elements) {
-      element.style = getElementStyle(element, this.device)
+      element.style = getElementStyle(element, this.device, 'in')
       element.innerStyle = getElementInnerStyle(element, this.device) + ';' + getAnimationStyle(element, 'in')
       if (element.animation.dura.name && element.animation.dura.duration) {
         setTimeout(() => {
