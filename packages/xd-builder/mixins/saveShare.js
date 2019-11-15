@@ -32,12 +32,6 @@ export default {
       // save scene preview
       await this.saveImages()
       const work = this.getWorkConfig()
-      // work.cover = await this.saveCover()
-      work.isDraft = true
-      if (isPublish) {
-        work.isDraft = false
-        work.link = shortid(8)
-      }
       if (this.work.isNew) {
         delete this.work.isNew
         const result = await this.workdao.create(work)

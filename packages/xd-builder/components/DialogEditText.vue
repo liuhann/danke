@@ -3,22 +3,19 @@
   title="编辑文字"
   :fullscreen="fullscreen"
  :visible.sync="dialogVisible">
- <textarea v-model="editedText" class="edit-text">
-   
- </textarea>
+ <textarea v-model="editedText" class="edit-text"></textarea>
  <span slot="footer" class="dialog-footer">
-   <a class="button is-primary is-medium" @click="confirm">
-      确 定
-   </a>
+   <el-button @click="confirm" size="mini">确 定</el-button>
  </span>
 </el-dialog>
 </template>
 
 <script>
-import { Dialog, Loading } from 'element-ui'
+import { Dialog, Button } from 'element-ui'
 export default {
   components: {
-    [Dialog.name]: Dialog
+    [Dialog.name]: Dialog,
+    [Button.name]: Button
   },
   data () {
     return {
@@ -42,8 +39,8 @@ export default {
 </script>
 
 <style type="text/css">
-  .edit-text {
-    width: 100%;
-    height: 100%;
-  }
+.edit-text {
+  width: 100%;
+  height: 100%;
+}
 </style>
