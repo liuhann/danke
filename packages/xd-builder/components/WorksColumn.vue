@@ -1,5 +1,5 @@
 <template>
-<div class="columns is-mobile is-multiline is-3 work-columns">
+<div class="columns is-mobile is-multiline is-gapless work-columns">
   <div
     v-for="work in works"
     :key="work.id"
@@ -51,7 +51,7 @@ export default {
       } else if (ratio === '4:3') {
         return ['is-half-mobile', 'is-one-quarter-tablet']
       } else if (ratio === '9:16') {
-        return ['is-one-third-mobile', 'is-2-tablet']
+        return ['is-half-mobile', 'is-one-fifth-tablet']
       }
     }
   },
@@ -74,7 +74,7 @@ export default {
 
 <style>
 .cover-container {
-  padding: 10px;
+  padding: 3px;
   background: #fff;
   border-radius: 2px;
   box-shadow: 0 1px 2px rgba(0,0,0,0.07);

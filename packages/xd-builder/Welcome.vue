@@ -3,50 +3,15 @@
     <nav-bar/>
     <section class="section">
       <div class="container">
-        <h4 class="subtitle is-4">创建新的作品</h4>
-        <tabs
-          v-model="startNav"
-          :tabs="tabs"
-          size="is-medium"/>
-        <div>
-          <span>选择模板或</span><a class="button" @click="chooseStartWork(startNav)" type="pr">从空白新建</a>
-        </div>
-        <works-column v-if="startNav === 'widescreen'" :works="templates.widescreens"></works-column>
-        <works-column v-if="startNav === 'mobile'" :works="templates.mobiles"></works-column>
-        <div
-          v-if="startNav === 'tablet'"
-          class="columns is-mobile is-multiline is-1">
-          <div
-            class="column is-half-mobile is-one-quarter-tablet"
-            @click="chooseStartWork('4:3')">
-            <div class="add-work">
-              <i class="icon-plus-1"/>
-            </div>
-          </div>
-          <div
-            v-for="work in templates.books"
-            :key="work.id"
-            class="column is-half-mobile is-2-tablet">
-            <work-cover
-              :work="work"
-              :ratio="work.ratio"
-              @play="playWork(work._id)"
-              @edit="chooseFromTemplateWork(work)"/>
-          </div>
-        </div>
+        <a class="button is-primary" @click='true'>
+          创建新的作品
+        </a>
       </div>
     </section>
     <section class="section">
       <div class="container">
+        <h2>从模板创建</h2>
         <works-column :works="myWorks" @edit="chooseDraftWork" @play="playWork" @delete="deleteWorkDraft" />
-      </div>
-    </section>
-    <section class="section">
-      <div class="container">
-        <h4 class="subtitle is-4">我的作品</h4>
-        <works-column :works="shares.widescreens"  @play="playWork" @delete="deleteWorkDraft"></works-column>
-        <works-column :works="shares.mobiles" @edit="chooseDraftWork" @play="playWork" @delete="deleteWorkDraft"></works-column>
-        <works-column :works="shares.books" @share-info="goShareLink" @play="playWork" @delete="deleteWorkDraft"></works-column>
       </div>
     </section>
   </div>
@@ -149,6 +114,10 @@ export default {
       this.shares.widescreens = result.list.filter(work => work.ratio === '16:9' && !work.isDraft)
       this.shares.mobiles = result.list.filter(work => work.ratio === '9:16' && !work.isDraft)
       this.shares.books = result.list.filter(work => work.ratio === '4:3' && !work.isDraft)
+    },
+
+    async loadTemplates () {
+
     },
     async loadTops () {
       const tops = await this.workdao.list({

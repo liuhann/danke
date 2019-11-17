@@ -23,7 +23,7 @@ import initEventEmitter from '../packages/common/utils/initEventEmitter'
 
 Vue.use(VueRouter)
 window.Vue = Vue
-
+window.ResizeObserver = undefined
 const boot = new AsyncBoot({
   Vue,
   VueRouter,
