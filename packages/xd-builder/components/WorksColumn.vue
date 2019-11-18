@@ -1,5 +1,5 @@
 <template>
-<div class="columns is-mobile is-multiline is-gapless work-columns">
+<div class="columns is-mobile is-multiline work-columns">
   <div
     v-for="work in works"
     :key="work.id"
@@ -14,8 +14,8 @@
           @link="shareLink(work)"
           @play="playWork(work)"
           @edit="chooseDraftWork(work)"/>
-        <div class="work-info" style="height: 28px;">
-          <a class="button is-white has-text-danger is-pulled-right" @click='deleteWork(work)'>
+        <div class="work-info" style="height: 36px;">
+          <a v-if="false" class="button is-white has-text-danger is-pulled-right" @click='deleteWork(work)'>
             <span class="icon">
               <i class="icon-trash-empty"></i>
             </span>
@@ -72,9 +72,9 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 .cover-container {
-  padding: 3px;
+  padding: 10px;
   background: #fff;
   border-radius: 2px;
   box-shadow: 0 1px 2px rgba(0,0,0,0.07);

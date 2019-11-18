@@ -7,14 +7,16 @@
       @crop="cropImage"
       @run="runWork"></top-bar>
     <div class="scene-container" ref="sceneContainer">
-      <div class="device" ref="device" v-if="currentScene" :style="currentScene.style" @click.self="sceneClick">
-        <render-element
-          v-for="(element, index) of currentScene.elements"
-          :element="element"
-          :key="element.id"
-          :index="index"
-          :selected="currentElement === element"
-          @click="chooseElement(element, $event)"/>
+      <div class="device" ref="device" :style="deviceStyle">
+        <div class="screen" v-if="currentScene" :style="currentScene.style" @click.self="sceneClick">
+          <render-element
+            v-for="(element, index) of currentScene.elements"
+            :element="element"
+            :key="element.id"
+            :index="index"
+            :selected="currentElement === element"
+            @click="chooseElement(element, $event)"/>
+        </div>
       </div>
       <div class="scene-options">
         <span class="tag is-info">{{work.scenes.indexOf(currentScene)+1}}/{{work.scenes.length}}</span>
@@ -24,14 +26,35 @@
         <a class="button is-small" @click="nextScene" style="margin-top: 5px;">
           向后
         </a>
-        <a class="button is-success is-small" @click="addNewScene" style="margin-top: 5px;">新增</a>
+        <el-popover
+          placement="left"
+          title="新增元素"
+          width="200"
+          trigger="click">
+          <el-button icon="el-icon-document-add" round />
+          <i class="el-icon-document-add"></i>
+          <i class="el-icon-document-copy"></i>
+          <a class="button is-success is-small" @click="addNewScene" style="margin-top: 5px;">新增场景</a>
+          <div>
+            <a class="file">
+              <label class="file-label">
+                <input class="file-input" type="file" name="resume">
+                <span class="button is-white icon-picture-1"></span>
+              </label>
+            </a>
+          </div>
+          <a class="button is-white icon-doc-landscape" @click="insertShape('rect')"></a>
+          <a class="button is-white icon-circle-thin" @click="insertShape('circle')"></a>
+          <a class="button is-white icon-sort-alphabet" @click="insertText"></a>
+          <a class="button is-success is-small" slot="reference" style="margin-top: 5px;">新增</a>
+        </el-popover>
       </div>
       <div class="mask-right" @click="sceneClick" :style="maskRightStyle"/>
       <div class="mask-bottom" :style="maskBottomStyle"/>
     </div>
     <div class="aside">
       <element-config :element="currentElement" :scene="currentScene" v-if="currentElement" :work="work" @remove="deleteElement"></element-config>
-      <work-scene-config :scene="currentScene" :work="work" v-if="!currentElement && currentScene.id"
+      <work-scene-config :scene="currentScene" :work="work" v-if="!currentElement && currentScene && currentScene.id"
         @choose-element="chooseElement" @choose-scene="chooseScene" @edit-tick="editTicking" @delete-scene="deleteCurrentScene"/>
     </div>
     <!-- float 切换显示 -->
@@ -46,7 +69,7 @@ import saveShareMixin from './mixins/saveShare'
 import sceneMixin from './mixins/sceneMixins'
 import layoutMixin from './mixins/layoutMixin'
 import keyBindMixin from './mixins/key-binds'
-
+import { Popover, Button } from 'element-ui'
 import ImageCropper from './components/ImageCropper'
 import TopBar from './components/TopBar.vue'
 import ElementConfig from './components/ElementConfig.vue'
@@ -57,6 +80,8 @@ import RenderElement from './RenderElement.vue'
 import ImageDAO from '../common/dao/imagedao'
 import RestDAO from '../common/dao/restdao'
 import { addStyle, createSheet } from '../frames/keyframe'
+
+import 'element-ui/packages/theme-chalk/lib/icon.css'
 export default {
   name: 'Builder',
   components: {
@@ -65,7 +90,9 @@ export default {
     ElementConfig,
     ImageCropper,
     WorkSceneConfig,
-    DialogEditText
+    DialogEditText,
+    [Popover.name]: Popover,
+    [Button.name]: Button
   },
   mixins: [elementMixin, saveShareMixin, sceneMixin, keyBindMixin, layoutMixin],
   props: {
@@ -85,7 +112,7 @@ export default {
         scenes: [],
         styles: '' // 附加的样式
       },
-      currentScene: {},
+      currentScene: null,
       currentElement: null,
       multipleElements: [],
       TypeEnum,
@@ -110,15 +137,15 @@ export default {
       try {
         const rules = this.work.styles.split('\n\n')
         for (let rule of rules) {
-          addStyle(sheet,rule)
+          addStyle(sheet, rule)
         }
       } catch (e) {
       }
     }
   },
   mounted () {
-    const workId = this.$route.query.work
-    const ratio = this.$route.query.ratio
+    let workId = this.$route.query.work || 'new'
+    let ratio = this.$route.query.ratio || '9:16'
     if (workId === 'new') {
       this.newWork(ratio)
     } else {
@@ -181,8 +208,9 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
     .device {
       touch-action: none;
       position: absolute;
-      background-color: #fff;
-      border: 1px solid #ccc;
+      background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==");
+      border: 1px solid #eee;
+      border-radius: 10px;
       overflow: hidden;
       z-index: 10;
       .element {

@@ -78,7 +78,7 @@ export default {
       this.reflow(this.scenes)
     },
     zoomCenter () {
-      const ratio = this.$route.query.ratio
+      const ratio = this.ratio || this.$route.query.ratio || '9:16'
       const containerEl = this.$refs.sceneContainer
       const paddings = this.devicePadding
       this.zoom = 1

@@ -8,7 +8,6 @@ const PaperFolding = {
   url: '',
   position: POSITION,
   size: SIZE,
-  split: 8,
-  direction: 'horizontal'
+  split: [3, 3]
 }
 export default PaperFolding

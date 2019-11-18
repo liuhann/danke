@@ -24,7 +24,9 @@ export default {
       scene.name = '场景 ' + (this.work.scenes.length + 1)
       scene.id = shortid()
       // 继承使用之前的颜色
-      scene.background.colors = this.currentScene.background.colors || ['rgba(0,0,0,0)']
+      if (this.currentScene) {
+        scene.background.colors = this.currentScene.background.colors || ['rgba(0,0,0,0)']
+      }
       scene.style = getSceneStyle(scene, this.device)
       this.work.scenes.push(scene)
       this.chooseScene(scene)

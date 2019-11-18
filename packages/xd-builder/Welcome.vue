@@ -1,16 +1,24 @@
 <template>
   <div class="welcome">
     <nav-bar/>
-    <section class="section">
-      <div class="container">
-        <a class="button is-primary" @click='true'>
+    <section class="section has-text-centered hero is-medium primary-background">
+      <p class="title is-5 is-spaced has-text-white is-family-sans-serif">
+        设计适用于各种场景的展示页面
+      </p>
+      <p class="is-spaced has-text-white is-family-sans-serif">
+        <router-link class="button is-primary is-large" to="/xd">
           创建新的作品
-        </a>
+        </router-link>
+      </p>
+    </section>
+    <section class="section" style="background: #fff;">
+      <div class="container">
+        <h2>选择模板</h2>
       </div>
     </section>
+
     <section class="section">
       <div class="container">
-        <h2>从模板创建</h2>
         <works-column :works="myWorks" @edit="chooseDraftWork" @play="playWork" @delete="deleteWorkDraft" />
       </div>
     </section>
@@ -156,9 +164,16 @@ export default {
 </script>
 
 <style lang="scss">
+
+.section.primary-background {
+  background-color: #47b17c;
+  color: #fff;
+  background-image: url('/res/icons-background.svg');
+}
 .section {
   background-color: #f4f4f4;
 }
+
 .add-work {
   display: flex;
   align-items: center;
