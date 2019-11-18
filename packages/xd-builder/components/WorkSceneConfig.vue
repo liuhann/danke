@@ -59,22 +59,6 @@
     </div>
     <div class="field has-addons">
       <p class="control field-lb">
-        分类信息
-      </p>
-      <p class="control">
-        <input class="input is-small" style="width: 220px;" v-model="work.categories">
-      </p>
-    </div>
-    <div class="field has-addons" style="height: 70px;">
-      <p class="control field-lb">
-        描述
-      </p>
-      <p class="control">
-         <textarea class="input is-small" style="height: 64px;width: 220px;" v-model="work.desc"></textarea>
-      </p>
-    </div>
-    <div class="field has-addons">
-      <p class="control field-lb">
         背景音频
       </p>
       <p class="control buttons has-addons is-small">
@@ -89,6 +73,9 @@
 
     <div class="field has-addons" v-if="work.audioName">
       <a class="button is-small" @click="editTicks">播放并编辑节拍</a>
+    </div>
+    <div class="field">
+      <textarea class="style-area" style="width: 100%; height: 320px;" v-model="work.styles"></textarea>
     </div>
   </div>
   <dialog-audio-tap ref="dialogAudioList" @audio="chooseAudio"/>

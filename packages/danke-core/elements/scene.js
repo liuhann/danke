@@ -24,6 +24,7 @@ export default {
   elements: [],
   res: {},
   leave: 3000,
+  className: '',
   z: 100, // 场景的层次
   manual: false,
   animation: {

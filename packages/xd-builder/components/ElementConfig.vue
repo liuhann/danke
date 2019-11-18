@@ -74,6 +74,14 @@
   </div>
 
   <div class="extra" v-if="configTab === 'other'">
+    <div class="field has-addons">
+      <div class="control field-lb">
+        类名
+      </div>
+      <div class="control">
+        <input v-model="element.className" class="input is-small"/>
+      </div>
+    </div>
     <edit-border v-model="element.border" v-if="element.border"></edit-border>
     <edit-shadow v-model="element.shadow" v-if="element.shadow"></edit-shadow>
     <edit-mask v-model="element.mask" v-if="element.mask"></edit-mask>

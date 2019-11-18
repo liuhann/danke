@@ -22,6 +22,7 @@ const image = {
   filter: FILTER,
   shadow: SHADOW,
   mask: MASK,
+  className: '',
   animation: {
     in: ANIMATION,
     dura: ANIMATION,

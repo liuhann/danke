@@ -56,6 +56,7 @@ import { TypeEnum } from '../danke-core/elements/index'
 import RenderElement from './RenderElement.vue'
 import ImageDAO from '../common/dao/imagedao'
 import RestDAO from '../common/dao/restdao'
+import { addStyle, createSheet } from '../frames/keyframe'
 export default {
   name: 'Builder',
   components: {
@@ -76,14 +77,13 @@ export default {
         ratio: '',
         id: '',
         title: '',
-        categories: [],
-        desc: '',
-        audioUrl: '',
-        audioName: '',
-        audioTicks: [],
-        duration: 0,
+        audioUrl: '', // 音频播放的地址
+        audioName: '', // 音频名称（只用于显示）
+        audioTicks: [], // 音频切换的节拍
+        duration: 0, // 持续时间
         resources: [],
-        scenes: []
+        scenes: [],
+        styles: '' // 附加的样式
       },
       currentScene: {},
       currentElement: null,
@@ -98,6 +98,23 @@ export default {
   created () {
     this.imagedao = new ImageDAO(this.ctx)
     this.workdao = new RestDAO(this.ctx, 'danke/work')
+  },
+
+  watch: {
+    'work.styles': function () {
+      const styleTag = document.getElementById('work-extra-style')
+      if (styleTag) {
+        styleTag.parentElement.removeChild(styleTag)
+      }
+      const sheet = createSheet('work-extra-style')
+      try {
+        const rules = this.work.styles.split('\n\n')
+        for (let rule of rules) {
+          addStyle(sheet,rule)
+        }
+      } catch (e) {
+      }
+    }
   },
   mounted () {
     const workId = this.$route.query.work

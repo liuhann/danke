@@ -1,8 +1,11 @@
 import { getElementStyle } from '../danke-core/utils/styles'
 
-function createSheet () {
+function createSheet (id) {
   // Create the <style> tag
   var style = document.createElement('style')
+  if (id) {
+    style.id = id
+  }
   // Add a media (and/or media query) here if you'd like!
   // style.setAttribute("media", "screen")
   // style.setAttribute("media", "only screen and (max-width : 1024px)")
@@ -32,6 +35,11 @@ function addAnimation (sheet, animation) {
     animation: ${animation.name} ${animation.duration}ms ${animation.timing} ${animation.infinite ? 'infinite' : animation.iteration} both
   }`
   sheet.insertRule(rule, pos)
+}
+
+function addStyle (sheet, styleText) {
+  let pos = sheet.length
+  sheet.insertRule(styleText, pos)
 }
 
 function generateKeyFrames (frames) {
@@ -71,6 +79,7 @@ function getAnimationSourceCode (sheet, animation) {
 }
 
 export {
+  addStyle,
   createSheet,
   clearAnimation,
   addAnimationStyle,

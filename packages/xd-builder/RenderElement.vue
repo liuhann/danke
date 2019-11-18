@@ -1,12 +1,12 @@
 <template>
 <div :id="'element-' + element.id"
      @click="$emit('click')"
-     class="element" :class="[element.visible?'':'hidden', 'type' + element.type]" :style="element.style + ';' + 'z-index:' + index + ';'">
+     class="element" :class="[element.visible?'':'hidden', element.className, 'type' + element.type]" :style="element.style + ';' + 'z-index:' + index + ';'">
   <!--图片渲染-->
   <img v-if="element.type === TypeEnum.IMAGE" :src="element.url" :style="element.innerStyle || ''">
   <paper-folding v-if="element.type === TypeEnum.PAPERFOLD" :url="element.url" direction="v" :split="5"/>
   <!--文本渲染情况下 文本内容-->
-  <span v-if="element.type === TypeEnum.TEXT" v-html="element.text"></span>
+  <span v-if="element.type === TypeEnum.TEXT" v-html="element.text" :class="element.className" :data-content="element.text"></span>
   <!--文件被选中的遮罩-->
   <div class="mask" v-if="selected">
     <!--右下角corner-->

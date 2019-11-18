@@ -11,6 +11,7 @@ const text = {
   position: POSITION,
   size: SIZE,
   shadow: SHADOW,
+  className: '',
   animation: {
     in: ANIMATION,
     dura: ANIMATION,
