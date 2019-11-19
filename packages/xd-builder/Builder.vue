@@ -1,12 +1,7 @@
 <template>
   <div id="xd">
-    <top-bar
-      @insert-image="insertRawImage"
-      @insert-shape="insertShape"
-      @insert-text="insertText"
-      @crop="cropImage"
-      @run="runWork"></top-bar>
-    <div class="scene-container" ref="sceneContainer">
+    <div class="scene-container" ref="sceneContainer" @click.self="sceneClick">
+      <!--渲染当前的场景-->
       <div class="device" ref="device" :style="deviceStyle">
         <div class="screen" v-if="currentScene" :style="currentScene.style" @click.self="sceneClick">
           <render-element
@@ -17,40 +12,43 @@
             :selected="currentElement === element"
             @click="chooseElement(element, $event)"/>
         </div>
+        <el-button v-if="work.audioUrl" class="btn-audio" icon="el-icon-headset" size="mini" circle @click="editTicking"/>
       </div>
-      <div class="scene-options">
-        <span class="tag is-info">{{work.scenes.indexOf(currentScene)+1}}/{{work.scenes.length}}</span>
-        <a class="button is-small" @click="previousScene" style="margin-top: 5px;">
-          向前
-        </a>
-        <a class="button is-small" @click="nextScene" style="margin-top: 5px;">
-          向后
-        </a>
-        <el-popover
-          placement="left"
-          title="新增元素"
-          width="200"
-          trigger="click">
-          <el-button icon="el-icon-document-add" round />
-          <i class="el-icon-document-add"></i>
-          <i class="el-icon-document-copy"></i>
-          <a class="button is-success is-small" @click="addNewScene" style="margin-top: 5px;">新增场景</a>
-          <div>
-            <a class="file">
-              <label class="file-label">
-                <input class="file-input" type="file" name="resume">
-                <span class="button is-white icon-picture-1"></span>
-              </label>
-            </a>
-          </div>
-          <a class="button is-white icon-doc-landscape" @click="insertShape('rect')"></a>
-          <a class="button is-white icon-circle-thin" @click="insertShape('circle')"></a>
-          <a class="button is-white icon-sort-alphabet" @click="insertText"></a>
-          <a class="button is-success is-small" slot="reference" style="margin-top: 5px;">新增</a>
-        </el-popover>
-      </div>
-      <div class="mask-right" @click="sceneClick" :style="maskRightStyle"/>
-      <div class="mask-bottom" :style="maskBottomStyle"/>
+      <!--场景操作-->
+      <span class="tag is-white">{{work.scenes.indexOf(currentScene)+1}}/{{work.scenes.length}}</span>
+      <el-button class="btn-run" icon="el-icon-caret-right" size="mini" circle type="success" @click="runWork"/>
+      <el-button class="btn-next" icon="el-icon-arrow-right" size="mini" circle @click="nextScene"/>
+      <el-button class="btn-prev" icon="el-icon-arrow-left" size="mini" circle @click="previousScene"/>
+      <el-popover
+        placement="left-start"
+        width="200"
+        trigger="click">
+        <div class="ptb-10">场景</div>
+        <el-button icon="el-icon-document-add" style="font-size: 16px;" size="mini" circle @click="addNewScene"/>
+        <el-button icon="el-icon-document-copy" style="font-size: 16px;" size="mini" circle @click="cloneScene"/>
+        <div class="ptb-10">基本元素</div>
+        <el-upload
+          style="float: left; margin-right: 10px;"
+          :show-file-list="false"
+          :auto-upload="false"
+          action="nothing"
+          :on-change="insertRawImage">
+          <el-button icon="el-icon-picture-outline" style="font-size: 16px;" size="mini" circle />
+        </el-upload>
+        <el-button icon="el-icon-files" size="mini" circle @click="insertShape('rect')"/>
+        <el-button icon="el-icon-postcard" size="mini" circle @click="insertText"/>
+        <el-button icon="el-icon-headset" size="mini" circle @click="openAudioDialog"/>
+        <div class="ptb-10">插件</div>
+        <el-upload
+          style="float: left; margin-right: 10px;"
+          :show-file-list="false"
+          :auto-upload="false"
+          action="nothing"
+          :on-change="insertPaperFolding">
+          <el-button icon="el-icon-s-grid" size="mini" circle/>
+        </el-upload>
+        <el-button class="btn-add" icon="el-icon-plus" slot="reference" type="primary" size="mini" circle/>
+      </el-popover>
     </div>
     <div class="aside">
       <element-config :element="currentElement" :scene="currentScene" v-if="currentElement" :work="work" @remove="deleteElement"></element-config>
@@ -60,6 +58,7 @@
     <!-- float 切换显示 -->
     <image-cropper ref="cropper"></image-cropper>
     <dialog-edit-text ref="dialogEditText" @input="setElementText"/>
+    <dialog-audio-tap ref="dialogAudioList" @audio="chooseAudio"/>
   </div>
 </template>
 
@@ -69,11 +68,11 @@ import saveShareMixin from './mixins/saveShare'
 import sceneMixin from './mixins/sceneMixins'
 import layoutMixin from './mixins/layoutMixin'
 import keyBindMixin from './mixins/key-binds'
-import { Popover, Button } from 'element-ui'
+import { Popover, Button, Upload } from 'element-ui'
 import ImageCropper from './components/ImageCropper'
-import TopBar from './components/TopBar.vue'
 import ElementConfig from './components/ElementConfig.vue'
 import DialogEditText from './components/DialogEditText.vue'
+import DialogAudioTap from './components/DialogAudioTap.vue'
 import WorkSceneConfig from './components/WorkSceneConfig.vue'
 import { TypeEnum } from '../danke-core/elements/index'
 import RenderElement from './RenderElement.vue'
@@ -86,13 +85,14 @@ export default {
   name: 'Builder',
   components: {
     RenderElement,
-    TopBar,
     ElementConfig,
     ImageCropper,
     WorkSceneConfig,
     DialogEditText,
+    DialogAudioTap,
     [Popover.name]: Popover,
-    [Button.name]: Button
+    [Button.name]: Button,
+    [Upload.name]: Upload
   },
   mixins: [elementMixin, saveShareMixin, sceneMixin, keyBindMixin, layoutMixin],
   props: {
@@ -162,6 +162,14 @@ export default {
     sceneClick () {
       this.hideLeftToggleMenu()
       this.chooseElement(null)
+    },
+    chooseAudio (audioItem) {
+      this.work.audioUrl = audioItem.audioUrl
+      this.work.audioName = audioItem.name
+      this.work.audioTicks = audioItem.ticks
+    },
+    openAudioDialog () {
+      this.$refs.dialogAudioList.open()
     }
   }
 }
@@ -170,6 +178,15 @@ export default {
 <style lang="scss">
 html.has-navbar-fixed-top, body.has-navbar-fixed-top {
   padding-top: 0;
+}
+
+.el-button {
+ font-size: 16px;
+}
+
+.ptb-10 {
+  padding-bottom: 10px;
+  padding-top: 10px;
 }
 #xd {
   @import './common.scss';
@@ -180,30 +197,42 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
   height: 100%;
   overflow: hidden;
   background-color: #f5f5f4;
-  .tool-bar {
-    position: absolute;
-    z-index: 101;
-    top: 40px;
-    width: 48px;
-    left: 0;
-    bottom: 0;
-  }
   .scene-container {
     position: absolute;
     left: 0;
-    top: 40px;
-    bottom: 0;
+    top: 5px;
+    bottom: 5px;
     right: 320px;
     overflow: auto;
-    .scene-options {
+    .tag {
+      z-index: 9999;
       position: absolute;
-      right: 0;
-      display: flex;
-      z-index: 202;
-      flex-direction: column;
-      top: 0;
-      width: 40px;
-      height: 300px;
+      right: 10px;
+      bottom: 10px;
+    }
+    .btn-run {
+      position: absolute;
+      right: 10px;
+      top: 60px;
+      z-index: 999;
+    }
+    .btn-next {
+      position: absolute;
+      right: 10px;
+      top: calc(50% - 10px);
+      z-index: 999;
+    }
+    .btn-prev {
+      position: absolute;
+      left: 10px;
+      top: calc(50% - 10px);
+      z-index: 999;
+    }
+    .btn-add {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      z-index: 999;
     }
     .device {
       touch-action: none;
@@ -213,6 +242,12 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
       border-radius: 10px;
       overflow: hidden;
       z-index: 10;
+      .btn-audio {
+        position: absolute;
+        left: 10px;
+        top: 10px;
+        z-index: 9999;
+      }
       .element {
         position: absolute;
         overflow: hidden;
@@ -248,25 +283,6 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
           outline:none;
           -webkit-user-modify: read-write-plaintext-only;
         }
-        .mask {
-          z-index: 1;
-          position: absolute;
-          left: 0;
-          top: 0;
-          width: calc(100% - 2px);
-          height: calc(100% - 2px);
-          border: 2px dashed #87b1f1;
-          box-sizing: border-box;
-          .corner-rb {
-            display: none;
-            background-color: #87b1f1;
-            position: absolute;
-            right: 0;
-            bottom: 0;
-            width: 10px;
-            height: 10px;
-          }
-        }
       }
 
       .ti {
@@ -289,10 +305,18 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
   .aside {
     position: absolute;
     right: 0;
-    top: 40px;
+    top: 5px;
     width: 320px;
     bottom: 0;
     background-color: #fff;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  #xd .scene-container {
+    top: 0;
+    bottom: 0;
+    right: 0;
   }
 }
 

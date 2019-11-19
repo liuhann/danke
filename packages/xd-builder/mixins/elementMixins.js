@@ -3,6 +3,7 @@ import { clone } from '../../utils/object'
 import { getElementInnerStyle, getElementStyle, getSceneStyle } from '../../danke-core/utils/styles'
 import { shortid } from '../../utils/string'
 import { MessageBox, Message } from 'element-ui'
+import PaperFolding from '../../danke-core/plugins/paperfolding'
 
 export default {
   data () {
@@ -69,17 +70,18 @@ export default {
       this.currentScene.layouts.push(cloned)
       this.chooseElement(cloned)
     },
-    insertShape (shape) {
+
+    /**
+     * 插入形状，为了支持边框和阴影， 形状只支持圆形和正方形
+     */
+    insertShape () {
       const clonedElement = clone(SHAPE)
       clonedElement.id = shortid()
-      clonedElement.name = shape === 'circle' ? '圆形' : '矩形'
-      clonedElement.shape = shape
-      clonedElement.visible = true
+      clonedElement.name = '矩形'
       clonedElement.background.colors = ['#eee']
       clonedElement.size.width = '30vw'
       clonedElement.size.height = '30vw'
       clonedElement.style = getElementStyle(clonedElement, this.device)
-      this.inc++
       this.currentScene.elements.push(clonedElement)
       this.chooseElement(clonedElement)
     },
@@ -134,7 +136,13 @@ export default {
         console.log('inserted', clonedElement)
       }
     },
-    insertRawImage (file) {
+
+    /**
+     * 插入图片 注意此时图片并不上传，只有保存时才上传并设置element.imgPath属性
+     * @param e
+     */
+    insertRawImage (e) {
+      const file = e.raw
       const clonedElement = clone(IMAGE)
       clonedElement.id = shortid()
       clonedElement.name = '图片'
@@ -144,6 +152,24 @@ export default {
       clonedElement.border.width = 0
       clonedElement.size.width = '50vw'
       clonedElement.size.height = '50vw'
+      clonedElement.url = URL.createObjectURL(file)
+      clonedElement.blob = file
+      const style = getElementStyle(clonedElement, this.device)
+      clonedElement.style = style
+      this.currentScene.elements.push(clonedElement)
+      this.chooseElement(clonedElement)
+    },
+
+    insertPaperFolding (e) {
+      const file = e.raw
+      const clonedElement = clone(PaperFolding)
+      clonedElement.id = shortid()
+      clonedElement.name = '图片栅格'
+      clonedElement.visible = true
+      clonedElement.position.horizontal = 'center'
+      clonedElement.position.vertical = 'center'
+      clonedElement.size.width = '100vw'
+      clonedElement.size.height = '100vw'
       clonedElement.url = URL.createObjectURL(file)
       clonedElement.blob = file
       const style = getElementStyle(clonedElement, this.device)

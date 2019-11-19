@@ -38,7 +38,6 @@
     <edit-animation :animation="scene.animation[animationType]" :animation-type="animationType"></edit-animation>
     <divider></divider>
     <div class="scene-buttons">
-      <a class="button is-small" @click="copyScene">复制场景</a>
       <a class="button is-small is-danger" @click="$emit('delete-scene')">删除</a>
     </div>
   </div>
@@ -71,9 +70,6 @@
       <a class="tag is-delete" @click="clearAudio"></a>
     </div>
 
-    <div class="field has-addons" v-if="work.audioName">
-      <a class="button is-small" @click="editTicks">播放并编辑节拍</a>
-    </div>
     <div class="field">
       <textarea class="style-area" style="width: 100%; height: 320px;" v-model="work.styles"></textarea>
     </div>
@@ -156,14 +152,6 @@ export default {
     },
     editTicks () {
       this.$emit('edit-tick')
-    },
-    copyScene () {
-      const scene = clone(this.currentScene)
-      scene.name = '场景 ' + (this.work.scenes.length + 1)
-      scene.id = shortid()
-      scene.style = getSceneStyle(scene, this.device)
-      this.work.scenes.push(scene)
-      this.chooseScene(scene)
     }
   }
 }

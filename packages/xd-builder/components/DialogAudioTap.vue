@@ -88,8 +88,7 @@ export default {
       audioEndPoint: 0,
       audioTicks: [],
       audioTotalSeconds: 0,
-      audioCurrentSeconds: 0,
-      audios: []
+      audioCurrentSeconds: 0
     }
   },
   created () {
@@ -152,8 +151,7 @@ export default {
     changeAudioCurrentSeconds () {
       this.sound.seek(this.audioCurrentSeconds)
     },
-    open (work) {
-      this.audios = work.audios
+    open () {
       this.dialogVisible = true
     },
     startTick () {

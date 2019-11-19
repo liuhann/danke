@@ -31,6 +31,18 @@ export default {
       this.work.scenes.push(scene)
       this.chooseScene(scene)
     },
+
+    /**
+     * 复制当前场景
+     */
+    cloneScene () {
+      const scene = clone(this.currentScene)
+      scene.name = '场景 ' + (this.work.scenes.length + 1)
+      scene.id = shortid()
+      scene.style = getSceneStyle(scene, this.device)
+      this.work.scenes.push(scene)
+      this.chooseScene(scene)
+    },
     chooseScene (scene, index) {
       if (this.chooseElement) {
         this.chooseElement(null)
@@ -94,10 +106,15 @@ export default {
      */
     async editTicking () {
       const that = this
-      MessageBox.alert('播放音乐时手动点击”下一页“切换场景，当前播放时间会自动附着到场景切换之上', '编辑节拍', {
-        confirmButtonText: '确定',
-        callback: async action => {
-          if (!that.ticksEditing) {
+      if (this.ticksEditing) {
+        this.ticksEditing = false
+        if (this.audio) {
+          that.audio.pause()
+        }
+      } else {
+        MessageBox.alert('播放音乐时手动点击”下一页“切换场景，当前播放时间点会自动附着到场景切换之上。再次点击中止音乐播放', '编辑节拍', {
+          confirmButtonText: '确定',
+          callback: async action => {
             this.chooseScene(this.work.scenes[0])
             that.ticksEditing = true
             that.work.audioTicks = []
@@ -112,14 +129,9 @@ export default {
                 that.applyWorkTicksToScenes()
               }
             }
-          } else {
-            that.ticksEditing = false
-            if (this.audio) {
-              that.audio.pause()
-            }
           }
-        }
-      })
+        })
+      }
     },
     applyWorkTicksToScenes () {
       let last = 0

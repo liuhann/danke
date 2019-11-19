@@ -64,10 +64,9 @@
         </div>
       </div>
     </div>
-
   </div>
 
-  <div class="animation" v-if="configTab === 'animation'">
+  <div class="animation" v-if="configTab === 'animation' && element.animation">
     <edit-animation :animation="element.animation.in" label="进入" animation-type="in"/>
     <edit-animation :animation="element.animation.dura" label="持续" animation-type="dura" />
     <edit-animation :animation="element.animation.out" label="离开" animation-type="out" />

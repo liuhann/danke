@@ -15,7 +15,6 @@ const shape = {
   background: BACKGROUND,
   border: BORDER,
   shadow: SHADOW,
-  clip: CLIP,
   className: '',
   animation: {
     in: ANIMATION,

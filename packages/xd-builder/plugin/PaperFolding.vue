@@ -1,6 +1,8 @@
 <template>
 <div class="paper-folder">
-  <img v-for="n in split" :key="n" :src="url" :style="getSplitRect(n-1)"/>
+  <div v-for="i in split[0]" :key="i">
+    <img v-for="j in split[1]" :key="j" :src="url" :style="getRectStyle(i, j)"/>
+  </div>
 </div>
 </template>
 
@@ -8,25 +10,44 @@
 export default {
   name: 'PaperFolding.vue',
   props: {
+    // 图片地址
     url: {
       type: String
     },
-    direction: {
-      type: String,
-      default: 'horizontal'
-    },
+    // 图片拆分块数, [1, 3] 表示横向拆分一块（不拆分） ，纵向拆分3块
     split: {
+      type: Array
+    },
+    // 使用的keyframe效果名称
+    keyframe: {
+      type: String
+    },
+    // 播放动画的持续时间
+    duration: {
       type: Number
+    },
+    // 动画的时间函数
+    timing: {
+      type: String
+    },
+    // 延迟时间
+    delay: {
+      type: Number
+    },
+    // 动画发起位置， [1, 1]表示第一个节点  如果为-1表示整行或者整列
+    from: {
+      type: Array
     }
   },
   methods: {
-    getSplitRect (i) {
-      if (this.direction === 'horizontal') { // 水平的
-        const clipPath = `clip-path: polygon(${i / this.split * 100 - 0.1}% 0, ${(i + 1) / this.split * 100}% 0, ${(i + 1) / this.split * 100}% 100%, ${i / this.split * 100 - 0.1}% 100%)`
-        return clipPath
-      } else {
-        const clipPath = `clip-path: polygon(0 ${i / this.split * 100 - 0.1}%, 100% ${i / this.split * 100 - 0.1}%, 100% ${(i + 1) / this.split * 100}%, 0 ${(i + 1) / this.split * 100}%)`
-        return clipPath
+    getRectStyle (i, j) {
+      const clipPath = `polygon(
+      ${(i - 1) / this.split[0] * 100 - 1}% ${(j - 1) / this.split[1] * 100}%,
+      ${i / this.split[0] * 100}% ${(j - 1) / this.split[1] * 100}%,
+      ${i / this.split[0] * 100}% ${j / this.split[1] * 100}%,
+      ${(i - 1) / this.split[0] * 100 - 1}% ${j / this.split[1] * 100}%)`
+      return {
+        clipPath: clipPath
       }
     }
   }
