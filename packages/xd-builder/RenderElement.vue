@@ -4,7 +4,8 @@
      class="element" :class="[element.visible?'':'hidden', element.className, 'type' + element.type]" :style="element.style + ';' + 'z-index:' + index + ';'">
   <!--图片渲染-->
   <img v-if="element.type === TypeEnum.IMAGE" :src="element.url" :style="element.innerStyle || ''">
-  <paper-folding v-if="element.type === 11" :url="element.url" :split="element.split"/>
+  <!--图片折纸效果-->
+  <paper-folding v-if="element.type === 11" :stage="stage" :element="element" />
   <!--文本渲染情况下 文本内容-->
   <span v-if="element.type === TypeEnum.TEXT" v-html="element.text" :class="element.className" :data-content="element.text"></span>
   <!--文件被选中的遮罩-->
@@ -24,6 +25,11 @@ export default {
     PaperFolding
   },
   props: {
+    // 渲染的阶段，可以为 in/dura/out
+    stage: {
+      type: String,
+      default: 'in'
+    },
     element: { // 元素定义
       type: Object
     },
@@ -33,6 +39,9 @@ export default {
     selected: { // 是否选中
       type: Boolean
     }
+  },
+  mounted () {
+
   },
   data () {
     return {

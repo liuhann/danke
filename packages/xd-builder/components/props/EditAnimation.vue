@@ -89,9 +89,14 @@ export default {
       this.animation.name = ''
       this.animation.desc = ''
     },
+
+    /**
+     * 打开动画选择面板，选择动画名称
+     * @param type
+     */
     chooseAnimation (type) {
       frameModel.choose(type, (animation) => {
-        console.log('choose animation', animation)
+        // 回调传回选择好的动画
         this.animation.name = animation.name
         this.animation.desc = animation.desc
         if (!this.animation.duration) {
@@ -102,7 +107,6 @@ export default {
         }
         this.animation.timing = animation.timing
         if (!animation.cssFrame) {
-          debugger
           this.animation.cssFrame = ''
           this.animation.frames = animation.frames
         } else {

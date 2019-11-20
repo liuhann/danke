@@ -2,6 +2,7 @@
 <nav class="element-prop-config">
   <tabs size="is-small" v-model="configTab" :tabs="configTabs"></tabs>
   <div class="basic" v-if="configTab === 'basic'">
+    <edit-paper-folding v-if="element.folding" :element="element"/>
     <edit-font v-if="element.font" v-model="element.font" @apply-to-all="applyFontToAll" @copy="copyFontStyle" @paste="pasteFontStyle"></edit-font>
     <edit-image v-if="element.url" v-model="element.url" @blob="imageUpdated"></edit-image>
     <edit-background v-model="element.background" v-if="element.background"></edit-background>
@@ -106,6 +107,7 @@ import Tabs from '../../common/components/Tabs.vue'
 import EditImage from './props/EditImage.vue'
 import { shortid } from '../../utils/string'
 import { Message } from 'element-ui'
+import EditPaperFolding from '../../danke-core/plugins/EditPaperFolding'
 
 export default {
   name: 'ElementConfig',
@@ -124,6 +126,7 @@ export default {
     }
   },
   components: {
+    EditPaperFolding,
     EditImage,
     Tabs,
     EditMask,

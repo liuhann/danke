@@ -6,6 +6,7 @@
         <div class="screen" v-if="currentScene" :style="currentScene.style" @click.self="sceneClick">
           <render-element
             v-for="(element, index) of currentScene.elements"
+            stage="in"
             :element="element"
             :key="element.id"
             :index="index"
@@ -19,9 +20,10 @@
       <el-button class="btn-run" icon="el-icon-caret-right" size="mini" circle type="success" @click="runWork"/>
       <el-button class="btn-next" icon="el-icon-arrow-right" size="mini" circle @click="nextScene"/>
       <el-button class="btn-prev" icon="el-icon-arrow-left" size="mini" circle @click="previousScene"/>
+      <!--PopOver新增场景、元素-->
       <el-popover
         placement="left-start"
-        width="200"
+        width="240"
         trigger="click">
         <div class="ptb-10">场景</div>
         <el-button icon="el-icon-document-add" style="font-size: 16px;" size="mini" circle @click="addNewScene"/>

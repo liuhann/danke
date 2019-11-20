@@ -55,12 +55,14 @@ function clearAnimation (sheet) {
 }
 
 function addAnimationStyle (sheet, animation) {
-  if (animation.cssFrame) {
-    addKeyFrames(sheet, animation.name, animation.cssFrame)
-  } else {
-    addKeyFrames(sheet, animation.name, generateKeyFrames(animation.frames))
+  if (animation.name) {
+    if (animation.cssFrame) {
+      addKeyFrames(sheet, animation.name, animation.cssFrame)
+    } else if (animation.frames) {
+      addKeyFrames(sheet, animation.name, generateKeyFrames(animation.frames))
+    }
+    addAnimation(sheet, animation)
   }
-  addAnimation(sheet, animation)
 }
 
 function getAnimationSourceCode (sheet, animation) {

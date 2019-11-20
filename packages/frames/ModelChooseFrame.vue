@@ -132,6 +132,9 @@ export default {
     height: calc(100% - 30px);
   }
 
+  .el-dialog__body {
+    height: calc(100% - 120px);
+  }
   @media screen and (max-width: 640px) {
     .frame-container {
       height: calc(100% - 40px);

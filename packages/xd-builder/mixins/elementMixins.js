@@ -150,8 +150,8 @@ export default {
       clonedElement.position.horizontal = 'center'
       clonedElement.position.vertical = 'center'
       clonedElement.border.width = 0
-      clonedElement.size.width = '50vw'
-      clonedElement.size.height = '50vw'
+      clonedElement.size.width = '100vw'
+      clonedElement.size.height = '100vw'
       clonedElement.url = URL.createObjectURL(file)
       clonedElement.blob = file
       const style = getElementStyle(clonedElement, this.device)
