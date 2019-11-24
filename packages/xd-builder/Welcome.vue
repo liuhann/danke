@@ -13,13 +13,13 @@
     </section>
     <section class="section" style="background: #fff;">
       <div class="container">
-        <h2>选择模板</h2>
+        <h2>我的作品</h2>
       </div>
     </section>
 
     <section class="section">
       <div class="container">
-        <works-column :works="myWorks" @edit="chooseDraftWork" @play="playWork" @delete="deleteWorkDraft" />
+        <works-column :works="works" @edit="chooseDraftWork" @play="playWork" @delete="deleteWorkDraft" />
       </div>
     </section>
   </div>
@@ -67,14 +67,10 @@ export default {
   },
   data () {
     return {
-      myWorks: [],
       isMobile: screen.width < screen.height,
       startNav: 'mobile',
-      templates: {
-        books: [],
-        mobiles: [],
-        widescreens: []
-      },
+      templates: [],
+      works: [],
       drafts: {
         books: [],
         mobiles: [],
@@ -109,10 +105,31 @@ export default {
   },
   created () {
     this.workdao = new RestDAO(this.ctx, 'danke/work')
-    this.loadDraftWorks()
-    this.loadTops()
+    this.loadWorkTemplates()
+    this.loadMyWorks()
   },
   methods: {
+    /**
+     * 加载用户可用的模板
+     * @returns {Promise<void>}
+     */
+    async loadWorkTemplates () {
+      const result = await this.workdao.list({
+        'sys.template': '1'
+      })
+      return result.list
+    },
+
+    async loadMyWorks () {
+      if (this.ctx.user) {
+        const result = await this.workdao.list({
+          'creator': this.ctx.user.id,
+          'projection': 'cover,updated,created,ratio'
+        })
+        this.works = result.list
+      }
+    },
+
     async loadDraftWorks () {
       const result = await this.workdao.list()
       this.myWorks = result.list
@@ -124,26 +141,14 @@ export default {
       this.shares.books = result.list.filter(work => work.ratio === '4:3' && !work.isDraft)
     },
 
-    async loadTemplates () {
-
-    },
-    async loadTops () {
-      const tops = await this.workdao.list({
-        'system.top4': '1'
-      })
-      this.templates.widescreens = tops.list.filter(work => work.ratio === '16:9')
-      this.templates.mobiles = tops.list.filter(work => work.ratio === '9:16')
-      this.templates.books = tops.list.filter(work => work.ratio === '4:3')
-    },
-
     playWork (work) {
-      window.open('/play/full/' + work._id)
+      window.open('/play/fit/' + work._id)
     },
     chooseFromTemplateWork () {
 
     },
     chooseDraftWork (work) {
-      this.$router.push(this.xdUrl + '?ratio=' + work.ratio + '&work=' + work._id)
+      this.$router.push(this.xdUrl + '?&work=' + work._id + '&ratio=' + work.ratio)
     },
     chooseStartWork (ratio) {
       this.$router.push(this.xdUrl + '?ratio=' + screenRatios[ratio] + '&work=new')

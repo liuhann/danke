@@ -19,13 +19,6 @@ export default {
     path: '/xd',
     beforeEnter,
     component: () => import(/* webpackChunkName: "xd" */'./Builder.vue')
-  }, {
-    path: '/xdt',
-    beforeEnter,
-    component: () => import(/* webpackChunkName: "xd-template" */'./TemplatedBuilder.vue')
-  }, {
-    path: '/shared/:link',
-    component: () => import(/* webpackChunkName: "xd-welcome" */'./SharedLink.vue')
   }],
   async onload (ctx) {
   }

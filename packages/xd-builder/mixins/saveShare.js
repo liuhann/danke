@@ -74,6 +74,7 @@ export default {
         }
         scene.style = ''
       }
+      work.cover = work.scenes[0]
       return work
     },
 

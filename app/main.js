@@ -12,10 +12,8 @@ import frameTool from '../packages/frames'
 import restclient from '../packages/rest-client'
 // import ybstory from '../packages/story'
 import xd from '../packages/xd-builder'
-import yd from '../packages/y-builder'
 import player from '../packages/xd-player'
 import vectors from '../packages/vectors'
-import adminDanke from '../packages/danke-admin'
 import slideLite from '../packages/slide-lite'
 
 import initClient from '../packages/common/utils/initClient'
@@ -34,7 +32,7 @@ const boot = new AsyncBoot({
   IMG_SERVER: 'http://image.danke.fun',
   mount: '#app',
   packages: [
-    site, user, frameTool, xd, player, adminDanke, vectors, slideLite, restclient, yd
+    site, user, frameTool, xd, player, vectors, slideLite, restclient
   ],
   started: async (ctx, next) => {
     ctx._router.beforeEach((to, from, next) => {

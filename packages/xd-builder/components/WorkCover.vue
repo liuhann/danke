@@ -59,7 +59,9 @@ export default {
   },
   computed: {
     scene () {
-      if (this.index) {
+      if (this.work.cover) {
+        return this.work.cover
+      } else if (this.index) {
         return this.work.scenes[this.index]
       } else {
         return this.work.scenes[0]
