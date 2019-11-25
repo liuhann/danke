@@ -124,7 +124,7 @@ export default {
       if (this.ctx.user) {
         const result = await this.workdao.list({
           'creator': this.ctx.user.id,
-          'projection': 'cover,updated,created,ratio'
+          'projection': 'cover,updated,created,ratio,creator'
         })
         this.works = result.list
       }
@@ -159,7 +159,8 @@ export default {
     async deleteWorkDraft (work) {
       await MessageBox.confirm('确认删除此作品', '注意')
       await this.workdao.delete(work)
-      this.loadDraftWorks()
+      this.works = []
+      this.loadMyWorks()
     },
     goShareLink (work) {
       this.$router.push('/shared/' + work._id)

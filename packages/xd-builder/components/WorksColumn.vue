@@ -15,7 +15,7 @@
           @play="playWork(work)"
           @edit="chooseDraftWork(work)"/>
         <div class="work-info" style="height: 36px;">
-          <a v-if="false" class="button is-white has-text-danger is-pulled-right" @click='deleteWork(work)'>
+          <a v-if="work.creator === userId" class="button is-white has-text-danger is-pulled-right" @click='deleteWork(work)'>
             <span class="icon">
               <i class="icon-trash-empty"></i>
             </span>
@@ -43,6 +43,13 @@ export default {
     }
   },
   computed: {
+    userId () {
+      if (this.ctx.user) {
+        return this.ctx.user.id
+      } else {
+        return ''
+      }
+    }
   },
   filters: {
     workSize (ratio) {
