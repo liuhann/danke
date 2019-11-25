@@ -78,8 +78,6 @@ import DialogAudioTap from './components/DialogAudioTap.vue'
 import WorkSceneConfig from './components/WorkSceneConfig.vue'
 import { TypeEnum } from '../danke-core/elements/index'
 import RenderElement from './RenderElement.vue'
-import ImageDAO from '../common/dao/imagedao'
-import RestDAO from '../common/dao/restdao'
 import { addStyle, createSheet } from '../frames/keyframe'
 
 import 'element-ui/packages/theme-chalk/lib/icon.css'
@@ -124,11 +122,7 @@ export default {
       ticksEditing: false
     }
   },
-  created () {
-    this.imagedao = new ImageDAO(this.ctx)
-    this.workdao = new RestDAO(this.ctx, 'danke/work')
-  },
-
+  
   watch: {
     'work.styles': function () {
       const styleTag = document.getElementById('work-extra-style')
@@ -314,7 +308,7 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
   }
 }
 
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 1080px) {
   #xd .scene-container {
     top: 0;
     bottom: 0;

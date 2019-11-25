@@ -36,36 +36,12 @@ export default {
         width: this.device.width + 'px',
         height: this.device.height + 'px'
       }
-    },
-    maskRightStyle () {
-      return {
-        position: 'absolute',
-        right: 0,
-        left: this.device.width + 'px',
-        top: 0,
-        bottom: 0
-      }
-    },
-    maskBottomStyle () {
-      return {
-        position: 'absolute',
-        right: this.device.width + 'px',
-        left: 0,
-        top: this.device.height + 'px',
-        bottom: 0
-      }
     }
   },
   mounted () {
     this.zoomCenter()
   },
   methods: {
-    setLeftToggleShow () {
-      this.showLeftToggleMenu = true
-    },
-    hideLeftToggleMenu () {
-      this.showLeftToggleMenu = false
-    },
     initSceneContainer () {
       this.zoomCenter()
     },
