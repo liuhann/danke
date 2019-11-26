@@ -23,32 +23,42 @@
       <!--PopOver新增场景、元素-->
       <el-popover
         placement="left-start"
-        width="240"
+        @show="addPopoverShow"
+        width="260"
         trigger="click">
-        <div class="ptb-10">场景</div>
-        <el-button icon="el-icon-document-add" style="font-size: 16px;" size="mini" circle @click="addNewScene"/>
-        <el-button icon="el-icon-document-copy" style="font-size: 16px;" size="mini" circle @click="cloneScene"/>
-        <div class="ptb-10">基本元素</div>
-        <el-upload
-          style="float: left; margin-right: 10px;"
-          :show-file-list="false"
-          :auto-upload="false"
-          action="nothing"
-          :on-change="insertRawImage">
-          <el-button icon="el-icon-picture-outline" style="font-size: 16px;" size="mini" circle />
-        </el-upload>
-        <el-button icon="el-icon-files" size="mini" circle @click="insertShape('rect')"/>
-        <el-button icon="el-icon-postcard" size="mini" circle @click="insertText"/>
-        <el-button icon="el-icon-headset" size="mini" circle @click="openAudioDialog"/>
-        <div class="ptb-10">插件</div>
-        <el-upload
-          style="float: left; margin-right: 10px;"
-          :show-file-list="false"
-          :auto-upload="false"
-          action="nothing"
-          :on-change="insertPaperFolding">
-          <el-button icon="el-icon-s-grid" size="mini" circle/>
-        </el-upload>
+        <el-tabs size="small" value="first">
+           <el-tab-pane label="基础" size="mini" name="first">
+             <div class="ptb-10">场景</div>
+             <el-button icon="el-icon-document-add" style="font-size: 16px;" size="mini" circle @click="addNewScene"/>
+             <el-button icon="el-icon-document-copy" style="font-size: 16px;" size="mini" circle @click="cloneScene"/>
+             <div class="ptb-10">基本元素</div>
+             <el-upload
+               style="float: left; margin-right: 10px;"
+               :show-file-list="false"
+               :auto-upload="false"
+               action="nothing"
+               :on-change="insertRawImage">
+               <el-button icon="el-icon-picture-outline" style="font-size: 16px;" size="mini" circle />
+             </el-upload>
+             <el-button icon="el-icon-files" size="mini" circle @click="insertShape('rect')"/>
+             <el-button icon="el-icon-postcard" size="mini" circle @click="insertText"/>
+             <el-button icon="el-icon-headset" size="mini" circle @click="openAudioDialog"/>
+             <div class="ptb-10">插件</div>
+             <div class="plugins is-clearfix">
+               <el-upload
+                 style="float: left; margin-right: 10px;"
+                 :show-file-list="false"
+                 :auto-upload="false"
+                 action="nothing"
+                 :on-change="insertPaperFolding">
+                 <el-button icon="el-icon-s-grid" size="mini" circle/>
+               </el-upload>
+             </div>
+           </el-tab-pane>
+           <el-tab-pane label="模板" name="second">
+                         
+           </el-tab-pane>
+         </el-tabs>
         <el-button class="btn-add" icon="el-icon-plus" slot="reference" type="primary" size="mini" circle/>
       </el-popover>
     </div>
@@ -70,7 +80,7 @@ import saveShareMixin from './mixins/saveShare'
 import sceneMixin from './mixins/sceneMixins'
 import layoutMixin from './mixins/layoutMixin'
 import keyBindMixin from './mixins/key-binds'
-import { Popover, Button, Upload } from 'element-ui'
+import { Popover, Button, Upload, Tabs, TabPane} from 'element-ui'
 import ImageCropper from './components/ImageCropper'
 import ElementConfig from './components/ElementConfig.vue'
 import DialogEditText from './components/DialogEditText.vue'
@@ -81,6 +91,8 @@ import RenderElement from './RenderElement.vue'
 import { addStyle, createSheet } from '../frames/keyframe'
 
 import 'element-ui/packages/theme-chalk/lib/icon.css'
+
+// 0db4ed954bb9589fc6e193888a98aeee61a7e7b5
 export default {
   name: 'Builder',
   components: {
@@ -92,7 +104,9 @@ export default {
     DialogAudioTap,
     [Popover.name]: Popover,
     [Button.name]: Button,
-    [Upload.name]: Upload
+    [Upload.name]: Upload,
+    [Tabs.name]: Tabs,
+    [TabPane.name]: TabPane
   },
   mixins: [elementMixin, saveShareMixin, sceneMixin, keyBindMixin, layoutMixin],
   props: {
@@ -119,7 +133,8 @@ export default {
       showLeftToggleMenu: false,
       showElementsLayer: false,
       interactEnabled: true,
-      ticksEditing: false
+      ticksEditing: false,
+      templates: null // 已经加载的模板
     }
   },
   
@@ -156,13 +171,15 @@ export default {
       this.renderScene(this.currentScene, 'in')
     },
     sceneClick () {
-      this.hideLeftToggleMenu()
       this.chooseElement(null)
     },
     chooseAudio (audioItem) {
       this.work.audioUrl = audioItem.audioUrl
       this.work.audioName = audioItem.name
       this.work.audioTicks = audioItem.ticks
+    },
+    addPopoverShow () {
+
     },
     openAudioDialog () {
       this.$refs.dialogAudioList.open()

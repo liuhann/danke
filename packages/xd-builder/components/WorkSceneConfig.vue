@@ -35,7 +35,7 @@
     <edit-background v-model="scene.background"></edit-background>
     <div class="scene-buttons">
       <a class="button is-small is-danger" @click="$emit('delete-scene')">删除</a>
-      <a class="button is-small" @click="saveAsTemplate">保存为模板</a>
+      <a class="button is-small" @click="saveAsTemplate(scene)">保存为模板</a>
     </div>
   </div>
   <div class="element-list" v-if="rootTab === 'elements'">
@@ -84,8 +84,10 @@ import { Divider, MessageBox } from 'element-ui'
 import { clone } from '../../utils/object'
 import { shortid } from '../../utils/string'
 import { getSceneStyle } from '../../danke-core/utils/styles'
+import saveShareMixin from '../mixins/saveShare.js'
 export default {
   name: 'WorkSceneConfig',
+  mixins: [ saveShareMixin ],
   props: {
     scene: {
       type: Object
