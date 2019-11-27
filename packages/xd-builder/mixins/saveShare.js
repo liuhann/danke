@@ -4,7 +4,15 @@
 import { Loading, Message, MessageBox } from 'element-ui'
 import { clone } from '../../utils/object'
 import { shortid } from '../../utils/string'
+import ImageDAO from '../../common/dao/imagedao'
+import RestDAO from '../../common/dao/restdao'
+
 export default {
+  created () {
+    this.imagedao = new ImageDAO(this.ctx)
+    this.workdao = new RestDAO(this.ctx, 'danke/work')
+    this.templatedao = new RestDAO(this.ctx, 'danke/scenetpl')
+  },
   methods: {
     /**
      * 新增作品
@@ -18,6 +26,9 @@ export default {
       this.addNewScene()
     },
 
+    /**
+    * 保存作品内容 
+    */
     async saveWork (isPublish) {
       if (this.savingWork) {
         return
@@ -82,6 +93,32 @@ export default {
     async runWork () {
       await this.saveWork()
       window.open('/play/fit/' + this.work._id)
+    },
+
+    /**
+    * 保存当前页面的所有元素及其动画为模版
+    */
+    async saveAsTemplate (targetScene) {
+      const scene = JSON.parse(JSON.stringify(targetScene))
+      for (let element of scene.elements) {
+        element.style = ''
+      }
+      scene.style = ''
+      await this.templatedao.create(scene)  
+    },
+
+    /**
+    * 加载通用模板
+    */
+    async listTemplate () {
+      const result = await this.templatedao.list({
+        creator: '15011245191'
+      })
+      return result.list
+    },
+
+    async listMyTemplate () {
+
     },
 
     async exportWork () {

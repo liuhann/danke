@@ -33,12 +33,9 @@
       </p>
     </div>
     <edit-background v-model="scene.background"></edit-background>
-    <divider content-position="right">动画效果</divider>
-    <tabs size="is-small" v-model="animationType" :tabs="animationTabs"></tabs>
-    <edit-animation :animation="scene.animation[animationType]" :animation-type="animationType"></edit-animation>
-    <divider></divider>
     <div class="scene-buttons">
       <a class="button is-small is-danger" @click="$emit('delete-scene')">删除</a>
+      <a class="button is-small" @click="saveAsTemplate(scene)">保存为模板</a>
     </div>
   </div>
   <div class="element-list" v-if="rootTab === 'elements'">
@@ -87,8 +84,10 @@ import { Divider, MessageBox } from 'element-ui'
 import { clone } from '../../utils/object'
 import { shortid } from '../../utils/string'
 import { getSceneStyle } from '../../danke-core/utils/styles'
+import saveShareMixin from '../mixins/saveShare.js'
 export default {
   name: 'WorkSceneConfig',
+  mixins: [ saveShareMixin ],
   props: {
     scene: {
       type: Object
@@ -134,6 +133,7 @@ export default {
   computed: {
   },
   methods: {
+    
     chooseAudio (audioItem) {
       this.work.audioUrl = audioItem.audioUrl
       this.work.audioName = audioItem.name
