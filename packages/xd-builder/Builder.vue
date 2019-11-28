@@ -53,11 +53,12 @@
                  :on-change="insertPaperFolding">
                  <el-button icon="el-icon-s-grid" size="mini" circle/>
                </el-upload>
+               <el-button icon="el-icon-coordinate" @click="showFlatIconPopover" size="mini" circle/>
              </div>
-           </el-tab-pane>
-           <el-tab-pane label="模板" name="second">
-                         
-           </el-tab-pane>
+          </el-tab-pane>
+          <el-tab-pane label="模板" size="mini" name="tpl">
+
+          </el-tab-pane>
          </el-tabs>
         <el-button class="btn-add" icon="el-icon-plus" slot="reference" type="primary" size="mini" circle/>
       </el-popover>
@@ -71,6 +72,7 @@
     <image-cropper ref="cropper"></image-cropper>
     <dialog-edit-text ref="dialogEditText" @input="setElementText"/>
     <dialog-audio-tap ref="dialogAudioList" @audio="chooseAudio"/>
+    <dialog-choose-flat-icon ref="dialogChooseFlatIcon" @input="flatIconChoosed"/>
   </div>
 </template>
 
@@ -80,7 +82,7 @@ import saveShareMixin from './mixins/saveShare'
 import sceneMixin from './mixins/sceneMixins'
 import layoutMixin from './mixins/layoutMixin'
 import keyBindMixin from './mixins/key-binds'
-import { Popover, Button, Upload, Tabs, TabPane} from 'element-ui'
+import { Popover, Button, Upload, Tabs, TabPane } from 'element-ui'
 import ImageCropper from './components/ImageCropper'
 import ElementConfig from './components/ElementConfig.vue'
 import DialogEditText from './components/DialogEditText.vue'
@@ -91,11 +93,13 @@ import RenderElement from './RenderElement.vue'
 import { addStyle, createSheet } from '../frames/keyframe'
 
 import 'element-ui/packages/theme-chalk/lib/icon.css'
+import DialogChooseFlatIcon from '../flaticon/DialogChooseFlatIcon'
 
 // 0db4ed954bb9589fc6e193888a98aeee61a7e7b5
 export default {
   name: 'Builder',
   components: {
+    DialogChooseFlatIcon,
     RenderElement,
     ElementConfig,
     ImageCropper,
@@ -137,7 +141,7 @@ export default {
       templates: null // 已经加载的模板
     }
   },
-  
+
   watch: {
     'work.styles': function () {
       const styleTag = document.getElementById('work-extra-style')
@@ -181,6 +185,14 @@ export default {
     addPopoverShow () {
 
     },
+
+    flatIconChoosed (icon) {
+      this.insertSVGImage(icon.svg, icon.desc)
+    },
+    // 显示Icon栏
+    showFlatIconPopover () {
+      this.$refs.dialogChooseFlatIcon.open()
+    },
     openAudioDialog () {
       this.$refs.dialogAudioList.open()
     }
@@ -218,7 +230,7 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
     right: 320px;
     overflow: auto;
     .tag {
-      z-index: 9999;
+      z-index: 999;
       position: absolute;
       right: 10px;
       bottom: 10px;
@@ -226,7 +238,7 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
     .btn-run {
       position: absolute;
       right: 10px;
-      top: 60px;
+      top: 10px;
       z-index: 999;
     }
     .btn-next {
@@ -243,7 +255,7 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
     }
     .btn-add {
       position: absolute;
-      right: 10px;
+      left: 10px;
       top: 10px;
       z-index: 999;
     }

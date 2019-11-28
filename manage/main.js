@@ -1,24 +1,11 @@
-// styles
-import './common.scss'
-import '../packages/common/karla/font.css'
 import AsyncBoot from 'async-boot'
 import App from './app.vue'
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-import site from '../packages/site'
-import user from '../packages/user'
-import frameTool from '../packages/frames'
 import restclient from '../packages/rest-client'
-// import ybstory from '../packages/story'
-import xd from '../packages/xd-builder'
-import player from '../packages/xd-player'
-import vectors from '../packages/vectors'
-import slideLite from '../packages/slide-lite'
-import flaticon from '../packages/flaticon'
-
+import user from '../packages/user'
 import initClient from '../packages/common/utils/initClient'
-import initEventEmitter from '../packages/common/utils/initEventEmitter'
 
 Vue.use(VueRouter)
 window.Vue = Vue
@@ -32,7 +19,7 @@ const boot = new AsyncBoot({
   IMG_SERVER: 'http://image.danke.fun',
   mount: '#app',
   packages: [
-    site, user, frameTool, xd, player, vectors, slideLite, restclient, flaticon
+    user, restclient
   ],
   started: async (ctx, next) => {
     ctx._router.beforeEach((to, from, next) => {
@@ -48,6 +35,5 @@ const boot = new AsyncBoot({
 
 // attach some global ctx services
 initClient(boot.ctx, 'http://www.danke.fun/api/')
-initEventEmitter(boot.ctx)
 
 boot.startUp()

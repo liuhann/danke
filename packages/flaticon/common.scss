@@ -1,0 +1,35 @@
+.icon-list {
+  overflow: hidden;
+  list-style: none;
+  padding: 0!important;
+  border: 1px solid #eaeefb;
+  border-radius: 4px;
+  li {
+    float: left;
+    width: 16.66%;
+    text-align: center;
+    height: 140px;
+    color: #666;
+    font-size: 13px;
+    border-right: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    margin-right: -1px;
+    margin-bottom: -1px;
+    img {
+      display: block;
+      transition: color .15s linear;
+      width: 50%;
+      height: 50%;
+      margin: 6px auto;
+    }
+    span.icon-name {
+      color: #99a9bf;
+      display: inline-block;
+      padding: 0 3px;
+      height: 1em;
+    }
+    span.btns {
+      display: block;
+    }
+  }
+}

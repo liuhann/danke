@@ -49,6 +49,8 @@ export default {
       }
       this.currentScene = scene
     },
+
+    // 切换到下一场景
     nextScene () {
       if (this.ticksEditing) {
         this.work.audioTicks.push(this.audio.currentTime)
@@ -62,10 +64,24 @@ export default {
         }
       }
     },
+
+    /**
+     * 渲染当前的场景
+     * @param scene
+     * @param stage
+     */
     renderScene (scene, stage) {
       for (let element of scene.elements) {
+        // 图片保存的是相对地址  在渲染时做url转换
         if (element.imgPath) {
           element.url = this.ctx.IMG_SERVER + '/' + element.imgPath
+        }
+        // 对于svg图片，内容是直接保存到元素上，这里进行blob->url转换
+        if (element.svg) {
+          let svgBlob = new Blob([element.svg], { type: 'image/svg+xml;charset=utf-8' })
+          let domURL = self.URL || self.webkitURL || self
+          let url = domURL.createObjectURL(svgBlob)
+          element.url = url
         }
         element.style = getElementStyle(element, this.device, stage)
         element.innerStyle = getElementInnerStyle(element, this.device, stage)

@@ -15,7 +15,6 @@ const image = {
   desc: '',
   url: '',
   position: POSITION,
-  background: BACKGROUND,
   border: BORDER,
   clip: CLIPPATH,
   size: SIZE,

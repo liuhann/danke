@@ -50,6 +50,7 @@
 <script>
 import { Table, TableColumn, Pagination, Input, Button, Dialog, Form, FormItem } from 'element-ui'
 import RestDAO from '../common/dao/restdao.js'
+window.ResizeObserver = undefined
 export default {
   name: 'RestList',
   components: {

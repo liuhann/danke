@@ -160,6 +160,32 @@ export default {
       this.chooseElement(clonedElement)
     },
 
+    /**
+     * 插入SVG类型图标
+     * @param svgContent
+     * @param desc
+     */
+    insertSVGImage (svgContent, desc) {
+      const clonedElement = clone(IMAGE)
+      clonedElement.id = shortid()
+      clonedElement.name = '矢量图片' + desc
+      clonedElement.visible = true
+      clonedElement.position.horizontal = 'center'
+      clonedElement.position.vertical = 'center'
+      clonedElement.border.width = 0
+      clonedElement.size.width = '100vw'
+      clonedElement.size.height = '100vw'
+      clonedElement.svg = svgContent
+      let svgBlob = new Blob([svgContent], { type: 'image/svg+xml;charset=utf-8' })
+      /// create URL (handle prefixed version)
+      let domURL = self.URL || self.webkitURL || self
+      let url = domURL.createObjectURL(svgBlob)
+      clonedElement.url = url
+      const style = getElementStyle(clonedElement, this.device)
+      clonedElement.style = style
+      this.currentScene.elements.push(clonedElement)
+      this.chooseElement(clonedElement)
+    },
     insertPaperFolding (e) {
       const file = e.raw
       const clonedElement = clone(PaperFolding)
