@@ -8,6 +8,9 @@ export default {
   blend: 'multiply'
 }
 
+/**
+* 获取背景样式，支持背景图片及颜色、多见变色的混合
+*/
 export function getBackgroundStyle ({ background, url }) {
   const styles = []
   if (background && !url) {
@@ -16,6 +19,7 @@ export function getBackgroundStyle ({ background, url }) {
     if (bgUrl) {
       backgroundImages.push(`url('${bgUrl}')`)
     }
+    // 多重颜色的处理
     if (background.colors) {
       let colors = background.colors.filter(e => e === 0 || e)
       if (colors.length > 1) {
@@ -27,6 +31,7 @@ export function getBackgroundStyle ({ background, url }) {
     if (backgroundImages.length) {
       styles.push(`background-image: ${backgroundImages.join(',')}`)
     }
+    // 背景图片的处理
     if (bgUrl) {
       styles.push(`background-size: ${background.size}`)
       styles.push(`background-position: ${background.position}`)

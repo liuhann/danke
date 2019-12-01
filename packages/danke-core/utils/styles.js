@@ -75,18 +75,45 @@ function getElementStyle (element, device, stage) {
     .concat(getFilterStyle(element, device))
 
   // 对于动画并且设置为overflow = true (默认)的
-  if (stage && element.animation && element.animation[stage] && element.animation[stage].overflow && element.animation[stage].name) {
-    const animationDef = element.animation[stage]
-    styles.push(`animation: ${animationDef.name} ${animationDef.duration}ms ${animationDef.timing} ${animationDef.delay}ms ${animationDef.infinite ? 'infinite' : animationDef.iteration} normal both running`)
-    addAnimationStyle(sheet, animationDef)
-  }
+  // if (stage && element.animation && element.animation[stage] && element.animation[stage].overflow && element.animation[stage].name) {
+  //   const animationDef = element.animation[stage]
+  //   styles.push(`animation: ${animationDef.name} ${animationDef.duration}ms ${animationDef.timing} ${animationDef.delay}ms ${animationDef.infinite ? 'infinite' : animationDef.iteration} normal both running`)
+  //   addAnimationStyle(sheet, animationDef)
+  // }
+  // 渲染相对于场景的动画
+  styles.push(getAnimationStyle(element, stage, true))
   return styles.filter(n => n).join(';')
 }
 
 /**
  * 获取元素的动画样式
+ * outer 是否为外渲染
  */
-function getAnimationStyle (element, stage) {
+function getAnimationStyle (element, stage, outer) {
+  // 渲染相对于场景的动画
+  if (stage) {
+    if (element.animations) {
+      const animationsOrdered = []
+      // 支持多个动画次序或者重叠播放
+      for (let animation of element.animations) {
+        // 动画溢出时 写到element上 还是写在内部渲染上
+        // 例如 图片渲染时  <div><img>这样的标签结构， overflow=true时才写入div 否则写入img
+        if (animation.stage === stage) {
+          if (outer === animation.overflow) {
+            animationsOrdered.push(`${animation.name} ${animation.duration}ms ${animation.timing} ${animation.delay}ms ${animation.infinite ? 'infinite' : animation.iteration} normal both running`)
+            // 动态写入css
+            addAnimationStyle(sheet, animation)
+          }
+        }
+      }
+      if (animationsOrdered.length) {
+        return `animation: ${animationsOrdered.join(',')}`
+      } else {
+        return ''
+      }
+    }
+  }
+
   if (stage && element.animation[stage] && element.animation[stage].name) {
     const animationDef = element.animation[stage]
     addAnimationStyle(sheet, animationDef)
@@ -104,15 +131,7 @@ function getAnimationStyle (element, stage) {
 function getElementInnerStyle (element, device, stage) {
   let styles = []
   styles = styles.concat(getMaskStyle(element, device))
-  if (element.type === TypeEnum.IMAGE && stage && element.animation[stage] && element.animation[stage].name) {
-    // 图片存在动画
-    if (!element.animation[stage].overflow) {
-      const animationDef = element.animation[stage]
-      styles.push(`animation: ${animationDef.name} ${animationDef.duration}ms ${animationDef.timing} ${animationDef.delay}ms ${animationDef.iteration} normal both running`)
-      addAnimationStyle(sheet, animationDef)
-    }
-  }
-
+  styles.push(getAnimationStyle(element, stage, false))
   return styles.filter(n => n).join(';')
 }
 

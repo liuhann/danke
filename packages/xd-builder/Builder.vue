@@ -21,55 +21,13 @@
       <el-button class="btn-next" icon="el-icon-arrow-right" size="mini" circle @click="nextScene"/>
       <el-button class="btn-prev" icon="el-icon-arrow-left" size="mini" circle @click="previousScene"/>
       <!--PopOver新增场景、元素-->
-      <el-popover
-        placement="left-start"
-        @show="addPopoverShow"
-        width="260"
-        trigger="click">
-        <el-tabs size="small" value="first">
-           <el-tab-pane label="基础" size="mini" name="first">
-             <div class="ptb-10">场景</div>
-             <el-button icon="el-icon-document-add" style="font-size: 16px;" size="mini" circle @click="addNewScene"/>
-             <el-button icon="el-icon-document-copy" style="font-size: 16px;" size="mini" circle @click="cloneScene"/>
-             <div class="ptb-10">基本元素</div>
-             <el-upload
-               style="float: left; margin-right: 10px;"
-               :show-file-list="false"
-               :auto-upload="false"
-               action="nothing"
-               :on-change="insertRawImage">
-               <el-button icon="el-icon-picture-outline" style="font-size: 16px;" size="mini" circle />
-             </el-upload>
-             <el-button icon="el-icon-files" size="mini" circle @click="insertShape('rect')"/>
-             <el-button icon="el-icon-postcard" size="mini" circle @click="insertText"/>
-             <el-button icon="el-icon-headset" size="mini" circle @click="openAudioDialog"/>
-             <div class="ptb-10">插件</div>
-             <div class="plugins is-clearfix">
-               <el-upload
-                 style="float: left; margin-right: 10px;"
-                 :show-file-list="false"
-                 :auto-upload="false"
-                 action="nothing"
-                 :on-change="insertPaperFolding">
-                 <el-button icon="el-icon-s-grid" size="mini" circle/>
-               </el-upload>
-               <el-button icon="el-icon-coordinate" @click="showFlatIconPopover" size="mini" circle/>
-             </div>
-          </el-tab-pane>
-          <el-tab-pane label="模板" size="mini" name="tpl">
-
-          </el-tab-pane>
-         </el-tabs>
-        <el-button class="btn-add" icon="el-icon-plus" slot="reference" type="primary" size="mini" circle/>
-      </el-popover>
+      <popover-new></popover-new>
     </div>
     <div class="aside">
-      <element-config :element="currentElement" :scene="currentScene" v-if="currentElement" :work="work" @remove="deleteElement"></element-config>
+      <element-config :element="currentElement" :scene="currentScene" v-if="currentElement" :work="work" @remove="deleteElement" @z="moveElementZ"></element-config>
       <work-scene-config :scene="currentScene" :work="work" v-if="!currentElement && currentScene && currentScene.id"
         @choose-element="chooseElement" @choose-scene="chooseScene" @edit-tick="editTicking" @delete-scene="deleteCurrentScene"/>
     </div>
-    <!-- float 切换显示 -->
-    <image-cropper ref="cropper"></image-cropper>
     <dialog-edit-text ref="dialogEditText" @input="setElementText"/>
     <dialog-audio-tap ref="dialogAudioList" @audio="chooseAudio"/>
     <dialog-choose-flat-icon ref="dialogChooseFlatIcon" @input="flatIconChoosed"/>
@@ -83,7 +41,6 @@ import sceneMixin from './mixins/sceneMixins'
 import layoutMixin from './mixins/layoutMixin'
 import keyBindMixin from './mixins/key-binds'
 import { Popover, Button, Upload, Tabs, TabPane } from 'element-ui'
-import ImageCropper from './components/ImageCropper'
 import ElementConfig from './components/ElementConfig.vue'
 import DialogEditText from './components/DialogEditText.vue'
 import DialogAudioTap from './components/DialogAudioTap.vue'
@@ -91,7 +48,7 @@ import WorkSceneConfig from './components/WorkSceneConfig.vue'
 import { TypeEnum } from '../danke-core/elements/index'
 import RenderElement from './RenderElement.vue'
 import { addStyle, createSheet } from '../frames/keyframe'
-
+import PopoverNew from './components/PopoverNew.vue'
 import 'element-ui/packages/theme-chalk/lib/icon.css'
 import DialogChooseFlatIcon from '../flaticon/DialogChooseFlatIcon'
 
@@ -102,10 +59,10 @@ export default {
     DialogChooseFlatIcon,
     RenderElement,
     ElementConfig,
-    ImageCropper,
     WorkSceneConfig,
     DialogEditText,
     DialogAudioTap,
+    PopoverNew,
     [Popover.name]: Popover,
     [Button.name]: Button,
     [Upload.name]: Upload,
@@ -181,9 +138,6 @@ export default {
       this.work.audioUrl = audioItem.audioUrl
       this.work.audioName = audioItem.name
       this.work.audioTicks = audioItem.ticks
-    },
-    addPopoverShow () {
-
     },
 
     flatIconChoosed (icon) {

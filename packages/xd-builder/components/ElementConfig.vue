@@ -185,7 +185,27 @@ export default {
   },
   methods: {
     imageUpdated (file) {
+      debugger
       this.element.blob = file
+    },
+
+    /**
+    * 纵向高度调整
+    */
+    moveUp () {
+      this.$emit('z', 'up')
+    },
+
+    moveDown () {
+      this.$emit('z', 'down')
+    },
+
+    moveTop () {
+      this.$emit('z', 'top')
+    },
+
+    moveBottom () {
+      this.$emit('z', 'bottom')
     },
 
     /**
