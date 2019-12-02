@@ -4,6 +4,7 @@ import { getElementInnerStyle, getElementStyle, getSceneStyle } from '../../dank
 import { shortid } from '../../utils/string'
 import { MessageBox, Message } from 'element-ui'
 import PaperFolding from '../../danke-core/plugins/paperfolding'
+import Flip from '../../danke-core/plugins/flip'
 
 export default {
   data () {
@@ -198,6 +199,24 @@ export default {
       clonedElement.size.height = '100vw'
       clonedElement.url = URL.createObjectURL(file)
       clonedElement.blob = file
+      const style = getElementStyle(clonedElement, this.device)
+      clonedElement.style = style
+      this.currentScene.elements.push(clonedElement)
+      this.chooseElement(clonedElement)
+    },
+
+    /**
+     * 插入插件图片 可翻转图片
+     */
+    insertFlipImage () {
+      const clonedElement = clone(Flip)
+      clonedElement.id = shortid()
+      clonedElement.name = '图片翻转'
+      clonedElement.visible = true
+      clonedElement.position.horizontal = 'center'
+      clonedElement.position.vertical = 'center'
+      clonedElement.size.width = '100vw'
+      clonedElement.size.height = '100vw'
       const style = getElementStyle(clonedElement, this.device)
       clonedElement.style = style
       this.currentScene.elements.push(clonedElement)

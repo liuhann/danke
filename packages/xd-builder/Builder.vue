@@ -54,6 +54,7 @@
                  <el-button icon="el-icon-s-grid" size="mini" circle/>
                </el-upload>
                <el-button icon="el-icon-coordinate" @click="showFlatIconPopover" size="mini" circle/>
+               <el-button icon="el-icon-connection" @click="insertFlipImage" size="mini" circle/>
              </div>
           </el-tab-pane>
           <el-tab-pane label="模板" size="mini" name="tpl">
