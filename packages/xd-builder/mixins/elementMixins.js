@@ -267,6 +267,18 @@ export default {
       this.currentScene.elements.push(clonedElement)
       this.chooseElement(clonedElement)
     },
+
+    moveElementZ (z) {
+      if (z === 'up') {
+        this.moveUp(this.currentElement)
+      } else if (z === 'down') {
+        this.moveDown(this.currentElement)
+      } else if (z === 'top') {
+        this.moveTop(this.currentElement)
+      } else if (z === 'bottom') {
+        this.moveBottom(this.currentElement)
+      }
+    },
     moveDown (element) {
       const elementIndex = this.currentScene.elements.indexOf(element)
       if (elementIndex === 0) {

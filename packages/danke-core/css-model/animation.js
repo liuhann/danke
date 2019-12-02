@@ -9,7 +9,6 @@ export default {
   srcFrame: '',
   frames: [],
   overflow: true,
-  direction: 'normal',
   fillMode: 'both'
 }
 export function trim (element) {

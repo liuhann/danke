@@ -38,10 +38,14 @@
       <a class="button is-small" @click="saveAsTemplate(scene)">保存为模板</a>
     </div>
   </div>
+  <!-- 元素列表 -->
   <div class="element-list" v-if="rootTab === 'elements'">
     <div class="element" v-for="element in scene.elements" :key="element.id" @click="chooseElement(element)">
-      <div class="name">{{element.name}}</div>
-      <div class="type">{{element.type}}</div>
+      <div class="element-icon">
+        <img v-if="element.url" :src="element.url"/>
+        <div v-if="element.text">T</div>
+      </div>
+      <div class="name">{{element.text || element.name || '未命名'}}</div>
     </div>
   </div>
   <div class="work-props" v-if="rootTab === 'work'">
@@ -133,7 +137,6 @@ export default {
   computed: {
   },
   methods: {
-    
     chooseAudio (audioItem) {
       this.work.audioUrl = audioItem.audioUrl
       this.work.audioName = audioItem.name
@@ -202,8 +205,24 @@ export default {
       font-size: 12px;
       border-bottom: 1px solid #efefef;
       padding: 5px 5px;
+      .element-icon img {
+        width: 24px;
+        height: 24px;
+        object-fit: cover;
+      }
+      .element-icon div {
+        width: 24px;
+        height: 24px;
+        line-height: 24px;
+        text-align: center;
+        background: aliceblue;
+        font-size: 16px;
+      }
       .name {
         flex: 1;
+        line-height: 24px;
+        padding: 0 5px;
+        overflow: hidden;
       }
       &:hover {
         background: #fcfcfc;
