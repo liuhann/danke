@@ -18,7 +18,7 @@
 
 <script>
 import { TypeEnum } from '../danke-core/elements/index'
-import PaperFolding from './plugin/PaperFolding.vue'
+import PaperFolding from '../danke-plugins/paperfold/PaperFolding.vue'
 export default {
   name: 'RenderElement.vue',
   components: {

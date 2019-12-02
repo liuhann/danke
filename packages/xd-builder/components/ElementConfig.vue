@@ -2,14 +2,13 @@
 <nav class="element-prop-config">
   <tabs size="is-small" v-model="configTab" :tabs="configTabs"></tabs>
   <div class="basic" v-if="configTab === 'basic'">
-    <edit-paper-folding v-if="element.folding" :element="element"/>
-    <edit-flip v-if="element.type === 12" :element="element"/>
-    <edit-font v-if="element.font" v-model="element.font" @apply-to-all="applyFontToAll" @copy="copyFontStyle" @paste="pasteFontStyle"></edit-font>
-    <edit-image v-if="element.url" v-model="element.url" @blob="imageUpdated"></edit-image>
-    <edit-background v-model="element.background" v-if="element.background"></edit-background>
-    <edit-position v-model="element.position"></edit-position>
-    <edit-size v-model="element.size"></edit-size>
-
+    <edit-paper-folding v-if="element.folding" :element="element" />
+    <edit-flip v-if="element.type === 1002" :element="element" />
+    <edit-font v-if="element.font" v-model="element.font" @apply-to-all="applyFontToAll" @copy="copyFontStyle" @paste="pasteFontStyle" />
+    <edit-image v-if="element.url" v-model="element.url" @blob="imageUpdated" />
+    <edit-background v-model="element.background" v-if="element.background" />
+    <edit-position v-model="element.position" />
+    <edit-size v-model="element.size" />
     <div class="field has-addons">
       <div class="control field-lb">
         层次
@@ -31,7 +30,6 @@
         </div>
       </div>
     </div>
-
     <div class="field has-addons">
       <div class="control field-lb">
         复制
@@ -56,7 +54,6 @@
         </div>
       </div>
     </div>
-
     <div class="field has-addons">
       <div class="control field-lb">
       </div>
@@ -69,6 +66,7 @@
   </div>
 
   <div class="animation" v-if="configTab === 'animation' && element.animation">
+    <el-button>增加动画</el-button>
     <edit-animation :animation="element.animation.in" label="进入" animation-type="in"/>
     <edit-animation :animation="element.animation.dura" label="持续" animation-type="dura" />
     <edit-animation :animation="element.animation.out" label="离开" animation-type="out" />
@@ -100,6 +98,7 @@ import EditClipPath from './props/EditClipPath.vue'
 import EditSize from './props/EditSize.vue'
 import EditShadow from './props/EditShadow.vue'
 import EditAnimation from './props/EditAnimation.vue'
+import { Button } from 'element-ui'
 import { TypeEnum } from '../../danke-core/elements/index'
 import { Shapes } from '../../danke-core/css-model/shapeclip'
 import EditMask from './props/EditMask.vue'
@@ -108,8 +107,8 @@ import Tabs from '../../common/components/Tabs.vue'
 import EditImage from './props/EditImage.vue'
 import { shortid } from '../../utils/string'
 import { Message } from 'element-ui'
-import EditPaperFolding from '../../danke-core/plugins/EditPaperFolding'
-import EditFlip from '../../danke-core/plugins/EditFlip'
+import EditPaperFolding from '../../danke-plugins/paperfold/EditPaperFolding.vue'
+import EditFlip from '../../danke-plugins/flip/EditFlip.vue'
 
 export default {
   name: 'ElementConfig',
@@ -141,7 +140,8 @@ export default {
     EditPosition,
     EditShadow,
     EditFilter,
-    EditFont
+    EditFont,
+    [Button.name]: Button
   },
   data () {
     return {

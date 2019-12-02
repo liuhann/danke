@@ -24,9 +24,21 @@
       <popover-new></popover-new>
     </div>
     <div class="aside">
-      <element-config :element="currentElement" :scene="currentScene" v-if="currentElement" :work="work" @remove="deleteElement" @z="moveElementZ"></element-config>
-      <work-scene-config :scene="currentScene" :work="work" v-if="!currentElement && currentScene && currentScene.id"
-        @choose-element="chooseElement" @choose-scene="chooseScene" @edit-tick="editTicking" @delete-scene="deleteCurrentScene"/>
+      <element-config
+        v-if="currentElement"
+        :element="currentElement"
+        :scene="currentScene"
+        :work="work"
+        @remove="deleteElement"
+        @z="moveElementZ" />
+      <work-scene-config
+        v-if="!currentElement && currentScene && currentScene.id"
+        :scene="currentScene"
+        :work="work"
+        @choose-element="chooseElement"
+        @choose-scene="chooseScene"
+        @edit-tick="editTicking"
+        @delete-scene="deleteCurrentScene"/>
     </div>
     <dialog-edit-text ref="dialogEditText" @input="setElementText"/>
     <dialog-audio-tap ref="dialogAudioList" @audio="chooseAudio"/>
@@ -40,7 +52,7 @@ import saveShareMixin from './mixins/saveShare'
 import sceneMixin from './mixins/sceneMixins'
 import layoutMixin from './mixins/layoutMixin'
 import keyBindMixin from './mixins/key-binds'
-import { Popover, Button, Upload, Tabs, TabPane } from 'element-ui'
+import { Popover, Button, Upload, Tabs, TabPane, Drawer, Dialog } from 'element-ui'
 import ElementConfig from './components/ElementConfig.vue'
 import DialogEditText from './components/DialogEditText.vue'
 import DialogAudioTap from './components/DialogAudioTap.vue'
@@ -49,9 +61,10 @@ import { TypeEnum } from '../danke-core/elements/index'
 import RenderElement from './RenderElement.vue'
 import { addStyle, createSheet } from '../frames/keyframe'
 import PopoverNew from './components/PopoverNew.vue'
-import 'element-ui/packages/theme-chalk/lib/icon.css'
 import DialogChooseFlatIcon from '../flaticon/DialogChooseFlatIcon'
+import BackGround from '../danke-core/css-model/background'
 
+import 'element-ui/packages/theme-chalk/lib/icon.css'
 // 0db4ed954bb9589fc6e193888a98aeee61a7e7b5
 export default {
   name: 'Builder',
@@ -64,10 +77,12 @@ export default {
     DialogAudioTap,
     PopoverNew,
     [Popover.name]: Popover,
+    [Dialog.name]: Dialog,
     [Button.name]: Button,
     [Upload.name]: Upload,
     [Tabs.name]: Tabs,
-    [TabPane.name]: TabPane
+    [TabPane.name]: TabPane,
+    [Drawer.name]: Drawer
   },
   mixins: [elementMixin, saveShareMixin, sceneMixin, keyBindMixin, layoutMixin],
   props: {
@@ -85,6 +100,7 @@ export default {
         duration: 0, // 持续时间
         resources: [],
         scenes: [],
+        background: JSON.parse(JSON.stringify(BackGround)),
         styles: '' // 附加的样式
       },
       currentScene: null,

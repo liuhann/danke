@@ -3,8 +3,8 @@ import { clone } from '../../utils/object'
 import { getElementInnerStyle, getElementStyle, getSceneStyle } from '../../danke-core/utils/styles'
 import { shortid } from '../../utils/string'
 import { MessageBox, Message } from 'element-ui'
-import PaperFolding from '../../danke-core/plugins/paperfolding'
-import Flip from '../../danke-core/plugins/flip'
+import PaperFolding from '../../danke-plugins/paperfold/paperfolding'
+import Flip from '../../danke-plugins/flip/flip'
 
 export default {
   data () {

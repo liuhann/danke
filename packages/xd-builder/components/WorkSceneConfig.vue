@@ -65,6 +65,7 @@
         <a class="button is-small is-primary" @click="openAudioDialog">新增并编辑</a>
       </p>
     </div>
+    <edit-background v-model="work.background" />
 
     <div class="tags has-addons" v-if="work.audioName">
       <a class="tag is-link" style="width: 260px;">{{work.audioName}}</a>
@@ -81,13 +82,8 @@
 
 <script>
 import EditBackground from './props/EditBackground.vue'
-import EditAnimation from './props/EditAnimation.vue'
 import Tabs from '../../common/components/Tabs.vue'
 import DialogAudioTap from './DialogAudioTap.vue'
-import { Divider, MessageBox } from 'element-ui'
-import { clone } from '../../utils/object'
-import { shortid } from '../../utils/string'
-import { getSceneStyle } from '../../danke-core/utils/styles'
 import saveShareMixin from '../mixins/saveShare.js'
 export default {
   name: 'WorkSceneConfig',
@@ -103,9 +99,7 @@ export default {
   components: {
     DialogAudioTap,
     EditBackground,
-    EditAnimation,
-    Tabs,
-    Divider
+    Tabs
   },
   data () {
     return {

@@ -17,7 +17,7 @@ import { Dialog } from 'element-ui'
 export default {
   name: 'DialogChooseVector',
   components: { Dialog, RestList },
-  data() {
+  data () {
     return {
       dialogVisible: false,
       IMG_SERVER: this.ctx.IMG_SERVER
