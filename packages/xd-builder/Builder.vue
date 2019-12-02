@@ -21,7 +21,10 @@
       <el-button class="btn-next" icon="el-icon-arrow-right" size="mini" circle @click="nextScene"/>
       <el-button class="btn-prev" icon="el-icon-arrow-left" size="mini" circle @click="previousScene"/>
       <!--PopOver新增场景、元素-->
-      <popover-new></popover-new>
+      <popover-new
+        @add-new-scene="addNewScene"
+        @insert-img="insertRawImage"
+        @clone-scene="cloneScene"/>
     </div>
     <div class="aside">
       <element-config

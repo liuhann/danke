@@ -1,18 +1,20 @@
 <template>
 <el-popover
+  :width="400"
   placement="left-start"
   trigger="click">
   <el-tabs size="small" value="first">
     <el-tab-pane label="基础" size="mini" name="first">
-      <div class="new-scene pop-new-block">
+      <div class="new-scene pop-new-block" @click="$emit('add-new-scene')">
+        <i class="el-icon-document-add" />
         空白场景
       </div>
-      <div class="clone-scene pop-new-block">
+      <div class="clone-scene pop-new-block" @click="$emit('clone-scene')">
         复制场景
       </div> 
       <div class="ptb-10">场景</div>
-       <el-button icon="el-icon-document-add" style="font-size: 16px;" size="mini" circle @click="addNewScene"/>
-       <el-button icon="el-icon-document-copy" style="font-size: 16px;" size="mini" circle @click="cloneScene"/>
+       <el-button icon="el-icon-document-add" style="font-size: 16px;" size="mini" circle @click="$emit('add-new-scene')"/>
+       <el-button icon="el-icon-document-copy" style="font-size: 16px;" size="mini" circle @click="$emit('clone-scene')"/>
        <div class="ptb-10">基本元素</div>
        <div class="clone-scene pop-new-block">
         <el-upload
@@ -20,7 +22,7 @@
           :show-file-list="false"
           :auto-upload="false"
           action="nothing"
-          :on-change="insertRawImage">
+          :on-change="$emit('insert-img')">
           <el-button icon="el-icon-picture-outline" style="font-size: 16px;" size="mini" circle />
           上传图片
         </el-upload>
@@ -71,6 +73,16 @@ export default {
     [Upload.name]: Upload,
     [Tabs.name]: Tabs,
     [TabPane.name]: TabPane
+  },
+  data () {
+    return {
+
+    }
+  },
+  methods: {
+    addNewScene () {
+      this.$emit('addNewScene')
+    }
   }
 }
 </script>
