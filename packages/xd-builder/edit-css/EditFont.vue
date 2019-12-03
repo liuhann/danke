@@ -4,16 +4,19 @@
     <div class="control field-lb">
       字体
     </div>
-    <edit-len v-model="font.size" unit-label="倍" :with-unit="false" :step="0.2"></edit-len>
-    <p class="control space">
-    </p>
+    <div class="control">
+      <el-input-number v-model="font.size" size="mini" controls-position="right" :step="0.2"/>
+    </div>
+    <div class="control">
+      <el-checkbox v-model="font.bold">粗体</el-checkbox>
+    </div>
+  </div>
+  <div class="field has-addons">
+    <div class="control field-lb">
+      颜色
+    </div>
     <p class="control">
-      <color-pickr v-model="font.color"></color-pickr>
-    </p>
-    <p class="control space">
-    </p>
-    <p class="control">
-      <toggle-button v-model="font.bold" icon="icon-bold"></toggle-button>
+      <el-color-picker v-model="font.color" size="mini" :show-alpha="true" :predefine="predefineColors" />
     </p>
   </div>
   <div class="field has-addons">
@@ -21,7 +24,9 @@
       对齐
     </div>
     <p class="control">
-      <toggle-grouped-button :options="aligns" v-model="font.align"></toggle-grouped-button>
+      <el-radio-group v-model="font.align" size="mini">
+        <el-radio-button v-for="align of aligns" :label="align.key" :key="align.key">{{align.label}}</el-radio-button>
+      </el-radio-group>
     </p>
   </div>
   <div class="field has-addons">
@@ -38,20 +43,19 @@
 </template>
 
 <script>
-import EditLen from './EditLen.vue'
-import FormField from './FormField.vue'
-import ToggleGroupedButton from './ToggleGroupedButton.vue'
-import ToggleButton from './ToggleButton.vue'
-import ColorPickr from '../ColorPickr.vue'
-import pastable from './pastable'
+import { Button, InputNumber, ColorPicker, Checkbox, RadioGroup, RadioButton } from 'element-ui'
+import predefineColors from './colors'
+import pastable from '../components/props/pastable'
 export default {
   name: 'EditFont',
   mixins: [ pastable ],
   components: {
-    ColorPickr,
-    EditLen,
-    ToggleButton,
-    ToggleGroupedButton
+    [Button.name]: Button,
+    [InputNumber.name]: InputNumber,
+    [ColorPicker.name]: ColorPicker,
+    [Checkbox.name]: Checkbox,
+    [RadioGroup.name]: RadioGroup,
+    [RadioButton.name]: RadioButton
   },
   props: {
     value: {
@@ -60,16 +64,20 @@ export default {
   },
   data () {
     return {
+      predefineColors,
       ctxKey: 'fontCopied',
       propKey: 'font',
       aligns: [{
         key: 'left',
+        label: '靠左',
         icon: 'icon-align-left'
       }, {
         key: 'center',
+        label: '居中',
         icon: 'icon-align-center'
       }, {
         key: 'right',
+        label: '靠右',
         icon: 'icon-align-right'
       }],
       valigns: [{
@@ -105,8 +113,5 @@ export default {
 
 <style lang="scss">
 .edit-font {
-  .control {
-    height: 28px;
-  }
 }
 </style>

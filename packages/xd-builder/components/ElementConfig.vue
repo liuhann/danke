@@ -82,7 +82,7 @@
       </div>
     </div>
     <edit-border v-model="element.border" v-if="element.border"></edit-border>
-    <edit-shadow v-model="element.shadow" v-if="element.shadow"></edit-shadow>
+    <edit-shadow v-model="element.shadows" v-if="element.shadows != null"></edit-shadow>
     <edit-mask v-model="element.mask" v-if="element.mask"></edit-mask>
     <edit-filter v-model="element.filter" v-if="element.filter" />
     <edit-clip-path v-model="element.clip" v-if="element.clip"></edit-clip-path>
@@ -90,15 +90,15 @@
 </nav>
 </template>
 <script>
-import EditFont from './props/EditFont.vue'
+import EditFont from '../edit-css/EditFont.vue'
 import EditPosition from './props/EditPosition.vue'
 import EditBackground from './props/EditBackground.vue'
 import EditBorder from './props/EditBorder.vue'
 import EditClipPath from './props/EditClipPath.vue'
 import EditSize from './props/EditSize.vue'
-import EditShadow from './props/EditShadow.vue'
+import EditShadow from '../edit-css/EditShadow.vue'
 import EditAnimation from './props/EditAnimation.vue'
-import { Button } from 'element-ui'
+import { Button, Message } from 'element-ui'
 import { TypeEnum } from '../../danke-core/elements/index'
 import { Shapes } from '../../danke-core/css-model/shapeclip'
 import EditMask from './props/EditMask.vue'
@@ -106,7 +106,6 @@ import EditFilter from './props/EditFilter.vue'
 import Tabs from '../../common/components/Tabs.vue'
 import EditImage from './props/EditImage.vue'
 import { shortid } from '../../utils/string'
-import { Message } from 'element-ui'
 import EditPaperFolding from '../../danke-plugins/paperfold/EditPaperFolding.vue'
 import EditFlip from '../../danke-plugins/flip/EditFlip.vue'
 

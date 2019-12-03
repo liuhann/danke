@@ -1,6 +1,6 @@
 import { getLenSplits, getLength, wait } from './common'
 
-import { getBoxShadowStyle } from '../css-model/shadow'
+import { getBoxShadowStyle, getTextShadowStyle } from '../css-model/shadow'
 import { getFontStyle } from '../css-model/font'
 import { getBackgroundStyle } from '../css-model/background'
 import { getBorderStyle } from '../css-model/border'
@@ -66,6 +66,7 @@ function getElementStyle (element, device, stage) {
   styles = styles.concat(getPositionStyle(element, device))
     .concat(getSizingStyle(element, device))
     .concat(getBoxShadowStyle(element, device))
+    .concat(getTextShadowStyle(element))
     .concat(getFontStyle(element, device))
     .concat(getBorderStyle(element, device))
     .concat(getBackgroundStyle(element, device))

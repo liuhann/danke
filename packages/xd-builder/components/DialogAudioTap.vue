@@ -1,7 +1,6 @@
 <template>
 <el-dialog
   title="编辑音频节拍"
-  :fullscreen="true"
  :visible.sync="dialogVisible">
   <div class="new-audio">
     <div v-if="!audioUrl" class="file is-success" style="margin-bottom: 10px;">
@@ -144,6 +143,7 @@ export default {
       this.audioCurrentSeconds = 0
     },
     boxClicked (e) {
+      debugger
       const percent = (e.pageX - e.currentTarget.offsetLeft) / e.currentTarget.clientWidth
       this.audioCurrentSeconds = percent * this.audioTotalSeconds
       this.sound.seek(this.audioCurrentSeconds)
@@ -191,6 +191,11 @@ export default {
       this.sound.play()
     },
 
+    /**
+     * 选择音频回调
+     * @param e
+     * @returns {Promise<void>}
+     */
     async audioChoosed (e) {
       if (e.currentTarget.files.length) {
         if (this.sound) {

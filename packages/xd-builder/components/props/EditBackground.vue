@@ -20,14 +20,12 @@
 </template>
 
 <script>
-import FormField from './FormField.vue'
 import ColorPickr from '../ColorPickr'
 import { backgroundSize } from '../../../danke-core/utils/css-options.js'
 export default {
   name: 'EditBackground',
   components: {
-    ColorPickr,
-    FormField
+    ColorPickr
   },
   props: {
     value: {
@@ -66,7 +64,6 @@ export default {
         key: 'to right top',
         value: '右上'
       }]
-
     },
 
     backgroundSizeOptions () {
@@ -116,7 +113,6 @@ export default {
     },
 
     removeColor (index) {
-      debugger
       this.background.colors.splice(index, 1)
     },
 

@@ -21,10 +21,7 @@
       <el-button class="btn-next" icon="el-icon-arrow-right" size="mini" circle @click="nextScene"/>
       <el-button class="btn-prev" icon="el-icon-arrow-left" size="mini" circle @click="previousScene"/>
       <!--PopOver新增场景、元素-->
-      <popover-new
-        @add-new-scene="addNewScene"
-        @insert-img="insertRawImage"
-        @clone-scene="cloneScene"/>
+      <popover-new @insert="insert"/>
     </div>
     <div class="aside">
       <element-config
@@ -44,7 +41,7 @@
         @delete-scene="deleteCurrentScene"/>
     </div>
     <dialog-edit-text ref="dialogEditText" @input="setElementText"/>
-    <dialog-audio-tap ref="dialogAudioList" @audio="chooseAudio"/>
+    <dialog-audio-tap ref="dialogAudioList" @audio="chooseWorkAudio"/>
     <dialog-choose-flat-icon ref="dialogChooseFlatIcon" @input="flatIconChoosed"/>
   </div>
 </template>
@@ -68,7 +65,6 @@ import DialogChooseFlatIcon from '../flaticon/DialogChooseFlatIcon'
 import BackGround from '../danke-core/css-model/background'
 
 import 'element-ui/packages/theme-chalk/lib/icon.css'
-// 0db4ed954bb9589fc6e193888a98aeee61a7e7b5
 export default {
   name: 'Builder',
   components: {
@@ -153,7 +149,7 @@ export default {
     sceneClick () {
       this.chooseElement(null)
     },
-    chooseAudio (audioItem) {
+    chooseWorkAudio (audioItem) {
       this.work.audioUrl = audioItem.audioUrl
       this.work.audioName = audioItem.name
       this.work.audioTicks = audioItem.ticks
@@ -168,6 +164,33 @@ export default {
     },
     openAudioDialog () {
       this.$refs.dialogAudioList.open()
+    },
+
+    /**
+     * 响应popup 插入相关场景、元素等
+     * @param type
+     * @param data
+     */
+    insert (type, data) {
+      switch (type) {
+        case 'scene':
+          this.addNewScene()
+          break
+        case 'clone-scene':
+          this.cloneScene()
+          break
+        case 'image':
+          this.insertRawImage(data)
+          break
+        case 'back-audio':
+          this.openAudioDialog()
+          break
+        case 'text':
+          this.insertText()
+          break
+        default:
+          break
+      }
     }
   }
 }
@@ -177,11 +200,6 @@ export default {
 html.has-navbar-fixed-top, body.has-navbar-fixed-top {
   padding-top: 0;
 }
-
-.el-button {
- font-size: 16px;
-}
-
 .ptb-10 {
   padding-bottom: 10px;
   padding-top: 10px;

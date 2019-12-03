@@ -16,6 +16,16 @@ export const boxShadows = {
   'around': 'box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)'
 }
 
+export function getTextShadowStyle ({ shadows }) {
+  if (shadows && shadows.length) {
+    const shadowList = []
+    for (let shadow of shadows) {
+      shadowList.push(`${shadow.x}px ${shadow.y}px ${shadow.b}px ${shadow.color} ${shadow.i ? 'inset' : ''}`)
+    }
+    return [`text-shadow: ${shadowList.join(',')}`]
+  }
+}
+
 export function getBoxShadowStyle ({ shadow, type }) {
   if (shadow) {
     if (shadow.x === 0 && shadow.y === 0 && shadow.b === 0) {

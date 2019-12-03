@@ -1,4 +1,4 @@
-import { IMAGE, SHAPE, TEXT, TypeEnum, LAYOUT } from '../../danke-core/elements/index'
+import { IMAGE, SHAPE, TEXT, LAYOUT } from '../../danke-core/elements/index'
 import { clone } from '../../utils/object'
 import { getElementInnerStyle, getElementStyle, getSceneStyle } from '../../danke-core/utils/styles'
 import { shortid } from '../../utils/string'
@@ -134,16 +134,14 @@ export default {
         this.currentScene.elements.push(clonedElement)
         elements.push(clonedElement)
         blob.filename = this.croppingFileName
-        console.log('inserted', clonedElement)
       }
     },
-
     /**
      * 插入图片 注意此时图片并不上传，只有保存时才上传并设置element.imgPath属性
      * @param e
      */
     insertRawImage (e) {
-      const file = e.raw
+      const file = e
       const clonedElement = clone(IMAGE)
       clonedElement.id = shortid()
       clonedElement.name = '图片'
