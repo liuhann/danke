@@ -64,12 +64,12 @@
       </div>
     </div>
   </div>
-
-  <div class="animation" v-if="configTab === 'animation' && element.animation">
-    <el-button>增加动画</el-button>
-    <edit-animation :animation="element.animation.in" label="进入" animation-type="in"/>
-    <edit-animation :animation="element.animation.dura" label="持续" animation-type="dura" />
-    <edit-animation :animation="element.animation.out" label="离开" animation-type="out" />
+  <div class="animation" v-if="configTab === 'animation'">
+    <el-button size="mini" @click="insertAnimation">增加动画</el-button>
+    <edit-animation
+      v-for="(animation, index) of element.animations"
+      :key="index"
+      :animation="animation" />
   </div>
 
   <div class="extra" v-if="configTab === 'other'">
@@ -108,7 +108,7 @@ import EditImage from './props/EditImage.vue'
 import { shortid } from '../../utils/string'
 import EditPaperFolding from '../../danke-plugins/paperfold/EditPaperFolding.vue'
 import EditFlip from '../../danke-plugins/flip/EditFlip.vue'
-
+import ANIMATION from '../../danke-core/css-model/animation.js'
 export default {
   name: 'ElementConfig',
   props: {
@@ -187,7 +187,6 @@ export default {
   },
   methods: {
     imageUpdated (file) {
-      debugger
       this.element.blob = file
     },
 
@@ -279,6 +278,13 @@ export default {
      */
     applyAnimationToAll (stage) {
 
+    },
+
+    /**
+    * 插入动画片段
+    */
+    insertAnimation () {
+      this.element.animations.push(JSON.parse(JSON.stringify(ANIMATION)))
     },
 
     /**

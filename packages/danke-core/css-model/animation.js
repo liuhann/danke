@@ -1,14 +1,13 @@
 export default {
-  name: '',
-  desc: '',
-  duration: 800,
+  name: '', // 动画名称
+  desc: '', // 名称便于阅读
+  duration: 800,  // 持续时间
+  stage: 'in',  // 对应阶段
   timing: 'linear',
-  delay: 0,
-  iteration: 1,
-  infinite: false,
-  srcFrame: '',
-  frames: [],
-  overflow: true,
+  delay: 0, // 相对阶段时间的延迟
+  iteration: 1, // 重复次数
+  infinite: false, // 无限次重复的标志
+  overflow: true, // 动画效果是否相对原本位置溢出
   fillMode: 'both'
 }
 export function trim (element) {

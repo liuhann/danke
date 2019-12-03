@@ -49,15 +49,6 @@ export default {
     }
   },
   methods: {
-    addMenuClicked (menu, event) {
-      if (menu.type === 'file') {
-        this.fileChoosed(event)
-      } else if (menu.label === '文字') {
-        this.insertText()
-      } else if (menu.label === '形状') {
-        this.insertShape()
-      }
-    },
     cropImage (file) {
       this.croppingFileName = file.name
       this.$refs.cropper.open(file, this.ratio || '16:9')
@@ -73,7 +64,7 @@ export default {
     },
 
     /**
-     * 插入形状，为了支持边框和阴影， 形状只支持圆形和正方形
+     * 插入形状，为了支持边框和阴影， 形状只支持圆形 (椭圆形) 和正方形
      */
     insertShape () {
       const clonedElement = clone(SHAPE)
@@ -87,6 +78,9 @@ export default {
       this.chooseElement(clonedElement)
     },
 
+    /**
+    * 设置或插入文本元素  主要供文字输入框弹出时回调
+    */
     setElementText (text) {
       if (this.currentElement) {
         this.currentElement.text = text
@@ -106,11 +100,19 @@ export default {
         this.chooseElement(clonedElement)
       }
     },
+
+    /**
+    * 调用插入文字Pop
+    */
     insertText (text) {
       this.chooseElement(null)
       this.$refs.dialogEditText.open('')
     },
-    insertImage (croppedList, cropScreenSize) {
+
+    /**
+    * 裁剪后插入图片
+    */
+    insertCroppedImage (croppedList, cropScreenSize) {
       const elements = []
       for (let { blob, cropbox } of croppedList) {
         const clonedElement = clone(IMAGE)
@@ -176,15 +178,17 @@ export default {
       clonedElement.size.height = '100vw'
       clonedElement.svg = svgContent
       let svgBlob = new Blob([svgContent], { type: 'image/svg+xml;charset=utf-8' })
-      /// create URL (handle prefixed version)
-      let domURL = self.URL || self.webkitURL || self
-      let url = domURL.createObjectURL(svgBlob)
+      let url = URL.createObjectURL(svgBlob)
       clonedElement.url = url
       const style = getElementStyle(clonedElement, this.device)
       clonedElement.style = style
       this.currentScene.elements.push(clonedElement)
       this.chooseElement(clonedElement)
     },
+
+    /**
+    * 插入折纸效果
+    */
     insertPaperFolding (e) {
       const file = e.raw
       const clonedElement = clone(PaperFolding)
@@ -221,6 +225,7 @@ export default {
       this.chooseElement(clonedElement)
     },
 
+
     deleteElement (element) {
       MessageBox.confirm('确认删除元素，是否继续？', '提示', {
         confirmButtonText: '确定',
@@ -233,6 +238,7 @@ export default {
         this.currentElement = null
       })
     },
+    
     contentChange (e) {
       this.editedText = e.target.innerHTML.replace(/<br>/g, '\n')
     },
@@ -266,6 +272,9 @@ export default {
       this.chooseElement(clonedElement)
     },
 
+    /**
+    * 调整元素Z坐标
+    */
     moveElementZ (z) {
       if (z === 'up') {
         this.moveUp(this.currentElement)
@@ -324,6 +333,9 @@ export default {
       Message.info('元素已经剪切到剪贴板')
     },
 
+    /**
+    * 重新计算所有场景、元素的样式及位置信息
+    */
     reflow () {
       for (let scene of this.work.scenes) {
         for (let element of scene.elements) {

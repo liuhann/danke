@@ -2,7 +2,17 @@
 <div class="edit-animation">
   <div class="field has-addons">
     <div class="control field-lb">
-      {{label}}效果
+      触发时机
+    </div>
+    <div class="control">
+      <el-radio-group v-model="animation.stage" size="mini">
+        <el-radio-button v-for="align of animationStages" :label="align.key" :key="align.key">{{align.label}}</el-radio-button>
+      </el-radio-group>
+    </div>
+  </div>
+  <div class="field has-addons">
+    <div class="control field-lb">
+      效果
     </div>
     <div class="control">
       <span class="button is-small" @click="chooseAnimation(animationType)">{{animation.desc || '选择'}}</span>
@@ -40,23 +50,11 @@
     </div>
   </div>
   <div class="field has-addons">
-    <div class="control field-lb">
-      溢出
+    <div class="control">
+      <el-checkbox size="mini" v-model="animation.overflow">溢出</el-checkbox>
     </div>
     <div class="control">
-      <input type="checkbox" v-model="animation.overflow" />
-    </div>
-    <div class="control field-lb">
-    重复
-  </div>
-    <div class="control">
-      <input type="checkbox" v-model="animation.infinite" />
-    </div>
-    <div class="control field-lb">
-      反向
-    </div>
-    <div class="control">
-      <input type="checkbox" v-model="animation.infinite" />
+      <el-checkbox v-model="animation.infinite">重复</el-checkbox>
     </div>
   </div>
 </div>
@@ -64,11 +62,18 @@
 
 <script>
 import EditLen from './EditLen.vue'
+import { Button, InputNumber, ColorPicker, Checkbox, RadioGroup, RadioButton } from 'element-ui'
 import frameModel from '../../../frames/frameChooseDialog'
 import cubicBerziers from '../../../frames/model/cubic-beziers'
 export default {
   name: 'EditAnimation',
   components: {
+    [Button.name]: Button,
+    [InputNumber.name]: InputNumber,
+    [ColorPicker.name]: ColorPicker,
+    [Checkbox.name]: Checkbox,
+    [RadioGroup.name]: RadioGroup,
+    [RadioButton.name]: RadioButton,
     EditLen
   },
   props: {
@@ -84,7 +89,14 @@ export default {
   },
   data () {
     return {
-      cubicBerziers
+      cubicBerziers,
+      animationStages: [{
+        key: 'in',
+        label: '进入'
+      }, {
+        key: 'out',
+        label: '离开'
+      }]
     }
   },
   watch: {

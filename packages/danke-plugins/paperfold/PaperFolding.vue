@@ -1,7 +1,6 @@
 <template>
 <div class="paper-folder">
   <div v-for="i in splitArray[0]" :key="i">
-   <!-- <img v-for="j in split[1]" :key="j" :src="element.url" :style="getRectStyle(i, j)"/>-->
     <div class="rect" v-for="j in splitArray[1]" :key="j" :style="getRectStyle(i, j)">
       <img class="full-img" :src="element.url" :style="getImageStyle(i, j)" />
     </div>
