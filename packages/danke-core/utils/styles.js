@@ -101,7 +101,7 @@ function getAnimationStyle (element, stage, outer) {
         // 例如 图片渲染时  <div><img>这样的标签结构， overflow=true时才写入div 否则写入img
         if (animation.stage === stage) {
           if (outer === animation.overflow) {
-            animationsOrdered.push(`${animation.name} ${animation.duration}ms ${animation.timing} ${animation.delay}ms ${animation.infinite ? 'infinite' : animation.iteration} normal both running`)
+            animationsOrdered.push(`${animation.name} ${animation.duration}ms ${animation.timing} ${animation.delay}ms ${animation.infinite ? 'infinite' : animation.iteration}`)
             // 动态写入css
             addAnimationStyle(sheet, animation)
           }
