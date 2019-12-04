@@ -90,10 +90,7 @@ export default {
         clonedElement.visible = true
         clonedElement.text = text
         clonedElement.size.width = '50vw'
-        clonedElement.size.height = '30px'
-        if (this.ctx.fontCopied) {
-          clonedElement.font = JSON.parse(JSON.stringify(this.ctx.fontCopied))
-        }
+        clonedElement.size.height = '40px'
         clonedElement.style = getElementStyle(clonedElement, this.device)
         this.inc++
         this.currentScene.elements.push(clonedElement)
@@ -238,7 +235,7 @@ export default {
         this.currentElement = null
       })
     },
-    
+
     contentChange (e) {
       this.editedText = e.target.innerHTML.replace(/<br>/g, '\n')
     },

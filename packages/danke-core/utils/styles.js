@@ -114,12 +114,12 @@ function getAnimationStyle (element, stage, outer) {
       }
     }
   }
-
-  if (stage && element.animation[stage] && element.animation[stage].name) {
-    const animationDef = element.animation[stage]
-    addAnimationStyle(sheet, animationDef)
-    return `animation: ${animationDef.name} ${animationDef.duration}ms ${animationDef.timing} ${animationDef.delay}ms ${animationDef.iteration} normal both running`
-  }
+  //
+  // if (stage && element.animation[stage] && element.animation[stage].name) {
+  //   const animationDef = element.animation[stage]
+  //   addAnimationStyle(sheet, animationDef)
+  //   return `animation: ${animationDef.name} ${animationDef.duration}ms ${animationDef.timing} ${animationDef.delay}ms ${animationDef.iteration} normal both running`
+  // }
 }
 
 /**

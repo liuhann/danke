@@ -2,15 +2,13 @@
 <div class="field is-horizontal">
   <div class="field-body">
     <div class="field has-addons">
-      <p class="control">
-        <input class="input is-small" style="width: 65px;" type="number" :step="step" v-model="length">
+      <p class="control" style="width: 76px;">
+        <el-input-number size="mini" v-model="length" controls-position="right" :step="step" />
       </p>
       <p class="control">
-        <span class="select is-small" v-if="withUnit">
-          <select v-model="unit" class="is-small">
-            <option v-for="u of units" :key="u.value" :value="u.value" :label="u.label">{{u.label}}</option>
-          </select>
-        </span>
+        <el-select v-model="unit" size="mini" v-if="withUnit" style="width: 76px;">
+          <el-option v-for="u in units" :value="u.value" :key="u.value" :label="u.label" />
+        </el-select>
         <a class="button is-static is-small" v-if="unitLabel">
           {{unitLabel}}
         </a>
@@ -21,8 +19,14 @@
 </template>
 
 <script>
+import { InputNumber, Select, Option } from 'element-ui'
 import { getLenSplits } from '../../../danke-core/utils/common'
 export default {
+  components: {
+    [Select.name]: Select,
+    [Option.name]: Option,
+    [InputNumber.name]: InputNumber
+  },
   props: {
     label: {
       type: String

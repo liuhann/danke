@@ -15,10 +15,10 @@
       效果
     </div>
     <div class="control">
-      <span class="button is-small" @click="chooseAnimation(animationType)">{{animation.desc || '选择'}}</span>
+      <el-tag size="mini" v-if="animation.desc">{{animation.desc}}</el-tag>
     </div>
     <div class="control">
-      <span v-if="animation.name" class="button is-small icon-trash-empty is-danger" @click="clearAnimation"></span>
+      <el-button type="text" @click="chooseAnimation(animationType)" size="mini">选择</el-button>
     </div>
   </div>
 
@@ -29,42 +29,46 @@
     <div class="control">
       <edit-len v-model="animation.duration" :with-unit="false"></edit-len>
     </div>
-    <div class="control field-lb">
+    <div class="control">
       延迟
     </div>
     <div class="control">
       <edit-len v-model="animation.delay" :with-unit="false"></edit-len>
     </div>
   </div>
-
   <div class="field has-addons">
     <div class="control field-lb">
       缓动
     </div>
     <div class="control">
-      <div class="select is-small">
-        <select v-model="animation.timing">
-          <option v-for="(value, key) in cubicBerziers" :value="value" :key="key">{{key}}</option>
-        </select>
-      </div>
+      <el-select v-model="animation.timing" size="mini">
+        <el-option v-for="(value, key) in cubicBerziers" :value="value" :key="key" :label="key" />
+      </el-select>
     </div>
   </div>
   <div class="field has-addons">
+    <div class="control field-lb">
+      特性
+    </div>
     <div class="control">
       <el-checkbox size="mini" v-model="animation.overflow">溢出</el-checkbox>
     </div>
     <div class="control">
       <el-checkbox v-model="animation.infinite">重复</el-checkbox>
     </div>
+    <div class="control">
+      <el-button icon="el-icon-delete" type="danger" size="mini" @click="$emit('remove')"></el-button>
+    </div>
   </div>
+  <el-divider />
 </div>
 </template>
 
 <script>
-import EditLen from './EditLen.vue'
-import { Button, InputNumber, ColorPicker, Checkbox, RadioGroup, RadioButton } from 'element-ui'
-import frameModel from '../../../frames/frameChooseDialog'
-import cubicBerziers from '../../../frames/model/cubic-beziers'
+import EditLen from '../components/props/EditLen.vue'
+import { Button, InputNumber, ColorPicker, Checkbox, RadioGroup, RadioButton, Tag, Divider, Select, Option } from 'element-ui'
+import frameModel from '../../frames/frameChooseDialog'
+import cubicBerziers from '../../frames/model/cubic-beziers'
 export default {
   name: 'EditAnimation',
   components: {
@@ -74,6 +78,10 @@ export default {
     [Checkbox.name]: Checkbox,
     [RadioGroup.name]: RadioGroup,
     [RadioButton.name]: RadioButton,
+    [Divider.name]: Divider,
+    [Select.name]: Select,
+    [Option.name]: Option,
+    [Tag.name]: Tag,
     EditLen
   },
   props: {
@@ -165,5 +173,4 @@ export default {
 </script>
 
 <style>
-
 </style>

@@ -1,6 +1,5 @@
 import POSITION from '../css-model/position'
 import SIZE from '../css-model/size'
-import ANIMATION from '../css-model/animation'
 import FONT from '../css-model/font'
 const text = {
   version: '1.2',
@@ -11,10 +10,6 @@ const text = {
   size: SIZE,
   shadows: [],
   className: '',
-  animation: {
-    in: ANIMATION,
-    dura: ANIMATION,
-    out: ANIMATION
-  }
+  animations: []
 }
 export default text

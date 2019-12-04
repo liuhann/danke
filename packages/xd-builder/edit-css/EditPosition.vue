@@ -1,32 +1,25 @@
 <template>
 <div class="edit-position field-group">
   <div class="field has-addons">
-    <div class="control field-lb" @click="copyPositionStyle">
+    <div class="control field-lb">
       位置
     </div>
-    <div class="control">
-      <div class="select is-small">
-        <select v-model="position.horizontal">
-          <option v-for="option in horizontalOptions" :value="option.key" :key="option.key">{{option.value}}</option>
-        </select>
-      </div>
+    <div class="control" style="width: 70px;">
+      <el-select v-model="position.horizontal" size="mini">
+        <el-option v-for="option in horizontalOptions" :value="option.key" :key="option.key" :label="option.value" />
+      </el-select>
     </div>
     <div class="control">
        <edit-len v-model="position.offsetX"></edit-len>
-    </div>
-    <div v-if="copied" class="control paste" @click="pastePositionStyle">
-      <i class="icon-paste"></i>
     </div>
   </div>
   <div class="field has-addons">
     <div class="control field-lb">
     </div>
-    <div class="control">
-      <div class="select is-small">
-        <select v-model="position.vertical">
-          <option v-for="option in verticalOptions" :value="option.key" :key="option.key">{{option.value}}</option>
-        </select>
-      </div>
+    <div class="control" style="width: 70px;">
+      <el-select v-model="position.vertical" size="mini">
+        <el-option v-for="option in verticalOptions" :value="option.key" :key="option.key" :label="option.value" />
+      </el-select>
     </div>
     <div class="control">
        <edit-len v-model="position.offsetY"></edit-len>
@@ -36,15 +29,15 @@
 </template>
 
 <script>
-import EditLen from './EditLen'
-import SVG_HOR from '../../svg/position-x.svg'
-import SVG_VER from '../../svg/position-y.svg'
-import FormField from './FormField'
-import { horizontalOptions, verticalOptions } from '../../../danke-core/css-model/position'
+import EditLen from '../components/props/EditLen'
+import { Select, Option, InputNumber } from 'element-ui'
+import { horizontalOptions, verticalOptions } from '../../danke-core/css-model/position'
 export default {
   name: 'EditPosition',
   components: {
-    FormField,
+    [Select.name]: Select,
+    [Option.name]: Option,
+    [InputNumber.name]: InputNumber,
     EditLen
   },
   props: {
@@ -58,8 +51,6 @@ export default {
   data () {
     return {
       copied: null,
-      SVG_HOR,
-      SVG_VER,
       horizontalOptions,
       verticalOptions
     }

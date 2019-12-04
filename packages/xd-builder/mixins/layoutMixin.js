@@ -2,6 +2,7 @@
  * 场景绘制区大小、缩放相关控制
  */
 import { fitToContainer } from '../../danke-core/utils/common'
+import { getBackgroundStyle } from '../../danke-core/css-model/background'
 
 export default {
   data () {
@@ -32,9 +33,15 @@ export default {
       }
     },
     deviceStyle () {
+      console.log({
+        width: this.device.width + 'px',
+        height: this.device.height + 'px',
+        background: getBackgroundStyle(this.work).join(';')
+      })
       return {
         width: this.device.width + 'px',
-        height: this.device.height + 'px'
+        height: this.device.height + 'px',
+        background: getBackgroundStyle(this.work).join(';')
       }
     }
   },

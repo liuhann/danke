@@ -4,6 +4,20 @@
   <div class="basic" v-if="configTab === 'basic'">
     <edit-paper-folding v-if="element.folding" :element="element" />
     <edit-flip v-if="element.type === 1002" :element="element" />
+
+    <div class="field has-addons" style="height: 60px;" v-if="element.text">
+      <div class="control field-lb">
+        文本
+      </div>
+      <div class="control" style="width: 230px;">
+        <el-input
+          type="textarea"
+          :rows="2"
+          v-model="element.text">
+        </el-input>
+      </div>
+    </div>
+
     <edit-font v-if="element.font" v-model="element.font" @apply-to-all="applyFontToAll" @copy="copyFontStyle" @paste="pasteFontStyle" />
     <edit-image v-if="element.url" v-model="element.url" @blob="imageUpdated" />
     <edit-background v-model="element.background" v-if="element.background" />
@@ -68,6 +82,7 @@
     <el-button size="mini" @click="insertAnimation">增加动画</el-button>
     <edit-animation
       v-for="(animation, index) of element.animations"
+      @remove="removeAnimation(index)"
       :key="index"
       :animation="animation" />
   </div>
@@ -91,14 +106,14 @@
 </template>
 <script>
 import EditFont from '../edit-css/EditFont.vue'
-import EditPosition from './props/EditPosition.vue'
+import EditPosition from '../edit-css/EditPosition.vue'
 import EditBackground from './props/EditBackground.vue'
 import EditBorder from './props/EditBorder.vue'
 import EditClipPath from './props/EditClipPath.vue'
 import EditSize from './props/EditSize.vue'
 import EditShadow from '../edit-css/EditShadow.vue'
-import EditAnimation from './props/EditAnimation.vue'
-import { Button, Message } from 'element-ui'
+import EditAnimation from '../edit-css/EditAnimation.vue'
+import { Button, Message, Input } from 'element-ui'
 import { TypeEnum } from '../../danke-core/elements/index'
 import { Shapes } from '../../danke-core/css-model/shapeclip'
 import EditMask from './props/EditMask.vue'
@@ -140,7 +155,8 @@ export default {
     EditShadow,
     EditFilter,
     EditFont,
-    [Button.name]: Button
+    [Button.name]: Button,
+    [Input.name]: Input
   },
   data () {
     return {
@@ -285,6 +301,9 @@ export default {
     */
     insertAnimation () {
       this.element.animations.push(JSON.parse(JSON.stringify(ANIMATION)))
+    },
+    removeAnimation (index) {
+      this.element.animations.splice(index, 1)
     },
 
     /**

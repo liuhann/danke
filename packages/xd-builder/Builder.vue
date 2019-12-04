@@ -97,8 +97,9 @@ export default {
         audioName: '', // 音频名称（只用于显示）
         audioTicks: [], // 音频切换的节拍
         duration: 0, // 持续时间
-        resources: [],
-        scenes: [],
+        resources: [],  // 作品引用的公共资源
+        animations: [], // 作品使用的动画
+        scenes: [], // 场景列表
         background: JSON.parse(JSON.stringify(BackGround)),
         styles: '' // 附加的样式
       },

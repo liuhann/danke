@@ -92,6 +92,10 @@ export default {
       this.$emit('insert', 'paper', file.raw)
     },
 
+    showFlatIconPopover () {
+
+    },
+
     audioFileChoosed (file) {
       this.$emit('insert', 'audio', file.raw)
     }

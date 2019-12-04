@@ -22,6 +22,25 @@ function getLenSplits (len) {
 }
 
 /**
+ * 根据给定的长度及单位，获取适配到具体设备的长度信息
+ * @param len 长度
+ * @param unit 单位
+ * @param device 设备信息
+ * @returns {number}
+ */
+function getLengthByDevice (len, unit, device) {
+  let number = 0
+  if (unit === 'vw') { // 单位:屏宽
+    number = Math.floor(device.width * len / 100)
+  } else if (unit === 'vh') { // 单位:屏高
+    number = Math.floor(device.height * len / 100)
+  } else if (unit === 'px') { // 单位:像素
+    number = len
+  }
+  return number
+}
+
+/**
  * get object with unit and len from length string
  * @param {String} unitLen: length string
  * @param {Object} device container device
@@ -33,14 +52,7 @@ function getLength (unitLen, device) {
     return 0
   }
   const { len, unit } = getLenSplits(unitLen)
-  let number = 0
-  if (unit === 'vw') {
-    number = Math.floor(device.width * len / 100)
-  } else if (unit === 'vh') {
-    number = Math.floor(device.height * len / 100)
-  } else if (unit === 'px') {
-    number = len
-  }
+  let number = getLengthByDevice(len, unit, device)
   return number
 }
 
@@ -136,4 +148,4 @@ function resumeCompare (target, template) {
   return resumed
 }
 
-export { getLength, getLenSplits, fitToContainer, wait, resumeCompare, fitBy, trimCompare }
+export { getLength, getLenSplits, fitToContainer, wait, resumeCompare, fitBy, trimCompare, getLengthByDevice }

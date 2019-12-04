@@ -29,16 +29,6 @@
       </el-radio-group>
     </p>
   </div>
-  <div class="field has-addons">
-    <div class="control field-lb">
-      字体复制
-    </div>
-    <p class="control">
-      <a class="button is-success is-small" @click="$emit('edit')">编辑</a>
-      <a class="button is-small" @click="$emit('copy')">样式复制</a>
-      <a class="button is-small" @click="$emit('paste')">粘贴</a>
-    </p>
-  </div>
 </div>
 </template>
 
