@@ -11,7 +11,6 @@
 <script>
 import { addAnimationStyle, createSheet } from '../../frames/keyframe'
 import { shortid } from '../../utils/string'
-
 export default {
   name: 'PaperFolding.vue',
   props: {

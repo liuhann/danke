@@ -52,6 +52,9 @@ export default {
 </script>
 
 <style lang="scss">
+.element {
+  overflow: visible;
+}
 .mask {
   z-index: 1;
   position: absolute;

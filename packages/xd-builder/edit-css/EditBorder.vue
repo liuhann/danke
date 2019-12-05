@@ -5,14 +5,12 @@
       边框
     </div>
     <p class="control">
-      <edit-len v-model="border.width" :with-unit="false" unit-label="像素"></edit-len>
+      <edit-len v-model="border.width" :with-unit="false"></edit-len>
     </p>
-    <p class="control">
-      <span class="select is-small">
-        <select v-model="border.style">
-          <option v-for="option in LINE_STYLES" :value="option.key" :key="option.key">{{option.value}}</option>
-        </select>
-      </span>
+    <p class="control" style="width: 80px">
+      <el-select v-model="border.style" size="mini">
+        <el-option v-for="option in LINE_STYLES" :value="option.key" :key="option.key" :label="option.value" />
+      </el-select>
     </p>
     <p class="control">
       <el-color-picker v-model="border.color" size="mini" :show-alpha="true" :predefine="predefineColors" />
@@ -23,16 +21,16 @@
       圆角
     </div>
     <p class="control">
-      <edit-len v-model="border.radius" label="" :with-unit="false" unit-label="像素"></edit-len>
+      <edit-len v-model="border.radius" label="" :with-unit="false"></edit-len>
     </p>
   </div>
 </div>
 </template>
 
 <script>
-import SVG_CORNER from '../svg/corner.svg'
 import EditLen from '../components/props/EditLen.vue'
 import predefineColors from './colors'
+import { Select, Option, ColorPicker } from 'element-ui'
 import { LINE_STYLES } from '../../danke-core/css-model/border'
 const allSides = {
   top: '上',
@@ -43,6 +41,9 @@ const allSides = {
 export default {
   name: 'EditBorder',
   components: {
+    [Select.name]: Select,
+    [Option.name]: Option,
+    [ColorPicker.name]: ColorPicker,
     EditLen
   },
   props: {
@@ -53,7 +54,6 @@ export default {
   data () {
     return {
       predefineColors,
-      SVG_CORNER,
       LINE_STYLES
     }
   },

@@ -12,8 +12,13 @@
 </template>
 
 <script>
+import { Select, Option } from 'element-ui'
 export default {
   name: 'EditShape',
+  components: {
+    [Select.name]: Select,
+    [Option.name]: Option
+  },
   props: {
     element: {
       type: Object

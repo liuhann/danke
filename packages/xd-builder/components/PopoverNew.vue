@@ -52,7 +52,6 @@
            <el-button icon="el-icon-s-grid" size="mini" circle/>
          </el-upload>
          <el-button icon="el-icon-coordinate" @click="showFlatIconPopover" size="mini" circle/>
-
          <div class="pop-new-block" @click="$emit('insert', 'text')">
            <i class="el-icon-coordinate" />
            <span>Flat图标</span>
