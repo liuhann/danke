@@ -33,9 +33,9 @@
       </div>
     </div>
     <div class="field has-addons" v-if="transform.origin">
-			<div class="control field-lb">
-				横向
-			</div>
+      <div class="control field-lb">
+        横向
+      </div>
       <div class="control">
         <div class="select is-small">
           <select v-model="transform.origin[0]">
@@ -43,21 +43,21 @@
           </select>
         </div>
       </div>
-			<div class="control field-lb">
-				纵向
-			</div>
-			<div class="control">
-				<div class="select is-small">
-					<select v-model="transform.origin[1]">
-						<option v-for="option in transformOffsetY" :value="option.value" :key="option.value">{{option.label}}</option>
-					</select>
-				</div>
-			</div>
+      <div class="control field-lb">
+        纵向
+      </div>
+      <div class="control">
+        <div class="select is-small">
+          <select v-model="transform.origin[1]">
+            <option v-for="option in transformOffsetY" :value="option.value" :key="option.value">{{option.label}}</option>
+          </select>
+        </div>
+      </div>
     </div>
     <div class="field has-addons">
-			<div class="control field-lb">
-				透明度
-			</div>
+      <div class="control field-lb">
+        透明度
+      </div>
       <div class="control">
          <input class="input is-small" v-model.number="transform.opacity" type="number">
       </div>
@@ -66,9 +66,9 @@
       </div>
     </div>
     <div class="field has-addons">
-			<div class="control field-lb">
-				视角
-			</div>
+      <div class="control field-lb">
+        视角
+      </div>
       <div class="control">
          <input class="input is-small" v-model.number="transform.psp" type="number">
       </div>
@@ -77,9 +77,9 @@
       </div>
     </div>
     <div class="field has-addons">
-			<div class="control field-lb">
-				缩放
-			</div>
+      <div class="control field-lb">
+        缩放
+      </div>
       <div class="control">
          <input class="input is-small" v-model.number="transform.scale" type="number">
       </div>

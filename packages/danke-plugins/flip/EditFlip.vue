@@ -32,7 +32,7 @@
 <script>
 import { Select, Option, Input } from 'element-ui'
 import EditLen from '../../xd-builder/components/props/EditLen.vue'
-import EditImage from '../../xd-builder/components/props/EditImage.vue'
+import EditImage from '../../xd-builder/edit-css/EditImage.vue'
 export default {
   name: 'EditFlip',
   components: {

@@ -81,7 +81,7 @@
 </template>
 
 <script>
-import EditBackground from './props/EditBackground.vue'
+import EditBackground from '../edit-css/EditBackground.vue'
 import Tabs from '../../common/components/Tabs.vue'
 import DialogAudioTap from './DialogAudioTap.vue'
 import saveShareMixin from '../mixins/saveShare.js'

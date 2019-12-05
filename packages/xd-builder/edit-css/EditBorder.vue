@@ -15,7 +15,7 @@
       </span>
     </p>
     <p class="control">
-      <color-pickr v-model="border.color"></color-pickr>
+      <el-color-picker v-model="border.color" size="mini" :show-alpha="true" :predefine="predefineColors" />
     </p>
   </div>
   <div class="field has-addons">
@@ -30,11 +30,10 @@
 </template>
 
 <script>
-import SVG_CORNER from '../../svg/corner.svg'
-import FormField from './FormField'
-import EditLen from './EditLen.vue'
-import ColorPickr from '../ColorPickr'
-import { LINE_STYLES } from '../../../danke-core/css-model/border'
+import SVG_CORNER from '../svg/corner.svg'
+import EditLen from '../components/props/EditLen.vue'
+import predefineColors from './colors'
+import { LINE_STYLES } from '../../danke-core/css-model/border'
 const allSides = {
   top: '上',
   bottom: '下',
@@ -44,9 +43,7 @@ const allSides = {
 export default {
   name: 'EditBorder',
   components: {
-    ColorPickr,
-    EditLen,
-    FormField
+    EditLen
   },
   props: {
     value: {
@@ -55,6 +52,7 @@ export default {
   },
   data () {
     return {
+      predefineColors,
       SVG_CORNER,
       LINE_STYLES
     }
@@ -87,6 +85,6 @@ export default {
 
 <style lang="scss">
 .edit-border {
-  
+
 }
 </style>

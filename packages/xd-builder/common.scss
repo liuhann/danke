@@ -83,6 +83,14 @@ input[type='number'] {
   padding: 5px;
 }
 
+.el-radio {
+  font-size: 12px;
+  margin-right: 15px;
+  .el-radio__label {
+    padding-left: 5px;
+  }
+}
+
 .el-input-number.is-controls-right .el-input__inner {
   padding-left: 8px;
   padding-right: 30px;

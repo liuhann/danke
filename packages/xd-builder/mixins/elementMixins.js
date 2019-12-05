@@ -79,7 +79,7 @@ export default {
     },
 
     /**
-    * 设置或插入文本元素  主要供文字输入框弹出时回调
+    * 设置或插入文本元素
     */
     setElementText (text) {
       if (this.currentElement) {
@@ -92,7 +92,6 @@ export default {
         clonedElement.size.width = '50vw'
         clonedElement.size.height = '40px'
         clonedElement.style = getElementStyle(clonedElement, this.device)
-        this.inc++
         this.currentScene.elements.push(clonedElement)
         this.chooseElement(clonedElement)
       }
@@ -103,7 +102,7 @@ export default {
     */
     insertText (text) {
       this.chooseElement(null)
-      this.$refs.dialogEditText.open('')
+      this.setElementText('文本内容')
     },
 
     /**

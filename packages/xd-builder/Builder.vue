@@ -189,6 +189,9 @@ export default {
         case 'text':
           this.insertText()
           break
+        case 'shape':
+          this.insertShape()
+          break
         default:
           break
       }

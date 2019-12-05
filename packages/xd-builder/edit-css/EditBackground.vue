@@ -5,14 +5,16 @@
       背景
     </p>
     <p class="control">
-      <color-pickr v-for="(color, index) of background.colors" :key="index" v-model="background.colors[index]" @remove="removeColor(index)"></color-pickr>
-      <a class="icon-plus-1" @click="addColor"></a>
+      <el-color-picker v-for="(color, index) of background.colors" :key="index" v-model="background.colors[index]" size="mini" :show-alpha="true" :predefine="predefineColors" />
     </p>
-    <div class="control">
-      <div class="select is-small" v-if="multipleColor">
-        <select v-model="background.angle">
-          <option v-for="option in gradientAngle" :value="option.key" :key="option.key">{{option.value}}</option>
-        </select>
+    <p class="control">
+      <el-button type="text" icon="el-icon-plus" size="mini" @click="addColor"/>
+    </p>
+    <div class="control" style="width: 80px;">
+      <div class="is-small" v-if="multipleColor">
+        <el-select v-model="background.angle" size="mini">
+          <el-option v-for="option in gradientAngle" :value="option.key" :key="option.key" :label="option.value"/>
+        </el-select>
       </div>
     </div>
   </div>
@@ -20,12 +22,16 @@
 </template>
 
 <script>
-import ColorPickr from '../ColorPickr'
-import { backgroundSize } from '../../../danke-core/utils/css-options.js'
+import { ColorPicker, Select, Option, Button } from 'element-ui'
+import { backgroundSize } from '../../danke-core/utils/css-options.js'
+import predefineColors from './colors.js'
 export default {
   name: 'EditBackground',
   components: {
-    ColorPickr
+    [ColorPicker.name]: ColorPicker,
+    [Select.name]: Select,
+    [Button.name]: Button,
+    [Option.name]: Option
   },
   props: {
     value: {
@@ -34,6 +40,7 @@ export default {
   },
   data () {
     return {
+      predefineColors
     }
   },
 

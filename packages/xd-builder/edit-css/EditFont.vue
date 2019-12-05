@@ -25,7 +25,7 @@
     </div>
     <p class="control">
       <el-radio-group v-model="font.align" size="mini">
-        <el-radio-button v-for="align of aligns" :label="align.key" :key="align.key">{{align.label}}</el-radio-button>
+        <el-radio v-for="align of aligns" :label="align.key" :key="align.key">{{align.label}}</el-radio>
       </el-radio-group>
     </p>
   </div>
@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { Button, InputNumber, ColorPicker, Checkbox, RadioGroup, RadioButton } from 'element-ui'
+import { Button, InputNumber, ColorPicker, Checkbox, RadioGroup, RadioButton, Radio } from 'element-ui'
 import predefineColors from './colors'
 import pastable from '../components/props/pastable'
 export default {
@@ -45,6 +45,7 @@ export default {
     [ColorPicker.name]: ColorPicker,
     [Checkbox.name]: Checkbox,
     [RadioGroup.name]: RadioGroup,
+    [Radio.name]: Radio,
     [RadioButton.name]: RadioButton
   },
   props: {

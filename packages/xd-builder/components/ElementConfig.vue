@@ -4,28 +4,16 @@
   <div class="basic" v-if="configTab === 'basic'">
     <edit-paper-folding v-if="element.folding" :element="element" />
     <edit-flip v-if="element.type === 1002" :element="element" />
-
-    <div class="field has-addons" style="height: 60px;" v-if="element.text">
-      <div class="control field-lb">
-        文本
-      </div>
-      <div class="control" style="width: 230px;">
-        <el-input
-          type="textarea"
-          :rows="2"
-          v-model="element.text">
-        </el-input>
-      </div>
-    </div>
-
-    <edit-font v-if="element.font" v-model="element.font" @apply-to-all="applyFontToAll" @copy="copyFontStyle" @paste="pasteFontStyle" />
+    <edit-text v-if="element.text" :element="element" />
+    <edit-shape v-if="element.shape" :element="element" />
+    <edit-font v-if="element.font" v-model="element.font" />
     <edit-image v-if="element.url" v-model="element.url" @blob="imageUpdated" />
     <edit-background v-model="element.background" v-if="element.background" />
     <edit-position v-model="element.position" />
     <edit-size v-model="element.size" />
     <div class="field has-addons">
       <div class="control field-lb">
-        层次
+        调整层次
       </div>
       <div class="control">
         <div class="buttons has-addons">
@@ -107,10 +95,10 @@
 <script>
 import EditFont from '../edit-css/EditFont.vue'
 import EditPosition from '../edit-css/EditPosition.vue'
-import EditBackground from './props/EditBackground.vue'
-import EditBorder from './props/EditBorder.vue'
+import EditBackground from '../edit-css/EditBackground.vue'
+import EditBorder from '../edit-css/EditBorder.vue'
 import EditClipPath from './props/EditClipPath.vue'
-import EditSize from './props/EditSize.vue'
+import EditSize from '../edit-css/EditSize.vue'
 import EditShadow from '../edit-css/EditShadow.vue'
 import EditAnimation from '../edit-css/EditAnimation.vue'
 import { Button, Message, Input } from 'element-ui'
@@ -119,11 +107,13 @@ import { Shapes } from '../../danke-core/css-model/shapeclip'
 import EditMask from './props/EditMask.vue'
 import EditFilter from './props/EditFilter.vue'
 import Tabs from '../../common/components/Tabs.vue'
-import EditImage from './props/EditImage.vue'
+import EditImage from '../edit-css/EditImage.vue'
 import { shortid } from '../../utils/string'
 import EditPaperFolding from '../../danke-plugins/paperfold/EditPaperFolding.vue'
 import EditFlip from '../../danke-plugins/flip/EditFlip.vue'
 import ANIMATION from '../../danke-core/css-model/animation.js'
+import EditText from '../edit-css/EditText'
+import EditShape from '../edit-css/EditShape'
 export default {
   name: 'ElementConfig',
   props: {
@@ -141,6 +131,8 @@ export default {
     }
   },
   components: {
+    EditShape,
+    EditText,
     EditFlip,
     EditPaperFolding,
     EditImage,

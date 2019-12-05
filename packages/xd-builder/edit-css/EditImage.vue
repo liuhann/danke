@@ -21,7 +21,6 @@
 import { Message } from 'element-ui'
 export default {
   name: 'EditImage',
-  components: { Message },
   props: {
     value: {
       type: String

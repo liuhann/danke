@@ -6,7 +6,7 @@
     </div>
     <div class="control">
       <el-radio-group v-model="animation.stage" size="mini">
-        <el-radio-button v-for="align of animationStages" :label="align.key" :key="align.key">{{align.label}}</el-radio-button>
+        <el-radio v-for="align of animationStages" :label="align.key" :key="align.key">{{align.label}}</el-radio>
       </el-radio-group>
     </div>
   </div>
@@ -66,7 +66,7 @@
 
 <script>
 import EditLen from '../components/props/EditLen.vue'
-import { Button, InputNumber, ColorPicker, Checkbox, RadioGroup, RadioButton, Tag, Divider, Select, Option } from 'element-ui'
+import { Button, InputNumber, ColorPicker, Checkbox, RadioGroup, RadioButton, Tag, Divider, Select, Option, Radio } from 'element-ui'
 import frameModel from '../../frames/frameChooseDialog'
 import cubicBerziers from '../../frames/model/cubic-beziers'
 export default {
@@ -81,6 +81,7 @@ export default {
     [Divider.name]: Divider,
     [Select.name]: Select,
     [Option.name]: Option,
+    [Radio.name]: Radio,
     [Tag.name]: Tag,
     EditLen
   },

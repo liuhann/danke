@@ -11,7 +11,7 @@
         </span>
       </label>
     </div>
-    <div class="audio-box" v-if="audioUrl" ref="audioBox" style="margin-bottom: 10px;" @click="boxClicked">
+    <div class="audio-box" v-if="audioUrl" ref="audioBox" style="margin-bottom: 10px;" @click.capture="boxClicked">
       <div class="cut-box" :style="'left:' + (100 * audioStartPoint / audioTotalSeconds) + '%;'
       + 'right:' + (100 * (audioTotalSeconds - audioEndPoint) / audioTotalSeconds) + '%'"/>
       <div class="start ver-line" :style="'left:' + (100 * audioStartPoint / audioTotalSeconds) + '%'"></div>
@@ -143,8 +143,9 @@ export default {
       this.audioCurrentSeconds = 0
     },
     boxClicked (e) {
-      debugger
-      const percent = (e.pageX - e.currentTarget.offsetLeft) / e.currentTarget.clientWidth
+      // const percent = (e.pageX - e.currentTarget.offsetLeft) / e.currentTarget.clientWidth
+      console.log(e.offsetX, e.currentTarget)
+      const percent = e.offsetX / e.currentTarget
       this.audioCurrentSeconds = percent * this.audioTotalSeconds
       this.sound.seek(this.audioCurrentSeconds)
     },
