@@ -71,6 +71,7 @@ export default {
       clonedElement.id = shortid()
       clonedElement.name = '矩形'
       clonedElement.background.colors = ['#eee']
+      clonedElement.visible = true
       clonedElement.size.width = '30vw'
       clonedElement.size.height = '30vw'
       clonedElement.style = getElementStyle(clonedElement, this.device)
