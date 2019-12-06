@@ -3,147 +3,169 @@
   <nav-bar></nav-bar>
   <div class="section">
     <div class="container">
-      <div class="columns is-gapless is-mobile is-multiline" style="margin: 5px;">
-        <div class="column is-full-mobile">
+      <el-row :gutter="20">
+        <el-col :span="16">
+          <el-form size="mini" label-width="90px">
+            <el-form-item label="">
+              <el-button size="mini" type="primary" @click="save">保存</el-button>
+              <el-button size="mini" @click="play">预览</el-button>
+            </el-form-item>
+            <el-form-item label="名称">
+              <el-input v-model="animation.name" style="width: 360px;"></el-input>
+            </el-form-item>
+            <el-form-item label="持续时间">
+              <el-input-number v-model.number="animation.duration" controls-position="right" :step="50" /> ms
+            </el-form-item>
+            <el-form-item label="过渡函数">
+              <el-select v-model="animation.timing" size="mini">
+                <el-option v-for="(value, key) in cubicBerziers" :value="value" :key="key" :label="key" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="标签">
+              <el-tag
+                :key="tag"
+                v-for="tag in animation.tags"
+                closable
+                :disable-transitions="false"
+                @close="handleClose(tag)">
+                {{tag}}
+              </el-tag>
+              <el-input
+                class="input-new-tag"
+                v-if="inputVisible"
+                v-model="inputValue"
+                ref="saveTagInput"
+                size="mini"
+                @keyup.enter.native="handleInputConfirm"
+                @blur="handleInputConfirm"
+              >
+              </el-input>
+              <el-button v-else type="text" class="button-new-tag" size="mini" @click="showInput" icon="el-icon-plus">标签</el-button>
+            </el-form-item>
+            <el-form-item label="样式文本">
+              <textarea id="code" />
+            </el-form-item>
+          </el-form>
+        </el-col>
+        <el-col :span="8">
           <div id="preview" :style="{background: previewType==='文字'? 'none': ''}">
             <div v-if="previewType==='方块'" class="preview-box" :class="boxClass" :style="frameStyle"></div>
             <div v-if="previewType==='文字'" class="preview-text" :class="boxClass" :style="frameStyle">danke.fun</div>
             <div v-if="previewType==='图片'" class="preview-box" :class="boxClass" :style="frameStyle">
               <img src="http://cdn.danke.fun/res/sample1.png" width="160" height="160">
             </div>
-
-            <div class='clip-note' v-if="currentFrame && currentFrame.clip.type === 'polygon'">
-              <div v-for="(point, index) of currentFrame.clip.points" class="circle" :key="index" :style="{
-                left: point[0] + '%',
-                top: point[1] + '%'
-              }">
-              </div>
-            </div>
-            <div class="columns toolbar">
-              <div class="column">
-                <div class="buttons has-addons">
-                  <span class="button is-small" v-for="ptype of previewTypes" :key="ptype" :class="previewType === ptype? 'is-selected is-info': ''" @click="previewType = ptype">{{ptype}}</span>
-                </div>
-              </div>
-              <div class="column">
-                <div class="buttons has-addons is-right">
-                  <a class="button is-small" @click="save">
-                    保存
-                  </a>
-                  <a class="button is-small" @click="play">
-                    预览
-                  </a>
-                </div>
-              </div>
-            </div>
           </div>
-        </div>
-        <div class="column is-one-third-widescreen is-two-fifths-tablet is-full-mobile">
-          <frames-config :animation="animation" class="config" @frame-change="frameChange"></frames-config>
-        </div>
-      </div>
-      <div class="modal" :class="showCode && 'is-active'">
-        <div class="modal-background"></div>
-        <div class="modal-content">
-          <div class="box">
-            <pre>
-              {{sourceCode}}
-            </pre>
-          </div>
-        </div>
-        <button class="modal-close is-large" aria-label="close" @click="showCode = false"></button>
-      </div>
+        </el-col>
+      </el-row>
     </div>
   </div>
 </div>
 </template>
 
 <script>
-import FramesConfig from './FramesConfig.vue'
-import { clone } from '../utils/object'
-import FRAME from './model/frame'
-import { Message } from 'element-ui'
-import { createSheet, addAnimationStyle, clearAnimation, getAnimationSourceCode } from './keyframe'
-import { getElementStyle } from '../danke-core/utils/styles'
-import { setTimeout } from 'timers'
+import { Message, Row, Col, Form, FormItem, Input, InputNumber, Select, Option, Radio, Tag, Button } from 'element-ui'
+import CodeMirror from 'codemirror/lib/codemirror.js'
+import 'codemirror/lib/codemirror.css'
+import 'codemirror/mode/css/css'
+import { createSheet, addAnimationStyle, clearAnimation } from './keyframe'
 import NavBar from '../site/components/NavBar'
+import cubicBerziers from './model/cubic-beziers.js'
+import RestDAO from '../common/dao/restdao'
 
 export default {
   name: 'FrameTool',
   components: {
-    NavBar,
-    FramesConfig
+    [Row.name]: Row,
+    [Col.name]: Col,
+    [Tag.name]: Tag,
+    [Form.name]: Form,
+    [Input.name]: Input,
+    [FormItem.name]: FormItem,
+    [InputNumber.name]: InputNumber,
+    [Button.name]: Button,
+    [Select.name]: Select,
+    [Option.name]: Option,
+    [Radio.name]: Radio,
+    NavBar
   },
   computed: {
     previewTypes () {
       return ['方块', '文字', '图片']
-    },
-    currentFrame () {
-      return this.animation.frames[this.frameIndex]
     }
   },
   data () {
-    const frames = []
-    frames.push(clone(FRAME))
-    const p100 = clone(FRAME)
-    p100.percent = 100
-    frames.push(p100)
     return {
-      showCode: false,  // source code css-model
-      sourceCode: '',
+      cubicBerziers,
+      // 动态增加标签相关处理
+      inputVisible: false,
+      inputValue: '',
       previewType: '方块',
-      animationName: '',
       frameIndex: -1,
       frameStyle: '',
       boxClass: '',
-      isEdit: false,
       animation: {
+        _id: '',
         name: 'my-animation',
         cssFrame: '',
-        desc: '',
-        type: '1',
+        tags: [],
         duration: 600,
         iteration: 1,
-        delay: 0,
-        timing: 'linear',
-        infinite: false,
-        frames: frames
+        timing: 'linear'
       }
     }
   },
   watch: {
-
   },
   created () {
-
+    this.framedao = new RestDAO(this.ctx, 'danke/animation')
   },
   mounted () {
-    if (this.ctx.editAnimation) {
-      this.isEdit = true
-      this.animation = this.ctx.editAnimation
-      this.ctx.editAnimation = null
-    } else {
-      this.isEdit = false
-    }
+    this.codeMirror = CodeMirror.fromTextArea(document.getElementById('code'), {
+      lineNumbers: true,
+      mode: 'css'
+    })
+    this.loadFrame()
   },
   methods: {
+    async loadFrame () {
+
+    },
+
+    handleClose (tag) {
+      this.animation.tags.splice(this.animation.tags.indexOf(tag), 1)
+    },
+
+    showInput () {
+      this.inputVisible = true
+      this.$nextTick(_ => {
+        this.$refs.saveTagInput.$refs.input.focus()
+      })
+    },
+
+    handleInputConfirm () {
+      let inputValue = this.inputValue
+      if (inputValue) {
+        this.animation.tags.push(inputValue)
+      }
+      this.inputVisible = false
+      this.inputValue = ''
+    },
+
+    /**
+     * 播放预览动画
+     */
     play () {
+      this.animation.cssFrame = this.codeMirror.getValue()
       if (this.sheet) {
         clearAnimation(this.sheet)
       }
       this.sheet = createSheet()
       this.boxClass = ''
       addAnimationStyle(this.sheet, this.animation)
-      // this.boxClass = 'hidden'
       this.frameStyle = ''
       setTimeout(() => {
         this.boxClass = this.animation.name
       }, 300)
-    },
-
-    viewCode () {
-      this.sourceCode = getAnimationSourceCode(this.sheet, this.animation)
-      this.showCode = true
     },
 
     async save () {
@@ -151,27 +173,37 @@ export default {
         Message.error('请输入动画名称')
         return
       }
-      const result = await this.ctx.animdao.addAnimation(this.animation)
+      this.animation.cssFrame = this.codeMirror.getValue()
+      const result = this.framedao.createOrPatch(this.animation)
 
       if (result.code === 409) {
         Message.error('动画名称和现有的冲突')
       } else {
         Message.success('保存成功')
       }
-    },
-
-    frameChange (index) {
-      if (index != null) {
-        this.frameIndex = index
-      }
-      const frame = this.animation.frames[this.frameIndex]
-      this.frameStyle = getElementStyle(frame)
-      console.log('frame chage', this.frameStyle)
     }
   }
 }
 </script>
 <style lang="scss">
+.el-tag + .el-tag {
+  margin-left: 10px;
+}
+.button-new-tag {
+  margin-left: 10px;
+  height: 32px;
+  line-height: 30px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.input-new-tag {
+  width: 90px;
+  margin-left: 10px;
+  vertical-align: bottom;
+}
+.CodeMirror {
+ border: 1px solid #efefef;
+}
 #preview {
   position: relative;
   background-image: linear-gradient(90deg, #aaa, #a4a4a4);
@@ -228,6 +260,4 @@ export default {
     }
   }
 }
-
-
 </style>

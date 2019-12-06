@@ -92,7 +92,6 @@ export default {
   },
   created () {
     this.uploaddao = new ImageDAO(this.ctx)
-    this.audiodao = new RestDAO(this.ctx, 'danke/oaudio')
   },
   watch: {
     'dialogVisible': function () {

@@ -4,7 +4,7 @@ export default class AnimationDAO {
   }
 
   async addAnimation (animation) {
-    return this.ctx.put('animation',  {
+    return this.ctx.put('animation', {
       json: animation
     }).json()
   }

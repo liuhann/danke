@@ -23,6 +23,17 @@ export default class RestDAO {
     return result
   }
 
+  /**
+  * 创建或者更新对象
+  */
+  async createOrPatch (o) {
+    if (o._id) {
+      return this.patch(o._id, o)
+    } else {
+      return this.create(o)
+    }
+  }
+
   async create (o) {
     return (await this.ctx.post(`${this.path}`, {
       json: o
