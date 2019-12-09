@@ -3,10 +3,9 @@
   <nav-bar></nav-bar>
   <div class="section">
     <div class="container">
-      <frame-box :is-edit="true" height="calc(100% - 200px)"></frame-box>
+      <frame-box :is-edit="true" />
     </div>
   </div>
-  <nav-footer></nav-footer>
 </div>
 </template>
 
@@ -14,11 +13,9 @@
 import NavBar from '../site/components/NavBar'
 import { createSheet, addAnimationStyle } from './keyframe'
 import FrameBox from './FrameBox.vue'
-import NavFooter from '../site/components/NavFooter'
 export default {
   name: 'PageFrameList',
   components: {
-    NavFooter,
     FrameBox,
     NavBar
   },
@@ -135,7 +132,8 @@ export default {
 #page-frame-list {
   height: 100%;
   .section {
-    height: calc(100% - 200px);
+    height: calc(100% - 54px);
+    overflow: hidden;
     .container {
       height: 100%;
     }

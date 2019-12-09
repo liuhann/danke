@@ -33,16 +33,14 @@ export default {
       }
     },
     deviceStyle () {
-      console.log({
-        width: this.device.width + 'px',
-        height: this.device.height + 'px',
-        background: getBackgroundStyle(this.work).join(';')
-      })
-      return {
-        width: this.device.width + 'px',
-        height: this.device.height + 'px',
-        background: getBackgroundStyle(this.work).join(';')
+      const styles = [`width: ${this.device.width}px`,
+        `height: ${this.device.height}px`]
+      if (this.work.background) {
+        styles.push(getBackgroundStyle(this.work))
+      } else {
+        styles.push(`background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==")`)
       }
+      return styles.join(';')
     }
   },
   mounted () {

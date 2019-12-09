@@ -55,4 +55,8 @@ export default class RestDAO {
     const result = await this.ctx.delete(`${this.path}/${o._id}`).json()
     return result
   }
+  async distinct (field) {
+    const result = await this.ctx.get(`${this.path}/distinct/${field}`).json()
+    return result
+  }
 }

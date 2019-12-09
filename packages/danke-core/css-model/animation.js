@@ -1,8 +1,8 @@
 export default {
   name: '', // 动画名称
   desc: '', // 名称便于阅读
-  duration: 800,  // 持续时间
-  stage: 'in',  // 对应阶段
+  duration: 800, // 持续时间
+  stage: 'in', // 对应阶段
   timing: 'linear',
   delay: 0, // 相对阶段时间的延迟
   iteration: 1, // 重复次数

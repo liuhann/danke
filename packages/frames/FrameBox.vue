@@ -1,47 +1,54 @@
 <template>
-<div class="columns frame-box-columns is-gapless">
-  <div class="column preview">
-    <div class="frame-preview" :class="[previewType!=='文字'?'shadow': '']">
-      <span class="buttons has-addons edit-button" v-if="isEdit" >
-        <router-link to="/frame/edit" class="button is-small is-info">创建</router-link>
-        <span class="button is-small" @click="editFrame">编辑</span>
-        <span class="button is-danger is-small" v-if="currentAnimation && currentAnimation.userid === user.id" @click="removeFrame">删除</span>
-      </span>
-      <div v-if="currentAnimation && previewType==='rect'" class="preview-box" :class="currentAnimation.name"></div>
-      <div v-if="currentAnimation && previewType==='text'" class="preview-text" :class="currentAnimation.name">frames@danke</div>
-    </div>
-  </div>
-  <div class="column is-narrow-tablet frame-navigation">
-    <div class="tabs is-small" style="margin: .5rem 0 0;">
-      <ul>
-        <li v-for="(type, index) in animationTypes" :key="index" :class="currentType === type.key? 'is-active': ''">
-          <a @click="changeType(type)" >{{type.value}}</a>
-        </li>
-      </ul>
-    </div>
-    <nav class="panel frames-list">
-      <div class="panel-body">
-        <div class="animations">
-          <div v-for="animation in filteredAnimations" :key="animation.name" class="animation" @click="setAnimation(animation)"
+<div class="frame-box">
+  <el-row :gutter="20">
+    <el-col :span="9">
+      <div class="top-gu" style="line-height: 32px; padding: 3px 0;">
+        <el-button @click="createFrame" size="mini" type="primary">创建</el-button>
+        <el-select style="width: 96px;float: right;" v-model="currentTag" filterable @change="loadAnimation" placeholder="分类" size="mini">
+          <el-option
+            v-for="tag in tags"
+            :key="tag"
+            :label="tag"
+            :value="tag">
+          </el-option>
+        </el-select>
+      </div>
+      <div class="animations">
+        <div v-for="animation in animations" :key="animation.name" class="animation-item"
              :class="currentAnimation.name === animation.name? 'is-active': ''">
-            <div class="zh-name">{{animation.desc}}</div>
-            <div class="en-name">{{animation.name}}</div>
-          </div>
+          <div class="en-name" @click="setAnimation(animation)">{{animation.name}}</div>
+          <el-button class="op" type="text" v-if="isEdit" size="mini" icon="el-icon-edit" @click="editAnimation(animation)" />
         </div>
       </div>
-    </nav>
-  </div>
+    </el-col>
+    <el-col :span="15">
+      <div class="frame-preview" :class="[previewType!=='文字'?'shadow': '']">
+        <div v-if="currentAnimation && previewType==='rect'" class="preview-box" :class="currentAnimation.name">
+          <img :src="PREVIEW_IMG" width="160" height="160">
+        </div>
+        <div v-if="currentAnimation && previewType==='text'" class="preview-text" :class="currentAnimation.name">
+          frames@danke</div>
+      </div>
+    </el-col>
+  </el-row>
 </div>
 </template>
 
 <script>
 import RestDAO from '../common/dao/restdao'
-import { Message } from 'element-ui'
+import PREVIEW_IMG from './project.svg'
+import { Message, Row, Col, Tag, Button, Input, Select, Option } from 'element-ui'
 import { addAnimationStyle, createSheet } from './keyframe'
-import animationTypes from './model/animation-type.js'
 export default {
   name: 'FrameBox',
   components: {
+    [Row.name]: Row,
+    [Col.name]: Col,
+    [Tag.name]: Tag,
+    [Button.name]: Button,
+    [Input.name]: Input,
+    [Select.name]: Select,
+    [Option.name]: Option
   },
   props: {
     isEdit: {
@@ -61,18 +68,22 @@ export default {
   },
   data () {
     return {
-      animationSet: {},
+      PREVIEW_IMG,
+      tags: [],
       user: this.ctx.user,
-      previewTypes: ['方块', '文字', '图片'],
-      currentType: 'in',
+      currentTag: null,
       currentAnimation: null,
-      animations: [],
-      currentKeyWords: [],
-      filterKey: '',
-      animationTypes
+      animations: []
     }
   },
   computed: {
+    currentUseId () {
+      if (this.ctx.user) {
+        return this.ctx.user.id
+      } else {
+        return ''
+      }
+    },
     filteredAnimations () {
       return this.animations.filter(animation => animation.name.indexOf(this.filterKey) > -1)
     }
@@ -80,18 +91,34 @@ export default {
   created () {
     this.sheet = createSheet()
     this.restdao = new RestDAO(this.ctx, 'danke/animation')
-    this.changeType(this.animationTypes[0])
   },
+
+  mounted () {
+    this.loadAllTags()
+    this.loadAnimation()
+  },
+
   methods: {
+    createFrame () {
+      this.$router.replace('/frame/edit')
+    },
+
+    chooseTag (tag) {
+      this.currentTag = tag
+      this.loadAnimation()
+    },
+    async loadAllTags () {
+      const tags = await this.restdao.distinct('tags')
+      this.tags = tags
+    },
     setAnimation (animation) {
       addAnimationStyle(this.sheet, animation)
       this.currentAnimation = animation
-      this.animationSet[this.currentType] = animation
     },
     async loadAnimation () {
       const query = {}
-      if (this.currentType) {
-        query.type = this.currentType
+      if (this.currentTag) {
+        query.tags = this.currentTag
       }
       query.count = 10000
       const response = await this.restdao.list(query)
@@ -109,28 +136,71 @@ export default {
       await this.loadAnimation()
       Message.success('删除成功')
     },
-
-    editFrame () {
-      this.ctx.editAnimation = this.currentAnimation
-      this.$router.push('/frame/edit')
-    },
-    filter (key) {
-      this.filterKey = key
-    },
-    changeType (type) {
-      this.currentType = type.key
-      this.currentKeyWords = this.animationTypes.filter(at => at.key === type.key)[0].keyword
-      this.filterKey = ''
-      this.loadAnimation()
+    editAnimation (animation) {
+      this.$router.push('/frame/edit?id=' + animation._id)
     }
   }
 }
 </script>
 
-
 <style lang="scss">
 .frame-box-columns {
   height: 100%;
+}
+
+.frame-box {
+  height: 100%;
+  padding: 0 12px;
+  background: #fff;
+  .el-row {
+    height: 100%;
+    .el-col {
+      height: 100%;
+    }
+  }
+}
+
+.frame-tag {
+  display: inline-block;
+  margin: 0 5px;
+  font-size: 12px;
+  padding: 2px 8px;
+  background: #f5f5f5;
+  cursor: pointer;
+  border-radius: 4px;
+  &:hover {
+    background: #f1f1f1;
+  }
+  &.current {
+    background: #00d1b2;
+    color: #fff;
+  }
+}
+
+.animations {
+  border: 1px solid #eee;
+  height: calc(100% - 36px);
+  overflow: auto;
+  .animation-item {
+    display: flex;
+    padding: 5px 10px;
+    font-size: 12px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    line-height: 30px;
+    .en-name {
+      flex: 1;
+    }
+    .op {
+    }
+    &:hover {
+      .el-button--text {
+        color: #fff;
+      }
+      background: #00d1b2;
+      color: #fff;
+    }
+  }
 }
 .frame-preview {
   height: 100%;
@@ -170,65 +240,6 @@ export default {
     bottom: .5rem;
     color: #999;
     font-size: 12px;
-  }
-}
-
-.frames-list {
-  width: 320px;
-  height: calc(100% - 40px);
-  overflow: auto;
-  .panel-body {
-    width: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
-    border: 1px solid #eee;
-  }
-  .animations {
-    width: 100%;
-    .animation {
-      cursor: pointer;
-      &:hover {
-        background: #fefefe;
-      }
-      &.is-active {
-        background-color: #eee;
-      }
-      border-bottom: 1px solid #eee;
-      padding: 4px 10px;
-      .en-name {
-        color: #666;
-      }
-    }
-  }
-}
-.frame-box-columns {
-  .panel {
-    font-size: 12px;
-  }
-}
-@media screen and (max-width: 640px) {
-  .el-dialog__body {
-    padding: 10px;
-  }
-  .frames-list {
-    width: 100%;
-  }
-  .column.preview {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 10px;
-  }
-  .frame-preview {
-    margin: 10px;
-    height: 80px;
-    width: 80px;
-    background-image: linear-gradient(90deg, #592D2D, #592D2D);
-    .preview-box {
-      width: 80px;
-      height: 80px;
-      background-color: #FF4B4B;
-    }
   }
 }
 

@@ -27,7 +27,7 @@ export default {
     },
 
     /**
-    * 保存作品内容 
+    * 保存作品内容
     */
     async saveWork (isPublish) {
       if (this.savingWork) {
@@ -55,12 +55,31 @@ export default {
       this.savingWork = false
     },
 
+    /**
+     * 打开作品，并且根据规则重新组织回写一些信息
+     * @param work 服务器加载的work信息
+     */
     openWork (o) {
       const work = clone(o)
+      // 回写cssFrame
+      for (let i = 0; i < work.scenes.length; i++) {
+        const scene = work.scenes[i]
+        for (let element of scene.elements) {
+          if (element.animations && element.animations.length) {
+            for (let animation of element.animations) {
+              animation.cssFrame = work.frames[animation.name]
+            }
+          }
+        }
+      }
       this.work = work
       this.work.isNew = false
     },
 
+    /**
+     * 保存图片，因为上传时只保存了blob在页面端  保存时需要将这些图片上传并回写服务器端的url信息
+     * @returns {Promise<void>}
+     */
     async saveImages () {
       for (let scene of this.work.scenes) {
         for (let element of scene.elements) {
@@ -78,18 +97,28 @@ export default {
      */
     getWorkConfig () {
       const work = JSON.parse(JSON.stringify(this.work))
+      // 抽取所有使用的frame到work上，以便压缩使用空间
+      const frames = {}
       for (let i = 0; i < work.scenes.length; i++) {
         const scene = work.scenes[i]
         for (let element of scene.elements) {
           element.style = ''
+          // 将element的cssFrame抽取到全局，同时删除cssFrame信息。 加载后再根据name回写frame
+          if (element.animations && element.animations.length) {
+            for (let animation of element.animations) {
+              if (!frames[animation.name]) {
+                frames[animation.name] = animation.cssFrame
+              }
+              delete animation.cssFrame
+            }
+          }
         }
         scene.style = ''
       }
+      work.frames = frames
       work.cover = work.scenes[0]
       return work
     },
-
-
     async runWork () {
       await this.saveWork()
       window.open('/play/fit/' + this.work._id)
@@ -104,7 +133,7 @@ export default {
         element.style = ''
       }
       scene.style = ''
-      await this.templatedao.create(scene)  
+      await this.templatedao.create(scene)
     },
 
     /**

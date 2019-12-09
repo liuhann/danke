@@ -15,10 +15,10 @@
       效果
     </div>
     <div class="control">
-      <el-tag size="mini" v-if="animation.desc">{{animation.desc}}</el-tag>
+      <el-tag size="mini" v-if="animation.name">{{animation.name}}</el-tag>
     </div>
     <div class="control">
-      <el-button type="text" @click="chooseAnimation(animationType)" size="mini">选择</el-button>
+      <el-button type="text" @click="chooseAnimation" size="mini">选择</el-button>
     </div>
   </div>
 
@@ -27,13 +27,13 @@
       持续
     </div>
     <div class="control">
-      <edit-len v-model="animation.duration" :with-unit="false"></edit-len>
+      <edit-len v-model="animation.duration" :step="50" :with-unit="false"></edit-len>
     </div>
     <div class="control">
       延迟
     </div>
     <div class="control">
-      <edit-len v-model="animation.delay" :with-unit="false"></edit-len>
+      <edit-len v-model="animation.delay" :step="50" :with-unit="false"></edit-len>
     </div>
   </div>
   <div class="field has-addons">
@@ -88,12 +88,6 @@ export default {
   props: {
     animation: {
       type: Object
-    },
-    label: {
-      type: String
-    },
-    animationType: {
-      type: String
     }
   },
   data () {
@@ -112,11 +106,6 @@ export default {
 
   },
   methods: {
-    clearAnimation () {
-      this.animation.name = ''
-      this.animation.desc = ''
-    },
-
     /**
      * 打开动画选择面板，选择动画名称
      * @param type
@@ -125,10 +114,7 @@ export default {
       frameModel.choose(type, (animation) => {
         // 回调传回选择好的动画
         this.animation.name = animation.name
-        this.animation.desc = animation.desc
-        if (!this.animation.duration) {
-          this.animation.duration = animation.duration
-        }
+        this.animation.duration = animation.duration
         if (!this.animation.delay) {
           this.animation.delay = animation.delay
         }

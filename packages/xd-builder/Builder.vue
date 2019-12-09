@@ -97,7 +97,7 @@ export default {
         audioName: '', // 音频名称（只用于显示）
         audioTicks: [], // 音频切换的节拍
         duration: 0, // 持续时间
-        resources: [],  // 作品引用的公共资源
+        resources: [], // 作品引用的公共资源
         animations: [], // 作品使用的动画
         scenes: [], // 场景列表
         background: JSON.parse(JSON.stringify(BackGround)),
@@ -257,7 +257,6 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
     .device {
       touch-action: none;
       position: absolute;
-      background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==");
       border: 1px solid #eee;
       border-radius: 10px;
       overflow: hidden;

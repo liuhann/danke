@@ -1,15 +1,11 @@
 <template>
 <div>
   <nav-bar></nav-bar>
-  <div class="section">
+  <div class="section" style="background: #fff;">
     <div class="container">
       <el-row :gutter="20">
         <el-col :span="16">
           <el-form size="mini" label-width="90px">
-            <el-form-item label="">
-              <el-button size="mini" type="primary" @click="save">保存</el-button>
-              <el-button size="mini" @click="play">预览</el-button>
-            </el-form-item>
             <el-form-item label="名称">
               <el-input v-model="animation.name" style="width: 360px;"></el-input>
             </el-form-item>
@@ -43,16 +39,22 @@
               <el-button v-else type="text" class="button-new-tag" size="mini" @click="showInput" icon="el-icon-plus">标签</el-button>
             </el-form-item>
             <el-form-item label="样式文本">
-              <textarea id="code" />
+              <el-input type="textarea" v-model="animation.cssFrame" :rows="10"></el-input>
+            </el-form-item>
+            <el-form-item label="">
+              <el-button size="mini" type="primary" @click="save">保存</el-button>
+              <el-button v-if="animation._id" size="mini" type="danger" @click="remove">删除</el-button>
+              <el-button size="mini" @click="play">预览</el-button>
+              <el-button size="mini" type="text" @click="$router.replace('/frames')">返回</el-button>
             </el-form-item>
           </el-form>
         </el-col>
         <el-col :span="8">
-          <div id="preview" :style="{background: previewType==='文字'? 'none': ''}">
-            <div v-if="previewType==='方块'" class="preview-box" :class="boxClass" :style="frameStyle"></div>
+          <div id="preview" :style="{background: previewType==='文字'? 'none': ''}" style="border-left: 1px solid #efefef;">
+<!--            <div v-if="previewType==='方块'" class="preview-box" :class="boxClass" :style="frameStyle"></div>-->
             <div v-if="previewType==='文字'" class="preview-text" :class="boxClass" :style="frameStyle">danke.fun</div>
-            <div v-if="previewType==='图片'" class="preview-box" :class="boxClass" :style="frameStyle">
-              <img src="http://cdn.danke.fun/res/sample1.png" width="160" height="160">
+            <div v-if="previewType==='方块'" class="preview-box" :class="boxClass" :style="frameStyle">
+              <img :src="PREVIEW_IMG" width="160" height="160">
             </div>
           </div>
         </el-col>
@@ -64,10 +66,8 @@
 
 <script>
 import { Message, Row, Col, Form, FormItem, Input, InputNumber, Select, Option, Radio, Tag, Button } from 'element-ui'
-import CodeMirror from 'codemirror/lib/codemirror.js'
-import 'codemirror/lib/codemirror.css'
-import 'codemirror/mode/css/css'
 import { createSheet, addAnimationStyle, clearAnimation } from './keyframe'
+import PREVIEW_IMG from './project.svg'
 import NavBar from '../site/components/NavBar'
 import cubicBerziers from './model/cubic-beziers.js'
 import RestDAO from '../common/dao/restdao'
@@ -95,6 +95,7 @@ export default {
   },
   data () {
     return {
+      PREVIEW_IMG,
       cubicBerziers,
       // 动态增加标签相关处理
       inputVisible: false,
@@ -104,11 +105,10 @@ export default {
       frameStyle: '',
       boxClass: '',
       animation: {
-        _id: '',
         name: 'my-animation',
         cssFrame: '',
         tags: [],
-        duration: 600,
+        duration: 400,
         iteration: 1,
         timing: 'linear'
       }
@@ -120,15 +120,14 @@ export default {
     this.framedao = new RestDAO(this.ctx, 'danke/animation')
   },
   mounted () {
-    this.codeMirror = CodeMirror.fromTextArea(document.getElementById('code'), {
-      lineNumbers: true,
-      mode: 'css'
-    })
-    this.loadFrame()
+    if (this.$route.query.id) {
+      this.loadFrame(this.$route.query.id)
+    }
   },
   methods: {
-    async loadFrame () {
-
+    async loadFrame (id) {
+      const result = await this.framedao.getOne(id)
+      this.animation = result
     },
 
     handleClose (tag) {
@@ -155,7 +154,6 @@ export default {
      * 播放预览动画
      */
     play () {
-      this.animation.cssFrame = this.codeMirror.getValue()
       if (this.sheet) {
         clearAnimation(this.sheet)
       }
@@ -168,14 +166,18 @@ export default {
       }, 300)
     },
 
+    async remove () {
+      await this.framedao.delete(this.animation)
+      this.$router.replace('/frames')
+    },
+
     async save () {
       if (!this.animation.name) {
         Message.error('请输入动画名称')
         return
       }
-      this.animation.cssFrame = this.codeMirror.getValue()
       const result = this.framedao.createOrPatch(this.animation)
-
+      this.animation._id = result.object._id
       if (result.code === 409) {
         Message.error('动画名称和现有的冲突')
       } else {

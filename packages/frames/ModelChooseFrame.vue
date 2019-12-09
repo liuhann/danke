@@ -8,16 +8,8 @@
   <div class="frame-container">
     <frame-box ref="frameBox" :element="element"></frame-box>
   </div>
-  <div class="speed">
-    <span v-for="speed in animationSpeeds"
-          :key="speed.value" @click="chooseSpeed(speed)"
-          class="tag is-light" :class="[speed.value === speeds[currentType]? 'is-info': '']">
-      {{speed.label}}
-    </span>
-  </div>
   <span slot="footer" class="dialog-footer">
     <button class="button is-text" @click="choose">应用</button>
-    <button class="button" @click="chooseForAll">应用到所有</button>
   </span>
 </el-dialog>
 </template>
@@ -103,13 +95,9 @@ export default {
       this.centerDialogVisible = true
       this.choosedCallback = choosedCallback
     },
-    chooseForAll () {
-      this.centerDialogVisible = false
-      this.$emit('all', this.$refs.frameBox.animationSet, this.speeds)
-    },
     choose () {
       this.centerDialogVisible = false
-      this.$emit('current', this.$refs.frameBox.animationSet, this.speeds)
+      this.$emit('current', this.$refs.frameBox.currentAnimation)
       this.choosedCallback && this.choosedCallback(this.$refs.frameBox.currentAnimation)
     }
   }
