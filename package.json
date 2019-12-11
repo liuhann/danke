@@ -20,6 +20,7 @@
     "file-saver": "^2.0.2",
     "howler": "^2.1.2",
     "image-preloader": "^1.1.1",
+    "imagesloaded": "^4.1.4",
     "jszip": "^3.2.2",
     "ky": "^0.8.0",
     "merge": "^1.2.1",

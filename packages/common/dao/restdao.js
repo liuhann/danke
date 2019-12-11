@@ -30,6 +30,7 @@ export default class RestDAO {
     if (o._id) {
       return this.patch(o._id, o)
     } else {
+      delete o._id
       return this.create(o)
     }
   }

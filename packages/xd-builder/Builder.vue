@@ -264,7 +264,6 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
       position: absolute;
       border: 1px solid #eee;
       border-radius: 10px;
-      overflow: hidden;
       z-index: 10;
       .btn-audio {
         position: absolute;

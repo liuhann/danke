@@ -1,6 +1,6 @@
-import { sceneTypeEnum } from './elements/scene'
-import { getElementInnerStyle, getElementStyle, getSceneStyle, getAnimationStyle } from './utils/styles'
-import { TypeEnum } from './elements'
+import { sceneTypeEnum } from '../danke-core/elements/scene'
+import { getElementInnerStyle, getElementStyle, getSceneStyle, getAnimationStyle } from '../danke-core/utils/styles'
+import { TypeEnum } from '../danke-core/elements'
 /**
  * Loading scenes and  resources then init ticker + views
  */
@@ -9,9 +9,9 @@ export default class Danke {
    * @param work 播放配置文件
    * @param device 设备信息  主要是宽度及高度
    */
-  constructor (scenes, device) {
+  constructor (work, device) {
     this.device = device
-    this.scenes = scenes
+    this.scenes = work.scenes
     this.displays = {
       current: null,
       fore: null,
@@ -24,9 +24,22 @@ export default class Danke {
     this.device = device
   }
 
+  /**
+   * 清空场景、元素相关信息
+   */
+  initSceneStyleAttr () {
+    for (let i = 0; i < this.scenes.length; i++) {
+      const scene = this.scenes[i]
+      scene.style = `display: none`
+      if (scene.elements) {
+        for (let element of scene.elements) {
+          element.style = ''
+        }
+      }
+      scene.index = i
+    }
+  }
   play (audio) {
-    setInterval(() => {
-    }, 1000)
     this.next()
   }
   pause () {
@@ -107,21 +120,18 @@ export default class Danke {
     }
   }
 
-  initSceneStyleAttr () {
-    for (let i = 0; i < this.scenes.length; i++) {
-      const scene = this.scenes[i]
-      scene.style = `display: none`
-      if (scene.elements) {
-        for (let element of scene.elements) {
-          element.style = ''
-        }
-      }
-      scene.index = i
-    }
-  }
-
+  /**
+   * 渲染进入场景
+   * @param scene
+   */
   enterScene (scene) {
-    this.renderEnter(scene)
+    if (scene.enterDelay) {
+      setTimeout(() => {
+        this.renderEnter(scene)
+      }, scene.enterDelay)
+    } else {
+      this.renderEnter(scene)
+    }
     this.sceneEnterCallback && this.sceneEnterCallback(this)
     if (!scene.manual) {
       this.pauseForLeave = setTimeout(this.next.bind(this), scene.leave || 3000)
@@ -140,16 +150,14 @@ export default class Danke {
         // 因为图片是单独的一个内部元素，这里主要是处理动画是否overflow、clip等
         element.innerStyle = getElementInnerStyle(element, this.device, 'in')
       }
-      // 设置延时动画
-      if (element.animation.dura.name && element.animation.dura.duration) {
-        setTimeout(() => {
-          element.style = getElementStyle(element, this.device, 'dura')
-        }, element.animation.in.duration + element.animation.in.delay)
-      }
     }
     scene.style = `display: inherit; ${getSceneStyle(scene, this.device)}`
   }
 
+  /**
+   * 离开场景
+   * @param scene
+   */
   leaveScene (scene) {
     this.renderLeave(scene)
     this.sceneLeaveCallback && this.sceneLeaveCallback(this)
@@ -159,9 +167,20 @@ export default class Danke {
     }, scene.hideDelay || 3000)
   }
 
+  /**
+   * 渲染场景离开
+   * @param scene
+   */
   renderLeave (scene) {
     for (let element of scene.elements) {
-      element.style = getElementStyle(element, this.device, 'out')
+      const outerAnimation = getAnimationStyle(element, 'out', true)
+      const innerAnimation = getAnimationStyle(element, 'out', true)
+      if (!outerAnimation && !innerAnimation) {
+        element.style = 'display: none'
+      } else {
+        element.style = getElementStyle(element, this.device, 'out')
+        element.innerStyle = getElementInnerStyle(element, this.device, 'out')
+      }
     }
     scene.style = `display: inherit; ${getSceneStyle(scene, this.device, 'out')}`
   }

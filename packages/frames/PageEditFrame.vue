@@ -1,8 +1,8 @@
 <template>
 <div>
   <nav-bar></nav-bar>
-  <div class="section" style="background: #fff;">
-    <div class="container">
+  <div class="section" style="background: #dfdfdf;">
+    <div class="container" style="background: #fff;padding: 20px;box-shadow: 0 1px 5px 0 rgba(0,0,0,.1);">
       <el-row :gutter="20">
         <el-col :span="16">
           <el-form size="mini" label-width="90px">
@@ -46,6 +46,7 @@
             </el-form-item>
             <el-form-item label="">
               <el-button size="mini" type="primary" @click="save">保存</el-button>
+              <el-button size="mini" @click="cloneCreate">复制新增</el-button>
               <el-button v-if="animation._id" size="mini" type="danger" @click="remove">删除</el-button>
               <el-button size="mini" @click="play">预览</el-button>
               <el-button size="mini" type="text" @click="$router.replace('/frames')">返回</el-button>
@@ -108,6 +109,7 @@ export default {
       frameStyle: '',
       boxClass: '',
       animation: {
+        _id: '',
         name: 'my-animation',
         cssFrame: '',
         svgFilter: '',
@@ -175,6 +177,10 @@ export default {
       this.$router.replace('/frames')
     },
 
+    cloneCreate () {
+      this.animation._id = ''
+    },
+
     async save () {
       if (!this.animation.name) {
         Message.error('请输入动画名称')
@@ -217,10 +223,12 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  perspective: 500px;
   background-size: 160px 160px;
   background-position: center;
   background-repeat: no-repeat;
   height: calc(100vh - 8rem);
+  overflow: hidden;
   .preview-box {
     background-color: #666;
     width: 160px;

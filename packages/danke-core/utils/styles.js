@@ -87,7 +87,7 @@ function getElementStyle (element, device, stage) {
 
 /**
  * 获取元素的动画样式
- * outer 是否为外渲染
+ * outer 是否为外渲染，true表示容器样式， false表示内部元素样式
  */
 function getAnimationStyle (element, stage, outer) {
   // 渲染相对于场景的动画
@@ -162,7 +162,7 @@ function getSceneStyle (scene, device, stage, fontRatio = 1) {
     default:
       break
   }
-  if (stage && scene.animation[stage] && scene.animation[stage].name) {
+  if (stage && scene.animation && scene.animation[stage] && scene.animation[stage].name) {
     const animationDef = scene.animation[stage]
     styles.push(`animation: ${animationDef.name} ${animationDef.duration}ms ${animationDef.timing} ${animationDef.delay}ms ${animationDef.iteration} normal both running`)
     addAnimationStyle(sheet, animationDef)

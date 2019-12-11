@@ -208,6 +208,7 @@ export default {
   justify-content: center;
   align-items: center;
   position: relative;
+  perspective: 500px;
   overflow: hidden;
   &.shadow {
     background-image: linear-gradient(90deg, #592D2D, #592D2D);

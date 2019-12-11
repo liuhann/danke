@@ -40,15 +40,13 @@
 import { sceneTypeEnum } from '../danke-core/elements/scene'
 import { getImageWebUrl } from '../danke-core/utils/styles'
 import { TypeEnum } from '../danke-core/elements/index'
-import DankeEngine from '../danke-core/engine'
+import DankeEngine from './engine'
 import AudioDanke from '../danke-core/audio-engine'
 import mixinDevice from './mixinDevice'
-import WorkCover from '../xd-builder/components/WorkCover'
 import RenderElement from '../xd-builder/RenderElement'
 export default {
   name: 'Player',
   components: {
-    WorkCover,
     RenderElement
   },
   mixins: [ mixinDevice ],
@@ -78,6 +76,17 @@ export default {
   },
 
   mounted () {
+    // 回写cssFrame
+    for (let i = 0; i < this.work.scenes.length; i++) {
+      const scene = this.work.scenes[i]
+      for (let element of scene.elements) {
+        if (element.animations && element.animations.length) {
+          for (let animation of element.animations) {
+            animation.cssFrame = this.work.frames[animation.name]
+          }
+        }
+      }
+    }
     this.imagePreloads = this.getWorkImagesInDevice(this.work, this.device)
     if (this.imagePreloads.length === 0) {
       this.isLoading = false
@@ -98,16 +107,11 @@ export default {
         }
         this.audio.onended = async function () {
           _this.playFinished = true
-          // await sleep(500)
-          // _this.startEngine()
         }
-        this.engine = new AudioDanke(this.work, this.device, this.audio)
-        this.engine.play()
-      } else {
-        this.engine = new DankeEngine(this.work.scenes, this.device)
-        this.engine.play()
-        this.engine.setDeviceEl(this.$el)
       }
+      this.engine = new DankeEngine(this.work, this.device)
+      this.engine.play()
+      this.engine.setDeviceEl(this.$el)
     },
 
     imageLoaded (index) {
@@ -122,7 +126,6 @@ export default {
       const audio = new Audio(url)
       return new Promise((resolve, reject) => {
         audio.addEventListener('canplaythrough', () => {
-          debugger
           resolve()
         }, false)
       })
@@ -170,9 +173,6 @@ export default {
   }
 }
 </script>
-
-
-
 <style lang="less">
   .device.player {
     position: relative;

@@ -28,7 +28,8 @@ export default {
         scene.background.colors = this.currentScene.background.colors || ['rgba(0,0,0,0)']
       }
       scene.style = getSceneStyle(scene, this.device)
-      this.work.scenes.push(scene)
+      const currentSceneIndex = this.work.scenes.indexOf(this.currentScene)
+      this.work.scenes.splice(currentSceneIndex + 1, 0, scene)
       this.chooseScene(scene)
     },
 
