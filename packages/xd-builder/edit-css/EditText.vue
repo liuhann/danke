@@ -14,8 +14,12 @@
 </template>
 
 <script>
+import { Input } from 'element-ui'
 export default {
   name: 'EditText',
+  components: {
+    [Input.name]: Input
+  },
   props: {
     element: {
       type: Object

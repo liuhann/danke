@@ -1,11 +1,12 @@
 <template>
-<div class="work-cover" style="background-color: #fff" :style="scene.style" @mouseover="mouseOn = true" @mouseout="mouseOn = false">
-  <div v-for="(element) in scene.elements" :key="element.id" class="element" :class="['type' + element.type]"
-        :style="element.style">
-    <img v-if="element.url" :src="element.url">
-    <span v-if="element.type === TypeEnum.TEXT && element.font.size >= textAdjust" v-html="$options.filters.newline(element.text)"></span>
-  </div>
-  <div class="hover-mask on" :class="mouseOn? 'on': ''">
+<div class="work-cover" style="background-color: #fff" :style="scene.style" @mouseenter="mouseOn = true" @mouseout="mouseOn = false">
+  <render-element
+    v-for="(element) in scene.elements"
+    stage="in"
+    :element="element"
+    :key="element.id"/>
+  <el-button icon="el-icon-video-camera" type="primary" size="mini" circle class="btn-play" @click="play"/>
+  <!--<div class="hover-mask on" :class="mouseOn? 'on': ''">
     <div class="centering">
       <a class="button is-small is-success" @click="play">
         <span class="icon">
@@ -13,7 +14,7 @@
         </span>
       </a>
     </div>
-  </div>
+  </div>-->
 </div>
 </template>
 
@@ -21,8 +22,14 @@
 import { TypeEnum } from '../../danke-core/elements'
 import mixinDevice from '../../xd-player/mixinDevice'
 import { getElementStyle, getImageWebUrl, getSceneStyle } from '../../danke-core/utils/styles'
+import RenderElement from '../RenderElement'
+import { Button } from 'element-ui'
 export default {
   name: 'WorkCover',
+  components: {
+    RenderElement,
+    [Button.name]: Button
+  },
   mixins: [ mixinDevice ],
   props: {
     work: {
@@ -56,6 +63,23 @@ export default {
     }
   },
   watch: {
+    'mouseOn': function () {
+      if (this.mouseOn) {
+        for (let element of this.scene.elements) {
+          element.style = getElementStyle(element, this.device)
+          this.scene.style = getSceneStyle(this.scene, this.device)
+        }
+        setTimeout(() => {
+          for (let element of this.scene.elements) {
+            element.style = getElementStyle(element, this.device, 'in')
+            this.scene.style = getSceneStyle(this.scene, this.device, 'in')
+          }
+        }, 200)
+        this.$nextTick(() => {
+
+        })
+      }
+    }
   },
   computed: {
     scene () {
@@ -64,7 +88,7 @@ export default {
       } else if (this.index) {
         return this.work.scenes[this.index]
       } else {
-        return this.work.scenes[0]
+        return []
       }
     }
   },
@@ -77,8 +101,13 @@ export default {
         element.url = this.ctx.IMG_SERVER + '/' + element.imgPath
         getImageWebUrl(element, this.device, this.ctx.supportWebp)
       }
-      element.style = getElementStyle(element, this.device)
-      this.scene.style = getSceneStyle(this.scene, this.device)
+      if (element.animations && element.animations.length) {
+        for (let animation of element.animations) {
+          animation.cssFrame = this.work.frames[animation.name]
+        }
+      }
+      element.style = getElementStyle(element, this.device, 'in')
+      this.scene.style = getSceneStyle(this.scene, this.device, 'in')
     }
   },
   methods: {
@@ -127,7 +156,17 @@ export default {
       object-fit: cover;
     }
   }
-
+  .btn-play {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    display: none;
+  }
+  &:hover {
+    .btn-play {
+      display: block;
+    }
+  }
   .hover-mask {
     transition: opacity .2s ease-out;
     position: absolute;

@@ -233,6 +233,8 @@ export default {
     width: 160px;
     height: 160px;
     background-color: #FF4B4B;
+    perspective: 500px;
+    -webkit-perspective: 500px;
   }
   .animation-provider {
     position: absolute;

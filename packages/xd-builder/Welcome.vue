@@ -124,7 +124,7 @@ export default {
       if (this.ctx.user) {
         const result = await this.workdao.list({
           'creator': this.ctx.user.id,
-          'projection': 'cover,updated,created,ratio,creator'
+          'projection': 'cover,updated,created,ratio,creator,frames'
         })
         this.works = result.list
       }

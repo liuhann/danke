@@ -41,6 +41,9 @@
             <el-form-item label="样式文本">
               <el-input type="textarea" v-model="animation.cssFrame" :rows="10"></el-input>
             </el-form-item>
+            <el-form-item label="SVG滤镜">
+              <el-input type="textarea" v-model="animation.svgFilter" :rows="5"></el-input>
+            </el-form-item>
             <el-form-item label="">
               <el-button size="mini" type="primary" @click="save">保存</el-button>
               <el-button v-if="animation._id" size="mini" type="danger" @click="remove">删除</el-button>
@@ -107,6 +110,7 @@ export default {
       animation: {
         name: 'my-animation',
         cssFrame: '',
+        svgFilter: '',
         tags: [],
         duration: 400,
         iteration: 1,
@@ -176,7 +180,7 @@ export default {
         Message.error('请输入动画名称')
         return
       }
-      const result = this.framedao.createOrPatch(this.animation)
+      const result = await this.framedao.createOrPatch(this.animation)
       this.animation._id = result.object._id
       if (result.code === 409) {
         Message.error('动画名称和现有的冲突')

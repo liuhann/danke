@@ -61,6 +61,9 @@ function addAnimationStyle (sheet, animation) {
     } else if (animation.frames) {
       addKeyFrames(sheet, animation.name, generateKeyFrames(animation.frames))
     }
+    if (animation.svgFilter) {
+      document.body.insertAdjacentHTML('beforeend', animation.svgFilter)
+    }
     addAnimation(sheet, animation)
   }
 }

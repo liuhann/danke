@@ -5,6 +5,8 @@ import { shortid } from '../../utils/string'
 import { MessageBox, Message } from 'element-ui'
 import PaperFolding from '../../danke-plugins/paperfold/paperfolding'
 import Flip from '../../danke-plugins/flip/flip'
+import { getPositionStyle } from '../../danke-core/css-model/position'
+import { getSizingStyle } from '../../danke-core/css-model/size'
 
 export default {
   data () {
@@ -41,6 +43,13 @@ export default {
           element.style = getElementStyle(element, this.device)
         }
       }
+    }
+  },
+  computed: {
+    maskStyle () {
+      const styles = [].concat(getPositionStyle(this.currentElement, this.device))
+        .concat(getSizingStyle(this.currentElement, this.device))
+      return styles.join(';')
     }
   },
   filters: {

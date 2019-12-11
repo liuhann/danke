@@ -8,11 +8,6 @@
   <paper-folding v-if="element.type === 11" :stage="stage" :element="element" />
   <!--文本渲染情况下 文本内容-->
   <span v-if="element.type === TypeEnum.TEXT" v-html="element.text" :class="element.className" :data-content="element.text"></span>
-  <!--文件被选中的遮罩-->
-  <div class="mask" v-if="selected">
-    <!--右下角corner-->
-    <div class="corner-rb"></div>
-  </div>
 </div>
 </template>
 
@@ -20,7 +15,7 @@
 import { TypeEnum } from '../danke-core/elements/index'
 import PaperFolding from '../danke-plugins/paperfold/PaperFolding.vue'
 export default {
-  name: 'RenderElement.vue',
+  name: 'RenderElement',
   components: {
     PaperFolding
   },
@@ -53,25 +48,6 @@ export default {
 
 <style lang="scss">
 .element {
-  overflow: visible;
-}
-.mask {
-  z-index: 1;
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  border: 2px dashed #87b1f1;
-  box-sizing: border-box;
-  .corner-rb {
-    display: none;
-    background-color: #87b1f1;
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    width: 10px;
-    height: 10px;
-  }
+  overflow: hidden;
 }
 </style>

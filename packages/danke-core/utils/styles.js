@@ -13,7 +13,6 @@ import { getSizingStyle } from '../css-model/size'
 import { sceneTypeEnum } from '../elements/scene'
 import { getMaskStyle } from '../css-model/mask'
 import { getFilterStyle } from '../css-model/filter'
-import { TypeEnum } from '../elements'
 
 function revertLength (value, currentLen, device) {
   const { unit } = getLenSplits(currentLen)
@@ -101,7 +100,7 @@ function getAnimationStyle (element, stage, outer) {
         // 例如 图片渲染时  <div><img>这样的标签结构， overflow=true时才写入div 否则写入img
         if (animation.stage === stage) {
           if (outer === animation.overflow) {
-            animationsOrdered.push(`${animation.name} ${animation.duration}ms ${animation.timing} ${animation.delay||0}ms ${animation.infinite ? 'infinite' : animation.iteration}`)
+            animationsOrdered.push(`${animation.name} ${animation.duration}ms ${animation.timing} ${animation.delay || 0}ms ${animation.infinite ? 'infinite' : animation.iteration} both`)
             // 动态写入css
             addAnimationStyle(sheet, animation)
           }

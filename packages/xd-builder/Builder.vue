@@ -12,6 +12,11 @@
             :index="index"
             :selected="currentElement === element"
             @click="chooseElement(element, $event)"/>
+          <!--文件被选中的遮罩-->
+          <div class="mask" v-if="currentElement" :style="maskStyle">
+            <!--右下角corner-->
+            <div class="corner-rb"></div>
+          </div>
         </div>
         <el-button v-if="work.audioUrl" class="btn-audio" icon="el-icon-headset" size="mini" circle @click="editTicking"/>
       </div>
@@ -266,6 +271,21 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
         left: 10px;
         top: 10px;
         z-index: 9999;
+      }
+
+      .mask {
+        z-index: 999;
+        border: 2px dashed #87b1f1;
+        box-sizing: border-box;
+        .corner-rb {
+          display: none;
+          background-color: #87b1f1;
+          position: absolute;
+          right: 0;
+          bottom: 0;
+          width: 10px;
+          height: 10px;
+        }
       }
       .element {
         position: absolute;
