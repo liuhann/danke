@@ -87,6 +87,7 @@ export default {
         element.style = getElementStyle(element, this.device, stage)
         element.innerStyle = getElementInnerStyle(element, this.device, stage)
       }
+      scene.style = getSceneStyle(scene, this.device, 'in')
     },
     previousScene () {
       if (this.currentScene) {

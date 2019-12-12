@@ -13,7 +13,7 @@
               <el-input-number v-model.number="animation.duration" controls-position="right" :step="50" /> ms
             </el-form-item>
             <el-form-item label="过渡函数">
-              <el-select v-model="animation.timing" size="mini">
+              <el-select v-model="animation.timing" size="mini" filterable>
                 <el-option v-for="(value, key) in cubicBerziers" :value="value" :key="key" :label="key" />
               </el-select>
             </el-form-item>
@@ -34,15 +34,14 @@
                 size="mini"
                 @keyup.enter.native="handleInputConfirm"
                 @blur="handleInputConfirm"
-              >
-              </el-input>
+              />
               <el-button v-else type="text" class="button-new-tag" size="mini" @click="showInput" icon="el-icon-plus">标签</el-button>
             </el-form-item>
             <el-form-item label="样式文本">
-              <el-input type="textarea" v-model="animation.cssFrame" :rows="10"></el-input>
+              <el-input type="textarea" v-model="animation.cssFrame" :rows="10" />
             </el-form-item>
             <el-form-item label="SVG滤镜">
-              <el-input type="textarea" v-model="animation.svgFilter" :rows="5"></el-input>
+              <el-input type="textarea" v-model="animation.svgFilter" :rows="5" />
             </el-form-item>
             <el-form-item label="">
               <el-button size="mini" type="primary" @click="save">保存</el-button>
@@ -58,7 +57,7 @@
 <!--            <div v-if="previewType==='方块'" class="preview-box" :class="boxClass" :style="frameStyle"></div>-->
             <div v-if="previewType==='文字'" class="preview-text" :class="boxClass" :style="frameStyle">danke.fun</div>
             <div v-if="previewType==='方块'" class="preview-box" :class="boxClass" :style="frameStyle">
-              <img :src="PREVIEW_IMG" width="160" height="160">
+              <img :src="PREVIEW_IMG" width="160" height="160" />
             </div>
           </div>
         </el-col>

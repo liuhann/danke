@@ -259,7 +259,7 @@ export default {
 
     pasteAnimation () {
       if (this.ctx.copiedAnimation) {
-        this.element.animation = JSON.parse(JSON.stringify(this.ctx.copiedAnimation.animation))
+        this.element.animations = JSON.parse(JSON.stringify(this.ctx.copiedAnimation.animations))
       }
     },
 

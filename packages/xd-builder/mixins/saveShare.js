@@ -11,7 +11,7 @@ export default {
   created () {
     this.imagedao = new ImageDAO(this.ctx)
     this.workdao = new RestDAO(this.ctx, 'danke/work')
-    this.templatedao = new RestDAO(this.ctx, 'danke/scenetpl')
+    this.blockdao = new RestDAO(this.ctx, 'danke/block')
   },
   methods: {
     /**
@@ -133,14 +133,14 @@ export default {
         element.style = ''
       }
       scene.style = ''
-      await this.templatedao.create(scene)
+      await this.blockdao.create(scene)
     },
 
     /**
     * 加载通用模板
     */
     async listTemplate () {
-      const result = await this.templatedao.list({
+      const result = await this.blockdao.list({
         creator: '15011245191'
       })
       return result.list

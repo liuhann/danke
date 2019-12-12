@@ -248,6 +248,7 @@ export default {
       opacity: 0;
     }
     .scene {
+      perspective: 500px;
       position: absolute;
       left: 0;
       top: 0;

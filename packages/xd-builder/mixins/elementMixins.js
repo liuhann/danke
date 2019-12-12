@@ -310,20 +310,16 @@ export default {
       this.$set(this.currentScene.elements, elementIndex + 1, this.currentElement)
     },
 
+    // 元素移动到最上层 （最后一个元素在最上层）
     moveTop (element) {
       let elementIndex = this.currentScene.elements.indexOf(element)
-      while (elementIndex > 0) {
-        this.moveUp(element)
-        elementIndex = this.currentScene.elements.indexOf(element)
-      }
+      this.currentScene.elements.push(this.currentScene.elements.splice(elementIndex, 1)[0])
     },
 
+    // 元素移动到最底层 （第一个元素在最底层）
     moveBottom (element) {
       let elementIndex = this.currentScene.elements.indexOf(element)
-      while (elementIndex < this.currentScene.elements.length - 1) {
-        this.moveDown(element)
-        elementIndex = this.currentScene.elements.indexOf(element)
-      }
+      this.currentScene.elements.unshift(this.currentScene.elements.splice(elementIndex, 1)[0])
     },
 
     // 拷贝当前选择元素到剪贴板

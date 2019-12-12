@@ -29,10 +29,10 @@
         层次
       </p>
       <p class="control">
-        <input class="input is-small" style="width: 220px;" v-model="scene.z">
+        <input class="input is-small" style="width: 220px;" v-model="scene.z" />
       </p>
     </div>
-    <edit-background v-model="scene.background"></edit-background>
+    <edit-background v-model="scene.background" />
     <div class="scene-buttons">
       <a class="button is-small is-danger" @click="$emit('delete-scene')">删除</a>
       <a class="button is-small" @click="saveAsTemplate(scene)">保存为模板</a>
@@ -44,6 +44,7 @@
       <div class="element-icon">
         <img v-if="element.url" :src="element.url"/>
         <div v-if="element.text">T</div>
+        <div v-if="element.shape" :class="element.shape" :style="'background:' + (element.background.colors? element.background.colors[0]:'#eee')"></div>
       </div>
       <div class="name">{{element.text || element.name || '未命名'}}</div>
     </div>
@@ -55,14 +56,6 @@
       </p>
       <p class="control">
         <input class="input is-small" style="width: 220px;" v-model="work.name">
-      </p>
-    </div>
-    <div class="field has-addons">
-      <p class="control field-lb">
-        背景音频
-      </p>
-      <p class="control buttons has-addons is-small">
-        <a class="button is-small is-primary" @click="openAudioDialog">新增并编辑</a>
       </p>
     </div>
     <edit-background v-model="work.background" />
@@ -211,6 +204,9 @@ export default {
         text-align: center;
         background: aliceblue;
         font-size: 16px;
+      }
+      .element-icon div.circle {
+        border-radius: 24px;
       }
       .name {
         flex: 1;

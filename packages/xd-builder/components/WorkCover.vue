@@ -6,21 +6,13 @@
     :element="element"
     :key="element.id"/>
   <el-button icon="el-icon-video-camera" type="primary" size="mini" circle class="btn-play" @click="play"/>
-  <!--<div class="hover-mask on" :class="mouseOn? 'on': ''">
-    <div class="centering">
-      <a class="button is-small is-success" @click="play">
-        <span class="icon">
-          <i class="icon-play"></i>
-        </span>
-      </a>
-    </div>
-  </div>-->
 </div>
 </template>
 
 <script>
 import { TypeEnum } from '../../danke-core/elements'
 import mixinDevice from '../../xd-player/mixinDevice'
+import sceneMixins from '../mixins/sceneMixins'
 import { getElementStyle, getImageWebUrl, getSceneStyle } from '../../danke-core/utils/styles'
 import RenderElement from '../RenderElement'
 import { Button } from 'element-ui'
@@ -30,7 +22,7 @@ export default {
     RenderElement,
     [Button.name]: Button
   },
-  mixins: [ mixinDevice ],
+  mixins: [ mixinDevice, sceneMixins ],
   props: {
     work: {
       type: Object
@@ -75,9 +67,6 @@ export default {
             this.scene.style = getSceneStyle(this.scene, this.device, 'in')
           }
         }, 200)
-        this.$nextTick(() => {
-
-        })
       }
     }
   },
@@ -96,6 +85,7 @@ export default {
 
   },
   async mounted () {
+    this.renderScene(this.scene, 'in')
     for (let element of this.scene.elements) {
       if (element.imgPath) {
         element.url = this.ctx.IMG_SERVER + '/' + element.imgPath

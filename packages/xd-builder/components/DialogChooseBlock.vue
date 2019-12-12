@@ -1,54 +1,41 @@
 <template>
-<el-dialog title="选择FlatIcon图标" :visible.sync="dialogVisible" :modal-append-to-body="true" :append-to-body="true">
-  <div class="icon-container">
-    <el-tabs v-model="activeName" @tab-click="tabSwitched">
-      <el-tab-pane v-for="(tag, index) of FlatTags" :label="tag.zh" :name="tag.en" :key="index">
-        <ul class="icon-list">
-          <li v-for="(icon, index) in flatIcons" :key="index" @click="chooseIcon(icon)">
-            <img :src="icon.url">
-            <span class="icon-name">
-          {{icon.desc}}
-        </span>
-          </li>
-        </ul>
-      </el-tab-pane>
-    </el-tabs>
-  </div>
-</el-dialog>
+  <el-dialog title="选择页面模板" :visible.sync="dialogVisible" :modal-append-to-body="true" :append-to-body="true">
+    <div class="block-container">
+      <work-cover v-for="(block, index) of blocks" :key="index" :work="block"/>
+    </div>
+  </el-dialog>
 </template>
 
 <script>
 import { Dialog, Tabs, TabPane } from 'element-ui'
 import RestDAO from '../common/dao/restdao'
 import FlatTags from './tags'
+import WorkCover from './WorkCover'
 export default {
-  name: 'DialogChooseFlatIcon',
+  name: 'DialogChooseBlock',
   components: {
+    WorkCover,
     [Dialog.name]: Dialog,
     [Tabs.name]: Tabs,
     [TabPane.name]: TabPane
   },
   data () {
     return {
-      activeName: FlatTags[0].en,
+      blocks: [],
       currentPage: 1,
-      dialogVisible: false,
-      flatIcons: [],
-      FlatTags
+      dialogVisible: false
     }
   },
   created () {
-    this.flatdao = new RestDAO(this.ctx, 'flaticon/icon')
+    this.blockdao = new RestDAO(this.ctx, 'danke/block')
   },
   methods: {
     open () {
       this.dialogVisible = true
-      this.loadFlatIcons()
+      this.loadBlocks()
     },
-    async loadFlatIcons () {
-      const result = await this.flatdao.list({
-        page: this.currentPage,
-        tags: this.activeName,
+    async loadBlocks () {
+      const result = await this.blockdao.list({
         count: 1000
       })
       for (let icon of result.list) {
@@ -73,7 +60,6 @@ export default {
 </script>
 
 <style lang="scss">
-@import "./common.scss";
 .icon-container {
   height: 60vh;
   overflow: auto;

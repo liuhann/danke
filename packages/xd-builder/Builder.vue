@@ -22,9 +22,9 @@
       </div>
       <!--场景操作-->
       <span class="tag is-white">{{work.scenes.indexOf(currentScene)+1}}/{{work.scenes.length}}</span>
-      <el-button class="btn-run" icon="el-icon-caret-right" size="mini" circle type="success" @click="runWork"/>
-      <el-button class="btn-next" icon="el-icon-arrow-right" size="mini" circle @click="nextScene"/>
-      <el-button class="btn-prev" icon="el-icon-arrow-left" size="mini" circle @click="previousScene"/>
+      <el-button class="btn-run" icon="el-icon-caret-right" size="mini" circle type="success" @click="runWork" />
+      <el-button class="btn-next" icon="el-icon-arrow-right" size="mini" circle @click="nextScene" />
+      <el-button class="btn-prev" icon="el-icon-arrow-left" size="mini" circle @click="previousScene" />
       <!--PopOver新增场景、元素-->
       <popover-new @insert="insert"/>
     </div>
@@ -45,7 +45,6 @@
         @edit-tick="editTicking"
         @delete-scene="deleteCurrentScene"/>
     </div>
-    <dialog-edit-text ref="dialogEditText" @input="setElementText"/>
     <dialog-audio-tap ref="dialogAudioList" @audio="chooseWorkAudio"/>
     <dialog-choose-flat-icon ref="dialogChooseFlatIcon" @input="flatIconChoosed"/>
   </div>
@@ -59,7 +58,6 @@ import layoutMixin from './mixins/layoutMixin'
 import keyBindMixin from './mixins/key-binds'
 import { Popover, Button, Upload, Tabs, TabPane, Drawer, Dialog } from 'element-ui'
 import ElementConfig from './components/ElementConfig.vue'
-import DialogEditText from './components/DialogEditText.vue'
 import DialogAudioTap from './components/DialogAudioTap.vue'
 import WorkSceneConfig from './components/WorkSceneConfig.vue'
 import { TypeEnum } from '../danke-core/elements/index'
@@ -77,7 +75,6 @@ export default {
     RenderElement,
     ElementConfig,
     WorkSceneConfig,
-    DialogEditText,
     DialogAudioTap,
     PopoverNew,
     [Popover.name]: Popover,
@@ -188,6 +185,9 @@ export default {
         case 'image':
           this.insertRawImage(data)
           break
+        case 'svg':
+          this.insertSVGImage(data.svg, data.desc)
+          break
         case 'back-audio':
           this.openAudioDialog()
           break
@@ -265,6 +265,8 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
       border: 1px solid #eee;
       border-radius: 10px;
       z-index: 10;
+      overflow: hidden;
+      perspective: 500px;
       .btn-audio {
         position: absolute;
         left: 10px;
