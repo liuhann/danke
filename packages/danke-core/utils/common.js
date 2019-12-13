@@ -31,9 +31,9 @@ function getLenSplits (len) {
 function getLengthByDevice (len, unit, device) {
   let number = 0
   if (unit === 'vw') { // 单位:屏宽
-    number = Math.floor(device.width * len / 100)
+    number = Math.round(device.width * len / 100)
   } else if (unit === 'vh') { // 单位:屏高
-    number = Math.floor(device.height * len / 100)
+    number = Math.round(device.height * len / 100)
   } else if (unit === 'px') { // 单位:像素
     number = len
   }

@@ -30,9 +30,6 @@ export default {
     index: {
       type: Number
     },
-    deviceSet: {
-      type: Object
-    },
     enableMask: {
       type: Boolean,
       default: true

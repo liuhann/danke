@@ -49,7 +49,7 @@
        :on-change="paperFoldImageChoosed">
        <el-button icon="el-icon-s-grid" size="mini" circle/>
      </el-upload>
-     <div class="clone-scene pop-new-block" @click="">
+     <div class="clone-scene pop-new-block" @click="showChooseBlock">
        <i class="el-icon-goods" />
        <span>模板元素</span>
      </div>
@@ -58,6 +58,7 @@
        <span>Flat图标</span>
      </div>
      <dialog-choose-flat-icon ref="dialogChooseFlatIcon" @input="flatIconChoosed" />
+     <dialog-choose-block ref="dialogChooseBlock" @input="blockChoosed"/>
    </div>
   <el-button class="btn-add" icon="el-icon-plus" slot="reference" type="primary" size="mini" circle/>
 </el-popover>
@@ -66,9 +67,11 @@
 <script>
 import { Popover, Button, Upload, Tabs, TabPane, Dialog } from 'element-ui'
 import DialogChooseFlatIcon from '../../flaticon/DialogChooseFlatIcon'
+import DialogChooseBlock from './DialogChooseBlock'
 export default {
   name: 'Publish',
   components: {
+    DialogChooseBlock,
     DialogChooseFlatIcon,
     [Popover.name]: Popover,
     [Button.name]: Button,
@@ -97,7 +100,12 @@ export default {
     showFlatIconPopover () {
       this.$refs.dialogChooseFlatIcon.open()
     },
+    showChooseBlock () {
+      this.$refs.dialogChooseBlock.open()
+    },
+    blockChoosed () {
 
+    },
     audioFileChoosed (file) {
       this.$emit('insert', 'audio', file.raw)
     }

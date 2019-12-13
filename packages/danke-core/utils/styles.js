@@ -190,6 +190,14 @@ async function renderSceneStage (scene, device, stage) {
 const DANKE_IMG_CDN = `http://image.danke.fun/`
 
 function getImageWebUrl (element, device) {
+  // 对于SVG类型图片的特殊处理
+  if (element.svg) {
+    let svgBlob = new Blob([element.svg], { type: 'image/svg+xml;charset=utf-8' })
+    let domURL = self.URL || self.webkitURL || self
+    let url = domURL.createObjectURL(svgBlob)
+    element.url = url
+    return element.url
+  }
   let w = getLength(element.size.width, device)
   let h = getLength(element.size.height, device)
   element.url = element.imgPath ? `${DANKE_IMG_CDN}${element.imgPath}` : element.url
