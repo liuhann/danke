@@ -7,7 +7,7 @@
         名称
       </p>
       <p class="control">
-        <input class="input is-small" style="width: 220px;" v-model="scene.name">
+        <el-input size="mini" style="width: 220px;" v-model="scene.name" />
       </p>
     </div>
     <div class="field has-addons">
@@ -15,24 +15,40 @@
         切换
       </p>
       <p class="control">
-        <input class="input is-small" :disabled="scene.manual" v-model="scene.leave">
+        <el-input size="mini" v-model="scene.leave" :disabled="scene.manual"/>
       </p>
       <p class="control">
-        <a class="button is-small">
-          <input type="checkbox" v-model="scene.manual">
-          手动
-        </a>
+        <el-checkbox v-model="scene.manual">手动</el-checkbox>
       </p>
     </div>
     <div class="field has-addons">
       <p class="control field-lb">
-        层次
+        Z坐标
       </p>
       <p class="control">
-        <input class="input is-small" style="width: 220px;" v-model="scene.z" />
+        <el-input size="mini" v-model="scene.z" />
+      </p>
+    </div>
+    <div class="field has-addons">
+      <p class="control field-lb">
+        呈现比例
+      </p>
+      <p class="control">
+        <el-input size="mini" v-model="scene.ratio" />
       </p>
     </div>
     <edit-background v-model="scene.background" />
+    <div class="field has-addons">
+      <p class="control field-lb">
+        脚本
+      </p>
+      <p class="control">
+        <el-button size="mini" @click="dialogEditSceneScript=true">编辑</el-button>
+        <el-dialog :visible.sync="dialogEditSceneScript" title="编辑代码" :close-on-click-modal="false" :close-on-press-escape="false">
+          <el-input type="textarea" :rows="18" v-model="scene.script"/>
+        </el-dialog>
+      </p>
+    </div>
     <div class="scene-buttons">
       <a class="button is-small is-danger" @click="$emit('delete-scene')">删除</a>
       <a class="button is-small" @click="saveAsTemplate(scene)">保存为模板</a>
@@ -58,6 +74,21 @@
         <input class="input is-small" style="width: 220px;" v-model="work.name">
       </p>
     </div>
+    <div class="field has-addons">
+      <p class="control field-lb">
+        插件
+      </p>
+      <p class="control">
+        <el-select v-model="work.plugins" size="mini" multiple placeholder="请选择">
+          <el-option
+            v-for="item in plugins"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </p>
+    </div>
     <edit-background v-model="work.background" />
 
     <div class="tags has-addons" v-if="work.audioName">
@@ -78,6 +109,7 @@ import EditBackground from '../edit-css/EditBackground.vue'
 import Tabs from '../../common/components/Tabs.vue'
 import DialogAudioTap from './DialogAudioTap.vue'
 import saveShareMixin from '../mixins/saveShare.js'
+import { Input, Checkbox, Button, Dialog, Select, Option } from 'element-ui'
 export default {
   name: 'WorkSceneConfig',
   mixins: [ saveShareMixin ],
@@ -92,10 +124,21 @@ export default {
   components: {
     DialogAudioTap,
     EditBackground,
+    [Input.name]: Input,
+    [Checkbox.name]: Checkbox,
+    [Button.name]: Button,
+    [Dialog.name]: Dialog,
+    [Select.name]: Select,
+    [Option.name]: Option,
     Tabs
   },
   data () {
     return {
+      dialogEditSceneScript: false,
+      plugins: [{
+        label: '图片颜色抽取',
+        value: 'color-thief'
+      }],
       switchTabs: [{
         key: 'scene',
         title: '场景'

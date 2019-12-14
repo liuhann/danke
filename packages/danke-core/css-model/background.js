@@ -1,5 +1,5 @@
 export default {
-  colors: ['rgba(0,0,0,0)'],
+  colors: [],
   angle: 'to bottom',
   url: '',
   size: 'cover',

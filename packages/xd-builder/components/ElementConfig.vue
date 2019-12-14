@@ -78,10 +78,18 @@
   <div class="extra" v-if="configTab === 'other'">
     <div class="field has-addons">
       <div class="control field-lb">
+        名称
+      </div>
+      <div class="control">
+        <el-input v-model="element.name" size="mini"/>
+      </div>
+    </div>
+    <div class="field has-addons">
+      <div class="control field-lb">
         类名
       </div>
       <div class="control">
-        <input v-model="element.className" class="input is-small"/>
+        <el-input v-model="element.className" size="mini"/>
       </div>
     </div>
     <edit-border v-model="element.border" v-if="element.border"></edit-border>
@@ -112,8 +120,8 @@ import { shortid } from '../../utils/string'
 import EditPaperFolding from '../../danke-plugins/paperfold/EditPaperFolding.vue'
 import EditFlip from '../../danke-plugins/flip/EditFlip.vue'
 import ANIMATION from '../../danke-core/css-model/animation.js'
-import EditText from '../edit-css/EditText'
-import EditShape from '../edit-css/EditShape'
+import EditText from '../edit-css/EditText.vue'
+import EditShape from '../edit-css/EditShape.vue'
 export default {
   name: 'ElementConfig',
   props: {
@@ -196,6 +204,7 @@ export default {
   methods: {
     imageUpdated (file) {
       this.element.blob = file
+      this.$emit('img-change', file)
     },
 
     /**

@@ -5,7 +5,7 @@
     stage="in"
     :element="element"
     :key="element.id"/>
-  <el-button icon="el-icon-video-camera" type="primary" size="mini" circle class="btn-play" @click="play"/>
+  <el-button v-if="showPlay" icon="el-icon-video-camera" type="primary" size="mini" circle class="btn-play" @click="play"/>
 </div>
 </template>
 
@@ -26,6 +26,10 @@ export default {
   props: {
     work: {
       type: Object
+    },
+    showPlay: {
+      type: Boolean,
+      default: true
     },
     index: {
       type: Number

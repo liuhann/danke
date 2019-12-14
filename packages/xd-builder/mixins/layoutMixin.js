@@ -35,7 +35,7 @@ export default {
     deviceStyle () {
       const styles = [`width: ${this.device.width}px`,
         `height: ${this.device.height}px`]
-      if (this.work.background) {
+      if (this.work.background && this.work.background.colors.length) {
         styles.push(getBackgroundStyle(this.work))
       } else {
         styles.push(`background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==")`)

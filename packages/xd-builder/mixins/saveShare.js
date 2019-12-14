@@ -101,18 +101,11 @@ export default {
       const frames = {}
       for (let i = 0; i < work.scenes.length; i++) {
         const scene = work.scenes[i]
+        let fr = this.getSceneElementFrames(scene)
         for (let element of scene.elements) {
           element.style = ''
-          // 将element的cssFrame抽取到全局，同时删除cssFrame信息。 加载后再根据name回写frame
-          if (element.animations && element.animations.length) {
-            for (let animation of element.animations) {
-              if (!frames[animation.name]) {
-                frames[animation.name] = animation.cssFrame
-              }
-              delete animation.cssFrame
-            }
-          }
         }
+        Object.assign(frames, fr)
         scene.style = ''
       }
       work.frames = frames
@@ -129,11 +122,70 @@ export default {
     */
     async saveAsTemplate (targetScene) {
       const scene = JSON.parse(JSON.stringify(targetScene))
+      scene.ratio = this.work.ratio
       for (let element of scene.elements) {
         element.style = ''
       }
       scene.style = ''
-      await this.blockdao.create(scene)
+      scene.frames = this.getSceneElementFrames(scene)
+      try {
+        await this.blockdao.create(scene)
+      } catch (e) {
+        console.log(e)
+      }
+    },
+
+    async loadBlocks () {
+      const result = await this.blockdao.list({
+        page: this.currentPage,
+        count: 20
+      })
+      this.blocks = []
+      for (let block of result.list) {
+        if (block.frames) {
+          this.initSceneElementFrames(block.elements, block.frames)
+        }
+        const work = {
+          cover: block
+        }
+        this.blocks.push(work)
+      }
+    },
+
+    /**
+     * 恢复元素列表的帧信息, 相当于getSceneElementFrames的反向方法
+     * @param scene
+     */
+    initSceneElementFrames (elements, frames) {
+      for (let element of elements) {
+        if (element.animations && element.animations.length) {
+          for (let animation of element.animations) {
+            if (frames[animation.name]) {
+              animation.cssFrame = frames[animation.name]
+            }
+          }
+        }
+      }
+    },
+
+    /**
+     * 获取场景下所有元素的样式列表
+     * @param scene
+     * @return object形式的frame列表
+     */
+    getSceneElementFrames (scene) {
+      const frames = {}
+      for (let element of scene.elements) {
+        if (element.animations && element.animations.length) {
+          for (let animation of element.animations) {
+            if (!frames[animation.name]) {
+              frames[animation.name] = animation.cssFrame
+            }
+            delete animation.cssFrame
+          }
+        }
+      }
+      return frames
     },
 
     /**

@@ -6,6 +6,7 @@
     </p>
     <p class="control">
       <el-color-picker v-for="(color, index) of background.colors" :key="index" v-model="background.colors[index]" size="mini" :show-alpha="true" :predefine="predefineColors" />
+      删除
     </p>
     <p class="control">
       <el-button type="text" icon="el-icon-plus" size="mini" @click="addColor"/>

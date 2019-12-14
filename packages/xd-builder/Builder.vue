@@ -34,6 +34,7 @@
         :element="currentElement"
         :scene="currentScene"
         :work="work"
+        @img-change="imageChange"
         @remove="deleteElement"
         @z="moveElementZ" />
       <work-scene-config
@@ -65,9 +66,12 @@ import RenderElement from './RenderElement.vue'
 import { addStyle, createSheet } from '../frames/keyframe'
 import PopoverNew from './components/PopoverNew.vue'
 import DialogChooseFlatIcon from '../flaticon/DialogChooseFlatIcon'
-import BackGround from '../danke-core/css-model/background'
-
+import BACKGROUND from '../danke-core/css-model/background'
 import 'element-ui/packages/theme-chalk/lib/icon.css'
+
+// 从图片资源中获取颜色
+import ColorThief from './plugin/ColorThief'
+
 export default {
   name: 'Builder',
   components: {
@@ -102,7 +106,8 @@ export default {
         resources: [], // 作品引用的公共资源
         animations: [], // 作品使用的动画
         scenes: [], // 场景列表
-        background: JSON.parse(JSON.stringify(BackGround)),
+        plugins: [],
+        background: JSON.parse(JSON.stringify(BACKGROUND)),
         styles: '' // 附加的样式
       },
       currentScene: null,
@@ -131,6 +136,11 @@ export default {
         }
       } catch (e) {
       }
+    }
+  },
+  created () {
+    this.plugins = {
+      'color-thief': ColorThief
     }
   },
   mounted () {
@@ -193,6 +203,9 @@ export default {
           break
         case 'text':
           this.insertText()
+          break
+        case 'block':
+          this.insertBlock(data)
           break
         case 'shape':
           this.insertShape()

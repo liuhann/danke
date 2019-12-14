@@ -103,8 +103,8 @@ export default {
     showChooseBlock () {
       this.$refs.dialogChooseBlock.open()
     },
-    blockChoosed () {
-
+    blockChoosed (block) {
+      this.$emit('insert', block)
     },
     audioFileChoosed (file) {
       this.$emit('insert', 'audio', file.raw)

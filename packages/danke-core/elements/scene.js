@@ -19,12 +19,14 @@ background.color = ['rgba(0,0,0,0)']
 export default {
   name: '',
   type: 1,
+  ratio: '',
   background,
   elements: [],
   res: {},
   leave: 3000,
   hideAfterDelay: 3000,
   className: '',
+  script: '',
   z: 100, // 场景的层次
   manual: false,
   animations: []

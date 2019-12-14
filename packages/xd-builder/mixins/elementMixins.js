@@ -164,7 +164,38 @@ export default {
       const style = getElementStyle(clonedElement, this.device)
       clonedElement.style = style
       this.currentScene.elements.push(clonedElement)
+      this.work.plugins.forEach(name => {
+        this.plugins[name].elementInserted(clonedElement)
+      })
+      // 执行场景脚本 参数为 scene\stage
+      if (this.currentScene.script) {
+        // eslint-disable-next-line no-eval
+        eval(this.currentScene.script)
+      }
       this.chooseElement(clonedElement)
+    },
+
+    getElementByName (name) {
+      for (let element of this.currentScene.elements) {
+        if (element.name === name) {
+          return element
+        }
+      }
+    },
+
+    /**
+     * 图片变更时的回调
+     * @param blob
+     */
+    imageChange (blob) {
+      this.work.plugins.forEach(name => {
+        this.plugins[name].elementUpdated(this.currentElement)
+      })
+      // 执行场景脚本 参数为 scene\stage
+      if (this.currentScene.script) {
+        // eslint-disable-next-line no-eval
+        eval(this.currentScene.script)
+      }
     },
 
     /**
@@ -231,6 +262,12 @@ export default {
       this.chooseElement(clonedElement)
     },
 
+    /**
+     * 插入节点组合
+     */
+    insertBlock (block) {
+      const cloned = JSON.parse(JSON.stringify(block))
+    },
 
     deleteElement (element) {
       MessageBox.confirm('确认删除元素，是否继续？', '提示', {

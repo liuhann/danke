@@ -23,6 +23,7 @@ export default {
       // 设置默认名称与ID
       scene.name = '场景 ' + (this.work.scenes.length + 1)
       scene.id = shortid()
+      scene.ratio = this.work.ratio
       // 继承使用之前的颜色
       if (this.currentScene) {
         scene.background.colors = this.currentScene.background.colors || ['rgba(0,0,0,0)']
@@ -88,6 +89,12 @@ export default {
         element.innerStyle = getElementInnerStyle(element, this.device, stage)
       }
       scene.style = getSceneStyle(scene, this.device, 'in')
+
+      // 执行场景脚本 参数为 scene\stage
+      if (scene.script) {
+        // eslint-disable-next-line no-eval
+        eval(scene.script)
+      }
     },
     previousScene () {
       if (this.currentScene) {
@@ -117,7 +124,6 @@ export default {
         this.currentScene = this.work.scenes[sceneIndex - 1] || this.work.scenes[0]
       })
     },
-
     /**
      * 编辑场景切换节拍
      * @returns {Promise<void>}
