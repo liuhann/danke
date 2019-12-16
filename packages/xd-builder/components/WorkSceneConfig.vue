@@ -44,6 +44,7 @@
       </p>
       <p class="control">
         <el-button size="mini" @click="dialogEditSceneScript=true">编辑</el-button>
+        <el-button size="mini" @click="execSceneScript">执行</el-button>
         <el-dialog :visible.sync="dialogEditSceneScript" title="编辑代码" :close-on-click-modal="false" :close-on-press-escape="false">
           <el-input type="textarea" :rows="18" v-model="scene.script"/>
         </el-dialog>
@@ -110,6 +111,10 @@ import Tabs from '../../common/components/Tabs.vue'
 import DialogAudioTap from './DialogAudioTap.vue'
 import saveShareMixin from '../mixins/saveShare.js'
 import { Input, Checkbox, Button, Dialog, Select, Option } from 'element-ui'
+
+/**
+ * 配置与编辑
+ */
 export default {
   name: 'WorkSceneConfig',
   mixins: [ saveShareMixin ],
@@ -131,6 +136,8 @@ export default {
     [Select.name]: Select,
     [Option.name]: Option,
     Tabs
+  },
+  created () {
   },
   data () {
     return {
@@ -185,6 +192,12 @@ export default {
     },
     editTicks () {
       this.$emit('edit-tick')
+    },
+
+    execSceneScript () {
+      if (this.scene.script) {
+        this.$parent.execScript(this.scene.script)
+      }
     }
   }
 }

@@ -3,7 +3,7 @@
      @click="$emit('click')"
      class="element" :class="[element.visible?'':'hidden', element.className, 'type' + element.type]" :style="element.style + ';' + 'z-index:' + index + ';'">
   <!--图片渲染-->
-  <img v-if="element.type === TypeEnum.IMAGE" :src="element.url" :style="element.innerStyle || ''">
+  <img v-if="element.type === TypeEnum.IMAGE" :id="'img-' + (element.name || element.id)" :src="element.url" :style="element.innerStyle || ''">
   <!--图片折纸效果-->
   <paper-folding v-if="element.type === 11" :stage="stage" :element="element" />
   <!--文本渲染情况下 文本内容-->
@@ -41,6 +41,11 @@ export default {
   data () {
     return {
       TypeEnum
+    }
+  },
+  methods: {
+    getImageDiv () {
+      return this.$refs.img
     }
   }
 }

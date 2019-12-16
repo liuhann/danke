@@ -21,9 +21,7 @@
 
 <script>
 import SVG_CORNER from '../../svg/corner.svg'
-import FormField from './FormField'
 import EditLen from './EditLen.vue'
-import ColorPickr from '../ColorPickr'
 import { LINE_STYLES } from '../../../danke-core/css-model/border'
 const allSides = {
   top: '上',
@@ -34,9 +32,7 @@ const allSides = {
 export default {
   name: 'EditFilter',
   components: {
-    ColorPickr,
-    EditLen,
-    FormField
+    EditLen
   },
   props: {
     value: {
@@ -77,6 +73,6 @@ export default {
 
 <style lang="scss">
 .edit-border {
-  
+
 }
 </style>

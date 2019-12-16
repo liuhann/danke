@@ -66,7 +66,6 @@ export default {
         }
       }
     },
-
     /**
      * 渲染当前的场景
      * @param scene
@@ -89,13 +88,18 @@ export default {
         element.innerStyle = getElementInnerStyle(element, this.device, stage)
       }
       scene.style = getSceneStyle(scene, this.device, 'in')
+    },
 
-      // 执行场景脚本 参数为 scene\stage
-      if (scene.script) {
-        // eslint-disable-next-line no-eval
-        eval(scene.script)
+    /**
+     * 重新计算当前场景内所有元素
+     */
+    invalidate () {
+      for (let element of this.currentScene.elements) {
+        element.style = getElementStyle(element, this.device, 'in')
+        element.innerStyle = getElementInnerStyle(element, this.device, 'in')
       }
     },
+
     previousScene () {
       if (this.currentScene) {
         const currrentSceneIndex = this.work.scenes.indexOf(this.currentScene)

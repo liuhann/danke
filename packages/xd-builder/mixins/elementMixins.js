@@ -167,37 +167,8 @@ export default {
       this.work.plugins.forEach(name => {
         this.plugins[name].elementInserted(clonedElement)
       })
-      // 执行场景脚本 参数为 scene\stage
-      if (this.currentScene.script) {
-        // eslint-disable-next-line no-eval
-        eval(this.currentScene.script)
-      }
       this.chooseElement(clonedElement)
     },
-
-    getElementByName (name) {
-      for (let element of this.currentScene.elements) {
-        if (element.name === name) {
-          return element
-        }
-      }
-    },
-
-    /**
-     * 图片变更时的回调
-     * @param blob
-     */
-    imageChange (blob) {
-      this.work.plugins.forEach(name => {
-        this.plugins[name].elementUpdated(this.currentElement)
-      })
-      // 执行场景脚本 参数为 scene\stage
-      if (this.currentScene.script) {
-        // eslint-disable-next-line no-eval
-        eval(this.currentScene.script)
-      }
-    },
-
     /**
      * 插入SVG类型图标
      * @param svgContent
@@ -371,7 +342,17 @@ export default {
       this.clipboard.cutFrom = this.currentScene
       Message.info('元素已经剪切到剪贴板')
     },
-
+    /**
+     * 根据名称获取元素  为插件代码使用
+     * @param name
+     */
+    getElementByName (name) {
+      for (let element of this.scene.elements) {
+        if (element.name === name) {
+          return element
+        }
+      }
+    },
     /**
     * 重新计算所有场景、元素的样式及位置信息
     */

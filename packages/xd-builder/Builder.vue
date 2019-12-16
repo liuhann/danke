@@ -10,6 +10,7 @@
             :element="element"
             :key="element.id"
             :index="index"
+            :ref="element.id"
             :selected="currentElement === element"
             @click="chooseElement(element, $event)"/>
           <!--文件被选中的遮罩-->
@@ -34,7 +35,6 @@
         :element="currentElement"
         :scene="currentScene"
         :work="work"
-        @img-change="imageChange"
         @remove="deleteElement"
         @z="moveElementZ" />
       <work-scene-config
@@ -56,6 +56,7 @@ import elementMixin from './mixins/elementMixins'
 import saveShareMixin from './mixins/saveShare'
 import sceneMixin from './mixins/sceneMixins'
 import layoutMixin from './mixins/layoutMixin'
+import pluginMixin from './plugin/mixins'
 import keyBindMixin from './mixins/key-binds'
 import { Popover, Button, Upload, Tabs, TabPane, Drawer, Dialog } from 'element-ui'
 import ElementConfig from './components/ElementConfig.vue'
@@ -68,10 +69,6 @@ import PopoverNew from './components/PopoverNew.vue'
 import DialogChooseFlatIcon from '../flaticon/DialogChooseFlatIcon'
 import BACKGROUND from '../danke-core/css-model/background'
 import 'element-ui/packages/theme-chalk/lib/icon.css'
-
-// 从图片资源中获取颜色
-import ColorThief from './plugin/ColorThief'
-
 export default {
   name: 'Builder',
   components: {
@@ -89,7 +86,7 @@ export default {
     [TabPane.name]: TabPane,
     [Drawer.name]: Drawer
   },
-  mixins: [elementMixin, saveShareMixin, sceneMixin, keyBindMixin, layoutMixin],
+  mixins: [elementMixin, saveShareMixin, sceneMixin, keyBindMixin, layoutMixin, pluginMixin],
   props: {
   },
   data () {
@@ -139,9 +136,7 @@ export default {
     }
   },
   created () {
-    this.plugins = {
-      'color-thief': ColorThief
-    }
+
   },
   mounted () {
     let workId = this.$route.query.work || 'new'
@@ -213,6 +208,11 @@ export default {
         default:
           break
       }
+    },
+    // 执行自定义的代码
+    execScript (script) {
+      // eslint-disable-next-line no-eval
+      eval(script)
     }
   }
 }

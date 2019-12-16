@@ -1,62 +1,39 @@
 import ColorThief from 'color-thief'
-import DeltaE from 'delta-e'
-import { ChinaColors, rgb2lab } from '../../utils/colors'
+import { ChinaColors } from '../../utils/colors'
 
 const colorThief = new ColorThief()
-
-/**
- * 根据RGB颜色获取最近的中国色
- * @param rgbColor
- * @return {{CMYK: number[], pinyin: string, name: string, hex: string, RGB: number[], LAB: number[]}|{CMYK: number[], pinyin: string, name: string, hex: string, RGB: number[], LAB: number[]}|{CMYK: number[], pinyin: string, name: string, hex: string, RGB: number[], LAB: number[]}|{CMYK: number[], pinyin: string, name: string, hex: string, RGB: number[], LAB: number[]}|{CMYK: number[], pinyin: string, name: string, hex: string, RGB: number[], LAB: number[]}}
- */
-function getNearbyChinaColor (rgbColor) {
-  const lab = rgb2lab(rgbColor)
-  let min = DeltaE.getDeltaE00({
-    L: lab[0], A: lab[1], B: lab[2]
-  }, {
-    L: ChinaColors[0].RGB[0], A: ChinaColors[0].RGB[1], B: ChinaColors[0].RGB[2]
-  })
-  let minChinaColor = ChinaColors[0]
+function getNearestByRGB (rgbColor) {
+  let result = {
+    rgb: rgbColor,
+    cn: ''
+  }
+  let dis = 1000
 
   for (let chinaColor of ChinaColors) {
-    let current = DeltaE.getDeltaE00({
-      L: lab[0], A: lab[1], B: lab[2]
-    }, {
-      L: chinaColor.RGB[0], A: chinaColor.RGB[1], B: chinaColor.RGB[2]
-    })
-    if (current < min) {
-      min = current
-      minChinaColor = chinaColor
+    let r = Math.pow(chinaColor.RGB[0] - rgbColor[0], 2) + Math.pow(chinaColor.RGB[1] - rgbColor[1], 2) + Math.pow(chinaColor.RGB[2] - rgbColor[2], 2)
+    if (r < dis) {
+      dis = r
+      result.cn = chinaColor.name
+      result.color = chinaColor.hex
     }
   }
-  return minChinaColor
+  result.rgb = `rgb(${rgbColor[0]}, ${rgbColor[1]}, ${rgbColor[2]})`
+  return result
 }
 
 /**
  * 计算图片元素的颜色
  * @param element
  */
-function calculateElementColors (element) {
-  if (element.url) {
-    const img = new Image(500, 500)
-    img.addEventListener('load', () => {
-      const paletteColors = colorThief.getPalette(img, 10)
-      const colors = []
-      for (let color of paletteColors) {
-        colors.push(getNearbyChinaColor(color))
-      }
-      element.colors = colors
-    })
-    img.src = element.url
+function calculateElementColors (el) {
+  const paletteColors = colorThief.getPalette(el, 10)
+  const colorsWithName = []
+  for (let color of paletteColors) {
+    colorsWithName.push(getNearestByRGB(color))
   }
+  return colorsWithName
 }
 
 export default {
-  elementInserted (element) {
-    calculateElementColors(element)
-  },
-  elementUpdated (element) {
-    debugger
-    calculateElementColors(element)
-  }
+  calculateElementColors
 }

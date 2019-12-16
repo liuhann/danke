@@ -204,7 +204,6 @@ export default {
   methods: {
     imageUpdated (file) {
       this.element.blob = file
-      this.$emit('img-change', file)
     },
 
     /**
