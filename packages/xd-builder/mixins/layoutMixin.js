@@ -12,7 +12,7 @@ export default {
         width: 360,
         height: 640
       },
-      devicePadding: [0, 0]
+      devicePadding: [5, 5]
     }
   },
   provide () {

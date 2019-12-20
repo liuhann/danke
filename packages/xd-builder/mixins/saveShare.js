@@ -8,6 +8,11 @@ import ImageDAO from '../../common/dao/imagedao'
 import RestDAO from '../../common/dao/restdao'
 
 export default {
+  data () {
+    return {
+      blockPageNum: 1
+    }
+  },
   created () {
     this.imagedao = new ImageDAO(this.ctx)
     this.workdao = new RestDAO(this.ctx, 'danke/work')
@@ -70,6 +75,10 @@ export default {
               animation.cssFrame = work.frames[animation.name]
             }
           }
+        }
+        // 补全animation
+        if (!scene.animations) {
+          scene.animations = []
         }
       }
       this.work = work
@@ -137,7 +146,7 @@ export default {
 
     async loadBlocks () {
       const result = await this.blockdao.list({
-        page: this.currentPage,
+        page: this.blockPageNum,
         count: 20
       })
       this.blocks = []

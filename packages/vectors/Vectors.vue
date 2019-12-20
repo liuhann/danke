@@ -20,6 +20,7 @@
           <div class="media-content">
             <p class="title is-4">{{item.name}}</p>
             <p class="subtitle is-6">{{item.desc}}</p>
+            <a @click="deleteVector">删除</a>
           </div>
         </article>
       </template>
@@ -71,6 +72,10 @@ export default {
 
     openVectorDialog (object) {
       this.$refs.formEditDialog.open(object)
+    },
+
+    deleteVector (v) {
+
     },
 
     async confirmVectorEdit (object) {

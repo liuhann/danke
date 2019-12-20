@@ -40,7 +40,7 @@
    </div>
   </div>
   <div class="ptb-10">插件</div>
-   <div class="plugins is-clearfix">
+  <div class="plugins is-clearfix">
      <el-upload
        style="float: left; margin-right: 10px;"
        :show-file-list="false"
@@ -88,15 +88,12 @@ export default {
     imageFileChosed (file) {
       this.$emit('insert', 'image', file.raw)
     },
-
     paperFoldImageChoosed (file) {
       this.$emit('insert', 'paper', file.raw)
     },
-
     flatIconChoosed (icon) {
       this.$emit('insert', 'svg', icon)
     },
-
     showFlatIconPopover () {
       this.$refs.dialogChooseFlatIcon.open()
     },
@@ -104,7 +101,7 @@ export default {
       this.$refs.dialogChooseBlock.open()
     },
     blockChoosed (block) {
-      this.$emit('insert', block)
+      this.$emit('insert', 'block', block)
     },
     audioFileChoosed (file) {
       this.$emit('insert', 'audio', file.raw)

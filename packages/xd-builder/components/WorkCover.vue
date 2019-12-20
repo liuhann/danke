@@ -1,5 +1,7 @@
 <template>
-<div class="work-cover" style="background-color: #fff" :style="scene.style" @mouseenter="mouseOn = true" @mouseout="mouseOn = false">
+<div class="work-cover" style="background-color: #fff" :style="scene.style"
+     @click="coverClicked"
+     @mouseenter="mouseOn = true" @mouseout="mouseOn = false">
   <render-element
     v-for="(element) in scene.elements"
     stage="in"
@@ -94,7 +96,7 @@ export default {
       }
       if (element.animations && element.animations.length) {
         for (let animation of element.animations) {
-          animation.cssFrame = this.work.frames[animation.name]
+          animation.cssFrame = this.work.cover.frames[animation.name]
         }
       }
       element.style = getElementStyle(element, this.device, 'in')
@@ -102,6 +104,9 @@ export default {
     }
   },
   methods: {
+    coverClicked () {
+      this.$emit('click')
+    },
     play () {
       this.$emit('play')
     },

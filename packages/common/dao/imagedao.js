@@ -15,6 +15,21 @@ export default class ImageDAO {
     }).json()
   }
 
+  /**
+   * 删除个人空间的文件
+   * @param path
+   * @return {Promise<void>}
+   */
+  async removeBlob (path) {
+
+  }
+
+  /**
+   * 上传一个文件到个人空间。
+   * @param blob 文件内容
+   * @param path 位于个人空间的目录位置
+   * @return {Promise<*|JSONValue>}
+   */
   async uploadBlob (blob, path) {
     // check file size
     const formData = new window.FormData()

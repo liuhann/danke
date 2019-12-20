@@ -101,9 +101,9 @@ export default {
         audioTicks: [], // 音频切换的节拍
         duration: 0, // 持续时间
         resources: [], // 作品引用的公共资源
-        animations: [], // 作品使用的动画
         scenes: [], // 场景列表
         plugins: [],
+        frames: {}, // 作品统一动画frame存放的位置
         background: JSON.parse(JSON.stringify(BACKGROUND)),
         styles: '' // 附加的样式
       },
@@ -238,8 +238,8 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
   .scene-container {
     position: absolute;
     left: 0;
-    top: 5px;
-    bottom: 5px;
+    top: 0;
+    bottom: 0;
     right: 320px;
     overflow: auto;
     .tag {
@@ -277,9 +277,11 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
       position: absolute;
       border: 1px solid #eee;
       border-radius: 10px;
+      top: 5px;
       z-index: 10;
       overflow: hidden;
       perspective: 500px;
+      box-shadow: 0px 0px 0px 3px #e6e6e6;
       .btn-audio {
         position: absolute;
         left: 10px;

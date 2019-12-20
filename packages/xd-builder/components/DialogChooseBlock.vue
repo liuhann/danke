@@ -2,19 +2,20 @@
   <el-dialog title="选择页面模板" :visible.sync="dialogVisible" custom-class="dialog-choose-block"
              :modal-append-to-body="true" :append-to-body="true" top="5vh">
     <div class="block-container">
-      <work-cover
-        v-for="(block, index) of blocks" :key="index"
-        :show-play="false" :work="block"
-        :device-set="deviceSet"
-        @click="chooseBlock(block)"
-      />
+      <div class="work-cover-container"  v-for="(block, index) of blocks" :key="index">
+        <work-cover
+          :show-play="false" :work="block"
+          :device-set="deviceSet"
+          @click="chooseBlock(block)"
+        />
+        <el-button size="mini" type="success" @click="chooseBlock(block)">选择</el-button>
+      </div>
     </div>
   </el-dialog>
 </template>
 
 <script>
-import { Dialog, Tabs, TabPane } from 'element-ui'
-import RestDAO from '../../common/dao/restdao'
+import { Dialog, Tabs, TabPane, Button } from 'element-ui'
 import saveShare from '../mixins/saveShare'
 import WorkCover from './WorkCover'
 export default {
@@ -23,6 +24,7 @@ export default {
   components: {
     WorkCover,
     [Dialog.name]: Dialog,
+    [Button.name]: Button,
     [Tabs.name]: Tabs,
     [TabPane.name]: TabPane
   },
@@ -33,7 +35,6 @@ export default {
         height: 280
       },
       blocks: [],
-      currentPage: 1,
       dialogVisible: false
     }
   },
@@ -43,6 +44,8 @@ export default {
       this.loadBlocks()
     },
     chooseBlock (block) {
+      this.dialogVisible = false
+      debugger
       this.$emit('input', block.cover)
     }
   }
@@ -56,11 +59,17 @@ export default {
 .block-container {
   height: 70vh;
   overflow: auto;
-  .work-cover {
+  .work-cover-container {
     float: left;
-    margin: 0 5px;
-    border-radius: 5px;
-    box-shadow: 0 0 3px rgba(0,0,0, .5);
+    margin: 10px 8px;
+    border: 1px solid #efefef;
+    .el-button {
+      margin: 5px;
+    }
+    &:hover {
+      cursor: pointer;
+      border-color: #00bf72;
+    }
   }
 }
 </style>

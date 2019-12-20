@@ -238,6 +238,14 @@ export default {
      */
     insertBlock (block) {
       const cloned = JSON.parse(JSON.stringify(block))
+      for (let element of cloned.elements) {
+        element.style = getElementStyle(element, this.device)
+        this.currentScene.elements.push(element)
+      }
+      if (!this.work.frames) {
+        this.work.frames = {}
+      }
+      Object.assign(this.work.frames, block.frames)
     },
 
     deleteElement (element) {
@@ -347,7 +355,7 @@ export default {
      * @param name
      */
     getElementByName (name) {
-      for (let element of this.scene.elements) {
+      for (let element of this.currentScene.elements) {
         if (element.name === name) {
           return element
         }

@@ -50,6 +50,19 @@
         </el-dialog>
       </p>
     </div>
+    <div class="field has-addons">
+      <p class="control field-lb">
+        动画
+      </p>
+      <p class="control">
+        <el-button size="mini" @click="insertAnimation">增加动画</el-button>
+      </p>
+    </div>
+    <edit-animation
+      v-for="(animation, index) of scene.animations"
+      @remove="removeAnimation(index)"
+      :key="index"
+      :animation="animation" />
     <div class="scene-buttons">
       <a class="button is-small is-danger" @click="$emit('delete-scene')">删除</a>
       <a class="button is-small" @click="saveAsTemplate(scene)">保存为模板</a>
@@ -111,6 +124,8 @@ import Tabs from '../../common/components/Tabs.vue'
 import DialogAudioTap from './DialogAudioTap.vue'
 import saveShareMixin from '../mixins/saveShare.js'
 import { Input, Checkbox, Button, Dialog, Select, Option } from 'element-ui'
+import ANIMATION from '../../danke-core/css-model/animation'
+import EditAnimation from '../edit-css/EditAnimation.vue'
 
 /**
  * 配置与编辑
@@ -127,6 +142,7 @@ export default {
     }
   },
   components: {
+    EditAnimation,
     DialogAudioTap,
     EditBackground,
     [Input.name]: Input,
@@ -192,6 +208,15 @@ export default {
     },
     editTicks () {
       this.$emit('edit-tick')
+    },
+    /**
+     * 插入动画片段
+     */
+    insertAnimation () {
+      this.scene.animations.push(JSON.parse(JSON.stringify(ANIMATION)))
+    },
+    removeAnimation (index) {
+      this.scene.animations.splice(index, 1)
     },
 
     execSceneScript () {

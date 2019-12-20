@@ -92,11 +92,12 @@
         <el-input v-model="element.className" size="mini"/>
       </div>
     </div>
-    <edit-border v-model="element.border" v-if="element.border"></edit-border>
-    <edit-shadow v-model="element.shadows" v-if="element.shadows != null"></edit-shadow>
-    <edit-mask v-model="element.mask" v-if="element.mask"></edit-mask>
+    <edit-transform v-if="element.transforms != null" :transforms="element.transforms" />
+    <edit-border v-model="element.border" v-if="element.border" />
+    <edit-shadow v-model="element.shadows" v-if="element.shadows != null" />
+    <edit-mask v-model="element.mask" v-if="element.mask" />
     <edit-filter v-model="element.filter" v-if="element.filter" />
-    <edit-clip-path v-model="element.clip" v-if="element.clip"></edit-clip-path>
+    <edit-clip-path v-model="element.clip" v-if="element.clip" />
   </div>
 </nav>
 </template>
@@ -122,6 +123,7 @@ import EditFlip from '../../danke-plugins/flip/EditFlip.vue'
 import ANIMATION from '../../danke-core/css-model/animation.js'
 import EditText from '../edit-css/EditText.vue'
 import EditShape from '../edit-css/EditShape.vue'
+import EditTransform from './props/EditTransform'
 export default {
   name: 'ElementConfig',
   props: {
@@ -139,6 +141,7 @@ export default {
     }
   },
   components: {
+    EditTransform,
     EditShape,
     EditText,
     EditFlip,

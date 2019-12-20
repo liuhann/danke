@@ -1,37 +1,50 @@
-export default {
-  translate: ['0', '0', '0'],
-  scale: 100,
-  opacity: 100,
-  psp: '1000',
-  origin: ['center', 'center'],
-  rotate: ['0', '0', '0']
+export const transformKeys = [{
+  label: '横向拉伸',
+  value: 'scaleX'
+}, {
+  label: '纵向拉伸',
+  value: 'scaleY'
+}, {
+  label: '横向扭曲',
+  value: 'skewX'
+}, {
+  label: '纵向扭曲',
+  value: 'skewY'
+}, {
+  label: '旋转',
+  value: 'rotateZ'
+}, {
+  label: 'X旋转',
+  value: 'rotateX'
+}, {
+  label: 'Y旋转',
+  value: 'rotateY'
+}]
+
+export const transformValue = {
+  scaleX: 1,
+  scaleY: 1,
+  skewX: 0,
+  skewY: 0,
+  rotateX: 0,
+  rotateY: 0,
+  rotateZ: 0
 }
 
-export function getTransformStyle ({ transform }) {
-  const styles = []
-  if (transform) {
-    const transforms = []
-    if (transform.psp) {
-      transforms.push(`perspective(${transform.psp}px)`)
-    }
-    if (transform.translate) {
-      transforms.push(`translate3d(${transform.translate[0]}%, ${transform.translate[1]}%, ${transform.translate[2]}px)`)
-    }
-    if (transform.rotate) {
-      transforms.push(`rotateX(${transform.rotate[0]}deg)`)
-      transforms.push(`rotateY(${transform.rotate[1]}deg)`)
-      transforms.push(`rotateZ(${transform.rotate[2]}deg)`)
-    }
-    if (transform.scale != null) {
-      transforms.push(`scale(${transform.scale / 100})`)
-    }
-    styles.push(`transform: ${transforms.join(' ')}`)
-    if (transform.opacity != null) {
-      styles.push(`opacity: ${transform.opacity / 100}`)
-    }
-    if (transform.origin) {
-      styles.push(`transform-origin: ${transform.origin[0]} ${transform.origin[1]}`)
+export const transformUnits = {
+  skewX: 'deg',
+  skewY: 'deg',
+  rotateX: 'deg',
+  rotateY: 'deg',
+  rotateZ: 'deg'
+}
+
+export function getTransformStyle ({ transforms }) {
+  const seq = []
+  if (transforms) {
+    for (let transform of transforms) {
+      seq.push(`${transform.key}(${transform.value}${transformUnits[transform.key] || ''})`)
     }
   }
-  return styles
+  return [`transform: ${seq.join(' ')}`]
 }

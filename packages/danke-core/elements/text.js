@@ -10,6 +10,7 @@ const text = {
   size: SIZE,
   shadows: [],
   className: '',
-  animations: []
+  animations: [],
+  transforms: []
 }
 export default text

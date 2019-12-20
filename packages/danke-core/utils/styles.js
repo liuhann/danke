@@ -74,12 +74,6 @@ function getElementStyle (element, device, stage) {
     .concat(getShapeStyle(element, device))
     .concat(getFilterStyle(element, device))
 
-  // 对于动画并且设置为overflow = true (默认)的
-  // if (stage && element.animation && element.animation[stage] && element.animation[stage].overflow && element.animation[stage].name) {
-  //   const animationDef = element.animation[stage]
-  //   styles.push(`animation: ${animationDef.name} ${animationDef.duration}ms ${animationDef.timing} ${animationDef.delay}ms ${animationDef.infinite ? 'infinite' : animationDef.iteration} normal both running`)
-  //   addAnimationStyle(sheet, animationDef)
-  // }
   // 渲染相对于场景的动画
   styles.push(getAnimationStyle(element, stage, true))
   return styles.filter(n => n).join(';')
@@ -99,7 +93,7 @@ function getAnimationStyle (element, stage, outer) {
         // 动画溢出时 写到element上 还是写在内部渲染上
         // 例如 图片渲染时  <div><img>这样的标签结构， overflow=true时才写入div 否则写入img
         if (animation.stage === stage) {
-          if (outer === animation.overflow) {
+          if (animation.overflow == null || outer === animation.overflow) {
             animationsOrdered.push(`${animation.name} ${animation.duration}ms ${animation.timing} ${animation.delay || 0}ms ${animation.infinite ? 'infinite' : animation.iteration} both`)
             // 动态写入css
             addAnimationStyle(sheet, animation)
@@ -162,11 +156,7 @@ function getSceneStyle (scene, device, stage, fontRatio = 1) {
     default:
       break
   }
-  if (stage && scene.animation && scene.animation[stage] && scene.animation[stage].name) {
-    const animationDef = scene.animation[stage]
-    styles.push(`animation: ${animationDef.name} ${animationDef.duration}ms ${animationDef.timing} ${animationDef.delay}ms ${animationDef.iteration} normal both running`)
-    addAnimationStyle(sheet, animationDef)
-  }
+  styles.push(getAnimationStyle(scene, stage, true))
   return styles.join(';')
 }
 
@@ -201,6 +191,9 @@ function getImageWebUrl (element, device) {
   let w = getLength(element.size.width, device)
   let h = getLength(element.size.height, device)
   element.url = element.imgPath ? `${DANKE_IMG_CDN}${element.imgPath}` : element.url
+  if (element.url.endsWith('.svg')) {
+    return element.url
+  }
   if (supportWebP) {
     element.url = element.url + '?x-oss-process=image/format,webp/quality,Q_80/resize,m_fill,h_' + (h * 2) + ',w_' + (w * 2)
   } else {

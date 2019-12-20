@@ -13,6 +13,7 @@ const shape = {
   border: BORDER,
   shadows: [],
   className: '',
-  animations: []
+  animations: [],
+  transforms: []
 }
 export default shape

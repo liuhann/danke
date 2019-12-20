@@ -22,7 +22,8 @@ const image = {
   shadow: SHADOW,
   mask: MASK,
   className: '',
-  animations: []
+  animations: [],
+  transforms: []
 }
 
 export function trim (image) {

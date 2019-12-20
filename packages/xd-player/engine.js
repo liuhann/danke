@@ -161,10 +161,56 @@ export default class Danke {
   leaveScene (scene) {
     this.renderLeave(scene)
     this.sceneLeaveCallback && this.sceneLeaveCallback(this)
+    const outDura = this.getSceneStageAnimationDura(scene, 'out')
     setTimeout(() => {
+      console.log(`scene ${scene.index} left!`)
       scene.style = `display: none`
-      this.sceneHideCallback && this.sceneHideCallback(this)
-    }, scene.hideDelay || 3000)
+    }, outDura)
+  }
+
+  /**
+   * 获取场景进入或者离开时下动态持续的最长时间， 同时考虑repeat的情况
+   */
+  getSceneStageAnimationDura (scene, stage) {
+    let max = 0
+    for (let element of scene.elements) {
+      let emax = this.getAnimationsMaxDura(element, stage)
+      if (emax > max) {
+        max = emax
+      }
+    }
+    let smax = this.getAnimationsMaxDura(scene, stage)
+    if (smax > max) {
+      max = smax
+    }
+    return max
+  }
+
+  /**
+   * 获得元素动画的最长持续持剑
+   * @param element 元素
+   * @param stage 具体阶段
+   * @return {number}
+   */
+  getAnimationsMaxDura (element, stage) {
+    let max = 0
+    if (element.animations) {
+      for (let animation of element.animations) {
+        if (animation.stage === stage) {
+          let dura = 0
+          if (animation.infinite) {
+            return Number.MAX_SAFE_INTEGER
+          }
+          dura = animation.duration * animation.iteration + (animation.delay || 0)
+          if (dura > max) {
+            max = dura
+          }
+        }
+      }
+      return max
+    } else {
+      return 0
+    }
   }
 
   /**
@@ -176,7 +222,7 @@ export default class Danke {
       const outerAnimation = getAnimationStyle(element, 'out', true)
       const innerAnimation = getAnimationStyle(element, 'out', true)
       if (!outerAnimation && !innerAnimation) {
-        element.style = 'display: none'
+        // element.style = 'display: none'
       } else {
         element.style = getElementStyle(element, this.device, 'out')
         element.innerStyle = getElementInnerStyle(element, this.device, 'out')

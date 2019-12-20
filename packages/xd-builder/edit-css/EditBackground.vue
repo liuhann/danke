@@ -4,10 +4,10 @@
     <p class="control field-lb">
       背景
     </p>
-    <p class="control">
-      <el-color-picker v-for="(color, index) of background.colors" :key="index" v-model="background.colors[index]" size="mini" :show-alpha="true" :predefine="predefineColors" />
-      删除
-    </p>
+    <div class="control color" v-for="(color, index) of background.colors" :key="index">
+      <el-color-picker  v-model="background.colors[index]" size="mini" :show-alpha="true" :predefine="predefineColors" />
+      <el-button icon="el-icon-error" type="text" @click="removeColor(index)"/>
+    </div>
     <p class="control">
       <el-button type="text" icon="el-icon-plus" size="mini" @click="addColor"/>
     </p>
@@ -152,6 +152,16 @@ export default {
     line-height: 1.8rem;
     display: inline-block;
     color: #888;
+  }
+  .color.control {
+    width: 32px;
+    position: relative;
+    .el-button {
+      color: #f56c6c;
+      position: absolute;
+      top: -19px;
+      left: 20px;
+    }
   }
 }
 </style>

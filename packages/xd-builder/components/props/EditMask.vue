@@ -2,7 +2,7 @@
 <div class="edit-mask field-group">
   <div class="field has-addons">
     <div class="control field-lb">
-      Mask
+      蒙版
     </div>
     <div class="control">
       <span class="button is-small" @click="showMaskList = !showMaskList">选择</span>

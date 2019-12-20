@@ -1,4 +1,7 @@
 export default [{
+  zh: '蒙板',
+  en: 'mask'
+}, {
   zh: '形状',
   en: 'figure'
 }, {
@@ -7,6 +10,9 @@ export default [{
 }, {
   zh: '交通',
   en: 'transport'
+}, {
+  zh: '建筑',
+  en: 'building'
 }, {
   zh: '科技',
   en: 'technology'
