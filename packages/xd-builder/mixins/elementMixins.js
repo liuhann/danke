@@ -78,7 +78,7 @@ export default {
     insertShape () {
       const clonedElement = clone(SHAPE)
       clonedElement.id = shortid()
-      clonedElement.name = '矩形'
+      clonedElement.name = '形状'
       clonedElement.background.colors = ['#eee']
       clonedElement.visible = true
       clonedElement.size.width = '30vw'

@@ -3,14 +3,11 @@
   :width="width + 'px'"
   :title="title"
   :visible.sync="dialogVisible">
-  <div class="field has-addons" v-for="(value, name) in object" :key="name">
-    <p class="control">
-      <a class="button is-static is-small">{{name}}</a>
-    </p>
-    <p class="control" style="width: 100%;">
-      <input class="input is-small" v-model="object[name]">
-    </p>
-  </div>
+  <el-form :model="object" label-width="80px">
+    <el-form-item :label="key" v-for="(value, name) in object" :key="name">
+      <el-input v-model="object[name]"></el-input>
+    </el-form-item>
+  </el-form>
   <span slot="footer" class="dialog-footer">
     <a class="button is-small" @click="dialogVisible = false">
         取 消
@@ -23,15 +20,22 @@
 </template>
 
 <script>
-import { Dialog } from 'element-ui'
+import { Dialog, Form, FormItem, Button } from 'element-ui'
 export default {
   components: {
-    'el-dialog': Dialog
+    'el-dialog': Dialog,
+    [Form.name]: Form,
+    [Button.name]: Button,
+    [FormItem.name]: FormItem
   },
   name: 'FormEditDialog',
   props: {
-    types: {
-      type: Object
+    // 字段标签信息
+    labels: {
+      type: Object,
+      default: function () {
+        return {}
+      }
     },
     title: {
       type: String

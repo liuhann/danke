@@ -53,9 +53,15 @@
           </el-form>
         </el-col>
         <el-col :span="8">
+          <div style="margin: 0 auto;text-align: center;">
+            <el-radio-group v-model="previewType" size="mini">
+              <el-radio-button label="文字"></el-radio-button>
+              <el-radio-button label="方块"></el-radio-button>
+            </el-radio-group>
+          </div>
           <div id="preview" :style="{background: previewType==='文字'? 'none': ''}" style="border-left: 1px solid #efefef;">
 <!--            <div v-if="previewType==='方块'" class="preview-box" :class="boxClass" :style="frameStyle"></div>-->
-            <div v-if="previewType==='文字'" class="preview-text" :class="boxClass" :style="frameStyle">danke.fun</div>
+            <div v-if="previewType==='文字'" class="preview-text" :class="boxClass" :style="frameStyle">frames@danke</div>
             <div v-if="previewType==='方块'" class="preview-box" :class="boxClass" :style="frameStyle">
               <img :src="PREVIEW_IMG" width="160" height="160" />
             </div>
@@ -68,7 +74,7 @@
 </template>
 
 <script>
-import { Message, Row, Col, Form, FormItem, Input, InputNumber, Select, Option, Radio, Tag, Button } from 'element-ui'
+import { Message, Row, Col, Form, FormItem, Input, InputNumber, Select, Option, Radio, Tag, Button, RadioGroup, RadioButton } from 'element-ui'
 import { createSheet, addAnimationStyle, clearAnimation } from './keyframe'
 import PREVIEW_IMG from './project.svg'
 import NavBar from '../site/components/NavBar'
@@ -88,6 +94,8 @@ export default {
     [Button.name]: Button,
     [Select.name]: Select,
     [Option.name]: Option,
+    [RadioGroup.name]: RadioGroup,
+    [RadioButton.name]: RadioButton,
     [Radio.name]: Radio,
     NavBar
   },
@@ -103,7 +111,7 @@ export default {
       // 动态增加标签相关处理
       inputVisible: false,
       inputValue: '',
-      previewType: '方块',
+      previewType: '文字',
       frameIndex: -1,
       frameStyle: '',
       boxClass: '',
@@ -254,8 +262,7 @@ export default {
     }
   }
   .preview-text {
-    text-transform: uppercase;
-    font-size: 2.5rem;
+    font-size: 2rem;
   }
   .toolbar {
     top: 0;

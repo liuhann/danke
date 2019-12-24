@@ -2,6 +2,7 @@
 <el-popover
   :width="420"
   placement="left-start"
+  v-model="popoverShow"
   trigger="click">
   <div class="is-clearfix">
     <div class="new-scene pop-new-block" @click="$emit('insert', 'scene')">
@@ -10,7 +11,7 @@
     </div>
     <div class="clone-scene pop-new-block" @click="$emit('insert', 'clone-scene')">
       <i class="el-icon-document-copy" />
-      <span>复制场景</span>
+      <span></span>
     </div>
     <div class="clone-scene pop-new-block" @click="$emit('insert', 'back-audio')">
       <i class="el-icon-headset" />
@@ -27,12 +28,12 @@
         accept="image/*"
         :on-change="imageFileChosed">
         <i class="el-icon-picture-outline" />
-        <div>上传图片</div>
+        <div>图片</div>
       </el-upload>
     </div>
     <div class="clone-scene pop-new-block" @click="$emit('insert', 'shape')">
       <i class="el-icon-files" />
-      <span>插入形状</span>
+      <span>形状</span>
     </div>
    <div class="clone-scene pop-new-block" @click="$emit('insert', 'text')">
     <i class="el-icon-postcard" />
@@ -82,29 +83,40 @@ export default {
   },
   data () {
     return {
+      popoverShow: false
     }
   },
   methods: {
+    hidePopover () {
+      this.popoverShow = false
+    },
     imageFileChosed (file) {
       this.$emit('insert', 'image', file.raw)
+      this.hidePopover()
     },
     paperFoldImageChoosed (file) {
       this.$emit('insert', 'paper', file.raw)
+      this.hidePopover()
     },
     flatIconChoosed (icon) {
       this.$emit('insert', 'svg', icon)
+      this.hidePopover()
     },
     showFlatIconPopover () {
       this.$refs.dialogChooseFlatIcon.open()
+      this.hidePopover()
     },
     showChooseBlock () {
       this.$refs.dialogChooseBlock.open()
+      this.hidePopover()
     },
     blockChoosed (block) {
       this.$emit('insert', 'block', block)
+      this.hidePopover()
     },
     audioFileChoosed (file) {
       this.$emit('insert', 'audio', file.raw)
+      this.hidePopover()
     }
   }
 }

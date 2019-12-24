@@ -1,7 +1,7 @@
 export default {
   routes: [{
-    path: '/vectors',
-    component: () => import(/* webpackChunkName: "vectors" */'./Vectors.vue')
+    path: '/gallery',
+    component: () => import(/* webpackChunkName: "vectors" */'./Gallery.vue')
   }],
   async onload (ctx) {
   }

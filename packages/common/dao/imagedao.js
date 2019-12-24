@@ -21,7 +21,11 @@ export default class ImageDAO {
    * @return {Promise<void>}
    */
   async removeBlob (path) {
-
+    await this.ctx.post(`image/remove`, {
+      json: {
+        fileId: path
+      }
+    }).json()
   }
 
   /**

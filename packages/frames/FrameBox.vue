@@ -15,18 +15,25 @@
       </div>
       <div class="animations">
         <div v-for="animation in animations" :key="animation.name" class="animation-item"
-             :class="currentAnimation.name === animation.name? 'is-active': ''">
-          <div class="en-name" @click="setAnimation(animation)">{{animation.name}}</div>
-          <el-button class="op" type="text" v-if="isEdit" size="mini" icon="el-icon-edit" @click="editAnimation(animation)" />
+             :class="currentAnimation.name === animation.name? 'is-active': ''"
+             @click="setAnimation(animation)">
+          <div class="en-name">{{animation.name}}</div>
         </div>
       </div>
     </el-col>
     <el-col :span="15">
+      <div style="margin: 0 auto;text-align: center;">
+        <el-radio-group v-model="previewType" size="mini">
+          <el-radio-button label="文字"></el-radio-button>
+          <el-radio-button label="方块"></el-radio-button>
+        </el-radio-group>
+        <el-button class="op" type="text" v-if="isEdit" size="mini" icon="el-icon-edit" @click="editAnimation(currentAnimation)" />
+      </div>
       <div class="frame-preview" :class="[previewType!=='文字'?'shadow': '']">
-        <div v-if="currentAnimation && previewType==='rect'" class="preview-box" :class="currentAnimation.name">
+        <div v-if="previewType==='方块'" class="preview-box" :class="currentAnimation.name">
           <img :src="PREVIEW_IMG" width="160" height="160">
         </div>
-        <div v-if="currentAnimation && previewType==='text'" class="preview-text" :class="currentAnimation.name">
+        <div v-if="previewType==='文字'" class="preview-text" :class="currentAnimation.name">
           frames@danke</div>
       </div>
     </el-col>
@@ -37,7 +44,7 @@
 <script>
 import RestDAO from '../common/dao/restdao'
 import PREVIEW_IMG from './project.svg'
-import { Message, Row, Col, Tag, Button, Input, Select, Option } from 'element-ui'
+import { Message, Row, Col, Tag, Button, Input, Select, Option, RadioGroup, RadioButton } from 'element-ui'
 import { addAnimationStyle, createSheet } from './keyframe'
 export default {
   name: 'FrameBox',
@@ -47,6 +54,8 @@ export default {
     [Tag.name]: Tag,
     [Button.name]: Button,
     [Input.name]: Input,
+    [RadioGroup.name]: RadioGroup,
+    [RadioButton.name]: RadioButton,
     [Select.name]: Select,
     [Option.name]: Option
   },
@@ -57,10 +66,6 @@ export default {
     height: {
       default: 420
     },
-    previewType: {
-      type: String,
-      default: 'rect'
-    },
     select: {
       type: Boolean,
       default: false
@@ -68,11 +73,14 @@ export default {
   },
   data () {
     return {
+      previewType: '方块',
       PREVIEW_IMG,
       tags: [],
       user: this.ctx.user,
       currentTag: null,
-      currentAnimation: null,
+      currentAnimation: {
+        name: 'none'
+      },
       animations: []
     }
   },
@@ -112,8 +120,13 @@ export default {
       this.tags = tags
     },
     setAnimation (animation) {
+      this.currentAnimation = {
+        name: 'none'
+      }
       addAnimationStyle(this.sheet, animation)
-      this.currentAnimation = animation
+      this.$nextTick(() => {
+        this.currentAnimation = animation
+      })
     },
     async loadAnimation () {
       const query = {}
@@ -191,7 +204,9 @@ export default {
     .en-name {
       flex: 1;
     }
-    .op {
+    &.is-active {
+      background: #00c7ae;
+      color: #fff;
     }
     &:hover {
       .el-button--text {
@@ -201,6 +216,10 @@ export default {
       color: #fff;
     }
   }
+}
+
+.op {
+  float: right;
 }
 .frame-preview {
   height: 100%;

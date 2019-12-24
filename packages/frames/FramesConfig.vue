@@ -60,7 +60,7 @@
         动画CSS
       </div>
     </div>
-    <div class="field has-addons" style="height: 220px;" v-if="editMode === 'css'"> 
+    <div class="field has-addons" style="height: 220px;" v-if="editMode === 'css'">
       <textarea v-model="animation.cssFrame" style="width: 100%; height: 200px;"></textarea>
     </div>
 
@@ -87,12 +87,10 @@
         </div>
       </div>
     </div>
-
     <div class="field has-addons">
-      <a class="button is-success is-small" v-if="editMode === 'timeline'" @click="editMode='css'">源代码编辑</a>  
-      <a class="button is-success is-small" v-if="editMode === 'css'" @click="editMode='timeline';animation.cssFrame=''">时间线编辑</a>  
+      <a class="button is-success is-small" v-if="editMode === 'timeline'" @click="editMode='css'">源代码编辑</a>
+      <a class="button is-success is-small" v-if="editMode === 'css'" @click="editMode='timeline'; animation.cssFrame=''">时间线编辑</a>
     </div>
-
   </div>
 </div>
 </template>
