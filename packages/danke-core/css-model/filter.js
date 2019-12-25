@@ -1,9 +1,11 @@
 export default {
   blur: 0,
+  opacity: 1,
   grayscale: 0
 }
 
 export function getFilterStyle ({ filter }, device) {
+  const styles = []
   const filtered = []
   if (filter) {
     if (filter.blur > 0) {
@@ -12,10 +14,12 @@ export function getFilterStyle ({ filter }, device) {
     if (filter.grayscale) {
       filtered.push(`grayscale(${filter.grayscale})`)
     }
+    if (filter.opacity != null) {
+      styles.push(`opacity: ${filter.opacity}`)
+    }
   }
   if (filtered.length) {
-    return ['filter:' + filtered.join(' ')]
-  } else {
-    return []
+    styles.push('filter:' + filtered.join(' '))
   }
+  return styles
 }

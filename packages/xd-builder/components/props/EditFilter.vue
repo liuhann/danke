@@ -5,7 +5,7 @@
       模糊
     </div>
     <p class="control">
-      <edit-len v-model="filter.blur" label="" :with-unit="false" unit-label="像素"></edit-len>
+      <edit-len v-model="filter.blur" :with-unit="false" />
     </p>
   </div>
   <div class="field has-addons">
@@ -13,7 +13,15 @@
       灰度
     </div>
     <p class="control">
-      <edit-len v-model="filter.grayscale" label="" :with-unit="false" unit-label="像素"></edit-len>
+      <edit-len v-model="filter.grayscale" :with-unit="false" />
+    </p>
+  </div>
+  <div class="field has-addons">
+    <div class="control field-lb">
+      透明度
+    </div>
+    <p class="control">
+      <edit-len v-model="filter.opacity" :with-unit="false" />
     </p>
   </div>
 </div>
@@ -35,7 +43,7 @@ export default {
     EditLen
   },
   props: {
-    value: {
+    filter: {
       type: Object
     }
   },

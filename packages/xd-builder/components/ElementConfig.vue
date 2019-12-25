@@ -96,7 +96,7 @@
     <edit-border v-model="element.border" v-if="element.border" />
     <edit-shadow v-model="element.shadows" v-if="element.shadows != null" />
     <edit-mask v-model="element.mask" v-if="element.mask" />
-    <edit-filter v-model="element.filter" v-if="element.filter" />
+    <edit-filter :filter="element.filter" v-if="element.filter"/>
     <edit-clip-path v-model="element.clip" v-if="element.clip" />
   </div>
 </nav>
