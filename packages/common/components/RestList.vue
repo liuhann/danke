@@ -7,6 +7,14 @@
       </slot>
     </div>
   </div>
+  <el-pagination
+    background
+    layout="prev, pager, next"
+    :current-page.sync="pageNumber"
+    :current-change="list"
+    :page-size="20"
+    :total="total">
+  </el-pagination>
   <nav class="pagination is-rounded is-small" role="navigation" aria-label="pagination">
     <a class="pagination-previous is-small" @click="previousPage">上一页</a>
     <a class="pagination-next is-small" @click="nextPage">下一页</a>
@@ -20,9 +28,13 @@
 
 <script>
 import RestDAO from '../dao/restdao'
+import { Pagination } from 'element-ui'
 
 export default {
   name: 'RestList',
+  components: {
+    [Pagination.name]: Pagination
+  },
   props: {
     rest: {
       type: String
@@ -46,7 +58,7 @@ export default {
     return {
       pageNumber: 1,
       total: 0,
-      listData: [],
+      listData: []
     }
   },
   mounted () {
