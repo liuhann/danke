@@ -8,6 +8,7 @@
     </div>
   </div>
   <el-pagination
+    v-if="withPagination"
     background
     layout="prev, pager, next"
     :current-page.sync="pageNumber"
@@ -15,14 +16,6 @@
     :page-size="20"
     :total="total">
   </el-pagination>
-  <nav class="pagination is-rounded is-small" role="navigation" aria-label="pagination">
-    <a class="pagination-previous is-small" @click="previousPage">上一页</a>
-    <a class="pagination-next is-small" @click="nextPage">下一页</a>
-    <a class="pagination-next is-small is-primary" @click="closeList">关闭</a>
-    <ul class="pagination-list">
-      {{this.pageNumber}}/ {{this.total}}
-    </ul>
-  </nav>
 </div>
 </template>
 
@@ -48,6 +41,10 @@ export default {
     column: {
       type: String,
       default: 'is-2-tablet is-one-third-mobile'
+    },
+    withPagination: {
+      type: Boolean,
+      default: true
     },
     pageSize: {
       type: Number,

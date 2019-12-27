@@ -31,6 +31,11 @@
         <div>图片</div>
       </el-upload>
     </div>
+
+    <div class="pop-new-block" @click="showImageDialog">
+      <i class="el-icon-picture-outline" />
+      <span>图片</span>
+    </div>
     <div class="clone-scene pop-new-block" @click="$emit('insert', 'shape')">
       <i class="el-icon-files" />
       <span>形状</span>
@@ -39,6 +44,7 @@
     <i class="el-icon-postcard" />
      <span>文本</span>
    </div>
+    <dialog-image-choose ref="dialogChooseImage" @input="imageChoosed"/>
   </div>
   <div class="ptb-10">插件</div>
   <div class="plugins is-clearfix">
@@ -50,7 +56,7 @@
        :on-change="paperFoldImageChoosed">
        <el-button icon="el-icon-s-grid" size="mini" circle/>
      </el-upload>
-     <div class="clone-scene pop-new-block" @click="showChooseBlock">
+     <div class="pop-new-block" @click="showChooseBlock">
        <i class="el-icon-goods" />
        <span>模板元素</span>
      </div>
@@ -68,10 +74,12 @@
 <script>
 import { Popover, Button, Upload, Tabs, TabPane, Dialog } from 'element-ui'
 import DialogChooseFlatIcon from '../../flaticon/DialogChooseFlatIcon'
+import DialogImageChoose from '../../vectors/DialogImageChoose.vue'
 import DialogChooseBlock from './DialogChooseBlock'
 export default {
   name: 'Publish',
   components: {
+    DialogImageChoose,
     DialogChooseBlock,
     DialogChooseFlatIcon,
     [Popover.name]: Popover,
@@ -90,6 +98,11 @@ export default {
     hidePopover () {
       this.popoverShow = false
     },
+
+    imageChoosed (url) {
+      this.$emit('insert', 'image', url)
+      this.hidePopover()
+    },
     imageFileChosed (file) {
       this.$emit('insert', 'image', file.raw)
       this.hidePopover()
@@ -104,6 +117,10 @@ export default {
     },
     showFlatIconPopover () {
       this.$refs.dialogChooseFlatIcon.open()
+      this.hidePopover()
+    },
+    showImageDialog () {
+      this.$refs.dialogChooseImage.open()
       this.hidePopover()
     },
     showChooseBlock () {

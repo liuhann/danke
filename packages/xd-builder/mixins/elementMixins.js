@@ -159,8 +159,12 @@ export default {
       clonedElement.border.width = 0
       clonedElement.size.width = '100vw'
       clonedElement.size.height = '100vw'
-      clonedElement.url = URL.createObjectURL(file)
-      clonedElement.blob = file
+      if (typeof e === 'string') {
+        clonedElement.url = e
+      } else {
+        clonedElement.url = URL.createObjectURL(file)
+        clonedElement.blob = file
+      }
       const style = getElementStyle(clonedElement, this.device)
       clonedElement.style = style
       this.currentScene.elements.push(clonedElement)

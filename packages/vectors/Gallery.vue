@@ -9,11 +9,11 @@
           <el-button size="small" type="primary">点击上传</el-button>
         </el-upload>
         <div class="tool-tags">
-          <el-tag v-for="tag in tags" :key="tag" type="info">{{tag}}</el-tag>
+          <el-tag v-for="tag in tags" :key="tag" @click="changeTag(tag)" :type="currentTag===tag?'success':'info'">{{tag}}</el-tag>
         </div>
       </div>
       <form-edit-dialog :width="480" :options="formOptions" title="Edit Vector" ref="formEditDialog" @save="confirmVectorEdit"></form-edit-dialog>
-      <rest-list rest="danke/vector" ref="restList" column="is-one-fifth-tablet is-one-third-mobile">
+      <rest-list rest="danke/vector" ref="restList" column="is-one-fifth-tablet is-one-third-mobile" :query="query">
         <template v-slot:item="{ item }">
           <div class="media">
             <div class="image" :class="item.url.endsWith('svg')? 'svg': ''">
@@ -58,6 +58,8 @@ export default {
       IMG_SERVER: this.ctx.IMG_SERVER,
       user: this.ctx.user ? this.ctx.user.id : 'anonymous',
       tags: [],
+      currentTag: null,
+      query: {},
       vectorObject: {
         name: '',
         desc: '',
@@ -122,7 +124,15 @@ export default {
         this.$refs.restList.refresh()
       }
     },
-
+    changeTag (tag) {
+      this.currentTag = tag
+      this.query = {
+        tags: tag
+      }
+      this.$nextTick(() => {
+        this.$refs.restList.refresh()
+      })
+    },
     editVector (object) {
       this.$refs.formEditDialog.open(object)
     }
