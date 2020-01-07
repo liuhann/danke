@@ -14,7 +14,7 @@
          column="is-one-fifth-tablet is-one-third-mobile" :query="{creator: user}" :with-pagination="false">
         <template v-slot:item="{ item }">
           <div class="media" @click="chooseImage(item.url)" :class="currentChooseImage===item.url? 'current': ''">
-            <div class="image" :class="item.url.endsWith('svg')? 'svg': ''" :title="image.name">
+            <div class="image" :class="item.url.endsWith('svg')? 'svg': ''" :title="item.name">
               <img :src="getImageUrl(item.url)">
             </div>
           </div>

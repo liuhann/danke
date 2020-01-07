@@ -58,7 +58,7 @@ import sceneMixin from './mixins/sceneMixins'
 import layoutMixin from './mixins/layoutMixin'
 import pluginMixin from './plugin/mixins'
 import keyBindMixin from './mixins/key-binds'
-import { Popover, Button, Upload, Tabs, TabPane, Drawer, Dialog, RadioGroup, RadioButton } from 'element-ui'
+import { Popover, Button, Upload, Tabs, TabPane, Drawer, Dialog } from 'element-ui'
 import ElementConfig from './components/ElementConfig.vue'
 import DialogAudioTap from './components/DialogAudioTap.vue'
 import WorkSceneConfig from './components/WorkSceneConfig.vue'
@@ -358,6 +358,7 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
     overflow: auto;
   }
   .aside {
+    overflow: auto;
     position: absolute;
     right: 0;
     top: 5px;

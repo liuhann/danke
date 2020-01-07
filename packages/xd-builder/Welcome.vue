@@ -2,14 +2,24 @@
   <div class="welcome">
     <nav-bar/>
     <section class="section has-text-centered hero is-medium primary-background">
-      <p class="title is-5 is-spaced has-text-white is-family-sans-serif">
-        设计适用于各种场景的展示页面
-      </p>
       <p class="is-spaced has-text-white is-family-sans-serif">
-        <router-link class="button is-primary is-large" to="/xd">
-          创建新的作品
-        </router-link>
+        <button class="button is-primary is-large">
+          马上开始制作用于各种屏幕的展示作品
+        </button>
       </p>
+      <div class="container">
+        <div class="line-cross">
+          <div class="ratio" v-for="(ratio, index) in ratios" :key="index" @click="xd(ratio.width, ratio.height)">
+            <div class="media-image">
+              <img :src="ratio.img">
+            </div>
+            <div class="media-content">
+              <div class="media-title">{{ratio.name}}</div>
+              <div class="hover">{{ratio.desc}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
     <section class="section" style="background: #fff;">
       <div class="container">
@@ -30,10 +40,39 @@ import { MessageBox } from 'element-ui'
 import Tabs from '../common/components/Tabs.vue'
 import NavBar from '../site/components/NavBar'
 import RestDAO from '../common/dao/restdao'
-import dayjs from 'dayjs'
 import WorkCover from './components/WorkCover.vue'
 import WorksColumn from './components/WorksColumn.vue'
-
+const ratios = [{
+  name: '全面屏手机',
+  width: 400,
+  height: 800,
+  img: '/res/1x2.png',
+  desc: '适用iPhone X/Mate 30等全面屏手机'
+}, {
+  name: '普通屏手机',
+  width: 360,
+  height: 640,
+  img: '/res/9x16.jpg',
+  desc: '适用于传统普通屏幕手机'
+}, {
+  name: '平板电脑(横)',
+  width: 1024,
+  height: 768,
+  img: '/res/4x3.jpg',
+  desc: '适用于iPad等4:3屏幕比例设备'
+}, {
+  name: '桌面电脑',
+  width: 1366,
+  height: 768,
+  img: '/res/16x9.jpg',
+  desc: '适用于桌面显示器、笔记本及电视等设备'
+}, {
+  name: '正方形',
+  width: 640,
+  height: 640,
+  img: '/res/1x1.jpg',
+  desc: '可以在任何设备打开，但四周会空置'
+}]
 const welcomeRatios = {
   '9:16': '2:3',
   '4:3': '4:3',
@@ -69,6 +108,7 @@ export default {
     return {
       isMobile: screen.width < screen.height,
       startNav: 'mobile',
+      ratios,
       templates: [],
       works: [],
       drafts: {
@@ -141,6 +181,10 @@ export default {
       this.shares.books = result.list.filter(work => work.ratio === '4:3' && !work.isDraft)
     },
 
+    xd (width, height) {
+      window.open(`/xd?width=${width}&height=${height}`)
+    },
+
     playWork (work) {
       window.open('/play/fit/' + work._id)
     },
@@ -152,9 +196,6 @@ export default {
     },
     chooseStartWork (ratio) {
       this.$router.push(this.xdUrl + '?ratio=' + screenRatios[ratio] + '&work=new')
-    },
-    formateTime (mill) {
-      return dayjs(mill).format('YYYY-MM-DD HH:mm:ss')
     },
     async deleteWorkDraft (work) {
       await MessageBox.confirm('确认删除此作品', '注意')
@@ -178,6 +219,52 @@ export default {
 }
 .section {
   background-color: #f4f4f4;
+}
+
+.line-cross {
+  margin-top: 20px;
+  display: flex;
+  width: 100%;
+  background: rgba(255,255,255, .1);
+  .ratio {
+    margin: 20px 10px 10px;
+    width: 160px;
+    height: 280px;
+    .media-image {
+      height: 200px;
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: center bottom;
+      }
+    }
+    .media-content {
+      height: 80px;
+      .media-title {
+        text-align: center;
+        font-size: 14px;
+        font-weight: bold;
+        padding: 5px;
+      }
+      .hover {
+        color: #fefefe;
+        text-align: center;
+        display: none;
+        font-size: 12px;
+      }
+    }
+    &:hover {
+      cursor: pointer;
+      .media-image {
+      }
+      .media-title {
+      }
+      .hover {
+        display: block;
+      }
+    }
+  }
 }
 
 .add-work {

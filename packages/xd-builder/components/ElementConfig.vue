@@ -4,7 +4,7 @@
   <div class="basic" v-if="configTab === 'basic'">
     <edit-paper-folding v-if="element.folding" :element="element" />
     <edit-flip v-if="element.type === 1002" :element="element" />
-    <edit-text v-if="element.text" :element="element" />
+    <edit-text v-if="element.text != null" :element="element" />
     <edit-shape v-if="element.shape" :element="element" />
     <edit-font v-if="element.font" v-model="element.font" />
     <edit-image v-if="element.url" v-model="element.url" @blob="imageUpdated" />
