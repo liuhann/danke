@@ -3,11 +3,11 @@
     <nav-bar/>
     <section class="section has-text-centered hero is-medium primary-background">
       <p class="is-spaced has-text-white is-family-sans-serif">
-        <button class="button is-primary is-large">
-          马上开始制作用于各种屏幕的展示作品
+        <button class="button is-primary is-large" @click="newShow = !newShow">
+          创建新的作品
         </button>
       </p>
-      <div class="container">
+      <div class="container new-container" v-if="newShow">
         <div class="line-cross">
           <div class="ratio" v-for="(ratio, index) in ratios" :key="index" @click="xd(ratio.width, ratio.height)">
             <div class="media-image">
@@ -19,6 +19,7 @@
             </div>
           </div>
         </div>
+        <i class="el-icon-circle-close close-new" @click="newShow = false"/>
       </div>
     </section>
     <section class="section" style="background: #fff;">
@@ -37,10 +38,8 @@
 
 <script>
 import { MessageBox } from 'element-ui'
-import Tabs from '../common/components/Tabs.vue'
 import NavBar from '../site/components/NavBar'
 import RestDAO from '../common/dao/restdao'
-import WorkCover from './components/WorkCover.vue'
 import WorksColumn from './components/WorksColumn.vue'
 const ratios = [{
   name: '全面屏手机',
@@ -73,39 +72,16 @@ const ratios = [{
   img: '/res/1x1.jpg',
   desc: '可以在任何设备打开，但四周会空置'
 }]
-const welcomeRatios = {
-  '9:16': '2:3',
-  '4:3': '4:3',
-  '16:9': '3:2'
-}
-const textAdjusts = {
-  '9:16': 2,
-  '4:3': 0.8,
-  '16:9': 0.7
-}
-const screenRatios = {
-  'mobile': '9:16',
-  'widescreen': '16:9',
-  'books': '4:3'
-}
 export default {
   name: 'Welcome',
   components: {
     WorksColumn,
-    WorkCover,
-    Tabs,
     NavBar
   },
-  filters: {
-    displayRatio (r) {
-      return welcomeRatios[r] || '1:1'
-    },
-    textAdjust (r) {
-      return textAdjusts[r] || 3
-    }
-  },
+  filters: { },
   data () {
     return {
+      newShow: false,
       isMobile: screen.width < screen.height,
       startNav: 'mobile',
       ratios,
@@ -194,9 +170,6 @@ export default {
     chooseDraftWork (work) {
       this.$router.push(this.xdUrl + '?&work=' + work._id + '&ratio=' + work.ratio)
     },
-    chooseStartWork (ratio) {
-      this.$router.push(this.xdUrl + '?ratio=' + screenRatios[ratio] + '&work=new')
-    },
     async deleteWorkDraft (work) {
       await MessageBox.confirm('确认删除此作品', '注意')
       await this.workdao.delete(work)
@@ -221,11 +194,17 @@ export default {
   background-color: #f4f4f4;
 }
 
+.new-container {
+  background: rgba(255,255,255, .1);
+  border-radius: 10px;
+  .close-new {
+    font-size: 16px;
+  }
+}
 .line-cross {
   margin-top: 20px;
   display: flex;
   width: 100%;
-  background: rgba(255,255,255, .1);
   .ratio {
     margin: 20px 10px 10px;
     width: 160px;
