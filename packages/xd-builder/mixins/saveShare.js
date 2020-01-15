@@ -20,18 +20,6 @@ export default {
   },
   methods: {
     /**
-     * 新增作品
-     * @param ratio
-     */
-    newWork (ratio) {
-      this.work.ratio = ratio
-      this.work.id = shortid()
-      this.work.title = '我的作品'
-      this.work.isNew = true
-      this.addNewScene()
-    },
-
-    /**
     * 保存作品内容
     */
     async saveWork (isPublish) {

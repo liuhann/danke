@@ -43,8 +43,8 @@ import RestDAO from '../common/dao/restdao'
 import WorksColumn from './components/WorksColumn.vue'
 const ratios = [{
   name: '全面屏手机',
-  width: 400,
-  height: 800,
+  width: 414,
+  height: 896,
   img: '/res/1x2.png',
   desc: '适用iPhone X/Mate 30等全面屏手机'
 }, {

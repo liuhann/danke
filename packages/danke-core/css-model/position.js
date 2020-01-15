@@ -1,6 +1,5 @@
 import { getLength } from '../utils/common'
 export default {
-  type: 'absolute',
   horizontal: 'center',
   vertical: 'center',
   offsetX: '0vw',

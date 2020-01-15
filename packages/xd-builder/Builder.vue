@@ -65,7 +65,9 @@ import WorkSceneConfig from './components/WorkSceneConfig.vue'
 import { TypeEnum } from '../danke-core/elements/index'
 import RenderElement from './RenderElement.vue'
 import { addStyle, createSheet } from '../frames/keyframe'
+import { shortid } from '../utils/string'
 import PopoverNew from './components/PopoverNew.vue'
+import Moveable from 'vue-moveable'
 import DialogChooseFlatIcon from '../flaticon/DialogChooseFlatIcon'
 import BACKGROUND from '../danke-core/css-model/background'
 import 'element-ui/packages/theme-chalk/lib/icon.css'
@@ -96,6 +98,10 @@ export default {
         ratio: '',
         id: '',
         title: '',
+        screen: {
+          width: 0,
+          height: 0
+        },
         audioUrl: '', // 音频播放的地址
         audioName: '', // 音频名称（只用于显示）
         audioTicks: [], // 音频切换的节拍
@@ -139,15 +145,28 @@ export default {
 
   },
   mounted () {
-    let workId = this.$route.query.work || 'new'
-    let ratio = this.$route.query.ratio || '9:16'
-    if (workId === 'new') {
-      this.newWork(ratio)
+    let workId = this.$route.query.work
+    if (!workId) {
+      this.newWork()
     } else {
       this.fetchWork(workId)
     }
   },
   methods: {
+    /**
+     * 新增作品
+     */
+    newWork () {
+      this.work.screen = {
+        width: parseInt(this.$route.query.width) || 414,
+        height: parseInt(this.$route.query.height) || 896
+      }
+      this.work.id = shortid()
+      this.work.title = '我的作品'
+      this.work.isNew = true
+      this.addNewScene()
+    },
+
     async fetchWork (workId) {
       const work = await this.workdao.getOne(workId)
       this.openWork(work)
@@ -235,6 +254,7 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
   height: 100%;
   overflow: hidden;
   background-color: #f5f5f4;
+  // 编辑容器
   .scene-container {
     position: absolute;
     left: 0;
@@ -242,6 +262,8 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
     bottom: 0;
     right: 320px;
     overflow: auto;
+    display: flex;
+    justify-content: center;
     .tag {
       z-index: 999;
       position: absolute;
@@ -276,12 +298,12 @@ html.has-navbar-fixed-top, body.has-navbar-fixed-top {
       touch-action: none;
       position: absolute;
       border: 1px solid #eee;
-      /*border-radius: 10px;*/
+      border-radius: 5px;
       top: 5px;
       z-index: 10;
       overflow: hidden;
       perspective: 500px;
-      box-shadow: 0px 0px 0px 3px #e6e6e6;
+      box-shadow: 0px 0px 0px 1px #e6e6e6;
       .btn-audio {
         position: absolute;
         left: 10px;

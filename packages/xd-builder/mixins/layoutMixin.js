@@ -8,28 +8,14 @@ export default {
   data () {
     return {
       zoom: 1,
-      deviceOrigin: {
-        width: 360,
-        height: 640
-      },
       devicePadding: [5, 5]
-    }
-  },
-  provide () {
-    return {
-      device: this.device,
-      zoom: this.zoom,
-      zoomIn: this.zoomIn,
-      zoomOut: this.zoomOut,
-      zoomCenter: this.zoomCenter,
-      setLeftToggleShow: this.setLeftToggleShow
     }
   },
   computed: {
     device () {
       return {
-        width: this.deviceOrigin.width * this.zoom,
-        height: this.deviceOrigin.height * this.zoom
+        width: this.work.screen.width * this.zoom,
+        height: this.work.screen.height * this.zoom
       }
     },
     deviceStyle () {
@@ -42,9 +28,6 @@ export default {
       }
       return styles.join(';')
     }
-  },
-  mounted () {
-    this.zoomCenter()
   },
   methods: {
     initSceneContainer () {
@@ -59,11 +42,11 @@ export default {
       this.reflow(this.scenes)
     },
     zoomCenter () {
-      const ratio = this.ratio || this.$route.query.ratio || '9:16'
       const containerEl = this.$refs.sceneContainer
-      const paddings = this.devicePadding
-      this.zoom = 1
-      this.deviceOrigin = fitToContainer(ratio, containerEl.clientWidth - paddings[0] * 2, containerEl.clientHeight - paddings[1] * 2)
+      if (this.ratio) {
+        const paddings = this.devicePadding
+        this.zoom = 1
+      }
       this.$nextTick(() => {
         let x = (containerEl.clientWidth - paddings[0] * 2 - this.deviceOrigin.width) / 2
         let y = 0

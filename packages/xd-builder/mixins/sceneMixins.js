@@ -23,7 +23,7 @@ export default {
       // 设置默认名称与ID
       scene.name = '场景 ' + (this.work.scenes.length + 1)
       scene.id = shortid()
-      scene.ratio = this.work.ratio
+      scene.screen = this.work.screen
       // 继承使用之前的颜色
       if (this.currentScene) {
         scene.background.colors = this.currentScene.background.colors || ['rgba(0,0,0,0)']
