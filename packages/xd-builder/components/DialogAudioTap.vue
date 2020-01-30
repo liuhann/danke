@@ -47,7 +47,7 @@
 
 <script>
 import { Dialog, Loading } from 'element-ui'
-import ImageDAO from '../../common/dao/imagedao'
+import ImageDAO from '../utils/imagedao'
 import RestDAO from '../../common/dao/restdao'
 import { Howl } from 'howler'
 export default {

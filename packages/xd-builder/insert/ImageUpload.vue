@@ -16,7 +16,7 @@
 
 <script>
 import RestDAO from '../../common/dao/restdao'
-import ImageDAO from '../../common/dao/imagedao'
+import ImageDAO from '../utils/imagedao'
 import { Upload, Button } from 'element-ui'
 export default {
   components: {
@@ -41,7 +41,7 @@ export default {
   },
 
   methods: {
-    async loadImages() {
+    async loadImages () {
       const result = await this.restdao.list({
         page: 1,
         count: 20
@@ -72,6 +72,6 @@ export default {
 
 <style lang="scss">
 #my-uploaded-images {
-  
+
 }
 </style>

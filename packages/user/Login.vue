@@ -109,7 +109,7 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="scss">
 .login-panel {
   width: 320px;
   margin: 40px auto;

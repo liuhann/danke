@@ -120,7 +120,7 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="scss">
 .work-cover {
   position: relative;
   overflow: hidden;

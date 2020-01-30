@@ -4,7 +4,7 @@
 import { Loading, Message, MessageBox } from 'element-ui'
 import { clone } from '../../utils/object'
 import { shortid } from '../../utils/string'
-import ImageDAO from '../../common/dao/imagedao'
+import ImageDAO from '../utils/imagedao'
 import RestDAO from '../../common/dao/restdao'
 
 export default {

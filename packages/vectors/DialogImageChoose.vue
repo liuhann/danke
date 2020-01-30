@@ -33,7 +33,6 @@
 import RestList from '../common/components/RestList'
 import { Dialog, TabPane, Tabs, Upload, Button } from 'element-ui'
 import RestDAO from '../common/dao/restdao'
-import ImageDAO from '../common/dao/imagedao'
 export default {
   name: 'DialogImageChoose',
   components: {

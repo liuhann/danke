@@ -10,11 +10,11 @@
 import LogoWrapper from './LogoWrapper'
 export default {
   name: 'DankeHeader',
-  components: {LogoWrapper}
+  components: { LogoWrapper }
 }
 </script>
 
-<style lang="less">
+<style lang="scss">
 @height: 56px;
 @padding: 10px;
 header {

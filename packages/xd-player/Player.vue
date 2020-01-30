@@ -173,7 +173,7 @@ export default {
   }
 }
 </script>
-<style lang="less">
+<style lang="scss">
   .device.player {
     position: relative;
     overflow: hidden;

@@ -42,6 +42,8 @@
 
 <script>
 import { Dialog, TabPane, Tabs, Upload, Button } from 'element-ui'
+import ImageDAO from './utils/imagedao'
+import RestDAO from '../common/dao/restdao'
 import ImageUpload from './insert/ImageUpload.vue'
 
 export default {
@@ -58,7 +60,7 @@ export default {
     this.restdao = new RestDAO(this.ctx, 'danke/image')
   },
   methods: {
-    async fileChoosed () {
+    async fileChoosed (file) {
       const result = await this.imagedao.uploadBlob(file.raw, `images`)
       await this.restdao.create({
         url: result.name,
@@ -83,45 +85,45 @@ export default {
   opacity: 0;
 }
 
-  aside.insert-container {
-    flex-shrink: 0;
-    position: relative;
+aside.insert-container {
+  flex-shrink: 0;
+  position: relative;
+  display: flex;
+  .category-side {
+    width: 76px;
+    background: #0e1318;
     display: flex;
-    .category-side {
-      width: 76px;
-      background: #0e1318;
+    flex-direction: column;
+    .category {
       display: flex;
       flex-direction: column;
-      .category {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        color: #aaacad;
-        padding: 12px 0;
-        &:hover {
-          cursor: pointer;
-          color: #ddd;
-        }
-        &.current {
-          background: #293039;
-        }
-        i {
-          margin: 2px 0 2px;
-          font-size: 24px;
-        }
-        span {
-          font-size: 14px;
-          display: block;
-        }
+      justify-content: center;
+      align-items: center;
+      color: #aaacad;
+      padding: 12px 0;
+      &:hover {
+        cursor: pointer;
+        color: #ddd;
+      }
+      &.current {
+        background: #293039;
+      }
+      i {
+        margin: 2px 0 2px;
+        font-size: 24px;
+      }
+      span {
+        font-size: 14px;
+        display: block;
       }
     }
-    .element-container {
-      background: #293039;
-      padding-left: 16px;
-      padding-right: 16px;
-      padding-top: 16px;
-      width: 352px;
-    }
   }
+  .element-container {
+    background: #293039;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 16px;
+    width: 352px;
+  }
+}
 </style>

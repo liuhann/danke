@@ -8,17 +8,12 @@ import VueRouter from 'vue-router'
 
 import site from '../packages/site'
 import user from '../packages/user'
-import frameTool from '../packages/frames'
 import restclient from '../packages/rest-client'
-// import ybstory from '../packages/story'
-import xd from '../packages/xd-builder'
-import player from '../packages/xd-player'
-import vectors from '../packages/vectors'
-import slideLite from '../packages/slide-lite'
 import flaticon from '../packages/flaticon'
-
 import initClient from '../packages/common/utils/initClient'
 import initEventEmitter from '../packages/common/utils/initEventEmitter'
+
+import dankePackages from './danke'
 
 Vue.use(VueRouter)
 window.Vue = Vue
@@ -32,8 +27,8 @@ const boot = new AsyncBoot({
   IMG_SERVER: 'http://image.danke.fun',
   mount: '#app',
   packages: [
-    site, user, frameTool, xd, player, vectors, slideLite, restclient, flaticon
-  ],
+    site, user, restclient, flaticon
+  ].concat(dankePackages),
   started: async (ctx, next) => {
     ctx._router.beforeEach((to, from, next) => {
       to.meta.ctx = ctx

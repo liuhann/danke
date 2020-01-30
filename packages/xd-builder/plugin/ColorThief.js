@@ -1,7 +1,5 @@
-import ColorThief from 'color-thief'
 import { ChinaColors } from '../../utils/colors'
 
-const colorThief = new ColorThief()
 function getNearestByRGB (rgbColor) {
   let result = {
     rgb: rgbColor,
