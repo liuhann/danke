@@ -1,54 +1,55 @@
 <template>
-  <div id="xd">
-    <div class="scene-container" ref="sceneContainer" @click.self="sceneClick">
-      <!--渲染当前的场景-->
-      <div class="device" ref="device" :style="deviceStyle">
-        <div class="screen" v-if="currentScene" :style="currentScene.style" @click.self="sceneClick">
-          <render-element
-            v-for="(element, index) of currentScene.elements"
-            stage="in"
-            :element="element"
-            :key="element.id"
-            :index="index"
-            :ref="element.id"
-            :selected="currentElement === element"
-            @click="chooseElement(element, $event)"/>
-          <!--文件被选中的遮罩-->
-          <div class="mask" v-if="currentElement" :style="maskStyle">
-            <!--右下角corner-->
-            <div class="corner-rb"></div>
-          </div>
+<div id="xd">
+  <left-aside />
+  <section class="scene-container" ref="sceneContainer" @click.self="sceneClick">
+    <!--渲染当前的场景-->
+    <div class="device" ref="device" :style="deviceStyle">
+      <div class="screen" v-if="currentScene" :style="currentScene.style" @click.self="sceneClick">
+        <render-element
+          v-for="(element, index) of currentScene.elements"
+          stage="in"
+          :element="element"
+          :key="element.id"
+          :index="index"
+          :ref="element.id"
+          :selected="currentElement === element"
+          @click="chooseElement(element, $event)"/>
+        <!--文件被选中的遮罩-->
+        <div class="mask" v-if="currentElement" :style="maskStyle">
+          <!--右下角corner-->
+          <div class="corner-rb" />
         </div>
-        <el-button v-if="work.audioUrl" class="btn-audio" icon="el-icon-headset" size="mini" circle @click="editTicking"/>
       </div>
-      <!--场景操作-->
-      <span class="tag is-white">{{work.scenes.indexOf(currentScene)+1}}/{{work.scenes.length}}</span>
-      <el-button class="btn-run" icon="el-icon-caret-right" size="mini" circle type="success" @click="runWork" />
-      <el-button class="btn-next" icon="el-icon-arrow-right" size="mini" circle @click="nextScene" />
-      <el-button class="btn-prev" icon="el-icon-arrow-left" size="mini" circle @click="previousScene" />
-      <!--PopOver新增场景、元素-->
-      <popover-new @insert="insert"/>
+      <el-button v-if="work.audioUrl" class="btn-audio" icon="el-icon-headset" size="mini" circle @click="editTicking"/>
     </div>
-    <div class="aside">
-      <element-config
-        v-if="currentElement"
-        :element="currentElement"
-        :scene="currentScene"
-        :work="work"
-        @remove="deleteElement"
-        @z="moveElementZ" />
-      <work-scene-config
-        v-if="!currentElement && currentScene && currentScene.id"
-        :scene="currentScene"
-        :work="work"
-        @choose-element="chooseElement"
-        @choose-scene="chooseScene"
-        @edit-tick="editTicking"
-        @delete-scene="deleteCurrentScene"/>
-    </div>
-    <dialog-audio-tap ref="dialogAudioList" @audio="chooseWorkAudio"/>
-    <dialog-choose-flat-icon ref="dialogChooseFlatIcon" @input="flatIconChoosed"/>
+    <!--场景操作-->
+    <span class="tag is-white">{{work.scenes.indexOf(currentScene)+1}}/{{work.scenes.length}}</span>
+    <el-button class="btn-run" icon="el-icon-caret-right" size="mini" circle type="success" @click="runWork" />
+    <el-button class="btn-next" icon="el-icon-arrow-right" size="mini" circle @click="nextScene" />
+    <el-button class="btn-prev" icon="el-icon-arrow-left" size="mini" circle @click="previousScene" />
+    <!--PopOver新增场景、元素-->
+    <popover-new @insert="insert"/>
+  </section>
+  <div class="aside">
+    <element-config
+      v-if="currentElement"
+      :element="currentElement"
+      :scene="currentScene"
+      :work="work"
+      @remove="deleteElement"
+      @z="moveElementZ" />
+    <work-scene-config
+      v-if="!currentElement && currentScene && currentScene.id"
+      :scene="currentScene"
+      :work="work"
+      @choose-element="chooseElement"
+      @choose-scene="chooseScene"
+      @edit-tick="editTicking"
+      @delete-scene="deleteCurrentScene"/>
   </div>
+  <dialog-audio-tap ref="dialogAudioList" @audio="chooseWorkAudio"/>
+  <dialog-choose-flat-icon ref="dialogChooseFlatIcon" @input="flatIconChoosed"/>
+</div>
 </template>
 
 <script>
@@ -58,7 +59,8 @@ import sceneMixin from './mixins/sceneMixins'
 import layoutMixin from './mixins/layoutMixin'
 import pluginMixin from './plugin/mixins'
 import keyBindMixin from './mixins/key-binds'
-import { Popover, Button, Upload, Tabs, TabPane, Drawer, Dialog } from 'element-ui'
+import { Popover, Button, Upload, Tabs, TabPane, Drawer, Dialog, Menu, MenuItem } from 'element-ui'
+import LeftAside from './LeftAside.vue'
 import ElementConfig from './components/ElementConfig.vue'
 import DialogAudioTap from './components/DialogAudioTap.vue'
 import WorkSceneConfig from './components/WorkSceneConfig.vue'
@@ -80,13 +82,16 @@ export default {
     WorkSceneConfig,
     DialogAudioTap,
     PopoverNew,
+    LeftAside,
     [Popover.name]: Popover,
     [Dialog.name]: Dialog,
     [Button.name]: Button,
     [Upload.name]: Upload,
     [Tabs.name]: Tabs,
     [TabPane.name]: TabPane,
-    [Drawer.name]: Drawer
+    [Drawer.name]: Drawer,
+    [Menu.name]: Menu,
+    [MenuItem.name]: MenuItem
   },
   mixins: [elementMixin, saveShareMixin, sceneMixin, keyBindMixin, layoutMixin, pluginMixin],
   props: {
@@ -238,32 +243,19 @@ export default {
 </script>
 
 <style lang="scss">
-html.has-navbar-fixed-top, body.has-navbar-fixed-top {
-  padding-top: 0;
-}
-.ptb-10 {
-  padding-bottom: 10px;
-  padding-top: 10px;
-}
 #xd {
   @import './common.scss';
-  position: relative;
-  left: 0;
-  top: 0;
-  width: 100%;
   height: 100%;
-  overflow: hidden;
+  display: flex;
+  flex-wrap: nowrap;
+  height: 100%;
   background-color: #f5f5f4;
+
   // 编辑容器
-  .scene-container {
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    right: 320px;
-    overflow: auto;
-    display: flex;
-    justify-content: center;
+  section.scene-container {
+    flex-grow: 1;
+    position: relative;
+    overflow: hidden;
     .tag {
       z-index: 999;
       position: absolute;

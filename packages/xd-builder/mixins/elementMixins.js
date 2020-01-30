@@ -154,11 +154,6 @@ export default {
       clonedElement.id = shortid()
       clonedElement.name = '图片'
       clonedElement.visible = true
-      clonedElement.position.horizontal = 'center'
-      clonedElement.position.vertical = 'center'
-      clonedElement.border.width = 0
-      clonedElement.size.width = '100vw'
-      clonedElement.size.height = '100vw'
       if (typeof e === 'string') {
         clonedElement.url = e
       } else {
