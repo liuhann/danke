@@ -1,7 +1,8 @@
 <template>
 <div id="xd">
   <left-aside />
-  <section class="scene-container" ref="sceneContainer" @click.self="sceneClick">
+  <scene-container :scene="currentScene" :screen="work.screen"/>
+  <section v-if="false" class="scene-container" ref="sceneContainer" @click.self="sceneClick">
     <!--渲染当前的场景-->
     <div class="device" ref="device" :style="deviceStyle">
       <div class="screen" @dragover="screenDragOver" v-if="currentScene" :style="currentScene.style" @click.self="sceneClick">
@@ -53,6 +54,7 @@
 </template>
 
 <script>
+import SceneContainer from './SceneContainer.vue'
 import elementMixin from './mixins/elementMixins'
 import saveShareMixin from './mixins/saveShare'
 import sceneMixin from './mixins/sceneMixins'
@@ -75,6 +77,7 @@ import 'element-ui/packages/theme-chalk/lib/icon.css'
 export default {
   name: 'Builder',
   components: {
+    SceneContainer,
     DialogChooseFlatIcon,
     RenderElement,
     ElementConfig,
@@ -231,9 +234,6 @@ export default {
         default:
           break
       }
-    },
-    screenDragOver (ev) {
-      ev.preventDefault()
     },
     // 执行自定义的代码
     execScript (script) {

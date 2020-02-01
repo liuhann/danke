@@ -20,6 +20,7 @@
     "howler": "^2.1.2",
     "image-preloader": "^1.1.1",
     "imagesloaded": "^4.1.4",
+    "interactjs": "^1.8.2",
     "jszip": "^3.2.2",
     "ky": "^0.8.0",
     "merge": "^1.2.1",
