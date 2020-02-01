@@ -3,12 +3,14 @@
   <el-upload
     :auto-upload="false" action="https://jsonplaceholder.typicode.com/posts/"
     :show-file-list="false"
+    multiple
+    class="upload-container"
     :on-change="fileChoosed">
     <el-button type="primary">点击上传图片/视频</el-button>
   </el-upload>
   <div class="image-list">
     <div class="image-item" v-for="image in images" :key="image._id">
-      <img :src="getImageUrl(image.url)" />
+      <img :src="getImageUrl(image.url)" draggable />
     </div>
   </div>
 </div>
@@ -17,6 +19,7 @@
 <script>
 import RestDAO from '../../common/dao/restdao'
 import ImageDAO from '../utils/imagedao'
+import ky from 'ky'
 import { Upload, Button } from 'element-ui'
 export default {
   components: {
@@ -49,21 +52,26 @@ export default {
       this.images = result.list
     },
 
-    async fileChoosed (file) {
+    // may be choose multiple files, should do auto upload on choose
+    // each file would trigger fileChoosed event
+    async fileChoosed (file, uploadFiles) {
       const result = await this.imagedao.uploadBlob(file.raw, `images`)
+      const imageInfo = await ky.get(this.IMG_SERVER + '/' + result.name + '?x-oss-process=image/info').json()
+      // write file info
       await this.restdao.create({
         url: result.name,
         name: file.name,
-        size: file.size
+        size: file.size,
+        height: parseInt(imageInfo.ImageHeight.value),
+        width: parseInt(imageInfo.ImageWidth.value)
       })
-      this.$refs.myImageList.refresh()
     },
 
     getImageUrl (url) {
       if (url.endsWith('.svg')) {
         return this.IMG_SERVER + '/' + url
       } else {
-        return this.IMG_SERVER + '/' + url + '?x-oss-process=image/format,jpg/quality,Q_80/resize,m_fill,h_200,w_200'
+        return this.IMG_SERVER + '/' + url + '?x-oss-process=image/format,jpg/quality,Q_100/resize,m_fill,h_100,w_100'
       }
     }
   }
@@ -72,6 +80,19 @@ export default {
 
 <style lang="scss">
 #my-uploaded-images {
-
+  .upload-container {
+    display: flex;
+    justify-content: center;
+    padding: 10px 0px;
+  }
+  .image-list {
+    display: flex;
+    flex-wrap: wrap;
+    .image-item {
+      width: 100px;
+      height: 100px;
+      margin: 3px;
+    }
+  }
 }
 </style>

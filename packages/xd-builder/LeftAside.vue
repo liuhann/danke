@@ -1,9 +1,9 @@
 <template>
   <aside class="insert-container">
     <div class="category-side">
-      <div class='category' :class="current === 'template'? 'current': ''" @click="toggleTo('template')">
+      <div class='category' :class="current === 'scene'? 'current': ''" @click="toggleTo('scene')">
         <i class="el-icon-files"/>
-        <span>模板</span>
+        <span>场景</span>
       </div>
       <div class="category" :class="current === 'image'? 'current': ''" @click="toggleTo('image')">
         <i class="el-icon-picture-outline"/>
@@ -34,6 +34,13 @@
       <transition name="fade">
         <keep-alive>
           <image-upload v-if="current === 'image'"/>
+        </keep-alive>
+      </transition>
+      <transition name="fade">
+        <keep-alive>
+          <div class="scene-list" v-if="current === 'scene'">
+            SAcen
+          </div>
         </keep-alive>
       </transition>
     </div>

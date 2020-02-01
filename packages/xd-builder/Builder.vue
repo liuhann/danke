@@ -4,7 +4,7 @@
   <section class="scene-container" ref="sceneContainer" @click.self="sceneClick">
     <!--渲染当前的场景-->
     <div class="device" ref="device" :style="deviceStyle">
-      <div class="screen" v-if="currentScene" :style="currentScene.style" @click.self="sceneClick">
+      <div class="screen" @dragover="screenDragOver" v-if="currentScene" :style="currentScene.style" @click.self="sceneClick">
         <render-element
           v-for="(element, index) of currentScene.elements"
           stage="in"
@@ -30,7 +30,7 @@
     <!--PopOver新增场景、元素-->
     <popover-new @insert="insert"/>
   </section>
-  <div class="aside">
+  <div class="aside" v-if="false">
     <element-config
       v-if="currentElement"
       :element="currentElement"
@@ -231,6 +231,9 @@ export default {
         default:
           break
       }
+    },
+    screenDragOver (ev) {
+      ev.preventDefault()
     },
     // 执行自定义的代码
     execScript (script) {
