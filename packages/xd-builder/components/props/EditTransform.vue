@@ -14,7 +14,7 @@
       </div>
       <div class="control" style="width: 100px">
         <el-select v-model="transform.key" size="mini">
-          <el-option v-for="transformKey of transformKeys" :label="transformKey.label" :value="transformKey.value"/>
+          <el-option v-for="transformKey of transformKeys" :label="transformKey.label" :value="transformKey.value" :key="transformKey"/>
         </el-select>
       </div>
       <div class="control" style="width: 80px">

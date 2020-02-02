@@ -31,7 +31,7 @@
     <!--PopOver新增场景、元素-->
     <popover-new @insert="insert"/>
   </section>
-  <div class="aside" v-if="false">
+  <!-- <div class="aside" v-if="false">
     <element-config
       v-if="currentElement"
       :element="currentElement"
@@ -47,7 +47,7 @@
       @choose-scene="chooseScene"
       @edit-tick="editTicking"
       @delete-scene="deleteCurrentScene"/>
-  </div>
+  </div> -->
   <dialog-audio-tap ref="dialogAudioList" @audio="chooseWorkAudio"/>
   <dialog-choose-flat-icon ref="dialogChooseFlatIcon" @input="flatIconChoosed"/>
 </div>

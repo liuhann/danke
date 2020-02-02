@@ -12,7 +12,7 @@
     </div>
   </div>
   <div class="mask" :style="styleScreen" @dragover="sceneDragOver" @drop="elementDropped">
-    <div v-for="selectee in selectedElements" class="selecting-mask" :key="selectee.id" >
+    <div v-for="selectee in selectedElements" class="selected-node" :key="selectee.id" :style="getRectPositionStyle(selectee)">
     </div>
   </div>
   <div class="dragging-rect" :style="styleDragingRect">
@@ -24,6 +24,7 @@
 import interact from 'interactjs'
 import RenderElement from './RenderElement.vue'
 import { shortid } from '../utils/string'
+import { fitRectIntoBounds, getRectPositionStyle } from './mixins/rectUtils.js'
 export default {
   components: {
     RenderElement
@@ -99,10 +100,13 @@ export default {
     this.initGlobalInteract()
   },
   methods: {
+    /**
+     * 处理全局拖拽事件，全局拖拽主要负责
+     * 1 元素拖拽多选选中处理
+     */
     initGlobalInteract () {
       interact(this.$el).draggable({
         onstart: event => {
-          console.log(event)
           this.dragRect.left = event.x0 - event.rect.left
           this.dragRect.top = event.y0 - event.rect.top
           this.dragRect.visible = true
@@ -131,24 +135,35 @@ export default {
       ev.preventDefault()
     },
 
+    /**
+     * 放置元素到页面
+     */
     elementDropped (ev) {
       ev.preventDefault()
       const data = ev.dataTransfer.getData('Text')
       const element = JSON.parse(data)
-      let width = element.width
-      let height = element.height
-      let x = ev.offsetX
-      let y = ev.offsetY
+      // 获取元素自适应到整个画面的高度和宽度
+      let { width, height } = fitRectIntoBounds(element, this.screen)
       const node = this.addNode()
-      node.x = x - width / 2
-      node.y = y - height / 2
+      node.x = ev.offsetX - width / 2
+      node.y = ev.offsetY - height / 2
       node.width = width
       node.height = height
+      // 自动适应到屏幕内部 避免溢出
+      node.x = (node.x < 0) ? 0 : node.x
+      node.y = (node.y < 0) ? 0 : node.y
       if (element.url) {
         node.url = element.url
       }
+      this.selectedElements.push(node)
     },
-
+    fitElementToScene (element, screen) {
+      if (element.width > screen.width || element.height > screen.height) {
+        return fitRectIntoBounds(element, screen)
+      } else {
+        return element
+      }
+    },
     addNode () {
       const node = {
         id: shortid()
@@ -171,7 +186,8 @@ export default {
       this.screenRect.x = (this.$el.clientWidth - this.screen.width) / 2
       this.screenRect.y = 20
       console.log(this.$el.clientWidth, this.$el.clientHeight)
-    }
+    },
+    getRectPositionStyle
   }
 }
 </script>
@@ -189,7 +205,11 @@ export default {
   }
   .mask {
     position: absolute;
-    border: 1px solid #fff;
+    box-shadow: 0 0 0 1px #fff;
+    .selected-node {
+      position: absolute;
+      border: 1px solid #42A5F5;
+    }
   }
   .dragging-rect {
     position: absolute;
