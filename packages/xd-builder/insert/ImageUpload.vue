@@ -10,7 +10,7 @@
   </el-upload>
   <div class="image-list">
     <div class="image-item" v-for="image in images" :key="image._id">
-      <img :src="getImageUrl(image.url)" draggable />
+      <img :src="getImageUrl(image.url)" draggable @dragstart="dragStart(image, $event)"/>
     </div>
   </div>
 </div>
@@ -18,10 +18,12 @@
 
 <script>
 import RestDAO from '../../common/dao/restdao'
+import imageUtils from '../mixins/imageUtils.js'
 import ImageDAO from '../utils/imagedao'
 import ky from 'ky'
 import { Upload, Button } from 'element-ui'
 export default {
+  mixins: [imageUtils],
   components: {
     [Button.name]: Button,
     [Upload.name]: Upload
@@ -67,12 +69,9 @@ export default {
       })
     },
 
-    getImageUrl (url) {
-      if (url.endsWith('.svg')) {
-        return this.IMG_SERVER + '/' + url
-      } else {
-        return this.IMG_SERVER + '/' + url + '?x-oss-process=image/format,jpg/quality,Q_100/resize,m_fill,h_100,w_100'
-      }
+    dragStart (image, ev) {
+      // stringify image info as text
+      ev.dataTransfer.setData('Text', JSON.stringify(image))
     }
   }
 }

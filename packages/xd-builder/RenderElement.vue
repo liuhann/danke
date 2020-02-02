@@ -1,27 +1,29 @@
 <template>
 <div :id="'element-' + element.id"
      @click="$emit('click')"
-     class="element" :class="[element.visible?'':'hidden', element.className, 'type' + element.type]" :style="element.style">
+     class="element" :class="[element.hidden? 'hidden' : '', element.className]" :style="getElementPositionStyle(element)">
   <!--图片渲染-->
-  <img v-if="element.type === TypeEnum.IMAGE" :id="'img-' + (element.name || element.id)" :src="element.url" :style="element.innerStyle || ''">
+  <img v-if="element.url" :id="'img-' + (element.name || element.id)" :src="getImageUrl(element.url, element.width, element.height)" :style="element.innerStyle || ''">
   <!--文本渲染情况下 文本内容-->
-  <span v-if="element.type === TypeEnum.TEXT" v-html="element.text" :class="element.className" :data-content="element.text"></span>
+  <span v-if="element.text" v-html="element.text" :class="element.className" :data-content="element.text"></span>
 </div>
 </template>
 
 <script>
-import { TypeEnum } from '../danke-core/elements/index'
-import PaperFolding from '../danke-plugins/paperfold/PaperFolding.vue'
+import imageUtils from './mixins/imageUtils.js'
 export default {
   name: 'RenderElement',
+  mixins: [imageUtils],
   components: {
-    PaperFolding
   },
   props: {
     // 渲染的阶段，可以为 in/dura/out
     stage: {
       type: String,
       default: 'in'
+    },
+    screen: {
+      type: Object
     },
     element: { // 元素定义
       type: Object
@@ -44,8 +46,16 @@ export default {
     }
   },
   methods: {
+    getElementPositionStyle (element) {
+      return {
+        left: element.x + 'px',
+        top: element.y + 'px',
+        width: element.width + 'px',
+        height: element.height + 'px'
+      }
+    },
     render (stage) {
-      
+
     },
     getImageDiv () {
       return this.$refs.img
@@ -57,5 +67,6 @@ export default {
 <style lang="scss">
 .element {
   overflow: hidden;
+  position: absolute;
 }
 </style>

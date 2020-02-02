@@ -48,7 +48,6 @@
 </template>
 
 <script>
-import { Dialog, TabPane, Tabs, Upload, Button } from 'element-ui'
 import ImageDAO from './utils/imagedao'
 import RestDAO from '../common/dao/restdao'
 import ImageUpload from './insert/ImageUpload.vue'

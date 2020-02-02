@@ -1,7 +1,7 @@
 <template>
 <section id="scene-container">
   <div class="screen" :style="styleScreen">
-    <div class="scene" @dragover="sceneDragOver" v-if="scene">
+    <div class="scene" v-if="scene">
       <render-element
           v-for="(element, index) of scene.elements"
           stage="in"
@@ -11,16 +11,23 @@
           :ref="element.id"/>
     </div>
   </div>
-  <div class="mask">
-    <div class="dragging-rect" :style="styleDragingRect">
+  <div class="mask" :style="styleScreen" @dragover="sceneDragOver" @drop="elementDropped">
+    <div v-for="selectee in selectedElements" class="selecting-mask" :key="selectee.id" >
     </div>
+  </div>
+  <div class="dragging-rect" :style="styleDragingRect">
   </div>
 </section>
 </template>
 
 <script>
 import interact from 'interactjs'
+import RenderElement from './RenderElement.vue'
+import { shortid } from '../utils/string'
 export default {
+  components: {
+    RenderElement
+  },
   props: {
     scene: {
       type: Object
@@ -52,6 +59,16 @@ export default {
         width: 0,
         height: 0,
         visible: false
+      },
+      selectedElements: []
+    }
+  },
+
+  watch: {
+    'screen': {
+      deep: true,
+      handler () {
+        this.fitToCenter()
       }
     }
   },
@@ -85,6 +102,7 @@ export default {
     initGlobalInteract () {
       interact(this.$el).draggable({
         onstart: event => {
+          console.log(event)
           this.dragRect.left = event.x0 - event.rect.left
           this.dragRect.top = event.y0 - event.rect.top
           this.dragRect.visible = true
@@ -108,8 +126,39 @@ export default {
         }
       }).styleCursor(false)
     },
+    // Drag over and set as allow drop
     sceneDragOver (ev) {
       ev.preventDefault()
+    },
+
+    elementDropped (ev) {
+      ev.preventDefault()
+      const data = ev.dataTransfer.getData('Text')
+      const element = JSON.parse(data)
+      let width = element.width
+      let height = element.height
+      let x = ev.offsetX
+      let y = ev.offsetY
+      const node = this.addNode()
+      node.x = x - width / 2
+      node.y = y - height / 2
+      node.width = width
+      node.height = height
+      if (element.url) {
+        node.url = element.url
+      }
+    },
+
+    addNode () {
+      const node = {
+        id: shortid()
+      }
+      this.scene.elements.push(node)
+      return node
+    },
+
+    chooseElement (element) {
+
     },
 
     sceneClick () {
@@ -139,11 +188,13 @@ export default {
     box-shadow: 0 0 6px #ddd;
   }
   .mask {
-    .dragging-rect {
-      position: absolute;
-      border: 1px solid #42A5F5;
-      background: #3366665e;
-    }
+    position: absolute;
+    border: 1px solid #fff;
+  }
+  .dragging-rect {
+    position: absolute;
+    border: 1px solid #42A5F5;
+    background: #3366665e;
   }
 }
 </style>
