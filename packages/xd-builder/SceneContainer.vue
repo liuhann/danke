@@ -1,5 +1,5 @@
 <template>
-<section id="scene-container">
+<section id="scene-container" @mousedown.exact="sceneMouseDown">
   <div class="screen" :style="styleScreen">
     <div class="scene" v-if="scene">
       <render-element
@@ -11,8 +11,8 @@
           :ref="element.id"/>
     </div>
   </div>
-  <div class="mask" :style="styleScreen" @dragover="sceneDragOver" @drop="elementDropped">
-    <div v-for="selectee in selectedElements" class="selected-node" :key="selectee.id" :style="getRectPositionStyle(selectee)">
+  <div class="mask" :style="styleScreen" @dragover="sceneDragOver" @drop="elementDropped" v-if="scene">
+    <div v-for="selectee in scene.elements" :ref="'mask-' + selectee.id" class="selected-node" :key="selectee.id" :style="getMaskStyle(selectee)">
     </div>
   </div>
   <div class="dragging-rect" :style="styleDragingRect">
@@ -24,7 +24,7 @@
 import interact from 'interactjs'
 import RenderElement from './RenderElement.vue'
 import { shortid } from '../utils/string'
-import { fitRectIntoBounds, getRectPositionStyle } from './mixins/rectUtils.js'
+import { fitRectIntoBounds, getRectPositionStyle, isPointInRect } from './mixins/rectUtils.js'
 export default {
   components: {
     RenderElement
@@ -106,7 +106,11 @@ export default {
      */
     initGlobalInteract () {
       interact(this.$el).draggable({
+        /**
+         * 拖拽开始，如果只是点击不会触发拖拽事件。
+         */
         onstart: event => {
+          // 在mousedown时已经处理过
           this.dragRect.left = event.x0 - event.rect.left
           this.dragRect.top = event.y0 - event.rect.top
           this.dragRect.visible = true
@@ -129,6 +133,38 @@ export default {
           console.log('drag end', event)
         }
       }).styleCursor(false)
+    },
+    /**
+     * 进行鼠标点击位置检测，如果点击到元素则选中或保持多个的选择状态， 点到空白则取消所有元素选中
+     */
+    sceneMouseDown (ev) {
+      // 设计区点转换为相对于屏幕的点
+      const rootRect = this.$el.getBoundingClientRect()
+      // 点位置计算 clientX - 容器X - 屏幕X
+      const point = {
+        x: ev.clientX - rootRect.x - this.screenRect.x,
+        y: ev.clientY - rootRect.y - this.screenRect.y
+      }
+      // 判断点击处的元素
+      let targetElement = null
+      for (let element of this.scene.elements) {
+        if (isPointInRect(point, element, 10)) {
+          // 获取第一个 也就是最外层的
+          targetElement = element
+        }
+      }
+      this.mode = 'drag'
+      if (targetElement === null) {
+        // 无选择元素
+        this.setElementSelected(null)
+      } else if (this.selectedElements.indexOf(targetElement) > -1) {
+        // 当前元素已经被选择
+        // 区域切换到移动模式
+        this.mode = 'move'
+      } else {
+        this.setElementSelected(targetElement)
+      }
+      console.log('mouse down', ev)
     },
     // Drag over and set as allow drop
     sceneDragOver (ev) {
@@ -155,31 +191,69 @@ export default {
       if (element.url) {
         node.url = element.url
       }
-      this.selectedElements.push(node)
+      this.setElementSelected(node)
     },
-    fitElementToScene (element, screen) {
-      if (element.width > screen.width || element.height > screen.height) {
-        return fitRectIntoBounds(element, screen)
-      } else {
-        return element
-      }
-    },
+
+    /**
+     * 增加一个节点
+     */
     addNode () {
+      const id = shortid()
       const node = {
-        id: shortid()
+        id,
+        selected: false
       }
       this.scene.elements.push(node)
+
+      this.$nextTick(() => {
+        const el = this.$refs['mask-' + id]
+        const rootRect = this.$el.getBoundingClientRect()
+        if (el.length) {
+          interact(el[0]).resizable({
+            edges: { left: true, right: true, bottom: true, top: true },
+            inertia: true
+          }).on('resizemove', event => {
+            node.width = event.rect.width
+            node.height = event.rect.height
+            node.x = event.pageX - rootRect.x - this.screenRect.x
+            node.y = event.pageY - rootRect.y - this.screenRect.y
+            console.log(node)
+          })
+        }
+      })
       return node
     },
 
-    chooseElement (element) {
-
+    appendElementSelected (element) {
+      this.selectedElements.push(element)
     },
 
-    sceneClick () {
-
+    /**
+     * 设置单个元素为选中状态, 取消其他元素选中
+     */
+    setElementSelected (element) {
+      for (let e of this.scene.elements) {
+        e.selected = false
+      }
+      if (element) {
+        element.selected = true
+      }
     },
 
+    /**
+     * 获取遮罩的样式，对于未选中的设置为display: none
+     */
+    getMaskStyle (element) {
+      const displayStyle = {}
+      if (!element.selected) {
+        displayStyle.display = 'none'
+      }
+      return Object.assign(displayStyle, getRectPositionStyle(element))
+    },
+
+    /**
+     * 将屏幕放置到设计区正中央，同时修改屏幕位置偏移量
+     */
     fitToCenter () {
       this.screenRect.width = this.screen.width
       this.screenRect.height = this.screen.height

@@ -40,3 +40,12 @@ export function getRectPositionStyle (rect) {
     height: rect.height + 'px'
   }
 }
+
+/**
+ * 制定的点是否在矩形范围内
+ * @param {*} point
+ * @param {*} rect
+ */
+export function isPointInRect (point, rect, outer = 0) {
+  return (point.x - rect.x) < (rect.width + outer) && (point.x - rect.x) > -outer && (point.y - rect.y) < (rect.height + outer) && (point.y - rect.y) > -outer
+}
