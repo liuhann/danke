@@ -201,13 +201,16 @@ export default {
       const id = shortid()
       const node = {
         id,
+        x: 0,
+        y: 0,
+        width: 100,
+        height: 100,
         selected: false
       }
       this.scene.elements.push(node)
 
       this.$nextTick(() => {
         const el = this.$refs['mask-' + id]
-        const rootRect = this.$el.getBoundingClientRect()
         if (el.length) {
           interact(el[0]).resizable({
             edges: { left: true, right: true, bottom: true, top: true },
@@ -215,8 +218,8 @@ export default {
           }).on('resizemove', event => {
             node.width = event.rect.width
             node.height = event.rect.height
-            node.x = event.pageX - rootRect.x - this.screenRect.x
-            node.y = event.pageY - rootRect.y - this.screenRect.y
+            node.x += event.deltaRect.left
+            node.y += event.deltaRect.top
             console.log(node)
           })
         }
