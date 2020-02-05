@@ -42,10 +42,23 @@ export function getRectPositionStyle (rect) {
 }
 
 /**
- * 制定的点是否在矩形范围内
+ * 指定的点是否在矩形范围内
  * @param {*} point
  * @param {*} rect
  */
 export function isPointInRect (point, rect, outer = 0) {
   return (point.x - rect.x) < (rect.width + outer) && (point.x - rect.x) > -outer && (point.y - rect.y) < (rect.height + outer) && (point.y - rect.y) > -outer
+}
+
+/**
+ * 判断2个矩形是否有交集
+ * @param {*} r1
+ * @param {*} r2
+ */
+export function intersectRect (r1, r2) {
+  console.log(r1, r2)
+  return !(r2.x > (r1.x + r1.width) ||
+           (r2.x + r2.width) < r1.x ||
+           r2.y > (r1.y + r1.height) ||
+           (r2.y + r2.height) < r1.y)
 }

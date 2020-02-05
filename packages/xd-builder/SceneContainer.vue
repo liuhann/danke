@@ -25,7 +25,7 @@
 import interact from 'interactjs'
 import RenderElement from './RenderElement.vue'
 import { shortid } from '../utils/string'
-import { fitRectIntoBounds, getRectPositionStyle, isPointInRect } from './mixins/rectUtils.js'
+import { fitRectIntoBounds, getRectPositionStyle, isPointInRect, intersectRect } from './mixins/rectUtils.js'
 export default {
   components: {
     RenderElement
@@ -117,6 +117,7 @@ export default {
           this.dragRect.visible = true
         },
         onmove: event => {
+          // 计算正在拖拽的矩形区域
           this.dragRect.width = event.page.x - event.x0
           this.dragRect.height = event.page.y - event.y0
           if (this.dragRect.width < 0) {
@@ -126,6 +127,15 @@ export default {
           if (this.dragRect.height < 0) {
             this.dragRect.top = (event.y0 - event.rect.top) + this.dragRect.height
             this.dragRect.height = -this.dragRect.height
+          }
+          this.dragRect.x = this.dragRect.left - this.screenRect.x
+          this.dragRect.y = this.dragRect.top - this.screenRect.y
+          for (let element of this.scene.elements) {
+            if (intersectRect(element, this.dragRect)) {
+              element.selected = true
+            } else {
+              element.selected = false
+            }
           }
           console.log('drag move', event)
         },
@@ -222,6 +232,13 @@ export default {
             node.x += event.deltaRect.left
             node.y += event.deltaRect.top
             console.log(node)
+          }).draggable({
+            onstart: event => {},
+            onmove: event => {
+              node.x += event.dx
+              node.y += event.dy
+            },
+            onend: event => {}
           })
         }
       })
