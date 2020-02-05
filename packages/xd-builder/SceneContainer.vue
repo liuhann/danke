@@ -1,5 +1,5 @@
 <template>
-<section id="scene-container" @mousedown.exact="sceneMouseDown">
+<section id="scene-container" @click.exact="sceneMouseDown">
   <div class="screen" :style="styleScreen">
     <div class="scene" v-if="scene">
       <render-element
@@ -14,6 +14,14 @@
   </div>
   <div class="mask" :style="styleScreen" @dragover="sceneDragOver" @drop="elementDropped" v-if="scene">
     <div v-for="selectee in scene.elements" :ref="'mask-' + selectee.id" class="selected-node" :key="selectee.id" :style="getMaskStyle(selectee)">
+      <div class="lt"/>
+      <div class="rt"/>
+      <div class="t"/>
+      <div class="l"/>
+      <div class="lb"/>
+      <div class="rb"/>
+      <div class="r"/>
+      <div class="b"/>
     </div>
   </div>
   <div class="dragging-rect" :style="styleDragingRect">
@@ -102,8 +110,7 @@ export default {
   },
   methods: {
     /**
-     * 处理全局拖拽事件，全局拖拽主要负责
-     * 1 元素拖拽多选选中处理
+     * 处理全局拖拽事件，全局拖拽主要负责元素拖拽多选选中处理
      */
     initGlobalInteract () {
       interact(this.$el).draggable({
@@ -111,7 +118,6 @@ export default {
          * 拖拽开始，如果只是点击不会触发拖拽事件。
          */
         onstart: event => {
-          // 在mousedown时已经处理过
           this.dragRect.left = event.x0 - event.rect.left
           this.dragRect.top = event.y0 - event.rect.top
           this.dragRect.visible = true
@@ -128,6 +134,8 @@ export default {
             this.dragRect.top = (event.y0 - event.rect.top) + this.dragRect.height
             this.dragRect.height = -this.dragRect.height
           }
+
+          // 判断矩形交叉的元素设置为选中
           this.dragRect.x = this.dragRect.left - this.screenRect.x
           this.dragRect.y = this.dragRect.top - this.screenRect.y
           for (let element of this.scene.elements) {
@@ -137,11 +145,11 @@ export default {
               element.selected = false
             }
           }
-          console.log('drag move', event)
         },
         onend: event => {
           this.dragRect.visible = false
-          console.log('drag end', event)
+          // 取消mouseclick事件的触发
+          this.dragRect.dragged = true
         }
       }).styleCursor(false)
     },
@@ -149,34 +157,28 @@ export default {
      * 进行鼠标点击位置检测，如果点击到元素则选中或保持多个的选择状态， 点到空白则取消所有元素选中
      */
     sceneMouseDown (ev) {
-      // 设计区点转换为相对于屏幕的点
-      const rootRect = this.$el.getBoundingClientRect()
-      // 点位置计算 clientX - 容器X - 屏幕X
-      const point = {
-        x: ev.clientX - rootRect.x - this.screenRect.x,
-        y: ev.clientY - rootRect.y - this.screenRect.y
-      }
-      // 判断点击处的元素
-      let targetElement = null
-      for (let element of this.scene.elements) {
-        if (isPointInRect(point, element, 10)) {
-          // 获取第一个 也就是最外层的
-          targetElement = element
+      if (!this.dragRect.dragged) {
+        // 设计区点转换为相对于屏幕的点
+        const rootRect = this.$el.getBoundingClientRect()
+        // 点位置计算 clientX - 容器X - 屏幕X
+        const point = {
+          x: ev.clientX - rootRect.x - this.screenRect.x,
+          y: ev.clientY - rootRect.y - this.screenRect.y
         }
-      }
-      this.mode = 'drag'
-      if (targetElement === null) {
-        // 无选择元素
-        this.setElementSelected(null)
-      } else if (this.selectedElements.indexOf(targetElement) > -1) {
-        // 当前元素已经被选择
-        // 区域切换到移动模式
-        this.mode = 'move'
-      } else {
+        // 判断点击处的元素
+        let targetElement = null
+        for (let element of this.scene.elements) {
+          if (isPointInRect(point, element, 10)) {
+            // 获取第一个 也就是最外层的
+            targetElement = element
+          }
+        }
+        this.mode = 'drag'
         this.setElementSelected(targetElement)
       }
-      console.log('mouse down', ev)
+      this.dragRect.dragged = false
     },
+
     // Drag over and set as allow drop
     sceneDragOver (ev) {
       ev.preventDefault()
@@ -235,10 +237,16 @@ export default {
           }).draggable({
             onstart: event => {},
             onmove: event => {
-              node.x += event.dx
-              node.y += event.dy
+              for (let element of this.scene.elements) {
+                if (element.selected) {
+                  element.x += event.dx
+                  element.y += event.dy
+                }
+              }
             },
-            onend: event => {}
+            onend: event => {
+              this.dragRect.dragged = true
+            }
           })
         }
       })
@@ -310,6 +318,49 @@ export default {
     position: absolute;
     border: 1px solid #42A5F5;
     background: #3366665e;
+  }
+  .selected-node {
+    position: relative;
+    >div {
+      border: 1px solid #42A5F5;
+      width: 8px;
+      height: 8px;
+      background-color: #fff;
+      position: absolute;
+    }
+    .l {
+      left: -5px;
+      top: calc(50% - 4px);
+    }
+    .lt {
+      left: -4px;
+      top: -4px;
+    }
+    .lb {
+      left: -4px;
+      bottom: -4px;
+    }
+    .rt {
+      top: -4px;
+      right: -4px;
+    }
+    .rb {
+      right: -4px;
+      bottom: -4px;
+    }
+    .r {
+      right: -4px;
+      top: calc(50% - 4px);
+    }
+    .b {
+      bottom: -4px;
+      left: calc(50% - 4px);
+    }
+    .t {
+      top: -4px;
+      left: calc(50% - 4px);
+    }
+
   }
 }
 </style>
