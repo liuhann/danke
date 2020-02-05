@@ -6,6 +6,7 @@
           v-for="(element, index) of scene.elements"
           stage="in"
           :element="element"
+          :screen="screen"
           :key="element.id"
           :index="index"
           :ref="element.id"/>

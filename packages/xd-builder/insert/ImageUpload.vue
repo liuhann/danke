@@ -18,12 +18,11 @@
 
 <script>
 import RestDAO from '../../common/dao/restdao'
-import imageUtils from '../mixins/imageUtils.js'
+import { getImageUrl } from '../mixins/imageUtils.js'
 import ImageDAO from '../utils/imagedao'
 import ky from 'ky'
 import { Upload, Button } from 'element-ui'
 export default {
-  mixins: [imageUtils],
   components: {
     [Button.name]: Button,
     [Upload.name]: Upload
@@ -46,6 +45,7 @@ export default {
   },
 
   methods: {
+    getImageUrl,
     async loadImages () {
       const result = await this.restdao.list({
         page: 1,
@@ -91,6 +91,12 @@ export default {
       width: 100px;
       height: 100px;
       margin: 3px;
+      background: #000;
+      img {
+        object-fit: contain;
+        width: 100px;
+        height: 100px;
+      }
     }
   }
 }
