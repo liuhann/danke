@@ -1,5 +1,7 @@
 <template>
 <section id="scene-container" @click.exact="sceneMouseDown">
+  <div class="tool-bar">
+  </div>
   <div class="screen" :style="styleScreen">
     <div class="scene" v-if="scene">
       <render-element
@@ -287,7 +289,7 @@ export default {
       this.screenRect.width = this.screen.width
       this.screenRect.height = this.screen.height
       this.screenRect.x = (this.$el.clientWidth - this.screen.width) / 2
-      this.screenRect.y = 20
+      this.screenRect.y = 40
       console.log(this.$el.clientWidth, this.$el.clientHeight)
     },
     getRectPositionStyle
