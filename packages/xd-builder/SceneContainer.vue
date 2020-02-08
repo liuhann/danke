@@ -1,8 +1,11 @@
 <template>
 <section id="scene-container" @click.exact="sceneMouseDown">
   <div class="tool-bar">
+    <pop-border-shadow />
   </div>
   <div class="screen" :style="styleScreen">
+    <div class="screen-title">
+    </div>
     <div class="scene" v-if="scene">
       <render-element
           v-for="(element, index) of scene.elements"
@@ -35,10 +38,12 @@
 import interact from 'interactjs'
 import RenderElement from './RenderElement.vue'
 import { shortid } from '../utils/string'
+import PopBorderShadow from './components/PopBorderShadow.vue'
 import { fitRectIntoBounds, getRectPositionStyle, isPointInRect, intersectRect } from './mixins/rectUtils.js'
 export default {
   components: {
-    RenderElement
+    RenderElement,
+    PopBorderShadow
   },
   props: {
     scene: {
@@ -289,8 +294,7 @@ export default {
       this.screenRect.width = this.screen.width
       this.screenRect.height = this.screen.height
       this.screenRect.x = (this.$el.clientWidth - this.screen.width) / 2
-      this.screenRect.y = 40
-      console.log(this.$el.clientWidth, this.$el.clientHeight)
+      this.screenRect.y = 80
     },
     getRectPositionStyle
   }
@@ -303,6 +307,21 @@ export default {
   touch-action: none;
   user-select: none;
   flex: 1;
+  overflow: auto;
+  .tool-bar {
+    z-index: 90999;
+    position: fixed;
+    width: 100%;
+    height: 36px;
+    background: #fff;
+    .el-button {
+      padding: 10px;
+      border-radius: 0;
+      &:hover {
+        background: rgba(14,19,24,.07);
+      }
+    }
+  }
   .screen {
     position: absolute;
     background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==");
