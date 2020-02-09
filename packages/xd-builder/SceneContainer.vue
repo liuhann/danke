@@ -1,50 +1,61 @@
 <template>
-<section id="scene-container" @click.exact="sceneMouseDown">
+<section id="right-section">
   <div class="tool-bar">
-    <pop-border-shadow />
+    <i class="el-icon-full-screen" @click="toggleBorderLayer"/>
+    <i class="el-icon-full-screen" @click="toggleBorderLayer"/>
   </div>
-  <div class="screen" :style="styleScreen">
-    <div class="screen-title">
+  <div id="scene-container" @click.exact="sceneMouseDown" ref="sceneContainer">
+    <div class="screen" :style="styleScreen">
+      <div class="screen-title">
+      </div>
+      <div class="scene" v-if="scene">
+        <render-element
+            v-for="(element, index) of scene.elements"
+            stage="in"
+            :element="element"
+            :screen="screen"
+            :key="element.id"
+            :index="index"
+            :ref="element.id"/>
+      </div>
     </div>
-    <div class="scene" v-if="scene">
-      <render-element
-          v-for="(element, index) of scene.elements"
-          stage="in"
-          :element="element"
-          :screen="screen"
-          :key="element.id"
-          :index="index"
-          :ref="element.id"/>
+    <div class="mask" :style="styleScreen" @dragover="sceneDragOver" @drop="elementDropped" v-if="scene">
+      <div v-for="selectee in scene.elements" :ref="'mask-' + selectee.id" class="selected-node" :key="selectee.id" :style="getMaskStyle(selectee)">
+        <div class="lt"/>
+        <div class="rt"/>
+        <div class="t"/>
+        <div class="l"/>
+        <div class="lb"/>
+        <div class="rb"/>
+        <div class="r"/>
+        <div class="b"/>
+      </div>
+    </div>
+    <div class="dragging-rect" :style="styleDragingRect">
     </div>
   </div>
-  <div class="mask" :style="styleScreen" @dragover="sceneDragOver" @drop="elementDropped" v-if="scene">
-    <div v-for="selectee in scene.elements" :ref="'mask-' + selectee.id" class="selected-node" :key="selectee.id" :style="getMaskStyle(selectee)">
-      <div class="lt"/>
-      <div class="rt"/>
-      <div class="t"/>
-      <div class="l"/>
-      <div class="lb"/>
-      <div class="rb"/>
-      <div class="r"/>
-      <div class="b"/>
-    </div>
-  </div>
-  <div class="dragging-rect" :style="styleDragingRect">
+  <div class="addon-container" v-show="currentAddon != null">
+    <keep-alive>
+      <addon-border-list v-if="currentAddon === 'border'" @border="setSelectedBorder"/>
+    </keep-alive>
   </div>
 </section>
 </template>
 
 <script>
+import { Button, ButtonGroup } from 'element-ui'
 import interact from 'interactjs'
 import RenderElement from './RenderElement.vue'
+import AddonBorderList from './left/AddonBorderList.vue'
 import { shortid } from '../utils/string'
-import PopBorderShadow from './components/PopBorderShadow.vue'
 import { fitRectIntoBounds, getRectPositionStyle, isPointInRect, intersectRect } from './mixins/rectUtils.js'
 export default {
   name: 'SceneContainer',
   components: {
     RenderElement,
-    PopBorderShadow
+    AddonBorderList,
+    [Button.name]: Button,
+    [ButtonGroup.name]: ButtonGroup
   },
   props: {
     scene: {
@@ -78,6 +89,7 @@ export default {
         height: 0,
         visible: false
       },
+      currentAddon: null,
       selectedElements: []
     }
   },
@@ -126,11 +138,13 @@ export default {
          * 拖拽开始，如果只是点击不会触发拖拽事件。
          */
         onstart: event => {
+          const containerRect = this.$refs.sceneContainer.getBoundingClientRect()
           this.dragRect.left = event.x0 - event.rect.left
-          this.dragRect.top = event.y0 - event.rect.top
+          this.dragRect.top = event.y0 - event.rect.top - containerRect.y
           this.dragRect.visible = true
         },
         onmove: event => {
+          const containerRect = this.$refs.sceneContainer.getBoundingClientRect()
           // 计算正在拖拽的矩形区域
           this.dragRect.width = event.page.x - event.x0
           this.dragRect.height = event.page.y - event.y0
@@ -139,7 +153,7 @@ export default {
             this.dragRect.width = -this.dragRect.width
           }
           if (this.dragRect.height < 0) {
-            this.dragRect.top = (event.y0 - event.rect.top) + this.dragRect.height
+            this.dragRect.top = (event.y0 - event.rect.top - containerRect.y) + this.dragRect.height
             this.dragRect.height = -this.dragRect.height
           }
 
@@ -167,7 +181,7 @@ export default {
     sceneMouseDown (ev) {
       if (!this.dragRect.dragged) {
         // 设计区点转换为相对于屏幕的点
-        const rootRect = this.$el.getBoundingClientRect()
+        const rootRect = this.$refs.sceneContainer.getBoundingClientRect()
         // 点位置计算 clientX - 容器X - 屏幕X
         const point = {
           x: ev.clientX - rootRect.x - this.screenRect.x,
@@ -184,6 +198,7 @@ export default {
         this.mode = 'drag'
         this.setElementSelected(targetElement)
       }
+      this.currentAddon = null
       this.dragRect.dragged = false
     },
 
@@ -226,6 +241,8 @@ export default {
         y: 0,
         width: 100,
         height: 100,
+        addons: [],
+        variables: [],
         selected: false
       }
       this.scene.elements.push(node)
@@ -287,6 +304,19 @@ export default {
       }
       return Object.assign(displayStyle, getRectPositionStyle(element))
     },
+    // 显示左侧边框
+    toggleBorderLayer () {
+      this.currentAddon = 'border'
+    },
+
+    // 增加样式
+    setSelectedBorder (style) {
+      for (let element of this.scene.elements) {
+        if (element.selected) {
+          element.addons.push(style.name)
+        }
+      }
+    },
 
     /**
      * 将屏幕放置到设计区正中央，同时修改屏幕位置偏移量
@@ -294,7 +324,7 @@ export default {
     fitToCenter () {
       this.screenRect.width = this.screen.width
       this.screenRect.height = this.screen.height
-      this.screenRect.x = (this.$el.clientWidth - this.screen.width) / 2
+      this.screenRect.x = (this.$refs.sceneContainer.clientWidth - this.screen.width) / 2
       this.screenRect.y = 80
     },
     getRectPositionStyle
@@ -303,26 +333,45 @@ export default {
 </script>
 
 <style lang="scss">
-#scene-container {
+#right-section {
+  flex: 1;
   position: relative;
   touch-action: none;
   user-select: none;
-  flex: 1;
-  overflow: auto;
   .tool-bar {
-    z-index: 90999;
-    position: fixed;
+    z-index: 99999;
+    position: absolute;
     width: 100%;
     height: 36px;
     background: #fff;
-    .el-button {
-      padding: 10px;
-      border-radius: 0;
+    top: 0;
+    left: 0;
+    i {
+      line-height: 36px;
+      padding: 0 10px;
+      cursor: pointer;
       &:hover {
-        background: rgba(14,19,24,.07);
+
       }
     }
   }
+  .addon-container {
+    position: absolute;
+    left: -352px;
+    top: 0;
+    bottom: 0;
+    width: 352px;
+    background: #fff;
+    border-right: 1px solid #ededed;
+  }
+}
+#scene-container {
+  position: absolute;
+  top: 36px;
+  left: 0;
+  width: 100%;
+  bottom: 0;
+  overflow: auto;
   .screen {
     position: absolute;
     background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==");

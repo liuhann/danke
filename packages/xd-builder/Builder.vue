@@ -2,84 +2,22 @@
 <div id="xd">
   <left-aside />
   <scene-container :scene="currentScene" :screen="work.screen"/>
-  <section v-if="false" class="scene-container" ref="sceneContainer" @click.self="sceneClick">
-    <!--渲染当前的场景-->
-    <div class="device" ref="device" :style="deviceStyle">
-      <div class="screen" @dragover="screenDragOver" v-if="currentScene" :style="currentScene.style" @click.self="sceneClick">
-        <render-element
-          v-for="(element, index) of currentScene.elements"
-          stage="in"
-          :element="element"
-          :key="element.id"
-          :index="index"
-          :ref="element.id"
-          :selected="currentElement === element"
-          @click="chooseElement(element, $event)"/>
-        <!--文件被选中的遮罩-->
-        <div class="mask" v-if="currentElement" :style="maskStyle">
-          <!--右下角corner-->
-          <div class="corner-rb" />
-        </div>
-      </div>
-      <el-button v-if="work.audioUrl" class="btn-audio" icon="el-icon-headset" size="mini" circle @click="editTicking"/>
-    </div>
-    <!--场景操作-->
-    <span class="tag is-white">{{work.scenes.indexOf(currentScene)+1}}/{{work.scenes.length}}</span>
-    <el-button class="btn-run" icon="el-icon-caret-right" size="mini" circle type="success" @click="runWork" />
-    <el-button class="btn-next" icon="el-icon-arrow-right" size="mini" circle @click="nextScene" />
-    <el-button class="btn-prev" icon="el-icon-arrow-left" size="mini" circle @click="previousScene" />
-    <!--PopOver新增场景、元素-->
-    <popover-new @insert="insert"/>
-  </section>
-  <!-- <div class="aside" v-if="false">
-    <element-config
-      v-if="currentElement"
-      :element="currentElement"
-      :scene="currentScene"
-      :work="work"
-      @remove="deleteElement"
-      @z="moveElementZ" />
-    <work-scene-config
-      v-if="!currentElement && currentScene && currentScene.id"
-      :scene="currentScene"
-      :work="work"
-      @choose-element="chooseElement"
-      @choose-scene="chooseScene"
-      @edit-tick="editTicking"
-      @delete-scene="deleteCurrentScene"/>
-  </div> -->
-  <dialog-audio-tap ref="dialogAudioList" @audio="chooseWorkAudio"/>
-  <dialog-choose-flat-icon ref="dialogChooseFlatIcon" @input="flatIconChoosed"/>
 </div>
 </template>
 
 <script>
 import SceneContainer from './SceneContainer.vue'
-import elementMixin from './mixins/elementMixins'
-import saveShareMixin from './mixins/saveShare'
-import sceneMixin from './mixins/sceneMixins'
-import layoutMixin from './mixins/layoutMixin'
-import pluginMixin from './plugin/mixins'
-import keyBindMixin from './mixins/key-binds'
 import { Popover, Button, Upload, Tabs, TabPane, Drawer, Dialog, Menu, MenuItem } from 'element-ui'
 import LeftAside from './LeftAside.vue'
-import DialogAudioTap from './components/DialogAudioTap.vue'
-import { TypeEnum } from '../danke-core/elements/index'
-import RenderElement from './RenderElement.vue'
 import { addStyle, createSheet } from '../frames/keyframe'
 import { shortid } from '../utils/string'
-import PopoverNew from './components/PopoverNew.vue'
-import DialogChooseFlatIcon from '../flaticon/DialogChooseFlatIcon'
 import BACKGROUND from '../danke-core/css-model/background'
+import sceneMixin from './mixins/sceneMixins.js'
 import 'element-ui/packages/theme-chalk/lib/icon.css'
 export default {
   name: 'Builder',
   components: {
     SceneContainer,
-    DialogChooseFlatIcon,
-    RenderElement,
-    DialogAudioTap,
-    PopoverNew,
     LeftAside,
     [Popover.name]: Popover,
     [Dialog.name]: Dialog,
@@ -91,7 +29,7 @@ export default {
     [Menu.name]: Menu,
     [MenuItem.name]: MenuItem
   },
-  mixins: [elementMixin, saveShareMixin, sceneMixin, keyBindMixin, layoutMixin, pluginMixin],
+  mixins: [ sceneMixin ],
   props: {
   },
   data () {
@@ -116,15 +54,7 @@ export default {
         background: JSON.parse(JSON.stringify(BACKGROUND)),
         styles: '' // 附加的样式
       },
-      currentScene: null,
-      currentElement: null,
-      multipleElements: [],
-      TypeEnum,
-      showLeftToggleMenu: false,
-      showElementsLayer: false,
-      interactEnabled: true,
-      ticksEditing: false,
-      templates: null // 已经加载的模板
+      currentScene: null
     }
   },
 
@@ -176,9 +106,7 @@ export default {
       this.chooseScene(this.work.scenes[0])
       this.renderScene(this.currentScene, 'in')
     },
-    sceneClick () {
-      this.chooseElement(null)
-    },
+
     chooseWorkAudio (audioItem) {
       this.work.audioUrl = audioItem.audioUrl
       this.work.audioName = audioItem.name

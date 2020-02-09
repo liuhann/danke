@@ -1,7 +1,7 @@
 <template>
 <div :id="'element-' + element.id"
      @click="$emit('click')"
-     class="element" :class="[element.hidden? 'hidden' : '', element.className]" :style="getRectPositionStyle(element)">
+     class="element" :class="[element.hidden? 'hidden' : '', element.className].concat(element.addons)" :style="getRectPositionStyle(element)">
   <!--图片渲染-->
   <img v-if="element.url" :id="'img-' + (element.name || element.id)" :src="getImageUrl(element.url, screen.width, screen.height)" :style="element.innerStyle || ''">
   <!--文本渲染情况下 文本内容-->

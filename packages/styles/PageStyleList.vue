@@ -1,17 +1,17 @@
 <template>
-<div class="section" style="">
-  <div class="container" style="padding: 20px;box-shadow: 0 1px 5px 0 rgba(0,0,0,.1);">
-    <el-button @click="newStyle">新建</el-button>
+<div class="section" style="background: #dfdfdf;">
+  <div class="container" style="background: #fff;padding: 20px;box-shadow: 0 1px 5px 0 rgba(0,0,0,.1);">
+    <el-button size="mini" type="primary" @click="newStyle">新建</el-button>
     <div class="style-list">
       <div v-for="(style, index) in styles" :key="index" class="style-item">
           <div class="style-container">
             <div class="styled-box" :class="style.name">
-              {{style.desc}}
+              <div class="inner">{{style.desc}}</div>
             </div>
           </div>
           <div class="btns">
-            <el-button type="text" size="mini" icon="el-icon-delete" @click="removeStyle(style._id)"/>
-            <el-button type="text" size="mini" icon="el-icon-edit" @click="editStyle(style._id)"/>
+            <el-button type="text" size="mini" icon="el-icon-delete" @click="removeStyle(style)"/>
+            <el-button type="text" size="mini" icon="el-icon-edit" @click="editStyle(style)"/>
           </div>
         </div>
     </div>
@@ -68,8 +68,15 @@ export default {
         console.log(e)
       }
     },
-    editStyle (id) {
-      window.open('/style/edit?id=' + id)
+    // 新窗口编辑
+    editStyle (style) {
+      window.open('/style/edit?id=' + style._id)
+    },
+
+    // 目前暂无提示 直接删除
+    async removeStyle (style) {
+      await this.styledao.delete(style)
+      this.loadStyles()
     }
   }
 }
@@ -89,6 +96,14 @@ export default {
     .styled-box {
       width: 120px;
       height: 120px;
+      z-index: 10;
+      > div.inner {
+        position: absolute;
+        z-index: 10;
+        width: 100%;
+        height: 100%;
+        background-color: black;
+      }
     }
   }
 }

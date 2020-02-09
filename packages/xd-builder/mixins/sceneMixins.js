@@ -1,6 +1,5 @@
 import { clone } from '../../utils/object'
 import { shortid } from '../../utils/string'
-import SCENE from '../../danke-core/elements/scene'
 import { getElementInnerStyle, getElementStyle, getSceneStyle } from '../../danke-core/utils/styles'
 import { MessageBox } from 'element-ui'
 export default {
@@ -19,19 +18,17 @@ export default {
      * 增加新的场景
      */
     addNewScene () {
-      const scene = clone(SCENE)
-      // 设置默认名称与ID
-      scene.name = '场景 ' + (this.work.scenes.length + 1)
-      scene.id = shortid()
-      scene.screen = this.work.screen
-      // 继承使用之前的颜色
-      if (this.currentScene) {
-        scene.background.colors = this.currentScene.background.colors || ['rgba(0,0,0,0)']
+      const scene = {
+        elements: [],
+        leave: 3000,
+        z: 100, // 场景的层次
+        manual: false
       }
-      scene.style = getSceneStyle(scene, this.device)
+      // 设置默认名称与ID
+      scene.id = shortid()
       const currentSceneIndex = this.work.scenes.indexOf(this.currentScene)
       this.work.scenes.splice(currentSceneIndex + 1, 0, scene)
-      this.chooseScene(scene)
+      this.currentScene = scene
     },
 
     /**
