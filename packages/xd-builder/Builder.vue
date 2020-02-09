@@ -63,9 +63,7 @@ import pluginMixin from './plugin/mixins'
 import keyBindMixin from './mixins/key-binds'
 import { Popover, Button, Upload, Tabs, TabPane, Drawer, Dialog, Menu, MenuItem } from 'element-ui'
 import LeftAside from './LeftAside.vue'
-import ElementConfig from './components/ElementConfig.vue'
 import DialogAudioTap from './components/DialogAudioTap.vue'
-import WorkSceneConfig from './components/WorkSceneConfig.vue'
 import { TypeEnum } from '../danke-core/elements/index'
 import RenderElement from './RenderElement.vue'
 import { addStyle, createSheet } from '../frames/keyframe'
@@ -80,8 +78,6 @@ export default {
     SceneContainer,
     DialogChooseFlatIcon,
     RenderElement,
-    ElementConfig,
-    WorkSceneConfig,
     DialogAudioTap,
     PopoverNew,
     LeftAside,
@@ -258,36 +254,6 @@ export default {
     flex-grow: 1;
     position: relative;
     overflow: hidden;
-    .tag {
-      z-index: 999;
-      position: absolute;
-      right: 10px;
-      bottom: 10px;
-    }
-    .btn-run {
-      position: absolute;
-      right: 10px;
-      top: 10px;
-      z-index: 999;
-    }
-    .btn-next {
-      position: absolute;
-      right: 10px;
-      top: calc(50% - 10px);
-      z-index: 999;
-    }
-    .btn-prev {
-      position: absolute;
-      left: 10px;
-      top: calc(50% - 10px);
-      z-index: 999;
-    }
-    .btn-add {
-      position: absolute;
-      left: 10px;
-      top: 10px;
-      z-index: 999;
-    }
     .device {
       touch-action: none;
       position: absolute;
@@ -321,7 +287,6 @@ export default {
       }
       .element {
         position: absolute;
-        overflow: hidden;
         &.selected {
           overflow: visible;
         }

@@ -41,6 +41,7 @@ import { shortid } from '../utils/string'
 import PopBorderShadow from './components/PopBorderShadow.vue'
 import { fitRectIntoBounds, getRectPositionStyle, isPointInRect, intersectRect } from './mixins/rectUtils.js'
 export default {
+  name: 'SceneContainer',
   components: {
     RenderElement,
     PopBorderShadow
@@ -329,6 +330,7 @@ export default {
   }
   .mask {
     position: absolute;
+    z-index: 100;
     box-shadow: 0 0 0 1px #fff;
     .selected-node {
       position: absolute;
@@ -336,6 +338,7 @@ export default {
     }
   }
   .dragging-rect {
+    z-index: 1000;
     position: absolute;
     border: 1px solid #42A5F5;
     background: #3366665e;
