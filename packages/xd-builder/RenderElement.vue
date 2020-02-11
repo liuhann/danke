@@ -1,7 +1,7 @@
 <template>
 <div :id="'element-' + element.id"
      @click="$emit('click')"
-     class="element" :class="[element.hidden? 'hidden' : '', element.className].concat(element.addons)" :style="getRectPositionStyle(element)">
+     class="element" :class="[element.hidden? 'hidden' : '', element.className, element.border? element.border.name: '']" :style="getElementStyle(element)">
   <!--图片渲染-->
   <img v-if="element.url" :id="'img-' + (element.name || element.id)" :src="getImageUrl(element.url, screen.width, screen.height)" :style="element.innerStyle || ''">
   <!--文本渲染情况下 文本内容-->
@@ -46,7 +46,18 @@ export default {
   },
   methods: {
     getImageUrl,
-    getRectPositionStyle,
+    getElementStyle (element) {
+      const style = {}
+      Object.assign(style, getRectPositionStyle(element))
+      if (element.border && element.border.variables) {
+        for (let variable of element.border.variables) {
+          Object.assign(style, {
+            ['--' + variable.name]: variable.value + 'px'
+          })
+        }
+      }
+      return style
+    },
     getElementPositionStyle (element) {
       return {
         left: element.x + 'px',

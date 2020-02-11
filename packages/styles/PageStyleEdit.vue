@@ -17,6 +17,10 @@
         <el-form-item label="变量信息">
           <el-button size="mini" @click="addVariable">增加</el-button>
           <div class="variables" v-for="(variable, index) in style.variables" :key="index" style="display:flex;">
+            <label>标题</label>
+            <span>
+              <el-input v-model="variable.label"/>
+            </span>
             <label>变量名</label>
             <span>
               <el-input v-model="variable.name"/>
@@ -79,6 +83,7 @@ export default {
       this.style.variables.push({
         name: 'var',
         value: '#000',
+        label: '',
         type: 'color'
       })
     },
@@ -89,6 +94,8 @@ export default {
       }
       await this.styledao.createOrPatch(this.style)
       Message.success('保存成功')
+
+      window.close()
     }
   }
 }

@@ -75,8 +75,10 @@ export default {
 
     // 目前暂无提示 直接删除
     async removeStyle (style) {
-      await this.styledao.delete(style)
-      this.loadStyles()
+      if (confirm('确认删除样式')) {
+        await this.styledao.delete(style)
+        this.loadStyles()
+      }
     }
   }
 }
@@ -97,6 +99,7 @@ export default {
       width: 120px;
       height: 120px;
       z-index: 10;
+      position: relative;
       > div.inner {
         position: absolute;
         z-index: 10;
@@ -107,4 +110,5 @@ export default {
     }
   }
 }
+
 </style>

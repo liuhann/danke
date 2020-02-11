@@ -1,8 +1,7 @@
 <template>
 <section id="right-section">
   <div class="tool-bar">
-    <i class="el-icon-full-screen" @click="toggleBorderLayer"/>
-    <i class="el-icon-full-screen" @click="toggleBorderLayer"/>
+    <i class="el-icon-full-screen" v-if="selectedImages.length" @click="toggleBorderLayer"/>
   </div>
   <div id="scene-container" @click.exact="sceneMouseDown" ref="sceneContainer">
     <div class="screen" :style="styleScreen">
@@ -36,7 +35,7 @@
   </div>
   <div class="addon-container" v-show="currentAddon != null">
     <keep-alive>
-      <addon-border-list v-if="currentAddon === 'border'" @border="setSelectedBorder"/>
+      <addon-border-list :border="currentBorder" v-if="currentAddon === 'border'" @input="setSelectedBorder"/>
     </keep-alive>
   </div>
 </section>
@@ -49,6 +48,7 @@ import RenderElement from './RenderElement.vue'
 import AddonBorderList from './left/AddonBorderList.vue'
 import { shortid } from '../utils/string'
 import { fitRectIntoBounds, getRectPositionStyle, isPointInRect, intersectRect } from './mixins/rectUtils.js'
+
 export default {
   name: 'SceneContainer',
   components: {
@@ -90,7 +90,7 @@ export default {
         visible: false
       },
       currentAddon: null,
-      selectedElements: []
+      currentBorder: null
     }
   },
 
@@ -104,6 +104,18 @@ export default {
   },
 
   computed: {
+    selectedElements () {
+      if (this.scene && this.scene.elements) {
+        return this.scene.elements.filter(el => el.selected)
+      }
+      return []
+    },
+    selectedImages () {
+      if (this.scene && this.scene.elements) {
+        return this.scene.elements.filter(el => el.selected && el.url)
+      }
+      return []
+    },
     styleScreen () {
       return {
         left: this.screenRect.x + 'px',
@@ -128,6 +140,7 @@ export default {
     this.fitToCenter()
     this.initGlobalInteract()
   },
+
   methods: {
     /**
      * 处理全局拖拽事件，全局拖拽主要负责元素拖拽多选选中处理
@@ -143,6 +156,9 @@ export default {
           this.dragRect.top = event.y0 - event.rect.top - containerRect.y
           this.dragRect.visible = true
         },
+        /**
+         * 拖拽移动
+         */
         onmove: event => {
           const containerRect = this.$refs.sceneContainer.getBoundingClientRect()
           // 计算正在拖拽的矩形区域
@@ -168,6 +184,10 @@ export default {
             }
           }
         },
+
+        /**
+         * 拖拽结束
+         */
         onend: event => {
           this.dragRect.visible = false
           // 取消mouseclick事件的触发
@@ -225,9 +245,13 @@ export default {
       node.x = (node.x < 0) ? 0 : node.x
       node.y = (node.y < 0) ? 0 : node.y
       if (element.url) {
+        // 放置的图片
         node.url = element.url
+        node.border = null
       }
+      this.scene.elements.push(node)
       this.setElementSelected(node)
+      this.initElementDrag(node)
     },
 
     /**
@@ -235,20 +259,24 @@ export default {
      */
     addNode () {
       const id = shortid()
+      // 此处设置节点的基本属性
       const node = {
         id,
         x: 0,
         y: 0,
         width: 100,
         height: 100,
-        addons: [],
-        variables: [],
         selected: false
       }
-      this.scene.elements.push(node)
+      return node
+    },
 
+    /**
+     * 初始化元素interact拖拽功能
+     */
+    initElementDrag (node) {
       this.$nextTick(() => {
-        const el = this.$refs['mask-' + id]
+        const el = this.$refs['mask-' + node.id]
         if (el.length) {
           interact(el[0]).resizable({
             edges: { left: true, right: true, bottom: true, top: true },
@@ -258,7 +286,6 @@ export default {
             node.height = event.rect.height
             node.x += event.deltaRect.left
             node.y += event.deltaRect.top
-            console.log(node)
           }).draggable({
             onstart: event => {},
             onmove: event => {
@@ -275,11 +302,6 @@ export default {
           })
         }
       })
-      return node
-    },
-
-    appendElementSelected (element) {
-      this.selectedElements.push(element)
     },
 
     /**
@@ -307,14 +329,24 @@ export default {
     // 显示左侧边框
     toggleBorderLayer () {
       this.currentAddon = 'border'
+      if (this.selectedImages.length) {
+        this.currentBorder = this.selectedImages[0].border
+      }
     },
 
     // 增加样式
     setSelectedBorder (style) {
       for (let element of this.scene.elements) {
         if (element.selected) {
-          element.addons.push(style.name)
+          element.border = {
+            name: style.name,
+            variables: style.variables
+          }
         }
+      }
+      this.currentBorder = {
+        name: style.name,
+        variables: style.variables
       }
     },
 

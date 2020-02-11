@@ -1,13 +1,28 @@
 <template>
 <div id="addon-border-list">
-  <div class="style-list">
-    <div class="style-item">
+  <div class="style-list" ref="styleList">
+    <div class="style-item" :class="border==null? 'current': ''">
       空白
     </div>
-    <div v-for="(style, index) in styles" :key="index" class="style-item" @click="useStyle(style)">
+    <div v-for="(style, index) in styles" :key="index" class="style-item" :class="(border && border.name === style.name)? 'current': ''" @click="useStyle(style, index)">
       <div class="style-container">
         <div class="styled-box" :class="style.name">
-          <div class="inner">{{style.title}}</div>
+          <div class="inner"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="style-prop-panel" ref="propPanel">
+    <div class="variable-item" v-for="variable in borderVaraibles" :key="variable.name">
+      <div class="var-number" v-if="variable.type === 'number'">
+        <div class="var-label">{{variable.name}}</div>
+        <div class="slider"><el-slider v-model="variable.value" max="40" /></div>
+        <div class="value">{{variable.value}}px</div>
+      </div>
+      <div class="color-picker" v-if="variable.type === 'color'">
+        <div class="var-label">{{variable.name}}</div>
+        <div class="picker">
+          <el-color-picker v-model="variable.value"/>
         </div>
       </div>
     </div>
@@ -18,22 +33,25 @@
 </template>
 
 <script>
-import { Pagination, Button } from 'element-ui'
+import { Pagination, Button, Slider, ColorPicker } from 'element-ui'
 import RestDAO from '../../common/dao/restdao'
 import { createSheet, addStyle } from '../../frames/keyframe.js'
 export default {
   name: 'AddonBorderList',
   components: {
     [Pagination.name]: Pagination,
-    [Button.name]: Button
+    [Slider.name]: Slider,
+    [Button.name]: Button,
+    [ColorPicker.name]: ColorPicker
   },
-  prop: {
-    styleName: {
-      type: String
+  props: {
+    border: {
+      type: Object
     }
   },
   data () {
     return {
+      variables: [],
       styles: [],
       page: 0,
       pageSize: 20,
@@ -42,6 +60,15 @@ export default {
   },
   created () {
     this.styledao = new RestDAO(this.ctx, 'danke/style')
+  },
+  computed: {
+    borderVaraibles () {
+      if (this.border) {
+        return this.border.variables || []
+      } else {
+        return []
+      }
+    }
   },
   mounted () {
     this.sheet = createSheet()
@@ -67,47 +94,82 @@ export default {
       }
     },
 
-    useStyle (style) {
-      this.$emit('border', style)
+    // 使用样式
+    useStyle (style, index) {
+      this.$emit('input', style)
+      this.currentStyle = style
+      const list = this.$refs.styleList
+      // 插入样式面板到当前之下
+      list.insertBefore(this.$refs.propPanel, list.childNodes[Math.floor((index + 1) / 4) * 4 + 4])
     }
   }
 }
 </script>
 <style lang="scss">
 #addon-border-list {
-  padding: 20px;
+  padding: 10px;
   .style-list {
     display: flex;
+    flex-wrap: wrap;
     .style-item {
-      width: 50%;
+      width: 25%;
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 3px;
-      margin: 5px 10px;
       cursor: pointer;
+      height: 80px;
       &:hover {
-        box-shadow: 0 0 0 2px #00c4cc, inset 0 0 0 2px #fff;
+        box-shadow: inset 0 0 0 1px #00c5cc86;
+      }
+      &.current {
+        box-shadow: inset 0 0 0 1px #00c5cc86;
+      }
+    }
+    // 属性配置面板
+    .style-prop-panel {
+      width: 100%;
+      .variable-item {
+        font-size: 12px;
+        padding: 6px;
+        .var-number {
+          display: flex;
+          line-height: 52px;
+          .var-label {
+            width: 64px;
+          }
+          .slider {
+            margin: 0 10px;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            >div {
+              flex: 1;
+            }
+          }
+          .value {
+            width: 36px;
+          }
+        }
       }
     }
     .style-container {
-      height: 120px;
       display: flex;
       align-items: center;
       justify-content: center;
       .styled-box {
-        width: 100px;
-        height: 60px;
+        width: 52px;
+        height: 52px;
         text-align: center;
         color: #fff;
         font-size: 12px;
         z-index: 10;
+        position: relative;
         > div.inner {
           position: absolute;
           z-index: 10;
           width: 100%;
           height: 100%;
-          background-color: black;
+          background-color: rgba(255,255,255, .6)
         }
       }
     }

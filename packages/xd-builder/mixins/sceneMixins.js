@@ -4,14 +4,7 @@ import { getElementInnerStyle, getElementStyle, getSceneStyle } from '../../dank
 import { MessageBox } from 'element-ui'
 export default {
   watch: {
-    'currentScene.background': {
-      deep: true,
-      handler () {
-        if (this.currentScene) {
-          this.currentScene.style = getSceneStyle(this.currentScene, this.device)
-        }
-      }
-    }
+
   },
   methods: {
     /**
