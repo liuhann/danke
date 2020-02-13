@@ -27,7 +27,8 @@
             </span>
             <label>默认值</label>
             <span>
-            <el-input v-model="variable.value"/>
+              <el-input v-if="variable.type==='number'" v-model.number="variable.value"/>
+              <el-input v-else v-model="variable.value"/>
             </span>
             <label>类型</label>
             <el-select v-model="variable.type">

@@ -34,6 +34,7 @@ export function fitRectIntoBounds (rect, bounds) {
  */
 export function getRectPositionStyle (rect) {
   return {
+    position: 'absolute',
     left: rect.x + 'px',
     top: rect.y + 'px',
     width: rect.width + 'px',

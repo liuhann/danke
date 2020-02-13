@@ -51,9 +51,15 @@ export default {
       Object.assign(style, getRectPositionStyle(element))
       if (element.border && element.border.variables) {
         for (let variable of element.border.variables) {
-          Object.assign(style, {
-            ['--' + variable.name]: variable.value + 'px'
-          })
+          if (variable.type === 'number') {
+            Object.assign(style, {
+              ['--' + variable.name]: variable.value + 'px'
+            })
+          } else {
+            Object.assign(style, {
+              ['--' + variable.name]: variable.value
+            })
+          }
         }
       }
       return style

@@ -1,7 +1,8 @@
 <template>
 <section id="right-section">
-  <div class="tool-bar">
+  <div id="tool-bar">
     <i class="el-icon-full-screen" v-if="selectedImages.length" @click="toggleBorderLayer"/>
+    <i class="el-icon-video-camera" v-if="selectedImages.length" @click="toggleAnimationLayer"/>
   </div>
   <div id="scene-container" @click.exact="sceneMouseDown" ref="sceneContainer">
     <div class="screen" :style="styleScreen">
@@ -33,10 +34,16 @@
     <div class="dragging-rect" :style="styleDragingRect">
     </div>
   </div>
-  <div class="addon-container" v-show="currentAddon != null">
+  <div id="addon-container" v-show="currentAddon != null">
     <keep-alive>
       <addon-border-list :border="currentBorder" v-if="currentAddon === 'border'" @input="setSelectedBorder"/>
     </keep-alive>
+    <keep-alive>
+      <addon-animation-list v-if="currentAddon === 'animation'" @input="addAnimation"/>
+    </keep-alive>
+  </div>
+  <!-- 显示当前元素的动画 -->
+  <div id="animations-container" v-if="currentAddon === 'animation'">
   </div>
 </section>
 </template>
@@ -46,6 +53,7 @@ import { Button, ButtonGroup } from 'element-ui'
 import interact from 'interactjs'
 import RenderElement from './RenderElement.vue'
 import AddonBorderList from './left/AddonBorderList.vue'
+import AddonAnimationList from './left/AddonAnimationList.vue'
 import { shortid } from '../utils/string'
 import { fitRectIntoBounds, getRectPositionStyle, isPointInRect, intersectRect } from './mixins/rectUtils.js'
 
@@ -54,6 +62,7 @@ export default {
   components: {
     RenderElement,
     AddonBorderList,
+    AddonAnimationList,
     [Button.name]: Button,
     [ButtonGroup.name]: ButtonGroup
   },
@@ -65,8 +74,7 @@ export default {
       type: Object
     }
   },
-
-  data () {
+  data: function () {
     return {
       screenPosition: {
         x: 0,
@@ -136,24 +144,33 @@ export default {
     }
   },
 
-  mounted () {
+  mounted: function () {
     this.fitToCenter()
     this.initGlobalInteract()
   },
 
   methods: {
     /**
+     * 将屏幕放置到设计区正中央，同时修改屏幕位置偏移量
+     */
+    fitToCenter () {
+      this.screenRect.width = this.screen.width
+      this.screenRect.height = this.screen.height
+      this.screenRect.x = (this.$refs.sceneContainer.clientWidth - this.screen.width) / 2
+      this.screenRect.y = 30
+    },
+    getRectPositionStyle,
+    /**
      * 处理全局拖拽事件，全局拖拽主要负责元素拖拽多选选中处理
      */
     initGlobalInteract () {
-      interact(this.$el).draggable({
+      interact(this.$refs.sceneContainer).draggable({
         /**
          * 拖拽开始，如果只是点击不会触发拖拽事件。
          */
         onstart: event => {
-          const containerRect = this.$refs.sceneContainer.getBoundingClientRect()
           this.dragRect.left = event.x0 - event.rect.left
-          this.dragRect.top = event.y0 - event.rect.top - containerRect.y
+          this.dragRect.top = event.y0 - event.rect.top
           this.dragRect.visible = true
         },
         /**
@@ -311,6 +328,7 @@ export default {
       for (let e of this.scene.elements) {
         e.selected = false
       }
+      this.currentAddon = null
       if (element) {
         element.selected = true
       }
@@ -350,16 +368,10 @@ export default {
       }
     },
 
-    /**
-     * 将屏幕放置到设计区正中央，同时修改屏幕位置偏移量
-     */
-    fitToCenter () {
-      this.screenRect.width = this.screen.width
-      this.screenRect.height = this.screen.height
-      this.screenRect.x = (this.$refs.sceneContainer.clientWidth - this.screen.width) / 2
-      this.screenRect.y = 80
-    },
-    getRectPositionStyle
+    // 切换到编辑动画模式
+    toggleAnimationLayer () {
+      this.currentAddon = 'animation'
+    }
   }
 }
 </script>
@@ -370,7 +382,7 @@ export default {
   position: relative;
   touch-action: none;
   user-select: none;
-  .tool-bar {
+  #tool-bar {
     z-index: 99999;
     position: absolute;
     width: 100%;
@@ -387,7 +399,8 @@ export default {
       }
     }
   }
-  .addon-container {
+
+  #addon-container {
     position: absolute;
     left: -352px;
     top: 0;
@@ -396,76 +409,83 @@ export default {
     background: #fff;
     border-right: 1px solid #ededed;
   }
-}
-#scene-container {
-  position: absolute;
-  top: 36px;
-  left: 0;
-  width: 100%;
-  bottom: 0;
-  overflow: auto;
-  .screen {
+  #scene-container {
     position: absolute;
-    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==");
-    box-shadow: 0 0 6px #ddd;
-  }
-  .mask {
-    position: absolute;
-    z-index: 100;
-    box-shadow: 0 0 0 1px #fff;
+    top: 36px;
+    left: 0;
+    width: 100%;
+    bottom: 0;
+    overflow: auto;
+    .screen {
+      position: absolute;
+      background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==");
+      box-shadow: 0 0 6px #ddd;
+    }
+    .mask {
+      position: absolute;
+      z-index: 100;
+      box-shadow: 0 0 0 1px #fff;
+      .selected-node {
+        position: absolute;
+        border: 1px solid #42A5F5;
+      }
+    }
+    .dragging-rect {
+      z-index: 1000;
+      position: absolute;
+      border: 1px solid #42A5F5;
+      background: #3366665e;
+    }
     .selected-node {
-      position: absolute;
-      border: 1px solid #42A5F5;
-    }
-  }
-  .dragging-rect {
-    z-index: 1000;
-    position: absolute;
-    border: 1px solid #42A5F5;
-    background: #3366665e;
-  }
-  .selected-node {
-    position: relative;
-    >div {
-      border: 1px solid #42A5F5;
-      width: 8px;
-      height: 8px;
-      background-color: #fff;
-      position: absolute;
-    }
-    .l {
-      left: -5px;
-      top: calc(50% - 4px);
-    }
-    .lt {
-      left: -4px;
-      top: -4px;
-    }
-    .lb {
-      left: -4px;
-      bottom: -4px;
-    }
-    .rt {
-      top: -4px;
-      right: -4px;
-    }
-    .rb {
-      right: -4px;
-      bottom: -4px;
-    }
-    .r {
-      right: -4px;
-      top: calc(50% - 4px);
-    }
-    .b {
-      bottom: -4px;
-      left: calc(50% - 4px);
-    }
-    .t {
-      top: -4px;
-      left: calc(50% - 4px);
-    }
+      position: relative;
+      >div {
+        border: 1px solid #42A5F5;
+        width: 8px;
+        height: 8px;
+        background-color: #fff;
+        position: absolute;
+      }
+      .l {
+        left: -5px;
+        top: calc(50% - 4px);
+      }
+      .lt {
+        left: -4px;
+        top: -4px;
+      }
+      .lb {
+        left: -4px;
+        bottom: -4px;
+      }
+      .rt {
+        top: -4px;
+        right: -4px;
+      }
+      .rb {
+        right: -4px;
+        bottom: -4px;
+      }
+      .r {
+        right: -4px;
+        top: calc(50% - 4px);
+      }
+      .b {
+        bottom: -4px;
+        left: calc(50% - 4px);
+      }
+      .t {
+        top: -4px;
+        left: calc(50% - 4px);
+      }
 
+    }
+  }
+
+  #animations-container {
+    position: absolute;
+    left: 0;
+    top: 36px;
   }
 }
+
 </style>

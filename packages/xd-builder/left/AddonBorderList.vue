@@ -15,14 +15,14 @@
   <div class="style-prop-panel" ref="propPanel">
     <div class="variable-item" v-for="variable in borderVaraibles" :key="variable.name">
       <div class="var-number" v-if="variable.type === 'number'">
-        <div class="var-label">{{variable.name}}</div>
-        <div class="slider"><el-slider v-model="variable.value" max="40" /></div>
+        <div class="var-label">{{variable.label}}</div>
+        <div class="slider"><el-slider v-model="variable.value" :max="40" /></div>
         <div class="value">{{variable.value}}px</div>
       </div>
       <div class="color-picker" v-if="variable.type === 'color'">
-        <div class="var-label">{{variable.name}}</div>
+        <div class="var-label">{{variable.label}}</div>
         <div class="picker">
-          <el-color-picker v-model="variable.value"/>
+          <el-color-picker size="mini" v-model="variable.value"/>
         </div>
       </div>
     </div>
@@ -108,6 +108,48 @@ export default {
 <style lang="scss">
 #addon-border-list {
   padding: 10px;
+  // 属性配置面板
+  .style-prop-panel {
+    width: 100%;
+    margin: 8px 0;
+    box-shadow: inset 0 0 2px #eee;
+    background: #fdfdfd;
+    .variable-item {
+      font-size: 12px;
+      padding: 6px;
+      .var-number {
+        display: flex;
+        line-height: 36px;
+        .var-label {
+          width: 64px;
+        }
+        .slider {
+          margin: 0 10px;
+          flex: 1;
+          display: flex;
+          align-items: center;
+          >div {
+            flex: 1;
+          }
+        }
+        .value {
+          width: 36px;
+        }
+      }
+      .color-picker {
+        display: flex;
+        line-height: 36px;
+        .var-label {
+          width: 64px;
+        }
+        .picker {
+          flex: 1;
+          display: flex;
+          align-items: center;
+        }
+      }
+    }
+  }
   .style-list {
     display: flex;
     flex-wrap: wrap;
@@ -123,33 +165,6 @@ export default {
       }
       &.current {
         box-shadow: inset 0 0 0 1px #00c5cc86;
-      }
-    }
-    // 属性配置面板
-    .style-prop-panel {
-      width: 100%;
-      .variable-item {
-        font-size: 12px;
-        padding: 6px;
-        .var-number {
-          display: flex;
-          line-height: 52px;
-          .var-label {
-            width: 64px;
-          }
-          .slider {
-            margin: 0 10px;
-            flex: 1;
-            display: flex;
-            align-items: center;
-            >div {
-              flex: 1;
-            }
-          }
-          .value {
-            width: 36px;
-          }
-        }
       }
     }
     .style-container {
