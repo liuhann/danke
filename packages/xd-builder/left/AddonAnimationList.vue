@@ -1,27 +1,39 @@
 <template>
 <div id="addon-animation-list">
+  <div class="addon-title">
+    添加动画
+  </div>
   <div class="animation-list">
     <div v-for="(animation, index) in animations" :key="index" class="animation-item"
-      @mouseover="animationMouseOver(animation)"
+      @mouseenter="animationMouseEnter(animation)"
       @click="addAnimation(animation)">
       <div class="preview-box" :class="animation.name">
+        <img :src="SVG" />
       </div>
+      <div class="animation-title">{{animation.title}}</div>
     </div>
   </div>
+  <el-pagination background :total="total" :page-size="pageSize" @current-change="loadAnimation" :current-page.sync="page" layout="prev, pager, next" />
 </div>
 </template>
 
 <script>
 import RestDAO from '../../common/dao/restdao'
+import SVG from './project.svg'
+import { Pagination } from 'element-ui'
 import { addAnimationStyle, createSheet } from '../../frames/keyframe'
 export default {
   name: 'AddonAnimationList',
+  components: {
+    [Pagination.name]: Pagination
+  },
   data () {
     return {
+      SVG,
       hoverAnimation: null,
       animations: [],
       page: 0,
-      pageSize: 20,
+      pageSize: 30,
       total: 0
     }
   },
@@ -45,11 +57,16 @@ export default {
       }
     },
 
-    animationMouseOver (animation) {
-      animation.name = ''
-      this.$$nextTick(() => {
-        this.hoverAnimation = animation.name
-      })
+    addAnimation (animation) {
+      this.$emit('add', animation)
+    },
+
+    animationMouseEnter (animation) {
+      const replayStore = animation.name
+      animation.name = 'none'
+      setTimeout(() => {
+        animation.name = replayStore
+      }, 300)
     }
   }
 }
@@ -57,20 +74,46 @@ export default {
 
 <style lang="scss">
 #addon-animation-list {
+  .addon-title {
+    font-size: 16px;
+    padding: 10px 20px;
+    border-bottom: 1px solid seashell;
+  }
   .animation-list {
     display: flex;
     flex-wrap: wrap;
     .animation-item {
-      width: 25%;
+      width: 33.3%;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      height: 80px;
+      height: 120px;
+      overflow: hidden;
+      position: relative;
+      background-image: linear-gradient(90deg, #592D2D, #592D2D);
+      background-size: 60px 60px;
+      background-position: center;
+      background-repeat: no-repeat;
+
+      perspective: 200px;
+      .animation-title {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        left: 0;
+        text-align: center;
+        font-size: 12px;
+      }
       .preview-box {
-         background: #00c7ae;
-         width: 32px;
-         height: 32px;
+        background-color: #FF4B4B;
+        perspective: 200px;
+        width: 60px;
+        height: 60px;
+      }
+      .preview-box.none {
+        opacity: 0;
+        transition: opacity .3s ease-in;
       }
     }
   }

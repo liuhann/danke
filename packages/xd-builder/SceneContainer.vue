@@ -39,11 +39,12 @@
       <addon-border-list :border="currentBorder" v-if="currentAddon === 'border'" @input="setSelectedBorder"/>
     </keep-alive>
     <keep-alive>
-      <addon-animation-list v-if="currentAddon === 'animation'" @input="addAnimation"/>
+      <addon-animation-list v-if="currentAddon === 'animation'" @add="addAnimation"/>
     </keep-alive>
   </div>
   <!-- 显示当前元素的动画 -->
   <div id="animations-container" v-if="currentAddon === 'animation'">
+
   </div>
 </section>
 </template>
@@ -283,6 +284,7 @@ export default {
         y: 0,
         width: 100,
         height: 100,
+        animations: [],
         selected: false
       }
       return node
@@ -371,6 +373,10 @@ export default {
     // 切换到编辑动画模式
     toggleAnimationLayer () {
       this.currentAddon = 'animation'
+    },
+
+    // 增加动画
+    addAnimation (animation) {
     }
   }
 }
@@ -406,6 +412,7 @@ export default {
     top: 0;
     bottom: 0;
     width: 352px;
+    overflow: auto;
     background: #fff;
     border-right: 1px solid #ededed;
   }

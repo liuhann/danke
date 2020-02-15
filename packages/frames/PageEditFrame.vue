@@ -6,6 +6,9 @@
       <el-row :gutter="20">
         <el-col :span="16">
           <el-form size="mini" label-width="90px">
+            <el-form-item label="title">
+              <el-input v-model="animation.title" style="width: 360px;"></el-input>
+            </el-form-item>
             <el-form-item label="名称">
               <el-input v-model="animation.name" style="width: 360px;"></el-input>
             </el-form-item>
@@ -117,6 +120,7 @@ export default {
       boxClass: '',
       animation: {
         _id: '',
+        title: '',
         name: 'my-animation',
         cssFrame: '',
         svgFilter: '',

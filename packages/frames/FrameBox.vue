@@ -17,7 +17,7 @@
         <div v-for="animation in animations" :key="animation.name" class="animation-item"
              :class="currentAnimation.name === animation.name? 'is-active': ''"
              @click="setAnimation(animation)">
-          <div class="en-name">{{animation.name}}</div>
+          <div class="en-name">{{animation.name}}({{animation.title}})</div>
         </div>
       </div>
     </el-col>
