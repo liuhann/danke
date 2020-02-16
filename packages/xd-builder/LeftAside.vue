@@ -38,9 +38,7 @@
       </transition>
       <transition name="fade">
         <keep-alive>
-          <div class="scene-list" v-if="current === 'scene'">
-            SAcen
-          </div>
+          <left-scene-template v-if="current === 'scene'"/>
         </keep-alive>
       </transition>
     </div>
@@ -50,15 +48,17 @@
 <script>
 import ImageDAO from './utils/imagedao'
 import RestDAO from '../common/dao/restdao'
-import ImageUpload from './insert/ImageUpload.vue'
+import ImageUpload from './gallery/ImageUpload.vue'
+import LeftSceneTemplate from './scene/LeftSceneTemplates.vue'
 
 export default {
   components: {
-    ImageUpload
+    ImageUpload,
+    LeftSceneTemplate
   },
   data () {
     return {
-      current: 'template'
+      current: 'scene'
     }
   },
   created () {

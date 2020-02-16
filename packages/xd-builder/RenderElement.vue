@@ -3,7 +3,7 @@
      @click="$emit('click')"
      class="element" :class="[element.hidden? 'hidden' : '', element.className, element.border? element.border.name: '']" :style="getElementStyle(element)">
   <!--图片渲染-->
-  <img v-if="element.url" :id="'img-' + (element.name || element.id)" :src="getImageUrl(element.url, screen.width, screen.height)" :style="element.innerStyle || ''">
+  <img v-if="element.url" :id="'img-' + (element.name || element.id)" :src="getImageUrl(element.url, screen.width, screen.height)" :style="getElementAnimationStyle(element)">
   <!--文本渲染情况下 文本内容-->
   <span v-if="element.text" v-html="element.text" :class="element.className" :data-content="element.text"></span>
 </div>
@@ -49,6 +49,7 @@ export default {
     getElementStyle (element) {
       const style = {}
       Object.assign(style, getRectPositionStyle(element))
+      // 根据border扩展设置， 展示扩展的属性
       if (element.border && element.border.variables) {
         for (let variable of element.border.variables) {
           if (variable.type === 'number') {
@@ -62,8 +63,34 @@ export default {
           }
         }
       }
+      style.perspective = (element.width + element.height) + 'px'
       return style
     },
+
+    // 获取元素的动画特效
+    getElementAnimationStyle (element) {
+      if (element.animations && element.animations.length) {
+        if (element.animations.length === 1) {
+          const animation = element.animations[0]
+          return {
+            animation: `${animation.name} ${animation.range[1]}ms ${animation.timing} ${animation.range[0]}ms both`
+          }
+        } else {
+          const animationsOrdered = []
+          // 多个动画次序或者重叠播放
+          for (let animation of element.animations) {
+            animationsOrdered.push(`${animation.name} ${animation.range[1]}ms ${animation.timing} ${animation.range[0]}ms`)
+          }
+          if (animationsOrdered.length) {
+            return {
+              animation: animationsOrdered.join(',')
+            }
+          }
+        }
+      }
+      return null
+    },
+
     getElementPositionStyle (element) {
       return {
         left: element.x + 'px',

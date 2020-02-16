@@ -2,7 +2,8 @@
 <section id="right-section">
   <div id="tool-bar">
     <i class="el-icon-full-screen" v-if="selectedImages.length" @click="toggleBorderLayer"/>
-    <i class="el-icon-video-camera" v-if="selectedImages.length" @click="toggleAnimationLayer"/>
+    <i class="el-icon-video-camera" v-if="selectedImages.length" @click="toggleAnimationLayer('enters')"/>
+    <i class="el-icon-video-camera" v-if="selectedImages.length" @click="toggleAnimationLayer('exists')"/>
   </div>
   <div id="scene-container" @click.exact="sceneMouseDown" ref="sceneContainer">
     <div class="screen" :style="styleScreen">
@@ -39,12 +40,13 @@
       <addon-border-list :border="currentBorder" v-if="currentAddon === 'border'" @input="setSelectedBorder"/>
     </keep-alive>
     <keep-alive>
-      <addon-animation-list v-if="currentAddon === 'animation'" @add="addAnimation"/>
+      <addon-animation-list v-if="currentAddon === 'enters' || currentAddon === 'exists'" @add="addAnimation"/>
     </keep-alive>
   </div>
   <!-- 显示当前元素的动画 -->
-  <div id="animations-container" v-if="currentAddon === 'animation'">
-
+  <div class="animation-container">
+    <animation-panel v-if="currentAddon === 'enters' || currentAddon === 'exists'"
+      :trigger="currentAddon" @preview="previewAnimationSelection" :animations="currentEditAnimations" />
   </div>
 </section>
 </template>
@@ -54,7 +56,8 @@ import { Button, ButtonGroup } from 'element-ui'
 import interact from 'interactjs'
 import RenderElement from './RenderElement.vue'
 import AddonBorderList from './left/AddonBorderList.vue'
-import AddonAnimationList from './left/AddonAnimationList.vue'
+import AddonAnimationList from './animation/AddonAnimationList.vue'
+import AnimationPanel from './animation/AnimationPanel.vue'
 import { shortid } from '../utils/string'
 import { fitRectIntoBounds, getRectPositionStyle, isPointInRect, intersectRect } from './mixins/rectUtils.js'
 
@@ -64,6 +67,7 @@ export default {
     RenderElement,
     AddonBorderList,
     AddonAnimationList,
+    AnimationPanel,
     [Button.name]: Button,
     [ButtonGroup.name]: ButtonGroup
   },
@@ -98,8 +102,12 @@ export default {
         height: 0,
         visible: false
       },
+      // 正在编辑的选项
       currentAddon: null,
-      currentBorder: null
+      // 当前正编辑的边框信息
+      currentBorder: null,
+      // 当前正在编辑的动画列表
+      currentEditAnimations: []
     }
   },
 
@@ -202,7 +210,6 @@ export default {
             }
           }
         },
-
         /**
          * 拖拽结束
          */
@@ -371,12 +378,40 @@ export default {
     },
 
     // 切换到编辑动画模式
-    toggleAnimationLayer () {
-      this.currentAddon = 'animation'
+    toggleAnimationLayer (trigger) {
+      this.currentAddon = trigger
+      if (this.selectedImages.length) {
+        if (!this.selectedImages[0][trigger]) {
+          this.$set(this.selectedImages[0], trigger, [])
+        }
+        this.currentEditAnimations = this.selectedImages[0][trigger]
+      }
     },
 
     // 增加动画
     addAnimation (animation) {
+      this.currentEditAnimations.push(animation)
+      this.selectedElements[0].animations = this.currentEditAnimations
+    },
+
+    /**
+     * 预览当前选中的元素
+     * @param trigger  可以为enter和exist 表示进入和离开动画
+     */
+    previewAnimationSelection (trigger) {
+      // 清空动画选项
+      for (let element of this.scene.elements) {
+        if (element.selected) {
+          element.animations = []
+        }
+      }
+      setTimeout(() => {
+        for (let element of this.scene.elements) {
+          if (element.selected) {
+            element.animations = element[trigger]
+          }
+        }
+      }, 200)
     }
   }
 }
@@ -396,6 +431,7 @@ export default {
     background: #fff;
     top: 0;
     left: 0;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 0 2px;
     i {
       line-height: 36px;
       padding: 0 10px;
@@ -488,10 +524,12 @@ export default {
     }
   }
 
-  #animations-container {
+  .animation-container {
     position: absolute;
     left: 0;
-    top: 36px;
+    top: 40px;
+    background: #fff;
+    width: 360px;
   }
 }
 

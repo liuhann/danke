@@ -58,7 +58,18 @@ export default {
     },
 
     addAnimation (animation) {
-      this.$emit('add', animation)
+      this.$emit('add', {
+        // 名称，供配置展示用
+        title: animation.title,
+        // css类名称
+        name: animation.name,
+        // 过渡函数，默认不许修改
+        timing: animation.timing,
+        // 时间区间 [0]为延迟，[1]为持续时间
+        range: [0, parseInt(animation.duration)],
+        // css内容， 保存时统一抽取到页面一级， 打开后因为页面已存在就不再写回
+        cssFrame: animation.cssFrame
+      })
     },
 
     animationMouseEnter (animation) {
@@ -106,7 +117,6 @@ export default {
         font-size: 12px;
       }
       .preview-box {
-        background-color: #FF4B4B;
         perspective: 200px;
         width: 60px;
         height: 60px;
