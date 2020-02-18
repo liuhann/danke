@@ -41,6 +41,9 @@ export default {
   mounted () {
     this.sheet = createSheet()
     this.restdao = new RestDAO(this.ctx, 'danke/animation')
+    if (!this.ctx.frameRegistry) {
+      this.ctx.frameRegistry = {}
+    }
     this.loadAnimation()
   },
   methods: {
@@ -53,10 +56,14 @@ export default {
       this.styles = result.list
       this.animations = result.list
       for (let animation of this.animations) {
-        addAnimationStyle(this.sheet, animation)
+        if (!this.ctx.frameRegistry[animation.name]) {
+          this.ctx.frameRegistry[animation.name] = animation.cssFrame
+          addAnimationStyle(this.sheet, animation)
+        }
       }
     },
 
+    // 增加动画
     addAnimation (animation) {
       this.$emit('add', {
         // 名称，供配置展示用
@@ -66,12 +73,11 @@ export default {
         // 过渡函数，默认不许修改
         timing: animation.timing,
         // 时间区间 [0]为延迟，[1]为持续时间
-        range: [0, parseInt(animation.duration)],
-        // css内容， 保存时统一抽取到页面一级， 打开后因为页面已存在就不再写回
-        cssFrame: animation.cssFrame
+        range: [0, parseInt(animation.duration)]
       })
     },
 
+    // 鼠标移动上面之后会进行frame演示
     animationMouseEnter (animation) {
       const replayStore = animation.name
       animation.name = 'none'

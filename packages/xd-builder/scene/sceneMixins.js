@@ -1,11 +1,7 @@
-import { clone } from '../../utils/object'
 import { shortid } from '../../utils/string'
 import { getElementInnerStyle, getElementStyle, getSceneStyle } from '../../danke-core/utils/styles'
 import { MessageBox } from 'element-ui'
 export default {
-  watch: {
-
-  },
   methods: {
     /**
      * 增加新的场景
@@ -24,21 +20,15 @@ export default {
       this.currentScene = scene
     },
 
-    /**
-     * 复制当前场景
-     */
-    cloneScene () {
-      const scene = clone(this.currentScene)
-      scene.name = '场景 ' + (this.work.scenes.length + 1)
-      scene.id = shortid()
-      scene.style = getSceneStyle(scene, this.device)
-      this.work.scenes.push(scene)
+    cloneScene (scene) {
+      const newScene = JSON.parse(JSON.stringify(scene))
+      newScene.id = shortid()
+      const currentSceneIndex = this.work.scenes.indexOf(this.currentScene)
+      this.work.scenes.splice(currentSceneIndex + 1, 0, scene)
       this.chooseScene(scene)
     },
+
     chooseScene (scene, index) {
-      if (this.chooseElement) {
-        this.chooseElement(null)
-      }
       this.currentScene = scene
     },
 
@@ -51,8 +41,16 @@ export default {
         const currrentSceneIndex = this.work.scenes.indexOf(this.currentScene)
         if (currrentSceneIndex < this.work.scenes.length - 1) {
           this.chooseScene(this.work.scenes[currrentSceneIndex + 1])
-          this.renderScene(this.work.scenes[currrentSceneIndex + 1], 'in')
-          this.renderScene(this.work.scenes[currrentSceneIndex], 'out')
+        }
+      }
+    },
+
+    // 切换到上一场景
+    previousScene () {
+      if (this.currentScene) {
+        const currrentSceneIndex = this.work.scenes.indexOf(this.currentScene)
+        if (currrentSceneIndex > 0) {
+          this.chooseScene(this.work.scenes[currrentSceneIndex - 1])
         }
       }
     },
@@ -90,16 +88,6 @@ export default {
       }
     },
 
-    previousScene () {
-      if (this.currentScene) {
-        const currrentSceneIndex = this.work.scenes.indexOf(this.currentScene)
-        if (currrentSceneIndex > 0) {
-          this.chooseScene(this.work.scenes[currrentSceneIndex - 1])
-          this.renderScene(this.work.scenes[currrentSceneIndex - 1], 'in')
-          this.renderScene(this.work.scenes[currrentSceneIndex], 'out')
-        }
-      }
-    },
     /**
      * 删除当前场景
      */

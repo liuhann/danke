@@ -60,6 +60,10 @@ export default {
   },
   created () {
     this.styledao = new RestDAO(this.ctx, 'danke/style')
+    // 全局边框样式存储位置
+    if (!this.ctx.borderStyleRegistry) {
+      this.ctx.borderStyleRegistry = {}
+    }
   },
   computed: {
     borderVaraibles () {
@@ -84,9 +88,13 @@ export default {
       this.styles = result.list
       try {
         for (let style of result.list) {
-          const splits = style.cssContent.split('\n\n')
-          for (let css of splits) {
-            addStyle(this.sheet, css)
+          // 检查是否已经存储
+          if (!this.ctx.borderStyleRegistry[style.name]) {
+            this.ctx.borderStyleRegistry[style.name] = style.cssContent
+            const splits = style.cssContent.split('\n\n')
+            for (let css of splits) {
+              addStyle(this.sheet, css)
+            }
           }
         }
       } catch (e) {

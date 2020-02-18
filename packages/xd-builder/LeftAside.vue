@@ -38,7 +38,7 @@
       </transition>
       <transition name="fade">
         <keep-alive>
-          <left-scene-template v-if="current === 'scene'"/>
+          <left-scene-template v-if="current === 'scene'" @insert="insertNewScene"/>
         </keep-alive>
       </transition>
     </div>
@@ -78,6 +78,11 @@ export default {
 
     toggleTo (nav) {
       this.current = nav
+    },
+
+    // 增加新的场景
+    insertNewScene (scene) {
+      this.$emit('insert', 'scene', scene)
     }
   }
 }
@@ -130,6 +135,7 @@ aside.insert-container {
     padding-right: 16px;
     padding-top: 16px;
     width: 352px;
+    position: relative;
   }
 }
 </style>

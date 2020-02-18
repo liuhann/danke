@@ -1,7 +1,11 @@
 <template>
 <div id="xd">
-  <left-aside />
-  <scene-container :scene="currentScene" :screen="work.screen"/>
+  <left-aside @insert="insert"/>
+  <scene-container :scene="currentScene" :screen="work.screen" :scenes="work.scenes"
+    @prev-scene="previousScene"
+    @next-scene="nextScene"
+    @save-work="saveWork"
+    @play-work="runWork"/>
 </div>
 </template>
 
@@ -12,7 +16,8 @@ import LeftAside from './LeftAside.vue'
 import { addStyle, createSheet } from '../frames/keyframe'
 import { shortid } from '../utils/string'
 import BACKGROUND from '../danke-core/css-model/background'
-import sceneMixin from './mixins/sceneMixins.js'
+import sceneMixin from './scene/sceneMixins.js'
+import workMixin from './work/workMixin.js'
 import 'element-ui/packages/theme-chalk/lib/icon.css'
 export default {
   name: 'Builder',
@@ -29,30 +34,23 @@ export default {
     [Menu.name]: Menu,
     [MenuItem.name]: MenuItem
   },
-  mixins: [ sceneMixin ],
+  mixins: [ sceneMixin, workMixin ],
   props: {
   },
   data () {
     return {
       // 作品概要信息
       work: {
-        ratio: '',
-        id: '',
-        title: '',
-        screen: {
+        id: '', // 随机生成的id数
+        title: '', // 名称 暂时保留使用
+        screen: { // 定义时的屏幕大小
           width: 0,
           height: 0
         },
-        audioUrl: '', // 音频播放的地址
-        audioName: '', // 音频名称（只用于显示）
-        audioTicks: [], // 音频切换的节拍
-        duration: 0, // 持续时间
         resources: [], // 作品引用的公共资源
         scenes: [], // 场景列表
-        plugins: [],
         frames: {}, // 作品统一动画frame存放的位置
-        background: JSON.parse(JSON.stringify(BACKGROUND)),
-        styles: '' // 附加的样式
+        background: JSON.parse(JSON.stringify(BACKGROUND))
       },
       currentScene: null
     }
@@ -130,12 +128,14 @@ export default {
      * @param data
      */
     insert (type, data) {
+      debugger
       switch (type) {
         case 'scene':
-          this.addNewScene()
-          break
-        case 'clone-scene':
-          this.cloneScene()
+          if (data == null) {
+            this.addNewScene()
+          } else {
+            this.cloneScene(data)
+          }
           break
         case 'image':
           this.insertRawImage(data)

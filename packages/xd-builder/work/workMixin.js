@@ -2,7 +2,6 @@
  * 保存、加载作品通用方法
  */
 import { Loading, Message, MessageBox } from 'element-ui'
-import { clone } from '../../utils/object'
 import { shortid } from '../../utils/string'
 import ImageDAO from '../utils/imagedao'
 import RestDAO from '../../common/dao/restdao'
@@ -22,7 +21,8 @@ export default {
     /**
     * 保存作品内容
     */
-    async saveWork (isPublish) {
+    async saveWork () {
+      debugger
       if (this.savingWork) {
         return
       }
@@ -33,11 +33,8 @@ export default {
         spinner: 'el-icon-loading',
         background: 'rgba(255, 255, 255, 0.4)'
       })
-      // save scene preview
-      await this.saveImages()
       const work = this.getWorkConfig()
-      if (this.work.isNew) {
-        delete this.work.isNew
+      if (!this.work._id) {
         const result = await this.workdao.create(work)
         this.work._id = result.object._id
       } else {
@@ -75,7 +72,8 @@ export default {
 
     /**
      * 保存图片，因为上传时只保存了blob在页面端  保存时需要将这些图片上传并回写服务器端的url信息
-     * @returns {Promise<void>}
+     * 目前图片都是先上传，再使用
+     * @deprecated
      */
     async saveImages () {
       for (let scene of this.work.scenes) {
@@ -165,6 +163,21 @@ export default {
       }
     },
 
+    getStyleResource (scene) {
+      const frames = {}
+      const borders = {}
+      for (let element of scene.elements) {
+        if (element.animations && element.animations.length) {
+          for (let animation of element.animations) {
+            if (!frames[animation.name]) {
+              frames[animation.name] = animation.cssFrame
+            }
+            delete animation.cssFrame
+          }
+        }
+      }
+    },
+
     /**
      * 获取场景下所有元素的样式列表
      * @param scene
@@ -195,10 +208,9 @@ export default {
       return result.list
     },
 
-    async listMyTemplate () {
-
-    },
-
+    /**
+     * @deprecated
+     */
     async exportWork () {
       const JSZip = (await import(/* webpackChunkName: "jszip" */'jszip')).default
       const { saveAs } = (await import(/* webpackChunkName: "jszip" */'file-saver')).default

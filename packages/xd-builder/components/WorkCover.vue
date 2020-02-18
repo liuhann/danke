@@ -14,7 +14,7 @@
 <script>
 import { TypeEnum } from '../../danke-core/elements'
 import mixinDevice from '../../xd-player/mixinDevice'
-import sceneMixins from '../mixins/sceneMixins'
+import sceneMixins from '../scene/sceneMixins'
 import { getElementStyle, getImageWebUrl, getSceneStyle } from '../../danke-core/utils/styles'
 import RenderElement from '../RenderElement'
 import { Button } from 'element-ui'

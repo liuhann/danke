@@ -4,6 +4,13 @@
     <i class="el-icon-full-screen" v-if="selectedImages.length" @click="toggleBorderLayer"/>
     <i class="el-icon-video-camera" v-if="selectedImages.length" @click="toggleAnimationLayer('enters')"/>
     <i class="el-icon-video-camera" v-if="selectedImages.length" @click="toggleAnimationLayer('exists')"/>
+    <div class="pull-right" v-if="selectedImages.length === 0">
+      <el-button icon="el-icon-arrow-down" type="text" size="mini" @click="nextScene">下页</el-button>
+      <el-button icon="el-icon-arrow-up" type="text" size="mini" @click="prevScene">上页</el-button>
+      {{scenes.indexOf(scene) + 1}}/{{scenes.length}}
+      <i class="el-icon-upload" @click="saveWork"/>
+      <el-button icon="el-icon-video-play" @click="playWork" type="text"></el-button>
+    </div>
   </div>
   <div id="scene-container" @click.exact="sceneMouseDown" ref="sceneContainer">
     <div class="screen" :style="styleScreen">
@@ -21,7 +28,11 @@
       </div>
     </div>
     <div class="mask" :style="styleScreen" @dragover="sceneDragOver" @drop="elementDropped" v-if="scene">
-      <div v-for="selectee in scene.elements" :ref="'mask-' + selectee.id" class="selected-node" :key="selectee.id" :style="getMaskStyle(selectee)">
+      <div
+        v-for="selectee in scene.elements"
+        :ref="'mask-' + selectee.id" class="node-mask"
+        :key="selectee.id"
+        :style="getMaskStyle(selectee)">
         <div class="lt"/>
         <div class="rt"/>
         <div class="t"/>
@@ -55,7 +66,7 @@
 import { Button, ButtonGroup } from 'element-ui'
 import interact from 'interactjs'
 import RenderElement from './RenderElement.vue'
-import AddonBorderList from './left/AddonBorderList.vue'
+import AddonBorderList from './border/AddonBorderList.vue'
 import AddonAnimationList from './animation/AddonAnimationList.vue'
 import AnimationPanel from './animation/AnimationPanel.vue'
 import { shortid } from '../utils/string'
@@ -72,6 +83,9 @@ export default {
     [ButtonGroup.name]: ButtonGroup
   },
   props: {
+    scenes: {
+      type: Array
+    },
     scene: {
       type: Object
     },
@@ -112,6 +126,13 @@ export default {
   },
 
   watch: {
+    // 场景更新操作，需要更新交互及其他页面元素
+    scene () {
+      this.destoryElementInteract()
+      this.$nextTick(() => {
+        this.setElementsInteract()
+      })
+    },
     'screen': {
       deep: true,
       handler () {
@@ -220,6 +241,7 @@ export default {
         }
       }).styleCursor(false)
     },
+
     /**
      * 进行鼠标点击位置检测，如果点击到元素则选中或保持多个的选择状态， 点到空白则取消所有元素选中
      */
@@ -276,7 +298,9 @@ export default {
       }
       this.scene.elements.push(node)
       this.setElementSelected(node)
-      this.initElementDrag(node)
+      this.$nextTick(() => {
+        this.initElementDrag(node)
+      })
     },
 
     /**
@@ -301,33 +325,53 @@ export default {
      * 初始化元素interact拖拽功能
      */
     initElementDrag (node) {
-      this.$nextTick(() => {
-        const el = this.$refs['mask-' + node.id]
-        if (el.length) {
-          interact(el[0]).resizable({
-            edges: { left: true, right: true, bottom: true, top: true },
-            inertia: true
-          }).on('resizemove', event => {
-            node.width = event.rect.width
-            node.height = event.rect.height
-            node.x += event.deltaRect.left
-            node.y += event.deltaRect.top
-          }).draggable({
-            onstart: event => {},
-            onmove: event => {
-              for (let element of this.scene.elements) {
-                if (element.selected) {
-                  element.x += event.dx
-                  element.y += event.dy
-                }
+      const el = this.$refs['mask-' + node.id]
+      if (el.length) {
+        interact(el[0]).resizable({
+          edges: { left: true, right: true, bottom: true, top: true },
+          inertia: true
+        }).on('resizemove', event => {
+          node.width = event.rect.width
+          node.height = event.rect.height
+          node.x += event.deltaRect.left
+          node.y += event.deltaRect.top
+        }).draggable({
+          onstart: event => {},
+          inertia: true,
+          onmove: event => {
+            for (let element of this.scene.elements) {
+              if (element.selected) {
+                element.x += event.dx
+                element.y += event.dy
               }
-            },
-            onend: event => {
-              this.dragRect.dragged = true
             }
-          })
+          },
+          onend: event => {
+            this.dragRect.dragged = true
+          }
+        })
+      }
+    },
+
+    /**
+     * 销毁所有元素的interaction
+     */
+    destoryElementInteract () {
+      for (let element of this.scene.elements) {
+        const el = this.$refs['mask-' + element.id]
+        if (el && el.length) {
+          interact(el[0]).unset()
         }
-      })
+      }
+    },
+
+    /**
+     * 初始化所有元素的interaction
+     */
+    setElementsInteract () {
+      for (let element of this.scene.elements) {
+        this.initElementDrag(element)
+      }
     },
 
     /**
@@ -412,6 +456,20 @@ export default {
           }
         }
       }, 200)
+    },
+    nextScene () {
+      this.$emit('next-scene')
+    },
+    prevScene () {
+      this.$emit('prev-scene')
+    },
+    // 播放作品
+    playWork () {
+      this.$emit('play-work')
+    },
+    // 播放作品
+    saveWork () {
+      this.$emit('save-work')
     }
   }
 }
@@ -424,20 +482,31 @@ export default {
   touch-action: none;
   user-select: none;
   #tool-bar {
-    z-index: 99999;
+    z-index: 9999;
     position: absolute;
     width: 100%;
-    height: 36px;
+    height: 40px;
     background: #fff;
+    font-size: 12px;
+    padding: 6px;
     top: 0;
     left: 0;
+    .pull-right {
+      float: right;
+    }
+    .el-button {
+      padding: 0;
+    }
     box-shadow: rgba(0, 0, 0, 0.2) 0px 0 2px;
     i {
-      line-height: 36px;
-      padding: 0 10px;
+      line-height: 28px;
+      width: 28px;
+      text-align: center;
       cursor: pointer;
+      color: rgba(0, 0, 0, 0.7);
+      font-size: 18px;
       &:hover {
-
+        background-color: #f1f3f4;
       }
     }
   }
@@ -468,10 +537,6 @@ export default {
       position: absolute;
       z-index: 100;
       box-shadow: 0 0 0 1px #fff;
-      .selected-node {
-        position: absolute;
-        border: 1px solid #42A5F5;
-      }
     }
     .dragging-rect {
       z-index: 1000;
@@ -479,8 +544,9 @@ export default {
       border: 1px solid #42A5F5;
       background: #3366665e;
     }
-    .selected-node {
+    .node-mask {
       position: relative;
+      border: 1px solid #42A5F5;
       >div {
         border: 1px solid #42A5F5;
         width: 8px;
