@@ -10,14 +10,13 @@
 </template>
 
 <script type="module">
+import RestDAO from '../common/dao/restdao'
 import StyleRegistry from './utils/StyleRegistry.js'
+import { Popover, Button, Upload, Tabs, TabPane, Drawer, Dialog, Menu, MenuItem, Message, Loading } from 'element-ui'
 import SceneContainer from './SceneContainer.vue'
-import { Popover, Button, Upload, Tabs, TabPane, Drawer, Dialog, Menu, MenuItem } from 'element-ui'
 import LeftAside from './LeftAside.vue'
 import { shortid } from '../utils/string'
-import BACKGROUND from '../danke-core/css-model/background'
 import sceneMixin from './scene/sceneMixins.js'
-import workMixin from './work/workMixin.js'
 import 'element-ui/packages/theme-chalk/lib/icon.css'
 export default {
   name: 'Builder',
@@ -34,7 +33,7 @@ export default {
     [Menu.name]: Menu,
     [MenuItem.name]: MenuItem
   },
-  mixins: [ sceneMixin, workMixin ],
+  mixins: [ sceneMixin ],
   props: {
   },
   data () {
@@ -47,16 +46,16 @@ export default {
           width: 0,
           height: 0
         },
-        resources: [], // 作品引用的公共资源
-        scenes: [], // 场景列表
-        frames: {}, // 作品统一动画frame存放的位置
-        background: JSON.parse(JSON.stringify(BACKGROUND))
+        background: null,
+        scenes: [] // 场景列表
       },
       currentScene: null
     }
   },
 
-  created () {},
+  created () {
+    this.workdao = new RestDAO(this.ctx, 'danke/work')
+  },
 
   mounted () {
     this.ctx.styleRegistry = new StyleRegistry()
@@ -64,7 +63,7 @@ export default {
     if (!workId) {
       this.newWork()
     } else {
-      this.fetchWork(workId)
+      this.loadWork(workId)
     }
   },
   methods: {
@@ -82,10 +81,43 @@ export default {
       this.addNewScene()
     },
 
-    async fetchWork (workId) {
+    /**
+    * 保存作品内容
+    */
+    async saveWork () {
+      if (this.savingWork) {
+        return
+      }
+      this.savingWork = true
+      const loading = Loading.service({
+        lock: true,
+        text: '正在保存中',
+        spinner: 'el-icon-loading',
+        background: 'rgba(255, 255, 255, 0.4)'
+      })
+      const work = JSON.parse(JSON.stringify(this.work))
+      // 抽取所有使用的frame style到work上，以便压缩使用空间
+      Object.assign(work, this.ctx.styleRegistry.getStyleResource(work))
+      if (!this.work._id) {
+        const result = await this.workdao.create(work)
+        this.work._id = result.object._id
+      } else {
+        await this.workdao.patch(work._id, work)
+      }
+      loading.close()
+      Message.success('保存完成')
+      this.savingWork = false
+    },
+
+    async loadWork (workId) {
       const work = await this.workdao.getOne(workId)
-      this.openWork(work)
+      this.ctx.styleRegistry.initWorkStyleResource(work)
+      this.work = work
       this.chooseScene(this.work.scenes[0])
+    },
+
+    runWork () {
+
     },
 
     /**

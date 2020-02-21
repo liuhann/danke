@@ -52,7 +52,7 @@
   <!-- 左侧的信息选择框 -->
   <div id="addon-container" v-show="currentAddon != null">
     <keep-alive>
-      <addon-border-list :border="currentBorder" v-if="currentAddon === 'border'" @input="setSelectedBorder"/>
+      <addon-border-list :border="currentAddonObject" v-if="currentAddon === 'border'" @input="setElementAddon"/>
     </keep-alive>
     <keep-alive>
       <addon-animation-list v-if="currentAddon === 'enters' || currentAddon === 'exists'" @add="addAnimation"/>
@@ -123,9 +123,7 @@ export default {
       // 正在编辑的选项
       currentAddon: null,
       // 当前正编辑的边框信息
-      currentBorder: null,
-      // 当前正在编辑的动画列表
-      currentEditAnimations: null
+      currentAddonObject: null
     }
   },
 
@@ -402,45 +400,27 @@ export default {
       }
       return Object.assign(displayStyle, getRectPositionStyle(element))
     },
-    // 显示左侧边框
-    toggleBorderLayer () {
-      this.currentAddon = 'border'
-      if (this.selectedImages.length) {
-        this.currentBorder = this.selectedImages[0].border
-      }
-    },
 
-    // 增加样式
-    setSelectedBorder (style) {
-      const border = style ? {
-        name: style.name,
-        variables: style.variables
-      } : null
-      for (let element of this.scene.elements) {
-        if (element.selected) {
-          element.style.border = border
-        }
-      }
-      this.currentBorder = border
-    },
-
+    /**
+     * 设置当前显示属性
+     */
     showAddon (addon) {
-      switch (addon) {
-        case 'border':
-          if (this.selectedImages.length) {
-            this.currentBorder = this.selectedImages[0].style.border
-          }
-          break
-        case 'animation':
-          if (this.selectedImages.length) {
-            this.currentAnimation = this.selectedImages[0].style.animation
-          }
-          break
-        case 'background':
-          this.currentBackground = this.scene.background
-          break
+      if (this.selectedImages.length) {
+        this.currentAddonObject = this.selectedImages[0].style[addon]
+      } else {
+        this.currentAddonObject = this.scene.style[addon]
       }
       this.currentAddon = addon
+    },
+
+    /**
+     * 设置当前属性
+     */
+    setElementAddon (addon) {
+      for (let element of this.selectedElements) {
+        this.$set(element.style, this.currentAddon, addon)
+      }
+      this.currentAddonObject = addon
     },
 
     // 切换到编辑动画模式

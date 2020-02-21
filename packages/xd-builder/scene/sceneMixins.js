@@ -9,10 +9,8 @@ export default {
     addNewScene () {
       const scene = {
         elements: [],
-        background: '',
-        leave: 3000,
-        z: 100, // 场景的层次
-        manual: false
+        style: {},
+        z: 100 // 场景的层次
       }
       // 设置默认名称与ID
       scene.id = shortid()

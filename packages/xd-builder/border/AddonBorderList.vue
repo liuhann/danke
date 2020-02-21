@@ -35,7 +35,6 @@
 <script>
 import { Pagination, Button, Slider, ColorPicker } from 'element-ui'
 import RestDAO from '../../common/dao/restdao'
-import { createSheet, addStyle } from '../../frames/keyframe.js'
 export default {
   name: 'AddonBorderList',
   components: {
@@ -60,10 +59,6 @@ export default {
   },
   created () {
     this.styledao = new RestDAO(this.ctx, 'danke/style')
-    // 全局边框样式存储位置
-    if (!this.ctx.borderStyleRegistry) {
-      this.ctx.borderStyleRegistry = {}
-    }
   },
   computed: {
     borderVaraibles () {
@@ -75,10 +70,13 @@ export default {
     }
   },
   mounted () {
-    this.sheet = createSheet()
     this.loadStyles()
   },
   methods: {
+
+    /**
+     * 分页加载样式，并写入到全局注册
+     */
     async loadStyles () {
       const result = await this.styledao.list({
         page: this.page,
@@ -97,8 +95,12 @@ export default {
 
     // 使用样式
     useStyle (style, index) {
-      this.$emit('input', style)
-      this.currentStyle = style
+      debugger
+      this.currentStyle = style ? {
+        name: style.name,
+        variables: style.variables
+      } : null
+      this.$emit('input', this.currentStyle)
       const list = this.$refs.styleList
       // 插入样式面板到当前之下
       list.insertBefore(this.$refs.propPanel, list.childNodes[Math.floor((index + 1) / 4) * 4 + 4])
