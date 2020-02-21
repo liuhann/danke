@@ -9,6 +9,7 @@ export default {
     addNewScene () {
       const scene = {
         elements: [],
+        background: '',
         leave: 3000,
         z: 100, // 场景的层次
         manual: false

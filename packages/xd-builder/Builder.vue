@@ -9,11 +9,11 @@
 </div>
 </template>
 
-<script>
+<script type="module">
+import StyleRegistry from './utils/StyleRegistry.js'
 import SceneContainer from './SceneContainer.vue'
 import { Popover, Button, Upload, Tabs, TabPane, Drawer, Dialog, Menu, MenuItem } from 'element-ui'
 import LeftAside from './LeftAside.vue'
-import { addStyle, createSheet } from '../frames/keyframe'
 import { shortid } from '../utils/string'
 import BACKGROUND from '../danke-core/css-model/background'
 import sceneMixin from './scene/sceneMixins.js'
@@ -56,26 +56,10 @@ export default {
     }
   },
 
-  watch: {
-    'work.styles': function () {
-      const styleTag = document.getElementById('work-extra-style')
-      if (styleTag) {
-        styleTag.parentElement.removeChild(styleTag)
-      }
-      const sheet = createSheet('work-extra-style')
-      try {
-        const rules = this.work.styles.split('\n\n')
-        for (let rule of rules) {
-          addStyle(sheet, rule)
-        }
-      } catch (e) {
-      }
-    }
-  },
-  created () {
+  created () {},
 
-  },
   mounted () {
+    this.ctx.styleRegistry = new StyleRegistry()
     let workId = this.$route.query.work
     if (!workId) {
       this.newWork()
@@ -102,24 +86,6 @@ export default {
       const work = await this.workdao.getOne(workId)
       this.openWork(work)
       this.chooseScene(this.work.scenes[0])
-      this.renderScene(this.currentScene, 'in')
-    },
-
-    chooseWorkAudio (audioItem) {
-      this.work.audioUrl = audioItem.audioUrl
-      this.work.audioName = audioItem.name
-      this.work.audioTicks = audioItem.ticks
-    },
-
-    flatIconChoosed (icon) {
-      this.insertSVGImage(icon.svg, icon.desc)
-    },
-    // 显示Icon栏
-    showFlatIconPopover () {
-      this.$refs.dialogChooseFlatIcon.open()
-    },
-    openAudioDialog () {
-      this.$refs.dialogAudioList.open()
     },
 
     /**
@@ -128,7 +94,6 @@ export default {
      * @param data
      */
     insert (type, data) {
-      debugger
       switch (type) {
         case 'scene':
           if (data == null) {
@@ -158,11 +123,6 @@ export default {
         default:
           break
       }
-    },
-    // 执行自定义的代码
-    execScript (script) {
-      // eslint-disable-next-line no-eval
-      eval(script)
     }
   }
 }

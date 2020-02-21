@@ -22,7 +22,6 @@ export default {
     * 保存作品内容
     */
     async saveWork () {
-      debugger
       if (this.savingWork) {
         return
       }
@@ -50,24 +49,9 @@ export default {
      * @param work 服务器加载的work信息
      */
     openWork (o) {
-      const work = clone(o)
-      // 回写cssFrame
-      for (let i = 0; i < work.scenes.length; i++) {
-        const scene = work.scenes[i]
-        for (let element of scene.elements) {
-          if (element.animations && element.animations.length) {
-            for (let animation of element.animations) {
-              animation.cssFrame = work.frames[animation.name]
-            }
-          }
-        }
-        // 补全animation
-        if (!scene.animations) {
-          scene.animations = []
-        }
-      }
+      const work = JSON.parse(JSON.stringify(o))
+      this.ctx.styleRegistry.initWorkStyleResource(work)
       this.work = work
-      this.work.isNew = false
     },
 
     /**
@@ -86,6 +70,7 @@ export default {
         }
       }
     },
+
     /**
      * 获取Work信息
      * @returns {any}
@@ -93,20 +78,10 @@ export default {
     getWorkConfig () {
       const work = JSON.parse(JSON.stringify(this.work))
       // 抽取所有使用的frame到work上，以便压缩使用空间
-      const frames = {}
-      for (let i = 0; i < work.scenes.length; i++) {
-        const scene = work.scenes[i]
-        let fr = this.getSceneElementFrames(scene)
-        for (let element of scene.elements) {
-          element.style = ''
-        }
-        Object.assign(frames, fr)
-        scene.style = ''
-      }
-      work.frames = frames
-      work.cover = work.scenes[0]
+      Object.assign(work, this.ctx.styleRegistry.getStyleResource(work))
       return work
     },
+
     async runWork () {
       await this.saveWork()
       window.open('/play/fit/' + this.work._id)
@@ -163,18 +138,37 @@ export default {
       }
     },
 
-    getStyleResource (scene) {
-      const frames = {}
-      const borders = {}
-      for (let element of scene.elements) {
-        if (element.animations && element.animations.length) {
-          for (let animation of element.animations) {
-            if (!frames[animation.name]) {
-              frames[animation.name] = animation.cssFrame
+    /**
+     * 获取作品里所有元素的样式资源
+     * @param {*} work
+     */
+    getStyleResource (work) {
+      const frames = {} // css 帧资源
+      const styles = {} // css 样式资源
+      for (let scene of work.scenes) {
+        for (let element of scene.elements) {
+          // 进入动画抽取
+          if (element.enters && element.enters.length) {
+            for (let animation of element.enters) {
+              frames[animation.name] = this.ctx.frameRegistry[animation.name]
             }
-            delete animation.cssFrame
+          }
+          // 离开动画抽取
+          if (element.exists && element.exists.length) {
+            for (let animation of element.exists) {
+              frames[animation.name] = this.ctx.frameRegistry[animation.name]
+            }
+          }
+          // 边框css样式
+          if (element.border && element.border.name) {
+            styles[element.border.name] = this.ctx.borderStyleRegistry[element.border.name]
           }
         }
+      }
+      debugger
+      return {
+        frames,
+        styles
       }
     },
 

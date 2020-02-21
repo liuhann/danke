@@ -1,7 +1,7 @@
 <template>
 <div :id="'element-' + element.id"
      @click="$emit('click')"
-     class="element" :class="[element.hidden? 'hidden' : '', element.className, element.border? element.border.name: '']" :style="getElementStyle(element)">
+     class="element" :class="[element.hidden? 'hidden' : '', element.className, borderClass]" :style="elementStyle">
   <!--图片渲染-->
   <img v-if="element.url" :id="'img-' + (element.name || element.id)" :src="getImageUrl(element.url, screen.width, screen.height)" :style="getElementAnimationStyle(element)">
   <!--文本渲染情况下 文本内容-->
@@ -39,19 +39,19 @@ export default {
 
   },
   computed: {
-  },
-  data () {
-    return {
-    }
-  },
-  methods: {
-    getImageUrl,
-    getElementStyle (element) {
+    borderClass () {
+      if (this.element.style && this.element.style.border) {
+        return this.element.style.border.name
+      } else {
+        return null
+      }
+    },
+    elementStyle () {
       const style = {}
-      Object.assign(style, getRectPositionStyle(element))
+      Object.assign(style, getRectPositionStyle(this.element))
       // 根据border扩展设置， 展示扩展的属性
-      if (element.border && element.border.variables) {
-        for (let variable of element.border.variables) {
+      if (this.element.style.border && this.element.style.border.variables) {
+        for (let variable of this.element.style.border.variables) {
           if (variable.type === 'number') {
             Object.assign(style, {
               ['--' + variable.name]: variable.value + 'px'
@@ -63,14 +63,21 @@ export default {
           }
         }
       }
-      style.perspective = (element.width + element.height) + 'px'
+      style.perspective = (this.element.width + this.element.height) + 'px'
       return style
-    },
+    }
+  },
+  data () {
+    return {
+    }
+  },
+  methods: {
+    getImageUrl,
 
     // 获取元素的动画特效
     getElementAnimationStyle (element) {
-      if (element.animations && element.animations.length) {
-        if (element.animations.length === 1) {
+      if (element.style.animation && element.animation.current && element.animation.current.length) {
+        if (element.animation.current.length === 1) {
           const animation = element.animations[0]
           return {
             animation: `${animation.name} ${animation.range[1]}ms ${animation.timing} ${animation.range[0]}ms both`

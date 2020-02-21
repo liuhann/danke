@@ -88,14 +88,7 @@ export default {
       this.styles = result.list
       try {
         for (let style of result.list) {
-          // 检查是否已经存储
-          if (!this.ctx.borderStyleRegistry[style.name]) {
-            this.ctx.borderStyleRegistry[style.name] = style.cssContent
-            const splits = style.cssContent.split('\n\n')
-            for (let css of splits) {
-              addStyle(this.sheet, css)
-            }
-          }
+          this.ctx.styleRegistry.addStyle(style)
         }
       } catch (e) {
         console.log(e)

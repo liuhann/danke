@@ -1,18 +1,26 @@
 <template>
 <section id="right-section">
+  <!-- 工具栏 -->
   <div id="tool-bar">
-    <i class="el-icon-full-screen" v-if="selectedImages.length" @click="toggleBorderLayer"/>
-    <i class="el-icon-video-camera" v-if="selectedImages.length" @click="toggleAnimationLayer('enters')"/>
-    <i class="el-icon-video-camera" v-if="selectedImages.length" @click="toggleAnimationLayer('exists')"/>
+    <!-- 设置元素边框 -->
+    <i class="el-icon-copy-document" :class="currentAddon === 'border'? 'on': ''" v-if="selectedImages.length" @click="showAddon('border')"/>
+    <!-- 设置元素动画 -->
+    <i class="el-icon-magic-stick" v-if="selectedImages.length" @click="showAddon('animation')"/>
+    <!-- 设置场景背景 -->
+    <i class="el-icon-s-open" v-if="selectedImages.length === 0" @click="showAddon('background')"/>
+    <!-- 设置场景动画 -->
+    <i class="el-icon-magic-stick" v-if="selectedImages.length === 0" @click="toggleAnimationLayer()"/>
     <div class="pull-right" v-if="selectedImages.length === 0">
       <el-button icon="el-icon-arrow-down" type="text" size="mini" @click="nextScene">下页</el-button>
       <el-button icon="el-icon-arrow-up" type="text" size="mini" @click="prevScene">上页</el-button>
       {{scenes.indexOf(scene) + 1}}/{{scenes.length}}
       <i class="el-icon-upload" @click="saveWork"/>
-      <el-button icon="el-icon-video-play" @click="playWork" type="text"></el-button>
+      <i class="el-icon-setting" @click="saveWork"/>
+      <i class="el-icon-data-line"  @click="playWork"/>
     </div>
   </div>
   <div id="scene-container" @click.exact="sceneMouseDown" ref="sceneContainer">
+    <!-- 当前屏幕内容 -->
     <div class="screen" :style="styleScreen">
       <div class="screen-title">
       </div>
@@ -27,25 +35,21 @@
             :ref="element.id"/>
       </div>
     </div>
+    <!-- 元素被选中、移动、调整大小时的选中层 -->
     <div class="mask" :style="styleScreen" @dragover="sceneDragOver" @drop="elementDropped" v-if="scene">
       <div
         v-for="selectee in scene.elements"
         :ref="'mask-' + selectee.id" class="node-mask"
         :key="selectee.id"
         :style="getMaskStyle(selectee)">
-        <div class="lt"/>
-        <div class="rt"/>
-        <div class="t"/>
-        <div class="l"/>
-        <div class="lb"/>
-        <div class="rb"/>
-        <div class="r"/>
-        <div class="b"/>
+        <div class="lt"/><div class="rt"/><div class="t"/><div class="l"/><div class="lb"/><div class="rb"/><div class="r"/><div class="b"/>
       </div>
     </div>
+    <!-- 拖拽选择层 -->
     <div class="dragging-rect" :style="styleDragingRect">
     </div>
   </div>
+  <!-- 左侧的信息选择框 -->
   <div id="addon-container" v-show="currentAddon != null">
     <keep-alive>
       <addon-border-list :border="currentBorder" v-if="currentAddon === 'border'" @input="setSelectedBorder"/>
@@ -121,7 +125,7 @@ export default {
       // 当前正编辑的边框信息
       currentBorder: null,
       // 当前正在编辑的动画列表
-      currentEditAnimations: []
+      currentEditAnimations: null
     }
   },
 
@@ -283,7 +287,7 @@ export default {
       const element = JSON.parse(data)
       // 获取元素自适应到整个画面的高度和宽度
       let { width, height } = fitRectIntoBounds(element, this.screen)
-      const node = this.addNode()
+      const node = this.createElement()
       node.x = ev.offsetX - width / 2
       node.y = ev.offsetY - height / 2
       node.width = width
@@ -306,7 +310,7 @@ export default {
     /**
      * 增加一个节点
      */
-    addNode () {
+    createElement () {
       const id = shortid()
       // 此处设置节点的基本属性
       const node = {
@@ -315,7 +319,8 @@ export default {
         y: 0,
         width: 100,
         height: 100,
-        animations: [],
+        style: {},
+        prop: {},
         selected: false
       }
       return node
@@ -407,28 +412,48 @@ export default {
 
     // 增加样式
     setSelectedBorder (style) {
-      for (let element of this.scene.elements) {
-        if (element.selected) {
-          element.border = {
-            name: style.name,
-            variables: style.variables
-          }
-        }
-      }
-      this.currentBorder = {
+      const border = style ? {
         name: style.name,
         variables: style.variables
+      } : null
+      for (let element of this.scene.elements) {
+        if (element.selected) {
+          element.style.border = border
+        }
       }
+      this.currentBorder = border
+    },
+
+    showAddon (addon) {
+      switch (addon) {
+        case 'border':
+          if (this.selectedImages.length) {
+            this.currentBorder = this.selectedImages[0].style.border
+          }
+          break
+        case 'animation':
+          if (this.selectedImages.length) {
+            this.currentAnimation = this.selectedImages[0].style.animation
+          }
+          break
+        case 'background':
+          this.currentBackground = this.scene.background
+          break
+      }
+      this.currentAddon = addon
     },
 
     // 切换到编辑动画模式
     toggleAnimationLayer (trigger) {
       this.currentAddon = trigger
+      // 设置的是元素动画
       if (this.selectedImages.length) {
         if (!this.selectedImages[0][trigger]) {
           this.$set(this.selectedImages[0], trigger, [])
         }
         this.currentEditAnimations = this.selectedImages[0][trigger]
+      } else {
+        // 设置场景动画
       }
     },
 
@@ -505,7 +530,7 @@ export default {
       cursor: pointer;
       color: rgba(0, 0, 0, 0.7);
       font-size: 18px;
-      &:hover {
+      &:hover, &.on {
         background-color: #f1f3f4;
       }
     }

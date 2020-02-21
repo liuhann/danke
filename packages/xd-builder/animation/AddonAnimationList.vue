@@ -41,9 +41,6 @@ export default {
   mounted () {
     this.sheet = createSheet()
     this.restdao = new RestDAO(this.ctx, 'danke/animation')
-    if (!this.ctx.frameRegistry) {
-      this.ctx.frameRegistry = {}
-    }
     this.loadAnimation()
   },
   methods: {
@@ -56,6 +53,7 @@ export default {
       this.styles = result.list
       this.animations = result.list
       for (let animation of this.animations) {
+        this.ctx.addFrame(animation)
         if (!this.ctx.frameRegistry[animation.name]) {
           this.ctx.frameRegistry[animation.name] = animation.cssFrame
           addAnimationStyle(this.sheet, animation)

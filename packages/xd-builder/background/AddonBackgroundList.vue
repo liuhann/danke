@@ -1,16 +1,19 @@
 <template>
-<div id="addon-background-list">
+<div id="addon-color-list">
 
 </div>
 </template>
 
 <script>
-
-const lights = []
-const darks = []
+import lights from './lights'
 
 export default {
-  name: 'AddonBackgroundList'
+  name: 'AddonBackgroundList',
+  data () {
+    return {
+      lights
+    }
+  }
 }
 </script>
 
