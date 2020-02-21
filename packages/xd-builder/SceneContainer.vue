@@ -5,8 +5,8 @@
     <!-- 设置元素边框 -->
     <i class="el-icon-copy-document" :class="currentAddon === 'border'? 'on': ''" v-if="selectedImages.length" @click="showAddon('border')"/>
     <!-- 设置元素动画 -->
-    <i class="el-icon-magic-stick" v-if="selectedImages.length" @click="showAddon('enters')"/>
-    <i class="el-icon-magic-stick" v-if="selectedImages.length" @click="showAddon('exists')"/>
+    <i class="el-icon-data-analysis" v-if="selectedImages.length" @click="showAddon('enters')"/>
+    <i class="el-icon-data-board" v-if="selectedImages.length" @click="showAddon('exists')"/>
     <!-- 设置场景背景 -->
     <i class="el-icon-s-open" v-if="selectedImages.length === 0" @click="showAddon('background')"/>
     <!-- 设置场景动画 -->
@@ -58,6 +58,9 @@
     <keep-alive>
       <addon-animation-list v-if="currentAddon === 'enters' || currentAddon === 'exists'" @add="addAnimation"/>
     </keep-alive>
+    <keep-alive>
+      <addon-color-list v-if="currentAddon === 'background'" :color="currentAddonObject" @input="setElementAddon" />
+    </keep-alive>
   </div>
   <!-- 显示当前元素的动画 -->
   <div class="animation-container">
@@ -74,6 +77,7 @@ import RenderElement from './RenderElement.vue'
 import AddonBorderList from './border/AddonBorderList.vue'
 import AddonAnimationList from './animation/AddonAnimationList.vue'
 import AnimationPanel from './animation/AnimationPanel.vue'
+import AddonColorList from './color/AddonColorList.vue'
 import { shortid } from '../utils/string'
 import { fitRectIntoBounds, getRectPositionStyle, isPointInRect, intersectRect } from './mixins/rectUtils.js'
 
@@ -84,6 +88,7 @@ export default {
     AddonBorderList,
     AddonAnimationList,
     AnimationPanel,
+    AddonColorList,
     [Button.name]: Button,
     [ButtonGroup.name]: ButtonGroup
   },
@@ -210,7 +215,7 @@ export default {
          * 拖拽移动
          */
         onmove: event => {
-          const containerRect = this.$refs.sceneContainer.getBoundingClientRect()
+          // const containerRect = this.$refs.sceneContainer.getBoundingClientRect()
           // 计算正在拖拽的矩形区域
           this.dragRect.width = event.page.x - event.x0
           this.dragRect.height = event.page.y - event.y0
@@ -219,7 +224,7 @@ export default {
             this.dragRect.width = -this.dragRect.width
           }
           if (this.dragRect.height < 0) {
-            this.dragRect.top = (event.y0 - event.rect.top - containerRect.y) + this.dragRect.height
+            this.dragRect.top = (event.y0 - event.rect.top) + this.dragRect.height
             this.dragRect.height = -this.dragRect.height
           }
 
