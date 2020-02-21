@@ -42,6 +42,19 @@ function addKeyFrames (sheet, name, frames) {
   sheet.insertRule(rule, pos)
 }
 
+/**
+  animation: focus-in-expand-fwd 0.8s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+ * @param animation
+ */
+function addAnimation (sheet, animation) {
+  let pos = sheet.length
+  const rule = `.${animation.name} {
+    animation: ${animation.name} ${animation.duration}ms ${animation.timing} ${animation.infinite ? 'infinite' : animation.iteration} both
+  }`
+  sheet.insertRule(rule, pos)
+}
+
 export default class StyleRegistry {
   constructor () {
     this.sheet = createSheet('style-registry')
@@ -79,6 +92,7 @@ export default class StyleRegistry {
     if (!this.keyframes[frame.name]) {
       this.keyframes[frame.name] = frame.cssFrame
       addKeyFrames(this.sheet, frame.name, frame.cssFrame)
+      addAnimation(this.sheet, frame)
     }
   }
 

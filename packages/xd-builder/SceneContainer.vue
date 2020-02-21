@@ -5,7 +5,8 @@
     <!-- 设置元素边框 -->
     <i class="el-icon-copy-document" :class="currentAddon === 'border'? 'on': ''" v-if="selectedImages.length" @click="showAddon('border')"/>
     <!-- 设置元素动画 -->
-    <i class="el-icon-magic-stick" v-if="selectedImages.length" @click="showAddon('animation')"/>
+    <i class="el-icon-magic-stick" v-if="selectedImages.length" @click="showAddon('enters')"/>
+    <i class="el-icon-magic-stick" v-if="selectedImages.length" @click="showAddon('exists')"/>
     <!-- 设置场景背景 -->
     <i class="el-icon-s-open" v-if="selectedImages.length === 0" @click="showAddon('background')"/>
     <!-- 设置场景动画 -->
@@ -60,8 +61,8 @@
   </div>
   <!-- 显示当前元素的动画 -->
   <div class="animation-container">
-    <animation-panel v-if="currentAddon === 'enters' || currentAddon === 'exists'"
-      :trigger="currentAddon" @preview="previewAnimationSelection" :animations="currentEditAnimations" />
+    <animation-panel v-if="currentAddon === 'enters' || currentAddon === 'exists'" @input="setElementAddon"
+      :trigger="currentAddon" @preview="previewAnimationSelection" :animations="currentAddonObject" />
   </div>
 </section>
 </template>
@@ -402,7 +403,8 @@ export default {
     },
 
     /**
-     * 设置当前显示属性
+     * 切换到选中元素的设置样式模式
+     * @param addon 样式名称
      */
     showAddon (addon) {
       if (this.selectedImages.length) {
@@ -414,7 +416,7 @@ export default {
     },
 
     /**
-     * 设置当前属性
+     * 设置当前属性的配置值
      */
     setElementAddon (addon) {
       for (let element of this.selectedElements) {
@@ -423,43 +425,34 @@ export default {
       this.currentAddonObject = addon
     },
 
-    // 切换到编辑动画模式
-    toggleAnimationLayer (trigger) {
-      this.currentAddon = trigger
-      // 设置的是元素动画
-      if (this.selectedImages.length) {
-        if (!this.selectedImages[0][trigger]) {
-          this.$set(this.selectedImages[0], trigger, [])
-        }
-        this.currentEditAnimations = this.selectedImages[0][trigger]
-      } else {
-        // 设置场景动画
-      }
-    },
-
-    // 增加动画
+    /*
+     * 增加动画到配置面板，同时更新选择的元素的动画效果
+     */
     addAnimation (animation) {
-      this.currentEditAnimations.push(animation)
-      this.selectedElements[0].animations = this.currentEditAnimations
+      if (this.currentAddonObject == null) {
+        this.currentAddonObject = []
+      }
+      this.currentAddonObject.push(animation)
+      if (this.selectedElements.length) {
+        for (let element of this.selectedElements) {
+          this.$set(element, 'animations', this.currentAddonObject)
+          this.$set(element.style, this.currentAddon, this.currentAddonObject)
+        }
+      }
     },
 
     /**
-     * 预览当前选中的元素
-     * @param trigger  可以为enter和exist 表示进入和离开动画
+     * 预览当前选中的元素的动画效果
      */
-    previewAnimationSelection (trigger) {
+    previewAnimationSelection () {
       // 清空动画选项
-      for (let element of this.scene.elements) {
-        if (element.selected) {
-          element.animations = []
-        }
-      }
+      this.selectedElements.forEach(element => {
+        element.animations = []
+      })
       setTimeout(() => {
-        for (let element of this.scene.elements) {
-          if (element.selected) {
-            element.animations = element[trigger]
-          }
-        }
+        this.selectedElements.forEach(element => {
+          element.animations = this.currentAddonObject
+        })
       }, 200)
     },
     nextScene () {

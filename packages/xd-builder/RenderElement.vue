@@ -1,9 +1,9 @@
 <template>
 <div :id="'element-' + element.id"
-     @click="$emit('click')"
+     @click="elementClicked"
      class="element" :class="[element.hidden? 'hidden' : '', element.className, borderClass]" :style="elementStyle">
   <!--图片渲染-->
-  <img v-if="element.url" :id="'img-' + (element.name || element.id)" :src="getImageUrl(element.url, screen.width, screen.height)" :style="getElementAnimationStyle(element)">
+  <img v-if="element.url" :id="'img-' + (element.name || element.id)" :src="getImageUrl(element.url, screen.width, screen.height)">
   <!--文本渲染情况下 文本内容-->
   <span v-if="element.text" v-html="element.text" :class="element.className" :data-content="element.text"></span>
 </div>
@@ -48,7 +48,7 @@ export default {
     },
     elementStyle () {
       const style = {}
-      Object.assign(style, getRectPositionStyle(this.element))
+      Object.assign(style, getRectPositionStyle(this.element), this.elementAnimationStyle)
       // 根据border扩展设置， 展示扩展的属性
       if (this.element.style.border && this.element.style.border.variables) {
         for (let variable of this.element.style.border.variables) {
@@ -65,6 +65,35 @@ export default {
       }
       style.perspective = (this.element.width + this.element.height) + 'px'
       return style
+    },
+
+    /**
+     * 取 element.animations 计算元素的动画样式
+     */
+    elementAnimationStyle () {
+      const element = this.element
+      if (element.animations && element.animations.length) {
+        // 单个动画
+        if (element.animations.length === 1) {
+          const animation = element.animations[0]
+          return {
+            animation: `${animation.name} ${animation.range[1]}ms ${animation.timing} ${animation.range[0]}ms both`
+          }
+        } else {
+          const animationsOrdered = []
+          // 多个动画次序或者重叠播放
+          for (let i = 0; i < element.animations.length; i++) {
+            const animation = element.animations[i]
+            animationsOrdered.push(`${animation.name} ${animation.range[1]}ms ${animation.timing} ${animation.range[0]}ms ${i === element.animations.length - 1 ? '' : ''}`)
+          }
+          if (animationsOrdered.length) {
+            return {
+              animation: animationsOrdered.join(',')
+            }
+          }
+        }
+      }
+      return {}
     }
   },
   data () {
@@ -74,28 +103,13 @@ export default {
   methods: {
     getImageUrl,
 
+    elementClicked () {
+      console.log(this.element)
+    },
+
     // 获取元素的动画特效
     getElementAnimationStyle (element) {
-      if (element.style.animation && element.animation.current && element.animation.current.length) {
-        if (element.animation.current.length === 1) {
-          const animation = element.animations[0]
-          return {
-            animation: `${animation.name} ${animation.range[1]}ms ${animation.timing} ${animation.range[0]}ms both`
-          }
-        } else {
-          const animationsOrdered = []
-          // 多个动画次序或者重叠播放
-          for (let animation of element.animations) {
-            animationsOrdered.push(`${animation.name} ${animation.range[1]}ms ${animation.timing} ${animation.range[0]}ms`)
-          }
-          if (animationsOrdered.length) {
-            return {
-              animation: animationsOrdered.join(',')
-            }
-          }
-        }
-      }
-      return null
+
     },
 
     getElementPositionStyle (element) {

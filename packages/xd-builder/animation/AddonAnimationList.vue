@@ -21,7 +21,6 @@
 import RestDAO from '../../common/dao/restdao'
 import SVG from './project.svg'
 import { Pagination } from 'element-ui'
-import { addAnimationStyle, createSheet } from '../../frames/keyframe'
 export default {
   name: 'AddonAnimationList',
   components: {
@@ -39,7 +38,6 @@ export default {
   },
   created () {},
   mounted () {
-    this.sheet = createSheet()
     this.restdao = new RestDAO(this.ctx, 'danke/animation')
     this.loadAnimation()
   },
@@ -53,11 +51,7 @@ export default {
       this.styles = result.list
       this.animations = result.list
       for (let animation of this.animations) {
-        this.ctx.addFrame(animation)
-        if (!this.ctx.frameRegistry[animation.name]) {
-          this.ctx.frameRegistry[animation.name] = animation.cssFrame
-          addAnimationStyle(this.sheet, animation)
-        }
+        this.ctx.styleRegistry.addFrame(animation)
       }
     },
 

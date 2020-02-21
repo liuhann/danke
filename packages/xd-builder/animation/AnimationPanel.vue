@@ -48,11 +48,11 @@ export default {
   methods: {
     removeAnimation (index) {
       this.animations.splice(index, 1)
-      this.$emit('preview', this.trigger)
+      this.$emit('preview')
     },
 
     preview () {
-      this.$emit('preview', this.trigger)
+      this.$emit('preview')
     }
   }
 }
