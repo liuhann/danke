@@ -4,16 +4,17 @@
     <el-button size="mini" type="primary" @click="newStyle">新建</el-button>
     <div class="style-list">
       <div v-for="(style, index) in styles" :key="index" class="style-item">
-          <div class="style-container">
-            <div class="styled-box" :class="style.name">
-              <div class="inner">{{style.desc}}</div>
-            </div>
-          </div>
-          <div class="btns">
-            <el-button type="text" size="mini" icon="el-icon-delete" @click="removeStyle(style)"/>
-            <el-button type="text" size="mini" icon="el-icon-edit" @click="editStyle(style)"/>
+        <div class="style-container">
+          <div class="styled-box" :class="style.name">
+            <div class="inner">{{style.desc}}</div>
           </div>
         </div>
+        <div class="btns">
+          <el-button type="text" size="mini" icon="el-icon-delete" @click="removeStyle(style)"/>
+          <el-button type="text" size="mini" icon="el-icon-edit" @click="editStyle(style)"/>
+          <span class="category">{{style.category}}</span>
+        </div>
+      </div>
     </div>
     <el-pagination background :total="total" :page-size="pageSize" @current-change="loadStyles" :current-page.sync="page" layout="prev, pager, next" />
   </div>
@@ -87,8 +88,22 @@ export default {
 <style lang="scss">
 .style-list {
   display: flex;
+  flex-wrap: wrap;
   .style-item {
     width: 20%;
+  }
+  .btns {
+    padding: 0 20px;
+    .category {
+      font-size: 12px;
+      border: 1px solid #409EFF;
+      padding: 2px;
+      border-radius: 4px;
+      line-height: 18px;
+      color:#409EFF;
+      background: rgba(64, 160, 255, 0.075);
+      float: right;
+    }
   }
   .style-container {
     height: 160px;
@@ -96,7 +111,7 @@ export default {
     align-items: center;
     justify-content: center;
     .styled-box {
-      width: 120px;
+      width: 80%;
       height: 120px;
       z-index: 10;
       position: relative;
@@ -105,7 +120,6 @@ export default {
         z-index: 10;
         width: 100%;
         height: 100%;
-        background-color: black;
       }
     }
   }

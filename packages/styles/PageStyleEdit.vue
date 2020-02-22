@@ -9,7 +9,12 @@
           <el-input v-model="style.name" style="width: 360px;"></el-input>
         </el-form-item>
         <el-form-item label="分类">
-          <el-input v-model="style.category" style="width: 360px;"></el-input>
+          <el-select  v-model="style.category">
+            <el-option value="background"/>
+            <el-option value="clip"/>
+            <el-option value="border"/>
+            <el-option value="gradient"/>
+          </el-select>
         </el-form-item>
         <el-form-item label="样式文本">
           <el-input type="textarea" v-model="style.cssContent" :rows="10" />
@@ -62,9 +67,20 @@ export default {
     return {
       style: {
         title: '', // 标题 供描述使用
+        name: '', // class 类名
         category: '', // 效果分类
         cssContent: '', // css 正文
         variables: [] // 变量替换列表
+      }
+    }
+  },
+  watch: {
+    'style.title': function (value) {
+      if (this.style.name === '') {
+        this.style.name = value
+      }
+      if (this.style.cssContent === '') {
+        this.style.cssContent = '.' + value + ' {\n\r}'
       }
     }
   },
