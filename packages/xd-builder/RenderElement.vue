@@ -1,7 +1,7 @@
 <template>
 <div :id="'element-' + element.id"
      @click="elementClicked"
-     class="element" :class="[element.hidden? 'hidden' : '', element.className, borderClass]" :style="elementStyle">
+     class="element" :class="elementClass" :style="elementStyle">
   <!--图片渲染-->
   <img v-if="element.url" :id="'img-' + (element.name || element.id)" :src="getImageUrl(element.url, screen.width, screen.height)">
   <!--文本渲染情况下 文本内容-->
@@ -39,6 +39,18 @@ export default {
 
   },
   computed: {
+    elementClass () {
+      let result = []
+      if (this.element.hidden) {
+        result.push(this.hidden)
+      }
+      for (let key in this.element.style) {
+        if (this.element.style[key].name) {
+          result.push(this.element.style[key].name)
+        }
+      }
+      return result
+    },
     borderClass () {
       if (this.element.style && this.element.style.border) {
         return this.element.style.border.name

@@ -25,8 +25,8 @@
     <div class="screen" :style="styleScreen">
       <div class="screen-title">
       </div>
-      <div class="scene" v-if="scene">
-        <render-element
+      <div class="scene" v-if="scene" :style="sceneStyle" :class="sceneClass">
+         <render-element
             v-for="(element, index) of scene.elements"
             stage="in"
             :element="element"
@@ -179,6 +179,30 @@ export default {
         width: this.dragRect.width + 'px',
         height: this.dragRect.height + 'px'
       }
+    },
+    sceneStyle () {
+      const styles = {
+        width: this.screenRect.width + 'px',
+        height: this.screenRect.height + 'px'
+      }
+      for (let key in this.scene.style) {
+        if (!this.scene.style[key].name) {
+          Object.assign(styles, this.scene.style[key])
+        }
+      }
+      return styles
+    },
+    /**
+     * 获取场景class列表
+     */
+    sceneClass () {
+      const classes = []
+      for (let key in this.scene.style) {
+        if (this.scene.style[key].name) {
+          classes.push(this.scene.style[key].name)
+        }
+      }
+      return classes
     }
   },
 
@@ -424,8 +448,12 @@ export default {
      * 设置当前属性的配置值
      */
     setElementAddon (addon) {
-      for (let element of this.selectedElements) {
-        this.$set(element.style, this.currentAddon, addon)
+      if (this.selectedElements.length) {
+        for (let element of this.selectedElements) {
+          this.$set(element.style, this.currentAddon, addon)
+        }
+      } else {
+        this.$set(this.scene.style, this.currentAddon, addon)
       }
       this.currentAddonObject = addon
     },
