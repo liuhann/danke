@@ -10,13 +10,12 @@
 </template>
 
 <script type="module">
-import RestDAO from '../common/dao/restdao'
 import StyleRegistry from './utils/StyleRegistry.js'
+import workMixin from './work/workMixin.js'
+import sceneMixin from './scene/sceneMixins.js'
 import { Popover, Button, Upload, Tabs, TabPane, Drawer, Dialog, Menu, MenuItem, Message, Loading } from 'element-ui'
 import SceneContainer from './SceneContainer.vue'
 import LeftAside from './LeftAside.vue'
-import { shortid } from '../utils/string'
-import sceneMixin from './scene/sceneMixins.js'
 import 'element-ui/packages/theme-chalk/lib/icon.css'
 export default {
   name: 'Builder',
@@ -33,7 +32,7 @@ export default {
     [Menu.name]: Menu,
     [MenuItem.name]: MenuItem
   },
-  mixins: [ sceneMixin ],
+  mixins: [ sceneMixin, workMixin ],
   props: {
   },
   data () {
@@ -46,41 +45,27 @@ export default {
           width: 0,
           height: 0
         },
-        background: null,
+        style: {},
         scenes: [] // 场景列表
       },
       currentScene: null
     }
   },
 
-  created () {
-    this.workdao = new RestDAO(this.ctx, 'danke/work')
-  },
+  created () { },
 
   mounted () {
     this.ctx.styleRegistry = new StyleRegistry()
     let workId = this.$route.query.work
     if (!workId) {
       this.newWork()
+      this.addNewScene()
     } else {
       this.loadWork(workId)
+      this.chooseScene(this.work.scenes[0])
     }
   },
   methods: {
-    /**
-     * 新增作品
-     */
-    newWork () {
-      this.work.screen = {
-        width: parseInt(this.$route.query.width) || 414,
-        height: parseInt(this.$route.query.height) || 896
-      }
-      this.work.id = shortid()
-      this.work.title = '我的作品'
-      this.work.isNew = true
-      this.addNewScene()
-    },
-
     /**
     * 保存作品内容
     */
@@ -107,13 +92,6 @@ export default {
       loading.close()
       Message.success('保存完成')
       this.savingWork = false
-    },
-
-    async loadWork (workId) {
-      const work = await this.workdao.getOne(workId)
-      this.ctx.styleRegistry.initWorkStyleResource(work)
-      this.work = work
-      this.chooseScene(this.work.scenes[0])
     },
 
     runWork () {

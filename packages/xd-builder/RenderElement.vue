@@ -17,7 +17,7 @@ export default {
   components: {
   },
   props: {
-    // 渲染的阶段，可以为 in/dura/out
+    // 渲染的阶段
     stage: {
       type: String,
       default: 'in'
