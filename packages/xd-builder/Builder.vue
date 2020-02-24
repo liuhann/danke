@@ -62,7 +62,6 @@ export default {
       this.addNewScene()
     } else {
       this.loadWork(workId)
-      this.chooseScene(this.work.scenes[0])
     }
   },
   methods: {

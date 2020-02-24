@@ -22,12 +22,12 @@
         <i class="el-icon-circle-close close-new" @click="newShow = false"/>
       </div>
     </section>
+    <img svg-inline style="--strokeColor: red;" src='./svg/bold-text-option.svg'>
     <section class="section" style="background: #fff;">
       <div class="container">
         <h2>我的作品</h2>
       </div>
     </section>
-
     <section class="section">
       <div class="container">
         <works-column :works="works" @edit="chooseDraftWork" @play="playWork" @delete="deleteWorkDraft" />
@@ -41,6 +41,7 @@ import { MessageBox } from 'element-ui'
 import NavBar from '../site/components/NavBar'
 import RestDAO from '../common/dao/restdao'
 import WorksColumn from './components/WorksColumn.vue'
+import SVG from './svg/bold-text-option.svg'
 const ratios = [{
   name: '全面屏手机',
   width: 414,
@@ -81,6 +82,7 @@ export default {
   filters: { },
   data () {
     return {
+      SVG,
       newShow: false,
       isMobile: screen.width < screen.height,
       startNav: 'mobile',

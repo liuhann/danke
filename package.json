@@ -11,6 +11,7 @@
   "dependencies": {
     "async-boot": "^1.1.16",
     "axios": "^0.18.1",
+    "brace": "^0.11.1",
     "bulma": "^0.7.5",
     "dayjs": "^1.8.20",
     "element-ui": "^2.13.0",
@@ -28,7 +29,8 @@
     "resource-loader": "^3.0.1",
     "vue": "^2.6.11",
     "vue-circle-slider": "^1.0.2",
-    "vue-router": "^3.1.5"
+    "vue-router": "^3.1.5",
+    "vue-svg-inline-loader": "^1.4.5"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.12.1",

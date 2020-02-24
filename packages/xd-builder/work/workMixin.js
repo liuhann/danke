@@ -36,6 +36,7 @@ export default {
       const work = await this.workdao.getOne(workId)
       this.ctx.styleRegistry.initWorkStyleResource(work)
       this.work = work
+      this.chooseScene(this.work.scenes[0])
     },
     
     /**

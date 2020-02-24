@@ -1,0 +1,128 @@
+<template>
+<div class="section" style="background: #dfdfdf;">
+  <div class="container" style="background: #fff;padding: 20px;box-shadow: 0 1px 5px 0 rgba(0,0,0,.1);">
+    <el-button size="mini" type="primary" @click="newStyle">新建</el-button>
+    <div class="style-list">
+      <div v-for="(style, index) in styles" :key="index" class="style-item">
+        <div class="style-container">
+          <div class="styled-box" :class="style.name">
+            <div class="inner">{{style.desc}}</div>
+          </div>
+        </div>
+        <div class="btns">
+          <el-button type="text" size="mini" icon="el-icon-delete" @click="removeStyle(style)"/>
+          <el-button type="text" size="mini" icon="el-icon-edit" @click="editStyle(style)"/>
+          <span class="category">{{style.category}}</span>
+        </div>
+      </div>
+    </div>
+    <el-pagination background :total="total" :page-size="pageSize" @current-change="loadStyles" :current-page.sync="page" layout="prev, pager, next" />
+  </div>
+</div>
+
+</template>
+
+<script>
+import RestDAO from '../common/dao/restdao'
+import { Pagination, Button } from 'element-ui'
+import { createSheet, addStyle } from '../frames/keyframe.js'
+export default {
+  name: 'PageStyleList',
+  components: {
+    [Pagination.name]: Pagination,
+    [Button.name]: Button
+  },
+  data () {
+    return {
+      styles: [],
+      page: 0,
+      pageSize: 20,
+      total: 0
+    }
+  },
+  created () {
+    this.styledao = new RestDAO(this.ctx, 'danke/style')
+  },
+  mounted () {
+    this.sheet = createSheet()
+    this.loadStyles()
+  },
+  methods: {
+    newStyle () {
+      window.open('/style/edit')
+    },
+    async loadStyles () {
+      const result = await this.styledao.list({
+        page: this.page,
+        count: this.pageSize
+      })
+      this.total = result.total
+      this.styles = result.list
+      try {
+        for (let style of result.list) {
+          const splits = style.cssContent.split('\n\n')
+          for (let css of splits) {
+            addStyle(this.sheet, css)
+          }
+        }
+      } catch (e) {
+        console.log(e)
+      }
+    },
+    // 新窗口编辑
+    editStyle (style) {
+      window.open('/style/edit?id=' + style._id)
+    },
+
+    // 目前暂无提示 直接删除
+    async removeStyle (style) {
+      if (confirm('确认删除样式')) {
+        await this.styledao.delete(style)
+        this.loadStyles()
+      }
+    }
+  }
+}
+</script>
+
+<style lang="scss">
+.style-list {
+  display: flex;
+  flex-wrap: wrap;
+  .style-item {
+    width: 20%;
+  }
+  .btns {
+    padding: 0 20px;
+    .category {
+      font-size: 12px;
+      border: 1px solid #409EFF;
+      padding: 2px;
+      border-radius: 4px;
+      line-height: 18px;
+      color:#409EFF;
+      background: rgba(64, 160, 255, 0.075);
+      float: right;
+    }
+  }
+  .style-container {
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .styled-box {
+      width: 80%;
+      height: 120px;
+      z-index: 10;
+      position: relative;
+      > div.inner {
+        position: absolute;
+        z-index: 10;
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+}
+
+</style>

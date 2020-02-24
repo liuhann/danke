@@ -186,7 +186,7 @@ export default {
         height: this.screenRect.height + 'px'
       }
       for (let key in this.scene.style) {
-        if (!this.scene.style[key].name) {
+        if (this.scene.style[key] && !this.scene.style[key].name) {
           Object.assign(styles, this.scene.style[key])
         }
       }
@@ -198,7 +198,7 @@ export default {
     sceneClass () {
       const classes = []
       for (let key in this.scene.style) {
-        if (this.scene.style[key].name) {
+        if (this.scene.style[key] && this.scene.style[key].name) {
           classes.push(this.scene.style[key].name)
         }
       }

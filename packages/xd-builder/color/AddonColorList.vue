@@ -1,8 +1,13 @@
 <template>
 <div id="addon-color-list">
   <div class="color-container">
+    <div class="addon-field">
+      <span>选择颜色</span>
+      <el-color-picker style="flex:1; margin-left: 10px;" v-model="currentColor" @change="selectColor" size="mini"></el-color-picker>
+      <el-button type="text" @click="selectColor(null)">清除颜色</el-button>
+    </div>
     <div class="addon-title">
-      默认颜色
+       <span class="content">默认颜色</span>
     </div>
     <div class="default-colors">
       <div class="color-block" v-for="c in defaultColors" :title="c.split(' ')[0]" :key="c" @click="selectColor(c.split(' ')[1])" :style="{
@@ -42,7 +47,7 @@
 
 <script>
 import VueCircleSlider from 'vue-circle-slider'
-import { Popover } from 'element-ui'
+import { Popover, ColorPicker, Button } from 'element-ui'
 import lights from './lights'
 import darks from './darks'
 import RestDAO from '../../common/dao/restdao'
@@ -51,7 +56,9 @@ const defaultColors = ['黑色 #000000', '深灰色 #545454', '灰色 #737373', 
 export default {
   name: 'AddonBackgroundList',
   components: {
-    [Popover.name]: Popover
+    [Popover.name]: Popover,
+    [ColorPicker.name]: ColorPicker,
+    [Button.name]: Button
   },
   props: {
     color: {
@@ -62,6 +69,7 @@ export default {
     return {
       currentGradient: null,
       angle: 0,
+      currentColor: null,
       gradientColors: lights.slice(0, 4).concat(darks.slice(0, 4)),
       defaultColors,
       backgroundColors: [],
@@ -76,9 +84,13 @@ export default {
   },
   methods: {
     selectColor (color) {
-      this.$emit('input', {
-        backgroundColor: color
-      })
+      if (color) {
+        this.$emit('input', {
+          backgroundColor: color
+        })
+      } else {
+        this.$emit('input', null)
+      }
       this.$emit('color', color)
     },
     selectGradient  (g) {
@@ -139,6 +151,14 @@ export default {
 
 #addon-color-list {
   padding: 16px;
+  .addon-field {
+    display: flex;
+    align-items: center;
+    line-height: 20px;
+    font-weight: bold;
+    font-size: 14px;
+    color: rgba(14,19,24,.45);
+  }
   .addon-title {
     font-weight: bold;
     font-size: 14px;
@@ -167,6 +187,9 @@ export default {
     display: inline-block;
     width: 40px;
     height: 40px;
+    &.clear {
+      background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==")
+    }
     &:hover, &.selected {
        cursor: pointer;
       transition: box-shadow .2s linear;

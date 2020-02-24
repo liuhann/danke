@@ -27,6 +27,10 @@ module.exports = {
   chainWebpack: config => {
     // remove the prefetch plugin
     config.plugins.delete('prefetch-index')
+    config.module.rule('vue')
+      .use('vue-svg-inline-loader')
+      .loader('vue-svg-inline-loader')
+      .options({ /* ... */ })
   },
 
   lintOnSave: undefined
