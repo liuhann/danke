@@ -1,22 +1,20 @@
 <template>
 <div id="site">
-  <section class="primary-background">
-    <nav-bar></nav-bar>
-    <section class="section has-text-centered hero is-medium">
-      <div class="section">
-        <p class="title is-3 is-spaced has-text-white is-family-sans-serif">
-          设计适用于各种场景的展示页面
-        </p>
-        <p class="has-text-white" style="font-size: 20px;margin-bottom: 40px;">
-          Customize keyboard shortcuts for your frequently visited websites
-        </p>
-        <router-link class="button is-large is-rounded installation chrome-installation" to="/xd/welcome">
-          立刻开始
-        </router-link>
-      </div>
-    </section>
+  <nav-bar></nav-bar>
+  <section class="section has-text-centered hero is-medium primary-background">
+    <div class="section">
+      <p class="intro-title">
+        设计适用于各种场景的展示页面
+      </p>
+      <p class="has-text-white" style="font-size: 20px;margin-bottom: 40px;">
+        Customize keyboard shortcuts for your frequently visited websites
+      </p>
+      <router-link class="button is-large is-rounded installation chrome-installation" to="/xd/welcome">
+        立刻开始
+      </router-link>
+    </div>
   </section>
-  <section class="section">
+  <section class="section intro">
     <div class="container">
       <div class="columns">
         <div class="column">
@@ -28,14 +26,16 @@
           </p>
         </div>
         <div class="column">
+          <img src="https://about.canva.com/wp-content/uploads/sites/3/2019/09/canva-white-and-black-business-plan-presentation-MADWz9UUqCk.png">
         </div>
       </div>
     </div>
   </section>
-  <section class="section">
+  <section class="section intro">
     <div class="container">
       <div class="columns">
         <div class="column">
+          <img src="https://about.canva.com/wp-content/uploads/sites/3/2019/09/canva-white-and-black-business-plan-presentation-MADWz9UUqCk.png">
         </div>
         <div class="column">
           <p class="title is-3 is-spaced">
@@ -48,7 +48,7 @@
       </div>
     </div>
   </section>
-  <section class="section">
+  <section class="section intro">
     <div class="container">
       <div class="columns">
         <div class="column">
@@ -60,30 +60,16 @@
           </p>
         </div>
         <div class="column">
+          <img src="https://about.canva.com/wp-content/uploads/sites/3/2019/09/canva-white-and-black-business-plan-presentation-MADWz9UUqCk.png">
         </div>
       </div>
     </div>
   </section>
-  <section class="section">
+  <section class="section intro">
     <div class="container">
       <div class="columns">
         <div class="column">
-          <p class="title is-3 is-spaced">
-            移动设计
-          </p>
-          <p class="subtitle is-5">
-            不需要使用电脑，用手机上也能进行创作
-          </p>
-        </div>
-        <div class="column">
-        </div>
-      </div>
-    </div>
-  </section>
-  <section class="section">
-    <div class="container">
-      <div class="columns">
-        <div class="column">
+          <img src="https://about.canva.com/wp-content/uploads/sites/3/2019/09/canva-white-and-black-business-plan-presentation-MADWz9UUqCk.png">
         </div>
         <div class="column">
           <p class="title is-3 is-spaced">
@@ -103,28 +89,53 @@
       </div>
     </div>
   </section>
-  <nav-footer></nav-footer>
 </div>
 </template>
 <script>
 import NavBar from './components/NavBar'
-import WorkList from './sections/WorkList'
-import NavFooter from './components/NavFooter'
 export default {
   name: 'view.vue',
-  components: { NavFooter, WorkList, NavBar },
+  components: { NavBar },
   created () {
 
   }
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 #site {
+  color: #fff;
+  font-size: 16px;
+  background: linear-gradient(180deg, #0C003C 0%, #BFFFAF 100%), linear-gradient(165deg, #480045 25%, #E9EAAF 100%), linear-gradient(145deg, #480045 25%, #E9EAAF 100%), linear-gradient(300deg, rgba(233, 223, 255, 0) 0%, #AF89FF 100%), linear-gradient(90deg, #45EBA5 0%, #45EBA5 30%, #21ABA5 30%, #21ABA5 60%, #1D566E 60%, #1D566E 70%, #163A5F 70%, #163A5F 100%);
+  background-blend-mode: overlay, overlay, overlay, multiply, normal;
   .primary-background {
-    background-color: #47b17c;
     color: #fff;
-    background-image: url('/res/icons-background.svg');
+    height: 360px;
+    .intro-title {
+      margin-top: 100px;
+      position: relative;
+      font-size: 48px;
+      line-height: 108px;
+      color: #fff;
+      margin-bottom: 20px;
+      text-shadow: 0 2px 4px rgba(13,0,77,.08), 0 3px 6px rgba(13,0,77,.08), 0 8px 16px rgba(13,0,77,.08);
+    }
+    .has-text-white {
+      font-size: 30px;
+      margin: 0;
+    }
+    a.installation {
+      background-color: #fff;
+      color: #0d004d;
+      box-shadow: 0 2px 4px rgba(13,0,77,.08), 0 8px 16px rgba(13,0,77,.08), 0 32px 80px rgba(13,0,77,.08);
+      line-height: 28px;
+      border-radius: 4px;
+      border: none;
+      text-decoration: none;
+      font-size: 20px;
+      padding: 16px 40px;
+      cursor: pointer;
+    }
     .heading {
       font-size: 36px;
       line-height: 60px;
@@ -132,6 +143,24 @@ export default {
       font-weight: 600;
       color: #234689;
       letter-spacing: 0;
+    }
+  }
+  section.intro {
+    margin: 20px 0;
+    .container {
+    }
+    .columns {
+      display: flex;
+      .column {
+        flex: 1;
+        img {
+          width: 90%;
+        }
+      }
+    }
+    .title {
+      margin-top: 80px;
+      font-size: 36px;
     }
   }
   // background-image: linear-gradient(to right top, #051937, #004d7a, #008793, #00bf72, #a8eb12);

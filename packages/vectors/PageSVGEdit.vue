@@ -75,10 +75,9 @@ export default {
     this.svgdao = new RestDAO(this.ctx, 'danke/svg')
   },
   mounted () {
+    this.initEditor()
     if (this.$route.query.id) {
-      this.loadStyle(this.$route.query.id)
-    } else {
-      this.initEditor()
+      this.loadSvg(this.$route.query.id)
     }
   },
   methods: {
@@ -89,10 +88,10 @@ export default {
     },
     async loadSvg (id) {
       this.vector = await this.svgdao.getOne(id)
-      this.initEditor()
+      this.editor.setValue(this.vector.content)
     },
     addVariable () {
-      this.style.variables.push({
+      this.vector.variables.push({
         name: 'var',
         value: '#000',
         label: '',

@@ -2,21 +2,20 @@
 <div class="section" style="background: #dfdfdf;">
   <div class="container" style="background: #fff;padding: 20px;box-shadow: 0 1px 5px 0 rgba(0,0,0,.1);">
     <el-button size="mini" type="primary" @click="newStyle">新建</el-button>
-    <div class="style-list">
-      <div v-for="(style, index) in styles" :key="index" class="style-item">
-        <div class="style-container">
-          <div class="styled-box" :class="style.name">
-            <div class="inner">{{style.desc}}</div>
+    <div class="svg-list">
+      <div v-for="(svg, index) in svgs" :key="index" class="svg-item">
+        <div class="svg-container" :style="variableValues(svg)">
+          <div class="styled-box" v-html="svg.content">
           </div>
         </div>
         <div class="btns">
-          <el-button type="text" size="mini" icon="el-icon-delete" @click="removeStyle(style)"/>
-          <el-button type="text" size="mini" icon="el-icon-edit" @click="editStyle(style)"/>
-          <span class="category">{{style.category}}</span>
+          <el-button type="text" size="mini" icon="el-icon-delete" @click="removeStyle(svg)"/>
+          <el-button type="text" size="mini" icon="el-icon-edit" @click="edit(svg)"/>
+          <span class="category">{{svg.category}}</span>
         </div>
       </div>
     </div>
-    <el-pagination background :total="total" :page-size="pageSize" @current-change="loadStyles" :current-page.sync="page" layout="prev, pager, next" />
+    <el-pagination background :total="total" :page-size="pageSize" @current-change="loadSVGs" :current-page.sync="page" layout="prev, pager, next" />
   </div>
 </div>
 
@@ -25,7 +24,6 @@
 <script>
 import RestDAO from '../common/dao/restdao'
 import { Pagination, Button } from 'element-ui'
-import { createSheet, addStyle } from '../frames/keyframe.js'
 export default {
   name: 'PageStyleList',
   components: {
@@ -34,44 +32,44 @@ export default {
   },
   data () {
     return {
-      styles: [],
+      svgs: [],
       page: 0,
       pageSize: 20,
       total: 0
     }
   },
   created () {
-    this.styledao = new RestDAO(this.ctx, 'danke/style')
+    this.svgdao = new RestDAO(this.ctx, 'danke/svg')
   },
   mounted () {
-    this.sheet = createSheet()
-    this.loadStyles()
+    this.loadSVGs()
   },
   methods: {
     newStyle () {
       window.open('/style/edit')
     },
-    async loadStyles () {
-      const result = await this.styledao.list({
+    async loadSVGs () {
+      const result = await this.svgdao.list({
         page: this.page,
         count: this.pageSize
       })
       this.total = result.total
-      this.styles = result.list
-      try {
-        for (let style of result.list) {
-          const splits = style.cssContent.split('\n\n')
-          for (let css of splits) {
-            addStyle(this.sheet, css)
-          }
-        }
-      } catch (e) {
-        console.log(e)
-      }
+      this.svgs = result.list
     },
     // 新窗口编辑
-    editStyle (style) {
-      window.open('/style/edit?id=' + style._id)
+    edit (svg) {
+      window.open('/svg/edit?id=' + svg._id)
+    },
+
+    variableValues (svg) {
+      debugger
+      const styles = {}
+      for (let variable of svg.variables) {
+        Object.assign(styles, {
+          [`--${variable.name}`]: variable.value
+        })
+      }
+      return styles
     },
 
     // 目前暂无提示 直接删除

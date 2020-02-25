@@ -5,16 +5,13 @@
       <div class="column is-4">
         <div class="bd-footer-tsp">
           Source code licensed <a href="https://opensource.org/licenses/mit-license.php">MIT</a>.
-          <br>
-          Website content licensed <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>
         </div>
         <div >
-          © 2018-2019 DANKE.FUN
+          网站备案号<a href="http://www.beian.miit.gov.cn"> 京ICP备14044474号-3</a> | 蛋壳分享
         </div>
-      </div>
-      <div class="column is-4">
-      </div>
-      <div class="column is-4">
+        <div >
+          © 2018-2020 DANKE.FUN
+        </div>
       </div>
     </div>
   </div>
@@ -27,6 +24,18 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="scss">
+footer {
+  padding: 4rem 2rem;
+  align-items: stretch;
+  justify-content: center;
+  background: #fff;
+  color: #777;
+  line-height: 30px;
+  display: flex;
+  a {
+    color: #333;
+    text-decoration: none;
+  }
+}
 </style>

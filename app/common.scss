@@ -1,19 +1,24 @@
-$family-primary: 'Karla', sans-serif;
-$turquoise: rgb(71, 177, 124);
-$green: rgb(73, 207, 139);
-$red: #ff6c6c;
-$section-padding: 1rem;
-$box-padding: .5rem;
-$panel-heading-size: 1em;
- 
 html, body {
   overflow-y: auto;
   font-family: 'Karla',Microsoft YaHei,tahoma,arial,Hiragino Sans GB,sans-serif;
   height: 100%;
+  padding: 0;
+  margin: 0;
 }
-@import "./overrides.scss";
 .centering {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+
+@media screen and (min-width: 1408px) {
+  .container {
+    width: 1344px;
+  }
+}
+
+section {
+  display: flex;
+  justify-content: center;
 }
