@@ -55,6 +55,7 @@ export default {
   created () { },
 
   mounted () {
+    // document.body.removeChild(document.querySelector('footer'))
     this.ctx.styleRegistry = new StyleRegistry()
     let workId = this.$route.query.work
     if (!workId) {
@@ -141,6 +142,7 @@ export default {
 #xd {
   @import './common.scss';
   height: 100%;
+  overflow: hidden;
   display: flex;
   flex-wrap: nowrap;
   height: 100%;

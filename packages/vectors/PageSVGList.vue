@@ -1,5 +1,5 @@
 <template>
-<div class="section" style="background: #dfdfdf;">
+<section class="section" style="background: #dfdfdf;">
   <div class="container" style="background: #fff;padding: 20px;box-shadow: 0 1px 5px 0 rgba(0,0,0,.1);">
     <el-button size="mini" type="primary" @click="newStyle">新建</el-button>
     <div class="svg-list">
@@ -9,15 +9,15 @@
           </div>
         </div>
         <div class="btns">
-          <el-button type="text" size="mini" icon="el-icon-delete" @click="removeStyle(svg)"/>
-          <el-button type="text" size="mini" icon="el-icon-edit" @click="edit(svg)"/>
+          <el-button circle size="mini" icon="el-icon-delete" @click="remove(svg)"/>
+          <el-button circle size="mini" icon="el-icon-edit" @click="edit(svg)"/>
           <span class="category">{{svg.category}}</span>
         </div>
       </div>
     </div>
     <el-pagination background :total="total" :page-size="pageSize" @current-change="loadSVGs" :current-page.sync="page" layout="prev, pager, next" />
   </div>
-</div>
+</section>
 
 </template>
 
@@ -46,7 +46,7 @@ export default {
   },
   methods: {
     newStyle () {
-      window.open('/style/edit')
+      window.open('/svg/edit')
     },
     async loadSVGs () {
       const result = await this.svgdao.list({
@@ -62,7 +62,6 @@ export default {
     },
 
     variableValues (svg) {
-      debugger
       const styles = {}
       for (let variable of svg.variables) {
         Object.assign(styles, {
@@ -84,10 +83,10 @@ export default {
 </script>
 
 <style lang="scss">
-.style-list {
+.svg-list {
   display: flex;
   flex-wrap: wrap;
-  .style-item {
+  .svg-item {
     width: 20%;
   }
   .btns {
@@ -103,7 +102,8 @@ export default {
       float: right;
     }
   }
-  .style-container {
+
+  .svg-container {
     height: 160px;
     display: flex;
     align-items: center;
@@ -113,11 +113,8 @@ export default {
       height: 120px;
       z-index: 10;
       position: relative;
-      > div.inner {
-        position: absolute;
-        z-index: 10;
-        width: 100%;
-        height: 100%;
+      svg {
+        max-height: 120px;
       }
     }
   }

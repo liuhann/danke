@@ -1,5 +1,5 @@
 <template>
-<div class="section" style="background: #dfdfdf;height: 100%">
+<section class="section" style="background: #dfdfdf;height: 100%">
     <div class="container" style="background: #fff;padding: 20px;box-shadow: 0 1px 5px 0 rgba(0,0,0,.1);">
       <el-form size="mini" label-width="90px">
         <el-form-item label="分类">
@@ -12,6 +12,10 @@
         </el-form-item>
         <el-form-item label="样式文本">
           <div id="editor">
+          </div>
+        </el-form-item>
+        <el-form-item label="预览">
+           <div class="styled-box" v-html="vector.content" :style="variableStyle">
           </div>
         </el-form-item>
         <el-form-item label="变量信息">
@@ -42,7 +46,7 @@
           </el-form-item>
       </el-form>
     </div>
-</div>
+</section>
 </template>
 
 <script>
@@ -68,6 +72,17 @@ export default {
         content: '', //  正文
         variables: [] // 变量替换列表
       }
+    }
+  },
+  computed: {
+    variableStyle () {
+      const styles = {}
+      for (let variable of this.vector.variables) {
+        Object.assign(styles, {
+          [`--${variable.name}`]: variable.value
+        })
+      }
+      return styles
     }
   },
   watch: {},
@@ -112,6 +127,11 @@ export default {
 <style>
 #editor {
   height: 400px;
+}
+.styled-box {
+  width: 120px;
+  height: 120px;
+
 }
 .variables {
   margin: 20px 0;
