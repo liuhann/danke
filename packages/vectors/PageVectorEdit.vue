@@ -15,6 +15,7 @@
           </div>
         </el-form-item>
         <el-form-item label="预览">
+          {{vector._id}}
            <div class="styled-box" v-html="vector.content" :style="variableStyle">
           </div>
         </el-form-item>
@@ -70,7 +71,17 @@ export default {
       vector: {
         category: '', // 效果分类
         content: '', //  正文
-        variables: [] // 变量替换列表
+        variables: [{
+          'name': 'gradientStart',
+          'value': '#06f',
+          'label': '起始颜色',
+          'type': 'color'
+        }, {
+          'name': 'gradientEnd',
+          'value': '#FFA4D8',
+          'label': '结束颜色',
+          'type': 'color'
+        }]
       }
     }
   },

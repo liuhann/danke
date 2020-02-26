@@ -1,11 +1,17 @@
 // 矢量图片资源
 export default {
   routes: [{
-    path: '/svg/edit',
-    component: () => import(/* webpackChunkName: "svg" */'./PageSVGEdit.vue')
+    path: '/vector/edit',
+    component: () => import(/* webpackChunkName: "vector" */'./PageVectorEdit.vue')
   }, {
-    path: '/svg/list',
-    component: () => import(/* webpackChunkName: "svg" */'./PageSVGList.vue')
+    path: '/vector/list',
+    component: () => import(/* webpackChunkName: "vector" */'./PageVectorList.vue')
+  }, {
+    path: '/clippath/list',
+    component: () => import(/* webpackChunkName: "vector" */'./PageClippathList.vue')
+  }, {
+    path: '/clippath/edit',
+    component: () => import(/* webpackChunkName: "vector" */'./PageClippathEdit.vue')
   }],
   async onload (ctx) {
   }

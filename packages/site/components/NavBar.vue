@@ -7,6 +7,12 @@
         </a>
       </div>
       <div class="navbar-end">
+        <div class="navbar-item">
+          <router-link to="/vector/list">渐变矢量</router-link>
+        </div>
+        <div class="navbar-item">
+          <router-link to="/clippath/list">矢量裁切</router-link>
+        </div>
         <div class="navbar-item" v-if="!avatar">
           <div class="buttons">
             <router-link class="button is-primary" to="/register"><strong>注册</strong></router-link>
@@ -84,6 +90,7 @@ export default {
 <style lang="scss">
 nav.navbar {
   padding: 1rem 2rem;
+  line-height: 2.5rem;
   align-items: stretch;
   justify-content: center;
   display: flex;
@@ -94,7 +101,16 @@ nav.navbar {
       justify-content: flex-end;
       margin-right: auto;
       flex: 1;
-
+      .navbar-item {
+        font-weight: bold;
+        margin: 0 20px;
+        a {
+          text-decoration: none;
+        }
+        a:hover {
+          color: rgba(255,255,255, .8);
+        }
+      }
       a {
         color: #fff;
       }
