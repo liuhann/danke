@@ -6,6 +6,7 @@ const beforeEnter = (to, from, next) => {
     to.meta.ctx.toPath = to.path
     next('/login')
   } else {
+    document.getElementById('footer').style.display = 'none'
     next()
   }
 }

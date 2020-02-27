@@ -13,7 +13,7 @@
         <i class="el-icon-tickets"/>
         <span>文字</span>
       </div>
-      <div class='category'>
+      <div class='category' :class="current === 'shape'? 'current': ''" @click="toggleTo('shape')">
         <i class="el-icon-news"/>
         <span>形状</span>
       </div>
@@ -41,6 +41,11 @@
           <left-scene-template v-if="current === 'scene'" @insert="insertNewScene"/>
         </keep-alive>
       </transition>
+      <transition name="fade">
+        <keep-alive>
+          <left-shape-list v-if="current === 'shape'" />
+        </keep-alive>
+      </transition>
     </div>
   </aside>
 </template>
@@ -50,11 +55,13 @@ import ImageDAO from './utils/imagedao'
 import RestDAO from '../common/dao/restdao'
 import ImageUpload from './gallery/ImageUpload.vue'
 import LeftSceneTemplate from './scene/LeftSceneTemplates.vue'
+import LeftShapeList from './shape/LeftShapeList.vue'
 
 export default {
   components: {
     ImageUpload,
-    LeftSceneTemplate
+    LeftSceneTemplate,
+    LeftShapeList
   },
   data () {
     return {
@@ -136,6 +143,7 @@ aside.insert-container {
     padding-top: 16px;
     width: 352px;
     position: relative;
+    overflow-y: auto;
   }
 }
 </style>

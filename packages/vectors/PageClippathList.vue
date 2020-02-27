@@ -61,7 +61,6 @@ export default {
     this.loadObjects()
   },
   methods: {
-
     getSVGScale (el) {
       debugger
     },
