@@ -23,7 +23,9 @@ export default {
       })
       this.total = result.total
       this.objects = result.list
+      this.objectUpdated()
     },
+    objectUpdated () { },
     variableStyle (object) {
       const styles = {}
       if (object.variables) {

@@ -60,6 +60,19 @@ export default class StyleRegistry {
     this.sheet = createSheet('style-registry')
     this.styles = {}
     this.keyframes = {}
+    this.svgs = {}
+  }
+
+  /**
+   * 统一增加SVG内容，避免SVG图片反复使用存储位置过多的问题。 一些SVG图片也有近100K大小
+   * @param {*} vector
+   */
+  addVector (vector) {
+    this.svgs[vector._id] = vector.content
+  }
+
+  getVector (id) {
+    return this.svgs[id]
   }
 
   /**

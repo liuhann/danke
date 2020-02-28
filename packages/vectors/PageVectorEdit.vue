@@ -2,13 +2,8 @@
 <section class="section" style="background: #dfdfdf;height: 100%">
     <div class="container" style="background: #fff;padding: 20px;box-shadow: 0 1px 5px 0 rgba(0,0,0,.1);">
       <el-form size="mini" label-width="90px">
-        <el-form-item label="分类">
-          <el-select  v-model="vector.category">
-            <el-option value="background"/>
-            <el-option value="clip"/>
-            <el-option value="border"/>
-            <el-option value="gradient"/>
-          </el-select>
+        <el-form-item label="ID">
+          <el-input v-model="vector.name"/> <el-button @click="replaceId">更新ID</el-button>
         </el-form-item>
         <el-form-item label="样式文本">
           <div id="editor">
@@ -43,6 +38,7 @@
           </div>
           </el-form-item>
           <el-form-item label="">
+            <el-button size="mini" @click="reFill">数据填充</el-button>
             <el-button size="mini" type="primary" @click="save">保存</el-button>
           </el-form-item>
       </el-form>
@@ -69,6 +65,7 @@ export default {
   data () {
     return {
       vector: {
+        name: '',
         category: '', // 效果分类
         content: '', //  正文
         variables: [{
@@ -107,6 +104,26 @@ export default {
     }
   },
   methods: {
+    /**
+     * 替换指定Id 替换渐变定义 抽取颜色到变量之中
+     */
+    reFill () {
+      let svg = this.editor.getValue()
+      // replace color
+      let colorMatches = svg.match(/stop-color=".+"/g)
+      const color1 = colorMatches[0].substring(12, colorMatches[0].length - 1)
+      const color2 = colorMatches[1].substring(12, colorMatches[1].length - 1)
+      this.vector.variables[0].value = color1
+      this.vector.variables[1].value = color2
+      debugger
+      // replace id
+      let originalId = svg.match(/url\(.+\)/g)[0].replace(/url\(#/g, '').replace(/\)/g, '')
+      let replaced = svg.replace(new RegExp(originalId, 'gm'), this.vector.name).replace(color1, 'var(--gradientStart)').replace(color2, 'var(--gradientEnd)')
+      this.editor.setValue(replaced)
+    },
+    replaceId () {
+      this.editor.setValue(this.editor.getValue().replace(/id="[^"]+/i, 'id="' + this.vector.name))
+    },
     initEditor () {
       this.editor = ace.edit('editor')
       this.editor.getSession().setMode('ace/mode/svg')

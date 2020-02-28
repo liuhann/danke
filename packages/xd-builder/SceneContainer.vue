@@ -313,9 +313,16 @@ export default {
       ev.preventDefault()
       const data = ev.dataTransfer.getData('Text')
       const element = JSON.parse(data)
-      // 获取元素自适应到整个画面的高度和宽度
-      let { width, height } = fitRectIntoBounds(element, this.screen)
       const node = this.createElement()
+
+      let width = 100
+      let height = 100
+      if (element.width && element.height) {
+        // 获取元素自适应到整个画面的高度和宽度
+        const fit = fitRectIntoBounds(element, this.screen)
+        width = fit.width
+        height = fit.height
+      }
       node.x = ev.offsetX - width / 2
       node.y = ev.offsetY - height / 2
       node.width = width
@@ -327,6 +334,9 @@ export default {
         // 放置的图片
         node.url = element.url
         node.border = null
+      }
+      if (element.content) {
+        node.svg = element._id
       }
       this.scene.elements.push(node)
       this.setElementSelected(node)
@@ -516,7 +526,7 @@ export default {
     z-index: 9999;
     position: absolute;
     width: 100%;
-    height: 40px;
+    height: 30px;
     background: #fff;
     font-size: 12px;
     padding: 6px;

@@ -35,6 +35,12 @@ export default {
       this.draggingImage = true
     },
 
+    // load list callback
+    objectUpdated () {
+      for (let object of this.objects) {
+        this.ctx.styleRegistry.addVector(object)
+      }
+    },
     dragEnd () {
       this.draggingImage = false
     }

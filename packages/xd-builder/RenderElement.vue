@@ -4,6 +4,8 @@
      class="element" :class="elementClass" :style="elementStyle">
   <!--图片渲染-->
   <img v-if="element.url" :id="'img-' + (element.name || element.id)" :src="getImageUrl(element.url, screen.width, screen.height)">
+  <div v-if="element.svg" class="svg-content" v-html="elementSVGContent">
+  </div>
   <!--文本渲染情况下 文本内容-->
   <span v-if="element.text" v-html="element.text" :class="element.className" :data-content="element.text"></span>
 </div>
@@ -106,6 +108,13 @@ export default {
         }
       }
       return {}
+    },
+
+    /**
+     * 获取元素的SVG正文内容
+     */
+    elementSVGContent () {
+      return this.ctx.styleRegistry.getVector(this.element.svg)
     }
   },
   data () {
