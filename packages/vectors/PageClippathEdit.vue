@@ -55,6 +55,7 @@ import 'brace/mode/svg'
 import 'brace/theme/monokai'
 import { Message, Form, FormItem, Input, Select, Option, Button } from 'element-ui'
 import RestDAO from '../common/dao/restdao'
+import { getSVGViewBox } from './utils'
 export default {
   name: 'PageClippathEdit',
   components: {
@@ -116,10 +117,9 @@ export default {
     replaceClipPathId () {
       this.editor.setValue(this.editor.getValue().replace(/id="[^"]+/i, 'id="' + this.object.name))
     },
+    // 获取宽高
     extractWidthHeight () {
-      const splits = this.editor.getValue().match(/viewBox="[^"]+/)[0].split(' ')
-      this.object.width = Number.parseInt(splits[2])
-      this.object.height = Number.parseInt(splits[3])
+      Object.assign(this.object, getSVGViewBox(this.editor.getValue()))
     },
     async load (id) {
       this.object = await this.dao.getOne(id)

@@ -12,6 +12,7 @@
       <el-button size="mini" type="primary" @click="newStyle">新建</el-button>
       <div class="svg-list">
         <div v-for="(svg, index) in svgs" :key="index" class="svg-item">
+          <div class="title">{{svg.name}}</div>
           <div class="svg-container" :style="variableValues(svg)">
             <div class="styled-box" v-html="svg.content">
             </div>
@@ -19,7 +20,6 @@
           <div class="item-btns">
             <el-button circle size="mini" icon="el-icon-delete" @click="remove(svg)"/>
             <el-button circle size="mini" icon="el-icon-edit" @click="edit(svg)"/>
-            <span class="category">{{svg.category}}</span>
           </div>
         </div>
       </div>
@@ -125,6 +125,12 @@ export default {
     margin: 0 32px 50px 0;
     border-radius: 20px;
     padding: 30px 10px;
+    .title {
+      position: absolute;
+      color: #444;
+      top: 16px;
+      left: 16px;
+    }
     &:nth-of-type(4n) {
       margin-right: 0;
     }

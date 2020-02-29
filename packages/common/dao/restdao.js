@@ -47,9 +47,10 @@ export default class RestDAO {
   }
 
   async patch (id, json) {
-    await this.ctx.ky.patch(`${this.path}/${id}`, {
+    const result = await this.ctx.ky.patch(`${this.path}/${id}`, {
       json
-    })
+    }).json()
+    return result
   }
 
   async delete (o) {

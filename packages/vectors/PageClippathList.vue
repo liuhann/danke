@@ -62,7 +62,6 @@ export default {
   },
   methods: {
     getSVGScale (el) {
-      debugger
     },
     newClipPath () {
       window.open('/clippath/edit')

@@ -3,7 +3,7 @@
     <div class="container" style="background: #fff;padding: 20px;box-shadow: 0 1px 5px 0 rgba(0,0,0,.1);">
       <el-form size="mini" label-width="90px">
         <el-form-item label="ID">
-          <el-input v-model="vector.name"/> <el-button @click="replaceId">更新ID</el-button>
+          <el-input v-model="vector.name"/>
         </el-form-item>
         <el-form-item label="样式文本">
           <div id="editor">
@@ -143,10 +143,13 @@ export default {
     },
     async save () {
       this.vector.content = this.editor.getValue()
-      alert(this.vector.content)
-      await this.svgdao.createOrPatch(this.vector)
-      Message.success('保存成功')
-      window.close()
+      const result = await this.svgdao.createOrPatch(this.vector)
+      if (result.code === 409) {
+        Message.error('ID重复')
+      } else {
+        Message.success('保存成功')
+        window.close()
+      }
     }
   }
 }

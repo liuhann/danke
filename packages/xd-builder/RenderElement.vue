@@ -77,6 +77,14 @@ export default {
           }
         }
       }
+      // 可配置颜色变量
+      if (this.element.colors) {
+        for (let variable of this.element.colors) {
+          Object.assign(style, {
+            ['--' + variable.name]: variable.value
+          })
+        }
+      }
       style.perspective = (this.element.width + this.element.height) + 'px'
       return style
     },
@@ -160,6 +168,14 @@ export default {
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+  .svg-content {
+    width: 100%;
+    height: 100%;
+    svg {
+      width: 100%;
+      height: 100%;
+    }
   }
 }
 

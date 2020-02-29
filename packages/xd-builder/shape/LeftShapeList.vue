@@ -31,6 +31,7 @@ export default {
   methods: {
     dragStart (object, ev) {
       // stringify image info as text
+      console.log(object)
       ev.dataTransfer.setData('Text', JSON.stringify(object))
       this.draggingImage = true
     },

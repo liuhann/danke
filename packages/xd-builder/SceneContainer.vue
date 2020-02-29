@@ -3,21 +3,25 @@
   <!-- 工具栏 -->
   <div id="tool-bar">
     <!-- 设置元素边框 -->
-    <i class="el-icon-copy-document" :class="currentAddon === 'border'? 'on': ''" v-if="selectedImages.length" @click="showAddon('border')"/>
+    <i class="icon-border" :style="{backgroundImage: `url(${SVG_BORDER})`}" :class="currentAddon === 'border'? 'on': ''" v-if="selectedImages.length" @click="showAddon('border')"/>
     <!-- 设置元素动画 -->
     <i class="el-icon-data-analysis" v-if="selectedImages.length" @click="showAddon('enters')"/>
     <i class="el-icon-data-board" v-if="selectedImages.length" @click="showAddon('exists')"/>
     <!-- 设置场景背景 -->
-    <i class="el-icon-s-open" v-if="selectedImages.length === 0" @click="showAddon('background')"/>
+    <i class="icon-scene-bg" v-if="scene && selectedElements.length === 0"  @click="showAddon('background')" :class="sceneClass" :style="toolbarSceneBackgroundStyle"/>
     <!-- 设置场景动画 -->
     <i class="el-icon-magic-stick" v-if="selectedImages.length === 0" @click="toggleAnimationLayer()"/>
-    <div class="pull-right" v-if="selectedImages.length === 0">
-      <el-button icon="el-icon-arrow-down" type="text" size="mini" @click="nextScene">下页</el-button>
-      <el-button icon="el-icon-arrow-up" type="text" size="mini" @click="prevScene">上页</el-button>
+    <div class="pull-right" v-if="selectedElements.length === 0">
+      <span class="scale-info info">{{scaleToolbarDisplay}}</span>
+      <i class="el-icon-arrow-down" @click="nextScene" />
+      <i class="el-icon-arrow-up" @click="prevScene" />
       {{scenes.indexOf(scene) + 1}}/{{scenes.length}}
       <i class="el-icon-upload" @click="saveWork"/>
       <i class="el-icon-setting" @click="saveWork"/>
       <i class="el-icon-data-line"  @click="playWork"/>
+    </div>
+    <div class="pull-right" v-if="selectedElements.length">
+      <el-button icon="el-icon-arrow-down" type="text" size="mini" @click="nextScene"></el-button>
     </div>
   </div>
   <div id="scene-container" @click.exact="sceneMouseDown" ref="sceneContainer">
@@ -47,8 +51,7 @@
       </div>
     </div>
     <!-- 拖拽选择层 -->
-    <div class="dragging-rect" :style="styleDragingRect">
-    </div>
+    <div class="dragging-rect" :style="styleDragingRect" />
   </div>
   <!-- 左侧的信息选择框 -->
   <div id="addon-container" v-show="currentAddon != null">
@@ -78,7 +81,9 @@ import AddonBorderList from './border/AddonBorderList.vue'
 import AddonAnimationList from './animation/AddonAnimationList.vue'
 import AnimationPanel from './animation/AnimationPanel.vue'
 import AddonColorList from './color/AddonColorList.vue'
+import SVG_BORDER from './svg/broken-lines-square-border.svg'
 import { shortid } from '../utils/string'
+import { getSVGViewBox } from '../vectors/utils'
 import { fitRectIntoBounds, getRectPositionStyle, isPointInRect, intersectRect } from './mixins/rectUtils.js'
 
 export default {
@@ -105,6 +110,8 @@ export default {
   },
   data: function () {
     return {
+      SVG_BORDER,
+      scale: 0.8,
       screenPosition: {
         x: 0,
         y: 0
@@ -164,6 +171,8 @@ export default {
     },
     styleScreen () {
       return {
+        transform: 'scale(' + this.scale + ')',
+        transformOrigin: 'top center',
         left: this.screenRect.x + 'px',
         top: this.screenRect.y + 'px',
         width: this.screenRect.width + 'px',
@@ -203,6 +212,22 @@ export default {
         }
       }
       return classes
+    },
+
+    /**
+     *工具栏之上的按钮样式
+     */
+    toolbarSceneBackgroundStyle () {
+      const style = {}
+      Object.assign(style, this.sceneStyle, {
+        width: '24px',
+        height: '24px'
+      })
+      return style
+    },
+
+    scaleToolbarDisplay () {
+      return Math.floor(this.scale * 100) + '%'
     }
   },
 
@@ -253,10 +278,15 @@ export default {
           }
 
           // 判断矩形交叉的元素设置为选中
-          this.dragRect.x = this.dragRect.left - this.screenRect.x
+          this.dragRect.x = this.dragRect.left - this.screenRect.x - this.screenRect.width / 2 * (1 - this.scale)
           this.dragRect.y = this.dragRect.top - this.screenRect.y
           for (let element of this.scene.elements) {
-            if (intersectRect(element, this.dragRect)) {
+            if (intersectRect({
+              x: element.x * this.scale,
+              y: element.y * this.scale,
+              width: element.width * this.scale,
+              height: element.height * this.scale
+            }, this.dragRect)) {
               element.selected = true
             } else {
               element.selected = false
@@ -283,13 +313,19 @@ export default {
         const rootRect = this.$refs.sceneContainer.getBoundingClientRect()
         // 点位置计算 clientX - 容器X - 屏幕X
         const point = {
-          x: ev.clientX - rootRect.x - this.screenRect.x,
+          x: ev.clientX - rootRect.x - this.screenRect.x - this.screenRect.width / 2 * (1 - this.scale),
           y: ev.clientY - rootRect.y - this.screenRect.y
         }
+        console.log(point)
         // 判断点击处的元素
         let targetElement = null
         for (let element of this.scene.elements) {
-          if (isPointInRect(point, element, 10)) {
+          if (isPointInRect(point, {
+            x: element.x * this.scale,
+            y: element.y * this.scale,
+            width: element.width * this.scale,
+            height: element.height * this.scale
+          }, 10)) {
             // 获取第一个 也就是最外层的
             targetElement = element
           }
@@ -314,7 +350,6 @@ export default {
       const data = ev.dataTransfer.getData('Text')
       const element = JSON.parse(data)
       const node = this.createElement()
-
       let width = 100
       let height = 100
       if (element.width && element.height) {
@@ -322,6 +357,14 @@ export default {
         const fit = fitRectIntoBounds(element, this.screen)
         width = fit.width
         height = fit.height
+      }
+      if (element.content) {
+        const vb = getSVGViewBox(element.content)
+        if (vb) {
+          width = vb.width
+          height = vb.height
+          node.isRatioFixed = true
+        }
       }
       node.x = ev.offsetX - width / 2
       node.y = ev.offsetY - height / 2
@@ -337,6 +380,9 @@ export default {
       }
       if (element.content) {
         node.svg = element._id
+      }
+      if (element.variables) {
+        node.colors = element.variables
       }
       this.scene.elements.push(node)
       this.setElementSelected(node)
@@ -372,20 +418,21 @@ export default {
       if (el.length) {
         interact(el[0]).resizable({
           edges: { left: true, right: true, bottom: true, top: true },
-          inertia: true
+          inertia: true,
+          preserveAspectRatio: node.isRatioFixed
         }).on('resizemove', event => {
-          node.width = event.rect.width
-          node.height = event.rect.height
-          node.x += event.deltaRect.left
-          node.y += event.deltaRect.top
+          node.width = event.rect.width / this.scale
+          node.height = event.rect.height / this.scale
+          node.x += event.deltaRect.left / this.scale
+          node.y += event.deltaRect.top / this.scale
         }).draggable({
           onstart: event => {},
           inertia: true,
           onmove: event => {
             for (let element of this.scene.elements) {
               if (element.selected) {
-                element.x += event.dx
-                element.y += event.dy
+                element.x += event.dx / this.scale
+                element.y += event.dy / this.scale
               }
             }
           },
@@ -526,24 +573,38 @@ export default {
     z-index: 9999;
     position: absolute;
     width: 100%;
-    height: 30px;
+    box-sizing: border-box;
+    height: 40px;
     background: #fff;
     font-size: 12px;
-    padding: 6px;
+    padding: 6px 12px;
+    display: flex;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 0 2px;
     top: 0;
     left: 0;
     .pull-right {
       float: right;
+      text-align: right;
+      flex: 1;
     }
     .el-button {
       padding: 0;
     }
-    box-shadow: rgba(0, 0, 0, 0.2) 0px 0 2px;
+    .icon-border {
+      background-size: 20px 20px;
+      background-repeat: no-repeat;
+      background-position: center center;
+    }
+    .icon-scene-bg {
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
     i {
       line-height: 28px;
       width: 28px;
       text-align: center;
       cursor: pointer;
+      margin: 0 2px;
       color: rgba(0, 0, 0, 0.7);
       font-size: 18px;
       &:hover, &.on {
