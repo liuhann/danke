@@ -12,7 +12,19 @@
     <!-- 设置场景动画 -->
     <i class="el-icon-magic-stick" v-if="selectedImages.length === 0" @click="toggleAnimationLayer()"/>
     <div class="pull-right" v-if="selectedElements.length === 0">
-      <span class="scale-info info">{{scaleToolbarDisplay}}</span>
+      <el-popover
+        placement="bottom"
+        width="200"
+        trigger="click">
+        <span class="scale-info info" slot="reference">{{scaleToolbarDisplay}}</span>
+        <div>画面缩放</div>
+        <el-slider
+          v-model="scale"
+          :min=".2"
+          :max="2"
+          :step="0.1">
+        </el-slider>
+      </el-popover>
       <i class="el-icon-arrow-down" @click="nextScene" />
       <i class="el-icon-arrow-up" @click="prevScene" />
       {{scenes.indexOf(scene) + 1}}/{{scenes.length}}
@@ -74,7 +86,7 @@
 </template>
 
 <script>
-import { Button, ButtonGroup } from 'element-ui'
+import { Button, ButtonGroup, Popover, Slider } from 'element-ui'
 import interact from 'interactjs'
 import RenderElement from './RenderElement.vue'
 import AddonBorderList from './border/AddonBorderList.vue'
@@ -94,7 +106,9 @@ export default {
     AddonAnimationList,
     AnimationPanel,
     AddonColorList,
+    [Slider.name]: Slider,
     [Button.name]: Button,
+    [Popover.name]: Popover,
     [ButtonGroup.name]: ButtonGroup
   },
   props: {
@@ -111,7 +125,7 @@ export default {
   data: function () {
     return {
       SVG_BORDER,
-      scale: 0.8,
+      scale: 1,
       screenPosition: {
         x: 0,
         y: 0
@@ -598,6 +612,21 @@ export default {
     .icon-scene-bg {
       border: 1px solid #ccc;
       border-radius: 4px;
+    }
+    span.info {
+      line-height: 28px;
+      width: 28px;
+      text-align: center;
+      cursor: pointer;
+      display: inline-block;
+      margin: 0 2px;
+      color: rgba(0, 0, 0, 0.7);
+      font-size: 14px;
+      vertical-align: top;
+      padding: 0 5px;
+      &:hover, &.on {
+        background-color: #f1f3f4;
+      }
     }
     i {
       line-height: 28px;
