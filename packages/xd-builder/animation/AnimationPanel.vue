@@ -2,7 +2,6 @@
 <div id="animation-panel">
   <div class="panel-title">
     <div>动画列表</div>
-    <div></div>
   </div>
   <div class="animation-list">
     <div v-for="(animation, index) in animations" :key="index" class="animation">

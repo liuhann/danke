@@ -1,41 +1,7 @@
 <template>
 <section id="right-section">
   <!-- 工具栏 -->
-  <div id="tool-bar">
-    <!-- 设置元素边框 -->
-    <i class="icon-border" :style="{backgroundImage: `url(${SVG_BORDER})`}" :class="currentAddon === 'border'? 'on': ''" v-if="selectedImages.length" @click="showAddon('border')"/>
-    <!-- 设置元素动画 -->
-    <i class="el-icon-data-analysis" v-if="selectedImages.length" @click="showAddon('enters')"/>
-    <i class="el-icon-data-board" v-if="selectedImages.length" @click="showAddon('exists')"/>
-    <!-- 设置场景背景 -->
-    <i class="icon-scene-bg" v-if="scene && selectedElements.length === 0"  @click="showAddon('background')" :class="sceneClass" :style="toolbarSceneBackgroundStyle"/>
-    <!-- 设置场景动画 -->
-    <i class="el-icon-magic-stick" v-if="selectedImages.length === 0" @click="toggleAnimationLayer()"/>
-    <div class="pull-right" v-if="selectedElements.length === 0">
-      <el-popover
-        placement="bottom"
-        width="200"
-        trigger="click">
-        <span class="scale-info info" slot="reference">{{scaleToolbarDisplay}}</span>
-        <div>画面缩放</div>
-        <el-slider
-          v-model="scale"
-          :min=".2"
-          :max="2"
-          :step="0.1">
-        </el-slider>
-      </el-popover>
-      <i class="el-icon-arrow-down" @click="nextScene" />
-      <i class="el-icon-arrow-up" @click="prevScene" />
-      {{scenes.indexOf(scene) + 1}}/{{scenes.length}}
-      <i class="el-icon-upload" @click="saveWork"/>
-      <i class="el-icon-setting" @click="saveWork"/>
-      <i class="el-icon-data-line"  @click="playWork"/>
-    </div>
-    <div class="pull-right" v-if="selectedElements.length">
-      <el-button icon="el-icon-arrow-down" type="text" size="mini" @click="nextScene"></el-button>
-    </div>
-  </div>
+  <toolbar :scene="scene" :scenes="scenes" :scale="scale"/>
   <div id="scene-container" @click.exact="sceneMouseDown" ref="sceneContainer">
     <!-- 当前屏幕内容 -->
     <div class="screen" :style="styleScreen">
@@ -88,19 +54,25 @@
 <script>
 import { Button, ButtonGroup, Popover, Slider } from 'element-ui'
 import interact from 'interactjs'
+import Toolbar from './toolbar/Toolbar.vue'
 import RenderElement from './RenderElement.vue'
-import AddonBorderList from './border/AddonBorderList.vue'
-import AddonAnimationList from './animation/AddonAnimationList.vue'
+import AddonBorderList from './toolbar/BorderList.vue'
+import AddonAnimationList from './toolbar/AnimationTabs.vue'
 import AnimationPanel from './animation/AnimationPanel.vue'
 import AddonColorList from './color/AddonColorList.vue'
-import SVG_BORDER from './svg/broken-lines-square-border.svg'
+import SVG_BORDER from './res/border.svg'
+import SVG_ANIMATION_IN from './res/animation-enter.svg'
+import SVG_ANIMATION_OUT from './res/animation-disappear.svg'
+import SVG_CROP from './res/crop.svg'
 import { shortid } from '../utils/string'
 import { getSVGViewBox } from '../vectors/utils'
 import { fitRectIntoBounds, getRectPositionStyle, isPointInRect, intersectRect } from './mixins/rectUtils.js'
+import ToolBar from './components/ToolBar'
 
 export default {
   name: 'SceneContainer',
   components: {
+    Toolbar,
     RenderElement,
     AddonBorderList,
     AddonAnimationList,
@@ -124,7 +96,6 @@ export default {
   },
   data: function () {
     return {
-      SVG_BORDER,
       scale: 1,
       screenPosition: {
         x: 0,
@@ -171,18 +142,6 @@ export default {
   },
 
   computed: {
-    selectedElements () {
-      if (this.scene && this.scene.elements) {
-        return this.scene.elements.filter(el => el.selected)
-      }
-      return []
-    },
-    selectedImages () {
-      if (this.scene && this.scene.elements) {
-        return this.scene.elements.filter(el => el.selected && el.url)
-      }
-      return []
-    },
     styleScreen () {
       return {
         transform: 'scale(' + this.scale + ')',
@@ -238,10 +197,6 @@ export default {
         height: '24px'
       })
       return style
-    },
-
-    scaleToolbarDisplay () {
-      return Math.floor(this.scale * 100) + '%'
     }
   },
 
@@ -330,7 +285,6 @@ export default {
           x: ev.clientX - rootRect.x - this.screenRect.x - this.screenRect.width / 2 * (1 - this.scale),
           y: ev.clientY - rootRect.y - this.screenRect.y
         }
-        console.log(point)
         // 判断点击处的元素
         let targetElement = null
         for (let element of this.scene.elements) {
@@ -583,64 +537,6 @@ export default {
   position: relative;
   touch-action: none;
   user-select: none;
-  #tool-bar {
-    z-index: 9999;
-    position: absolute;
-    width: 100%;
-    box-sizing: border-box;
-    height: 40px;
-    background: #fff;
-    font-size: 12px;
-    padding: 6px 12px;
-    display: flex;
-    box-shadow: rgba(0, 0, 0, 0.2) 0px 0 2px;
-    top: 0;
-    left: 0;
-    .pull-right {
-      float: right;
-      text-align: right;
-      flex: 1;
-    }
-    .el-button {
-      padding: 0;
-    }
-    .icon-border {
-      background-size: 20px 20px;
-      background-repeat: no-repeat;
-      background-position: center center;
-    }
-    .icon-scene-bg {
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    span.info {
-      line-height: 28px;
-      width: 28px;
-      text-align: center;
-      cursor: pointer;
-      display: inline-block;
-      margin: 0 2px;
-      color: rgba(0, 0, 0, 0.7);
-      font-size: 14px;
-      vertical-align: top;
-      padding: 0 5px;
-      &:hover, &.on {
-        background-color: #f1f3f4;
-      }
-    }
-    i {
-      line-height: 28px;
-      width: 28px;
-      text-align: center;
-      cursor: pointer;
-      margin: 0 2px;
-      color: rgba(0, 0, 0, 0.7);
-      font-size: 18px;
-      &:hover, &.on {
-        background-color: #f1f3f4;
-      }
-    }
-  }
 
   #addon-container {
     position: absolute;

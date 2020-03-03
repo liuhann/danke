@@ -36,7 +36,7 @@
 import { Pagination, Button, Slider, ColorPicker } from 'element-ui'
 import RestDAO from '../../common/dao/restdao'
 export default {
-  name: 'AddonBorderList',
+  name: 'BorderList',
   components: {
     [Pagination.name]: Pagination,
     [Slider.name]: Slider,

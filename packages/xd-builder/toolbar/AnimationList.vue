@@ -1,44 +1,43 @@
 <template>
-<div id="addon-animation-list">
-  <div class="addon-title">
-    添加动画
-  </div>
-  <div class="animation-list">
-    <div v-for="(animation, index) in animations" :key="index" class="animation-item"
-      @mouseenter="animationMouseEnter(animation)"
-      @click="addAnimation(animation)">
-      <div class="preview-box" :class="animation.name">
-        <img :src="SVG" />
-      </div>
-      <div class="animation-title">{{animation.title}}</div>
+<div class="animation-list">
+  <div v-for="(animation, index) in animations" :key="index"  class="animation-item"
+       @mouseenter="animationMouseEnter(animation)"
+       @click="addAnimation(animation)">
+    <div class="preview-box" :class="animation.name">
+      <img :src="CLOUD_HILL" />
     </div>
+    <div class="animation-title">{{animation.title}}</div>
   </div>
-  <el-pagination background :total="total" :page-size="pageSize" @current-change="loadAnimation" :current-page.sync="page" layout="prev, pager, next" />
+  <pagination background :total="total" :page-size="pageSize" @current-change="loadAnimation" :current-page.sync="page" :pager-count="5" layout="prev, pager, next" />
 </div>
 </template>
 
 <script>
 import RestDAO from '../../common/dao/restdao'
-import SVG from './project.svg'
 import { Pagination } from 'element-ui'
+import CLOUD_HILL from '../../vectors/cloud-hill.webp'
 export default {
-  name: 'AddonAnimationList',
+  name: 'AnimationList',
   components: {
-    [Pagination.name]: Pagination
+    Pagination
+  },
+  props: {
+    type: {
+      type: String
+    }
   },
   data () {
     return {
-      SVG,
-      hoverAnimation: null,
+      CLOUD_HILL,
       animations: [],
       page: 0,
-      pageSize: 30,
+      pageSize: 18,
       total: 0
     }
   },
-  created () {},
   mounted () {
     this.restdao = new RestDAO(this.ctx, 'danke/animation')
+    this.tabHeight = window.innerHeight - 150
     this.loadAnimation()
   },
   methods: {
@@ -54,21 +53,6 @@ export default {
         this.ctx.styleRegistry.addFrame(animation)
       }
     },
-
-    // 增加动画
-    addAnimation (animation) {
-      this.$emit('add', {
-        // 名称，供配置展示用
-        title: animation.title,
-        // css类名称
-        name: animation.name,
-        // 过渡函数，默认不许修改
-        timing: animation.timing,
-        // 时间区间 [0]为延迟，[1]为持续时间
-        range: [0, parseInt(animation.duration)]
-      })
-    },
-
     // 鼠标移动上面之后会进行frame演示
     animationMouseEnter (animation) {
       const replayStore = animation.name
@@ -76,36 +60,39 @@ export default {
       setTimeout(() => {
         animation.name = replayStore
       }, 300)
+    },
+    addAnimation(animation) {
+      this.$emit('input', animation)
     }
   }
 }
 </script>
 
 <style lang="scss">
-#addon-animation-list {
-  .addon-title {
-    font-size: 16px;
-    padding: 10px 20px;
-    border-bottom: 1px solid seashell;
-  }
   .animation-list {
     display: flex;
     flex-wrap: wrap;
+    overflow-y: auto;
     .animation-item {
-      width: 33.3%;
+      width: 110px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      height: 120px;
+      height: 100px;
       overflow: hidden;
       position: relative;
       background-image: linear-gradient(90deg, #592D2D, #592D2D);
       background-size: 60px 60px;
       background-position: center;
       background-repeat: no-repeat;
-
       perspective: 200px;
+      &:hover {
+        background: rgba(0,0,0, .05);
+        .animation-title {
+          display: none;
+        }
+      }
       .animation-title {
         position: absolute;
         bottom: 0;
@@ -118,6 +105,11 @@ export default {
         perspective: 200px;
         width: 60px;
         height: 60px;
+        img {
+          object-fit: cover;
+          width: 100%;
+          height: 100%;
+        }
       }
       .preview-box.none {
         opacity: 0;
@@ -125,5 +117,6 @@ export default {
       }
     }
   }
-}
+
+
 </style>
