@@ -1,36 +1,56 @@
 <template>
 <div id="tool-bar">
-  <!-- 给图片及文字设置边框 -->
-  <el-popover
-    v-if="selectedElements.length || selectedTexts.length"
-    placement="bottom-start"
-    width="360"
-    trigger="click">
-    <a class="action" slot="reference">特效</a>
-    <animation-tabs slot="default" :elements="this.selectedElements"/>
-  </el-popover>
-  <el-popover
-    v-if="selectedElements.length || selectedTexts.length"
-    placement="bottom"
-    width="200"
-    trigger="click">
-    <a class="action" slot="reference">边框</a>
-    <keep-alive>
-      <border-list @input="$emit('input')"/>
-    </keep-alive>
-  </el-popover>
-
-  <el-popover
-    v-if="selectedElements.length"
-    placement="bottom"
-    width="200"
-    trigger="click">
-    <a class="action" slot="reference">变换</a>
-  </el-popover>
-  <!-- 设置场景背景 -->
-  <i class="icon icon-scene-bg" v-if="scene && selectedElements.length === 0"  @click="showAddon('background')" :class="sceneClass" :style="toolbarSceneBackgroundStyle"/>
-  <div class="pull-right" v-if="selectedElements.length === 0">
+  <keep-alive>
     <el-popover
+      v-if="selectedElements.length || selectedTexts.length"
+      placement="bottom-start"
+      width="360"
+      trigger="click">
+      <a class="action" slot="reference">特效</a>
+      <animation-tabs slot="default" :elements="this.selectedElements"/>
+    </el-popover>
+  </keep-alive>
+
+  <!-- 给图片及文字设置边框 -->
+  <keep-alive>
+    <el-popover
+      v-if="selectedElements.length || selectedTexts.length"
+      placement="bottom"
+      width="200"
+      trigger="click">
+      <a class="action" slot="reference">边框</a>
+      <border-list @input="$emit('input')" :elements="this.selectedElements"/>
+    </el-popover>
+  </keep-alive>
+
+  <keep-alive>
+    <el-popover
+      v-if="selectedElements.length"
+      placement="bottom"
+      width="200"
+      trigger="click">
+      <a class="action" slot="reference">变换</a>
+    </el-popover>
+  </keep-alive>
+
+  <!-- 设置场景背景 -->
+  <keep-alive>
+    <el-popover
+      v-if="scene && selectedElements.length === 0"
+      placement="bottom-start"
+      class="btn-action"
+      width="200"
+      trigger="click">
+      <i class="icon icon-scene-bg" :class="sceneClass" slot="reference" :style="toolbarSceneBackgroundStyle"/>
+    </el-popover>
+  </keep-alive>
+
+  <div class="pull-right">
+    <a class="action" v-if="selectedElements.length > 1" @click="groupSelectedElement">组合</a>
+    <a class="action" v-if="selectedElements.length === 1 && selectedElements[0].elements.length" @click="unGroupBlock">取消组合</a>
+
+    <el-popover
+      v-if="selectedElements.length === 0"
       placement="bottom"
       width="200"
       trigger="click">
@@ -40,12 +60,14 @@
         v-model="scale"
         :min=".2"
         :max="2"
-        :step="0.1">
+        :step="0.05"
+        @input="scaleChange">
       </el-slider>
     </el-popover>
-    <i class="el-icon-arrow-down" />
-    <i class="el-icon-arrow-up" />
+    <a class="action" v-if="selectedElements.length === 0" @click="groupSelectedElement">上一场景</a>
+    <a class="action" v-if="selectedElements.length === 0" @click="unGroupBlock">下一场景</a>
     {{scenes.indexOf(scene) + 1}}/{{scenes.length}}
+    <a class="action" v-if="selectedElements.length === 0" @click="unGroupBlock">配置</a>
   </div>
 </div>
 </template>
@@ -54,6 +76,8 @@
 import { Button, ButtonGroup, Popover, Slider } from 'element-ui'
 import AnimationTabs from './AnimationTabs.vue'
 import BorderList from './BorderList'
+import { shortid } from '../../utils/string'
+import interact from 'interactjs'
 export default {
   name: 'Toolbar',
   components: {
@@ -70,14 +94,11 @@ export default {
     },
     scenes: {
       type: Array
-    },
-    scale: {
-      type: Number
     }
   },
   data () {
     return {
-
+      scale: 1
     }
   },
   computed: {
@@ -101,6 +122,139 @@ export default {
     },
     scaleToolbarDisplay () {
       return Math.floor(this.scale * 100) + '%'
+    },
+    /**
+     * 获取场景class列表
+     */
+    sceneClass () {
+      const classes = []
+      for (let key in this.scene.style) {
+        if (this.scene.style[key] && this.scene.style[key].name) {
+          classes.push(this.scene.style[key].name)
+        }
+      }
+      return classes
+    },
+    /**
+     *工具栏之上的按钮样式
+     */
+    toolbarSceneBackgroundStyle () {
+      const style = {
+        width: '24px',
+        height: '24px',
+      }
+      for (let key in this.scene.style) {
+        if (this.scene.style[key] && !this.scene.style[key].name) {
+          Object.assign(style, this.scene.style[key])
+        }
+      }
+      return style
+    }
+  },
+  methods: {
+    /**
+     * Group selected element to one block, remove element from scene.elements
+     * Add block to scene.elements
+     */
+    groupSelectedElement () {
+      const block = {
+        id: shortid(),
+        elements: [],
+        // assign to the first of selected
+        x: this.selectedElements[0].x,
+        y: this.selectedElements[0].y,
+        width: this.selectedElements[0].width,
+        height: this.selectedElements[0].height
+      }
+      // 1、loop to set block rect
+      for (let element of this.selectedElements) {
+        // get corner of element
+        const x1 = element.x
+        const y1 = element.y
+        const x2 = element.x + element.width
+        const y2 = element.y + element.height
+
+        // check out and resize block size
+        if (x1 < block.x) {
+          block.x = x1
+        }
+        if (y1 < block.y) {
+          block.y = y1
+        }
+        if (x2 > block.x + block.width) {
+          block.width = x2 - block.x
+        }
+        if (y2 > block.y + block.height) {
+          block.height = y2 - block.y
+        }
+        block.elements.push(element)
+      }
+
+      //2、loop to reset element rect
+      for (let element of block.elements) {
+        this.scene.elements.splice(this.scene.elements.indexOf(element), 1)
+        element.x = element.x - block.x
+        element.y = element.y - block.y
+        element.selected = false
+      }
+      block.selected = true
+      this.scene.elements.push(block)
+
+      this.$nextTick( ()=> {
+        this.initBlockDragable(block)
+      })
+    },
+
+    /**
+     * Block Node Not support Resize.
+     * @param blockNode
+     */
+    initBlockDragable (blockNode) {
+      const el = document.getElementById('mask-' + blockNode.id)
+      if (el) {
+        interact(el).draggable({
+          onstart: event => {},
+          inertia: true,
+          onmove: event => {
+            for (let element of this.scene.elements) {
+              if (element.selected) {
+                element.x += event.dx / this.scale
+                element.y += event.dy / this.scale
+              }
+            }
+          },
+          onend: event => { }
+        })
+      }
+    },
+
+    scaleChange () {
+      this.$emit('scale-change', this.scale)
+    },
+    /**
+     * Destroy drag
+     * @param blockNode
+     */
+    destroyInteract (blockNode) {
+      const el = document.getElementById('mask-' + blockNode.id)
+      if (el) {
+        interact(el).unset()
+      }
+    },
+
+    unGroupBlock () {
+      if (this.selectedElements.length === 1) {
+        const block = this.selectedElements[0]
+        this.destroyInteract(block)
+
+        for (let element of block.elements) {
+          this.scene.elements.push(element)
+          element.x = element.x + block.x
+          element.y = element.y + block.y
+          element.selected = true
+        }
+
+      }
     }
   }
 }
@@ -108,8 +262,6 @@ export default {
 
 <style lang="scss">
 #tool-bar {
-  z-index: 999;
-  position: absolute;
   width: 100%;
   box-sizing: border-box;
   height: 40px;
@@ -118,8 +270,7 @@ export default {
   padding: 6px 12px;
   display: flex;
   box-shadow: rgba(0, 0, 0, 0.2) 0px 0 2px;
-  top: 0;
-  left: 0;
+
   a.action {
     line-height: 28px;
     cursor: pointer;
@@ -135,6 +286,7 @@ export default {
   }
   .icon {
     background-size: 26px 26px;
+    display: inline-block;
     background-repeat: no-repeat;
     background-position: center center;
   }

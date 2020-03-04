@@ -1,53 +1,53 @@
 <template>
-  <aside class="insert-container">
-    <div class="category-side">
-      <div class='category' :class="current === 'scene'? 'current': ''" @click="toggleTo('scene')">
-        <i class="el-icon-files"/>
-        <span>场景</span>
-      </div>
-      <div class="category" :class="current === 'image'? 'current': ''" @click="toggleTo('image')">
-        <i class="el-icon-picture-outline"/>
-        <span>图片</span>
-      </div>
-      <div class='category'>
-        <i class="el-icon-tickets"/>
-        <span>文字</span>
-      </div>
-      <div class='category' :class="current === 'shape'? 'current': ''" @click="toggleTo('shape')">
-        <i class="el-icon-news"/>
-        <span>形状</span>
-      </div>
-      <div class='category'>
-        <i class="el-icon-magic-stick"/>
-        <span>效果</span>
-      </div>
-      <div class='category'>
-        <i class="el-icon-service"/>
-        <span>音乐</span>
-      </div>
-       <div class='category'>
-        <i class="el-icon-service"/>
-        <span>音乐</span>
-      </div>
+<aside class="insert-container">
+  <div class="category-side">
+    <div class='category' :class="current === 'scene'? 'current': ''" @click="toggleTo('scene')">
+      <i class="el-icon-files"/>
+      <span>场景</span>
     </div>
-    <div class="element-container">
-      <transition name="fade">
-        <keep-alive>
-          <image-upload v-if="current === 'image'"/>
-        </keep-alive>
-      </transition>
-      <transition name="fade">
-        <keep-alive>
-          <left-scene-template v-if="current === 'scene'" @insert="insertNewScene"/>
-        </keep-alive>
-      </transition>
-      <transition name="fade">
-        <keep-alive>
-          <left-shape-list v-if="current === 'shape'" />
-        </keep-alive>
-      </transition>
+    <div class="category" :class="current === 'image'? 'current': ''" @click="toggleTo('image')">
+      <i class="el-icon-picture-outline"/>
+      <span>图片</span>
     </div>
-  </aside>
+    <div class='category'>
+      <i class="el-icon-tickets"/>
+      <span>文字</span>
+    </div>
+    <div class='category' :class="current === 'shape'? 'current': ''" @click="toggleTo('shape')">
+      <i class="el-icon-news"/>
+      <span>形状</span>
+    </div>
+    <div class='category'>
+      <i class="el-icon-magic-stick"/>
+      <span>效果</span>
+    </div>
+    <div class='category'>
+      <i class="el-icon-service"/>
+      <span>音乐</span>
+    </div>
+     <div class='category'>
+      <i class="el-icon-service"/>
+      <span>音乐</span>
+    </div>
+  </div>
+  <div class="element-container">
+    <transition name="fade">
+      <keep-alive>
+        <image-upload v-if="current === 'image'"/>
+      </keep-alive>
+    </transition>
+    <transition name="fade">
+      <keep-alive>
+        <left-scene-template v-if="current === 'scene'" @insert="insertNewScene"/>
+      </keep-alive>
+    </transition>
+    <transition name="fade">
+      <keep-alive>
+        <left-shape-list v-if="current === 'shape'" />
+      </keep-alive>
+    </transition>
+  </div>
+</aside>
 </template>
 
 <script>

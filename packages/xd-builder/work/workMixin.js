@@ -17,18 +17,6 @@ export default {
   },
   methods: {
     /**
-     * 新增作品
-     */
-    newWork () {
-      this.work.screen = {
-        width: parseInt(this.$route.query.width) || 414,
-        height: parseInt(this.$route.query.height) || 896
-      }
-      this.work.id = shortid()
-      this.work.title = '我的作品'
-    },
-
-    /**
      * 加载作品 并且根据规则重新组织回写一些信息
      * @param {string} workId 作品Id
      */
@@ -38,7 +26,7 @@ export default {
       this.work = work
       this.chooseScene(this.work.scenes[0])
     },
-    
+
     /**
     * 保存作品内容
     */

@@ -1,24 +1,33 @@
 import { shortid } from '../../utils/string'
-import { getElementInnerStyle, getElementStyle, getSceneStyle } from '../../danke-core/utils/styles'
 import { MessageBox } from 'element-ui'
 export default {
+  data () {
+    return {
+      scene: null
+    }
+  },
+  computed: {
+    scenes () {
+      return this.work.scenes
+    },
+    sceneIndex () {
+      return this.scenes.indexOf(this.scene)
+    }
+  },
   methods: {
     /**
      * 增加新的场景
      */
-    addNewScene () {
+    addScene () {
       const scene = {
+        id: shortid(),
         elements: [],
         style: {},
-        z: 100 // 场景的层次
+        z: 100
       }
-      // 设置默认名称与ID
-      scene.id = shortid()
-      const currentSceneIndex = this.work.scenes.indexOf(this.currentScene)
-      this.work.scenes.splice(currentSceneIndex + 1, 0, scene)
-      this.currentScene = scene
+      this.scenes.splice(this.sceneIndex + 1, 0, scene)
+      this.scene = scene
     },
-
     cloneScene (scene) {
       const newScene = JSON.parse(JSON.stringify(scene))
       newScene.id = shortid()
@@ -53,45 +62,12 @@ export default {
         }
       }
     },
-    /**
-     * 渲染当前的场景
-     * @param scene
-     * @param stage
-     */
-    renderScene (scene, stage) {
-      for (let element of scene.elements) {
-        // 图片保存的是相对地址  在渲染时做url转换
-        if (element.imgPath) {
-          element.url = this.ctx.IMG_SERVER + '/' + element.imgPath
-        }
-        // 对于svg图片，内容是直接保存到元素上，这里进行blob->url转换
-        if (element.svg) {
-          let svgBlob = new Blob([element.svg], { type: 'image/svg+xml;charset=utf-8' })
-          let domURL = self.URL || self.webkitURL || self
-          let url = domURL.createObjectURL(svgBlob)
-          element.url = url
-        }
-        element.style = getElementStyle(element, this.device, stage)
-        element.innerStyle = getElementInnerStyle(element, this.device, stage)
-      }
-      scene.style = getSceneStyle(scene, this.device, 'in')
-    },
-
-    /**
-     * 重新计算当前场景内所有元素
-     */
-    invalidate () {
-      for (let element of this.currentScene.elements) {
-        element.style = getElementStyle(element, this.device, 'in')
-        element.innerStyle = getElementInnerStyle(element, this.device, 'in')
-      }
-    },
 
     /**
      * 删除当前场景
      */
     deleteCurrentScene () {
-      if (this.work.scenes.length === 1) {
+      if (this.scenes.length === 1) {
         MessageBox.prompt('无法删除: 请至少保留一个场景')
         return
       }

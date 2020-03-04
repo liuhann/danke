@@ -1,25 +1,27 @@
 <template>
 <div id="xd">
   <left-aside @insert="insert"/>
-  <scene-container :scene="currentScene" :screen="work.screen" :scenes="work.scenes"
-    @prev-scene="previousScene"
-    @next-scene="nextScene"
-    @save-work="saveWork"
-    @play-work="runWork"/>
+  <section class="right-section">
+    <toolbar :scenes="work.scenes" :scene="scene" @scale-change="scaleChange"/>
+    <scene-container :screen="work.screen" :scenes="work.scenes" :scene="scene" :scale="scale"/>
+  </section>
 </div>
 </template>
 
-<script type="module">
+<script>
 import StyleRegistry from './utils/StyleRegistry.js'
 import workMixin from './work/workMixin.js'
-import sceneMixin from './scene/sceneMixins.js'
+import sceneMixin from './mixins/sceneMixins.js'
 import { Popover, Button, Upload, Tabs, TabPane, Drawer, Dialog, Menu, MenuItem, Message, Loading } from 'element-ui'
 import SceneContainer from './SceneContainer.vue'
 import LeftAside from './LeftAside.vue'
 import 'element-ui/packages/theme-chalk/lib/icon.css'
+import { shortid } from '../utils/string'
+import Toolbar from './toolbar/Toolbar'
 export default {
   name: 'Builder',
   components: {
+    Toolbar,
     SceneContainer,
     LeftAside,
     [Popover.name]: Popover,
@@ -48,7 +50,7 @@ export default {
         style: {},
         scenes: [] // 场景列表
       },
-      currentScene: null
+      scale: 1
     }
   },
 
@@ -60,12 +62,23 @@ export default {
     let workId = this.$route.query.work
     if (!workId) {
       this.newWork()
-      this.addNewScene()
     } else {
       this.loadWork(workId)
     }
   },
   methods: {
+    /**
+     * 新增作品
+     */
+    newWork () {
+      this.work.screen = {
+        width: parseInt(this.$route.query.width) || 414,
+        height: parseInt(this.$route.query.height) || 896
+      }
+      this.work.id = shortid()
+      this.work.title = '我的作品'
+      this.addScene()
+    },
     /**
     * 保存作品内容
     */
@@ -94,46 +107,14 @@ export default {
       this.savingWork = false
     },
 
-    runWork () {
+    insert () {
 
     },
 
-    /**
-     * 响应popup 插入相关场景、元素等
-     * @param type
-     * @param data
-     */
-    insert (type, data) {
-      switch (type) {
-        case 'scene':
-          if (data == null) {
-            this.addNewScene()
-          } else {
-            this.cloneScene(data)
-          }
-          break
-        case 'image':
-          this.insertRawImage(data)
-          break
-        case 'svg':
-          this.insertSVGImage(data.svg, data.desc)
-          break
-        case 'back-audio':
-          this.openAudioDialog()
-          break
-        case 'text':
-          this.insertText()
-          break
-        case 'block':
-          this.insertBlock(data)
-          break
-        case 'shape':
-          this.insertShape()
-          break
-        default:
-          break
-      }
+    scaleChange (scale) {
+      this.scale = scale
     }
+
   }
 }
 </script>
@@ -148,127 +129,14 @@ export default {
   height: 100%;
   background-color: #f5f5f4;
 
-  // 编辑容器
-  section.scene-container {
-    flex-grow: 1;
-    position: relative;
-    overflow: hidden;
-    .device {
-      touch-action: none;
-      position: absolute;
-      border: 1px solid #eee;
-      border-radius: 5px;
-      top: 5px;
-      z-index: 10;
-      overflow: hidden;
-      perspective: 500px;
-      box-shadow: 0px 0px 0px 1px #e6e6e6;
-      .btn-audio {
-        position: absolute;
-        left: 10px;
-        top: 10px;
-        z-index: 9999;
-      }
-
-      .mask {
-        z-index: 999;
-        border: 2px dashed #87b1f1;
-        box-sizing: border-box;
-        .corner-rb {
-          display: none;
-          background-color: #87b1f1;
-          position: absolute;
-          right: 0;
-          bottom: 0;
-          width: 10px;
-          height: 10px;
-        }
-      }
-      .element {
-        position: absolute;
-        &.selected {
-          overflow: visible;
-        }
-        &.type1 {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-        &.type2 {
-          display: flex;
-          align-items: center;
-          span {
-            width: 100%;
-          }
-        }
-        img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-        &.hidden {
-          display: none;
-        }
-        &.current {
-          outline: 2px dashed #87b1f1;
-          outline-offset: 0;
-          z-index: 9999;
-        }
-        span.content-editable {
-          outline:none;
-          -webkit-user-modify: read-write-plaintext-only;
-        }
-      }
-
-      .ti {
-        position: absolute;
-        background-color: #0a0a0a;
-        left: -30px;
-        width: 30px;
-        height: 30px;
-      }
-    }
-  }
-  .welcome {
-    position: absolute;
-    left: 48px;
-    top: 40px;
-    bottom: 0;
-    right: 0;
-    overflow: auto;
-  }
-  .aside {
-    overflow: auto;
-    position: absolute;
-    right: 0;
-    top: 5px;
-    width: 320px;
-    bottom: 0;
-    background-color: #fff;
+  .right-section {
+    padding: 0;
+    flex: 1;
+    touch-action: none;
+    user-select: none;
+    display: flex;
+    flex-direction: column;
   }
 }
 
-@media screen and (max-width: 1080px) {
-  #xd .scene-container {
-    top: 0;
-    bottom: 0;
-    right: 0;
-  }
-}
-
-.line {
-  margin: 5px 0;
-  height: 4px;
-  background: repeating-linear-gradient(to right, red 0, red 5px, transparent 5px, transparent 7px);
-  /*5px red then 2px transparent -> repeat this!*/
-  background-size: 100% 1px;
-  background-repeat: no-repeat;
-}
-
-.slide-left-enter-active, .slide-left-leave-active {
-transition: transform .2s ease-out;
-}
-.slide-left-enter, .slide-left-leave-to /* .fade-leave-active below version 2.1.8 */ {
-transform: translateX(-100%)
-}
 </style>

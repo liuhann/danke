@@ -8,15 +8,19 @@
   </div>
   <!--文本渲染情况下 文本内容-->
   <span v-if="element.text" v-html="element.text" :class="element.className" :data-content="element.text"></span>
+  <div v-if="element.elements" class="block">
+    <render-element v-for="(el, i) in element.elements" :key="el.id" :screen="screen" :element="el" :index="i" ></render-element>
+  </div>
 </div>
 </template>
 
 <script>
-import { getImageUrl } from './mixins/imageUtils.js'
-import { getRectPositionStyle } from './mixins/rectUtils.js'
+import { getImageUrl } from '../mixins/imageUtils.js'
+import { getRectPositionStyle } from '../mixins/rectUtils.js'
 export default {
   name: 'RenderElement',
   components: {
+    RenderElement: () => import('./RenderElement.vue')
   },
   props: {
     // 渲染的阶段
@@ -64,7 +68,7 @@ export default {
       const style = {}
       Object.assign(style, getRectPositionStyle(this.element), this.elementAnimationStyle)
       // 根据border扩展设置， 展示扩展的属性
-      if (this.element.style.border && this.element.style.border.variables) {
+      if (this.element.style && this.element.style.border && this.element.style.border.variables) {
         for (let variable of this.element.style.border.variables) {
           if (variable.type === 'number') {
             Object.assign(style, {

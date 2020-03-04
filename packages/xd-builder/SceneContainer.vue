@@ -1,94 +1,62 @@
 <template>
-<section id="right-section">
-  <!-- 工具栏 -->
-  <toolbar :scene="scene" :scenes="scenes" :scale="scale"/>
-  <div id="scene-container" @click.exact="sceneMouseDown" ref="sceneContainer">
-    <!-- 当前屏幕内容 -->
-    <div class="screen" :style="styleScreen">
-      <div class="screen-title">
-      </div>
-      <div class="scene" v-if="scene" :style="sceneStyle" :class="sceneClass">
-         <render-element
-            v-for="(element, index) of scene.elements"
-            stage="in"
-            :element="element"
-            :screen="screen"
-            :key="element.id"
-            :index="index"
-            :ref="element.id"/>
-      </div>
+<div id="scene-container" @click.exact="sceneMouseDown" ref="sceneContainer">
+  <!-- 当前屏幕内容 -->
+  <div class="screen" :style="styleScreen">
+    <div class="screen-title">
     </div>
-    <!-- 元素被选中、移动、调整大小时的选中层 -->
-    <div class="mask" :style="styleScreen" @dragover="sceneDragOver" @drop="elementDropped" v-if="scene">
-      <div
-        v-for="selectee in scene.elements"
-        :ref="'mask-' + selectee.id" class="node-mask"
-        :key="selectee.id"
-        :style="getMaskStyle(selectee)">
-        <div class="lt"/><div class="rt"/><div class="t"/><div class="l"/><div class="lb"/><div class="rb"/><div class="r"/><div class="b"/>
-      </div>
+    <div class="scene" v-if="scene" :style="sceneStyle" :class="sceneClass">
+       <render-element
+          v-for="(element, index) of scene.elements"
+          stage="in"
+          :element="element"
+          :screen="screen"
+          :key="element.id"
+          :index="index"
+          :ref="element.id"/>
     </div>
-    <!-- 拖拽选择层 -->
-    <div class="dragging-rect" :style="styleDragingRect" />
   </div>
-  <!-- 左侧的信息选择框 -->
-  <div id="addon-container" v-show="currentAddon != null">
-    <keep-alive>
-      <addon-border-list :border="currentAddonObject" v-if="currentAddon === 'border'" @input="setElementAddon"/>
-    </keep-alive>
-    <keep-alive>
-      <addon-animation-list v-if="currentAddon === 'enters' || currentAddon === 'exists'" @add="addAnimation"/>
-    </keep-alive>
-    <keep-alive>
-      <addon-color-list v-if="currentAddon === 'background'" :color="currentAddonObject" @input="setElementAddon" />
-    </keep-alive>
+  <!-- 元素被选中、移动、调整大小时的选中层 -->
+  <div class="mask" :style="styleScreen" @dragover="sceneDragOver" @drop="elementDropped" v-if="scene">
+    <div
+      v-for="selectee in scene.elements"
+      :key="selectee.id"
+      :id="'mask-' + selectee.id"
+      class="node-mask"
+      :style="getMaskStyle(selectee)">
+      <div class="lt"/><div class="rt"/><div class="t"/><div class="l"/><div class="lb"/><div class="rb"/><div class="r"/><div class="b"/>
+    </div>
   </div>
-  <!-- 显示当前元素的动画 -->
-  <div class="animation-container">
-    <animation-panel v-if="currentAddon === 'enters' || currentAddon === 'exists'" @input="setElementAddon"
-      :trigger="currentAddon" @preview="previewAnimationSelection" :animations="currentAddonObject" />
-  </div>
-</section>
+  <!-- 拖拽选择层 -->
+  <div class="dragging-rect" :style="styleDragingRect" />
+</div>
 </template>
 
 <script>
 import { Button, ButtonGroup, Popover, Slider } from 'element-ui'
 import interact from 'interactjs'
-import Toolbar from './toolbar/Toolbar.vue'
-import RenderElement from './RenderElement.vue'
-import AddonBorderList from './toolbar/BorderList.vue'
-import AddonAnimationList from './toolbar/AnimationTabs.vue'
-import AnimationPanel from './animation/AnimationPanel.vue'
-import AddonColorList from './color/AddonColorList.vue'
-import SVG_BORDER from './res/border.svg'
-import SVG_ANIMATION_IN from './res/animation-enter.svg'
-import SVG_ANIMATION_OUT from './res/animation-disappear.svg'
-import SVG_CROP from './res/crop.svg'
+import RenderElement from './render/RenderElement.vue'
 import { shortid } from '../utils/string'
 import { getSVGViewBox } from '../vectors/utils'
 import { fitRectIntoBounds, getRectPositionStyle, isPointInRect, intersectRect } from './mixins/rectUtils.js'
-import ToolBar from './components/ToolBar'
 
 export default {
   name: 'SceneContainer',
   components: {
-    Toolbar,
     RenderElement,
-    AddonBorderList,
-    AddonAnimationList,
-    AnimationPanel,
-    AddonColorList,
     [Slider.name]: Slider,
     [Button.name]: Button,
     [Popover.name]: Popover,
     [ButtonGroup.name]: ButtonGroup
   },
   props: {
+    scene: {
+      type: Object
+    },
     scenes: {
       type: Array
     },
-    scene: {
-      type: Object
+    scale: {
+      type: Number
     },
     screen: {
       type: Object
@@ -96,7 +64,6 @@ export default {
   },
   data: function () {
     return {
-      scale: 1,
       screenPosition: {
         x: 0,
         y: 0
@@ -128,7 +95,9 @@ export default {
   watch: {
     // 场景更新操作，需要更新交互及其他页面元素
     scene () {
-      this.destoryElementInteract()
+      for (let element of this.scene.elements) {
+        this.destoryInteract(element)
+      }
       this.$nextTick(() => {
         this.setElementsInteract()
       })
@@ -185,18 +154,6 @@ export default {
         }
       }
       return classes
-    },
-
-    /**
-     *工具栏之上的按钮样式
-     */
-    toolbarSceneBackgroundStyle () {
-      const style = {}
-      Object.assign(style, this.sceneStyle, {
-        width: '24px',
-        height: '24px'
-      })
-      return style
     }
   },
 
@@ -355,7 +312,7 @@ export default {
       this.scene.elements.push(node)
       this.setElementSelected(node)
       this.$nextTick(() => {
-        this.initElementDrag(node)
+        this.initElementDragResize(node)
       })
     },
 
@@ -379,70 +336,31 @@ export default {
     },
 
     /**
-     * 初始化元素interact拖拽功能
-     */
-    initElementDrag (node) {
-      const el = this.$refs['mask-' + node.id]
-      if (el.length) {
-        interact(el[0]).resizable({
-          edges: { left: true, right: true, bottom: true, top: true },
-          inertia: true,
-          preserveAspectRatio: node.isRatioFixed
-        }).on('resizemove', event => {
-          node.width = event.rect.width / this.scale
-          node.height = event.rect.height / this.scale
-          node.x += event.deltaRect.left / this.scale
-          node.y += event.deltaRect.top / this.scale
-        }).draggable({
-          onstart: event => {},
-          inertia: true,
-          onmove: event => {
-            for (let element of this.scene.elements) {
-              if (element.selected) {
-                element.x += event.dx / this.scale
-                element.y += event.dy / this.scale
-              }
-            }
-          },
-          onend: event => {
-            this.dragRect.dragged = true
-          }
-        })
-      }
-    },
-
-    /**
-     * 销毁所有元素的interaction
-     */
-    destoryElementInteract () {
-      for (let element of this.scene.elements) {
-        const el = this.$refs['mask-' + element.id]
-        if (el && el.length) {
-          interact(el[0]).unset()
-        }
-      }
-    },
-
-    /**
      * 初始化所有元素的interaction
      */
     setElementsInteract () {
       for (let element of this.scene.elements) {
-        this.initElementDrag(element)
+        if (element.elements) {
+          this.initElementDrag(element)
+        } else {
+          this.initElementDragResize(element)
+        }
       }
     },
+
 
     /**
      * 设置单个元素为选中状态, 取消其他元素选中
      */
     setElementSelected (element) {
-      for (let e of this.scene.elements) {
-        e.selected = false
-      }
-      this.currentAddon = null
       if (element) {
         element.selected = true
+      } else {
+        for (let e of this.scene.elements) {
+          e.selected = false
+        }
       }
+      this.currentAddon = null
     },
 
     /**
@@ -532,97 +450,69 @@ export default {
 </script>
 
 <style lang="scss">
-#right-section {
+#scene-container {
   flex: 1;
+  overflow: auto;
   position: relative;
-  touch-action: none;
-  user-select: none;
-
-  #addon-container {
+  .screen {
     position: absolute;
-    left: -352px;
-    top: 0;
-    bottom: 0;
-    width: 352px;
-    overflow: auto;
-    background: #fff;
-    border-right: 1px solid #ededed;
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==");
+    box-shadow: 0 0 6px #ddd;
   }
-  #scene-container {
+  .mask {
     position: absolute;
-    top: 36px;
-    left: 0;
-    width: 100%;
-    bottom: 0;
-    overflow: auto;
-    .screen {
-      position: absolute;
-      background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==");
-      box-shadow: 0 0 6px #ddd;
-    }
-    .mask {
-      position: absolute;
-      z-index: 100;
-      box-shadow: 0 0 0 1px #fff;
-    }
-    .dragging-rect {
-      z-index: 1000;
-      position: absolute;
-      border: 1px solid #42A5F5;
-      background: #3366665e;
-    }
-    .node-mask {
-      position: relative;
-      border: 1px solid #42A5F5;
-      >div {
-        border: 1px solid #42A5F5;
-        width: 8px;
-        height: 8px;
-        background-color: #fff;
-        position: absolute;
-      }
-      .l {
-        left: -5px;
-        top: calc(50% - 4px);
-      }
-      .lt {
-        left: -4px;
-        top: -4px;
-      }
-      .lb {
-        left: -4px;
-        bottom: -4px;
-      }
-      .rt {
-        top: -4px;
-        right: -4px;
-      }
-      .rb {
-        right: -4px;
-        bottom: -4px;
-      }
-      .r {
-        right: -4px;
-        top: calc(50% - 4px);
-      }
-      .b {
-        bottom: -4px;
-        left: calc(50% - 4px);
-      }
-      .t {
-        top: -4px;
-        left: calc(50% - 4px);
-      }
-
-    }
+    z-index: 100;
+    box-shadow: 0 0 0 1px #fff;
   }
-
-  .animation-container {
+  .dragging-rect {
+    z-index: 901;
     position: absolute;
-    left: 0;
-    top: 40px;
-    background: #fff;
-    width: 360px;
+    border: 1px solid #42A5F5;
+    background: #3366665e;
+  }
+  .node-mask {
+    position: relative;
+    border: 1px solid #42A5F5;
+    >div {
+      border: 1px solid #42A5F5;
+      width: 8px;
+      height: 8px;
+      background-color: #fff;
+      position: absolute;
+    }
+    .l {
+      left: -5px;
+      top: calc(50% - 4px);
+    }
+    .lt {
+      left: -4px;
+      top: -4px;
+    }
+    .lb {
+      left: -4px;
+      bottom: -4px;
+    }
+    .rt {
+      top: -4px;
+      right: -4px;
+    }
+    .rb {
+      right: -4px;
+      bottom: -4px;
+    }
+    .r {
+      right: -4px;
+      top: calc(50% - 4px);
+    }
+    .b {
+      bottom: -4px;
+      left: calc(50% - 4px);
+    }
+    .t {
+      top: -4px;
+      left: calc(50% - 4px);
+    }
+
   }
 }
 

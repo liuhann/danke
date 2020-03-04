@@ -1,13 +1,13 @@
 <template>
 <div id="site">
   <nav-bar></nav-bar>
-  <section class="section has-text-centered hero is-medium primary-background">
-    <div class="section">
+  <section class="section primary-background">
+    <div class="container">
       <p class="intro-title">
-        设计适用于各种场景的展示页面
+        快捷定制适用于各种设备的幻灯片与展示内容
       </p>
-      <p class="has-text-white" style="font-size: 20px;margin-bottom: 40px;">
-        Customize keyboard shortcuts for your frequently visited websites
+      <p class="has-text-white">
+        基于标准技术构建，可以分享到
       </p>
       <router-link class="button is-large is-rounded installation chrome-installation" to="/xd/welcome">
         立刻开始
@@ -110,19 +110,20 @@ export default {
   background-blend-mode: overlay, overlay, overlay, multiply, normal;
   .primary-background {
     color: #fff;
-    height: 360px;
+    height: 48rem;
+    text-align: center;
     .intro-title {
-      margin-top: 100px;
+      margin-top: 18rem;
       position: relative;
-      font-size: 48px;
-      line-height: 108px;
+      font-size: 3.2rem;
+      line-height: 2rem;
       color: #fff;
-      margin-bottom: 20px;
+      margin-bottom: 0;
       text-shadow: 0 2px 4px rgba(13,0,77,.08), 0 3px 6px rgba(13,0,77,.08), 0 8px 16px rgba(13,0,77,.08);
     }
     .has-text-white {
-      font-size: 30px;
-      margin: 0;
+      font-size: 2rem;
+      margin-bottom: 5rem;
     }
     a.installation {
       background-color: #fff;
@@ -147,8 +148,6 @@ export default {
   }
   section.intro {
     margin: 20px 0;
-    .container {
-    }
     .columns {
       display: flex;
       .column {

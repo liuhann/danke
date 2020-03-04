@@ -89,13 +89,14 @@ export default {
 
 <style lang="scss">
 nav.navbar {
-  padding: 1rem 2rem;
+  padding: 2rem 3rem;
   line-height: 2.5rem;
   align-items: stretch;
   justify-content: center;
   display: flex;
   .container {
     display: flex;
+    font-size: 1.8rem;
     .navbar-end {
       display: flex;
       justify-content: flex-end;
@@ -117,7 +118,7 @@ nav.navbar {
     }
   }
   .navbar-item img {
-    max-height: 1.75rem;
+    max-height: 2.5rem;
   }
 }
 </style>

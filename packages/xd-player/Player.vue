@@ -43,7 +43,7 @@ import { TypeEnum } from '../danke-core/elements/index'
 import DankeEngine from './engine'
 import AudioDanke from '../danke-core/audio-engine'
 import mixinDevice from './mixinDevice'
-import RenderElement from '../xd-builder/RenderElement'
+import RenderElement from '../xd-builder/render/RenderElement'
 export default {
   name: 'Player',
   components: {

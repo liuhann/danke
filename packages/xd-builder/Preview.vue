@@ -15,8 +15,8 @@
 import StyleRegistry from './utils/StyleRegistry.js'
 import { fitRectIntoBounds } from './mixins/rectUtils.js'
 import workMixin from './work/workMixin.js'
-import sceneMixin from './scene/sceneMixins.js'
-import RenderElement from './RenderElement.vue'
+import sceneMixin from './mixins/sceneMixins.js'
+import RenderElement from './render/RenderElement.vue'
 export default {
   name: 'Preview',
   mixins: [ workMixin, sceneMixin ],
