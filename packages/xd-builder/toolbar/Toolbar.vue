@@ -14,12 +14,12 @@
   <!-- 给图片及文字设置边框 -->
   <keep-alive>
     <el-popover
-      v-if="selectedElements.length || selectedTexts.length"
-      placement="bottom"
-      width="200"
+      v-if="selectedImages.length"
+      placement="bottom-start"
+      width="360"
       trigger="click">
       <a class="action" slot="reference">边框</a>
-      <border-list @input="$emit('input')" :elements="this.selectedElements"/>
+      <border-list slot="default" :elements="this.selectedElements"/>
     </el-popover>
   </keep-alive>
 
@@ -47,7 +47,7 @@
 
   <div class="pull-right">
     <a class="action" v-if="selectedElements.length > 1" @click="groupSelectedElement">组合</a>
-    <a class="action" v-if="selectedElements.length === 1 && selectedElements[0].elements.length" @click="unGroupBlock">取消组合</a>
+    <a class="action" v-if="selectedElements.length === 1 && selectedElements[0].elements && selectedElements[0].elements.length" @click="unGroupBlock">取消组合</a>
 
     <el-popover
       v-if="selectedElements.length === 0"
@@ -64,10 +64,10 @@
         @input="scaleChange">
       </el-slider>
     </el-popover>
-    <a class="action" v-if="selectedElements.length === 0" @click="groupSelectedElement">上一场景</a>
-    <a class="action" v-if="selectedElements.length === 0" @click="unGroupBlock">下一场景</a>
-    {{scenes.indexOf(scene) + 1}}/{{scenes.length}}
-    <a class="action" v-if="selectedElements.length === 0" @click="unGroupBlock">配置</a>
+    <a class="action" v-if="selectedElements.length === 0" @click="previousScene"><i class="el-icon-arrow-up" /></a>
+    <a class="action" v-if="selectedElements.length === 0" @click="nextScene"><i class="el-icon-arrow-down" /></a>
+    <a class="action"> {{scenes.indexOf(scene) + 1}}/{{scenes.length}}</a>
+    <a class="action" v-if="selectedElements.length === 0" @click="unGroupBlock"><i class="el-icon-setting" /></a>
   </div>
 </div>
 </template>
@@ -77,9 +77,10 @@ import { Button, ButtonGroup, Popover, Slider } from 'element-ui'
 import AnimationTabs from './AnimationTabs.vue'
 import BorderList from './BorderList'
 import { shortid } from '../../utils/string'
-import interact from 'interactjs'
+import interactMixins from '../mixins/interactMixins.js'
 export default {
   name: 'Toolbar',
+  mixins: [ interactMixins ],
   components: {
     BorderList,
     AnimationTabs,
@@ -201,60 +202,39 @@ export default {
       this.scene.elements.push(block)
 
       this.$nextTick( ()=> {
-        this.initBlockDragable(block)
+        this.initElementDrag(block)
       })
-    },
-
-    /**
-     * Block Node Not support Resize.
-     * @param blockNode
-     */
-    initBlockDragable (blockNode) {
-      const el = document.getElementById('mask-' + blockNode.id)
-      if (el) {
-        interact(el).draggable({
-          onstart: event => {},
-          inertia: true,
-          onmove: event => {
-            for (let element of this.scene.elements) {
-              if (element.selected) {
-                element.x += event.dx / this.scale
-                element.y += event.dy / this.scale
-              }
-            }
-          },
-          onend: event => { }
-        })
-      }
     },
 
     scaleChange () {
       this.$emit('scale-change', this.scale)
-    },
-    /**
-     * Destroy drag
-     * @param blockNode
-     */
-    destroyInteract (blockNode) {
-      const el = document.getElementById('mask-' + blockNode.id)
-      if (el) {
-        interact(el).unset()
-      }
     },
 
     unGroupBlock () {
       if (this.selectedElements.length === 1) {
         const block = this.selectedElements[0]
         this.destroyInteract(block)
-
+        this.scene.elements.splice(this.scene.elements.indexOf(block), 1)
         for (let element of block.elements) {
           this.scene.elements.push(element)
           element.x = element.x + block.x
           element.y = element.y + block.y
           element.selected = true
         }
-
+        this.$nextTick(() => {
+          for (let element of block.elements) {
+            this.initElementDragResize(element)
+          }
+        })
       }
+    },
+
+    previousScene () {
+
+    },
+
+    nextScene () {
+
     }
   }
 }

@@ -55,11 +55,10 @@ export default {
     display: flex;
     flex-wrap: wrap;
     .object-item {
-      width: 100px;
+      width: 98px;
       height: 100px;
       margin-bottom: 20px;
       margin-right: 20px;
-
       &:nth-of-type(3n) {
         margin-right: 0;
       }

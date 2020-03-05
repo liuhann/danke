@@ -162,7 +162,6 @@ export default {
 .styled-box {
   width: 120px;
   height: 120px;
-
 }
 .variables {
   margin: 20px 0;

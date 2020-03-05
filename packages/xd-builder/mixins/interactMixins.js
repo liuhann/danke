@@ -24,15 +24,14 @@ export default {
         })
       }
     },
+
     /**
-     * 销毁所有元素的interaction
+     * 销毁元素的interaction
      */
-    destoryInteract () {
-      for (let element of this.scene.elements) {
-        const el = this.$refs['mask-' + element.id]
-        if (el && el.length) {
-          interact(el[0]).unset()
-        }
+    destroyInteract (node) {
+      const el = document.getElementById('mask-' + node.id)
+      if (el) {
+        interact(el).unset()
       }
     },
     /**
@@ -61,9 +60,7 @@ export default {
               }
             }
           },
-          onend: event => {
-            this.dragRect.dragged = true
-          }
+          onend: event => { }
         })
       }
     }

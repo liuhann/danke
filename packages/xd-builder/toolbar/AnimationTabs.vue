@@ -78,6 +78,7 @@ export default {
       if (this.elements && this.elements.length) {
         for (let element of this.elements) {
           this.$set(element.style, type, [info])
+          this.$set(element, 'animations', [info])
         }
       }
     }
@@ -99,13 +100,13 @@ export default {
       line-height: 38px;
       display: flex;
       .animation-name {
-        width: 88px;
+        width: 100px;
       }
       .duration {
         flex: 1;
       }
       .icon-del {
-        width: 24px;
+        width: 36px;
         text-align: right;
       }
     }

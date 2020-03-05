@@ -17,7 +17,8 @@
           </el-select>
         </el-form-item>
         <el-form-item label="样式文本">
-          <el-input type="textarea" v-model="style.cssContent" :rows="10" />
+          <div id="editor">
+          </div>
         </el-form-item>
         <el-form-item label="变量信息">
           <el-button size="mini" @click="addVariable">增加</el-button>
@@ -40,6 +41,7 @@
               <el-option value="color"/>
               <el-option value="number"/>
             </el-select>
+            <el-button @click="removeVariable(index)">删除</el-button>
           </div>
           </el-form-item>
           <el-form-item label="">
@@ -51,6 +53,9 @@
 </template>
 
 <script>
+import ace from 'brace'
+import 'brace/mode/css'
+import 'brace/theme/monokai'
 import { Message, Form, FormItem, Input, Select, Option, Button } from 'element-ui'
 import RestDAO from '../common/dao/restdao'
 export default {
@@ -88,13 +93,20 @@ export default {
     this.styledao = new RestDAO(this.ctx, 'danke/style')
   },
   mounted () {
+    this.initEditor()
     if (this.$route.query.id) {
       this.loadStyle(this.$route.query.id)
     }
   },
   methods: {
+    initEditor () {
+      this.editor = ace.edit('editor')
+      this.editor.getSession().setMode('brace/mode/css')
+      this.editor.setTheme('ace/theme/monokai')
+    },
     async loadStyle (id) {
       this.style = await this.styledao.getOne(id)
+      this.editor.setValue(this.style.cssContent)
     },
     addVariable () {
       this.style.variables.push({
@@ -104,14 +116,17 @@ export default {
         type: 'color'
       })
     },
+    removeVariable (index) {
+      this.style.variables.splice(index, 1)
+    },
     async save () {
       if (!this.style.title) {
         Message.error('请输入名称')
         return
       }
+      this.style.cssContent = this.editor.getValue()
       await this.styledao.createOrPatch(this.style)
       Message.success('保存成功')
-
       window.close()
     }
   }
@@ -119,6 +134,9 @@ export default {
 </script>
 
 <style>
+#editor {
+  height: 400px;
+}
 .variables {
   margin: 20px 0;
 }

@@ -50,7 +50,7 @@ import VueCircleSlider from 'vue-circle-slider'
 import { Popover, ColorPicker, Button } from 'element-ui'
 import lights from './lights'
 import darks from './darks'
-import RestDAO from '../../common/dao/restdao'
+import RestDAO from '../../../common/dao/restdao'
 
 const defaultColors = ['黑色 #000000', '深灰色 #545454', '灰色 #737373', '灰色 #a6a6a6', '浅灰色 #d9d9d9', '白色 #ffffff', '亮红色 #ff1616', '珊瑚红色 #ff5757', '粉色 #ff66c4', '紫红色 #cb6ce6', '紫色 #8c52ff', '紫罗兰色 #5e17eb', '深宝石绿色 #03989e', '水蓝色 #00c2cb', '湖蓝色 #5ce1e6', '浅蓝色 #38b6ff', '宝蓝色 #5271ff', '深蓝色 #004aad', '绿色 #008037', '草绿色 #7ed957', '黄绿色 #c9e265', '黄色 #ffde59', '桃红色 #ffbd59', '橙色 #ff914d']
 export default {

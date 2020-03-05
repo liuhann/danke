@@ -1,7 +1,7 @@
 <template>
 <div id="page-vector-list">
   <nav-bar />
-  <section class="section splash">
+  <section class="section splash align-centered">
     <div class="container">
       <h1>多彩多样的矢量图片</h1>
       <h2>基于SVG文件格式，可任意配置、下载</h2>

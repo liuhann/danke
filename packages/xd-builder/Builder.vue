@@ -14,7 +14,7 @@ import workMixin from './work/workMixin.js'
 import sceneMixin from './mixins/sceneMixins.js'
 import { Popover, Button, Upload, Tabs, TabPane, Drawer, Dialog, Menu, MenuItem, Message, Loading } from 'element-ui'
 import SceneContainer from './SceneContainer.vue'
-import LeftAside from './LeftAside.vue'
+import LeftAside from './left/LeftAside.vue'
 import 'element-ui/packages/theme-chalk/lib/icon.css'
 import { shortid } from '../utils/string'
 import Toolbar from './toolbar/Toolbar'
@@ -50,6 +50,7 @@ export default {
         style: {},
         scenes: [] // 场景列表
       },
+      scene: null,
       scale: 1
     }
   },
@@ -57,7 +58,6 @@ export default {
   created () { },
 
   mounted () {
-    // document.body.removeChild(document.querySelector('footer'))
     this.ctx.styleRegistry = new StyleRegistry()
     let workId = this.$route.query.work
     if (!workId) {
@@ -77,8 +77,23 @@ export default {
       }
       this.work.id = shortid()
       this.work.title = '我的作品'
-      this.addScene()
+      this.addEmptyScene()
     },
+
+    /**
+     * 增加新的场景
+     */
+    addEmptyScene () {
+      const scene = {
+        id: shortid(),
+        elements: [],
+        style: {},
+        z: 100
+      }
+      this.work.scenes.splice(this.sceneIndex + 1, 0, scene)
+      this.scene = scene
+    },
+
     /**
     * 保存作品内容
     */
@@ -107,8 +122,15 @@ export default {
       this.savingWork = false
     },
 
-    insert () {
-
+    insert (type, object) {
+      switch (type) {
+        case 'scene':
+          if (object == null) {
+            this.addEmptyScene()
+          }
+          break;
+        default:
+      }
     },
 
     scaleChange (scale) {

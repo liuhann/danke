@@ -37,10 +37,12 @@ import interact from 'interactjs'
 import RenderElement from './render/RenderElement.vue'
 import { shortid } from '../utils/string'
 import { getSVGViewBox } from '../vectors/utils'
+import interactMixins from './mixins/interactMixins.js'
 import { fitRectIntoBounds, getRectPositionStyle, isPointInRect, intersectRect } from './mixins/rectUtils.js'
 
 export default {
   name: 'SceneContainer',
+  mixins: [ interactMixins ],
   components: {
     RenderElement,
     [Slider.name]: Slider,

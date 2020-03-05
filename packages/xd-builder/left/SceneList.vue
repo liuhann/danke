@@ -35,6 +35,7 @@ export default {
       .scene-preview {
         margin: 10px;
         height: 120px;
+        font-size: 1.6rem;
         background: rgba(0,0,0, .2);
         text-align: center;
         line-height: 120px;

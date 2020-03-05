@@ -51,11 +51,11 @@
 </template>
 
 <script>
-import ImageDAO from './utils/imagedao'
-import RestDAO from '../common/dao/restdao'
-import ImageUpload from './gallery/ImageUpload.vue'
-import LeftSceneTemplate from './scene/LeftSceneTemplates.vue'
-import LeftShapeList from './shape/LeftShapeList.vue'
+import ImageDAO from '../utils/imagedao'
+import RestDAO from '../../common/dao/restdao'
+import ImageUpload from './ImageList.vue'
+import LeftSceneTemplate from './SceneList.vue'
+import LeftShapeList from './ShapeList.vue'
 
 export default {
   components: {
