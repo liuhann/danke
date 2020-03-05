@@ -140,7 +140,9 @@ export default {
       }
       for (let key in this.scene.style) {
         if (this.scene.style[key] && !this.scene.style[key].name) {
-          Object.assign(styles, this.scene.style[key])
+          Object.assign(styles, {
+            [key]: this.scene.style[key]
+          })
         }
       }
       return styles
@@ -149,6 +151,7 @@ export default {
      * 获取场景class列表
      */
     sceneClass () {
+      debugger
       const classes = []
       for (let key in this.scene.style) {
         if (this.scene.style[key] && this.scene.style[key].name) {

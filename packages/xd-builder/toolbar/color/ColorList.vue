@@ -54,22 +54,25 @@ import RestDAO from '../../../common/dao/restdao'
 
 const defaultColors = ['黑色 #000000', '深灰色 #545454', '灰色 #737373', '灰色 #a6a6a6', '浅灰色 #d9d9d9', '白色 #ffffff', '亮红色 #ff1616', '珊瑚红色 #ff5757', '粉色 #ff66c4', '紫红色 #cb6ce6', '紫色 #8c52ff', '紫罗兰色 #5e17eb', '深宝石绿色 #03989e', '水蓝色 #00c2cb', '湖蓝色 #5ce1e6', '浅蓝色 #38b6ff', '宝蓝色 #5271ff', '深蓝色 #004aad', '绿色 #008037', '草绿色 #7ed957', '黄绿色 #c9e265', '黄色 #ffde59', '桃红色 #ffbd59', '橙色 #ff914d']
 export default {
-  name: 'AddonBackgroundList',
+  name: 'ColorList',
   components: {
     [Popover.name]: Popover,
     [ColorPicker.name]: ColorPicker,
     [Button.name]: Button
   },
   props: {
-    color: {
-      type: [String, Object]
+    scene: {
+      type: Object
+    },
+    elements: {
+      type: Array
     }
   },
   data () {
     return {
-      currentGradient: null,
-      angle: 0,
       currentColor: null,
+      colors: [],
+      angle: 0,
       gradientColors: lights.slice(0, 4).concat(darks.slice(0, 4)),
       defaultColors,
       backgroundColors: [],
@@ -84,26 +87,42 @@ export default {
   },
   methods: {
     selectColor (color) {
-      if (color) {
-        this.$emit('input', {
-          backgroundColor: color
-        })
-      } else {
-        this.$emit('input', null)
-      }
-      this.$emit('color', color)
+      this.setStyle('multiBackground', null)
+      this.setStyle('background', color)
     },
     selectGradient  (g) {
-      this.$emit('input', {
-        background: `linear-gradient(${this.angle}deg, ${g[0]} 0%, ${g[1]} 100%)`
-      })
-      this.$emit('color', g)
+      this.setStyle('multiBackground', null)
+      this.setStyle('background', `linear-gradient(${this.angle}deg, ${g[0]} 0%, ${g[1]} 100%)`)
     },
 
     selectBackground (bg) {
-      this.$emit('input', {
+      this.setStyle('background', null)
+      this.setStyle('multiBackground', {
         name: bg.name
       })
+    },
+
+    /**
+     * set style to elements or scene itself
+     * @param key
+     * @param value
+     */
+    setStyle (key, value) {
+      if (this.elements) {
+        for (let element of this.elements) {
+          if (value) {
+            this.$set(element.style, key, value)
+          } else {
+            delete element.style[key]
+          }
+        }
+      } else {
+        if (value) {
+          this.$set(this.scene.style, key, value)
+        } else {
+          delete this.scene.style[key]
+        }
+      }
     },
 
     showMoreGradient () {
@@ -150,7 +169,9 @@ export default {
 }
 
 #addon-color-list {
-  padding: 16px;
+  max-height: calc(100vh - 77px);
+  padding: 0 10px;
+  overflow-y: auto;
   .addon-field {
     display: flex;
     align-items: center;

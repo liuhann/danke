@@ -39,9 +39,10 @@
       v-if="scene && selectedElements.length === 0"
       placement="bottom-start"
       class="btn-action"
-      width="200"
+      width="360"
       trigger="click">
       <i class="icon icon-scene-bg" :class="sceneClass" slot="reference" :style="toolbarSceneBackgroundStyle"/>
+      <color-list :scene="scene"></color-list>
     </el-popover>
   </keep-alive>
 
@@ -78,10 +79,12 @@ import AnimationTabs from './AnimationTabs.vue'
 import BorderList from './BorderList'
 import { shortid } from '../../utils/string'
 import interactMixins from '../mixins/interactMixins.js'
+import ColorList from './color/ColorList'
 export default {
   name: 'Toolbar',
   mixins: [ interactMixins ],
   components: {
+    ColorList,
     BorderList,
     AnimationTabs,
     [Slider.name]: Slider,
