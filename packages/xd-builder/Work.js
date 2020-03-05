@@ -11,12 +11,16 @@ export default {
 
   },
   scenes: [{
-    id: 'e3dddd',
+    id: 'scene-1',
     style: {
-      background: '#fff',
-      curwind: {
-
+      multiBackground: {
+        name: 'swirly-love'
       }
+    }
+  },{
+    id: 'scene-2',
+    style: {
+      background: '#CE2299',
     },
     elements: [{
       id: 'xxewe',
