@@ -26,7 +26,7 @@ export default {
     // 渲染的阶段
     stage: {
       type: String,
-      default: 'in'
+      default: 'enters'
     },
     screen: {
       type: Object
@@ -98,19 +98,20 @@ export default {
      */
     elementAnimationStyle () {
       const element = this.element
-      if (element.animations && element.animations.length) {
+      const animations = element.style[this.stage]
+      if (animations && animations.length) {
         // 单个动画
-        if (element.animations.length === 1) {
-          const animation = element.animations[0]
+        if (animations.length === 1) {
+          const animation = animations[0]
           return {
             animation: `${animation.name} ${animation.range[1]}ms ${animation.timing} ${animation.range[0]}ms both`
           }
         } else {
           const animationsOrdered = []
           // 多个动画次序或者重叠播放
-          for (let i = 0; i < element.animations.length; i++) {
-            const animation = element.animations[i]
-            animationsOrdered.push(`${animation.name} ${animation.range[1]}ms ${animation.timing} ${animation.range[0]}ms ${i === element.animations.length - 1 ? '' : ''}`)
+          for (let i = 0; i < animations.length; i++) {
+            const animation = animations[i]
+            animationsOrdered.push(`${animation.name} ${animation.range[1]}ms ${animation.timing} ${animation.range[0]}ms ${i === animations.length - 1 ? '' : ''}`)
           }
           if (animationsOrdered.length) {
             return {
@@ -166,6 +167,7 @@ export default {
 <style lang="scss">
 .element {
   position: absolute;
+  box-sizing: border-box;
   img {
     position: absolute;
     z-index: 10;

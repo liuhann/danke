@@ -2,8 +2,8 @@
 <div id="xd">
   <left-aside @insert="insert"/>
   <section class="right-section">
-    <toolbar :scenes="work.scenes" :scene="scene" @scale-change="scaleChange"/>
-    <scene-container :screen="work.screen" :scenes="work.scenes" :scene="scene" :scale="scale"/>
+    <toolbar :scenes="work.scenes" :work="work" :scene="scene" @scale-change="scaleChange" @prev-scene="previousScene" @next-scene="nextScene"/>
+    <scene-container :screen="work.screen" :scenes="work.scenes" :scene="scene" :exist-scene="existScene" :scale="scale"/>
   </section>
 </div>
 </template>
@@ -50,6 +50,7 @@ export default {
         style: {},
         scenes: [] // 场景列表
       },
+      existScene: null,
       scene: null,
       scale: 1
     }
@@ -102,12 +103,6 @@ export default {
         return
       }
       this.savingWork = true
-      const loading = Loading.service({
-        lock: true,
-        text: '正在保存中',
-        spinner: 'el-icon-loading',
-        background: 'rgba(255, 255, 255, 0.4)'
-      })
       const work = JSON.parse(JSON.stringify(this.work))
       // 抽取所有使用的frame style到work上，以便压缩使用空间
       Object.assign(work, this.ctx.styleRegistry.getStyleResource(work))
@@ -117,8 +112,6 @@ export default {
       } else {
         await this.workdao.patch(work._id, work)
       }
-      loading.close()
-      Message.success('保存完成')
       this.savingWork = false
     },
 
@@ -132,7 +125,23 @@ export default {
         default:
       }
     },
+    previousScene () {
+      const currentIndex = this.work.scenes.indexOf(this.scene)
+      if (currentIndex === 0) {
+        return
+      }
+      this.existScene = this.scene
+      this.scene = this.work.scenes[currentIndex - 1]
+    },
 
+    nextScene () {
+      const currentIndex = this.work.scenes.indexOf(this.scene)
+      if (currentIndex === this.work.scenes.length - 1) {
+        return
+      }
+      this.existScene = this.scene
+      this.scene = this.work.scenes[currentIndex + 1]
+    },
     scaleChange (scale) {
       this.scale = scale
     }

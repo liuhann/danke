@@ -1,8 +1,8 @@
 <template>
 <div id="animation-config-tab">
   <tabs v-model="stage">
-    <tab-pane label="进入" name="enter" class="animation-list" type="card" :style="{ height: tabHeight + 'px' }">
-      <div class="enter-animations">
+    <tab-pane label="进入" name="enter" class="animation-list">
+      <div class="selected-animations">
         <div v-for="(animation, index) in enterAnimations" :key="index" class="animation">
           <div class="animation-name">
             {{animation.title}}
@@ -18,7 +18,20 @@
       <animation-list @input="addAnimation('enters', $event)" type="enter"/>
     </tab-pane>
     <tab-pane label="离开" name="exists">
-      <animation-list @input="addAnimation" type="exists"/>
+      <div class="selected-animations">
+        <div v-for="(animation, index) in existAnimations" :key="index" class="animation">
+          <div class="animation-name">
+            {{animation.title}}
+          </div>
+          <div class="duration">
+            <slider range :step="50" v-model="animation.range" :max="6000"/>
+          </div>
+          <div class="icon-del">
+            <el-button icon="el-icon-delete" type="text" size="mini"></el-button>
+          </div>
+        </div>
+      </div>
+      <animation-list @input="addAnimation('exists', $event)" type="exists"/>
     </tab-pane>
   </tabs>
 </div>
@@ -43,7 +56,6 @@ export default {
   },
   data () {
     return {
-      tabHeight: 400,
       stage: 'enter'
     }
   },
@@ -54,12 +66,18 @@ export default {
       } else {
         return []
       }
+    },
+    existAnimations () {
+      if (this.elements && this.elements.length) {
+        return this.elements[0].style.exists || []
+      } else {
+        return []
+      }
     }
   },
   created () {
   },
   mounted () {
-    this.tabHeight = window.innerHeight - 150
   },
   methods: {
     // 增加动画
@@ -78,7 +96,6 @@ export default {
       if (this.elements && this.elements.length) {
         for (let element of this.elements) {
           this.$set(element.style, type, [info])
-          this.$set(element, 'animations', [info])
         }
       }
     }
@@ -92,15 +109,15 @@ export default {
   .el-pagination {
     margin: 15px 0;
   }
-  .enter-animations {
+
+  .selected-animations {
+    padding: 0 12px;
     width: 100%;
-  }
-  .animation-list {
     .animation {
       line-height: 38px;
       display: flex;
       .animation-name {
-        width: 100px;
+        width: 90px;
       }
       .duration {
         flex: 1;

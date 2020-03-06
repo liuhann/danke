@@ -4,12 +4,14 @@
     <el-popover
       v-if="selectedElements.length || selectedTexts.length"
       placement="bottom-start"
+      popper-class="toolbar-pop"
       width="360"
       trigger="click">
       <a class="action" slot="reference">特效</a>
       <animation-tabs slot="default" :elements="this.selectedElements"/>
     </el-popover>
   </keep-alive>
+  <a class="action" @click="log">El</a>
 
   <!-- 给图片及文字设置边框 -->
   <keep-alive>
@@ -38,7 +40,7 @@
     <el-popover
       v-if="scene && selectedElements.length === 0"
       placement="bottom-start"
-      class="btn-action"
+      popper-class="toolbar-pop"
       width="360"
       trigger="click">
       <i class="icon icon-scene-bg" :class="sceneClass" slot="reference" :style="toolbarSceneBackgroundStyle"/>
@@ -50,25 +52,23 @@
     <a class="action" v-if="selectedElements.length > 1" @click="groupSelectedElement">组合</a>
     <a class="action" v-if="selectedElements.length === 1 && selectedElements[0].elements && selectedElements[0].elements.length" @click="unGroupBlock">取消组合</a>
 
-    <el-popover
-      v-if="selectedElements.length === 0"
-      placement="bottom"
-      width="200"
-      trigger="click">
-      <a class="action" slot="reference">缩放：{{scaleToolbarDisplay}}</a>
-      <div>画面缩放</div>
-      <el-slider
-        v-model="scale"
-        :min=".2"
-        :max="2"
-        :step="0.05"
-        @input="scaleChange">
-      </el-slider>
-    </el-popover>
+    <span v-if="selectedElements.length === 0">
+      <a class="action" @click="scaleDown">
+        <i class="el-icon-minus"></i>
+      </a>
+      <span class="info">{{scaleToolbarDisplay}}</span>
+      <a class="action" @click="scaleUp">
+        <i class="el-icon-plus"></i>
+      </a>
+    </span>
+
     <a class="action" v-if="selectedElements.length === 0" @click="previousScene"><i class="el-icon-arrow-up" /></a>
     <a class="action" v-if="selectedElements.length === 0" @click="nextScene"><i class="el-icon-arrow-down" /></a>
-    <a class="action"> {{scenes.indexOf(scene) + 1}}/{{scenes.length}}</a>
-    <a class="action" v-if="selectedElements.length === 0" @click="unGroupBlock"><i class="el-icon-setting" /></a>
+    <a class="action" v-if="selectedElements.length === 0"> {{scenes.indexOf(scene) + 1}}/{{scenes.length}}</a>
+    <el-popover v-if="selectedElements.length === 0" placement="bottom" width="360" trigger="click" popper-class="padding-0">
+      <a class="action" slot="reference"><i class="el-icon-setting" /></a>
+      <setting-panel :work="work"/>
+    </el-popover>
   </div>
 </div>
 </template>
@@ -80,10 +80,12 @@ import BorderList from './BorderList'
 import { shortid } from '../../utils/string'
 import interactMixins from '../mixins/interactMixins.js'
 import ColorList from './color/ColorList'
+import SettingPanel from './SettingPanel'
 export default {
   name: 'Toolbar',
   mixins: [ interactMixins ],
   components: {
+    SettingPanel,
     ColorList,
     BorderList,
     AnimationTabs,
@@ -98,6 +100,9 @@ export default {
     },
     scenes: {
       type: Array
+    },
+    work: {
+      type: Object
     }
   },
   data () {
@@ -149,7 +154,9 @@ export default {
       }
       for (let key in this.scene.style) {
         if (this.scene.style[key] && !this.scene.style[key].name) {
-          Object.assign(style, this.scene.style[key])
+          Object.assign(style, {
+            [key]: this.scene.style[key]
+          })
         }
       }
       return style
@@ -209,10 +216,6 @@ export default {
       })
     },
 
-    scaleChange () {
-      this.$emit('scale-change', this.scale)
-    },
-
     unGroupBlock () {
       if (this.selectedElements.length === 1) {
         const block = this.selectedElements[0]
@@ -232,23 +235,42 @@ export default {
       }
     },
 
-    previousScene () {
+    scaleDown () {
+      this.scale -= 0.05
+      this.$emit('scale-change', this.scale)
+    },
+    scaleUp () {
+      this.scale += 0.05
+      this.$emit('scale-change', this.scale)
+    },
 
+    log () {
+      console.log(this.selectedElements)
+    },
+
+    previousScene () {
+      this.$emit('prev-scene')
     },
 
     nextScene () {
-
+      this.$emit('next-scene')
     }
   }
 }
 </script>
 
 <style lang="scss">
+
+.toolbar-pop {
+  max-height: calc(100vh - 77px);
+  overflow-y: auto;
+}
 #tool-bar {
   width: 100%;
   box-sizing: border-box;
   height: 40px;
   background: #fff;
+  line-height: 28px;
   font-size: 12px;
   padding: 6px 12px;
   display: flex;
@@ -256,10 +278,10 @@ export default {
 
   a.action {
     line-height: 28px;
+    vertical-align: top;
     cursor: pointer;
     margin: 0 2px;
     color: #0e1318;
-    font-weight: 600;
     font-size: 1.4rem;
     padding: 0 5px;
     display: inline-block;
@@ -289,6 +311,7 @@ export default {
     float: right;
     text-align: right;
     flex: 1;
+    line-height: 28px;
   }
   .el-button {
     padding: 0;
@@ -301,19 +324,15 @@ export default {
     line-height: 28px;
     width: 28px;
     text-align: center;
-    cursor: pointer;
     display: inline-block;
     margin: 0 2px;
     color: rgba(0, 0, 0, 0.7);
     font-size: 14px;
     vertical-align: top;
     padding: 0 5px;
-    &:hover, &.on {
-      background-color: #f1f3f4;
-    }
   }
   i {
-    line-height: 28px;
+    line-height: 26px;
     width: 28px;
     text-align: center;
     cursor: pointer;

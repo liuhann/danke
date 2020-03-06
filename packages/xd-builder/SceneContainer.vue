@@ -7,7 +7,7 @@
     <div class="scene" v-if="scene" :style="sceneStyle" :class="sceneClass">
        <render-element
           v-for="(element, index) of scene.elements"
-          stage="in"
+          stage="enters"
           :element="element"
           :screen="screen"
           :key="element.id"
@@ -51,11 +51,13 @@ export default {
     [ButtonGroup.name]: ButtonGroup
   },
   props: {
+    // 渲染当前的场景
     scene: {
       type: Object
     },
-    scenes: {
-      type: Array
+    // 渲染正在离开的场景
+    existScene: {
+      type: Object
     },
     scale: {
       type: Number
@@ -98,7 +100,7 @@ export default {
     // 场景更新操作，需要更新交互及其他页面元素
     scene () {
       for (let element of this.scene.elements) {
-        this.destoryInteract(element)
+        this.destroyInteract(element)
       }
       this.$nextTick(() => {
         this.setElementsInteract()
@@ -151,7 +153,6 @@ export default {
      * 获取场景class列表
      */
     sceneClass () {
-      debugger
       const classes = []
       for (let key in this.scene.style) {
         if (this.scene.style[key] && this.scene.style[key].name) {
@@ -352,7 +353,6 @@ export default {
         }
       }
     },
-
 
     /**
      * 设置单个元素为选中状态, 取消其他元素选中

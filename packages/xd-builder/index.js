@@ -20,8 +20,8 @@ export default {
     beforeEnter,
     component: () => import(/* webpackChunkName: "xd" */'./Builder.vue')
   }, {
-    path: '/review',
-    component: () => import(/* webpackChunkName: "preview" */'./Preview.vue')
+    path: '/slide',
+    component: () => import(/* webpackChunkName: "preview" */'./preview/SlidePreview.vue')
   }],
   async onload (ctx) {
   }

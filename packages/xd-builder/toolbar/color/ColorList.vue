@@ -169,7 +169,6 @@ export default {
 }
 
 #addon-color-list {
-  max-height: calc(100vh - 77px);
   padding: 0 10px;
   overflow-y: auto;
   .addon-field {

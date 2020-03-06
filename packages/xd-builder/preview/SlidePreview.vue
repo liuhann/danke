@@ -1,22 +1,23 @@
 <template>
-<div class="preview-container">
+<div class="page-slide-preview">
   <div class="device" v-if="work" :style="deviceStyle">
     <div class="scene" v-for="scene of work.scenes" :key="scene.id">
       <render-element v-for="element of scene.elements" :key="element.id" :element="element" :screen="deviceSize">
       </render-element>
     </div>
   </div>
-  <div class="loading" v-if="!work">
+  <div class="action-bar">
+
   </div>
 </div>
 </template>
 
 <script>
-import StyleRegistry from './utils/StyleRegistry.js'
-import { fitRectIntoBounds } from './mixins/rectUtils.js'
-import workMixin from './work/workMixin.js'
-import sceneMixin from './mixins/sceneMixins.js'
-import RenderElement from './render/RenderElement.vue'
+import StyleRegistry from '../utils/StyleRegistry.js'
+import { fitRectIntoBounds } from '../mixins/rectUtils.js'
+import workMixin from '../work/workMixin.js'
+import sceneMixin from '../mixins/sceneMixins.js'
+import RenderElement from '../render/RenderElement.vue'
 export default {
   name: 'Preview',
   mixins: [ workMixin, sceneMixin ],
@@ -67,8 +68,7 @@ export default {
 
 <style lang="scss">
 
-.preview-container {
-  padding: 20px;
+.page-slide-preview {
   height: 100%;
   display: flex;
   align-items: center;
