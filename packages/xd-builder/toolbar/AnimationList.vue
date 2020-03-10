@@ -1,12 +1,14 @@
 <template>
 <div class="animation-list">
-  <div v-for="(animation, index) in animations" :key="index"  class="animation-item"
-       @mouseenter="animationMouseEnter(animation)"
-       @click="addAnimation(animation)">
-    <div class="preview-box" :class="animation.name">
-      <img :src="CLOUD_HILL" />
+  <div >
+    <div v-for="(animation, index) in animations" :key="index"  class="animation-item"
+         @mouseenter="animationMouseEnter(animation)"
+         @click="addAnimation(animation)">
+      <div class="preview-box" :class="animation.name">
+        <img :src="CLOUD_HILL" />
+      </div>
+      <div class="animation-title">{{animation.title}}</div>
     </div>
-    <div class="animation-title">{{animation.title}}</div>
   </div>
   <pagination background :total="total" :page-size="pageSize" @current-change="loadAnimation" :current-page.sync="page" :pager-count="5" layout="prev, pager, next" />
 </div>
@@ -44,7 +46,8 @@ export default {
     async loadAnimation () {
       const result = await this.restdao.list({
         page: this.page,
-        count: this.pageSize
+        count: this.pageSize,
+        tags: this.type
       })
       this.total = result.total
       this.styles = result.list

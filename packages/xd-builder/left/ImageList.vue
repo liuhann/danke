@@ -122,12 +122,13 @@ export default {
   .image-list {
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-between;
     .image-item {
-      width: 100px;
-      height: 100px;
-      margin: 3px;
+      width: 110px;
+      height: 110px;
       background: #000;
       position: relative;
+      margin-bottom: 1rem;
       .btn-delete {
         position: absolute;
         right: 5px;
@@ -148,8 +149,8 @@ export default {
       }
       img {
         object-fit: contain;
-        width: 100px;
-        height: 100px;
+        width: 110px;
+        height: 110px;
       }
     }
   }

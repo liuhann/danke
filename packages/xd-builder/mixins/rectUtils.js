@@ -30,15 +30,28 @@ export function fitRectIntoBounds (rect, bounds) {
 
 /**
  * 获取Rect类型元素的位置样式
- * @param {h} rect
+ * @param {x, y, width, height} rect 元素位置
+ * @param {width, height} origin 设计期屏幕大小
+ * @param {width, height} viewPort 元素位置
+ * @param {string} fitMode 对齐模式
  */
-export function getRectPositionStyle (rect) {
-  return {
-    position: 'absolute',
-    left: rect.x + 'px',
-    top: rect.y + 'px',
-    width: rect.width + 'px',
-    height: rect.height + 'px'
+export function getRectPositionStyle (rect, origin, viewPort, fitMode = '') {
+  if (origin && viewPort) {
+    return {
+      position: 'absolute',
+      left: rect.x * viewPort.width / origin.width + 'px',
+      top: rect.y  * viewPort.height / origin.height + 'px',
+      width: rect.width * viewPort.width / origin.width + 'px',
+      height: rect.height * viewPort.height / origin.height + 'px'
+    }
+  } else {
+    return {
+      position: 'absolute',
+      left: rect.x + 'px',
+      top: rect.y + 'px',
+      width: rect.width + 'px',
+      height: rect.height + 'px'
+    }
   }
 }
 

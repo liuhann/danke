@@ -31,7 +31,7 @@
           </div>
         </div>
       </div>
-      <animation-list @input="addAnimation('exists', $event)" type="exists"/>
+      <animation-list @input="addAnimation('exists', $event)" type="exist"/>
     </tab-pane>
   </tabs>
 </div>

@@ -31,6 +31,9 @@ export default {
     screen: {
       type: Object
     },
+    workScreen: {
+      type: Object
+    },
     element: { // 元素定义
       type: Object
     },
@@ -66,7 +69,7 @@ export default {
     },
     elementStyle () {
       const style = {}
-      Object.assign(style, getRectPositionStyle(this.element), this.elementAnimationStyle)
+      Object.assign(style, getRectPositionStyle(this.element, this.workScreen, this.screen), this.elementAnimationStyle)
       // 根据border扩展设置， 展示扩展的属性
       if (this.element.style && this.element.style.border && this.element.style.border.variables) {
         for (let variable of this.element.style.border.variables) {

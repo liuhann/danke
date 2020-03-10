@@ -10,6 +10,7 @@
           stage="enters"
           :element="element"
           :screen="screen"
+          :work-screen="screen"
           :key="element.id"
           :index="index"
           :ref="element.id"/>
@@ -166,6 +167,7 @@ export default {
   mounted: function () {
     this.fitToCenter()
     this.initGlobalInteract()
+    this.setElementsInteract()
   },
 
   methods: {

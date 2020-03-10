@@ -20,6 +20,13 @@
                 <el-option v-for="(value, key) in cubicBerziers" :value="value" :key="key" :label="key" />
               </el-select>
             </el-form-item>
+            <el-form-item label="类型">
+              <el-select v-model="animation.tags" size="mini" multiple>
+                <el-option value="enter" />
+                <el-option value="exist" />
+                <el-option value="text" />
+              </el-select>
+            </el-form-item>
             <el-form-item label="标签">
               <el-tag
                 :key="tag"

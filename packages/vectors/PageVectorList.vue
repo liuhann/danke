@@ -68,7 +68,7 @@ export default {
     },
     // 新窗口编辑
     edit (svg) {
-      window.open('/vector/edit?id=' + svg._id)
+      window.open('/vector/edit?id=' + svg.name)
     },
 
     variableValues (svg) {

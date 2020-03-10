@@ -1,13 +1,14 @@
 <template>
 <div class="page-slide-preview">
-  <div class="device" v-if="work" :style="deviceStyle">
+  <div class="device" v-if="work && deviceSize" :style="deviceStyle">
     <div class="scene" v-for="scene of work.scenes" :key="scene.id">
-      <render-element v-for="element of scene.elements" :key="element.id" :element="element" :screen="deviceSize">
+      <render-element v-for="element of scene.elements" :work-screen="work.screen"  :key="element.id" :element="element" :screen="deviceSize">
       </render-element>
     </div>
   </div>
   <div class="action-bar">
-
+    <div class="action-button">分享</div>
+    <div class="action-button">全屏</div>
   </div>
 </div>
 </template>
@@ -49,7 +50,7 @@ export default {
     }
   },
   mounted () {
-    let workId = this.$route.query.work
+    let workId = this.$route.query.work || this.$route.params.work
     this.loadAndInitDevice(workId)
   },
   methods: {
@@ -58,8 +59,8 @@ export default {
       await this.loadWork(workId)
       // 设置显示屏幕大小
       this.deviceSize = fitRectIntoBounds(this.work.screen, {
-        width: this.$el.offsetWidth - 20,
-        height: this.$el.offsetHeight - 20
+        width: this.$el.offsetWidth - 48,
+        height: this.$el.offsetHeight - 48 - 48
       })
     }
   }
@@ -70,15 +71,27 @@ export default {
 
 .page-slide-preview {
   height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(235deg, #FFFFFF 0%, #000F25 100%), linear-gradient(180deg, #6100FF 0%, #000000 100%), linear-gradient(235deg, #FFA3AC 0%, #FFA3AC 40%, #00043C calc(40% + 1px), #00043C 60%, #005D6C calc(60% + 1px), #005D6C 70%, #00C9B1 calc(70% + 1px), #00C9B1 100%), linear-gradient(125deg, #FFA3AC 0%, #FFA3AC 40%, #00043C calc(40% + 1px), #00043C 60%, #005D6C calc(60% + 1px), #005D6C 70%, #00C9B1 calc(70% + 1px), #00C9B1 100%);
-  background-blend-mode: soft-light, screen, darken, normal;
-}
+  box-sizing: border-box;
+  padding: 24px;
+  overflow: hidden;
 
+  .action-bar {
+    font-size: 16px;
+    height: 48px;
+    line-height: 48px;
+    display: flex;
+    justify-content: center;
+    .action-button {
+      margin: 0 20px;
+    }
+  }
+}
 .device {
   background: #fff;
+  margin: 0 auto;
+  box-shadow: 0 0 0 1px rgba(14,19,24,.02), 0 2px 8px rgba(14,19,24,.15);
+  border-radius: 4px;
+  position: relative;
   .scene {
     width: 100%;
     height: 100%;

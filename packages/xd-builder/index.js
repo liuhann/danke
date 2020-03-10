@@ -12,15 +12,16 @@ const beforeEnter = (to, from, next) => {
 }
 export default {
   routes: [{
-    path: '/xd/welcome',
+    path: '/creative',
     beforeEnter,
-    component: () => import(/* webpackChunkName: "xd-welcome" */'./Welcome.vue')
+    component: () => import(/* webpackChunkName: "xd-welcome" */'./CreativeCenter.vue')
   }, {
     path: '/xd',
     beforeEnter,
     component: () => import(/* webpackChunkName: "xd" */'./Builder.vue')
   }, {
-    path: '/slide',
+    path: '/slide/:work',
+    beforeEnter,
     component: () => import(/* webpackChunkName: "preview" */'./preview/SlidePreview.vue')
   }],
   async onload (ctx) {

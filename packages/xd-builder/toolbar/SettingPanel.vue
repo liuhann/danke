@@ -41,7 +41,7 @@ export default {
   },
   methods: {
     slidePreview () {
-      window.open('')
+      window.open('/slide/' + this.work.id)
     }
   }
 }

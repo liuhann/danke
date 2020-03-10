@@ -1,34 +1,45 @@
 <template>
-<div class="section" style="background: #dfdfdf;">
-  <div class="container" style="background: #fff;padding: 20px;box-shadow: 0 1px 5px 0 rgba(0,0,0,.1);">
-    <el-button size="mini" type="primary" @click="newStyle">新建</el-button>
-    <div class="style-list">
-      <div v-for="(style, index) in styles" :key="index" class="style-item">
-        <div class="style-container">
-          <div class="styled-box" :class="style.name">
-            <div class="inner">{{style.desc}}</div>
+<div id="page-style-list" class="site-page">
+  <nav-bar />
+  <section class="section splash">
+    <div class="container">
+      <h1>精彩样式、一键引入</h1>
+      <h2>想要美化您的页面元素？ 边框、渐变背景、动画</h2>
+    </div>
+  </section>
+  <section class="section is-white">
+    <div class="container">
+      <el-button size="mini" type="primary" @click="newStyle">新建</el-button>
+      <div class="style-list">
+        <div v-for="(style, index) in styles" :key="index" class="style-item">
+          <div class="style-container">
+            <div class="styled-box" :class="style.name">
+              <div class="inner">{{style.desc}}</div>
+            </div>
+          </div>
+          <div class="btns">
+            <el-button type="text" size="mini" icon="el-icon-delete" @click="removeStyle(style)"/>
+            <el-button type="text" size="mini" icon="el-icon-edit" @click="editStyle(style)"/>
+            <span class="category">{{style.category}}</span>
           </div>
         </div>
-        <div class="btns">
-          <el-button type="text" size="mini" icon="el-icon-delete" @click="removeStyle(style)"/>
-          <el-button type="text" size="mini" icon="el-icon-edit" @click="editStyle(style)"/>
-          <span class="category">{{style.category}}</span>
-        </div>
       </div>
+      <el-pagination background :total="total" :page-size="pageSize" @current-change="loadStyles" :current-page.sync="page" layout="prev, pager, next" />
     </div>
-    <el-pagination background :total="total" :page-size="pageSize" @current-change="loadStyles" :current-page.sync="page" layout="prev, pager, next" />
-  </div>
+  </section>
 </div>
-
 </template>
 
 <script>
 import RestDAO from '../common/dao/restdao'
 import { Pagination, Button } from 'element-ui'
 import { createSheet, addStyle } from '../frames/keyframe.js'
+import NavBar from '../site/components/NavBar'
+import '../site/common.scss'
 export default {
   name: 'PageStyleList',
   components: {
+    NavBar,
     [Pagination.name]: Pagination,
     [Button.name]: Button
   },

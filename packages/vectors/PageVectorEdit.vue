@@ -10,7 +10,6 @@
           </div>
         </el-form-item>
         <el-form-item label="预览">
-          {{vector._id}}
            <div class="styled-box" v-html="vector.content" :style="variableStyle">
           </div>
         </el-form-item>

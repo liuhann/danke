@@ -17,7 +17,6 @@ export default class RestDAO {
     const result = await this.ctx.get(`${this.path}/${id}`).json()
     return result
   }
-
   async list (filter) {
     const result = await this.ctx.get(`${this.path}?${this.serialize(filter)}`).json()
     return result

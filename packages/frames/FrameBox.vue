@@ -18,6 +18,7 @@
              :class="currentAnimation.name === animation.name? 'is-active': ''"
              @click="setAnimation(animation)">
           <div class="en-name">{{animation.name}}({{animation.title}})</div>
+          <div class="type">{{animation.tags.join (' ')}}</div>
         </div>
       </div>
     </el-col>

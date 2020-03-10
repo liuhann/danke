@@ -118,21 +118,16 @@ export default class StyleRegistry {
     const styles = {} // css 样式资源
     for (let scene of work.scenes) {
       for (let element of scene.elements) {
-        // 进入动画抽取
-        if (element.enters && element.enters.length) {
-          for (let animation of element.enters) {
-            frames[animation.name] = this.keyframes[animation.name]
+        for (let key in element.style) {
+          // 动画从keyframes 抽取
+          if (key === 'enters' || key === 'exists') {
+            for (let animation of element.style[key]) {
+              frames[animation.name] = this.keyframes[animation.name]
+            }
+          } else if (element.style[key].name) {
+            // 其他样例类从styles抽取
+            styles[key] = this.styles[element.style[key].name]
           }
-        }
-        // 离开动画抽取
-        if (element.exists && element.exists.length) {
-          for (let animation of element.exists) {
-            frames[animation.name] = this.keyframes[animation.name]
-          }
-        }
-        // 边框css样式
-        if (element.border && element.border.name) {
-          styles[element.border.name] = this.styles[element.border.name]
         }
       }
     }

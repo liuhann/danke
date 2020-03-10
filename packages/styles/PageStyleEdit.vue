@@ -14,6 +14,8 @@
             <el-option value="clip"/>
             <el-option value="border"/>
             <el-option value="gradient"/>
+            <el-option value="enters"/>
+            <el-option value="exists"/>
           </el-select>
         </el-form-item>
         <el-form-item label="样式文本">

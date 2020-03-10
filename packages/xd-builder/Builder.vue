@@ -2,8 +2,8 @@
 <div id="xd">
   <left-aside @insert="insert"/>
   <section class="right-section">
-    <toolbar :scenes="work.scenes" :work="work" :scene="scene" @scale-change="scaleChange" @prev-scene="previousScene" @next-scene="nextScene"/>
-    <scene-container :screen="work.screen" :scenes="work.scenes" :scene="scene" :exist-scene="existScene" :scale="scale"/>
+    <toolbar v-if="scene" :scenes="work.scenes" :work="work" :scene="scene" @scale-change="scaleChange" @prev-scene="previousScene" @next-scene="nextScene"/>
+    <scene-container v-if="scene" :screen="work.screen" :scenes="work.scenes" :scene="scene" :exist-scene="existScene" :scale="scale"/>
   </section>
 </div>
 </template>
@@ -66,6 +66,9 @@ export default {
     } else {
       this.loadWork(workId)
     }
+    setInterval(() => {
+      this.saveWork()
+    }, 3000)
   },
   methods: {
     /**
@@ -93,26 +96,6 @@ export default {
       }
       this.work.scenes.splice(this.sceneIndex + 1, 0, scene)
       this.scene = scene
-    },
-
-    /**
-    * 保存作品内容
-    */
-    async saveWork () {
-      if (this.savingWork) {
-        return
-      }
-      this.savingWork = true
-      const work = JSON.parse(JSON.stringify(this.work))
-      // 抽取所有使用的frame style到work上，以便压缩使用空间
-      Object.assign(work, this.ctx.styleRegistry.getStyleResource(work))
-      if (!this.work._id) {
-        const result = await this.workdao.create(work)
-        this.work._id = result.object._id
-      } else {
-        await this.workdao.patch(work._id, work)
-      }
-      this.savingWork = false
     },
 
     insert (type, object) {

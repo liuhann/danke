@@ -37,7 +37,7 @@ export default {
     },
 
     chooseScene (scene, index) {
-      this.currentScene = scene
+      this.scene = scene
     },
 
     // 切换到下一场景

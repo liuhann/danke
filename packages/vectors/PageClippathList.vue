@@ -1,5 +1,5 @@
 <template>
-<div id="page-clippath-list">
+<div id="page-clippath-list" class="site-page">
   <nav-bar />
   <section class="section splash">
     <div class="container">
@@ -35,11 +35,13 @@
 
 <script>
 import RestDAO from '../common/dao/restdao'
+import objectListMixin from '../common/components/objectListMixin'
 import NavBar from '../site/components/NavBar.vue'
 import CLOUD_HILL from './cloud-hill.webp'
 import { Pagination, Button } from 'element-ui'
 export default {
   name: 'PageStyleList',
+  mixins: [ objectListMixin ],
   components: {
     NavBar,
     [Pagination.name]: Pagination,
@@ -47,54 +49,19 @@ export default {
   },
   data () {
     return {
+      restPath: 'danke/clippath',
       CLOUD_HILL,
-      objects: [],
-      page: 0,
-      pageSize: 20,
-      total: 0
     }
   },
   created () {
-    this.dao = new RestDAO(this.ctx, 'danke/clippath')
-  },
-  mounted () {
-    this.loadObjects()
   },
   methods: {
-    getSVGScale (el) {
-    },
     newClipPath () {
       window.open('/clippath/edit')
-    },
-    async loadObjects () {
-      const result = await this.dao.list({
-        page: this.page,
-        count: this.pageSize
-      })
-      this.total = result.total
-      this.objects = result.list
     },
     // 新窗口编辑
     edit (object) {
       window.open('/clippath/edit?id=' + object._id)
-    },
-
-    variableValues (svg) {
-      const styles = {}
-      for (let variable of svg.variables) {
-        Object.assign(styles, {
-          [`--${variable.name}`]: variable.value
-        })
-      }
-      return styles
-    },
-
-    // 目前暂无提示 直接删除
-    async remove (style) {
-      if (confirm('确认删除样式')) {
-        await this.dao.delete(style)
-        this.loadObjects()
-      }
     }
   }
 }

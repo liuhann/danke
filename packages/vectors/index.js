@@ -1,4 +1,8 @@
 // 矢量图片资源
+/**
+ * 可修改颜色的SVG图片:  danke/svg
+ * 可调整横纵比例的SVG裁切: danke/clippath
+ */
 export default {
   routes: [{
     path: '/vector/edit',

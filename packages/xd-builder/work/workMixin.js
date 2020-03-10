@@ -26,32 +26,29 @@ export default {
       this.work = work
       this.chooseScene(this.work.scenes[0])
     },
-
     /**
-    * 保存作品内容
-    */
+     * 保存作品内容
+     */
     async saveWork () {
+      const work = JSON.parse(JSON.stringify(this.work))
+      // 抽取所有使用的frame style到work上，以便压缩使用空间
+      Object.assign(work, this.ctx.styleRegistry.getStyleResource(work))
+
+      const stringify = JSON.stringify(work)
+      if (stringify === this.lastStringify) {
+        return
+      }
+      this.lastStringify = stringify
       if (this.savingWork) {
         return
       }
       this.savingWork = true
-      const loading = Loading.service({
-        lock: true,
-        text: '正在保存中',
-        spinner: 'el-icon-loading',
-        background: 'rgba(255, 255, 255, 0.4)'
-      })
-      const work = JSON.parse(JSON.stringify(this.work))
-      // 抽取所有使用的frame style到work上，以便压缩使用空间
-      Object.assign(work, this.ctx.styleRegistry.getStyleResource(work))
       if (!this.work._id) {
         const result = await this.workdao.create(work)
         this.work._id = result.object._id
       } else {
         await this.workdao.patch(work._id, work)
       }
-      loading.close()
-      Message.success('保存完成')
       this.savingWork = false
     },
 
