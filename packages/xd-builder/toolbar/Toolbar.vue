@@ -7,7 +7,7 @@
       popper-class="toolbar-pop"
       width="360"
       trigger="click">
-      <a class="action" slot="reference">特效</a>
+      <a class="action" slot="reference" title="特效"><i class="el-icon-magic-stick"></i></a>
       <animation-tabs slot="default" :elements="this.selectedElements"/>
     </el-popover>
   </keep-alive>
@@ -20,7 +20,7 @@
       placement="bottom-start"
       width="360"
       trigger="click">
-      <a class="action" slot="reference">边框</a>
+      <a class="action" slot="reference"><i class="el-icon-full-screen" /></a>
       <border-list slot="default" :elements="this.selectedElements"/>
     </el-popover>
   </keep-alive>
@@ -31,7 +31,7 @@
       placement="bottom"
       width="200"
       trigger="click">
-      <a class="action" slot="reference">变换</a>
+      <a class="action" slot="reference" title="变换"><i class="el-icon-connection" /></a>
     </el-popover>
   </keep-alive>
 
@@ -47,6 +47,23 @@
       <color-list :scene="scene"></color-list>
     </el-popover>
   </keep-alive>
+
+  <!--  设置字体-->
+  <el-select
+    v-if="selectedTexts.length"
+    v-model="fontSize"
+    size="mini"
+    filterable
+    allow-create
+    placeholder="字体">
+    <el-option
+      v-for="item in fontSizeOptions"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value">
+    </el-option>
+  </el-select>
+  <a class="action" v-if="selectedTexts.length" style="padding: 0 10px;font-weight: bold;">B</a>
 
   <div class="pull-right">
     <a class="action" v-if="selectedElements.length > 1" @click="groupSelectedElement">组合</a>
@@ -76,7 +93,7 @@
 </template>
 
 <script>
-import { Button, ButtonGroup, Popover, Slider } from 'element-ui'
+import { Button, ButtonGroup, Popover, Slider, Select, Option } from 'element-ui'
 import AnimationTabs from './AnimationTabs.vue'
 import BorderList from './BorderList'
 import { shortid } from '../../utils/string'
@@ -91,6 +108,8 @@ export default {
     ColorList,
     BorderList,
     AnimationTabs,
+    [Select.name]: Select,
+    [Option.name]: Option,
     [Slider.name]: Slider,
     [Button.name]: Button,
     [Popover.name]: Popover,
@@ -109,10 +128,40 @@ export default {
   },
   data () {
     return {
-      scale: 1
+      scale: 1,
+      fontSizeOptions: [{
+        label: '1',
+        value: 1
+      }, {
+        label: '1.4',
+        value: 1.4
+      }, {
+        label: '1.6',
+        value: 1.6
+      },{
+        label: '1.8',
+        value: 1.8
+      }, {
+        label: '2',
+        value: 2
+      }]
     }
   },
   computed: {
+    fontSize: {
+      get: function () {
+        if (this.selectedTexts.length) {
+          return this.selectedTexts[0].style.font.size
+        } else {
+          return 10
+        }
+      },
+      set: function (size) {
+        for (let element of this.selectedTexts) {
+          element.style.font.size = size
+        }
+      }
+    },
     selectedElements () {
       if (this.scene && this.scene.elements) {
         return this.scene.elements.filter(el => el.selected)
@@ -127,7 +176,7 @@ export default {
     },
     selectedTexts () {
       if (this.scene && this.scene.elements) {
-        return this.scene.elements.filter(el => el.selected && el.content != null)
+        return this.scene.elements.filter(el => el.selected && el.text != null)
       }
       return []
     },
@@ -268,7 +317,6 @@ export default {
 </script>
 
 <style lang="scss">
-
 .toolbar-pop {
   max-height: calc(100vh - 77px);
   overflow-y: auto;
@@ -283,14 +331,17 @@ export default {
   padding: 6px 12px;
   display: flex;
   box-shadow: rgba(0, 0, 0, 0.2) 0px 0 2px;
-
+  .el-select {
+    border: none;
+    width: 64px;
+  }
   a.action {
     line-height: 28px;
     vertical-align: top;
     cursor: pointer;
-    margin: 0 2px;
+    margin: 0 5px;
     color: #0e1318;
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     padding: 0 5px;
     display: inline-block;
     &:hover, &.on {
@@ -338,18 +389,6 @@ export default {
     font-size: 14px;
     vertical-align: top;
     padding: 0 5px;
-  }
-  i {
-    line-height: 26px;
-    width: 28px;
-    text-align: center;
-    cursor: pointer;
-    margin: 0 2px;
-    color: rgba(0, 0, 0, 0.7);
-    font-size: 18px;
-    &:hover, &.on {
-      background-color: #f1f3f4;
-    }
   }
 }
 

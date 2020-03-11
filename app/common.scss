@@ -37,6 +37,9 @@ section.splash {
   height: 26rem;
 }
 
+.el-scrollbar__wrap {
+  overflow: hidden;
+}
 .align-centered {
   text-align: center;
 }

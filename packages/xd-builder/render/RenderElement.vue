@@ -187,6 +187,8 @@ export default {
     resize: none;
     border: none;
     background: transparent;
+    width: 100%;
+    font-family: 'Karla',Microsoft YaHei,tahoma,arial,Hiragino Sans GB,sans-serif;
   }
   img {
     position: absolute;

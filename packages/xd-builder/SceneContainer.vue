@@ -132,6 +132,7 @@ export default {
     },
     styleScreen () {
       return {
+        fontSize: '10px',
         transform: 'scale(' + this.scale + ')',
         transformOrigin: 'top center',
         left: this.screenRect.x + 'px',
