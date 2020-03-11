@@ -7,7 +7,8 @@
   <div v-if="element.svg" class="svg-content" v-html="elementSVGContent">
   </div>
   <!--文本渲染情况下 文本内容-->
-  <span v-if="element.text">{{element.text}}</span>
+  <span v-if="element.text != null && !element.editing" :style="textStyle">{{element.text}}</span>
+  <textarea v-if="element.text != null && element.editing" :style="textStyle" v-model="element.text"/>
   <div v-if="element.elements" class="block">
     <render-element v-for="(el, i) in element.elements" :key="el.id" :screen="screen" :element="el" :index="i" ></render-element>
   </div>
@@ -17,9 +18,11 @@
 <script>
 import { getImageUrl } from '../mixins/imageUtils.js'
 import { getRectPositionStyle } from '../mixins/rectUtils.js'
+import TextList from '../left/TextList'
 export default {
   name: 'RenderElement',
   components: {
+    TextList,
     RenderElement: () => import('./RenderElement.vue')
   },
   props: {
@@ -96,6 +99,15 @@ export default {
       return style
     },
 
+    textStyle () {
+      const style = {
+        color: this.element.style.font.color,
+        fontWeight: this.element.style.font.weight,
+        letterSpacing: this.element.style.font.space,
+        fontSize: this.element.style.font.size + 'em'
+      }
+      return style
+    },
     /**
      * 取 element.animations 计算元素的动画样式
      */
@@ -171,6 +183,11 @@ export default {
 .element {
   position: absolute;
   box-sizing: border-box;
+  textarea {
+    resize: none;
+    border: none;
+    background: transparent;
+  }
   img {
     position: absolute;
     z-index: 10;

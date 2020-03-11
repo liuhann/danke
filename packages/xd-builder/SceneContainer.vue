@@ -1,34 +1,37 @@
 <template>
-<div id="scene-container" @click.exact="sceneMouseDown" ref="sceneContainer">
-  <!-- 当前屏幕内容 -->
-  <div class="screen" :style="styleScreen">
-    <div class="screen-title">
+<div class="scene-wrapper">
+  <div id="workspace" @click="sceneMouseDown" ref="sceneContainer" :style="styleWorkSpace">
+    <!-- 当前屏幕内容 -->
+    <div class="screen" :style="styleScreen">
+      <div class="screen-title">
+      </div>
+      <div class="scene" v-if="scene" :style="sceneStyle" :class="sceneClass">
+         <render-element
+            v-for="(element, index) of scene.elements"
+            stage="enters"
+            :element="element"
+            :screen="screen"
+            :work-screen="screen"
+            :key="element.id"
+            :index="index"
+            :ref="element.id"/>
+      </div>
     </div>
-    <div class="scene" v-if="scene" :style="sceneStyle" :class="sceneClass">
-       <render-element
-          v-for="(element, index) of scene.elements"
-          stage="enters"
-          :element="element"
-          :screen="screen"
-          :work-screen="screen"
-          :key="element.id"
-          :index="index"
-          :ref="element.id"/>
+    <!-- 元素被选中、移动、调整大小时的选中层 -->
+    <div class="mask" :style="styleMask" @dragover="sceneDragOver" @drop="elementDropped" v-if="scene">
+      <div
+        v-for="selectee in scene.elements"
+        :key="selectee.id"
+        :id="'mask-' + selectee.id"
+        class="node-mask"
+        @dblclick="maskDblClick(selectee)"
+        :style="getMaskStyle(selectee)">
+        <div class="lt"/><div class="rt"/><div class="t"/><div class="l"/><div class="lb"/><div class="rb"/><div class="r"/><div class="b"/>
+      </div>
     </div>
+    <!-- 拖拽选择层 -->
+    <div class="dragging-rect" :style="styleDragingRect" />
   </div>
-  <!-- 元素被选中、移动、调整大小时的选中层 -->
-  <div class="mask" :style="styleScreen" @dragover="sceneDragOver" @drop="elementDropped" v-if="scene">
-    <div
-      v-for="selectee in scene.elements"
-      :key="selectee.id"
-      :id="'mask-' + selectee.id"
-      class="node-mask"
-      :style="getMaskStyle(selectee)">
-      <div class="lt"/><div class="rt"/><div class="t"/><div class="l"/><div class="lb"/><div class="rb"/><div class="r"/><div class="b"/>
-    </div>
-  </div>
-  <!-- 拖拽选择层 -->
-  <div class="dragging-rect" :style="styleDragingRect" />
 </div>
 </template>
 
@@ -73,6 +76,11 @@ export default {
         x: 0,
         y: 0
       },
+      // 工作区大小， 屏幕、拖拽及选择遮罩都在工作区内部
+      workSpace: {
+        width: 0,
+        height: 0
+      },
       // 屏幕区的位置
       screenRect: {
         x: 0,
@@ -116,6 +124,12 @@ export default {
   },
 
   computed: {
+    styleWorkSpace() {
+      return {
+        width: this.workSpace.width + 'px',
+        height: this.workSpace.height + 'px'
+      }
+    },
     styleScreen () {
       return {
         transform: 'scale(' + this.scale + ')',
@@ -125,6 +139,20 @@ export default {
         width: this.screenRect.width + 'px',
         height: this.screenRect.height + 'px'
       }
+    },
+    styleMask () {
+      const style = {}
+      let isShow = true
+      for (let element of this.scene.elements) {
+        if (element.editing) {
+          isShow = false
+        }
+      }
+      if (!isShow) {
+        style.display = 'none'
+      }
+      Object.assign(style, this.styleScreen)
+      return style
     },
     // 拖拽中的矩形样式
     styleDragingRect () {
@@ -175,10 +203,17 @@ export default {
      * 将屏幕放置到设计区正中央，同时修改屏幕位置偏移量
      */
     fitToCenter () {
+      const fitSize = fitRectIntoBounds(this.screen, {
+        width: this.$el.clientWidth - 60,
+        height: this.$el.clientHeight - 60
+      })
+      const screenRatio = fitSize.width / this.screen.width
+      this.workSpace.width = this.$el.clientWidth / screenRatio
+      this.workSpace.height = this.$el.clientHeight / screenRatio
       this.screenRect.width = this.screen.width
       this.screenRect.height = this.screen.height
-      this.screenRect.x = (this.$refs.sceneContainer.clientWidth - this.screen.width) / 2
-      this.screenRect.y = 30
+      this.screenRect.x = (this.workSpace.width - this.screen.width) / 2
+      this.screenRect.y = (this.workSpace.height - this.screen.height) / 2
     },
     getRectPositionStyle,
     /**
@@ -247,8 +282,8 @@ export default {
         const rootRect = this.$refs.sceneContainer.getBoundingClientRect()
         // 点位置计算 clientX - 容器X - 屏幕X
         const point = {
-          x: ev.clientX - rootRect.x - this.screenRect.x - this.screenRect.width / 2 * (1 - this.scale),
-          y: ev.clientY - rootRect.y - this.screenRect.y
+          x: ev.clientX - rootRect.x - this.$refs.sceneContainer.scrollLeft - this.screenRect.x - this.screenRect.width / 2 * (1 - this.scale),
+          y: ev.clientY - rootRect.y - this.$refs.sceneContainer.scrollTop - this.screenRect.y
         }
         // 判断点击处的元素
         let targetElement = null
@@ -264,7 +299,11 @@ export default {
           }
         }
         this.mode = 'drag'
-        this.setElementSelected(targetElement)
+        if (ev.ctrlKey) {
+          this.appendElementSelected(targetElement)
+        } else {
+          this.setElementSelected(targetElement)
+        }
       }
       this.currentAddon = null
       this.dragRect.dragged = false
@@ -364,12 +403,29 @@ export default {
      * 设置单个元素为选中状态, 取消其他元素选中
      */
     setElementSelected (element) {
+      for (let e of this.scene.elements) {
+        e.selected = false
+        if (element == null && e.editing) {
+          e.editing = false
+        }
+      }
       if (element) {
         element.selected = true
-      } else {
-        for (let e of this.scene.elements) {
-          e.selected = false
+      }
+      this.currentAddon = null
+    },
+
+    /**
+     * append element selecting
+     **/
+    appendElementSelected (element) {
+      for (let e of this.scene.elements) {
+        if (e.editing) {
+          e.editing = false
         }
+      }
+      if (element) {
+        element.selected = true
       }
       this.currentAddon = null
     },
@@ -381,6 +437,10 @@ export default {
       const displayStyle = {}
       if (!element.selected) {
         displayStyle.display = 'none'
+      } else {
+        if (element.editing) {
+          displayStyle.display = 'none'
+        }
       }
       return Object.assign(displayStyle, getRectPositionStyle(element))
     },
@@ -428,6 +488,11 @@ export default {
       }
     },
 
+    maskDblClick (element) {
+      if (element.text) {
+        this.$set(element, 'editing', true)
+      }
+    },
     /**
      * 预览当前选中的元素的动画效果
      */
@@ -441,34 +506,24 @@ export default {
           element.animations = this.currentAddonObject
         })
       }, 200)
-    },
-    nextScene () {
-      this.$emit('next-scene')
-    },
-    prevScene () {
-      this.$emit('prev-scene')
-    },
-    // 播放作品
-    playWork () {
-      this.$emit('play-work')
-    },
-    // 播放作品
-    saveWork () {
-      this.$emit('save-work')
     }
   }
 }
 </script>
 
 <style lang="scss">
-#scene-container {
+.scene-wrapper {
   flex: 1;
   overflow: auto;
+  width: 100%;
+}
+#workspace {
   position: relative;
   .screen {
     position: absolute;
     background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==");
     box-shadow: 0 0 6px #ddd;
+    overflow: hidden;
   }
   .mask {
     position: absolute;

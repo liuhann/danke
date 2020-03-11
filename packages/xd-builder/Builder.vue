@@ -93,6 +93,7 @@ export default {
   background-color: #f5f5f4;
 
   .right-section {
+    width: calc(100% - 460px);
     padding: 0;
     flex: 1;
     touch-action: none;
