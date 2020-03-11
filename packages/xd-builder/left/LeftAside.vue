@@ -9,7 +9,7 @@
       <i class="el-icon-picture-outline"/>
       <span>图片</span>
     </div>
-    <div class='category'>
+    <div class='category' :class="current === 'text'? 'current': ''" @click="toggleTo('text')">
       <i class="el-icon-tickets"/>
       <span>文字</span>
     </div>
@@ -43,6 +43,11 @@
     </transition>
     <transition name="fade">
       <keep-alive>
+        <text-list v-if="current==='text'" />
+      </keep-alive>
+    </transition>
+    <transition name="fade">
+      <keep-alive>
         <left-shape-list v-if="current === 'shape'" />
       </keep-alive>
     </transition>
@@ -56,9 +61,11 @@ import RestDAO from '../../common/dao/restdao'
 import ImageUpload from './ImageList.vue'
 import LeftSceneTemplate from './SceneList.vue'
 import LeftShapeList from './ShapeList.vue'
+import TextList from './TextList'
 
 export default {
   components: {
+    TextList,
     ImageUpload,
     LeftSceneTemplate,
     LeftShapeList

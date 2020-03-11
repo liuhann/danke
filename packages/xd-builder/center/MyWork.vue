@@ -45,9 +45,12 @@ export default {
           'projection': 'scenes.1,updated,created,ratio,creator,screen,name,id'
         })
         this.works = result.list
-        this.lines = flowSchedule(this.works, this.$refs.myWorkList.offsetWidth, 25, 360)
+        this.lines = flowSchedule(this.works, this.$refs.myWorkList.offsetWidth, 25, 256)
       }
     },
+    editWork (work) {
+      window.open('/xd?work=' + work.id)
+    }
   }
 }
 </script>

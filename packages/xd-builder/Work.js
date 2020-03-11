@@ -32,8 +32,18 @@ export default {
       height: 345,
       // 图片类元素
       url: '/15011245191/image.jpg',
-      content: '文本类元素的正文',
+      text: '文本类元素的正文',
       style: {
+        font: {
+          // 文字大小
+          size: 2.2,
+          // 颜色
+          color: '#fff',
+          // 粗细
+          weight: 400,
+          // 字间距
+          space: 4,
+        },
         // 边框样式
         border: {
           name: '',

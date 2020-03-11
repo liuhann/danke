@@ -299,6 +299,11 @@ export default {
           node.isRatioFixed = true
         }
       }
+      if (element.text) {
+        node.text = element.text
+        delete element.text
+        node.style.font = element
+      }
       node.x = ev.offsetX - width / 2
       node.y = ev.offsetY - height / 2
       node.width = width
@@ -309,7 +314,6 @@ export default {
       if (element.url) {
         // 放置的图片
         node.url = element.url
-        node.border = null
       }
       if (element.content) {
         node.svg = element._id

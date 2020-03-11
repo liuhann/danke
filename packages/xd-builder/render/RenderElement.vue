@@ -7,7 +7,7 @@
   <div v-if="element.svg" class="svg-content" v-html="elementSVGContent">
   </div>
   <!--文本渲染情况下 文本内容-->
-  <span v-if="element.text" v-html="element.text" :class="element.className" :data-content="element.text"></span>
+  <span v-if="element.text">{{element.text}}</span>
   <div v-if="element.elements" class="block">
     <render-element v-for="(el, i) in element.elements" :key="el.id" :screen="screen" :element="el" :index="i" ></render-element>
   </div>

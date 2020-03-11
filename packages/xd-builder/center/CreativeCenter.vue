@@ -73,10 +73,6 @@ export default {
       this.$router.replace('/creative/my')
     },
 
-    editWork (work) {
-      window.open('/xd?work=' + work.id)
-    },
-
     xd ({ width, height }) {
       window.open(`/xd?width=${width}&height=${height}`)
     },
