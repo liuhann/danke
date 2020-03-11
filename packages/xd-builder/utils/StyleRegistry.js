@@ -116,6 +116,7 @@ export default class StyleRegistry {
   getStyleResource (work) {
     const frames = {} // css 帧资源
     const styles = {} // css 样式资源
+    const svgs = {}
     for (let scene of work.scenes) {
       for (let element of scene.elements) {
         for (let key in element.style) {
@@ -129,11 +130,15 @@ export default class StyleRegistry {
             styles[key] = this.styles[element.style[key].name]
           }
         }
+        if (element.svg) {
+          svgs[element.svg] = this.svgs[element.svg]
+        }
       }
     }
     return {
       frames,
-      styles
+      styles,
+      svgs
     }
   }
 
@@ -152,6 +157,14 @@ export default class StyleRegistry {
         name,
         cssContent: work.styles[name]
       })
+    }
+    if (work.svgs) {
+      for (let name in work.svgs) {
+        this.addVector({
+          _id: name,
+          content: work.svgs[name]
+        })
+      }
     }
   }
 }

@@ -62,6 +62,8 @@
       </a>
     </span>
 
+    <a class="action" v-if="selectedElements.length" @click="removeSelectedElement"><i class="el-icon-delete"/></a>
+
     <a class="action" v-if="selectedElements.length === 0" @click="previousScene"><i class="el-icon-arrow-up" /></a>
     <a class="action" v-if="selectedElements.length === 0" @click="nextScene"><i class="el-icon-arrow-down" /></a>
     <a class="action" v-if="selectedElements.length === 0"> {{scenes.indexOf(scene) + 1}}/{{scenes.length}}</a>
@@ -163,6 +165,12 @@ export default {
     }
   },
   methods: {
+    removeSelectedElement () {
+      for (let element of this.selectedElements) {
+        element.selected = false
+        this.scene.elements.splice(this.scene.elements.indexOf(element), 1)
+      }
+    },
     /**
      * Group selected element to one block, remove element from scene.elements
      * Add block to scene.elements
@@ -245,7 +253,7 @@ export default {
     },
 
     log () {
-      console.log(this.selectedElements)
+      console.log(this.selectedElements, this.scene, this.work)
     },
 
     previousScene () {

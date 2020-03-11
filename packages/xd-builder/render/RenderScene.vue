@@ -1,6 +1,6 @@
 <template>
 <div class="scene" :style="sceneStyle">
-  <render-element v-for="element of scene.elements" :work-screen="work.screen"  :key="element.id" :element="element" :screen="viewport" :stage="stage">
+  <render-element v-for="element of scene.elements" :work-screen="work.screen"  :key="element.id" :element="element" :screen="viewPort" :stage="stage">
   </render-element>
 </div>
 </template>
@@ -26,15 +26,15 @@ export default {
       type: Object
     },
     // 给出的显示区域大小
-    viewport: {
+    viewPort: {
       type: Object
     }
   },
   computed: {
     sceneStyle () {
       const styles = {
-        width: this.viewport.width + 'px',
-        height: this.viewport.height + 'px'
+        width: this.viewPort.width + 'px',
+        height: this.viewPort.height + 'px'
       }
       for (let key in this.scene.style) {
         if (this.scene.style[key] && !this.scene.style[key].name) {

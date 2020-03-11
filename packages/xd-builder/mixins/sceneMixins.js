@@ -1,17 +1,11 @@
 import { shortid } from '../../utils/string'
 import { MessageBox } from 'element-ui'
+import { dura } from '../../frames/model/animation-type'
 export default {
   data () {
     return {
-      scene: null
-    }
-  },
-  computed: {
-    scenes () {
-      return this.work.scenes
-    },
-    sceneIndex () {
-      return this.scenes.indexOf(this.scene)
+      currentScene: null,
+      lastScene: null,
     }
   },
   methods: {
@@ -25,19 +19,23 @@ export default {
         style: {},
         z: 100
       }
-      this.scenes.splice(this.sceneIndex + 1, 0, scene)
-      this.scene = scene
+      this.insertScene(scene)
     },
+
+    insertScene(scene) {
+      if (this.currentScene) {
+        const currentSceneIndex = this.work.scenes.indexOf(this.currentScene)
+        this.work.scenes.splice(currentSceneIndex + 1, 0, scene)
+      } else {
+        this.work.scenes.push(scene)
+      }
+      this.currentScene = scene
+    },
+
     cloneScene (scene) {
       const newScene = JSON.parse(JSON.stringify(scene))
       newScene.id = shortid()
-      const currentSceneIndex = this.work.scenes.indexOf(this.currentScene)
-      this.work.scenes.splice(currentSceneIndex + 1, 0, scene)
       this.chooseScene(scene)
-    },
-
-    chooseScene (scene, index) {
-      this.scene = scene
     },
 
     // 切换到下一场景
@@ -48,7 +46,12 @@ export default {
       if (this.currentScene) {
         const currrentSceneIndex = this.work.scenes.indexOf(this.currentScene)
         if (currrentSceneIndex < this.work.scenes.length - 1) {
-          this.chooseScene(this.work.scenes[currrentSceneIndex + 1])
+          let duration = this.getSceneExistDuration()
+          this.lastScene = this.currentScene
+          setTimeout(() => {
+            this.lastScene = null
+          }, duration)
+          this.currentScene = this.work.scenes[currrentSceneIndex + 1]
         }
       }
     },
@@ -58,9 +61,24 @@ export default {
       if (this.currentScene) {
         const currrentSceneIndex = this.work.scenes.indexOf(this.currentScene)
         if (currrentSceneIndex > 0) {
-          this.chooseScene(this.work.scenes[currrentSceneIndex - 1])
+          this.currentScene = this.work.scenes[currrentSceneIndex - 1]
         }
       }
+    },
+
+    getSceneExistDuration () {
+      let maxExistsMill = 300
+      for (let element of this.currentScene.elements) {
+        if (element.style.exists) {
+          for (let exist of element.style.exists) {
+            const existMill = exist.delay + exist.dura
+            if (existMill > maxExistsMill) {
+              maxExistsMill = existMill
+            }
+          }
+        }
+      }
+      return maxExistsMill
     },
 
     /**

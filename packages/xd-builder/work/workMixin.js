@@ -8,6 +8,7 @@ import RestDAO from '../../common/dao/restdao'
 export default {
   data () {
     return {
+      work: null,
       blockPageNum: 1
     }
   },
@@ -16,6 +17,23 @@ export default {
     this.blockdao = new RestDAO(this.ctx, 'danke/block')
   },
   methods: {
+
+    /**
+     * 新增作品
+     */
+    newWork () {
+      this.work = {
+        id: shortid(10),
+        title: '未命名的作品',
+        screen: {
+          width: parseInt(this.$route.query.width) || 414,
+          height: parseInt(this.$route.query.height) || 896
+        },
+        style: {},
+        scenes: []
+      }
+    },
+
     /**
      * 加载作品 并且根据规则重新组织回写一些信息
      * @param {string} workId 作品Id
@@ -24,7 +42,6 @@ export default {
       const work = await this.workdao.getOne(workId)
       this.ctx.styleRegistry.initWorkStyleResource(work)
       this.work = work
-      this.chooseScene(this.work.scenes[0])
     },
     /**
      * 保存作品内容

@@ -1,9 +1,9 @@
 <template>
 <div id="xd">
   <left-aside @insert="insert"/>
-  <section class="right-section">
-    <toolbar v-if="scene" :scenes="work.scenes" :work="work" :scene="scene" @scale-change="scaleChange" @prev-scene="previousScene" @next-scene="nextScene"/>
-    <scene-container v-if="scene" :screen="work.screen" :scenes="work.scenes" :scene="scene" :exist-scene="existScene" :scale="scale"/>
+  <section class="right-section" v-if="work">
+    <toolbar v-if="currentScene" :scenes="work.scenes" :work="work" :scene="currentScene" @scale-change="scaleChange" @prev-scene="previousScene" @next-scene="nextScene"/>
+    <scene-container v-if="currentScene" :screen="work.screen" :scenes="work.scenes" :scene="currentScene" :exist-scene="lastScene" :scale="scale"/>
   </section>
 </div>
 </template>
@@ -39,19 +39,6 @@ export default {
   },
   data () {
     return {
-      // 作品概要信息
-      work: {
-        id: '', // 随机生成的id数
-        title: '', // 名称 暂时保留使用
-        screen: { // 定义时的屏幕大小
-          width: 0,
-          height: 0
-        },
-        style: {},
-        scenes: [] // 场景列表
-      },
-      existScene: null,
-      scene: null,
       scale: 1
     }
   },
@@ -60,70 +47,32 @@ export default {
 
   mounted () {
     this.ctx.styleRegistry = new StyleRegistry()
-    let workId = this.$route.query.work
-    if (!workId) {
-      this.newWork()
-    } else {
-      this.loadWork(workId)
-    }
-    setInterval(() => {
-      this.saveWork()
-    }, 3000)
+    this.onMounted()
   },
   methods: {
-    /**
-     * 新增作品
-     */
-    newWork () {
-      this.work.screen = {
-        width: parseInt(this.$route.query.width) || 414,
-        height: parseInt(this.$route.query.height) || 896
+    async onMounted () {
+      let workId = this.$route.query.work
+      if (!workId) {
+        this.newWork()
+        this.addScene()
+      } else {
+        await this.loadWork(workId)
+        this.currentScene = this.work.scenes[0]
       }
-      this.work.id = shortid()
-      this.work.title = '我的作品'
-      this.addEmptyScene()
-    },
-
-    /**
-     * 增加新的场景
-     */
-    addEmptyScene () {
-      const scene = {
-        id: shortid(),
-        elements: [],
-        style: {},
-        z: 100
-      }
-      this.work.scenes.splice(this.sceneIndex + 1, 0, scene)
-      this.scene = scene
+      setInterval(() => {
+        this.saveWork()
+      }, 3000)
     },
 
     insert (type, object) {
       switch (type) {
         case 'scene':
           if (object == null) {
-            this.addEmptyScene()
+            this.addScene()
           }
           break;
         default:
       }
-    },
-    previousScene () {
-      const currentIndex = this.work.scenes.indexOf(this.scene)
-      if (currentIndex === 0) {
-        return
-      }
-      this.existScene = this.scene
-      this.scene = this.work.scenes[currentIndex - 1]
-    },
-
-    nextScene () {
-      const currentIndex = this.work.scenes.indexOf(this.scene)
-      if (currentIndex === this.work.scenes.length - 1) {
-        return
-      }
-      this.existScene = this.scene
-      this.scene = this.work.scenes[currentIndex + 1]
     },
     scaleChange (scale) {
       this.scale = scale
