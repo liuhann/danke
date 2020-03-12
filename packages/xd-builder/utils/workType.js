@@ -5,7 +5,7 @@ export default [{
   img: '/res/1x2.png',
   desc: '适用iPhone X/Mate 30等全面屏手机'
 }, {
-  name: '普通屏手机',
+  name: '手机展示',
   width: 360,
   height: 640,
   img: '/res/9x16.jpg',

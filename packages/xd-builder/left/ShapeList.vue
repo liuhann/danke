@@ -1,5 +1,16 @@
 <template>
 <div id="addon-shape-list">
+  <div class="hint">拖拽形状到设计区</div>
+  <div class="basic-shape">
+    <div class="object-item" draggable @dragstart="dragStart({
+      style: {
+        backgroundColor: '#00bf72'
+      }
+    }, $event)" @dragend="dragEnd()">
+      <div class="rectangle">
+      </div>
+    </div>
+  </div>
   <div class="shape-list">
     <div v-for="(object, index) in objects" :key="index" class="object-item" draggable @dragstart="dragStart(object, $event)" @dragend="dragEnd(object)">
       <div class="svg-container" :style="variableStyle(object)" v-html="object.content">
@@ -31,7 +42,6 @@ export default {
   methods: {
     dragStart (object, ev) {
       // stringify image info as text
-      console.log(object)
       ev.dataTransfer.setData('Text', JSON.stringify(object))
       this.draggingImage = true
     },
@@ -51,6 +61,27 @@ export default {
 
 <style lang="scss">
 #addon-shape-list {
+  .basic-shape {
+    display: flex;
+    flex-wrap: wrap;
+    .object-item {
+      width: 98px;
+      height: 100px;
+      margin-bottom: 20px;
+      margin-right: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      &:nth-of-type(3n) {
+        margin-right: 0;
+      }
+      .rectangle {
+        width: 70px;
+        height: 70px;
+        background-color: #00bf72;
+      }
+    }
+  }
   .shape-list {
     display: flex;
     flex-wrap: wrap;
@@ -70,6 +101,7 @@ export default {
         align-items: center;
         svg {
           width: 100%;
+          height: 100%;
         }
       }
     }

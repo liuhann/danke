@@ -13,55 +13,46 @@
 <script>
 const fontTemplates = [{
   text: '添加标题',
-  // 文字大小
-  size: 3,
-  // 颜色
-  color: '#000',
-  // 粗细
-  weight: 400,
-  // 字间距
-  space: 4
-}, {
-  text: '添加子标题',
-  // 文字大小
-  size: 2.2,
-  // 颜色
-  color: '#000',
-  // 粗细
-  weight: 400,
-  // 字间距
-  space: 4
+  style: {
+    fontSize: 4,
+    color: '#333',
+    weight: 700,
+    letterSpacing: 4
+  }
 }, {
   text: '添加标题描述',
-  // 文字大小
-  size: 2.4,
-  // 颜色
-  color: '#000',
-  // 粗细
-  weight: 200,
-  // 字间距
-  space: 4
+  style: {
+    fontSize: 2,
+    color: '#666',
+    weight: 200,
+    letterSpacing: 4
+  }
+}, {
+  text: '添加子标题',
+  style: {
+    fontSize: 2.8,
+    color: '#333',
+    weight: 200,
+    letterSpacing: 4
+  }
 }, {
   text: '添加子描述',
-  // 文字大小
-  size: 1.8,
-  // 颜色
-  color: '#000',
-  // 粗细
-  weight: 200,
-  // 字间距
-  space: 4
+  style: {
+    fontSize: 2,
+    color: '#000',
+    weight: 200,
+    letterSpacing: 4
+  }
 }, {
   text: '添加正文',
-  // 文字大小
-  size: 1.4,
-  // 颜色
-  color: '#000',
-  // 粗细
-  weight: 200,
-  // 字间距
-  space: 4
+  style: {
+    fontSize: 1.6,
+    color: '#000',
+    weight: 200,
+    letterSpacing: 4
+  }
 }]
+
 export default {
   name: 'TextList',
   data () {

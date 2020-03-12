@@ -1,6 +1,6 @@
 <template>
 <div class="scene" :style="sceneStyle">
-  <render-element v-for="element of scene.elements" :work-screen="work.screen"  :key="element.id" :element="element" :screen="viewPort" :stage="stage">
+  <render-element v-for="element of scene.elements" :view-port="viewPort"  :key="element.id" :element="element" :screen="work.screen" :stage="stage">
   </render-element>
 </div>
 </template>

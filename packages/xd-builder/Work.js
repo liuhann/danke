@@ -14,8 +14,10 @@ export default {
     id: 'scene-1',
     style: {
       // 背景为类名
-      multiBackground: {
-        name: 'swirly-love'
+      background: {
+        color: '#fff',
+        name: 'swirly-love',
+        variables: []
       }
     }
   },{
@@ -30,25 +32,33 @@ export default {
       y: 23,
       width: 213,
       height: 345,
-      // 图片类元素
+      // image or svg
       url: '/15011245191/image.jpg',
+      // text content
       text: '文本类元素的正文',
       style: {
-        font: {
-          // 文字大小
-          size: 2.2,
-          // 颜色
-          color: '#fff',
-          // 粗细
-          weight: 400,
-          // 字间距
-          space: 4,
+        // direct style writing
+        backgroundColor: '#00bf72',
+        // 文字大小
+        fontSize: 2.2,
+        // 颜色
+        color: '#fff',
+        // 粗细
+        fontWeight: 400,
+        // 字间距
+        letterSpacing: 4,
+        // class style with variables
+        background: {
+          name: '',
+          variables: []
         },
         // 边框样式
         border: {
           name: '',
           variables: []
-        },
+        }
+      },
+      animation: {
         // 进入特效
         enters: [{
           // 名称，供配置展示用

@@ -144,6 +144,10 @@ aside.insert-container {
     }
   }
   .element-container {
+    .hint {
+      margin: 10px 0;
+      color: hsla(0,0%,100%,.5);
+    }
     background: #293039;
     padding-left: 16px;
     padding-right: 16px;

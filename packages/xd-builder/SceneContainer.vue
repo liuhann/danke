@@ -11,7 +11,7 @@
             stage="enters"
             :element="element"
             :screen="screen"
-            :work-screen="screen"
+            :view-port="screen"
             :key="element.id"
             :index="index"
             :ref="element.id"/>
@@ -325,12 +325,15 @@ export default {
       const node = this.createElement()
       let width = 100
       let height = 100
+
       if (element.width && element.height) {
         // 获取元素自适应到整个画面的高度和宽度
         const fit = fitRectIntoBounds(element, this.screen)
         width = fit.width
         height = fit.height
       }
+
+      // svg 图片处理 content -> svg
       if (element.content) {
         const vb = getSVGViewBox(element.content)
         if (vb) {
@@ -338,12 +341,17 @@ export default {
           height = vb.height
           node.isRatioFixed = true
         }
+        node.svg = element._id
       }
+      // 文本增加
       if (element.text) {
         node.text = element.text
-        delete element.text
-        node.style.font = element
       }
+      // 放置的图片
+      if (element.url) {
+        node.url = element.url
+      }
+      Object.assign(node.style, element.style)
       node.x = ev.offsetX - width / 2
       node.y = ev.offsetY - height / 2
       node.width = width
@@ -351,16 +359,6 @@ export default {
       // 自动适应到屏幕内部 避免溢出
       node.x = (node.x < 0) ? 0 : node.x
       node.y = (node.y < 0) ? 0 : node.y
-      if (element.url) {
-        // 放置的图片
-        node.url = element.url
-      }
-      if (element.content) {
-        node.svg = element._id
-      }
-      if (element.variables) {
-        node.colors = element.variables
-      }
       this.scene.elements.push(node)
       this.setElementSelected(node)
       this.$nextTick(() => {

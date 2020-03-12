@@ -14,7 +14,7 @@
         background: c.split(' ')[1]
       }" />
     </div>
-    <div class="addon-title">
+    <div class="addon-title" v-if="!isPure">
       <span class="content">颜色渐变</span>
       <el-popover
         placement="top-start"
@@ -30,15 +30,15 @@
       <a class="more" v-if="!gradientMore" @click="showMoreGradient">查看更多</a>
       <a class="more" v-if="gradientMore" @click="showLessGradient">收起</a>
     </div>
-    <div class="gradient-colors">
+    <div class="gradient-colors" v-if="!isPure">
       <div class="gradient-block" v-for="(g, index) in gradientColors" :key="index" :style="{
         background: `linear-gradient(${angle}deg, ${g[0]} 0%, ${g[1]} 100%)`
       }" @click="selectGradient(g)"/>
     </div>
-    <div class="addon-title">
+    <div class="addon-title" v-if="!isPure">
       <span class="content">多重渐变</span>
     </div>
-    <div class="background-colors">
+    <div class="background-colors" v-if="!isPure">
       <div class="background-block" v-for="(bg, index) in backgroundColors" :key="index" :class="bg.name" @click="selectBackground(bg)"/>
     </div>
   </div>
@@ -66,6 +66,10 @@ export default {
     },
     elements: {
       type: Array
+    },
+    isPure: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -83,12 +87,15 @@ export default {
     this.styledao = new RestDAO(this.ctx, 'danke/style')
   },
   mounted () {
-    this.loadBackgrounds()
+    if (!this.isPure) {
+      this.loadBackgrounds()
+    }
   },
   methods: {
     selectColor (color) {
       this.setStyle('multiBackground', null)
       this.setStyle('background', color)
+      this.setFontColor(color)
     },
     selectGradient  (g) {
       this.setStyle('multiBackground', null)
@@ -121,6 +128,17 @@ export default {
           this.$set(this.scene.style, key, value)
         } else {
           delete this.scene.style[key]
+        }
+      }
+    },
+
+    setFontColor (value) {
+      debugger
+      if (this.elements) {
+        for (let element of this.elements) {
+          if (element.style.font) {
+            element.style.font.color = value
+          }
         }
       }
     },
@@ -211,7 +229,7 @@ export default {
       background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==")
     }
     &:hover, &.selected {
-       cursor: pointer;
+      cursor: pointer;
       transition: box-shadow .2s linear;
       border: none;
       box-shadow: 0 0 0 2px #00c4cc, inset 0 0 0 2px #fff;

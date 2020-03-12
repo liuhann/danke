@@ -3,14 +3,14 @@
      @click="elementClicked"
      class="element" :class="elementClass" :style="elementStyle">
   <!--图片渲染-->
-  <img v-if="element.url" :id="'img-' + (element.name || element.id)" :src="getImageUrl(element.url, screen.width, screen.height)">
+  <img v-if="element.url" :id="'img-' + (element.name || element.id)" :src="getImageUrl(element.url, viewPort.width, viewPort.height)">
   <div v-if="element.svg" class="svg-content" v-html="elementSVGContent">
   </div>
   <!--文本渲染情况下 文本内容-->
-  <span v-if="element.text != null && !element.editing" :style="textStyle">{{element.text}}</span>
-  <textarea v-if="element.text != null && element.editing" :style="textStyle" v-model="element.text"/>
+  <span class="text" v-if="element.text != null && !element.editing">{{element.text}}</span>
+  <textarea v-if="element.text != null && element.editing" v-model="element.text"/>
   <div v-if="element.elements" class="block">
-    <render-element v-for="(el, i) in element.elements" :key="el.id" :screen="screen" :element="el" :index="i" ></render-element>
+    <render-element v-for="(el, i) in element.elements" :key="el.id" :screen="viewPort" :element="el" :index="i" ></render-element>
   </div>
 </div>
 </template>
@@ -31,10 +31,10 @@ export default {
       type: String,
       default: 'enters'
     },
-    screen: {
+    viewPort: {
       type: Object
     },
-    workScreen: {
+    screen: {
       type: Object
     },
     element: { // 元素定义
@@ -54,7 +54,7 @@ export default {
     elementClass () {
       let result = []
       if (this.element.hidden) {
-        result.push(this.hidden)
+        result.push('hidden')
       }
       for (let key in this.element.style) {
         if (this.element.style[key].name) {
@@ -63,49 +63,30 @@ export default {
       }
       return result
     },
-    borderClass () {
-      if (this.element.style && this.element.style.border) {
-        return this.element.style.border.name
-      } else {
-        return null
-      }
-    },
     elementStyle () {
       const style = {}
-      Object.assign(style, getRectPositionStyle(this.element, this.workScreen, this.screen), this.elementAnimationStyle)
-      // 根据border扩展设置， 展示扩展的属性
-      if (this.element.style && this.element.style.border && this.element.style.border.variables) {
-        for (let variable of this.element.style.border.variables) {
-          if (variable.type === 'number') {
-            Object.assign(style, {
-              ['--' + variable.name]: variable.value + 'px'
-            })
-          } else {
-            Object.assign(style, {
-              ['--' + variable.name]: variable.value
-            })
+      Object.assign(style, getRectPositionStyle(this.element, this.screen, this.viewPort), this.elementAnimationStyle)
+      for (let key in this.element.style) {
+        if (typeof this.element.style[key] === 'string') {
+          Object.assign(style, {
+            [key]: this.element.style[key]
+          })
+        }
+        if (style.variables) {
+          for (let variable of style.variables) {
+            if (variable.type === 'number') {
+              Object.assign(style, {
+                ['--' + variable.name]: variable.value + 'px'
+              })
+            } else {
+              Object.assign(style, {
+                ['--' + variable.name]: variable.value
+              })
+            }
           }
         }
       }
-      // 可配置颜色变量
-      if (this.element.colors) {
-        for (let variable of this.element.colors) {
-          Object.assign(style, {
-            ['--' + variable.name]: variable.value
-          })
-        }
-      }
       style.perspective = (this.element.width + this.element.height) + 'px'
-      return style
-    },
-
-    textStyle () {
-      const style = {
-        color: this.element.style.font.color,
-        fontWeight: this.element.style.font.weight,
-        letterSpacing: this.element.style.font.space,
-        fontSize: this.element.style.font.size + 'em'
-      }
       return style
     },
     /**
@@ -113,7 +94,7 @@ export default {
      */
     elementAnimationStyle () {
       const element = this.element
-      const animations = element.style[this.stage]
+      const animations = element.animation[this.stage]
       if (animations && animations.length) {
         // 单个动画
         if (animations.length === 1) {

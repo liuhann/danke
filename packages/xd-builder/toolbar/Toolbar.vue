@@ -43,7 +43,7 @@
       popper-class="toolbar-pop"
       width="360"
       trigger="click">
-      <i class="icon icon-scene-bg" :class="sceneClass" slot="reference" :style="toolbarSceneBackgroundStyle"/>
+      <i class="icon choose-color" :class="sceneClass" slot="reference" :style="toolbarSceneBackgroundStyle"/>
       <color-list :scene="scene"></color-list>
     </el-popover>
   </keep-alive>
@@ -63,12 +63,23 @@
       :value="item.value">
     </el-option>
   </el-select>
-  <a class="action" v-if="selectedTexts.length" style="padding: 0 10px;font-weight: bold;">B</a>
+  <a class="action" v-if="selectedTexts.length" @click="toggleFontBold" :class="isFontBold? 'on': ''" style="padding: 0 10px;font-weight: bold;">B</a>
+  <!--  设置文字颜色-->
+  <keep-alive>
+    <el-popover
+      v-if="selectedTexts.length"
+      placement="bottom-start"
+      popper-class="toolbar-pop"
+      width="360"
+      trigger="click">
+      <i class="icon choose-color" slot="reference" :style="styleFontColor"/>
+      <color-list :elements="selectedTexts" :is-pure="true"></color-list>
+    </el-popover>
+  </keep-alive>
 
   <div class="pull-right">
     <a class="action" v-if="selectedElements.length > 1" @click="groupSelectedElement">组合</a>
     <a class="action" v-if="selectedElements.length === 1 && selectedElements[0].elements && selectedElements[0].elements.length" @click="unGroupBlock">取消组合</a>
-
     <span v-if="selectedElements.length === 0">
       <a class="action" @click="scaleDown">
         <i class="el-icon-minus"></i>
@@ -162,6 +173,18 @@ export default {
         }
       }
     },
+    isFontBold () {
+      if (this.selectedTexts.length) {
+        return this.selectedTexts[0].style.font.weight > 500
+      } else {
+        return false
+      }
+    },
+    styleFontColor () {
+      return {
+        backgroundColor: this.selectedTexts[0].style.font.color
+      }
+    },
     selectedElements () {
       if (this.scene && this.scene.elements) {
         return this.scene.elements.filter(el => el.selected)
@@ -214,6 +237,21 @@ export default {
     }
   },
   methods: {
+    toggleFontBold () {
+      if (this.selectedTexts.length) {
+        let fontWeight = this.selectedTexts[0].style.font.weight
+
+        if (fontWeight < 500) {
+          fontWeight = 800
+        } else {
+          fontWeight = 200
+        }
+        for (let textElement of this.selectedTexts) {
+          textElement.style.font.weight = fontWeight
+        }
+      }
+    },
+
     removeSelectedElement () {
       for (let element of this.selectedElements) {
         element.selected = false
@@ -375,9 +413,18 @@ export default {
   .el-button {
     padding: 0;
   }
-  .icon-scene-bg {
+  .choose-color {
     border: 1px solid #ccc;
     border-radius: 4px;
+    cursor: pointer;
+    width: 26px;
+    height: 26px;
+    &:hover, &.selected {
+      cursor: pointer;
+      transition: box-shadow .2s linear;
+      border: none;
+      box-shadow: 0 0 0 2px #00c4cc, inset 0 0 0 2px #fff;
+    }
   }
   span.info {
     line-height: 28px;

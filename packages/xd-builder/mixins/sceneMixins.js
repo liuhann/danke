@@ -16,7 +16,9 @@ export default {
       const scene = {
         id: shortid(),
         elements: [],
-        style: {},
+        style: {
+          backgroundColor: 'transparent'
+        },
         z: 100
       }
       this.insertScene(scene)
