@@ -3,13 +3,14 @@
   <div class="content-title">我的作品</div>
   <div class="my-work-list" ref="myWorkList">
     <div class="work" v-for="work in works" :key="work.id">
-      <render-scene :work="work" :scene="work.scenes[0]" :view-port="work.viewport" @click="editWork(work)"/>
+      <render-scene :work="work" :scene="work.scenes[0]" :view-port="work.viewport"/>
       <div class="actions">
         <div class="name">
+          {{work.name}}
         </div>
         <div class="btns">
           <i class="el-icon-delete" @click="removeWork(work)"/>
-          <i class="el-icon-edit" />
+          <i class="el-icon-edit" @click="editWork(work)"/>
         </div>
       </div>
     </div>
@@ -75,8 +76,20 @@ export default {
     .work {
       height: 296px;
       margin: 20px 16px;
-      .btns {
+      .actions {
         display: flex;
+        padding: 10px 0;
+        .name {
+          flex: 1;
+        }
+        .btns {
+          display: flex;
+          i {
+            font-size: 16px;
+            cursor: pointer;
+            margin: 0 10px;
+          }
+        }
       }
     }
   }

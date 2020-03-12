@@ -379,7 +379,7 @@ export default {
         width: 100,
         height: 100,
         style: {},
-        prop: {},
+        animation: {},
         selected: false
       }
       return node
