@@ -62,14 +62,14 @@ export default {
   computed: {
     enterAnimations () {
       if (this.elements && this.elements.length) {
-        return this.elements[0].style.enters || []
+        return this.elements[0].animation.enters || []
       } else {
         return []
       }
     },
     existAnimations () {
       if (this.elements && this.elements.length) {
-        return this.elements[0].style.exists || []
+        return this.elements[0].animation.exists || []
       } else {
         return []
       }
@@ -95,7 +95,7 @@ export default {
       // 给选中的元素增加动画
       if (this.elements && this.elements.length) {
         for (let element of this.elements) {
-          this.$set(element.style, type, [info])
+          this.$set(element.animation, type, [info])
         }
       }
     }

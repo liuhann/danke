@@ -9,8 +9,6 @@ function createSheet (id) {
     style.id = id
   }
   // Add a media (and/or media query) here if you'd like!
-  // style.setAttribute("media", "screen")
-  // style.setAttribute("media", "only screen and (max-width : 1024px)")
 
   // WebKit hack :(
   style.appendChild(document.createTextNode(''))
@@ -50,7 +48,7 @@ function addKeyFrames (sheet, name, frames) {
 function addAnimation (sheet, animation) {
   let pos = sheet.length
   const rule = `.${animation.name} {
-    animation: ${animation.name} ${animation.duration}ms ${animation.timing} ${animation.infinite ? 'infinite' : animation.iteration} both
+    animation: ${animation.name} ${animation.duration}ms ${animation.timing} both
   }`
   sheet.insertRule(rule, pos)
 }
@@ -120,14 +118,16 @@ export default class StyleRegistry {
     for (let scene of work.scenes) {
       for (let element of scene.elements) {
         for (let key in element.style) {
-          // 动画从keyframes 抽取
-          if (key === 'enters' || key === 'exists') {
-            for (let animation of element.style[key]) {
-              frames[animation.name] = this.keyframes[animation.name]
-            }
-          } else if (element.style[key].name) {
-            // 其他样例类从styles抽取
+          // 抽取class类型name
+          if (element.style[key].name) {
             styles[key] = this.styles[element.style[key].name]
+          }
+        }
+        // element.animation.enters = [{name: 'fade-in'}]
+        // element.animation.exists = [{name: 'fade-out'}]
+        for (let key in element.animation) {
+          for (let anima of element.animation[key]) {
+            frames[anima.name] = this.keyframes[anima.name]
           }
         }
         if (element.svg) {

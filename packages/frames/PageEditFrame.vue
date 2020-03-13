@@ -27,26 +27,6 @@
                 <el-option value="text" />
               </el-select>
             </el-form-item>
-            <el-form-item label="标签">
-              <el-tag
-                :key="tag"
-                v-for="tag in animation.tags"
-                closable
-                :disable-transitions="false"
-                @close="handleClose(tag)">
-                {{tag}}
-              </el-tag>
-              <el-input
-                class="input-new-tag"
-                v-if="inputVisible"
-                v-model="inputValue"
-                ref="saveTagInput"
-                size="mini"
-                @keyup.enter.native="handleInputConfirm"
-                @blur="handleInputConfirm"
-              />
-              <el-button v-else type="text" class="button-new-tag" size="mini" @click="showInput" icon="el-icon-plus">标签</el-button>
-            </el-form-item>
             <el-form-item label="样式文本">
               <el-input type="textarea" v-model="animation.cssFrame" :rows="10" />
             </el-form-item>
@@ -205,11 +185,13 @@ export default {
         return
       }
       const result = await this.framedao.createOrPatch(this.animation)
-      this.animation._id = result.object._id
       if (result.code === 409) {
         Message.error('动画名称和现有的冲突')
       } else {
         Message.success('保存成功')
+        setTimeout(() => {
+          window.close()
+        }, 500)
       }
     }
   }

@@ -9,6 +9,11 @@ export default {
       total: 0
     }
   },
+  computed: {
+    filter () {
+      return  {}
+    }
+  },
   created () {
     this.dao = new RestDAO(this.ctx, this.restPath)
   },
@@ -17,10 +22,10 @@ export default {
   },
   methods: {
     async loadObjects () {
-      const result = await this.dao.list({
+      const result = await this.dao.list(Object.assign({
         page: this.page,
-        count: this.pageSize
-      })
+        count: this.pageSize,
+      }, this.filter))
       this.total = result.total
       this.objects = result.list
       this.objectUpdated()

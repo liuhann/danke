@@ -34,7 +34,6 @@
 </template>
 
 <script>
-import RestDAO from '../common/dao/restdao'
 import objectListMixin from '../common/components/objectListMixin'
 import NavBar from '../site/components/NavBar.vue'
 import CLOUD_HILL from './cloud-hill.webp'

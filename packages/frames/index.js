@@ -4,7 +4,7 @@ export default {
     path: '/frame/edit',
     component: () => import(/* webpackChunkName: "frames-tool" */'./PageEditFrame.vue')
   }, {
-    path: '/frames',
+    path: '/frame/list',
     component: () => import(/* webpackChunkName: "frames-tool" */'./PageFrameList.vue')
   }],
   async onload (ctx) {

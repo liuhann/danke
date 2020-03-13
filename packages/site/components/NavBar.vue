@@ -8,10 +8,13 @@
       </div>
       <div class="navbar-end">
         <div class="navbar-item">
-          <router-link to="/vector/list">渐变矢量</router-link>
+          <router-link to="/vector/list">绘色</router-link>
         </div>
         <div class="navbar-item">
-          <router-link to="/clippath/list">矢量裁切</router-link>
+          <router-link to="/frame/list">动画</router-link>
+        </div>
+        <div class="navbar-item">
+          <router-link to="/clippath/list">剪裁</router-link>
         </div>
         <div class="navbar-item" v-if="!avatar">
           <div class="buttons">
