@@ -1,5 +1,20 @@
 <template>
 <div id="tool-bar">
+  <!--  设置颜色变量-->
+  <template v-for="(variable, index) in elementStyleVariables">
+    <el-popover
+      v-if="variable.type === 'color'"
+      placement="bottom-start"
+      popper-class="toolbar-pop"
+      width="360"
+      trigger="click">
+      <i class="icon choose-color" :class="sceneClass" slot="reference" :style="{
+        backgroundColor: variable.value
+      }"/>
+      <color-list :variable="variable" is-color></color-list>
+    </el-popover>
+  </template>
+
   <keep-alive>
     <el-popover
       v-if="selectedElements.length || selectedTexts.length"
@@ -11,7 +26,6 @@
       <animation-tabs slot="default" :elements="this.selectedElements"/>
     </el-popover>
   </keep-alive>
-  <a class="action" @click="log">El</a>
 
   <!-- 给图片及文字设置边框 -->
   <keep-alive>
@@ -73,7 +87,7 @@
       width="360"
       trigger="click">
       <i class="icon choose-color" slot="reference" :style="styleFontColor"/>
-      <color-list :elements="selectedTexts" :is-pure="true"></color-list>
+      <color-list :elements="selectedTexts" :is-color="true"></color-list>
     </el-popover>
   </keep-alive>
 
@@ -162,29 +176,42 @@ export default {
     fontSize: {
       get: function () {
         if (this.selectedTexts.length) {
-          return this.selectedTexts[0].style.font.size
+          return this.selectedTexts[0].style.fontSize
         } else {
           return 10
         }
       },
       set: function (size) {
         for (let element of this.selectedTexts) {
-          element.style.font.size = size
+          element.style.fontSize = size
         }
       }
     },
     isFontBold () {
       if (this.selectedTexts.length) {
-        return this.selectedTexts[0].style.font.weight > 500
+        return this.selectedTexts[0].style.weight > 500
       } else {
         return false
       }
     },
     styleFontColor () {
       return {
-        backgroundColor: this.selectedTexts[0].style.font.color
+        backgroundColor: this.selectedTexts[0].style.color
       }
     },
+
+    elementStyleVariables () {
+      let variables = []
+      if (this.selectedElements.length === 1) {
+        for (let key in  this.selectedElements[0].style) {
+          if (this.selectedElements[0].style[key].variables) {
+            variables = variables.concat(this.selectedElements[0].style[key].variables)
+          }
+        }
+      }
+      return variables
+    },
+
     selectedElements () {
       if (this.scene && this.scene.elements) {
         return this.scene.elements.filter(el => el.selected)
@@ -239,7 +266,7 @@ export default {
   methods: {
     toggleFontBold () {
       if (this.selectedTexts.length) {
-        let fontWeight = this.selectedTexts[0].style.font.weight
+        let fontWeight = this.selectedTexts[0].style.weight
 
         if (fontWeight < 500) {
           fontWeight = 800
@@ -247,7 +274,7 @@ export default {
           fontWeight = 200
         }
         for (let textElement of this.selectedTexts) {
-          textElement.style.font.weight = fontWeight
+          textElement.style.weight = fontWeight
         }
       }
     },
@@ -419,11 +446,12 @@ export default {
     cursor: pointer;
     width: 26px;
     height: 26px;
+    margin: 0 5px;
     &:hover, &.selected {
       cursor: pointer;
       transition: box-shadow .2s linear;
-      border: none;
-      box-shadow: 0 0 0 2px #00c4cc, inset 0 0 0 2px #fff;
+      border: 1px solid transparent;
+      box-shadow: 0 0 0 1px #00c4cc, inset 0 0 0 2px #fff;
     }
   }
   span.info {

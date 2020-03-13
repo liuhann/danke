@@ -56,6 +56,10 @@ export default {
         border: {
           name: '',
           variables: []
+        },
+        svg: {
+          name: 'fill',
+          variables: [],
         }
       },
       animation: {

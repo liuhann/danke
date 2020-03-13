@@ -15,7 +15,7 @@ const fontTemplates = [{
   text: '添加标题',
   style: {
     fontSize: 4,
-    color: '#333',
+    background: '#333',
     weight: 700,
     letterSpacing: 4
   }
@@ -23,7 +23,7 @@ const fontTemplates = [{
   text: '添加标题描述',
   style: {
     fontSize: 2,
-    color: '#666',
+    background: '#666',
     weight: 200,
     letterSpacing: 4
   }
@@ -31,7 +31,7 @@ const fontTemplates = [{
   text: '添加子标题',
   style: {
     fontSize: 2.8,
-    color: '#333',
+    background: '#333',
     weight: 200,
     letterSpacing: 4
   }
@@ -39,7 +39,7 @@ const fontTemplates = [{
   text: '添加子描述',
   style: {
     fontSize: 2,
-    color: '#000',
+    background: '#000',
     weight: 200,
     letterSpacing: 4
   }

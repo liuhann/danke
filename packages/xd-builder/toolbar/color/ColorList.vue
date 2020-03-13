@@ -14,7 +14,7 @@
         background: c.split(' ')[1]
       }" />
     </div>
-    <div class="addon-title" v-if="!isPure">
+    <div class="addon-title" v-if="!isColor">
       <span class="content">颜色渐变</span>
       <el-popover
         placement="top-start"
@@ -30,15 +30,15 @@
       <a class="more" v-if="!gradientMore" @click="showMoreGradient">查看更多</a>
       <a class="more" v-if="gradientMore" @click="showLessGradient">收起</a>
     </div>
-    <div class="gradient-colors" v-if="!isPure">
+    <div class="gradient-colors" v-if="!isColor">
       <div class="gradient-block" v-for="(g, index) in gradientColors" :key="index" :style="{
         background: `linear-gradient(${angle}deg, ${g[0]} 0%, ${g[1]} 100%)`
       }" @click="selectGradient(g)"/>
     </div>
-    <div class="addon-title" v-if="!isPure">
+    <div class="addon-title" v-if="!isColor">
       <span class="content">多重渐变</span>
     </div>
-    <div class="background-colors" v-if="!isPure">
+    <div class="background-colors" v-if="!isColor">
       <div class="background-block" v-for="(bg, index) in backgroundColors" :key="index" :class="bg.name" @click="selectBackground(bg)"/>
     </div>
   </div>
@@ -53,6 +53,10 @@ import darks from './darks'
 import RestDAO from '../../../common/dao/restdao'
 
 const defaultColors = ['黑色 #000000', '深灰色 #545454', '灰色 #737373', '灰色 #a6a6a6', '浅灰色 #d9d9d9', '白色 #ffffff', '亮红色 #ff1616', '珊瑚红色 #ff5757', '粉色 #ff66c4', '紫红色 #cb6ce6', '紫色 #8c52ff', '紫罗兰色 #5e17eb', '深宝石绿色 #03989e', '水蓝色 #00c2cb', '湖蓝色 #5ce1e6', '浅蓝色 #38b6ff', '宝蓝色 #5271ff', '深蓝色 #004aad', '绿色 #008037', '草绿色 #7ed957', '黄绿色 #c9e265', '黄色 #ffde59', '桃红色 #ffbd59', '橙色 #ff914d']
+
+/**
+ * 使用场景
+ */
 export default {
   name: 'ColorList',
   components: {
@@ -61,20 +65,29 @@ export default {
     [Button.name]: Button
   },
   props: {
+    mode: {
+      type: String,
+      default: 'background'
+    },
+    // 设置单个变量
+    variable: {
+      type: Object
+    },
+    // 设置场景背景
     scene: {
       type: Object
     },
+    // 设置多个元素的颜色 （文字） 或者设置多个矩形元素的背景
     elements: {
       type: Array
     },
-    isPure: {
+    isColor: {
       type: Boolean,
       default: false
     }
   },
   data () {
     return {
-      currentColor: null,
       colors: [],
       angle: 0,
       gradientColors: lights.slice(0, 4).concat(darks.slice(0, 4)),
@@ -83,39 +96,51 @@ export default {
       gradientMore: false
     }
   },
+  computed: {
+    currentColor : {
+      set (val) {
+        this.selectColor(val)
+      },
+      get () {
+        if (this.variable) {
+          return this.variable.value
+        } else if (this.elements) {
+          return this.elements[0].style.color
+        } else {
+          return null
+        }
+      }
+    }
+  },
   created () {
     this.styledao = new RestDAO(this.ctx, 'danke/style')
   },
   mounted () {
-    if (!this.isPure) {
+    if (!this.isColor) {
       this.loadBackgrounds()
     }
   },
   methods: {
     selectColor (color) {
-      this.setStyle('multiBackground', null)
-      this.setStyle('background', color)
-      this.setFontColor(color)
+      this.setStyle(this.mode, color)
     },
     selectGradient  (g) {
-      this.setStyle('multiBackground', null)
       this.setStyle('background', `linear-gradient(${this.angle}deg, ${g[0]} 0%, ${g[1]} 100%)`)
     },
-
     selectBackground (bg) {
-      this.setStyle('background', null)
-      this.setStyle('multiBackground', {
+      this.setStyle('background', {
         name: bg.name
       })
     },
-
     /**
      * set style to elements or scene itself
      * @param key
      * @param value
      */
     setStyle (key, value) {
-      if (this.elements) {
+      if (this.variable) {
+        this.variable.value = value
+      } else if (this.elements) {
         for (let element of this.elements) {
           if (value) {
             this.$set(element.style, key, value)
@@ -133,7 +158,6 @@ export default {
     },
 
     setFontColor (value) {
-      debugger
       if (this.elements) {
         for (let element of this.elements) {
           if (element.style.font) {

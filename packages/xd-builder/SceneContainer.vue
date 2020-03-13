@@ -322,6 +322,7 @@ export default {
       ev.preventDefault()
       const data = ev.dataTransfer.getData('Text')
       const element = JSON.parse(data)
+      console.log(element)
       const node = this.createElement()
       let width = 100
       let height = 100
@@ -340,6 +341,11 @@ export default {
           width = vb.width
           height = vb.height
           node.isRatioFixed = true
+        }
+        // 设置SVG的颜色填充变量
+        node.style.svg = {
+          name: 'fill',
+          variables: element.variables
         }
         node.svg = element._id
       }

@@ -116,6 +116,12 @@ export default class StyleRegistry {
     const styles = {} // css 样式资源
     const svgs = {}
     for (let scene of work.scenes) {
+      for (let key in scene.style) {
+        // 抽取class类型name
+        if (scene.style[key].name) {
+          styles[key] = this.styles[scene.style[key].name]
+        }
+      }
       for (let element of scene.elements) {
         for (let key in element.style) {
           // 抽取class类型name

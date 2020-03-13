@@ -1,5 +1,5 @@
 <template>
-<div class="scene" :style="sceneStyle">
+<div class="scene" :style="sceneStyle" :class="sceneClass">
   <render-element v-for="element of scene.elements" :view-port="viewPort"  :key="element.id" :element="element" :screen="work.screen" :stage="stage">
   </render-element>
 </div>
@@ -31,6 +31,15 @@ export default {
     }
   },
   computed: {
+    sceneClass () {
+      const classes = []
+      for (let key in this.scene.style) {
+        if (this.scene.style[key] && this.scene.style[key].name) {
+          classes.push(this.scene.style[key].name)
+        }
+      }
+      return classes
+    },
     sceneStyle () {
       const styles = {
         width: this.viewPort.width + 'px',
