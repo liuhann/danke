@@ -156,19 +156,19 @@ export default {
       scale: 1,
       fontSizeOptions: [{
         label: '1',
-        value: 1
+        value: '1em'
       }, {
         label: '1.4',
-        value: 1.4
+        value: '1.4em'
       }, {
         label: '1.6',
-        value: 1.6
+        value: '1.6em'
       },{
-        label: '1.8',
-        value: 1.8
-      }, {
         label: '2',
-        value: 2
+        value: '2em'
+      }, {
+        label: '3',
+        value: '3em'
       }]
     }
   },

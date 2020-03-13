@@ -64,7 +64,8 @@ export default {
       return result
     },
     elementStyle () {
-      const style = {}
+      const style = {
+      }
       Object.assign(style, getRectPositionStyle(this.element, this.screen, this.viewPort), this.elementAnimationStyle)
       for (let key in this.element.style) {
         const styled = this.element.style[key]
@@ -88,6 +89,7 @@ export default {
         }
       }
       style.perspective = (this.element.width + this.element.height) + 'px'
+      style['-webkit-background-clip'] = 'text'
       return style
     },
     /**
@@ -173,6 +175,7 @@ export default {
     width: 100%;
     font-family: 'Karla',Microsoft YaHei,tahoma,arial,Hiragino Sans GB,sans-serif;
   }
+  color: transparent;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   span.text {

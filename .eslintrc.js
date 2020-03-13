@@ -3,11 +3,12 @@ module.exports = {
   env: {
     node: true
   },
-  rules: {
-    'no-console': 'off',
-    'no-debugger': 'off'
-  },
   'extends': [
     'plugin:vue/recommended'
-  ]
+  ],
+  rules: {
+    'no-console': 'off',
+    'no-debugger': 'off',
+    "vue/max-attributes-per-line": 'off'
+  }
 }
