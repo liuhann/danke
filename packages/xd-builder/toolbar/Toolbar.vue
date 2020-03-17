@@ -62,7 +62,7 @@
     </el-popover>
   </keep-alive>
 
-  <!--  设置字体-->
+  <!--  设置字体粗细-->
   <el-select
     v-if="selectedTexts.length"
     v-model="fontSize"
@@ -77,7 +77,7 @@
       :value="item.value">
     </el-option>
   </el-select>
-  <a class="action" v-if="selectedTexts.length" @click="toggleFontBold" :class="isFontBold? 'on': ''" style="padding: 0 10px;font-weight: bold;">B</a>
+  <a class="action" v-if="selectedTexts.length" @click="toggleFontBold" :style="fontWeightStyle" style="padding: 0 10px;">B</a>
   <!--  设置文字颜色-->
   <keep-alive>
     <el-popover
@@ -87,7 +87,7 @@
       width="360"
       trigger="click">
       <i class="icon choose-color" slot="reference" :style="styleFontColor"/>
-      <color-list :elements="selectedTexts" :is-color="true"></color-list>
+      <color-list :elements="selectedTexts" :is-color="true" mode="color"></color-list>
     </el-popover>
   </keep-alive>
 
@@ -105,7 +105,6 @@
     </span>
 
     <a class="action" v-if="selectedElements.length" @click="removeSelectedElement"><i class="el-icon-delete"/></a>
-
     <a class="action" v-if="selectedElements.length === 0" @click="previousScene"><i class="el-icon-arrow-up" /></a>
     <a class="action" v-if="selectedElements.length === 0" @click="nextScene"><i class="el-icon-arrow-down" /></a>
     <a class="action" v-if="selectedElements.length === 0"> {{scenes.indexOf(scene) + 1}}/{{scenes.length}}</a>
@@ -155,20 +154,41 @@ export default {
     return {
       scale: 1,
       fontSizeOptions: [{
-        label: '1',
-        value: '1em'
+        label: '10',
+        value: '10px'
       }, {
-        label: '1.4',
-        value: '1.4em'
+        label: '12',
+        value: '12px'
       }, {
-        label: '1.6',
-        value: '1.6em'
+        label: '14',
+        value: '14px'
       },{
-        label: '2',
-        value: '2em'
+        label: '16',
+        value: '16px'
       }, {
-        label: '3',
-        value: '3em'
+        label: '18',
+        value: '18px'
+      }, {
+        label: '20',
+        value: '20px'
+      }, {
+        label: '24',
+        value: '24px'
+      }, {
+        label: '28',
+        value: '28px'
+      }, {
+        label: '32',
+        value: '32px'
+      }, {
+        label: '36',
+        value: '36px'
+      }, {
+        label: '40',
+        value: '40px'
+      }, {
+        label: '48',
+        value: '48px'
       }]
     }
   },
@@ -178,7 +198,7 @@ export default {
         if (this.selectedTexts.length) {
           return this.selectedTexts[0].style.fontSize
         } else {
-          return 10
+          return 14
         }
       },
       set: function (size) {
@@ -187,13 +207,17 @@ export default {
         }
       }
     },
-    isFontBold () {
+
+    fontWeightStyle () {
       if (this.selectedTexts.length) {
-        return this.selectedTexts[0].style.weight > 500
+        return {
+          fontWeight: this.selectedTexts[0].style.fontWeight
+        }
       } else {
-        return false
+        return {}
       }
     },
+
     styleFontColor () {
       return {
         backgroundColor: this.selectedTexts[0].style.color
@@ -266,15 +290,13 @@ export default {
   methods: {
     toggleFontBold () {
       if (this.selectedTexts.length) {
-        let fontWeight = this.selectedTexts[0].style.weight
-
-        if (fontWeight < 500) {
-          fontWeight = 800
-        } else {
+        let fontWeight = this.selectedTexts[0].style.fontWeight
+        fontWeight += 200
+        if (fontWeight > 600) {
           fontWeight = 200
         }
         for (let textElement of this.selectedTexts) {
-          textElement.style.weight = fontWeight
+          textElement.style.fontWeight = fontWeight
         }
       }
     },

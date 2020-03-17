@@ -10,6 +10,10 @@ export default {
   style: {
 
   },
+  fonts: [{
+    name: '华文行楷间',
+    url: ''
+  }],
   scenes: [{
     id: 'scene-1',
     style: {
@@ -40,7 +44,7 @@ export default {
         // direct style writing
         backgroundColor: '#00bf72',
         // 文字大小
-        fontSize: 2.2,
+        fontSize: 12,  // px as unit
         // 颜色
         color: '#fff',
         // 粗细

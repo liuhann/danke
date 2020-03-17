@@ -14,41 +14,41 @@
 const fontTemplates = [{
   text: '添加标题',
   style: {
-    fontSize: 4,
-    background: '#333',
-    weight: 700,
+    fontSize: 48,
+    color: '#333',
+    fontWeight: 800,
     letterSpacing: 4
   }
 }, {
   text: '添加标题描述',
   style: {
-    fontSize: 2,
-    background: '#666',
-    weight: 200,
+    fontSize: 24,
+    color: '#666',
+    fontWeight: 400,
     letterSpacing: 4
   }
 }, {
   text: '添加子标题',
   style: {
-    fontSize: 2.8,
-    background: '#333',
-    weight: 200,
+    fontSize: 36,
+    color: '#333',
+    fontWeight: 400,
     letterSpacing: 4
   }
 }, {
   text: '添加子描述',
   style: {
-    fontSize: 2,
-    background: '#000',
-    weight: 200,
+    fontSize: 20,
+    color: '#000',
+    fontWeight: 200,
     letterSpacing: 4
   }
 }, {
   text: '添加正文',
   style: {
-    fontSize: 1.6,
+    fontSize: 14,
     color: '#000',
-    weight: 200,
+    fontWeight: 200,
     letterSpacing: 4
   }
 }]

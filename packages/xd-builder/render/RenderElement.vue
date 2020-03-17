@@ -7,8 +7,8 @@
   <div v-if="element.svg" class="svg-content" v-html="elementSVGContent">
   </div>
   <!--文本渲染情况下 文本内容-->
-  <template v-if="element.text != null && !element.editing">{{element.text}}</template>
-  <textarea v-if="element.text != null && element.editing" v-model="element.text"/>
+  <span v-if="element.text != null && !element.editing" :style="textTransformStyle">{{element.text}}</span>
+  <textarea v-if="element.text != null && element.editing" :style="textEditStyle" v-model="element.text"/>
   <div v-if="element.elements" class="block">
     <render-element v-for="(el, i) in element.elements" :key="el.id" :screen="viewPort" :element="el" :index="i" ></render-element>
   </div>
@@ -63,13 +63,45 @@ export default {
       }
       return result
     },
-    elementStyle () {
+
+    textEditStyle () {
       const style = {
+        fontFamily: `'Karla',Microsoft YaHei,tahoma,arial,Hiragino Sans GB,sans-serif;`
       }
-      Object.assign(style, getRectPositionStyle(this.element, this.screen, this.viewPort), this.elementAnimationStyle)
       for (let key in this.element.style) {
         const styled = this.element.style[key]
         if (typeof styled === 'string') {
+          Object.assign(style, {
+            [key]: styled
+          })
+        }
+        if (typeof styled === 'number') {
+          Object.assign(style, {
+            [key]: styled + 'px'
+          })
+        }
+      }
+      return style
+    },
+
+    // 呈现时根据vp进行进一步缩放
+    elementTextTransform () {
+      if (this.viewPort && this.screen && this.element.text) {
+        return {
+          transform: `scale(${this.viewPort.width/this.screen.width})`,
+          transformOrigin: 'top left'
+        }
+      } else {
+        return  {}
+      }
+    },
+
+    elementStyle () {
+      const style = {}
+      Object.assign(style, getRectPositionStyle(this.element, this.screen, this.viewPort), this.elementAnimationStyle, this.elementTextTransform)
+      for (let key in this.element.style) {
+        const styled = this.element.style[key]
+        if (typeof styled === 'string' || typeof styled === 'number') {
           Object.assign(style, {
             [key]: styled
           })
@@ -89,7 +121,6 @@ export default {
         }
       }
       style.perspective = (this.element.width + this.element.height) + 'px'
-      style['-webkit-background-clip'] = 'text'
       return style
     },
     /**
@@ -170,17 +201,13 @@ export default {
   textarea {
     resize: none;
     border: none;
-    color: #000;
     background: transparent;
     width: 100%;
-    font-family: 'Karla',Microsoft YaHei,tahoma,arial,Hiragino Sans GB,sans-serif;
+    overflow: hidden;
   }
-  color: transparent;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  span.text {
-
-  }
+  /*color: transparent;*/
+  /*-webkit-background-clip: text;*/
+  /*-webkit-text-fill-color: transparent;*/
   img {
     position: absolute;
     z-index: 10;
