@@ -14,39 +14,21 @@
         background: c.split(' ')[1]
       }" />
     </div>
-    <div class="addon-title" v-if="!isColor">
+    <div class="addon-title" v-if="mode === 'background'">
       <span class="content">颜色渐变</span>
-      <el-popover
-        placement="top-start"
-        width="160"
-        trigger="click">
-        <div class="angle-switcher">
-          <div class="pop-title">调整角度</div>
-          <circle-slider class="switcher" :max="360" :side="100" v-model="angle" />
-          <div class="angle">{{ angle }}度</div>
-        </div>
-        <i slot="reference" class="el-icon-setting" />
-      </el-popover>
       <a class="more" v-if="!gradientMore" @click="showMoreGradient">查看更多</a>
       <a class="more" v-if="gradientMore" @click="showLessGradient">收起</a>
     </div>
-    <div class="gradient-colors" v-if="!isColor">
+    <div class="gradient-colors" v-if="mode === 'background'">
       <div class="gradient-block" v-for="(g, index) in gradientColors" :key="index" :style="{
         background: `linear-gradient(${angle}deg, ${g[0]} 0%, ${g[1]} 100%)`
       }" @click="selectGradient(g)"/>
-    </div>
-    <div class="addon-title" v-if="!isColor">
-      <span class="content">多重渐变</span>
-    </div>
-    <div class="background-colors" v-if="!isColor">
-      <div class="background-block" v-for="(bg, index) in backgroundColors" :key="index" :class="bg.name" @click="selectBackground(bg)"/>
     </div>
   </div>
 </div>
 </template>
 
 <script>
-import VueCircleSlider from 'vue-circle-slider'
 import { Popover, ColorPicker, Button } from 'element-ui'
 import lights from './lights'
 import darks from './darks'
@@ -69,21 +51,8 @@ export default {
       type: String,
       default: 'background'
     },
-    // 设置单个变量
-    variable: {
-      type: Object
-    },
-    // 设置场景背景
-    scene: {
-      type: Object
-    },
-    // 设置多个元素的颜色 （文字） 或者设置多个矩形元素的背景
-    elements: {
-      type: Array
-    },
-    isColor: {
-      type: Boolean,
-      default: false
+    color: {
+      type: String
     }
   },
   data () {
@@ -102,13 +71,7 @@ export default {
         this.selectColor(val)
       },
       get () {
-        if (this.variable) {
-          return this.variable.value
-        } else if (this.elements) {
-          return this.elements[0].style.color
-        } else {
-          return null
-        }
+        return this.color
       }
     }
   },
@@ -116,21 +79,14 @@ export default {
     this.styledao = new RestDAO(this.ctx, 'danke/style')
   },
   mounted () {
-    if (!this.isColor) {
-      this.loadBackgrounds()
-    }
+
   },
   methods: {
     selectColor (color) {
-      this.setStyle(this.mode, color)
+      this.$emit('input', color)
     },
     selectGradient  (g) {
-      this.setStyle('background', `linear-gradient(${this.angle}deg, ${g[0]} 0%, ${g[1]} 100%)`)
-    },
-    selectBackground (bg) {
-      this.setStyle('background', {
-        name: bg.name
-      })
+      this.$emit('input', `linear-gradient(${this.angle}deg, ${g[0]} 0%, ${g[1]} 100%)`)
     },
     /**
      * set style to elements or scene itself

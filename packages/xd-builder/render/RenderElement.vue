@@ -7,7 +7,7 @@
   <div v-if="element.svg" class="svg-content" v-html="elementSVGContent">
   </div>
   <!--文本渲染情况下 文本内容-->
-  <span v-if="element.text != null && !element.editing" :style="textTransformStyle">{{element.text}}</span>
+  <span v-if="element.text != null && !element.editing">{{element.text}}</span>
   <textarea v-if="element.text != null && element.editing" :style="textEditStyle" v-model="element.text"/>
   <div v-if="element.elements" class="block">
     <render-element v-for="(el, i) in element.elements" :key="el.id" :screen="viewPort" :element="el" :index="i" ></render-element>
@@ -198,6 +198,8 @@ export default {
 .element {
   position: absolute;
   box-sizing: border-box;
+  text-overflow: initial;
+  white-space:nowrap;
   textarea {
     resize: none;
     border: none;

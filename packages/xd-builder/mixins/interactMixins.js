@@ -10,6 +10,7 @@ export default {
       const el = document.getElementById('mask-' + node.id)
       if (el) {
         interact(el).draggable({
+          allowFrom: '.drag-handle',
           onstart: event => {},
           inertia: true,
           onmove: event => {

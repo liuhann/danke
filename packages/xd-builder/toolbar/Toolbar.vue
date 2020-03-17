@@ -2,22 +2,21 @@
 <div id="tool-bar">
   <!--  设置颜色变量-->
   <template v-for="(variable, index) in elementStyleVariables">
-    <el-popover
-      v-if="variable.type === 'color'"
-      placement="bottom-start"
-      popper-class="toolbar-pop"
-      width="360"
-      trigger="click">
-      <i class="icon choose-color" :class="sceneClass" slot="reference" :style="{
-        backgroundColor: variable.value
-      }"/>
-      <color-list :variable="variable" is-color></color-list>
-    </el-popover>
+    <color-pop-picker :key="index" v-if="variable.type === 'color'" :color="variable.value" model="color" @input="variableColorInput(variable, $event)"/>
+  </template>
+  <template v-if="selectedElements.length === 0">
+    <!-- 设置场景背景 -->
+    <color-pop-picker :color="scene.style.background" mode="background" @input="sceneBackgroundChange"/>
+  </template>
+  <template v-if="focusedElement && focusedElement.style.background">
+    <!-- 设置场景背景 -->
+    <color-pop-picker :color="focusedElement.style.background" mode="background" @input="elementBackgroundChange"/>
   </template>
 
+  <!--元素动画效果设置-->
   <keep-alive>
     <el-popover
-      v-if="selectedElements.length || selectedTexts.length"
+      v-if="selectedElements.length"
       placement="bottom-start"
       popper-class="toolbar-pop"
       width="360"
@@ -27,7 +26,7 @@
     </el-popover>
   </keep-alive>
 
-  <!-- 给图片及文字设置边框 -->
+  <!-- 边框修饰扩展 -->
   <keep-alive>
     <el-popover
       v-if="selectedImages.length"
@@ -39,6 +38,7 @@
     </el-popover>
   </keep-alive>
 
+  <!--元素变换、旋转、拉伸等-->
   <keep-alive>
     <el-popover
       v-if="selectedElements.length"
@@ -46,19 +46,6 @@
       width="200"
       trigger="click">
       <a class="action" slot="reference" title="变换"><i class="el-icon-connection" /></a>
-    </el-popover>
-  </keep-alive>
-
-  <!-- 设置场景背景 -->
-  <keep-alive>
-    <el-popover
-      v-if="scene && selectedElements.length === 0"
-      placement="bottom-start"
-      popper-class="toolbar-pop"
-      width="360"
-      trigger="click">
-      <i class="icon choose-color" :class="sceneClass" slot="reference" :style="toolbarSceneBackgroundStyle"/>
-      <color-list :scene="scene"></color-list>
     </el-popover>
   </keep-alive>
 
@@ -79,19 +66,10 @@
   </el-select>
   <a class="action" v-if="selectedTexts.length" @click="toggleFontBold" :style="fontWeightStyle" style="padding: 0 10px;">B</a>
   <!--  设置文字颜色-->
-  <keep-alive>
-    <el-popover
-      v-if="selectedTexts.length"
-      placement="bottom-start"
-      popper-class="toolbar-pop"
-      width="360"
-      trigger="click">
-      <i class="icon choose-color" slot="reference" :style="styleFontColor"/>
-      <color-list :elements="selectedTexts" :is-color="true" mode="color"></color-list>
-    </el-popover>
-  </keep-alive>
+  <color-pop-picker v-if="selectedTexts.length === 1" :color="focusedElement.style.color" mode="color" @input="fontColorChanged"/>
 
   <div class="pull-right">
+    <a class="action" v-if="selectedElements.length > 0" @click="copySelectedElement"><i class="el-icon-document-copy" /></a>
     <a class="action" v-if="selectedElements.length > 1" @click="groupSelectedElement">组合</a>
     <a class="action" v-if="selectedElements.length === 1 && selectedElements[0].elements && selectedElements[0].elements.length" @click="unGroupBlock">取消组合</a>
     <span v-if="selectedElements.length === 0">
@@ -124,10 +102,12 @@ import { shortid } from '../../utils/string'
 import interactMixins from '../mixins/interactMixins.js'
 import ColorList from './color/ColorList'
 import SettingPanel from './SettingPanel'
+import ColorPopPicker from './ColorPopPicker'
 export default {
   name: 'Toolbar',
   mixins: [ interactMixins ],
   components: {
+    ColorPopPicker,
     SettingPanel,
     ColorList,
     BorderList,
@@ -193,6 +173,14 @@ export default {
     }
   },
   computed: {
+    // 当前唯一选中的元素
+    focusedElement () {
+      if (this.selectedElements.length === 1) {
+        return this.selectedElements[0]
+      } else {
+        return null
+      }
+    },
     fontSize: {
       get: function () {
         if (this.selectedTexts.length) {
@@ -236,6 +224,16 @@ export default {
       return variables
     },
 
+    sceneStyleVariables () {
+      let variables = []
+      for (let [key, styleValue] in  this.scene.style) {
+        if (styleValue.variables) {
+          variables = variables.concat(styleValue.variables)
+        }
+      }
+      return variables
+    },
+
     selectedElements () {
       if (this.scene && this.scene.elements) {
         return this.scene.elements.filter(el => el.selected)
@@ -269,10 +267,22 @@ export default {
       }
       return classes
     },
+
+    backgroundToolbarVisible () {
+      if (this.selectedElements.length) {
+        let visible = false
+        if (this.selectedElements[0].style.backgroundColor) {
+          return true
+        }
+        return false
+      } else {
+        return true
+      }
+    },
     /**
      *工具栏之上的按钮样式
      */
-    toolbarSceneBackgroundStyle () {
+    styleSelectedBackgroundStyle () {
       const style = {
         width: '24px',
         height: '24px',
@@ -288,6 +298,33 @@ export default {
     }
   },
   methods: {
+    sceneBackgroundChange (color) {
+      this.scene.style.background = color
+    },
+    elementBackgroundChange (color) {
+      this.focusedElement.style.background = color
+    },
+    fontColorChanged (color) {
+      this.focusedElement.style.color = color
+    },
+    variableColorInput (variable, color) {
+      variable.value = color
+    },
+    copySelectedElement () {
+      // 拷贝元素
+      for (let element of this.selectedElements) {
+        element.selected = false
+        const cloned = JSON.parse(JSON.stringify(element))
+        cloned.id = shortid()
+        cloned.selected = true
+        cloned.x += 10
+        cloned.y += 10
+        this.scene.elements.push(cloned)
+        this.$nextTick( ()=> {
+          this.initElementDrag(cloned)
+        })
+      }
+    },
     toggleFontBold () {
       if (this.selectedTexts.length) {
         let fontWeight = this.selectedTexts[0].style.fontWeight
@@ -461,20 +498,6 @@ export default {
   }
   .el-button {
     padding: 0;
-  }
-  .choose-color {
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    cursor: pointer;
-    width: 26px;
-    height: 26px;
-    margin: 0 5px;
-    &:hover, &.selected {
-      cursor: pointer;
-      transition: box-shadow .2s linear;
-      border: 1px solid transparent;
-      box-shadow: 0 0 0 1px #00c4cc, inset 0 0 0 2px #fff;
-    }
   }
   span.info {
     line-height: 28px;

@@ -4,7 +4,7 @@
   <div class="basic-shape">
     <div class="object-item" draggable @dragstart="dragStart({
       style: {
-        backgroundColor: '#00bf72'
+        background: '#00bf72'
       }
     }, $event)" @dragend="dragEnd()">
       <div class="rectangle">

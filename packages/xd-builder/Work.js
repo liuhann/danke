@@ -1,5 +1,3 @@
-import { shortid } from '../utils/string'
-
 export default {
   id: '',
   title: '', // 名称 暂时保留使用
@@ -28,7 +26,7 @@ export default {
     id: 'scene-2',
     style: {
       // 直接指定背景样式
-      background: '#CE2299',
+      backgroundColor: '#00bf72',
     },
     elements: [{
       id: 'element-32',
@@ -45,7 +43,7 @@ export default {
         backgroundColor: '#00bf72',
         // 文字大小
         fontSize: 12,  // px as unit
-        // 颜色
+        // 字体颜色
         color: '#fff',
         // 粗细
         fontWeight: 400,

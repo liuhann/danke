@@ -551,6 +551,10 @@ export default {
       background-color: #fff;
       position: absolute;
     }
+    .drag-handle {
+      left: -30px;
+      top: 5px;
+    }
     .l {
       left: -5px;
       top: calc(50% - 4px);
