@@ -4,7 +4,8 @@
   <div class="basic-shape">
     <div class="object-item" draggable @dragstart="dragStart({
       style: {
-        background: '#00bf72'
+        background: '#00bf72',
+        clipPath: ''
       }
     }, $event)" @dragend="dragEnd()">
       <div class="rectangle">

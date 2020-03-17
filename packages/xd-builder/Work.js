@@ -21,6 +21,10 @@ export default {
         name: 'swirly-love',
         variables: []
       }
+    },
+    animation: {
+      enters: [],
+      exists: []
     }
   },{
     id: 'scene-2',

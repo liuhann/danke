@@ -322,7 +322,6 @@ export default {
       ev.preventDefault()
       const data = ev.dataTransfer.getData('Text')
       const element = JSON.parse(data)
-      console.log(element)
       const node = this.createElement()
       let width = 100
       let height = 100
@@ -356,6 +355,7 @@ export default {
       // 放置的图片
       if (element.url) {
         node.url = element.url
+        node.style.clipPath = ''
       }
       Object.assign(node.style, element.style)
       node.x = ev.offsetX - width / 2

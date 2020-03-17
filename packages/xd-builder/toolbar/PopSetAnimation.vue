@@ -1,53 +1,63 @@
 <template>
-<div id="animation-config-tab">
-  <tabs v-model="stage">
-    <tab-pane label="进入" name="enter" class="animation-list">
-      <div class="selected-animations">
-        <div v-for="(animation, index) in enterAnimations" :key="index" class="animation">
-          <div class="animation-name">
-            {{animation.title}}
-          </div>
-          <div class="duration">
-            <slider range :step="50" v-model="animation.range" :max="6000"/>
-          </div>
-          <div class="icon-del">
-            <el-button icon="el-icon-delete" type="text" size="mini"></el-button>
-          </div>
-        </div>
-      </div>
-      <animation-list @input="addAnimation('enters', $event)" type="enter"/>
-    </tab-pane>
-    <tab-pane label="离开" name="exists">
-      <div class="selected-animations">
-        <div v-for="(animation, index) in existAnimations" :key="index" class="animation">
-          <div class="animation-name">
-            {{animation.title}}
-          </div>
-          <div class="duration">
-            <slider range :step="50" v-model="animation.range" :max="6000"/>
-          </div>
-          <div class="icon-del">
-            <el-button icon="el-icon-delete" type="text" size="mini"></el-button>
+<el-popover
+  placement="bottom-start"
+  popper-class="toolbar-pop"
+  width="360"
+  trigger="click">
+  <a class="action" slot="reference" title="特效"><i class="el-icon-magic-stick"></i></a>
+  <div id="animation-config-tab">
+    <tabs v-model="stage">
+      <tab-pane label="进入" name="enter" class="animation-list">
+        <div class="selected-animations">
+          <div v-for="(animation, index) in enterAnimations" :key="index" class="animation">
+            <div class="duration">
+              <slider range :step="50" v-model="animation.range" :max="6000"/>
+            </div>
+            <div class="icon-del">
+              <el-button icon="el-icon-delete" type="text" size="mini"></el-button>
+            </div>
           </div>
         </div>
-      </div>
-      <animation-list @input="addAnimation('exists', $event)" type="exist"/>
-    </tab-pane>
-  </tabs>
-</div>
+        <animation-list @input="addAnimation('enters', $event)" type="enter"/>
+      </tab-pane>
+      <tab-pane label="离开" name="exists">
+        <div class="selected-animations">
+          <div v-for="(animation, index) in existAnimations" :key="index" class="animation">
+            <div class="animation-name">
+              {{animation.title}}
+            </div>
+            <div class="duration">
+              <slider range :step="50" v-model="animation.range" :max="6000"/>
+            </div>
+            <div class="icon-del">
+              <el-button icon="el-icon-delete" type="text" size="mini"></el-button>
+            </div>
+          </div>
+        </div>
+        <animation-list @input="addAnimation('exists', $event)" type="exist"/>
+      </tab-pane>
+    </tabs>
+  </div>
+</el-popover>
+
+
 </template>
 
 <script>
 import AnimationList from './AnimationList.vue'
-import { TabPane, Tabs, Slider, Button } from 'element-ui'
+import { TabPane, Tabs, Slider, Button, Popover } from 'element-ui'
 export default {
-  name: 'AnimationTabs',
+  name: 'PopSetAnimation',
   props: {
     elements: {
       type: Array
+    },
+    scene: {
+
     }
   },
   components: {
+    [Popover.name]: Popover,
     [Button.name]: Button,
     AnimationList,
     Slider,
@@ -63,6 +73,8 @@ export default {
     enterAnimations () {
       if (this.elements && this.elements.length) {
         return this.elements[0].animation.enters || []
+      } else if (this.scene) {
+        return this.scene.animation.enters
       } else {
         return []
       }

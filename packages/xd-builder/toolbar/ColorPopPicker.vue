@@ -1,14 +1,14 @@
 <template>
-  <el-popover
-    placement="bottom-start"
-    popper-class="toolbar-pop"
-    width="360"
-    trigger="click">
-    <i class="icon choose-color" slot="reference" :style="{
-      backgroundColor: color
-    }"/>
-    <color-list :color="color" :mode="mode" @input="input"></color-list>
-  </el-popover>
+<el-popover
+  placement="bottom-start"
+  popper-class="toolbar-pop"
+  width="360"
+  trigger="click">
+  <i class="icon choose-color" slot="reference" :style="{
+    backgroundColor: color
+  }"/>
+  <color-list :color="color" :mode="mode" @input="input"></color-list>
+</el-popover>
 </template>
 
 <script>

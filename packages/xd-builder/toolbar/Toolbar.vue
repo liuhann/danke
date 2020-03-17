@@ -1,30 +1,17 @@
 <template>
 <div id="tool-bar">
   <!--  设置颜色变量-->
-  <template v-for="(variable, index) in elementStyleVariables">
-    <color-pop-picker :key="index" v-if="variable.type === 'color'" :color="variable.value" model="color" @input="variableColorInput(variable, $event)"/>
-  </template>
-  <template v-if="selectedElements.length === 0">
-    <!-- 设置场景背景 -->
-    <color-pop-picker :color="scene.style.background" mode="background" @input="sceneBackgroundChange"/>
-  </template>
-  <template v-if="focusedElement && focusedElement.style.background">
-    <!-- 设置场景背景 -->
-    <color-pop-picker :color="focusedElement.style.background" mode="background" @input="elementBackgroundChange"/>
-  </template>
-
+  <color-pop-picker v-for="(variable, index) in elementStyleVariables" :key="index" v-if="variable.type === 'color'" :color="variable.value" model="color" @input="variableColorInput(variable, $event)"/>
+  <!-- 设置场景背景 -->
+  <color-pop-picker v-if="selectedElements.length === 0" :color="scene.style.background" mode="background" @input="sceneBackgroundChange"/>
+  <!-- 设置矩形元素背景 -->
+  <color-pop-picker v-if="focusedElement && focusedElement.style.background" :color="focusedElement.style.background" mode="background" @input="elementBackgroundChange"/>
+  <!--  设置文字颜色-->
+  <color-pop-picker v-if="selectedTexts.length === 1" :color="focusedElement.style.color" mode="color" @input="fontColorChanged"/>
   <!--元素动画效果设置-->
-  <keep-alive>
-    <el-popover
-      v-if="selectedElements.length"
-      placement="bottom-start"
-      popper-class="toolbar-pop"
-      width="360"
-      trigger="click">
-      <a class="action" slot="reference" title="特效"><i class="el-icon-magic-stick"></i></a>
-      <animation-tabs slot="default" :elements="this.selectedElements"/>
-    </el-popover>
-  </keep-alive>
+  <pop-set-animation v-if="selectedElements.length" :elements="this.selectedElements"/>
+  <!--整体场景的动画效果-->
+  <pop-set-animation v-if="selectedElements.length === 0" :scene="this.scene"/>
 
   <!-- 边框修饰扩展 -->
   <keep-alive>
@@ -49,6 +36,7 @@
     </el-popover>
   </keep-alive>
 
+  <pop-clip-list v-if="focusedElement && focusedElement.style.clipPath != null" @input="setElementClipPath"/>
   <!--  设置字体粗细-->
   <el-select
     v-if="selectedTexts.length"
@@ -65,8 +53,6 @@
     </el-option>
   </el-select>
   <a class="action" v-if="selectedTexts.length" @click="toggleFontBold" :style="fontWeightStyle" style="padding: 0 10px;">B</a>
-  <!--  设置文字颜色-->
-  <color-pop-picker v-if="selectedTexts.length === 1" :color="focusedElement.style.color" mode="color" @input="fontColorChanged"/>
 
   <div class="pull-right">
     <a class="action" v-if="selectedElements.length > 0" @click="copySelectedElement"><i class="el-icon-document-copy" /></a>
@@ -96,20 +82,23 @@
 
 <script>
 import { Button, ButtonGroup, Popover, Slider, Select, Option } from 'element-ui'
-import AnimationTabs from './AnimationTabs.vue'
+import AnimationTabs from './PopSetAnimation.vue'
 import BorderList from './BorderList'
 import { shortid } from '../../utils/string'
 import interactMixins from '../mixins/interactMixins.js'
 import ColorList from './color/ColorList'
 import SettingPanel from './SettingPanel'
 import ColorPopPicker from './ColorPopPicker'
+import PopClipList from './PopClipList'
+import PopSetAnimation from './PopSetAnimation'
 export default {
   name: 'Toolbar',
   mixins: [ interactMixins ],
   components: {
+    PopSetAnimation,
+    PopClipList,
     ColorPopPicker,
     SettingPanel,
-    ColorList,
     BorderList,
     AnimationTabs,
     [Select.name]: Select,
@@ -205,25 +194,26 @@ export default {
         return {}
       }
     },
-
-    styleFontColor () {
-      return {
-        backgroundColor: this.selectedTexts[0].style.color
-      }
-    },
-
     elementStyleVariables () {
       let variables = []
-      if (this.selectedElements.length === 1) {
-        for (let key in  this.selectedElements[0].style) {
-          if (this.selectedElements[0].style[key].variables) {
-            variables = variables.concat(this.selectedElements[0].style[key].variables)
+      if (this.focusedElement) {
+        for (let [key, style] in this.focusedElement.style) {
+          if (style.variables) {
+            variables = variables.concat(style.variables)
           }
         }
       }
       return variables
     },
-
+    elementColorVariables () {
+      let variables = []
+      for (let variable of this.elementStyleVariables) {
+        if (variable.type === 'color') {
+          variables.push(variable)
+        }
+      }
+      return variables
+    },
     sceneStyleVariables () {
       let variables = []
       for (let [key, styleValue] in  this.scene.style) {
@@ -309,6 +299,9 @@ export default {
     },
     variableColorInput (variable, color) {
       variable.value = color
+    },
+    setElementClipPath (clippath) {
+      this.focusedElement.style.clipPath = clippath
     },
     copySelectedElement () {
       // 拷贝元素
