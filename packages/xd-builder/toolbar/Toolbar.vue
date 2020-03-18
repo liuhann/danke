@@ -72,6 +72,7 @@
     <a class="action" v-if="selectedElements.length === 0" @click="previousScene"><i class="el-icon-arrow-up" /></a>
     <a class="action" v-if="selectedElements.length === 0" @click="nextScene"><i class="el-icon-arrow-down" /></a>
     <a class="action" v-if="selectedElements.length === 0"> {{scenes.indexOf(scene) + 1}}/{{scenes.length}}</a>
+    <pop-more-action :element="focusedElement" :scene="scene" v-if="focusedElement" @reset="resetElementDragResize"/>
     <el-popover v-if="selectedElements.length === 0" placement="bottom" width="360" trigger="click" popper-class="padding-0">
       <a class="action" slot="reference"><i class="el-icon-setting" /></a>
       <setting-panel :work="work"/>
@@ -81,26 +82,26 @@
 </template>
 
 <script>
-import { Button, ButtonGroup, Popover, Slider, Select, Option } from 'element-ui'
-import AnimationTabs from './PopSetAnimation.vue'
+import { Button, ButtonGroup, Popover, Slider, Select, Option, Tooltip } from 'element-ui'
 import BorderList from './BorderList'
 import { shortid } from '../../utils/string'
 import interactMixins from '../mixins/interactMixins.js'
-import ColorList from './color/ColorList'
 import SettingPanel from './SettingPanel'
 import ColorPopPicker from './ColorPopPicker'
 import PopClipList from './PopClipList'
 import PopSetAnimation from './PopSetAnimation'
+import PopMoreAction from './PopMoreAction'
 export default {
   name: 'Toolbar',
   mixins: [ interactMixins ],
   components: {
+    PopMoreAction,
     PopSetAnimation,
     PopClipList,
     ColorPopPicker,
     SettingPanel,
     BorderList,
-    AnimationTabs,
+    [Tooltip.name]: Tooltip,
     [Select.name]: Select,
     [Option.name]: Option,
     [Slider.name]: Slider,
@@ -458,11 +459,17 @@ export default {
     cursor: pointer;
     margin: 0 5px;
     color: #0e1318;
-    font-size: 1.6rem;
-    padding: 0 5px;
+    font-size: 1.4rem;
+    font-weight: 400;
+    padding: 0 8px;
     display: inline-block;
     &:hover, &.on {
       background-color: #f1f3f4;
+    }
+    i {
+      vertical-align: text-bottom;
+      font-size: 1.8rem;
+      font-weight: bold;
     }
   }
   .icon {

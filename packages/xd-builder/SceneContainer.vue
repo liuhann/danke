@@ -26,7 +26,9 @@
         class="node-mask"
         @dblclick="maskDblClick(selectee)"
         :style="getMaskStyle(selectee)">
-        <div class="lt"/><div class="rt"/><div class="t"/><div class="l"/><div class="lb"/><div class="rb"/><div class="r"/><div class="b"/>
+        <template v-if="selectee.props.resizable">
+          <div class="lt"/><div class="rt"/><div class="t"/><div class="l"/><div class="lb"/><div class="rb"/><div class="r"/><div class="b"/>
+        </template>
       </div>
     </div>
     <!-- 拖拽选择层 -->
@@ -384,6 +386,10 @@ export default {
         y: 0,
         width: 100,
         height: 100,
+        props: {
+          resizable: true,
+          movable: true
+        },
         style: {},
         animation: {},
         selected: false

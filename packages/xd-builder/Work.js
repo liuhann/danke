@@ -42,6 +42,10 @@ export default {
       url: '/15011245191/image.jpg',
       // text content
       text: '文本类元素的正文',
+      props: {
+        resizable: true,
+        movable: true
+      },
       style: {
         // direct style writing
         backgroundColor: '#00bf72',

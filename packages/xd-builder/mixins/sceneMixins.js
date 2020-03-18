@@ -19,6 +19,7 @@ export default {
         style: {
           backgroundColor: 'transparent'
         },
+        animation: {},
         z: 100
       }
       this.insertScene(scene)
