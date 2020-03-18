@@ -29,6 +29,9 @@ export default {
           width: parseInt(this.$route.query.width) || 414,
           height: parseInt(this.$route.query.height) || 896
         },
+        frames: {},
+        svgs: {},
+        fonts: {},
         style: {},
         scenes: []
       }
@@ -50,11 +53,11 @@ export default {
       const work = JSON.parse(JSON.stringify(this.work))
       // 抽取所有使用的frame style到work上，以便压缩使用空间
       Object.assign(work, this.ctx.styleRegistry.getStyleResource(work))
-
       const stringify = JSON.stringify(work)
       if (stringify === this.lastStringify) {
         return
       }
+      work.colors = this.ctx.styleRegistry.getWorkColors(work)
       this.lastStringify = stringify
       if (this.savingWork) {
         return

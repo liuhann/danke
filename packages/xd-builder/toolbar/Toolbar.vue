@@ -1,7 +1,7 @@
 <template>
 <div id="tool-bar">
   <!--  设置颜色变量-->
-  <color-pop-picker v-for="(variable, index) in elementStyleVariables" :key="index" v-if="variable.type === 'color'" :color="variable.value" model="color" @input="variableColorInput(variable, $event)"/>
+  <color-pop-picker v-for="(variable, index) in elementStyleVariables" :key="index" :color="variable.value" model="color" @input="variableColorInput(variable, $event)"/>
   <!-- 设置场景背景 -->
   <color-pop-picker v-if="selectedElements.length === 0" :color="scene.style.background" mode="background" @input="sceneBackgroundChange"/>
   <!-- 设置矩形元素背景 -->
@@ -291,12 +291,15 @@ export default {
   methods: {
     sceneBackgroundChange (color) {
       this.scene.style.background = color
+      this.ctx.palette = this.ctx.styleRegistry.getWorkColors(this.work)
     },
     elementBackgroundChange (color) {
       this.focusedElement.style.background = color
+      this.ctx.palette = this.ctx.styleRegistry.getWorkColors(this.work)
     },
     fontColorChanged (color) {
       this.focusedElement.style.color = color
+      this.ctx.palette = this.ctx.styleRegistry.getWorkColors(this.work)
     },
     variableColorInput (variable, color) {
       variable.value = color

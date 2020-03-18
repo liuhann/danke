@@ -172,10 +172,12 @@ export default {
         width: this.screenRect.width + 'px',
         height: this.screenRect.height + 'px'
       }
+      delete this.scene.style.backgroundColor
       for (let key in this.scene.style) {
-        if (this.scene.style[key] && !this.scene.style[key].name) {
+        const value = this.scene.style[key]
+        if (typeof value === 'string') {
           Object.assign(styles, {
-            [key]: this.scene.style[key]
+            [key]: value
           })
         }
       }
@@ -532,7 +534,7 @@ export default {
   position: relative;
   .screen {
     position: absolute;
-    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==");
+    background-color: #fff;
     box-shadow: 0 0 6px #ddd;
     overflow: hidden;
   }

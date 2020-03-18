@@ -14,7 +14,7 @@
 const fontTemplates = [{
   text: '添加标题',
   style: {
-    fontSize: 48,
+    fontSize: '48px',
     color: '#333',
     fontWeight: 800,
     letterSpacing: 4
@@ -22,7 +22,7 @@ const fontTemplates = [{
 }, {
   text: '添加标题描述',
   style: {
-    fontSize: 24,
+    fontSize: '24px',
     color: '#666',
     fontWeight: 400,
     letterSpacing: 4
@@ -30,7 +30,7 @@ const fontTemplates = [{
 }, {
   text: '添加子标题',
   style: {
-    fontSize: 36,
+    fontSize: '36px',
     color: '#333',
     fontWeight: 400,
     letterSpacing: 4
@@ -38,7 +38,7 @@ const fontTemplates = [{
 }, {
   text: '添加子描述',
   style: {
-    fontSize: 20,
+    fontSize: '20px',
     color: '#000',
     fontWeight: 200,
     letterSpacing: 4
@@ -46,7 +46,7 @@ const fontTemplates = [{
 }, {
   text: '添加正文',
   style: {
-    fontSize: 14,
+    fontSize: '14px',
     color: '#000',
     fontWeight: 200,
     letterSpacing: 4

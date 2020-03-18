@@ -6,6 +6,11 @@
       <el-color-picker style="flex:1; margin-left: 10px;" v-model="currentColor" @change="selectColor" size="mini"></el-color-picker>
       <el-button type="text" @click="selectColor(null)">清除颜色</el-button>
     </div>
+    <div class="default-colors" v-if="palette">
+      <div class="color-block" v-for="c in palette" :key="c" @click="selectColor(c)" :style="{
+        background: c
+      }" />
+    </div>
     <div class="addon-title">
        <span class="content">默认颜色</span>
     </div>
@@ -53,6 +58,9 @@ export default {
     },
     color: {
       type: String
+    },
+    palette: {
+      type: Array
     }
   },
   data () {

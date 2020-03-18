@@ -108,6 +108,33 @@ export default class StyleRegistry {
   }
 
   /**
+   * 收集所有的作品使用颜色
+   */
+  getWorkColors(work) {
+    let colors = []
+    for (let scene of work.scenes) {
+      colors = colors.concat(this.getColorsFromStyle(scene.style))
+      for (let element of scene.elements) {
+        colors = colors.concat(this.getColorsFromStyle(element.style))
+      }
+    }
+    return Array.from(new Set(colors))
+  }
+
+  getColorsFromStyle (style) {
+    const colors = []
+    for (let key in style) {
+      if (key === 'background') {
+        colors.push(style[key])
+      }
+      if (key === 'color') {
+        colors.push(style[key])
+      }
+    }
+    return colors
+  }
+
+  /**
    * 获取作品里所有元素的样式资源
    * @param {*} work
    */

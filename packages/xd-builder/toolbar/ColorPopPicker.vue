@@ -3,11 +3,12 @@
   placement="bottom-start"
   popper-class="toolbar-pop"
   width="360"
+  @show="resetWorkColors"
   trigger="click">
   <i class="icon choose-color" slot="reference" :style="{
-    backgroundColor: color
+    background: color
   }"/>
-  <color-list :color="color" :mode="mode" @input="input"></color-list>
+  <color-list :color="color" :mode="mode" @input="input" :palette="palette"></color-list>
 </el-popover>
 </template>
 
@@ -29,11 +30,19 @@ export default {
     ColorList,
     [Popover.name]: Popover
   },
+  data () {
+    return {
+      palette: []
+    }
+  },
   computed : {
   },
   methods: {
     input (val) {
       this.$emit('input', val)
+    },
+    resetWorkColors() {
+      this.palette = this.ctx.palette
     }
   }
 }

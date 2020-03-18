@@ -5,13 +5,12 @@ export default {
     width: 414,
     height: 896
   },
-  style: {
-
+  style: {},
+  frames: {},
+  svgs: {},
+  fonts: {
+    ['华文行楷间']: ''
   },
-  fonts: [{
-    name: '华文行楷间',
-    url: ''
-  }],
   scenes: [{
     id: 'scene-1',
     style: {
@@ -22,6 +21,7 @@ export default {
         variables: []
       }
     },
+    props: {},
     animation: {
       enters: [],
       exists: []
