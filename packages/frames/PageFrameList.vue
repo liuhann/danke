@@ -1,5 +1,5 @@
 <template>
-  <div id="page-frames-list" 
+  <div id="page-frames-list"
     class="site-page">
     <nav-bar />
     <section class="section splash">
@@ -21,7 +21,7 @@
               {{object.name}} | {{object.tags.join()}}
             </div>
             <div class="object-container">
-              <span v-if="object.tags.join('') === 'text'" :class="object.name">风景如画</span>
+              <span v-if="object.tags.join('').indexOf('text') > -1" :class="object.name">风景如画</span>
               <img v-else :src="CLOUD_HILL" :class="object.name"/>
             </div>
             <div class="item-btns">

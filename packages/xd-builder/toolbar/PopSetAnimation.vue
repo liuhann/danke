@@ -18,7 +18,7 @@
             </div>
           </div>
         </div>
-        <animation-list @input="addAnimation('enters', $event)" type="enter"/>
+        <animation-list @input="addAnimation('enters', $event)" :type="elementType"/>
       </tab-pane>
       <tab-pane label="离开" name="exists">
         <div class="selected-animations">
@@ -53,7 +53,7 @@ export default {
       type: Array
     },
     scene: {
-
+      type: Object
     }
   },
   components: {
@@ -70,6 +70,17 @@ export default {
     }
   },
   computed: {
+    elementType () {
+      if (this.elements.length) {
+        if (this.elements[0].text) {
+          return 'text'
+        } else {
+          return  'enter'
+        }
+      } else {
+        return 'enter'
+      }
+    },
     enterAnimations () {
       if (this.elements && this.elements.length) {
         return this.elements[0].animation.enters || []

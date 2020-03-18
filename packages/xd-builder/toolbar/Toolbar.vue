@@ -9,7 +9,7 @@
   <!--  设置文字颜色-->
   <color-pop-picker v-if="selectedTexts.length === 1" :color="focusedElement.style.color" mode="color" @input="fontColorChanged"/>
   <!--元素动画效果设置-->
-  <pop-set-animation v-if="selectedElements.length" :elements="this.selectedElements"/>
+  <pop-set-animation v-if="selectedElements.length" :elements="selectedElements"/>
   <!--整体场景的动画效果-->
   <pop-set-animation v-if="selectedElements.length === 0" :scene="this.scene"/>
 
