@@ -1,5 +1,5 @@
 <template>
-<section class="section" style="background: #dfdfdf;height: 100%">
+<section class="section" style="background: #dfdfdf;">
     <div class="container" style="background: #fff;padding: 20px;box-shadow: 0 1px 5px 0 rgba(0,0,0,.1);">
       <el-form size="mini" label-width="90px">
         <el-form-item label="ID">
@@ -9,8 +9,13 @@
           <div id="editor">
           </div>
         </el-form-item>
+        <el-form-item label="类型">
+          <el-select v-model="vector.album" size="mini" allow-create filterable>
+            <el-option :value="album" v-for="album in albums" :key="album"/>
+          </el-select>
+        </el-form-item>
         <el-form-item label="预览">
-           <div class="styled-box" v-html="vector.content" :style="variableStyle">
+          <div class="styled-box" v-html="vector.content" :style="variableStyle">
           </div>
         </el-form-item>
         <el-form-item label="变量信息">
@@ -38,6 +43,7 @@
           </el-form-item>
           <el-form-item label="">
             <el-button size="mini" @click="reFill">数据填充</el-button>
+            <el-button size="mini" @click="replaceFillColorWithVariables">replaceFillColorWithVariables</el-button>
             <el-button size="mini" type="primary" @click="save">保存</el-button>
           </el-form-item>
       </el-form>
@@ -63,8 +69,10 @@ export default {
   },
   data () {
     return {
+      albums: [],
       vector: {
         name: '',
+        album: '',
         category: '', // 效果分类
         content: '', //  正文
         variables: [{
@@ -101,8 +109,12 @@ export default {
     if (this.$route.query.id) {
       this.loadSvg(this.$route.query.id)
     }
+    this.loadSvgAlbums()
   },
   methods: {
+    async loadSvgAlbums () {
+      this.albums = await this.svgdao.distinct('album')
+    },
     /**
      * 替换指定Id 替换渐变定义 抽取颜色到变量之中
      */
@@ -114,12 +126,30 @@ export default {
       const color2 = colorMatches[1].substring(12, colorMatches[1].length - 1)
       this.vector.variables[0].value = color1
       this.vector.variables[1].value = color2
-      debugger
       // replace id
       let originalId = svg.match(/url\(.+\)/g)[0].replace(/url\(#/g, '').replace(/\)/g, '')
       let replaced = svg.replace(new RegExp(originalId, 'gm'), this.vector.name).replace(color1, 'var(--gradientStart)').replace(color2, 'var(--gradientEnd)')
       this.editor.setValue(replaced)
     },
+
+    replaceFillColorWithVariables () {
+      let svg = this.editor.getValue()
+      const matched = svg.match(/fill:.+;/g)
+      const colorList = Array.from(new Set(matched))
+      this.vector.variables = []
+      for (let i = 0; i < colorList.length; i++) {
+        this.vector.variables.push({
+          'name': 'fillColor' + i,
+          'value': colorList[i].substring(5).replace(';', ''),
+          'label': '颜色' + i,
+          'type': 'color'
+        })
+        svg = svg.replace(new RegExp(colorList[i], 'gm'), `fill:var(--fillColor${i})`)
+      }
+      this.editor.setValue(svg)
+      console.log(matched)
+    },
+
     replaceId () {
       this.editor.setValue(this.editor.getValue().replace(/id="[^"]+/i, 'id="' + this.vector.name))
     },
@@ -154,13 +184,17 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 #editor {
   height: 400px;
 }
 .styled-box {
   width: 120px;
   height: 120px;
+  svg {
+    height: 120px;
+    width: 120px;
+  }
 }
 .variables {
   margin: 20px 0;

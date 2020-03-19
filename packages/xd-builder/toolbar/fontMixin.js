@@ -47,6 +47,21 @@ export default {
       }, {
         label: '48',
         value: '48px'
+      }, {
+        label: '54',
+        value: '54px'
+      }, {
+        label: '60',
+        value: '60px'
+      }, {
+        label: '72',
+        value: '72px'
+      }, {
+        label: '80',
+        value: '80px'
+      }, {
+        label: '100',
+        value: '100px'
       }]
     }
   },

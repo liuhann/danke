@@ -25,8 +25,8 @@
               <img v-else :src="CLOUD_HILL" :class="object.name"/>
             </div>
             <div class="item-btns">
-              <el-button circle size="mini" icon="el-icon-delete" @click="remove(object)"/>
-              <el-button circle size="mini" icon="el-icon-edit" @click="edit(object)"/>
+              <el-button circle icon="el-icon-delete" @click="remove(object)"/>
+              <el-button circle icon="el-icon-edit" @click="edit(object)"/>
             </div>
           </div>
         </div>
@@ -165,9 +165,8 @@ export default {
       .item-btns {
         position: absolute;
         width: 100%;
-        left: 0;
-        bottom: 0;
-        background: rgba(0,0,0, .4);
+        left: 20px;
+        bottom: 20px;
         display: none;
       }
       &:hover {

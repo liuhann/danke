@@ -18,8 +18,8 @@
             </div>
           </div>
           <div class="item-btns">
-            <el-button circle size="mini" icon="el-icon-delete" @click="remove(svg)"/>
-            <el-button circle size="mini" icon="el-icon-edit" @click="edit(svg)"/>
+            <el-button circle icon="el-icon-delete" @click="remove(svg)"/>
+            <el-button circle icon="el-icon-edit" @click="edit(svg)"/>
           </div>
         </div>
       </div>
@@ -137,9 +137,8 @@ export default {
     .item-btns {
       position: absolute;
       width: 100%;
-      left: 0;
-      bottom: 0;
-      background: rgba(0,0,0, .4);
+      left: 20px;
+      bottom: 20px;
       display: none;
     }
     &:hover {
