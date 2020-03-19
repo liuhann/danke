@@ -8,16 +8,20 @@
   <div id="animation-config-tab">
     <tabs v-model="stage">
       <tab-pane label="进入" name="enter" class="animation-list">
-        <div class="selected-animations">
-          <div v-for="(animation, index) in enterAnimations" :key="index" class="animation">
-            <div class="duration">
-              <slider range :step="50" v-model="animation.range" :max="6000"/>
-            </div>
-            <div class="icon-del">
-              <el-button icon="el-icon-delete" type="text" size="mini"></el-button>
-            </div>
-          </div>
-        </div>
+        <table class="selected-animations">
+          <tr>
+            <td>名称</td>
+            <td>延迟(ms)</td>
+            <td>持续(ms)</td>
+            <td></td>
+          </tr>
+          <tr v-for="(animation, index) in enterAnimations" :key="index" class="animation">
+            <td>{{animation.title}}</td>
+            <td><el-input-number v-model="animation.range[0]" size="mini" controls-position="right" :step="50"></el-input-number></td>
+            <td><el-input-number v-model="animation.range[1]" size="mini" controls-position="right" :step="50"></el-input-number></td>
+            <td><el-button icon="el-icon-delete" type="text" size="mini"></el-button></td>
+          </tr>
+        </table>
         <animation-list @input="addAnimation('enters', $event)" :type="elementType"/>
       </tab-pane>
       <tab-pane label="离开" name="exists">
@@ -45,7 +49,7 @@
 
 <script>
 import AnimationList from './AnimationList.vue'
-import { TabPane, Tabs, Slider, Button, Popover } from 'element-ui'
+import { TabPane, Tabs, Slider, Button, Popover, InputNumber } from 'element-ui'
 export default {
   name: 'PopSetAnimation',
   props: {
@@ -57,6 +61,7 @@ export default {
     }
   },
   components: {
+    [InputNumber.name]: InputNumber,
     [Popover.name]: Popover,
     [Button.name]: Button,
     AnimationList,
@@ -71,8 +76,8 @@ export default {
   },
   computed: {
     elementType () {
-      if (this.elements.length) {
-        if (this.elements[0].text) {
+      if (this.elements && this.elements.length) {
+        if (this.elements[0].text != null) {
           return 'text'
         } else {
           return  'enter'
@@ -137,10 +142,15 @@ export default {
     padding: 0 12px;
     width: 100%;
     .animation {
-      line-height: 38px;
-      display: flex;
       .animation-name {
         width: 90px;
+      }
+      .el-input-number--mini {
+        width: 90px;
+      }
+      .el-input-number.is-controls-right .el-input__inner {
+        padding-left: 5px;
+        padding-right: 28px;
       }
       .duration {
         flex: 1;

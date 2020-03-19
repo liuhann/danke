@@ -4,13 +4,12 @@
      class="element" :class="elementClass" :style="elementStyle">
   <!--图片渲染-->
   <img v-if="element.url" :id="'img-' + (element.name || element.id)" :src="getImageUrl(element.url, viewPort.width, viewPort.height)">
-  <div v-if="element.svg" class="svg-content" v-html="elementSVGContent">
-  </div>
+  <div v-if="element.svg" class="svg-content" v-html="elementSVGContent" />
   <!--文本渲染情况下 文本内容-->
-  <span v-if="element.text != null && !element.editing">{{element.text}}</span>
+  <template :style="elementTextTransform" v-if="element.text != null && !element.editing">{{element.text}}</template>
   <textarea v-if="element.text != null && element.editing" :style="textEditStyle" v-model="element.text"/>
   <div v-if="element.elements" class="block">
-    <render-element v-for="(el, i) in element.elements" :key="el.id" :screen="viewPort" :element="el" :index="i" ></render-element>
+    <render-element v-for="(el, i) in element.elements" :key="el.id" :screen="viewPort" :element="el" :index="i" />
   </div>
 </div>
 </template>
@@ -88,8 +87,7 @@ export default {
     elementTextTransform () {
       if (this.viewPort && this.screen && this.element.text) {
         return {
-          transform: `scale(${this.viewPort.width/this.screen.width})`,
-          transformOrigin: 'top left'
+          transform: `scale(${this.viewPort.width/this.screen.width})`
         }
       } else {
         return  {}
@@ -126,7 +124,8 @@ export default {
     /**
      * 取 element.animations 计算元素的动画样式
      */
-    elementAnimationStyle () {
+
+    elementAnimationStyle (                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ) {
       const element = this.element
       const animations = element.animation[this.stage]
       if (animations && animations.length) {

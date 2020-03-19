@@ -18,10 +18,10 @@
         <div class="object-list">
           <div v-for="(object, index) in objects" :key="index" class="object-item" @mouseenter="animationMouseEnter(object)">
             <div class="animation-name" v-if="object.name !== 'none'">
-              {{object.name}} | {{object.tags.join()}}
+              {{object.name}}
             </div>
             <div class="object-container">
-              <span v-if="object.tags.join('').indexOf('text') > -1" :class="object.name">风景如画</span>
+              <span v-if="object.tags.join('').indexOf('text') > -1" :class="object.name">{{object.title}}</span>
               <img v-else :src="CLOUD_HILL" :class="object.name"/>
             </div>
             <div class="item-btns">
@@ -186,6 +186,12 @@ export default {
           width: 120px;
           height: 120px;
           object-fit: cover;
+        }
+        span {
+          display: block;
+          width: 200px;
+          text-align: center;
+          margin-left: -40px;
         }
       }
       div.svg {

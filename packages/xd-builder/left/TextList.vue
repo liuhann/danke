@@ -17,6 +17,7 @@ const fontTemplates = [{
     fontSize: '48px',
     color: '#333',
     fontWeight: 800,
+    textAlign: 'center',
     letterSpacing: 4
   }
 }, {
@@ -25,6 +26,7 @@ const fontTemplates = [{
     fontSize: '24px',
     color: '#666',
     fontWeight: 400,
+    textAlign: 'left',
     letterSpacing: 4
   }
 }, {
@@ -33,6 +35,7 @@ const fontTemplates = [{
     fontSize: '36px',
     color: '#333',
     fontWeight: 400,
+    textAlign: 'center',
     letterSpacing: 4
   }
 }, {
@@ -41,6 +44,7 @@ const fontTemplates = [{
     fontSize: '20px',
     color: '#000',
     fontWeight: 200,
+    textAlign: 'left',
     letterSpacing: 4
   }
 }, {
@@ -49,6 +53,7 @@ const fontTemplates = [{
     fontSize: '14px',
     color: '#000',
     fontWeight: 200,
+    textAlign: 'left',
     letterSpacing: 4
   }
 }]

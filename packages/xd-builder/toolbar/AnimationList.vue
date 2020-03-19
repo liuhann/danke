@@ -4,9 +4,10 @@
        @mouseenter="animationMouseEnter(animation)"
        @click="addAnimation(animation)">
     <div class="preview-box" :class="animation.name">
-      <img :src="CLOUD_HILL" />
+      <img :src="CLOUD_HILL" v-if="animation.tags.indexOf('text') === -1"/>
+      <span v-if="animation.tags.indexOf('text') > -1">{{animation.title}}</span>
     </div>
-    <div class="animation-title">{{animation.title}}</div>
+    <div v-if="animation.tags.indexOf('text') === -1" class="animation-title">{{animation.title}}</div>
   </div>
   <pagination background :total="total" :page-size="pageSize" @current-change="loadAnimation" :current-page.sync="page" :pager-count="5" layout="prev, pager, next" />
 </div>
@@ -33,6 +34,11 @@ export default {
       page: 0,
       pageSize: 18,
       total: 0
+    }
+  },
+  watch: {
+    type () {
+      this.loadAnimation()
     }
   },
   mounted () {
@@ -83,10 +89,6 @@ export default {
       height: 100px;
       overflow: hidden;
       position: relative;
-      background-image: linear-gradient(90deg, #592D2D, #592D2D);
-      background-size: 60px 60px;
-      background-position: center;
-      background-repeat: no-repeat;
       perspective: 200px;
       &:hover {
         background: rgba(0,0,0, .05);
@@ -110,6 +112,15 @@ export default {
           object-fit: cover;
           width: 100%;
           height: 100%;
+        }
+        span {
+          height: 60px;
+          display: inline-block;
+          line-height: 60px;
+          font-size: 18px;
+          width: 220px;
+          margin-left: -75px;
+          text-align: center;
         }
       }
       .preview-box.none {

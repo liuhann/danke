@@ -37,13 +37,14 @@ export function fitRectIntoBounds (rect, bounds) {
  */
 export function getRectPositionStyle (rect, origin, viewPort, fitMode = '') {
   if (origin && viewPort) {
-    return {
+    const result = {
       position: 'absolute',
       left: rect.x * viewPort.width / origin.width + 'px',
       top: rect.y  * viewPort.height / origin.height + 'px',
       width: rect.width * viewPort.width / origin.width + 'px',
       height: rect.height * viewPort.height / origin.height + 'px'
     }
+    return result
   } else {
     return {
       position: 'absolute',

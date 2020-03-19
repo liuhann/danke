@@ -37,7 +37,7 @@
   </keep-alive>
 
   <pop-clip-list v-if="focusedElement && focusedElement.style.clipPath != null" @input="setElementClipPath"/>
-  <!--  设置字体粗细-->
+  <!--  设置字体-->
   <el-select
     v-if="selectedTexts.length"
     v-model="fontSize"
@@ -47,6 +47,18 @@
     placeholder="字体">
     <el-option
       v-for="item in fontSizeOptions"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value">
+    </el-option>
+  </el-select>
+  <el-select
+    v-if="selectedTexts.length"
+    v-model="textAlign"
+    size="mini"
+    placeholder="对齐">
+    <el-option
+      v-for="item in textAlignOptions"
       :key="item.value"
       :label="item.label"
       :value="item.value">
@@ -83,6 +95,7 @@
 
 <script>
 import { Button, ButtonGroup, Popover, Slider, Select, Option, Tooltip } from 'element-ui'
+import fontMixin from './fontMixin'
 import BorderList from './BorderList'
 import { shortid } from '../../utils/string'
 import interactMixins from '../mixins/interactMixins.js'
@@ -93,7 +106,7 @@ import PopSetAnimation from './PopSetAnimation'
 import PopMoreAction from './PopMoreAction'
 export default {
   name: 'Toolbar',
-  mixins: [ interactMixins ],
+  mixins: [ interactMixins, fontMixin ],
   components: {
     PopMoreAction,
     PopSetAnimation,
@@ -122,44 +135,7 @@ export default {
   },
   data () {
     return {
-      scale: 1,
-      fontSizeOptions: [{
-        label: '10',
-        value: '10px'
-      }, {
-        label: '12',
-        value: '12px'
-      }, {
-        label: '14',
-        value: '14px'
-      },{
-        label: '16',
-        value: '16px'
-      }, {
-        label: '18',
-        value: '18px'
-      }, {
-        label: '20',
-        value: '20px'
-      }, {
-        label: '24',
-        value: '24px'
-      }, {
-        label: '28',
-        value: '28px'
-      }, {
-        label: '32',
-        value: '32px'
-      }, {
-        label: '36',
-        value: '36px'
-      }, {
-        label: '40',
-        value: '40px'
-      }, {
-        label: '48',
-        value: '48px'
-      }]
+      scale: 1
     }
   },
   computed: {
@@ -171,30 +147,7 @@ export default {
         return null
       }
     },
-    fontSize: {
-      get: function () {
-        if (this.selectedTexts.length) {
-          return this.selectedTexts[0].style.fontSize
-        } else {
-          return 14
-        }
-      },
-      set: function (size) {
-        for (let element of this.selectedTexts) {
-          element.style.fontSize = size
-        }
-      }
-    },
 
-    fontWeightStyle () {
-      if (this.selectedTexts.length) {
-        return {
-          fontWeight: this.selectedTexts[0].style.fontWeight
-        }
-      } else {
-        return {}
-      }
-    },
     elementStyleVariables () {
       let variables = []
       if (this.focusedElement) {
@@ -320,18 +273,6 @@ export default {
         this.$nextTick( ()=> {
           this.initElementDrag(cloned)
         })
-      }
-    },
-    toggleFontBold () {
-      if (this.selectedTexts.length) {
-        let fontWeight = this.selectedTexts[0].style.fontWeight
-        fontWeight += 200
-        if (fontWeight > 600) {
-          fontWeight = 200
-        }
-        for (let textElement of this.selectedTexts) {
-          textElement.style.fontWeight = fontWeight
-        }
       }
     },
 

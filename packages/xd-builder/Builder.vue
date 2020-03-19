@@ -12,7 +12,6 @@
 import StyleRegistry from './utils/StyleRegistry.js'
 import workMixin from './work/workMixin.js'
 import sceneMixin from './mixins/sceneMixins.js'
-import { Popover, Button, Upload, Tabs, TabPane, Drawer, Dialog, Menu, MenuItem, Message, Loading } from 'element-ui'
 import SceneContainer from './SceneContainer.vue'
 import LeftAside from './left/LeftAside.vue'
 import 'element-ui/packages/theme-chalk/lib/icon.css'
@@ -23,16 +22,7 @@ export default {
   components: {
     Toolbar,
     SceneContainer,
-    LeftAside,
-    [Popover.name]: Popover,
-    [Dialog.name]: Dialog,
-    [Button.name]: Button,
-    [Upload.name]: Upload,
-    [Tabs.name]: Tabs,
-    [TabPane.name]: TabPane,
-    [Drawer.name]: Drawer,
-    [Menu.name]: Menu,
-    [MenuItem.name]: MenuItem
+    LeftAside
   },
   mixins: [ sceneMixin, workMixin ],
   props: {

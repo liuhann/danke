@@ -53,6 +53,8 @@ export default {
         fontSize: 12,  // px as unit
         // 字体颜色
         color: '#fff',
+        // 字体对齐
+        textAlign: 'left',
         // 粗细
         fontWeight: 400,
         // 字间距
