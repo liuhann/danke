@@ -4,12 +4,12 @@
   <section class="section primary-background">
     <div class="container">
       <p class="intro-title">
-        快捷定制适用于各种设备的幻灯片与展示内容
+        快速设计各种精美的动态展示
       </p>
       <p class="has-text-white">
-        基于标准技术构建，可以分享到
+        一键分享 带动全场
       </p>
-      <router-link class="button is-large is-rounded installation chrome-installation" to="/xd/welcome">
+      <router-link class="button is-large is-rounded installation chrome-installation" to="/creative/my">
         立刻开始
       </router-link>
     </div>
