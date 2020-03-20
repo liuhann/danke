@@ -18,7 +18,7 @@
         <div class="object-list">
           <div v-for="(object, index) in objects" :key="index" class="object-item" @mouseenter="animationMouseEnter(object)">
             <div class="animation-name" v-if="object.name !== 'none'">
-              {{object.name}}
+              {{object.title || object.name}}
             </div>
             <div class="object-container">
               <span v-if="object.tags.join('').indexOf('text') > -1" :class="object.name">{{object.title}}</span>

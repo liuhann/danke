@@ -12,7 +12,7 @@
       <el-button size="mini" type="primary" @click="newStyle">新建</el-button>
       <div class="svg-list">
         <div v-for="(svg, index) in svgs" :key="index" class="svg-item">
-          <div class="title">{{svg.name}}</div>
+          <div class="title">{{svg.title || svg.name}}</div>
           <div class="album">{{svg.album}}</div>
           <div class="svg-container" :style="variableValues(svg)">
             <div class="styled-box" v-html="svg.content">

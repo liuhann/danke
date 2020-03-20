@@ -70,7 +70,7 @@ export default {
     },
 
     getSceneExistDuration () {
-      let maxExistsMill = 300
+      let maxExistsMill = 1
       for (let element of this.currentScene.elements) {
         if (element.style.exists) {
           for (let exist of element.style.exists) {

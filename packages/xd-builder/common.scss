@@ -75,10 +75,6 @@ input[type='number'] {
   flex-direction: column;
 }
 
-.el-input-number--mini {
-  width: 72px;
-}
-
 .el-textarea__inner {
   padding: 5px;
 }
@@ -92,6 +88,6 @@ input[type='number'] {
 }
 
 .el-input-number.is-controls-right .el-input__inner {
-  padding-left: 8px;
+  padding-left: 2px;
   padding-right: 30px;
 }

@@ -1,11 +1,11 @@
 <template>
 <div id="tool-bar">
   <!--  设置颜色变量-->
-  <color-pop-picker v-for="(variable, index) in elementStyleVariables" :key="index" :color="variable.value" model="color" @input="variableColorInput(variable, $event)"/>
-  <!-- 设置场景背景 -->
+  <color-pop-picker v-for="(variable, index) in elementColorVariables" :key="index" :color="variable.value" model="color" @input="variableColorInput(variable, $event)"/>
+  <!--  设置数字类变量-->
+  <el-input-number v-for="(variable, index) in elementNumberVariables" :key="index" v-model="variable.value" controls-position="right" size="mini"/>
+
   <color-pop-picker v-if="selectedElements.length === 0" :color="scene.style.background" mode="background" @input="sceneBackgroundChange"/>
-  <!-- 设置矩形元素背景 -->
-  <color-pop-picker v-if="focusedElement && focusedElement.style.background" :color="focusedElement.style.background" mode="background" @input="elementBackgroundChange"/>
   <!--  设置文字颜色-->
   <color-pop-picker v-if="selectedTexts.length === 1" :color="focusedElement.style.color" mode="color" @input="fontColorChanged"/>
   <!--元素动画效果设置-->
@@ -94,7 +94,7 @@
 </template>
 
 <script>
-import { Button, ButtonGroup, Popover, Slider, Select, Option, Tooltip } from 'element-ui'
+import { Button, ButtonGroup, Popover, Slider, Select, Option, Tooltip, InputNumber } from 'element-ui'
 import fontMixin from './fontMixin'
 import BorderList from './BorderList'
 import { shortid } from '../../utils/string'
@@ -120,6 +120,7 @@ export default {
     [Slider.name]: Slider,
     [Button.name]: Button,
     [Popover.name]: Popover,
+    [InputNumber.name]: InputNumber,
     [ButtonGroup.name]: ButtonGroup
   },
   props: {
@@ -159,18 +160,23 @@ export default {
             variables = variables.concat(this.focusedElement.style[key].variables)
           }
         }
-      }
-      console.log(this.focusedElement, variables)
-      return variables
-    },
-    elementColorVariables () {
-      let variables = []
-      for (let variable of this.elementStyleVariables) {
-        if (variable.type === 'color') {
-          variables.push(variable)
+      } else {
+        for (let key in this.scene.style) {
+          if (this.scene.style[key].variables) {
+            variables = variables.concat(this.scene.style[key].variables)
+          }
         }
       }
       return variables
+    },
+    elementColorVariables () {
+      return this.elementStyleVariables.filter(v => v.type === 'color')
+    },
+    elementNumberVariables () {
+      return this.elementStyleVariables.filter(v => v.type === 'number')
+    },
+    elementBackgroundVariables () {
+      return this.elementStyleVariables.filter(v => v.type === 'background')
     },
     sceneStyleVariables () {
       let variables = []
@@ -407,6 +413,9 @@ export default {
   .el-select {
     border: none;
     width: 64px;
+  }
+  .el-input-number--mini {
+    width: 60px;
   }
   a.action {
     line-height: 28px;

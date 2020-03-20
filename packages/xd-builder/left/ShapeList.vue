@@ -4,8 +4,39 @@
   <div class="basic-shape">
     <div class="object-item" draggable @dragstart="dragStart({
       style: {
-        background: '#00bf72',
-        clipPath: ''
+        background: 'var(--backgroundColor)',
+        clipPath: '',
+        basic: {
+          name: 'config',
+          variables: [{
+            name: 'backgroundColor',
+            value: '#00bf72',
+            type: 'background'
+          }]
+        }
+      }
+    }, $event)" @dragend="dragEnd()">
+      <div class="rectangle">
+      </div>
+    </div>
+    <div class="object-item" draggable @dragstart="dragStart({
+      style: {
+        background: 'transparent',
+        borderColor: 'var(--borderColor)',
+        borderStyle: 'solid',
+        borderWidth: 'var(--borderWidth)',
+        basic: {
+          name: 'config',
+          variables: [{
+            name: 'borderColor',
+            value: '#00bf72',
+            type: 'color'
+          }, {
+            name: 'borderWidth',
+            value: 2,
+            type: 'number'
+          }]
+        }
       }
     }, $event)" @dragend="dragEnd()">
       <div class="rectangle">
