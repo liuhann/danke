@@ -2,8 +2,25 @@
 <div id="xd">
   <left-aside @insert="insert"/>
   <section class="right-section" v-if="work">
-    <toolbar v-if="currentScene" :scenes="work.scenes" :work="work" :scene="currentScene" @scale-change="scaleChange" @prev-scene="previousScene" @next-scene="nextScene"/>
-    <scene-container v-if="currentScene" :screen="work.screen" :scenes="work.scenes" :scene="currentScene" :exist-scene="lastScene" :scale="scale"/>
+    <toolbar
+      v-if="currentScene"
+      :scenes="work.scenes"
+      :work="work"
+      :scene="currentScene"
+      :paste="paste"
+      @scale-change="scaleChange"
+      @prev-scene="previousScene"
+      @next-scene="nextScene"
+      @toggle-paste="togglePaste"/>
+    <scene-container
+      v-if="currentScene"
+      :screen="work.screen"
+      :scenes="work.scenes"
+      :scene="currentScene"
+      :exist-scene="lastScene"
+      :scale="scale"
+      :paste="paste"
+      @clean-paste="cleanPaste"/>
   </section>
 </div>
 </template>
@@ -15,7 +32,6 @@ import sceneMixin from './mixins/sceneMixins.js'
 import SceneContainer from './SceneContainer.vue'
 import LeftAside from './left/LeftAside.vue'
 import 'element-ui/packages/theme-chalk/lib/icon.css'
-import { shortid } from '../utils/string'
 import Toolbar from './toolbar/Toolbar'
 export default {
   name: 'Builder',
@@ -29,7 +45,8 @@ export default {
   },
   data () {
     return {
-      scale: 1
+      scale: 1,
+      paste: null
     }
   },
 
@@ -66,8 +83,13 @@ export default {
     },
     scaleChange (scale) {
       this.scale = scale
+    },
+    togglePaste (paste) {
+      this.paste = paste
+    },
+    cleanPaste () {
+      this.paste = null
     }
-
   }
 }
 </script>

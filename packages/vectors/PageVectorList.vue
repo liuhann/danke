@@ -3,7 +3,7 @@
   <nav-bar />
   <section class="section splash align-centered">
     <div class="container">
-      <h1>多彩多样的矢量图片</h1>
+      <h1>可定制颜色的SVG图片</h1>
       <h2>基于SVG文件格式，可任意配置、下载</h2>
     </div>
   </section>
@@ -13,6 +13,7 @@
       <div class="svg-list">
         <div v-for="(svg, index) in svgs" :key="index" class="svg-item">
           <div class="title">{{svg.name}}</div>
+          <div class="album">{{svg.album}}</div>
           <div class="svg-container" :style="variableValues(svg)">
             <div class="styled-box" v-html="svg.content">
             </div>
@@ -131,6 +132,12 @@ export default {
       top: 16px;
       left: 16px;
     }
+    .album {
+      position: absolute;
+      color: #444;
+      top: 16px;
+      right: 16px;
+    }
     &:nth-of-type(4n) {
       margin-right: 0;
     }
@@ -153,7 +160,7 @@ export default {
       justify-content: center;
       .styled-box {
         width: 80%;
-        height: 200px;
+        height: 120px;
         z-index: 10;
         position: relative;
         svg {

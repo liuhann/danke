@@ -71,7 +71,12 @@ export default {
         },
         svg: {
           name: 'fill',
-          variables: [],
+          variables: [{
+            name: "fillColor0",
+            value: "#5CA4DA",
+            label: "颜色0",
+            type: "color"
+          }]
         }
       },
       animation: {

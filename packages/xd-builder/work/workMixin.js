@@ -44,6 +44,7 @@ export default {
     async loadWork (workId) {
       const work = await this.workdao.getOne(workId)
       this.ctx.styleRegistry.initWorkStyleResource(work)
+      this.ctx.palette = this.ctx.styleRegistry.getWorkColors(work)
       this.work = work
     },
     /**

@@ -70,6 +70,10 @@ export default {
     },
     screen: {
       type: Object
+    },
+    // 格式刷模式
+    paste: {
+      type: Object
     }
   },
   data: function () {
@@ -303,14 +307,24 @@ export default {
             targetElement = element
           }
         }
-        this.mode = 'drag'
-        if (ev.ctrlKey) {
-          this.appendElementSelected(targetElement)
+
+        // 剪贴模式
+        if (this.paste) {
+          if (targetElement) {
+            this.pasteStyleToTargetElement(targetElement)
+          } else {
+            this.$emit('clean-paste')
+            this.setElementSelected(null)
+          }
         } else {
-          this.setElementSelected(targetElement)
+          this.mode = 'drag'
+          if (ev.ctrlKey) {
+            this.appendElementSelected(targetElement)
+          } else {
+            this.setElementSelected(targetElement)
+          }
         }
       }
-      this.currentAddon = null
       this.dragRect.dragged = false
     },
 
@@ -425,7 +439,6 @@ export default {
       if (element) {
         element.selected = true
       }
-      this.currentAddon = null
     },
 
     /**
@@ -440,7 +453,6 @@ export default {
       if (element) {
         element.selected = true
       }
-      this.currentAddon = null
     },
 
     /**
@@ -458,67 +470,41 @@ export default {
       return Object.assign(displayStyle, getRectPositionStyle(element))
     },
 
-    /**
-     * 切换到选中元素的设置样式模式
-     * @param addon 样式名称
-     */
-    showAddon (addon) {
-      if (this.selectedImages.length) {
-        this.currentAddonObject = this.selectedImages[0].style[addon]
-      } else {
-        this.currentAddonObject = this.scene.style[addon]
-      }
-      this.currentAddon = addon
-    },
-
-    /**
-     * 设置当前属性的配置值
-     */
-    setElementAddon (addon) {
-      if (this.selectedElements.length) {
-        for (let element of this.selectedElements) {
-          this.$set(element.style, this.currentAddon, addon)
-        }
-      } else {
-        this.$set(this.scene.style, this.currentAddon, addon)
-      }
-      this.currentAddonObject = addon
-    },
-
-    /*
-     * 增加动画到配置面板，同时更新选择的元素的动画效果
-     */
-    addAnimation (animation) {
-      if (this.currentAddonObject == null) {
-        this.currentAddonObject = []
-      }
-      this.currentAddonObject.push(animation)
-      if (this.selectedElements.length) {
-        for (let element of this.selectedElements) {
-          this.$set(element, 'animations', this.currentAddonObject)
-          this.$set(element.style, this.currentAddon, this.currentAddonObject)
-        }
-      }
-    },
-
     maskDblClick (element) {
       if (element.text) {
         this.$set(element, 'editing', true)
       }
     },
+
     /**
-     * 预览当前选中的元素的动画效果
+     * do actural paste work
+     * @param element
      */
-    previewAnimationSelection () {
-      // 清空动画选项
-      this.selectedElements.forEach(element => {
-        element.animations = []
-      })
-      setTimeout(() => {
-        this.selectedElements.forEach(element => {
-          element.animations = this.currentAddonObject
-        })
-      }, 200)
+    pasteStyleToTargetElement (element) {
+      if (this.paste) {
+        element.width = this.paste.width
+        element.height = this.paste.height
+
+        element.animation = JSON.parse(JSON.stringify(element.animation))
+        for (let key in this.paste.style) {
+          if (element.style[key] != null) {
+            if (typeof element.style[key] === 'object') {
+              this.copyVariableValue(this.paste.style[key].variables, element.style[key].variables)
+            } else {
+              element.style[key] = this.paste.style[key]
+            }
+          }
+        }
+      }
+    },
+    copyVariableValue (source, target) {
+      if (source.length === target.length) {
+        for (let i = 0; i < source.length; i++) {
+          if ((target[i].name === source[i].name) && (target[i].type === source[i].type)) {
+            target[i].value = source[i].value
+          }
+        }
+      }
     }
   }
 }

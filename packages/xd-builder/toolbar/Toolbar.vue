@@ -67,6 +67,7 @@
   <a class="action" v-if="selectedTexts.length" @click="toggleFontBold" :style="fontWeightStyle" style="padding: 0 10px;">B</a>
 
   <div class="pull-right">
+    <a class="action" :class="paste? 'on': ''" v-if="focusedElement" @click="togglePaste"><i class="el-icon-coordinate"/></a>
     <a class="action" v-if="selectedElements.length > 0" @click="copySelectedElement"><i class="el-icon-document-copy" /></a>
     <a class="action" v-if="selectedElements.length > 1" @click="groupSelectedElement">组合</a>
     <a class="action" v-if="selectedElements.length === 1 && selectedElements[0].elements && selectedElements[0].elements.length" @click="unGroupBlock">取消组合</a>
@@ -79,7 +80,6 @@
         <i class="el-icon-plus"></i>
       </a>
     </span>
-
     <a class="action" v-if="selectedElements.length" @click="removeSelectedElement"><i class="el-icon-delete"/></a>
     <a class="action" v-if="selectedElements.length === 0" @click="previousScene"><i class="el-icon-arrow-up" /></a>
     <a class="action" v-if="selectedElements.length === 0" @click="nextScene"><i class="el-icon-arrow-down" /></a>
@@ -131,6 +131,9 @@ export default {
     },
     work: {
       type: Object
+    },
+    paste: {
+      type: Object
     }
   },
   data () {
@@ -151,12 +154,13 @@ export default {
     elementStyleVariables () {
       let variables = []
       if (this.focusedElement) {
-        for (let [key, style] in this.focusedElement.style) {
-          if (style.variables) {
-            variables = variables.concat(style.variables)
+        for (let key in this.focusedElement.style) {
+          if (this.focusedElement.style[key].variables) {
+            variables = variables.concat(this.focusedElement.style[key].variables)
           }
         }
       }
+      console.log(this.focusedElement, variables)
       return variables
     },
     elementColorVariables () {
@@ -242,6 +246,13 @@ export default {
     }
   },
   methods: {
+    togglePaste () {
+      if (this.paste) {
+        this.$emit('toggle-paste', null)
+      } else {
+        this.$emit('toggle-paste', this.focusedElement)
+      }
+    },
     sceneBackgroundChange (color) {
       this.scene.style.background = color
       this.ctx.palette = this.ctx.styleRegistry.getWorkColors(this.work)
