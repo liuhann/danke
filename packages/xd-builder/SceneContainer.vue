@@ -12,7 +12,7 @@
             :element="element"
             :screen="screen"
             :view-port="screen"
-            :key="element.id"
+            :key="index"
             :index="index"
             :ref="element.id"/>
       </div>
@@ -27,7 +27,7 @@
         @dblclick="maskDblClick(selectee)"
         :class="getMaskClass(selectee)"
         :style="getMaskStyle(selectee)">
-        <template v-if="selectee.props.resizable">
+        <template v-if="selectee.props && selectee.props.resizable">
           <div class="lt"/><div class="rt"/><div class="t"/><div class="l"/><div class="lb"/><div class="rb"/><div class="r"/><div class="b"/>
         </template>
       </div>
@@ -398,14 +398,16 @@ export default {
       const node = this.createElement()
       let width = 100
       let height = 100
-
+      node.name = element.name || ('节点' + this.scene.elements.length + 1)
       if (element.width && element.height) {
         // 获取元素自适应到整个画面的高度和宽度
         const fit = fitRectIntoBounds(element, this.screen)
         width = fit.width
         height = fit.height
       }
-
+      if (element.variables) {
+        node.variables = element.variables
+      }
       // svg 图片处理 content -> svg
       if (element.content) {
         const vb = getSVGViewBox(element.content)
@@ -413,11 +415,6 @@ export default {
           width = vb.width
           height = vb.height
           node.isRatioFixed = true
-        }
-        // 设置SVG的颜色填充变量
-        node.style.svg = {
-          name: 'fill',
-          variables: element.variables
         }
         node.svg = element._id
       }
@@ -473,11 +470,7 @@ export default {
      */
     setElementsInteract () {
       for (let element of this.scene.elements) {
-        if (element.elements) {
-          this.initElementDrag(element)
-        } else {
-          this.initElementDragResize(element)
-        }
+        this.initElementDragResize(element)
       }
     },
 

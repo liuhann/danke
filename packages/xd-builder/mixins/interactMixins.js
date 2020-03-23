@@ -36,6 +36,10 @@ export default {
       }
     },
 
+    /**
+     * 重设元素是否允许缩放、移动
+     * @param node
+     */
     resetElementDragResize (node) {
       const el = document.getElementById('mask-' + node.id)
       if (el) {

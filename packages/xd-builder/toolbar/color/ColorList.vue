@@ -3,7 +3,7 @@
   <div class="color-container">
     <div class="addon-field">
       <span>选择颜色</span>
-      <el-color-picker style="flex:1; margin-left: 10px;" v-model="currentColor" @change="selectColor" size="mini"></el-color-picker>
+      <el-color-picker style="flex:1; margin-left: 10px;" show-alpha v-model="currentColor" @change="selectColor" size="mini"></el-color-picker>
       <el-button type="text" @click="selectColor(null)">清除颜色</el-button>
     </div>
     <div class="default-colors" v-if="palette">

@@ -94,9 +94,17 @@ export default {
       }
     },
 
+    // 位置及大小的样式
+    elementRectPositionStyle () {
+      return getRectPositionStyle(this.element, this.screen, this.viewPort)
+    },
+
     elementStyle () {
       const style = {}
-      Object.assign(style, getRectPositionStyle(this.element, this.screen, this.viewPort), this.elementAnimationStyle, this.elementTextTransform)
+      Object.assign(style, this.elementRectPositionStyle)
+      Object.assign(style, this.elementAnimationStyle)
+      Object.assign(style, this.elementTextTransform)
+      this.assignVariables(style, this.element.variables)
       for (let key in this.element.style) {
         const styled = this.element.style[key]
         if (typeof styled === 'string' || typeof styled === 'number') {
@@ -104,19 +112,7 @@ export default {
             [key]: styled
           })
         }
-        if (styled.variables) {
-          for (let variable of styled.variables) {
-            if (variable.type === 'number') {
-              Object.assign(style, {
-                ['--' + variable.name]: variable.value + 'px'
-              })
-            } else {
-              Object.assign(style, {
-                ['--' + variable.name]: variable.value
-              })
-            }
-          }
-        }
+        this.assignVariables(style, styled.variables)
       }
       style.perspective = (this.element.width + this.element.height) + 'px'
       return style
@@ -127,24 +123,26 @@ export default {
 
     elementAnimationStyle (                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ) {
       const element = this.element
-      const animations = element.animation[this.stage]
-      if (animations && animations.length) {
-        // 单个动画
-        if (animations.length === 1) {
-          const animation = animations[0]
-          return {
-            animation: `${animation.name} ${animation.range[1]}ms ${animation.timing} ${animation.range[0]}ms both`
-          }
-        } else {
-          const animationsOrdered = []
-          // 多个动画次序或者重叠播放
-          for (let i = 0; i < animations.length; i++) {
-            const animation = animations[i]
-            animationsOrdered.push(`${animation.name} ${animation.range[1]}ms ${animation.timing} ${animation.range[0]}ms ${i === animations.length - 1 ? '' : ''}`)
-          }
-          if (animationsOrdered.length) {
+      if (element.animation) {
+        const animations = element.animation[this.stage]
+        if (animations && animations.length) {
+          // 单个动画
+          if (animations.length === 1) {
+            const animation = animations[0]
             return {
-              animation: animationsOrdered.join(',')
+              animation: `${animation.name} ${animation.range[1]}ms ${animation.timing} ${animation.range[0]}ms both`
+            }
+          } else {
+            const animationsOrdered = []
+            // 多个动画次序或者重叠播放
+            for (let i = 0; i < animations.length; i++) {
+              const animation = animations[i]
+              animationsOrdered.push(`${animation.name} ${animation.range[1]}ms ${animation.timing} ${animation.range[0]}ms ${i === animations.length - 1 ? '' : ''}`)
+            }
+            if (animationsOrdered.length) {
+              return {
+                animation: animationsOrdered.join(',')
+              }
             }
           }
         }
@@ -165,6 +163,22 @@ export default {
   },
   methods: {
     getImageUrl,
+
+    assignVariables (style, variables) {
+      if (variables && variables.length) {
+        for (let variable of variables) {
+          if (variable.type === 'number') {
+            Object.assign(style, {
+              ['--' + variable.name]: variable.value + 'px'
+            })
+          } else {
+            Object.assign(style, {
+              ['--' + variable.name]: variable.value
+            })
+          }
+        }
+      }
+    },
 
     elementClicked () {
       console.log(this.element)

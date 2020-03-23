@@ -4,7 +4,9 @@
   popper-class="toolbar-pop"
   width="360"
   trigger="click">
-  <a class="action" slot="reference" title="特效"><i class="el-icon-magic-stick"></i></a>
+  <a class="action" slot="reference" title="特效">
+    <img :src="ICON">
+  </a>
   <div id="animation-config-tab">
     <tabs v-model="stage">
       <tab-pane label="进入" name="enter" class="animation-list">
@@ -49,6 +51,7 @@
 
 <script>
 import AnimationList from './AnimationList.vue'
+import ICON from './res/effect.svg'
 import { TabPane, Tabs, Slider, Button, Popover, InputNumber } from 'element-ui'
 export default {
   name: 'PopSetAnimation',
@@ -71,6 +74,7 @@ export default {
   },
   data () {
     return {
+      ICON,
       stage: 'enter'
     }
   },

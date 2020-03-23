@@ -5,18 +5,24 @@
   title="节点设置"
   trigger="click">
   <el-tooltip class="item" effect="dark" content="视觉位置及调整" placement="bottom" slot="reference">
-    <a class="action" ><i class="el-icon-edit-outline" /></a>
+    <a class="action" ><img :src="ICON_SIZE"></a>
   </el-tooltip>
-  <el-form label-width="80px" size="mini" class="more-action-form">
-    <el-form-item label="大小调整">
+  <el-form label-width="70px" size="mini" class="more-action-form">
+    <el-form-item label="宽高">
+      <el-input-number v-model="element.width" :disabled="!element.props.resizable" controls-position="right" size="mini"/>-<el-input-number v-model="element.height" :disabled="!element.props.resizable" controls-position="right" size="mini" />
       <el-checkbox v-model="element.props.resizable" @change="reInitElementDragResize" />
-      <el-input-number v-model="element.width" controls-position="right" size="mini"/>
-      <el-input-number v-model="element.height" controls-position="right" size="mini" />
     </el-form-item>
-    <el-form-item label="移动">
+    <el-form-item label="坐标">
+      <el-input-number v-model="element.x" :disabled="!element.props.movable" controls-position="right" size="mini"/>-<el-input-number v-model="element.y" :disabled="!element.props.movable" controls-position="right" size="mini" />
       <el-checkbox v-model="element.props.movable" @change="reInitElementDragResize" />
-      <el-input-number v-model="element.x" controls-position="right" size="mini"/>
-      <el-input-number v-model="element.y" controls-position="right" size="mini" />
+    </el-form-item>
+    <el-form-item label="显示次序">
+      <el-button-group size="mini">
+        <el-button @click="moveElementTop">顶层</el-button>
+        <el-button @click="moveElementUp">上一层</el-button>
+        <el-button @click="moveElementDown">下一层</el-button>
+        <el-button @click="moveElementBottom">底层</el-button>
+      </el-button-group>
     </el-form-item>
   </el-form>
 </el-popover>
@@ -25,17 +31,51 @@
 <script>
 import toolbarPopMixin from './toolbarPopMixin'
 import interactMixins from '../mixins/interactMixins'
+import ICON_SIZE from './res/size.svg'
+
 export default {
   name: 'PopMoreAction',
   mixins: [ toolbarPopMixin, interactMixins ],
   data () {
     return {
+      ICON_SIZE
     }
   },
   computed: { },
   methods: {
     reInitElementDragResize (val) {
       this.$emit('reset', this.element)
+    },
+
+    // 移动元素到最顶层 （数组最后一个）
+    moveElementTop () {
+      let currentIndex = this.scene.elements.indexOf(this.element)
+      while (currentIndex < this.scene.elements.length - 1) {
+        this.moveElementUp()
+        currentIndex ++
+      }
+    },
+    moveElementBottom () {
+      let currentIndex = this.scene.elements.indexOf(this.element)
+      while (currentIndex > 0) {
+        this.moveElementDown()
+        currentIndex --
+      }
+    },
+    // 移动元素上一层 （数组向后一个）
+    moveElementUp () {
+      const currentIndex = this.scene.elements.indexOf(this.element)
+      if (currentIndex < this.scene.elements.length - 1) {
+        this.scene.elements[currentIndex] = this.scene.elements[currentIndex + 1]
+        this.scene.elements[currentIndex + 1] = this.element
+      }
+    },
+    moveElementDown () {
+      const currentIndex = this.scene.elements.indexOf(this.element)
+      if (currentIndex > 0) {
+        this.scene.elements[currentIndex] = this.scene.elements[currentIndex - 1]
+        this.scene.elements[currentIndex - 1] = this.element
+      }
     }
   }
 }

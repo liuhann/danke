@@ -34,6 +34,7 @@ export default {
     },
     elements: [{
       id: 'element-32',
+      name: '',
       x: 4,
       y: 23,
       width: 213,
@@ -46,6 +47,10 @@ export default {
         resizable: true,
         movable: true
       },
+      classes: [{
+        name: '',
+        variables: []
+      }],
       style: {
         // direct style writing
         backgroundColor: '#00bf72',

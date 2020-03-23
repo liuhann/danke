@@ -2,44 +2,12 @@
 <div id="addon-shape-list">
   <div class="hint">拖拽形状到设计区</div>
   <div class="basic-shape">
-    <div class="object-item" draggable @dragstart="dragStart({
-      style: {
-        background: 'var(--backgroundColor)',
-        clipPath: '',
-        basic: {
-          name: 'config',
-          variables: [{
-            name: 'backgroundColor',
-            value: '#00bf72',
-            type: 'background'
-          }]
-        }
-      }
-    }, $event)" @dragend="dragEnd()">
-      <div class="rectangle">
-      </div>
-    </div>
-    <div class="object-item" draggable @dragstart="dragStart({
-      style: {
-        background: 'transparent',
-        borderColor: 'var(--borderColor)',
-        borderStyle: 'solid',
-        borderWidth: 'var(--borderWidth)',
-        basic: {
-          name: 'config',
-          variables: [{
-            name: 'borderColor',
-            value: '#00bf72',
-            type: 'color'
-          }, {
-            name: 'borderWidth',
-            value: 2,
-            type: 'number'
-          }]
-        }
-      }
-    }, $event)" @dragend="dragEnd()">
-      <div class="rectangle">
+    <div
+      v-for="(shape, index) in buildInShapes"
+      :key="index"
+      class="object-item" draggable @dragstart="dragStart(shape, $event)">
+      <div class="shape" :style="shapeStyle(shape)">
+        {{shape.name}}
       </div>
     </div>
   </div>
@@ -58,6 +26,41 @@
 <script>
 import objectListMixin from '../../common/components/objectListMixin'
 import { Pagination } from 'element-ui'
+
+const buildInShapes = [{
+  name: '纯色矩形',
+  style: {
+    background: 'var(--backgroundColor)',
+    clipPath: '',
+  },
+  variables: [{
+    name: 'backgroundColor',
+    value: '#00bf72',
+    type: 'color'
+  }]
+}, {
+  name: '边框矩形',
+  style: {
+    background: 'var(--backgroundColor)',
+    borderColor: 'var(--borderColor)',
+    borderStyle: 'solid',
+    borderWidth: 'var(--borderWidth)',
+  },
+  variables: [{
+    name: 'borderColor',
+    value: '#00bf72',
+    type: 'color'
+  }, {
+    name: 'borderWidth',
+    value: 2,
+    type: 'number'
+  }, {
+    name: 'backgroundColor',
+    value: '#10211a',
+    type: 'color'
+  }]
+}]
+
 export default {
   name: 'LeftShapeList',
   mixins: [ objectListMixin ],
@@ -66,6 +69,7 @@ export default {
   },
   data () {
     return {
+      buildInShapes,
       restPath: 'danke/svg'
     }
   },
@@ -79,6 +83,23 @@ export default {
       this.draggingImage = true
     },
 
+    shapeStyle (shape) {
+      const style = shape.style
+      if (shape.variables) {
+        for (let variable of shape.variables) {
+          if (variable.type === 'number') {
+            Object.assign(style, {
+              ['--' + variable.name]: variable.value + 'px'
+            })
+          } else {
+            Object.assign(style, {
+              ['--' + variable.name]: variable.value
+            })
+          }
+        }
+      }
+      return style
+    },
     // load list callback
     objectUpdated () {
       for (let object of this.objects) {
@@ -108,10 +129,14 @@ export default {
       &:nth-of-type(3n) {
         margin-right: 0;
       }
-      .rectangle {
+      .shape {
         width: 70px;
         height: 70px;
-        background-color: #00bf72;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 14px;
+        color: #fff;
       }
     }
   }

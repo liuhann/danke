@@ -35,7 +35,7 @@
     </el-popover>
   </keep-alive>
 
-  <pop-clip-list v-if="focusedElement && focusedElement.style.clipPath != null" @input="setElementClipPath"/>
+  <pop-clip-list v-if="focusedElement && focusedElement.style && focusedElement.style.clipPath != null" @input="setElementClipPath"/>
   <!--  设置字体-->
   <el-select
     v-if="selectedTexts.length"
@@ -64,14 +64,14 @@
     </el-option>
   </el-select>
   <a class="action" v-if="selectedTexts.length" @click="toggleFontBold" :style="fontWeightStyle" style="padding: 0 10px;">B</a>
-  <pop-transparent :element="focusedElement"/>
+  <pop-transparent :element="focusedElement" v-if="focusedElement"/>
 
   <div class="pull-right">
-    <a class="action" :class="paste? 'on': ''" v-if="focusedElement" @click="togglePaste"><i class="el-icon-coordinate"/></a>
-    <a class="action" v-if="selectedElements.length > 0" @click="copySelectedElement"><i class="el-icon-document-copy" /></a>
-    <a class="action" v-if="selectedElements.length > 1" @click="groupSelectedElement">组合</a>
-    <a class="action" v-if="selectedElements.length === 1 && selectedElements[0].elements && selectedElements[0].elements.length" @click="unGroupBlock">取消组合</a>
-    <a class="action" v-if="selectedElements.length" @click="removeSelectedElement"><i class="el-icon-delete"/></a>
+    <a class="action" :class="paste? 'on': ''" v-if="focusedElement" @click="togglePaste"><img :src="ICON_BRUSH"></a>
+    <a class="action" v-if="selectedElements.length > 0" @click="copySelectedElement"><img :src="ICON_COPY"></a>
+    <a class="action" v-if="selectedElements.length > 1" @click="groupSelectedElement"><img :src="ICON_GROUPING"></a>
+    <a class="action on" v-if="selectedElements.length === 1 && selectedElements[0].elements && selectedElements[0].elements.length" @click="unGroupBlock"><img :src="ICON_GROUPING"></a>
+    <a class="action" v-if="selectedElements.length" @click="removeSelectedElement"><img :src="ICON_TRASH"></a>
     <a class="action" v-if="selectedElements.length === 0" @click="previousScene"><i class="el-icon-arrow-up" /></a>
     <a class="action" v-if="selectedElements.length === 0" @click="nextScene"><i class="el-icon-arrow-down" /></a>
     <a class="action" v-if="selectedElements.length === 0"> {{scenes.indexOf(scene) + 1}}/{{scenes.length}}</a>
@@ -96,6 +96,10 @@ import PopClipList from './PopClipList'
 import PopSetAnimation from './PopSetAnimation'
 import PopMoreAction from './PopMoreAction'
 import PopTransparent from './PopTransparent'
+import ICON_BRUSH from './res/brush.svg'
+import ICON_GROUPING from './res/grouping.svg'
+import ICON_COPY from './res/copy.svg'
+import ICON_TRASH from './res/trash.svg'
 export default {
   name: 'Toolbar',
   mixins: [ interactMixins, fontMixin ],
@@ -135,6 +139,10 @@ export default {
   },
   data () {
     return {
+      ICON_TRASH,
+      ICON_BRUSH,
+      ICON_GROUPING,
+      ICON_COPY
     }
   },
   computed: {
@@ -150,8 +158,11 @@ export default {
     elementStyleVariables () {
       let variables = []
       if (this.focusedElement) {
+        if (this.focusedElement.variables) {
+          variables = variables.concat(this.focusedElement.variables)
+        }
         for (let key in this.focusedElement.style) {
-          if (this.focusedElement.style[key].variables) {
+          if (typeof this.focusedElement.style[key] === 'object' && this.focusedElement.style[key].variables) {
             variables = variables.concat(this.focusedElement.style[key].variables)
           }
         }
@@ -299,6 +310,14 @@ export default {
       const block = {
         id: shortid(),
         elements: [],
+        name: '组合',
+        props: {
+          resizable: false,
+          movable: true
+        },
+        style: {},
+        animation: {},
+        selected: false,
         // assign to the first of selected
         x: this.selectedElements[0].x,
         y: this.selectedElements[0].y,
@@ -340,7 +359,7 @@ export default {
       this.scene.elements.push(block)
 
       this.$nextTick( ()=> {
-        this.initElementDrag(block)
+        this.initElementDragResize(block)
       })
     },
 
@@ -408,7 +427,7 @@ export default {
     color: #0e1318;
     font-size: 1.4rem;
     font-weight: 400;
-    padding: 0 8px;
+    padding: 0 6px;
     display: inline-block;
     &:hover, &.on {
       background-color: #f1f3f4;
@@ -419,7 +438,7 @@ export default {
       font-weight: bold;
     }
     img {
-      width: 20px;
+      width: 18px;
       height: 28px;
       display: inline-block;
       vertical-align: top;

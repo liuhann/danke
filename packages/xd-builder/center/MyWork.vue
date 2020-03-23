@@ -62,8 +62,10 @@ export default {
     },
 
     async removeWork (work) {
-      await this.workdao.delete(work)
-      this.loadMyWorks()
+      if (confirm('确认删除作品?')) {
+        await this.workdao.delete(work)
+        this.loadMyWorks()
+      }
     }
   }
 }
