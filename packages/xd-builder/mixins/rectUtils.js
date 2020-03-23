@@ -17,10 +17,12 @@ export function fitRectIntoBounds (rect, bounds) {
 
   // Rect is more landscape than bounds - fit to width
   if (rectRatio > boundsRatio) {
+    newDimensions.fitTo = 'width'
     newDimensions.width = bounds.width
     newDimensions.height = Math.floor(rect.height * (bounds.width / rect.width))
   } else {
     // Rect is more portrait than bounds - fit to height
+    newDimensions.fitTo = 'height'
     newDimensions.width = Math.floor(rect.width * (bounds.height / rect.height))
     newDimensions.height = bounds.height
   }

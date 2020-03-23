@@ -1,6 +1,6 @@
 <template>
 <div class="scene-wrapper">
-  <div id="workspace" @click="sceneMouseDown" ref="sceneContainer" :style="styleWorkSpace">
+  <div id="workspace" @mousedown="sceneMouseDown" ref="sceneContainer" :style="styleWorkSpace">
     <!-- 当前屏幕内容 -->
     <div class="screen" :style="styleScreen">
       <div class="screen-title">
@@ -25,6 +25,7 @@
         :id="'mask-' + selectee.id"
         class="node-mask"
         @dblclick="maskDblClick(selectee)"
+        :class="getMaskClass(selectee)"
         :style="getMaskStyle(selectee)">
         <template v-if="selectee.props.resizable">
           <div class="lt"/><div class="rt"/><div class="t"/><div class="l"/><div class="lb"/><div class="rb"/><div class="r"/><div class="b"/>
@@ -32,7 +33,24 @@
       </div>
     </div>
     <!-- 拖拽选择层 -->
-    <div class="dragging-rect" :style="styleDragingRect" />
+    <div class="dragging-rect" :style="styleDragingRect"></div>
+
+    <!--缩放、平移操作区-->
+    <div class="screen-actions">
+      <a class="action" @click="scaleDown">
+        <i class="el-icon-minus"></i>
+      </a>
+      <span class="info">{{scaleDisplay}}</span>
+      <a class="action" @click="scaleUp">
+        <i class="el-icon-plus"></i>
+      </a>
+      <a class="action" @click="fitToCenter">
+        <img :src="ICON_FIT">
+      </a>
+      <a class="action" @click="toggleActionMove" :class="actionMove? 'on': ''">
+        <img :src="ICON_HAND">
+      </a>
+    </div>
   </div>
 </div>
 </template>
@@ -45,7 +63,9 @@ import { shortid } from '../utils/string'
 import { getSVGViewBox } from '../vectors/utils'
 import interactMixins from './mixins/interactMixins.js'
 import { fitRectIntoBounds, getRectPositionStyle, isPointInRect, intersectRect } from './mixins/rectUtils.js'
-
+import ICON_HAND from './res/hand.svg'
+import ICON_FIT from './res/fit.svg'
+const WORKSPACE_PADDING = 20
 export default {
   name: 'SceneContainer',
   mixins: [ interactMixins ],
@@ -65,9 +85,6 @@ export default {
     existScene: {
       type: Object
     },
-    scale: {
-      type: Number
-    },
     screen: {
       type: Object
     },
@@ -78,10 +95,14 @@ export default {
   },
   data: function () {
     return {
-      screenPosition: {
-        x: 0,
-        y: 0
-      },
+      // 屏幕区域缩放比例
+      scale: 0.2,
+      // 屏幕在工作区横向位置
+      translateX: 0,
+      // 屏幕区在工作区纵向位置
+      translateY: 0,
+      // 拖拽移动模式
+      actionMove: false,
       // 工作区大小， 屏幕、拖拽及选择遮罩都在工作区内部
       workSpace: {
         width: 0,
@@ -107,7 +128,9 @@ export default {
       // 正在编辑的选项
       currentAddon: null,
       // 当前正编辑的边框信息
-      currentAddonObject: null
+      currentAddonObject: null,
+      ICON_HAND,
+      ICON_FIT
     }
   },
 
@@ -130,22 +153,32 @@ export default {
   },
 
   computed: {
-    styleWorkSpace() {
-      return {
+    scaleDisplay () {
+      return Math.floor(this.scale * 100) + '%'
+    },
+    styleWorkSpace () {
+      const style = {
         width: this.workSpace.width + 'px',
         height: this.workSpace.height + 'px'
       }
+      if (this.actionMove) {
+        style.cursor = 'move'
+      }
+      return style
     },
     styleScreen () {
-      return {
-        fontSize: '10px',
-        transform: 'scale(' + this.scale + ')',
-        transformOrigin: 'top center',
-        left: this.screenRect.x + 'px',
-        top: this.screenRect.y + 'px',
-        width: this.screenRect.width + 'px',
-        height: this.screenRect.height + 'px'
+      const screenStyle = {
+        transform: `translateX(${this.translateX}px) translateY(${this.translateY}px) scale(${this.scale})`,
+        transformOrigin: 'top left',
+        width: this.screen.width + 'px',
+        height: this.screen.height + 'px',
+        transition: 'transform .2s ease-out'
       }
+      if (this.actionMove) {
+        screenStyle.transition = ''
+        screenStyle.cursor = 'move'
+      }
+      return screenStyle
     },
     styleMask () {
       const style = {}
@@ -198,10 +231,18 @@ export default {
         }
       }
       return classes
+    },
+    /**
+     *
+     **/
+    selectedElements () {
+      return this.scene.elements.filter(el => el.selected)
     }
   },
 
   mounted: function () {
+    this.workSpace.width = this.$el.clientWidth
+    this.workSpace.height = this.$el.clientHeight
     this.fitToCenter()
     this.initGlobalInteract()
     this.setElementsInteract()
@@ -212,17 +253,24 @@ export default {
      * 将屏幕放置到设计区正中央，同时修改屏幕位置偏移量
      */
     fitToCenter () {
+      // 上下左右边距30px  自适应到容器大小
       const fitSize = fitRectIntoBounds(this.screen, {
-        width: this.$el.clientWidth - 60,
-        height: this.$el.clientHeight - 60
+        width: this.workSpace.width - WORKSPACE_PADDING * 2,
+        height: this.workSpace.height - WORKSPACE_PADDING * 2
       })
-      const screenRatio = fitSize.width / this.screen.width
-      this.workSpace.width = this.$el.clientWidth / screenRatio
-      this.workSpace.height = this.$el.clientHeight / screenRatio
-      this.screenRect.width = this.screen.width
-      this.screenRect.height = this.screen.height
-      this.screenRect.x = (this.workSpace.width - this.screen.width) / 2
-      this.screenRect.y = (this.workSpace.height - this.screen.height) / 2
+      // 自适应后，伸缩的比率
+      this.scale = fitSize.width / this.screen.width
+      if (fitSize.fitTo === 'width') {
+        this.translateX = WORKSPACE_PADDING
+        this.translateY = (this.workSpace.height - fitSize.height) / 2
+      } else {
+        this.translateX = (this.workSpace.width - fitSize.width) / 2
+        this.translateY = WORKSPACE_PADDING
+      }
+      this.$emit('scale-fit', this.scale)
+    },
+    toggleActionMove () {
+      this.actionMove = !this.actionMove
     },
     getRectPositionStyle,
     /**
@@ -234,40 +282,51 @@ export default {
          * 拖拽开始，如果只是点击不会触发拖拽事件。
          */
         onstart: event => {
+          console.log('global on start', event)
           this.dragRect.left = event.x0 - event.rect.left
           this.dragRect.top = event.y0 - event.rect.top
-          this.dragRect.visible = true
+          if (!this.actionMove) {
+            this.dragRect.visible = true
+          }
         },
         /**
          * 拖拽移动
          */
         onmove: event => {
-          // const containerRect = this.$refs.sceneContainer.getBoundingClientRect()
-          // 计算正在拖拽的矩形区域
-          this.dragRect.width = event.page.x - event.x0
-          this.dragRect.height = event.page.y - event.y0
-          if (this.dragRect.width < 0) {
-            this.dragRect.left = (event.x0 - event.rect.left) + this.dragRect.width
-            this.dragRect.width = -this.dragRect.width
-          }
-          if (this.dragRect.height < 0) {
-            this.dragRect.top = (event.y0 - event.rect.top) + this.dragRect.height
-            this.dragRect.height = -this.dragRect.height
-          }
+          if (this.actionMove) {
+            // 移动模式
+            this.translateX += event.dx
+            this.translateY += event.dy
+          } else {
+            // 计算正在拖拽的矩形区域
+            this.dragRect.width = event.page.x - event.x0
+            this.dragRect.height = event.page.y - event.y0
+            // 拖拽多选模式
+            // 向右拖拽： 重新计算left
+            if (this.dragRect.width < 0) {
+              this.dragRect.left = (event.x0 - event.rect.left) + this.dragRect.width
+              this.dragRect.width = -this.dragRect.width
+            }
+            // 向上拖拽： 重新计算top
+            if (this.dragRect.height < 0) {
+              this.dragRect.top = (event.y0 - event.rect.top) + this.dragRect.height
+              this.dragRect.height = -this.dragRect.height
+            }
 
-          // 判断矩形交叉的元素设置为选中
-          this.dragRect.x = this.dragRect.left - this.screenRect.x - this.screenRect.width / 2 * (1 - this.scale)
-          this.dragRect.y = this.dragRect.top - this.screenRect.y
-          for (let element of this.scene.elements) {
-            if (intersectRect({
-              x: element.x * this.scale,
-              y: element.y * this.scale,
-              width: element.width * this.scale,
-              height: element.height * this.scale
-            }, this.dragRect)) {
-              element.selected = true
-            } else {
-              element.selected = false
+            // 判断矩形交叉的元素设置为选中
+            this.dragRect.x = this.dragRect.left - this.screenRect.x - this.screenRect.width / 2 * (1 - this.scale)
+            this.dragRect.y = this.dragRect.top - this.screenRect.y
+            for (let element of this.scene.elements) {
+              if (intersectRect({
+                x: element.x * this.scale + this.translateX,
+                y: element.y * this.scale + this.translateY,
+                width: element.width * this.scale,
+                height: element.height * this.scale
+              }, this.dragRect)) {
+                element.selected = true
+              } else {
+                element.selected = false
+              }
             }
           }
         },
@@ -286,46 +345,42 @@ export default {
      * 进行鼠标点击位置检测，如果点击到元素则选中或保持多个的选择状态， 点到空白则取消所有元素选中
      */
     sceneMouseDown (ev) {
-      if (!this.dragRect.dragged) {
-        // 设计区点转换为相对于屏幕的点
-        const rootRect = this.$refs.sceneContainer.getBoundingClientRect()
-        // 点位置计算 clientX - 容器X - 屏幕X
-        const point = {
-          x: ev.clientX - rootRect.x - this.$refs.sceneContainer.scrollLeft - this.screenRect.x - this.screenRect.width / 2 * (1 - this.scale),
-          y: ev.clientY - rootRect.y - this.$refs.sceneContainer.scrollTop - this.screenRect.y
-        }
-        // 判断点击处的元素
-        let targetElement = null
-        for (let element of this.scene.elements) {
-          if (isPointInRect(point, {
-            x: element.x * this.scale,
-            y: element.y * this.scale,
-            width: element.width * this.scale,
-            height: element.height * this.scale
-          }, 10)) {
-            // 获取第一个 也就是最外层的
-            targetElement = element
-          }
-        }
-
-        // 剪贴模式
-        if (this.paste) {
-          if (targetElement) {
-            this.pasteStyleToTargetElement(targetElement)
-          } else {
-            this.$emit('clean-paste')
-            this.setElementSelected(null)
-          }
-        } else {
-          this.mode = 'drag'
-          if (ev.ctrlKey) {
-            this.appendElementSelected(targetElement)
-          } else {
-            this.setElementSelected(targetElement)
-          }
+      // 鼠标得到所点的位置
+      const rootRect = this.$refs.sceneContainer.getBoundingClientRect()
+      const point = {
+        x: ev.clientX - rootRect.x,
+        y: ev.clientY - rootRect.y
+      }
+      // 获取选择的元素，重叠的获取z最高的
+      let targetElement = null
+      for (let element of this.scene.elements) {
+        if (isPointInRect(point, {
+          x: element.x * this.scale + this.translateX,
+          y: element.y * this.scale + this.translateY,
+          width: element.width * this.scale,
+          height: element.height * this.scale
+        }, 10)) {
+          targetElement = element
         }
       }
-      this.dragRect.dragged = false
+      // 剪贴模式
+      if (this.paste) {
+        if (targetElement) {
+          this.pasteStyleToTargetElement(targetElement)
+        } else {
+          this.$emit('clean-paste')
+          this.setElementSelected(null)
+        }
+      } else {
+        if (ev.ctrlKey) {
+          this.appendElementSelected(targetElement)
+        } else {
+          if (this.selectedElements.length && this.selectedElements.indexOf(targetElement) > -1) {
+            return
+          }
+          this.setElementSelected(targetElement)
+        }
+      }
     },
 
     // Drag over and set as allow drop
@@ -460,20 +515,38 @@ export default {
      */
     getMaskStyle (element) {
       const displayStyle = {}
+      // if (!element.selected) {
+      //   displayStyle.opacity = 0
+      // } else {
+      //   if (element.editing) {
+      //     displayStyle.opacity = 0
+      //   }
+      // }
+      return Object.assign(displayStyle, getRectPositionStyle(element))
+    },
+
+    getMaskClass (element) {
       if (!element.selected) {
-        displayStyle.display = 'none'
+        return 'not-selected'
       } else {
         if (element.editing) {
-          displayStyle.display = 'none'
+          return 'not-selected'
         }
       }
-      return Object.assign(displayStyle, getRectPositionStyle(element))
+      return 'selected'
     },
 
     maskDblClick (element) {
       if (element.text) {
         this.$set(element, 'editing', true)
       }
+    },
+
+    scaleDown () {
+      this.scale -= 0.05
+    },
+    scaleUp () {
+      this.scale += 0.05
     },
 
     /**
@@ -513,8 +586,43 @@ export default {
 <style lang="scss">
 .scene-wrapper {
   flex: 1;
-  overflow: auto;
+  overflow: hidden;
   width: 100%;
+
+  .screen-actions {
+    z-index: 1001;
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    background: rgba(255,255,255, .6);
+    border: 1px solid #eee;
+    padding: 5px;
+    border-radius: 10px;
+    font-size: 16px;
+
+    .action {
+      line-height: 36px;
+      cursor: pointer;
+      margin: 0 5px;
+      color: #0e1318;
+      font-weight: 400;
+      padding: 0 8px;
+      display: inline-block;
+      &:hover, &.on {
+        background-color: #f1f3f4;
+      }
+      i {
+        vertical-align: text-bottom;
+        font-weight: bold;
+      }
+      img {
+        width: 16px;
+        height: 16px;
+        display: inline-block;
+        vertical-align: text-bottom;
+      }
+    }
+  }
 }
 #workspace {
   position: relative;
@@ -537,7 +645,18 @@ export default {
   }
   .node-mask {
     position: relative;
-    border: 1px solid #42A5F5;
+    &.not-selected {
+      border: 1px solid transparent;
+      >div {
+        opacity: 0;
+      }
+    }
+    &.selected {
+      border: 1px dashed #00bf72;
+      >div {
+        opacity: 1;
+      }
+    }
     >div {
       border: 1px solid #42A5F5;
       width: 8px;

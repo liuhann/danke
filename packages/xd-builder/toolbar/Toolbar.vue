@@ -12,7 +12,6 @@
   <pop-set-animation v-if="selectedElements.length" :elements="selectedElements"/>
   <!--整体场景的动画效果-->
   <pop-set-animation v-if="selectedElements.length === 0" :scene="this.scene"/>
-
   <!-- 边框修饰扩展 -->
   <keep-alive>
     <el-popover
@@ -65,21 +64,13 @@
     </el-option>
   </el-select>
   <a class="action" v-if="selectedTexts.length" @click="toggleFontBold" :style="fontWeightStyle" style="padding: 0 10px;">B</a>
+  <pop-transparent :element="focusedElement"/>
 
   <div class="pull-right">
     <a class="action" :class="paste? 'on': ''" v-if="focusedElement" @click="togglePaste"><i class="el-icon-coordinate"/></a>
     <a class="action" v-if="selectedElements.length > 0" @click="copySelectedElement"><i class="el-icon-document-copy" /></a>
     <a class="action" v-if="selectedElements.length > 1" @click="groupSelectedElement">组合</a>
     <a class="action" v-if="selectedElements.length === 1 && selectedElements[0].elements && selectedElements[0].elements.length" @click="unGroupBlock">取消组合</a>
-    <span v-if="selectedElements.length === 0">
-      <a class="action" @click="scaleDown">
-        <i class="el-icon-minus"></i>
-      </a>
-      <span class="info">{{scaleToolbarDisplay}}</span>
-      <a class="action" @click="scaleUp">
-        <i class="el-icon-plus"></i>
-      </a>
-    </span>
     <a class="action" v-if="selectedElements.length" @click="removeSelectedElement"><i class="el-icon-delete"/></a>
     <a class="action" v-if="selectedElements.length === 0" @click="previousScene"><i class="el-icon-arrow-up" /></a>
     <a class="action" v-if="selectedElements.length === 0" @click="nextScene"><i class="el-icon-arrow-down" /></a>
@@ -104,10 +95,12 @@ import ColorPopPicker from './ColorPopPicker'
 import PopClipList from './PopClipList'
 import PopSetAnimation from './PopSetAnimation'
 import PopMoreAction from './PopMoreAction'
+import PopTransparent from './PopTransparent'
 export default {
   name: 'Toolbar',
   mixins: [ interactMixins, fontMixin ],
   components: {
+    PopTransparent,
     PopMoreAction,
     PopSetAnimation,
     PopClipList,
@@ -135,11 +128,13 @@ export default {
     },
     paste: {
       type: Object
+    },
+    scale: {
+      type: Number
     }
   },
   data () {
     return {
-      scale: 1
     }
   },
   computed: {
@@ -205,9 +200,6 @@ export default {
         return this.scene.elements.filter(el => el.selected && el.text != null)
       }
       return []
-    },
-    scaleToolbarDisplay () {
-      return Math.floor(this.scale * 100) + '%'
     },
     /**
      * 获取场景class列表
@@ -288,7 +280,7 @@ export default {
         cloned.y += 10
         this.scene.elements.push(cloned)
         this.$nextTick( ()=> {
-          this.initElementDrag(cloned)
+          this.initElementDragResize(cloned)
         })
       }
     },
@@ -371,15 +363,6 @@ export default {
       }
     },
 
-    scaleDown () {
-      this.scale -= 0.05
-      this.$emit('scale-change', this.scale)
-    },
-    scaleUp () {
-      this.scale += 0.05
-      this.$emit('scale-change', this.scale)
-    },
-
     log () {
       console.log(this.selectedElements, this.scene, this.work)
     },
@@ -434,6 +417,12 @@ export default {
       vertical-align: text-bottom;
       font-size: 1.8rem;
       font-weight: bold;
+    }
+    img {
+      width: 20px;
+      height: 28px;
+      display: inline-block;
+      vertical-align: top;
     }
   }
   .icon {

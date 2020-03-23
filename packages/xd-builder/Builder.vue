@@ -8,6 +8,7 @@
       :work="work"
       :scene="currentScene"
       :paste="paste"
+      :scale="scale"
       @scale-change="scaleChange"
       @prev-scene="previousScene"
       @next-scene="nextScene"
@@ -18,8 +19,8 @@
       :scenes="work.scenes"
       :scene="currentScene"
       :exist-scene="lastScene"
-      :scale="scale"
       :paste="paste"
+      @scale-fit="scaleChange"
       @clean-paste="cleanPaste"/>
   </section>
 </div>
