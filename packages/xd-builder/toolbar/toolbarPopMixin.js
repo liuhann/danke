@@ -1,4 +1,4 @@
-import { Popover, Tooltip, Switch, Form, FormItem, InputNumber, Checkbox, Slider, Button, ButtonGroup } from 'element-ui'
+import { Popover, Tooltip, Switch, Form, FormItem, InputNumber, Checkbox, Slider, Button, ButtonGroup, Select, Option } from 'element-ui'
 export default {
   components: {
     [Popover.name]: Popover,
@@ -10,6 +10,8 @@ export default {
     [Slider.name]: Slider,
     [Checkbox.name]: Checkbox,
     [Button.name]: Button,
+    [Select.name]: Select,
+    [Option.name]: Option,
     [ButtonGroup.name]: ButtonGroup
   },
   props: {

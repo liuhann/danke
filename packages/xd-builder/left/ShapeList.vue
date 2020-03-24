@@ -84,7 +84,7 @@ export default {
     },
 
     shapeStyle (shape) {
-      const style = shape.style
+      const style = Object.assign({}, shape.style)
       if (shape.variables) {
         for (let variable of shape.variables) {
           if (variable.type === 'number') {

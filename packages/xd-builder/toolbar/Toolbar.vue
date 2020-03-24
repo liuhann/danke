@@ -25,16 +25,7 @@
   </keep-alive>
 
   <!--元素变换、旋转、拉伸等-->
-  <keep-alive>
-    <el-popover
-      v-if="selectedElements.length"
-      placement="bottom"
-      width="200"
-      trigger="click">
-      <a class="action" slot="reference" title="变换"><i class="el-icon-connection" /></a>
-    </el-popover>
-  </keep-alive>
-
+  <pop-transform v-if="focusedElement" :element="focusedElement"/>
   <pop-clip-list v-if="focusedElement && focusedElement.style && focusedElement.style.clipPath != null" @input="setElementClipPath"/>
   <!--  设置字体-->
   <el-select
@@ -100,10 +91,12 @@ import ICON_BRUSH from './res/brush.svg'
 import ICON_GROUPING from './res/grouping.svg'
 import ICON_COPY from './res/copy.svg'
 import ICON_TRASH from './res/trash.svg'
+import PopTransform from './PopTransform'
 export default {
   name: 'Toolbar',
   mixins: [ interactMixins, fontMixin ],
   components: {
+    PopTransform,
     PopTransparent,
     PopMoreAction,
     PopSetAnimation,
