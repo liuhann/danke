@@ -9,9 +9,9 @@
   <!--  设置文字颜色-->
   <color-pop-picker v-if="selectedTexts.length === 1" :color="focusedElement.style.color" mode="color" @input="fontColorChanged"/>
   <!--元素动画效果设置-->
-  <pop-set-animation v-if="selectedElements.length" :elements="selectedElements"/>
+  <pop-set-animation v-if="focusedElement" :element="focusedElement"/>
   <!--整体场景的动画效果-->
-  <pop-set-animation v-if="selectedElements.length === 0" :scene="this.scene"/>
+  <pop-set-animation v-if="selectedElements.length === 0" :element="scene"/>
   <!-- 边框修饰扩展 -->
   <keep-alive>
     <el-popover
@@ -58,10 +58,12 @@
   <pop-transparent :element="focusedElement" v-if="focusedElement"/>
 
   <div class="pull-right">
+    <a class="action" :class="undoable || 'disabled'" v-if="!elementSelected" @click="$emit('undo')"><img :src="ICON_UNDO"></a>
+    <a class="action" :class="redoable || 'disabled'" v-if="!elementSelected" @click="$emit('redo')"><img :src="ICON_REDO"></a>
     <a class="action" :class="paste? 'on': ''" v-if="focusedElement" @click="togglePaste"><img :src="ICON_BRUSH"></a>
     <a class="action" v-if="selectedElements.length > 0" @click="copySelectedElement"><img :src="ICON_COPY"></a>
     <a class="action" v-if="selectedElements.length > 1" @click="groupSelectedElement"><img :src="ICON_GROUPING"></a>
-    <a class="action on" v-if="selectedElements.length === 1 && selectedElements[0].elements && selectedElements[0].elements.length" @click="unGroupBlock"><img :src="ICON_GROUPING"></a>
+    <a class="action on" v-if="focusedElement && focusedElement.elements && focusedElement.elements.length" @click="unGroupBlock"><img :src="ICON_GROUPING"></a>
     <a class="action" v-if="selectedElements.length" @click="removeSelectedElement"><img :src="ICON_TRASH"></a>
     <a class="action" v-if="selectedElements.length === 0" @click="previousScene"><i class="el-icon-arrow-up" /></a>
     <a class="action" v-if="selectedElements.length === 0" @click="nextScene"><i class="el-icon-arrow-down" /></a>
@@ -91,6 +93,8 @@ import ICON_BRUSH from './res/brush.svg'
 import ICON_GROUPING from './res/grouping.svg'
 import ICON_COPY from './res/copy.svg'
 import ICON_TRASH from './res/trash.svg'
+import ICON_UNDO from './res/undo.svg'
+import ICON_REDO from './res/redo.svg'
 import PopTransform from './PopTransform'
 export default {
   name: 'Toolbar',
@@ -128,12 +132,20 @@ export default {
     },
     scale: {
       type: Number
+    },
+    undoable: {
+      type: Boolean
+    },
+    redoable: {
+      type: Boolean
     }
   },
   data () {
     return {
       ICON_TRASH,
       ICON_BRUSH,
+      ICON_UNDO,
+      ICON_REDO,
       ICON_GROUPING,
       ICON_COPY
     }
@@ -193,6 +205,11 @@ export default {
       }
       return []
     },
+
+    elementSelected () {
+      return this.selectedElements.length > 0
+    },
+
     selectedImages () {
       if (this.scene && this.scene.elements) {
         return this.scene.elements.filter(el => el.selected && el.url)
@@ -294,6 +311,7 @@ export default {
         element.selected = false
         this.scene.elements.splice(this.scene.elements.indexOf(element), 1)
       }
+      this.$emit('change')
     },
     /**
      * Group selected element to one block, remove element from scene.elements
@@ -415,7 +433,6 @@ export default {
   a.action {
     line-height: 28px;
     vertical-align: top;
-    cursor: pointer;
     margin: 0 5px;
     color: #0e1318;
     font-size: 1.4rem;
@@ -423,7 +440,11 @@ export default {
     padding: 0 6px;
     display: inline-block;
     &:hover, &.on {
+      cursor: pointer;
       background-color: #f1f3f4;
+    }
+    &.disabled {
+     display: none;
     }
     i {
       vertical-align: text-bottom;

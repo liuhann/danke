@@ -9,6 +9,11 @@
       :scene="currentScene"
       :paste="paste"
       :scale="scale"
+      :undoable="undoable"
+      :redoable="redoable"
+      @change="workChange"
+      @undo="undo"
+      @redo="redo"
       @scale-change="scaleChange"
       @prev-scene="previousScene"
       @next-scene="nextScene"
@@ -20,6 +25,7 @@
       :scene="currentScene"
       :exist-scene="lastScene"
       :paste="paste"
+      @change="workChange"
       @scale-fit="scaleChange"
       @clean-paste="cleanPaste"/>
   </section>
@@ -30,6 +36,7 @@
 import StyleRegistry from './utils/StyleRegistry.js'
 import workMixin from './work/workMixin.js'
 import sceneMixin from './mixins/sceneMixins.js'
+import redoMixins from './work/redoMixins'
 import SceneContainer from './SceneContainer.vue'
 import LeftAside from './left/LeftAside.vue'
 import 'element-ui/packages/theme-chalk/lib/icon.css'
@@ -41,7 +48,7 @@ export default {
     SceneContainer,
     LeftAside
   },
-  mixins: [ sceneMixin, workMixin ],
+  mixins: [ sceneMixin, workMixin, redoMixins],
   props: {
   },
   data () {
@@ -63,9 +70,11 @@ export default {
       if (!workId) {
         this.newWork()
         this.addScene()
+        this.takeSnapshot()
       } else {
         await this.loadWork(workId)
         this.currentScene = this.work.scenes[0]
+        this.takeSnapshot()
       }
       setInterval(() => {
         this.saveWork()
@@ -81,6 +90,10 @@ export default {
           break;
         default:
       }
+    },
+
+    workChange () {
+      this.takeSnapshot()
     },
     scaleChange (scale) {
       this.scale = scale

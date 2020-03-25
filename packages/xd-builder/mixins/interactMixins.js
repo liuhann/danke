@@ -65,6 +65,8 @@ export default {
           node.height = event.rect.height / this.scale
           node.x += event.deltaRect.left / this.scale
           node.y += event.deltaRect.top / this.scale
+        }).on('resizeend', event => {
+          this.$emit('change')
         })
 
         interactee.draggable({
@@ -77,6 +79,9 @@ export default {
                 element.y += event.dy / this.scale
               }
             }
+          },
+          onend: event => {
+            this.$emit('change')
           }
         })
       }

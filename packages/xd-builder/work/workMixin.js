@@ -1,7 +1,6 @@
 /**
  * 保存、加载作品通用方法
  */
-import { Loading, Message, MessageBox } from 'element-ui'
 import { shortid } from '../../utils/string'
 import RestDAO from '../../common/dao/restdao'
 
@@ -17,7 +16,6 @@ export default {
     this.blockdao = new RestDAO(this.ctx, 'danke/block')
   },
   methods: {
-
     /**
      * 新增作品
      */

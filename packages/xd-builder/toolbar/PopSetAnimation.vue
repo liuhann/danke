@@ -56,10 +56,7 @@ import { TabPane, Tabs, Slider, Button, Popover, InputNumber } from 'element-ui'
 export default {
   name: 'PopSetAnimation',
   props: {
-    elements: {
-      type: Array
-    },
-    scene: {
+    element: {
       type: Object
     }
   },
@@ -80,31 +77,17 @@ export default {
   },
   computed: {
     elementType () {
-      if (this.elements && this.elements.length) {
-        if (this.elements[0].text != null) {
-          return 'text'
-        } else {
-          return  'enter'
-        }
+      if (this.element.text != null) {
+        return 'text'
       } else {
         return 'enter'
       }
     },
     enterAnimations () {
-      if (this.elements && this.elements.length) {
-        return this.elements[0].animation.enters || []
-      } else if (this.scene) {
-        return this.scene.animation.enters
-      } else {
-        return []
-      }
+      return this.element.enters || []
     },
     existAnimations () {
-      if (this.elements && this.elements.length) {
-        return this.elements[0].animation.exists || []
-      } else {
-        return []
-      }
+      return this.element.exists || []
     }
   },
   created () {
@@ -124,12 +107,7 @@ export default {
         // 时间区间 [0]为延迟，[1]为持续时间
         range: [0, parseInt(animation.duration)]
       }
-      // 给选中的元素增加动画
-      if (this.elements && this.elements.length) {
-        for (let element of this.elements) {
-          this.$set(element.animation, type, [info])
-        }
-      }
+      this.$set(this.element.animation, type, [info])
     }
   }
 }

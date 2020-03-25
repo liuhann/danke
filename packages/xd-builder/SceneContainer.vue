@@ -304,18 +304,18 @@ export default {
             // 拖拽多选模式
             // 向右拖拽： 重新计算left
             if (this.dragRect.width < 0) {
-              this.dragRect.left = (event.x0 - event.rect.left) + this.dragRect.width
+              this.dragRect.left = event.pageX - event.target.getBoundingClientRect().x
               this.dragRect.width = -this.dragRect.width
             }
             // 向上拖拽： 重新计算top
             if (this.dragRect.height < 0) {
-              this.dragRect.top = (event.y0 - event.rect.top) + this.dragRect.height
+              this.dragRect.top = event.pageY - event.target.getBoundingClientRect().y
               this.dragRect.height = -this.dragRect.height
             }
 
             // 判断矩形交叉的元素设置为选中
-            this.dragRect.x = this.dragRect.left - this.screenRect.x - this.screenRect.width / 2 * (1 - this.scale)
-            this.dragRect.y = this.dragRect.top - this.screenRect.y
+            this.dragRect.x = this.dragRect.left// - this.screenRect.x - this.screenRect.width / 2 * (1 - this.scale)
+            this.dragRect.y = this.dragRect.top// - this.screenRect.y
             for (let element of this.scene.elements) {
               if (intersectRect({
                 x: element.x * this.scale + this.translateX,
@@ -436,6 +436,7 @@ export default {
       node.y = (node.y < 0) ? 0 : node.y
       this.scene.elements.push(node)
       this.setElementSelected(node)
+      this.$emit('change')
       this.$nextTick(() => {
         this.initElementDragResize(node)
       })
