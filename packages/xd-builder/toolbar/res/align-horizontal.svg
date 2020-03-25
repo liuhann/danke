@@ -1,0 +1,6 @@
+<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+        "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128">
+    <path fill="#515151" d="M576 576h256v256H576v128H512v-128H256V576h256V448H128V192h384V64h64v128h384v256H576z"
+          p-id="5296"></path>
+</svg>

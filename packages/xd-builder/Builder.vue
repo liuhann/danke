@@ -24,6 +24,7 @@
       :scenes="work.scenes"
       :scene="currentScene"
       :exist-scene="lastScene"
+      :work="work"
       :paste="paste"
       @change="workChange"
       @scale-fit="scaleChange"

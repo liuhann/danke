@@ -29,7 +29,7 @@
   <pop-clip-list v-if="focusedElement && focusedElement.style && focusedElement.style.clipPath != null" @input="setElementClipPath"/>
   <!--  设置字体-->
   <el-select
-    v-if="selectedTexts.length"
+    v-if="focusedFont"
     v-model="fontSize"
     size="mini"
     filterable
@@ -43,7 +43,7 @@
     </el-option>
   </el-select>
   <el-select
-    v-if="selectedTexts.length"
+    v-if="focusedFont"
     v-model="textAlign"
     size="mini"
     placeholder="对齐">
@@ -54,12 +54,21 @@
       :value="item.value">
     </el-option>
   </el-select>
-  <a class="action" v-if="selectedTexts.length" @click="toggleFontBold" :style="fontWeightStyle" style="padding: 0 10px;">B</a>
+  <a class="action" v-if="focusedFont" @click="toggleFontBold" :style="fontWeightStyle" style="padding: 0 10px;">B</a>
   <pop-transparent :element="focusedElement" v-if="focusedElement"/>
 
+  <a class="action" v-if="selectedElements.length > 1" @click="alignLeft"><img :src="ICON_ALIGN_LEFT"></a>
+  <a class="action" v-if="selectedElements.length > 1" @click="alignRight"><img :src="ICON_ALIGN_RIGHT"></a>
+  <a class="action" v-if="selectedElements.length > 1" @click="alignTop"><img :src="ICON_ALIGN_TOP"></a>
+  <a class="action" v-if="selectedElements.length > 1" @click="alignBottom"><img :src="ICON_ALIGN_BOTTOM"></a>
+  <a class="action" v-if="selectedElements.length > 1" @click="alignVerCenter"><img :src="ICON_ALIGN_VER_CENTER"></a>
+  <a class="action" v-if="selectedElements.length > 1" @click="alignHorCenter"><img :src="ICON_ALIGN_HOR_CENTER"></a>
+  <a class="action" v-if="selectedElements.length > 2" @click="alignAverVer"><img :src="ICON_ALGIN_AVER_VER"></a>
+  <a class="action" v-if="selectedElements.length > 2" @click="alignAverHor"><img :src="ICON_ALGIN_AVER_HOR"></a>
+
   <div class="pull-right">
-    <a class="action" :class="undoable || 'disabled'" v-if="!elementSelected" @click="$emit('undo')"><img :src="ICON_UNDO"></a>
-    <a class="action" :class="redoable || 'disabled'" v-if="!elementSelected" @click="$emit('redo')"><img :src="ICON_REDO"></a>
+    <a class="action" v-if="!elementSelected && undoable" @click="$emit('undo')"><img :src="ICON_UNDO"></a>
+    <a class="action" v-if="!elementSelected && redoable" @click="$emit('redo')"><img :src="ICON_REDO"></a>
     <a class="action" :class="paste? 'on': ''" v-if="focusedElement" @click="togglePaste"><img :src="ICON_BRUSH"></a>
     <a class="action" v-if="selectedElements.length > 0" @click="copySelectedElement"><img :src="ICON_COPY"></a>
     <a class="action" v-if="selectedElements.length > 1" @click="groupSelectedElement"><img :src="ICON_GROUPING"></a>
@@ -95,6 +104,15 @@ import ICON_COPY from './res/copy.svg'
 import ICON_TRASH from './res/trash.svg'
 import ICON_UNDO from './res/undo.svg'
 import ICON_REDO from './res/redo.svg'
+import ICON_ALIGN_LEFT from './res/align-left.svg'
+import ICON_ALIGN_RIGHT from './res/align-right.svg'
+import ICON_ALIGN_TOP from './res/align_top.svg'
+import ICON_ALIGN_BOTTOM from './res/align-bottom.svg'
+import ICON_ALIGN_CENTER from './res/align-center.svg'
+import ICON_ALIGN_VER_CENTER from './res/align-vertical.svg'
+import ICON_ALIGN_HOR_CENTER from './res/align-horizontal.svg'
+import ICON_ALGIN_AVER_HOR from './res/align-aver-h.svg'
+import ICON_ALGIN_AVER_VER from './res/align-aver-v.svg'
 import PopTransform from './PopTransform'
 export default {
   name: 'Toolbar',
@@ -147,7 +165,16 @@ export default {
       ICON_UNDO,
       ICON_REDO,
       ICON_GROUPING,
-      ICON_COPY
+      ICON_COPY,
+      ICON_ALIGN_LEFT,
+      ICON_ALIGN_RIGHT,
+      ICON_ALIGN_TOP,
+      ICON_ALIGN_BOTTOM,
+      ICON_ALIGN_CENTER,
+      ICON_ALIGN_VER_CENTER,
+      ICON_ALIGN_HOR_CENTER,
+      ICON_ALGIN_AVER_HOR,
+      ICON_ALGIN_AVER_VER
     }
   },
   computed: {
@@ -158,6 +185,9 @@ export default {
       } else {
         return null
       }
+    },
+    focusedFont () {
+      return this.focusedElement &&  this.focusedElement.text != null
     },
 
     elementStyleVariables () {
@@ -392,7 +422,102 @@ export default {
         })
       }
     },
+    alignLeft () {
+      let leftPos = null
+      for (let element of this.selectedElements) {
+        if (leftPos === null) {
+          leftPos = element.x
+        } else {
+          element.x = leftPos
+        }
+      }
+    },
+    alignRight () {
+      let rightPos = null
+      for (let element of this.selectedElements) {
+        if (rightPos === null) {
+          rightPos = element.x + element.width
+        } else {
+          element.x = rightPos - element.width
+        }
+      }
+    },
+    alignTop () {
+      let topPos = null
+      for (let element of this.selectedElements) {
+        if (topPos === null) {
+          topPos = element.y
+        } else {
+          element.y = topPos
+        }
+      }
+    },
 
+    alignHorCenter () {
+      let center = null
+      for (let element of this.selectedElements) {
+        if (center === null) {
+          center = element.x + element.width / 2
+        } else {
+          element.x = center - element.width / 2
+        }
+      }
+    },
+
+    // 竖向平分
+    alignAverHor () {
+      const dup = []
+      for (let element of this.selectedElements) {
+        dup.push(element)
+      }
+
+      dup.sort((a, b) => a.x - b.x)
+      const min = dup[0].x
+      const max = dup[dup.length -1].x
+
+      for (let i = 0; i < dup.length; i++) {
+        dup[i].x = min + i * (max - min) / (dup.length - 1)
+      }
+    },
+
+    // 橫向平分
+    alignAverVer () {
+      const dup = []
+      for (let element of this.selectedElements) {
+        dup.push(element)
+      }
+
+      dup.sort((a, b) => a.y - b.y)
+      const min = dup[0].y
+      const max = dup[dup.length -1].y
+
+      for (let i = 0; i < dup.length; i++) {
+        dup[i].y = min + i * (max - min) / (dup.length - 1)
+      }
+    },
+
+    // 橫向居中
+    alignVerCenter () {
+      let center = null
+      for (let element of this.selectedElements) {
+        if (center === null) {
+          center = element.y + element.height / 2
+        } else {
+          element.y = center - element.height / 2
+        }
+      }
+    },
+
+    alignBottom () {
+      let bottomPos = null
+      for (let element of this.selectedElements) {
+        if (bottomPos === null) {
+          bottomPos = element.y + element.height
+        } else {
+          element.y = bottomPos - element.height
+        }
+      }
+    },
     log () {
       console.log(this.selectedElements, this.scene, this.work)
     },

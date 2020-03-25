@@ -50,6 +50,9 @@
       <a class="action" @click="toggleActionMove" :class="actionMove? 'on': ''">
         <img :src="ICON_HAND">
       </a>
+      <a class="action">
+        <img :src="ICON_LIST">
+      </a>
     </div>
   </div>
 </div>
@@ -65,6 +68,7 @@ import interactMixins from './mixins/interactMixins.js'
 import { fitRectIntoBounds, getRectPositionStyle, isPointInRect, intersectRect } from './mixins/rectUtils.js'
 import ICON_HAND from './res/hand.svg'
 import ICON_FIT from './res/fit.svg'
+import ICON_LIST from './res/list.svg'
 const WORKSPACE_PADDING = 20
 export default {
   name: 'SceneContainer',
@@ -77,6 +81,9 @@ export default {
     [ButtonGroup.name]: ButtonGroup
   },
   props: {
+    work: {
+      type: Object
+    },
     // 渲染当前的场景
     scene: {
       type: Object
@@ -130,7 +137,8 @@ export default {
       // 当前正编辑的边框信息
       currentAddonObject: null,
       ICON_HAND,
-      ICON_FIT
+      ICON_FIT,
+      ICON_LIST
     }
   },
 
@@ -613,6 +621,9 @@ export default {
         height: 16px;
         display: inline-block;
         vertical-align: text-bottom;
+      }
+      &.scenes {
+        width: 32px;
       }
     }
   }
