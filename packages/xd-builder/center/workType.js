@@ -1,5 +1,5 @@
 export default [{
-  name: '手机全屏(全面屏)',
+  name: '全面屏手机',
   width: 414,
   height: 896,
   img: '/res/1x2.png',

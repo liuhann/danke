@@ -6,19 +6,7 @@
   </div>
   <div class="main">
     <div class="nav">
-      <el-popover
-        placement="right-start"
-        title="选择页面类型"
-        width="200"
-        trigger="click">
-        <div class="choose-work-type">
-          <div v-for="(type, index) of workType" :key="index" class="type" @click="xd(type)">
-            <div></div>
-            <div class="name">{{type.name}}</div>
-          </div>
-        </div>
-        <button class="button" slot="reference">创建新的作品</button>
-      </el-popover>
+      <button class="button" slot="reference" @click="navNew">创建新的作品</button>
       <div class="menu">
         <div class="node" :class="nav==='my'? 'selected': ''" @click="navMyWork">
           <span>我的作品</span>
@@ -43,7 +31,7 @@
 <script>
 import StyleRegistry from '../utils/StyleRegistry'
 import { Popover } from 'element-ui'
-import workType from '../utils/workType'
+import workType from './workType'
 export default {
   name: 'CreativeCenter',
   components: {
@@ -71,6 +59,9 @@ export default {
   methods: {
     navMyWork () {
       this.$router.replace('/creative/my')
+    },
+    navNew () {
+      this.$router.replace('/creative/new')
     },
 
     xd ({ width, height }) {
@@ -166,6 +157,8 @@ export default {
   }
   .content {
     flex: 1;
+    overflow-x: hidden;
+    overflow-y: auto;
     .body {
       .my-work-list {
         .line {
@@ -177,7 +170,7 @@ export default {
     }
     .content-title {
       font-size: 2.4rem;
-      padding: 1rem;
+      padding: 1.6rem;
     }
     .empty {
       font-size: 2rem;

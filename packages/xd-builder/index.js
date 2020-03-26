@@ -14,10 +14,13 @@ export default {
   routes: [{
     path: '/creative',
     beforeEnter,
-    component: () => import(/* webpackChunkName: "xd-welcome" */'./center/CreativeCenter.vue'),
+    component: () => import(/* webpackChunkName: "xd-creative" */'./center/CreativeCenter.vue'),
     children: [{
       path: 'my',
-      component: () => import(/* webpackChunkName: "xd-welcome" */'./center/MyWork.vue'),
+      component: () => import(/* webpackChunkName: "xd-creative" */'./center/MyWork.vue'),
+    }, {
+      path: 'new',
+      component: () => import(/* webpackChunkName: "xd-creative" */'./center/AddNew.vue'),
     }]
   }, {
     path: '/xd',
