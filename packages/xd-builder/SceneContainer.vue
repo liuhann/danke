@@ -65,6 +65,7 @@ import RenderElement from './render/RenderElement.vue'
 import { shortid } from '../utils/string'
 import { getSVGViewBox } from '../vectors/utils'
 import interactMixins from './mixins/interactMixins.js'
+import mouseMixins from './mixins/mousetrap.js'
 import { fitRectIntoBounds, getRectPositionStyle, isPointInRect, intersectRect } from './mixins/rectUtils.js'
 import ICON_HAND from './res/hand.svg'
 import ICON_FIT from './res/fit.svg'
@@ -72,7 +73,7 @@ import ICON_LIST from './res/list.svg'
 const WORKSPACE_PADDING = 20
 export default {
   name: 'SceneContainer',
-  mixins: [ interactMixins ],
+  mixins: [ interactMixins, mouseMixins ],
   components: {
     RenderElement,
     [Slider.name]: Slider,

@@ -6,7 +6,7 @@
   width="360"
   trigger="click">
   <a class="action" slot="reference">
-    <i  class="icon el-icon-crop" />
+    <img :src="ICON">
   </a>
   <div class="clippath-list">
     <div class="clippath" v-for="clippath in clippaths" :key="clippath" @click="$emit('input',clippath)">
@@ -20,6 +20,7 @@
 
 <script>
 import { Popover } from 'element-ui'
+import ICON from './res/hexagon.svg'
 import clippaths from './clippaths'
 
 export default {
@@ -29,6 +30,7 @@ export default {
   },
   data () {
     return {
+      ICON,
       clippaths
     }
   }

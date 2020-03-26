@@ -25,7 +25,7 @@
 
 <script>
 import toolbarPopMixin from './toolbarPopMixin'
-import ICON from './res/transformation.svg'
+import ICON from './res/rotate.svg'
 export const transformKeys = [{
   label: '横向扭曲',
   value: 'skewX'

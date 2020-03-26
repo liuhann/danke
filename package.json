@@ -25,6 +25,7 @@
     "jszip": "^3.2.2",
     "ky": "^0.8.0",
     "merge": "^1.2.1",
+    "mousetrap": "^1.6.5",
     "pauseable": "^0.3.2",
     "resource-loader": "^3.0.1",
     "vue": "^2.6.11",

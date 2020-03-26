@@ -59,6 +59,23 @@ const buildInShapes = [{
     value: '#10211a',
     type: 'color'
   }]
+}, {
+  name: '圆形',
+  style: {
+    background: 'var(--backgroundColor)',
+    borderRadius: '50%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: 16,
+    color: '#fff'
+  },
+  text: '内容',
+  variables: [{
+    name: 'backgroundColor',
+    value: '#10211a',
+    type: 'color'
+  }]
 }]
 
 export default {
