@@ -37,23 +37,15 @@
     placeholder="字体">
     <el-option
       v-for="item in fontSizeOptions"
-      :key="item.value"
-      :label="item.label"
-      :value="item.value">
+      :key="item"
+      :label="item"
+      :value="item">
     </el-option>
   </el-select>
-  <el-select
-    v-if="focusedFont"
-    v-model="textAlign"
-    size="mini"
-    placeholder="对齐">
-    <el-option
-      v-for="item in textAlignOptions"
-      :key="item.value"
-      :label="item.label"
-      :value="item.value">
-    </el-option>
-  </el-select>
+  <a class="action" v-if="focusedFont" @click="setTextAlignment('left')"><img :src="ICON_TEXT_LEFT"></a>
+  <a class="action" v-if="focusedFont" @click="setTextAlignment('center')"><img :src="ICON_TEXT_CENTER"></a>
+  <a class="action" v-if="focusedFont" @click="setTextAlignment('right')"><img :src="ICON_TEXT_RIGHT"></a>
+
   <a class="action" v-if="focusedFont" @click="toggleFontBold" :style="fontWeightStyle" style="padding: 0 10px;">B</a>
   <pop-transparent :element="focusedElement" v-if="focusedElement"/>
 
@@ -113,6 +105,9 @@ import ICON_ALIGN_VER_CENTER from './res/align-vertical.svg'
 import ICON_ALIGN_HOR_CENTER from './res/align-horizontal.svg'
 import ICON_ALGIN_AVER_HOR from './res/align-aver-h.svg'
 import ICON_ALGIN_AVER_VER from './res/align-aver-v.svg'
+import ICON_TEXT_LEFT from './res/text-align-left.svg'
+import ICON_TEXT_RIGHT from './res/text-align-right.svg'
+import ICON_TEXT_CENTER from './res/text-align-center.svg'
 import PopTransform from './PopTransform'
 export default {
   name: 'Toolbar',
@@ -174,7 +169,10 @@ export default {
       ICON_ALIGN_VER_CENTER,
       ICON_ALIGN_HOR_CENTER,
       ICON_ALGIN_AVER_HOR,
-      ICON_ALGIN_AVER_VER
+      ICON_ALGIN_AVER_VER,
+      ICON_TEXT_LEFT,
+      ICON_TEXT_RIGHT,
+      ICON_TEXT_CENTER
     }
   },
   computed: {

@@ -18,6 +18,9 @@
 import { getImageUrl } from '../mixins/imageUtils.js'
 import { getRectPositionStyle } from '../mixins/rectUtils.js'
 import TextList from '../left/TextList'
+
+const CSSPX = ['fontSize', 'letterSpacing']
+
 export default {
   name: 'RenderElement',
   components: {
@@ -65,18 +68,17 @@ export default {
 
     textEditStyle () {
       const style = {
-        fontFamily: `'Karla',Microsoft YaHei,tahoma,arial,Hiragino Sans GB,sans-serif;`
+        fontFamily: `'Karla',Microsoft YaHei,tahoma,arial,Hiragino Sans GB,sans-serif`
       }
       for (let key in this.element.style) {
         const styled = this.element.style[key]
-        if (typeof styled === 'string') {
+        if (CSSPX.indexOf(key) > -1) {
           Object.assign(style, {
-            [key]: styled
+            [key]: this.element.style[key] + 'px'
           })
-        }
-        if (typeof styled === 'number') {
+        } else {
           Object.assign(style, {
-            [key]: styled + 'px'
+            [key]: this.element.style[key]
           })
         }
       }
@@ -107,9 +109,13 @@ export default {
       this.assignVariables(style, this.element.variables)
       for (let key in this.element.style) {
         const styled = this.element.style[key]
-        if (typeof styled === 'string' || typeof styled === 'number') {
+        if (CSSPX.indexOf(key) > -1) {
           Object.assign(style, {
-            [key]: styled
+            [key]: this.element.style[key] + 'px'
+          })
+        } else {
+          Object.assign(style, {
+            [key]: this.element.style[key]
           })
         }
         this.assignVariables(style, styled.variables)

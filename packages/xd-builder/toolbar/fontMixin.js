@@ -11,58 +11,7 @@ export default {
         label: '靠左',
         value: 'right'
       }],
-      fontSizeOptions: [{
-        label: '10',
-        value: '10px'
-      }, {
-        label: '12',
-        value: '12px'
-      }, {
-        label: '14',
-        value: '14px'
-      },{
-        label: '16',
-        value: '16px'
-      }, {
-        label: '18',
-        value: '18px'
-      }, {
-        label: '20',
-        value: '20px'
-      }, {
-        label: '24',
-        value: '24px'
-      }, {
-        label: '28',
-        value: '28px'
-      }, {
-        label: '32',
-        value: '32px'
-      }, {
-        label: '36',
-        value: '36px'
-      }, {
-        label: '40',
-        value: '40px'
-      }, {
-        label: '48',
-        value: '48px'
-      }, {
-        label: '54',
-        value: '54px'
-      }, {
-        label: '60',
-        value: '60px'
-      }, {
-        label: '72',
-        value: '72px'
-      }, {
-        label: '80',
-        value: '80px'
-      }, {
-        label: '100',
-        value: '100px'
-      }]
+      fontSizeOptions: [10, 12, 14]
     }
   },
   computed: {
@@ -107,6 +56,10 @@ export default {
     }
   },
   methods: {
+    setTextAlignment (align) {
+      this.focusedFont.style.align = align
+    },
+
     toggleFontBold () {
       if (this.selectedTexts.length) {
         let fontWeight = this.selectedTexts[0].style.fontWeight
