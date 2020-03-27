@@ -31,7 +31,7 @@
   <!--元素动画效果设置-->
   <pop-set-animation v-if="focusedElement" :element="focusedElement"/>
   <!--整体场景的动画效果-->
-  <pop-set-animation v-if="selectedElements.length === 0" :element="scene"/>
+  <pop-set-animation v-if="noFocusedElement" :element="scene"/>
 
   <!--元素变换、旋转、拉伸等-->
   <pop-transform v-if="focusedElement" :element="focusedElement"/>
@@ -56,11 +56,15 @@
     <a class="action" v-if="selectedElements.length > 0" @click="copySelectedElement"><img :src="ICON_COPY"></a>
     <a class="action" v-if="selectedElements.length > 1" @click="groupSelectedElement"><img :src="ICON_GROUPING"></a>
     <a class="action on" v-if="focusedElement && focusedElement.elements && focusedElement.elements.length" @click="unGroupBlock"><img :src="ICON_GROUPING"></a>
+    <pop-more-action :element="focusedElement" :scene="scene" v-if="focusedElement" @reset="resetElementDragResize"/>
     <a class="action" v-if="selectedElements.length" @click="removeSelectedElement"><img :src="ICON_TRASH"></a>
+    <a class="action" v-if="selectedElements.length" @click="lockSelectedElement"><img :src="ICON_LOCK"></a>
+    <a class="action" v-if="selectedLockedElements.length" @click="lockSelectedElement"><img :src="ICON_UNLOCK"></a>
+
     <a class="action" v-if="selectedElements.length === 0" @click="previousScene"><i class="el-icon-arrow-up" /></a>
     <a class="action" v-if="selectedElements.length === 0" @click="nextScene"><i class="el-icon-arrow-down" /></a>
     <a class="action" v-if="selectedElements.length === 0"> {{scenes.indexOf(scene) + 1}}/{{scenes.length}}</a>
-    <pop-more-action :element="focusedElement" :scene="scene" v-if="focusedElement" @reset="resetElementDragResize"/>
+
     <el-popover v-if="selectedElements.length === 0" placement="bottom" width="360" trigger="click" popper-class="padding-0">
       <a class="action" slot="reference"><i class="el-icon-setting" /></a>
       <setting-panel :work="work"/>
@@ -96,6 +100,8 @@ import ICON_ALIGN_VER_CENTER from './res/align-vertical.svg'
 import ICON_ALIGN_HOR_CENTER from './res/align-horizontal.svg'
 import ICON_ALGIN_AVER_HOR from './res/align-aver-h.svg'
 import ICON_ALGIN_AVER_VER from './res/align-aver-v.svg'
+import ICON_LOCK from './res/lock.svg'
+import ICON_UNLOCK from './res/unlock.svg'
 
 import PopTransform from './PopTransform'
 import TextAlign from './TextAlign'
@@ -162,9 +168,17 @@ export default {
       ICON_ALIGN_HOR_CENTER,
       ICON_ALGIN_AVER_HOR,
       ICON_ALGIN_AVER_VER,
+      ICON_LOCK,
+      ICON_UNLOCK
     }
   },
   computed: {
+    noFocusedElement () {
+      if (this.scene && this.scene.elements) {
+        return this.scene.elements.filter(el => el.selected).length === 0
+      }
+      return false
+    },
     // 当前唯一选中的元素
     focusedElement () {
       if (this.selectedElements.length === 1) {
@@ -200,7 +214,14 @@ export default {
 
     selectedElements () {
       if (this.scene && this.scene.elements) {
-        return this.scene.elements.filter(el => el.selected)
+        return this.scene.elements.filter(el => el.selected && !el.locked)
+      }
+      return []
+    },
+
+    selectedLockedElements () {
+      if (this.scene && this.scene.elements) {
+        return this.scene.elements.filter(el => el.selected && el.locked)
       }
       return []
     },
@@ -305,6 +326,14 @@ export default {
       for (let element of this.selectedElements) {
         element.selected = false
         this.scene.elements.splice(this.scene.elements.indexOf(element), 1)
+      }
+      this.$emit('change')
+    },
+
+    lockSelectedElement () {
+      for (let element of this.selectedElements) {
+        element.selected = false
+        this.$set(element, 'locked', true)
       }
       this.$emit('change')
     },
