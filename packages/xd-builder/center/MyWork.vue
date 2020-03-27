@@ -50,8 +50,8 @@ export default {
         this.works = result.list
         for (let work of this.works) {
           work.viewport = {
-            height: 256,
-            width: 256 / work.screen.height * work.screen.width
+            height: 200,
+            width: 200 / work.screen.height * work.screen.width
           }
         }
         // this.lines = flowSchedule(this.works, this.$refs.myWorkList.offsetWidth, 25, 256)

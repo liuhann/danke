@@ -11,52 +11,73 @@
 </div>
 </template>
 <script>
+
+const fontStyles = {
+  fontSize: 'var(--fontSize)',
+  color: 'var(--color)',
+  textAlign: 'var(--textAlign)',
+  fontWeight: 'var(--fontWeight)'
+}
 const fontTemplates = [{
   text: '添加标题',
-  style: {
-    fontSize: 48,
-    color: '#333',
-    fontWeight: 800,
-    textAlign: 'center',
-    letterSpacing: 0
-  },
-
-}, {
-  text: '添加标题描述',
-  style: {
-    fontSize: 24,
-    color: '#666',
-    fontWeight: 400,
-    textAlign: 'left',
-    letterSpacing: 0
-  }
+  style: fontStyles,
+  variables: [{
+    name: 'fontSize',
+    value: 48,
+    type: 'fontSize'
+  }, {
+    name: 'color',
+    value: '#444',
+    type: 'color'
+  }, {
+    name: 'textAlign',
+    value: 'center',
+    type: 'textAlign'
+  }, {
+    name: 'fontWeight',
+    value: 800,
+    type: 'fontWeight'
+  }]
 }, {
   text: '添加子标题',
-  style: {
-    fontSize: 36,
-    color: '#333',
-    fontWeight: 400,
-    textAlign: 'center',
-    letterSpacing: 0
-  }
-}, {
-  text: '添加子描述',
-  style: {
-    fontSize: 20,
-    color: '#000',
-    fontWeight: 200,
-    textAlign: 'left',
-    letterSpacing: 0
-  }
+  style: fontStyles,
+  variables: [{
+    name: 'fontSize',
+    value: 36,
+    type: 'fontSize'
+  }, {
+    name: 'color',
+    value: '#333',
+    type: 'color'
+  }, {
+    name: 'textAlign',
+    value: 'center',
+    type: 'textAlign'
+  }, {
+    name: 'fontWeight',
+    value: 400,
+    type: 'fontWeight'
+  }]
 }, {
   text: '添加正文',
-  style: {
-    fontSize: 14,
-    color: '#000',
-    fontWeight: 200,
-    textAlign: 'left',
-    letterSpacing: 0
-  }
+  style: fontStyles,
+  variables: [{
+    name: 'fontSize',
+    value: 14,
+    type: 'fontSize'
+  }, {
+    name: 'color',
+    value: '#333',
+    type: 'color'
+  }, {
+    name: 'textAlign',
+    value: 'left',
+    type: 'textAlign'
+  }, {
+    name: 'fontWeight',
+    value: 200,
+    type: 'fontWeight'
+  }]
 }]
 
 export default {

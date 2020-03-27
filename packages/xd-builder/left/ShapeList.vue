@@ -76,6 +76,35 @@ const buildInShapes = [{
     value: '#10211a',
     type: 'color'
   }]
+}, {
+  name: '按键',
+  style: {
+    background: 'var(--backgroundColor)',
+    color: 'var(--textColor)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontSize: 22,
+    borderRadius: 'calc(var(--height) * 0.08)',
+    boxShadow: '0 calc(var(--height) * 0.1) 0 0.1em var(--shadowColor)',
+    borderBottomColor: '#555',
+  },
+  width: 70,
+  height: 60,
+  text: 'Ctrl',
+  variables: [{
+    name: 'backgroundColor',
+    value: '#10211a',
+    type: 'color'
+  }, {
+    name: 'textColor',
+    value: '#fff',
+    type: 'color'
+  }, {
+    name: 'shadowColor',
+    value: '#222',
+    type: 'color'
+  }]
 }]
 
 export default {

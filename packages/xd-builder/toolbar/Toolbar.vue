@@ -1,54 +1,44 @@
 <template>
 <div id="tool-bar">
-  <!--  设置颜色变量-->
-  <color-pop-picker v-for="(variable, index) in elementColorVariables" :key="index" :color="variable.value" model="color" @input="variableColorInput(variable, $event)"/>
-  <!--  设置数字类变量-->
-  <el-input-number v-for="(variable, index) in elementNumberVariables" :key="index" v-model="variable.value" controls-position="right" size="mini"/>
+  <!--  样式变量的修改-->
+  <template v-for="(variable, index) in elementStyleVariables">
+    <!-- 颜色-->
+    <color-pop-picker :key="index" v-if="variable.type==='color'" :color="variable.value" model="color" @input="variableColorInput(variable, $event)"/>
+    <!-- 数字-->
+    <el-input-number :key="index" v-if="variable.type==='number'" v-model="variable.value" controls-position="right" size="mini"/>
+    <!-- 文字大小 -->
+    <el-select
+      :key="index"
+      v-if="variable.type==='fontSize'"
+      v-model="variable.value"
+      size="mini"
+      filterable
+      allow-create
+      placeholder="字体">
+      <el-option
+        v-for="item in fontSizeOptions"
+        :key="item"
+        :label="item"
+        :value="item">
+      </el-option>
+    </el-select>
+    <!-- 字体对齐-->
+    <text-align :key="index" v-if="variable.type==='textAlign'" v-model="variable.value"/>
+    <!-- 字体粗细-->
+    <font-weight :key="index" v-if="variable.type==='fontWeight'" v-model="variable.value"/>
+  </template>
 
-  <color-pop-picker v-if="selectedElements.length === 0" :color="scene.style.background" mode="background" @input="sceneBackgroundChange"/>
-  <!--  设置文字颜色-->
-  <color-pop-picker v-if="selectedTexts.length === 1" :color="focusedElement.style.color" mode="color" @input="fontColorChanged"/>
   <!--元素动画效果设置-->
   <pop-set-animation v-if="focusedElement" :element="focusedElement"/>
   <!--整体场景的动画效果-->
   <pop-set-animation v-if="selectedElements.length === 0" :element="scene"/>
-  <!-- 边框修饰扩展 -->
-  <keep-alive>
-    <el-popover
-      v-if="selectedImages.length"
-      placement="bottom-start"
-      width="360"
-      trigger="click">
-      <a class="action" slot="reference"><i class="el-icon-full-screen" /></a>
-      <border-list slot="default" :elements="this.selectedElements"/>
-    </el-popover>
-  </keep-alive>
 
   <!--元素变换、旋转、拉伸等-->
   <pop-transform v-if="focusedElement" :element="focusedElement"/>
   <pop-clip-list v-if="focusedElement && focusedElement.style && focusedElement.style.clipPath != null" @input="setElementClipPath"/>
-  <!--  设置字体-->
-  <el-select
-    v-if="focusedFont"
-    v-model="fontSize"
-    size="mini"
-    filterable
-    allow-create
-    placeholder="字体">
-    <el-option
-      v-for="item in fontSizeOptions"
-      :key="item"
-      :label="item"
-      :value="item">
-    </el-option>
-  </el-select>
-  <a class="action" v-if="focusedFont" @click="setTextAlignment('left')"><img :src="ICON_TEXT_LEFT"></a>
-  <a class="action" v-if="focusedFont" @click="setTextAlignment('center')"><img :src="ICON_TEXT_CENTER"></a>
-  <a class="action" v-if="focusedFont" @click="setTextAlignment('right')"><img :src="ICON_TEXT_RIGHT"></a>
-
-  <a class="action" v-if="focusedFont" @click="toggleFontBold" :style="fontWeightStyle" style="padding: 0 10px;">B</a>
   <pop-transparent :element="focusedElement" v-if="focusedElement"/>
 
+  <!-- 多选的对齐、平均分布功能-->
   <a class="action" v-if="selectedElements.length > 1" @click="alignLeft"><img :src="ICON_ALIGN_LEFT"></a>
   <a class="action" v-if="selectedElements.length > 1" @click="alignRight"><img :src="ICON_ALIGN_RIGHT"></a>
   <a class="action" v-if="selectedElements.length > 1" @click="alignTop"><img :src="ICON_ALIGN_TOP"></a>
@@ -58,6 +48,7 @@
   <a class="action" v-if="selectedElements.length > 2" @click="alignAverVer"><img :src="ICON_ALGIN_AVER_VER"></a>
   <a class="action" v-if="selectedElements.length > 2" @click="alignAverHor"><img :src="ICON_ALGIN_AVER_HOR"></a>
 
+  <!-- 右侧操作功能按钮-->
   <div class="pull-right">
     <a class="action" v-if="!elementSelected && undoable" @click="$emit('undo')"><img :src="ICON_UNDO"></a>
     <a class="action" v-if="!elementSelected && redoable" @click="$emit('redo')"><img :src="ICON_REDO"></a>
@@ -105,14 +96,16 @@ import ICON_ALIGN_VER_CENTER from './res/align-vertical.svg'
 import ICON_ALIGN_HOR_CENTER from './res/align-horizontal.svg'
 import ICON_ALGIN_AVER_HOR from './res/align-aver-h.svg'
 import ICON_ALGIN_AVER_VER from './res/align-aver-v.svg'
-import ICON_TEXT_LEFT from './res/text-align-left.svg'
-import ICON_TEXT_RIGHT from './res/text-align-right.svg'
-import ICON_TEXT_CENTER from './res/text-align-center.svg'
+
 import PopTransform from './PopTransform'
+import TextAlign from './TextAlign'
+import FontWeight from './FontWeight'
 export default {
   name: 'Toolbar',
   mixins: [ interactMixins, fontMixin ],
   components: {
+    FontWeight,
+    TextAlign,
     PopTransform,
     PopTransparent,
     PopMoreAction,
@@ -120,7 +113,6 @@ export default {
     PopClipList,
     ColorPopPicker,
     SettingPanel,
-    BorderList,
     [Tooltip.name]: Tooltip,
     [Select.name]: Select,
     [Option.name]: Option,
@@ -170,9 +162,6 @@ export default {
       ICON_ALIGN_HOR_CENTER,
       ICON_ALGIN_AVER_HOR,
       ICON_ALGIN_AVER_VER,
-      ICON_TEXT_LEFT,
-      ICON_TEXT_RIGHT,
-      ICON_TEXT_CENTER
     }
   },
   computed: {
@@ -204,24 +193,6 @@ export default {
           if (this.scene.style[key].variables) {
             variables = variables.concat(this.scene.style[key].variables)
           }
-        }
-      }
-      return variables
-    },
-    elementColorVariables () {
-      return this.elementStyleVariables.filter(v => v.type === 'color')
-    },
-    elementNumberVariables () {
-      return this.elementStyleVariables.filter(v => v.type === 'number')
-    },
-    elementBackgroundVariables () {
-      return this.elementStyleVariables.filter(v => v.type === 'background')
-    },
-    sceneStyleVariables () {
-      let variables = []
-      for (let [key, styleValue] in  this.scene.style) {
-        if (styleValue.variables) {
-          variables = variables.concat(styleValue.variables)
         }
       }
       return variables
@@ -306,10 +277,6 @@ export default {
     },
     elementBackgroundChange (color) {
       this.focusedElement.style.background = color
-      this.ctx.palette = this.ctx.styleRegistry.getWorkColors(this.work)
-    },
-    fontColorChanged (color) {
-      this.focusedElement.style.color = color
       this.ctx.palette = this.ctx.styleRegistry.getWorkColors(this.work)
     },
     variableColorInput (variable, color) {

@@ -6,7 +6,7 @@
   <img v-if="element.url" :id="'img-' + (element.name || element.id)" :src="getImageUrl(element.url, viewPort.width, viewPort.height)">
   <div v-if="element.svg" class="svg-content" v-html="elementSVGContent" />
   <!--文本渲染情况下 文本内容-->
-  <template :style="elementTextTransform" v-if="element.text != null && !element.editing">{{element.text}}</template>
+  <template v-if="element.text != null && !element.editing">{{element.text}}</template>
   <textarea v-if="element.text != null && element.editing" :style="textEditStyle" v-model="element.text"/>
   <div v-if="element.elements" class="block">
     <render-element v-for="(el, i) in element.elements" :key="el.id" :screen="viewPort" :element="el" :index="i" />
@@ -102,24 +102,21 @@ export default {
     },
 
     elementStyle () {
-      const style = {}
+      const style = {
+        ['--width']: this.element.width + 'px',
+        ['--height']: this.element.height + 'px'
+      }
       Object.assign(style, this.elementRectPositionStyle)
       Object.assign(style, this.elementAnimationStyle)
-      Object.assign(style, this.elementTextTransform)
       this.assignVariables(style, this.element.variables)
       for (let key in this.element.style) {
         const styled = this.element.style[key]
-        if (CSSPX.indexOf(key) > -1) {
-          Object.assign(style, {
-            [key]: this.element.style[key] + 'px'
-          })
-        } else {
-          Object.assign(style, {
-            [key]: this.element.style[key]
-          })
-        }
-        this.assignVariables(style, styled.variables)
+        Object.assign(style, {
+          [key]: this.element.style[key]
+        })
+      this.assignVariables(style, styled.variables)
       }
+      this.appendTextTransform(style)
       style.perspective = (this.element.width + this.element.height) + 'px'
       return style
     },
@@ -169,11 +166,10 @@ export default {
   },
   methods: {
     getImageUrl,
-
     assignVariables (style, variables) {
       if (variables && variables.length) {
         for (let variable of variables) {
-          if (variable.type === 'number') {
+          if (variable.type === 'number' || variable.type === 'fontSize') {
             Object.assign(style, {
               ['--' + variable.name]: variable.value + 'px'
             })
@@ -183,6 +179,16 @@ export default {
             })
           }
         }
+      }
+    },
+
+    appendTextTransform (style) {
+      if (this.viewPort && this.screen && this.element.text) {
+        if (style.transform) {
+          style.transform = style.transform + ` scale(${this.viewPort.width/this.screen.width})`
+        } else [
+          style.transform = `scale(${this.viewPort.width/this.screen.width})`
+        ]
       }
     },
 
