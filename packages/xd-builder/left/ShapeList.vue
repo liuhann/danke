@@ -39,6 +39,32 @@ const buildInShapes = [{
     type: 'color'
   }]
 }, {
+  name: '文字带背景',
+  width: 48,
+  height: 48,
+  text: '1',
+  style: {
+    background: 'var(--backgroundColor)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontSize: 'var(--fontSize)',
+    color: 'var(--fontColor)'
+  },
+  variables: [{
+    name: 'backgroundColor',
+    value: '#00bf72',
+    type: 'color'
+  }, {
+    name: 'fontSize',
+    value: 22,
+    type: 'fontSize'
+  }, {
+    name: 'fontColor',
+    value: '#fff',
+    type: 'color'
+  }]
+}, {
   name: '边框矩形',
   style: {
     background: 'var(--backgroundColor)',

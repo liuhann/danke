@@ -28,7 +28,7 @@
         :class="getMaskClass(selectee)"
         :style="getMaskStyle(selectee)">
         <template v-if="selectee.props && selectee.props.resizable">
-          <div class="lt"/><div class="rt"/><div class="t"/><div class="l"/><div class="lb"/><div class="rb"/><div class="r"/><div class="b"/>
+          <div class="lt resize-l resize-t"/><div class="rt resize-r resize-t"/><div class="t resize-t"/><div class="l resize-l"/><div class="lb resize-l resize-b"/><div class="rb resize-b resize-r"/><div class="r resize-r"/><div class="b resize-b"/>
         </template>
       </div>
     </div>

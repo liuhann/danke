@@ -84,10 +84,10 @@ export default {
       }
     },
     enterAnimations () {
-      return this.element.enters || []
+      return this.element.animation.enters || []
     },
     existAnimations () {
-      return this.element.exists || []
+      return this.element.animation.exists || []
     }
   },
   created () {

@@ -56,7 +56,13 @@ export default {
       if (el) {
         const interactee = interact(el)
         interactee.resizable({
-          edges: { left: true, right: true, bottom: true, top: true },
+          // edges: { left: true, right: true, bottom: true, top: true },
+          edges: {
+            left: '.resize-l',
+            right: '.resize-r',
+            bottom: '.resize-b',
+            top: '.resize-t'
+          },
           inertia: true,
           enabled: node.props.resizable,
           preserveAspectRatio: node.isRatioFixed

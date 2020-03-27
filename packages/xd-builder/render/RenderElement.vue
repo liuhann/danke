@@ -6,8 +6,8 @@
   <img v-if="element.url" :id="'img-' + (element.name || element.id)" :src="getImageUrl(element.url, viewPort.width, viewPort.height)">
   <div v-if="element.svg" class="svg-content" v-html="elementSVGContent" />
   <!--文本渲染情况下 文本内容-->
-  <template v-if="element.text != null && !element.editing">{{element.text}}</template>
-  <textarea v-if="element.text != null && element.editing" :style="textEditStyle" v-model="element.text"/>
+  <template v-for="(text, index) in elementTextLines">{{text}}<br></template>
+  <textarea ref="textarea" v-if="element.text != null && element.editing" :style="textEditStyle" v-model="element.text" @keydown="updateTextArea"/>
   <div v-if="element.elements" class="block">
     <render-element v-for="(el, i) in element.elements" :key="el.id" :screen="viewPort" :element="el" :index="i" />
   </div>
@@ -67,9 +67,7 @@ export default {
     },
 
     textEditStyle () {
-      const style = {
-        fontFamily: `'Karla',Microsoft YaHei,tahoma,arial,Hiragino Sans GB,sans-serif`
-      }
+      const style = {}
       for (let key in this.element.style) {
         const styled = this.element.style[key]
         if (CSSPX.indexOf(key) > -1) {
@@ -82,6 +80,7 @@ export default {
           })
         }
       }
+      style.height = this.element.height + 'px'
       return style
     },
 
@@ -153,6 +152,18 @@ export default {
       return {}
     },
 
+    elementTextLines () {
+      if (this.element.text != null && !this.element.editing) {
+        return this.element.text.split('\n')
+      } else {
+        return []
+      }
+    },
+
+    elementTextContent () {
+      return this.element.text.replace(/\n/g, '<br>')
+    },
+
     /**
      * 获取元素的SVG正文内容
      */
@@ -162,10 +173,16 @@ export default {
   },
   data () {
     return {
+      textAreaHeight: this.element.height
     }
   },
   methods: {
     getImageUrl,
+    updateTextArea () {
+      this.textAreaHeight = this.$refs.textarea.scrollHeight
+      this.element.width = this.$refs.textarea.scrollWidth
+      this.element.height = this.$refs.textarea.scrollHeight
+    },
     assignVariables (style, variables) {
       if (variables && variables.length) {
         for (let variable of variables) {
@@ -198,7 +215,6 @@ export default {
 
     // 获取元素的动画特效
     getElementAnimationStyle (element) {
-
     },
 
     getElementPositionStyle (element) {
@@ -230,7 +246,7 @@ export default {
     border: none;
     background: transparent;
     width: 100%;
-    overflow: hidden;
+    overflow: auto;
   }
   /*color: transparent;*/
   /*-webkit-background-clip: text;*/
