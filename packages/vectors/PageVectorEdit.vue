@@ -132,22 +132,26 @@ export default {
       this.editor.setValue(replaced)
     },
 
+    /**
+     * 获取及替换颜色操作
+     */
     replaceFillColorWithVariables () {
+      let rgbRegex = /[rR][gG][Bb][Aa]?[\\(]((2[0-4][0-9]|25[0-5]|[01]?[0-9][0-9]?),){2}(2[0-4][0-9]|25[0-5]|[01]?[0-9][0-9]?),?(0\\.\\d{1,2}|1|0)?[\\)]{1}/g
+      let colorRegex = /#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})|rgb[a]?\([^)]+\)/g
       let svg = this.editor.getValue()
-      const matched = svg.match(/fill:.+;/g)
-      const colorList = Array.from(new Set(matched))
+      const colorMatched = svg.match(colorRegex);
+      const colorList = Array.from(new Set(colorMatched))
       this.vector.variables = []
       for (let i = 0; i < colorList.length; i++) {
         this.vector.variables.push({
           'name': 'fillColor' + i,
-          'value': colorList[i].substring(5).replace(';', ''),
+          'value': colorList[i],
           'label': '颜色' + i,
           'type': 'color'
         })
-        svg = svg.replace(new RegExp(colorList[i], 'gm'), `fill:var(--fillColor${i})`)
+        svg = svg.replace(new RegExp(colorList[i].replace('(', '\\(').replace(')', '\\)'), 'gm'), `var(--fillColor${i})`)
       }
       this.editor.setValue(svg)
-      console.log(matched)
     },
 
     replaceId () {

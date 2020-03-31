@@ -5,7 +5,7 @@
   title="节点设置"
   trigger="click">
   <el-tooltip class="item" effect="dark" content="视觉位置及调整" placement="bottom" slot="reference">
-    <a class="action" ><img :src="ICON_SIZE"></a>
+    <a class="action"><img :src="ICON_SIZE"></a>
   </el-tooltip>
   <el-form label-width="70px" size="mini" class="more-action-form">
     <el-form-item label="宽高">
@@ -32,13 +32,15 @@
 import toolbarPopMixin from './toolbarPopMixin'
 import interactMixins from '../mixins/interactMixins'
 import ICON_SIZE from './res/size.svg'
+import ICON_LAYER_UP from './res/layer-up.svg'
 
 export default {
   name: 'PopMoreAction',
   mixins: [ toolbarPopMixin, interactMixins ],
   data () {
     return {
-      ICON_SIZE
+      ICON_SIZE,
+      ICON_LAYER_UP
     }
   },
   computed: { },
@@ -66,15 +68,18 @@ export default {
     moveElementUp () {
       const currentIndex = this.scene.elements.indexOf(this.element)
       if (currentIndex < this.scene.elements.length - 1) {
-        this.scene.elements[currentIndex] = this.scene.elements[currentIndex + 1]
-        this.scene.elements[currentIndex + 1] = this.element
+        this.scene.elements.splice(currentIndex, 1)
+        this.scene.elements.splice(currentIndex + 1, 0, this.element)
       }
     },
     moveElementDown () {
       const currentIndex = this.scene.elements.indexOf(this.element)
       if (currentIndex > 0) {
-        this.scene.elements[currentIndex] = this.scene.elements[currentIndex - 1]
-        this.scene.elements[currentIndex - 1] = this.element
+        this.scene.elements.splice(currentIndex, 1)
+        this.scene.elements.splice(currentIndex - 1, 0, this.element)
+
+        // this.scene.elements[currentIndex] = this.scene.elements[currentIndex - 1]
+        // this.scene.elements[currentIndex - 1] = this.element
       }
     }
   }

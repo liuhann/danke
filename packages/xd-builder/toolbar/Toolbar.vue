@@ -22,6 +22,8 @@
         :value="item">
       </el-option>
     </el-select>
+    <a class="action" :key="index" v-if="variable.type==='fontSize'" @click="increaseFontSize(variable)"><img :src="ICON_FONT_PLUS"></a>
+    <a class="action" :key="index" v-if="variable.type==='fontSize'" @click="decreaseFontSize(variable)"><img :src="ICON_FONT_SMALL"></a>
     <!-- 字体对齐-->
     <text-align :key="index" v-if="variable.type==='textAlign'" v-model="variable.value"/>
     <!-- 字体粗细-->
@@ -59,13 +61,13 @@
     <pop-more-action :element="focusedElement" :scene="scene" v-if="focusedElement" @reset="resetElementDragResize"/>
     <a class="action" v-if="selectedElements.length" @click="removeSelectedElement"><img :src="ICON_TRASH"></a>
     <a class="action" v-if="selectedElements.length" @click="lockSelectedElement"><img :src="ICON_LOCK"></a>
-    <a class="action" v-if="selectedLockedElements.length" @click="lockSelectedElement"><img :src="ICON_UNLOCK"></a>
+    <a class="action" v-if="selectedLockedElements.length" @click="unLockSelectedElement"><img :src="ICON_UNLOCK"></a>
 
-    <a class="action" v-if="selectedElements.length === 0" @click="previousScene"><i class="el-icon-arrow-up" /></a>
-    <a class="action" v-if="selectedElements.length === 0" @click="nextScene"><i class="el-icon-arrow-down" /></a>
-    <a class="action" v-if="selectedElements.length === 0"> {{scenes.indexOf(scene) + 1}}/{{scenes.length}}</a>
+    <a class="action" v-if="noFocusedElement" @click="previousScene"><i class="el-icon-arrow-up" /></a>
+    <a class="action" v-if="noFocusedElement" @click="nextScene"><i class="el-icon-arrow-down" /></a>
+    <a class="action" v-if="noFocusedElement"> {{scenes.indexOf(scene) + 1}}/{{scenes.length}}</a>
 
-    <el-popover v-if="selectedElements.length === 0" placement="bottom" width="360" trigger="click" popper-class="padding-0">
+    <el-popover v-if="noFocusedElement" placement="bottom" width="360" trigger="click" popper-class="padding-0">
       <a class="action" slot="reference"><i class="el-icon-setting" /></a>
       <setting-panel :work="work"/>
     </el-popover>
@@ -76,7 +78,6 @@
 <script>
 import { Button, ButtonGroup, Popover, Slider, Select, Option, Tooltip, InputNumber } from 'element-ui'
 import fontMixin from './fontMixin'
-import BorderList from './BorderList'
 import { shortid } from '../../utils/string'
 import interactMixins from '../mixins/interactMixins.js'
 import SettingPanel from './SettingPanel'
@@ -102,6 +103,8 @@ import ICON_ALGIN_AVER_HOR from './res/align-aver-h.svg'
 import ICON_ALGIN_AVER_VER from './res/align-aver-v.svg'
 import ICON_LOCK from './res/lock.svg'
 import ICON_UNLOCK from './res/unlock.svg'
+import ICON_FONT_PLUS from './res/font-plus.svg'
+import ICON_FONT_SMALL from './res/font-smaller.svg'
 
 import PopTransform from './PopTransform'
 import TextAlign from './TextAlign'
@@ -169,7 +172,9 @@ export default {
       ICON_ALGIN_AVER_HOR,
       ICON_ALGIN_AVER_VER,
       ICON_LOCK,
-      ICON_UNLOCK
+      ICON_UNLOCK,
+      ICON_FONT_PLUS,
+      ICON_FONT_SMALL
     }
   },
   computed: {
@@ -330,10 +335,26 @@ export default {
       this.$emit('change')
     },
 
+    /**
+     * 元素锁定的规则：
+     * 可以选中，但是不能调整大小、移动 不能被多选
+     */
     lockSelectedElement () {
       for (let element of this.selectedElements) {
-        element.selected = false
+        element.props.resizable = false
+        element.props.movable = false
+        this.resetElementDragResize(element)
         this.$set(element, 'locked', true)
+      }
+      this.$emit('change')
+    },
+
+    unLockSelectedElement () {
+      for (let element of this.selectedLockedElements) {
+        element.props.resizable = true
+        element.props.draggable = true
+        this.resetElementDragResize(element)
+        this.$set(element, 'locked', false)
       }
       this.$emit('change')
     },
@@ -575,6 +596,9 @@ export default {
       height: 28px;
       display: inline-block;
       vertical-align: top;
+      &.wide {
+        width: 26px;
+      }
     }
   }
   .icon {

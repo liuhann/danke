@@ -1,6 +1,7 @@
 <template>
 <div id="add-new-work">
-  <div class="content-title">空白项目</div>
+  <div class="content-title">选择作品的尺寸</div>
+  <div >可以在后续修改</div>
   <div class="column">
     <div class="new-types">
       <div v-for="work of workType" :key="work.name" class="work-type" :style="workSizeStyle(work)">
@@ -16,7 +17,7 @@
       </div>
       <div class="work-type">
         <div class="name">
-          自定义尺寸
+          其他
         </div>
         <div class="ratios">
           <el-input-number v-model="workWidth" size="mini" width="80" controls-position="right"/> X <el-input-number v-model="workHeight" size="mini" width="80" controls-position="right"/>

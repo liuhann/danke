@@ -26,6 +26,7 @@
       :exist-scene="lastScene"
       :work="work"
       :paste="paste"
+      @undo="undo"
       @change="workChange"
       @scale-fit="scaleChange"
       @clean-paste="cleanPaste"/>

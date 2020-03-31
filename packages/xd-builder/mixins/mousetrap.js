@@ -125,5 +125,9 @@ export default {
         }
       }
     })
+
+    Mousetrap.bind('ctrl+z', () => {
+      this.$emit('undo')
+    })
   }
 }

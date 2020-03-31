@@ -150,6 +150,9 @@ export default {
         this.destroyInteract(element)
       }
       this.$nextTick(() => {
+        for (let element of this.scene.elements) {
+          this.destroyInteract(element)
+        }
         this.setElementsInteract()
       })
     },
@@ -245,7 +248,7 @@ export default {
      *
      **/
     selectedElements () {
-      return this.scene.elements.filter(el => el.selected)
+      return this.scene.elements.filter(el => el.selected && !el.locked)
     }
   },
 
@@ -479,6 +482,7 @@ export default {
      */
     setElementsInteract () {
       for (let element of this.scene.elements) {
+        element.selected = false
         this.initElementDragResize(element)
       }
     },
@@ -489,7 +493,7 @@ export default {
     setElementSelected (element) {
       for (let e of this.scene.elements) {
         e.selected = false
-        if (element == null && e.editing) {
+        if (element !== e && e.editing) {
           e.editing = false
         }
       }
@@ -557,6 +561,7 @@ export default {
      */
     pasteStyleToTargetElement (element) {
       if (this.paste) {
+        this.$emit('change')
         element.width = this.paste.width
         element.height = this.paste.height
 
