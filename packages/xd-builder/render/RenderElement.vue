@@ -203,9 +203,18 @@ export default {
       if (this.viewPort && this.screen && this.element.text) {
         if (style.transform) {
           style.transform = style.transform + ` scale(${this.viewPort.width/this.screen.width})`
-        } else [
+        } else {
           style.transform = `scale(${this.viewPort.width/this.screen.width})`
-        ]
+        }
+        if (this.element.style.textAlign === 'left') {
+          style.transformOrigin = 'left top'
+        }
+        if (this.element.style.textAlign === 'center') {
+          style.transformOrigin = 'center top'
+        }
+        if (this.element.style.textAlign === 'right') {
+          style.transformOrigin = 'right top'
+        }
       }
     },
 

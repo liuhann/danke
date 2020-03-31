@@ -21,6 +21,15 @@ export default class RestDAO {
     const result = await this.ctx.get(`${this.path}?${this.serialize(filter)}`).json()
     return result
   }
+  async multiGet (ids) {
+    const result = await this.ctx.post(`${this.path}/id`, {
+      json: {
+        ids
+      }
+    }).json()
+
+    return result
+  }
 
   /**
   * 创建或者更新对象

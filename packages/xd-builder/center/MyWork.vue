@@ -25,6 +25,7 @@
 <script>
 import RenderScene from '../render/RenderScene'
 import RestDAO from '../../common/dao/restdao'
+import StyleRegistry from '../utils/StyleRegistry'
 
 export default {
   name: 'MyWork',
@@ -36,6 +37,8 @@ export default {
   },
   created () {
     this.workdao = new RestDAO(this.ctx, 'danke/work')
+    this.svgdao = new RestDAO(this.ctx, 'danke/svg')
+    this.ctx.styleRegistry = new StyleRegistry()
   },
   mounted () {
     this.loadMyWorks()
@@ -47,6 +50,21 @@ export default {
           'creator': this.ctx.user.id,
           'projection': 'scenes.1,updated,created,ratio,creator,screen,name,id'
         })
+
+        const svgs = []
+        for (let work of result.list) {
+          work.scenes[0].elements.forEach( element=> {
+            if (element.svg) {
+              svgs.push(element.svg)
+            }
+          })
+        }
+        console.log('svgs', svgs)
+        const svgRes = await this.svgdao.multiGet(svgs)
+        for (let res of svgRes.list) {
+          this.ctx.styleRegistry.addVector(res)
+        }
+
         this.works = result.list
         for (let work of this.works) {
           work.viewport = {
