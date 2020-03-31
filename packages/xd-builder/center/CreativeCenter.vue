@@ -1,11 +1,24 @@
 <template>
 <div class="creative-center">
-  <div class="top-header">
-    <div class="left">Left</div>
-    <div class="right">Right</div>
-  </div>
   <div class="main">
     <div class="nav">
+      <div class="me">
+        <div class="avatar">
+          <el-upload
+            :auto-upload="false" action="https://jsonplaceholder.typicode.com/posts/"
+            :show-file-list="false"
+            ref="imageUpload"
+            class="upload-container"
+            :on-change="avatarChosen">
+            <img :src="user.avatar || 'http://cdn.danke.fun/res/head.svg'">
+          </el-upload>
+        </div>
+        <div class="user">
+            <div class="user-name">
+              {{user.id}}
+            </div>
+        </div>
+      </div>
       <button class="button" slot="reference" @click="navNew">创建新的作品</button>
       <div class="menu">
         <div class="node" :class="nav==='my'? 'selected': ''" @click="navMyWork">
@@ -30,28 +43,34 @@
 
 <script>
 import StyleRegistry from '../utils/StyleRegistry'
-import { Popover } from 'element-ui'
+import { Popover, Upload } from 'element-ui'
 import workType from './workType'
+import ImageDAO from '../utils/imagedao'
 export default {
   name: 'CreativeCenter',
   components: {
-    [Popover.name]: Popover
+    [Popover.name]: Popover,
+    [Upload.name]: Upload
   },
   filters: { },
   data () {
     return {
+      user: this.ctx.user,
       workType,
       lines: []
     }
   },
   computed: {
+    avatar () {
+      return this.ctx.user.avatar
+    },
     nav () {
       const path = this.$route.path
       return path.substring(path.lastIndexOf('/') + 1)
     }
   },
   created () {
-
+    this.imagedao = new ImageDAO(this.ctx)
   },
   mounted () {
     this.ctx.styleRegistry = new StyleRegistry()
@@ -66,6 +85,16 @@ export default {
 
     xd ({ width, height }) {
       window.open(`/xd?width=${width}&height=${height}`)
+    },
+
+    // may be choose multiple files, should do auto upload on choose
+    // each file would trigger fileChoosed event
+    async avatarChosen (file, uploadFiles) {
+      const result = await this.imagedao.uploadBlob(file.raw, `profile`)
+      await this.ctx.userdao.setAvatar(result.name)
+      const user = await this.ctx.userdao.getCurrentUser()
+      this.ctx.user = user
+      this.user = user
     },
 
     playWork (work) {
@@ -107,6 +136,22 @@ export default {
       height: calc(100% - 4rem);
       margin: 2rem 0;
       box-sizing: content-box;
+      .me {
+        padding: 8px 12px;
+        display: flex;
+        .avatar {
+          width: 48px;
+          height: 48px;
+          border-radius: 50%;
+          img {
+            width: 48px;
+            height: 46px;
+          }
+        }
+        .user {
+          padding-left: 10px;
+        }
+      }
       button {
         font-size: 1.5rem;
         color: #fff;

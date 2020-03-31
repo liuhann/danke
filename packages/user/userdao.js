@@ -24,8 +24,17 @@ class UserDAO {
       }
     }).json()
   }
+
   async getCaptcha () {
     return this.ctx.get(`captcha`).json()
+  }
+
+  async setAvatar (url) {
+    return this.ctx.post(`user/avatar`, {
+      json: {
+        url
+      }
+    }).json()
   }
 
   async sendSmsCode (phone) {
@@ -33,6 +42,13 @@ class UserDAO {
   }
 
   logout () {
+    return this.ctx.post(`user/logout`, {
+      json: {
+        name,
+        password,
+        captcha
+      }
+    }).json()
   }
 }
 export default UserDAO
