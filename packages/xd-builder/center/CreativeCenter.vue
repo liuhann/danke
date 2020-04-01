@@ -22,18 +22,21 @@
           </div>
         </div>
       </div>
-      <button class="button" slot="reference" @click="navNew">创建新的作品</button>
+      <button class="button" slot="reference" @click="navTo('new')">创建新的作品</button>
       <div class="menu">
-        <div class="node" :class="nav==='my'? 'selected': ''" @click="navMyWork">
+        <div class="node" :class="nav==='my'? 'selected': ''" @click="navTo('my')">
           <span>我的作品</span>
         </div>
         <div class="node">
           <span>模板中心</span>
         </div>
         <div class="node">
-          <span>我的资源</span>
+          <span>我的图库</span>
         </div>
-        <div class="node tree-node" :class="nav==='profile'? 'selected': ''" @click="navConfig">
+        <div class="node" :class="nav==='packs'? 'selected': ''" @click="navTo('packs')">
+          <span>设计图库</span>
+        </div>
+        <div class="node tree-node" :class="nav==='profile'? 'selected': ''" @click="navTo('profile')">
           <span>设置</span>
         </div>
       </div>
@@ -87,15 +90,9 @@ export default {
   },
   methods: {
     getImageUrl,
-    navMyWork () {
-      this.$router.replace('/creative/my')
-    },
-    navNew () {
-      this.$router.replace('/creative/new')
-    },
 
-    navConfig () {
-      this.$router.replace('/creative/profile')
+    navTo (nav) {
+      this.$router.replace('/creative/' + nav)
     },
 
     xd ({ width, height }) {

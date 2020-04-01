@@ -1,5 +1,5 @@
 <template>
-<div class="my-works body" v-if="nav='mywork'">
+<div class="my-works body">
   <div class="content-title">我的作品</div>
   <div class="my-work-list" ref="myWorkList">
     <div class="work" v-for="work in works" :key="work.id">
