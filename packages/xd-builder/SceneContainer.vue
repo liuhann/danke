@@ -34,7 +34,6 @@
     </div>
     <!-- 拖拽选择层 -->
     <div class="dragging-rect" :style="styleDragingRect"></div>
-
     <!--缩放、平移操作区-->
     <div class="screen-actions">
       <a class="action" @click="scaleDown">
@@ -387,7 +386,7 @@ export default {
       }
       // 剪贴模式
       if (this.paste) {
-        if (targetElement) {
+        if (targetElement && !targetElement.locked) {
           this.pasteStyleToTargetElement(targetElement)
         } else {
           this.$emit('clean-paste')
@@ -576,7 +575,7 @@ export default {
         element.width = this.paste.width
         element.height = this.paste.height
 
-        element.animation = JSON.parse(JSON.stringify(element.animation))
+        element.animation = JSON.parse(JSON.stringify(this.paste.animation))
         for (let key in this.paste.style) {
           if (element.style[key] != null) {
             if (typeof element.style[key] === 'object') {
@@ -586,6 +585,7 @@ export default {
             }
           }
         }
+        element.variables = JSON.parse(JSON.stringify(this.paste.variables))
       }
     },
     copyVariableValue (source, target) {

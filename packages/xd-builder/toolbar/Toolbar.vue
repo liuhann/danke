@@ -7,23 +7,24 @@
     <!-- 数字-->
     <el-input-number :key="index" v-if="variable.type==='number'" v-model="variable.value" controls-position="right" size="mini"/>
     <!-- 文字大小 -->
-    <el-select
-      :key="index"
-      v-if="variable.type==='fontSize'"
-      v-model="variable.value"
-      size="mini"
-      filterable
-      allow-create
-      placeholder="字体">
-      <el-option
-        v-for="item in fontSizeOptions"
-        :key="item"
-        :label="item"
-        :value="item">
-      </el-option>
-    </el-select>
-    <a class="action" :key="index" v-if="variable.type==='fontSize'" @click="increaseFontSize(variable)"><img :src="ICON_FONT_PLUS"></a>
-    <a class="action" :key="index" v-if="variable.type==='fontSize'" @click="decreaseFontSize(variable)"><img :src="ICON_FONT_SMALL"></a>
+    <span :key="index">
+      <el-select
+        v-if="variable.type==='fontSize'"
+        v-model="variable.value"
+        size="mini"
+        filterable
+        allow-create
+        placeholder="字体">
+        <el-option
+          v-for="item in fontSizeOptions"
+          :key="item"
+          :label="item"
+          :value="item">
+        </el-option>
+      </el-select>
+      <a class="action" :key="index" v-if="variable.type==='fontSize'" @click="increaseFontSize(variable)"><img :src="ICON_FONT_PLUS"></a>
+      <a class="action" :key="index" v-if="variable.type==='fontSize'" @click="decreaseFontSize(variable)"><img :src="ICON_FONT_SMALL"></a>
+    </span>
     <!-- 字体对齐-->
     <text-align :key="index" v-if="variable.type==='textAlign'" v-model="variable.value"/>
     <!-- 字体粗细-->
