@@ -294,10 +294,17 @@ export default {
          * 拖拽开始，如果只是点击不会触发拖拽事件。
          */
         onstart: event => {
-          console.log('global on start', event)
+          if (event.ctrlKey) {
+            this.actionMove = true
+            this.dragRect.withCtrl = true
+          } else {
+            this.dragRect.withCtrl = false
+          }
           this.dragRect.left = event.x0 - event.rect.left
           this.dragRect.top = event.y0 - event.rect.top
-          if (!this.actionMove) {
+          if (this.actionMove) {
+            this.dragRect.visible = false
+          } else {
             this.dragRect.visible = true
           }
         },
@@ -346,6 +353,10 @@ export default {
          * 拖拽结束
          */
         onend: event => {
+          if (this.dragRect.withCtrl) {
+            this.actionMove = false
+            this.dragRect.withCtrl = false
+          }
           this.dragRect.visible = false
           // 取消mouseclick事件的触发
           this.dragRect.dragged = true
