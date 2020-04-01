@@ -6,25 +6,8 @@
     <color-pop-picker :key="index" v-if="variable.type==='color'" :color="variable.value" model="color" @input="variableColorInput(variable, $event)"/>
     <!-- 数字-->
     <el-input-number :key="index" v-if="variable.type==='number'" v-model="variable.value" controls-position="right" size="mini"/>
-    <!-- 文字大小 -->
-    <span :key="index">
-      <el-select
-        v-if="variable.type==='fontSize'"
-        v-model="variable.value"
-        size="mini"
-        filterable
-        allow-create
-        placeholder="字体">
-        <el-option
-          v-for="item in fontSizeOptions"
-          :key="item"
-          :label="item"
-          :value="item">
-        </el-option>
-      </el-select>
-      <a class="action" :key="index" v-if="variable.type==='fontSize'" @click="increaseFontSize(variable)"><img :src="ICON_FONT_PLUS"></a>
-      <a class="action" :key="index" v-if="variable.type==='fontSize'" @click="decreaseFontSize(variable)"><img :src="ICON_FONT_SMALL"></a>
-    </span>
+    <!--字体大小-->
+    <font-size :key="index" v-if="variable.type==='fontSize'" :variable="variable" />
     <!-- 字体对齐-->
     <text-align :key="index" v-if="variable.type==='textAlign'" v-model="variable.value"/>
     <!-- 字体粗细-->
@@ -78,7 +61,6 @@
 
 <script>
 import { Button, ButtonGroup, Popover, Slider, Select, Option, Tooltip, InputNumber } from 'element-ui'
-import fontMixin from './fontMixin'
 import { shortid } from '../../utils/string'
 import interactMixins from '../mixins/interactMixins.js'
 import SettingPanel from './SettingPanel'
@@ -104,16 +86,16 @@ import ICON_ALGIN_AVER_HOR from './res/align-aver-h.svg'
 import ICON_ALGIN_AVER_VER from './res/align-aver-v.svg'
 import ICON_LOCK from './res/lock.svg'
 import ICON_UNLOCK from './res/unlock.svg'
-import ICON_FONT_PLUS from './res/font-plus.svg'
-import ICON_FONT_SMALL from './res/font-smaller.svg'
 
 import PopTransform from './PopTransform'
 import TextAlign from './TextAlign'
 import FontWeight from './FontWeight'
+import FontSize from './FontSize'
 export default {
   name: 'Toolbar',
-  mixins: [ interactMixins, fontMixin ],
+  mixins: [ interactMixins ],
   components: {
+    FontSize,
     FontWeight,
     TextAlign,
     PopTransform,
@@ -173,9 +155,7 @@ export default {
       ICON_ALGIN_AVER_HOR,
       ICON_ALGIN_AVER_VER,
       ICON_LOCK,
-      ICON_UNLOCK,
-      ICON_FONT_PLUS,
-      ICON_FONT_SMALL
+      ICON_UNLOCK
     }
   },
   computed: {
