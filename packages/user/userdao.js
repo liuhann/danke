@@ -37,6 +37,16 @@ class UserDAO {
     }).json()
   }
 
+  async setUserProfile ({email, location, nick}) {
+    return this.ctx.post(`user/update`, {
+      json: {
+        nick,
+        email,
+        location
+      }
+    }).json()
+  }
+
   async sendSmsCode (phone) {
     return this.ctx.get(`user/sms/${phone}`).json()
   }

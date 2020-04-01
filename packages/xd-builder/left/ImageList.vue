@@ -23,7 +23,7 @@
 <script>
 import RestDAO from '../../common/dao/restdao'
 import { getImageUrl } from '../mixins/imageUtils.js'
-import ImageDAO from '../utils/imagedao'
+import ImageDAO from '../../utils/imagedao'
 import ky from 'ky'
 import { Upload, Button, Pagination } from 'element-ui'
 export default {

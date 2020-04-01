@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import ImageDAO from '../utils/imagedao'
+import ImageDAO from '../../utils/imagedao'
 import RestDAO from '../../common/dao/restdao'
 import ImageUpload from './ImageList.vue'
 import LeftSceneTemplate from './SceneList.vue'

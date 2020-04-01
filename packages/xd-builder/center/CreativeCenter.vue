@@ -10,13 +10,16 @@
             ref="imageUpload"
             class="upload-container"
             :on-change="avatarChosen">
-            <img :src="user.avatar || 'http://cdn.danke.fun/res/head.svg'">
+            <img :src="avatar">
           </el-upload>
         </div>
         <div class="user">
-            <div class="user-name">
-              {{user.id}}
-            </div>
+          <div class="user-name">
+            {{user.nick || user.id}}
+          </div>
+          <div class="location">
+            {{user.location ||　'火星'}}
+          </div>
         </div>
       </div>
       <button class="button" slot="reference" @click="navNew">创建新的作品</button>
@@ -30,7 +33,8 @@
         <div class="node">
           <span>我的资源</span>
         </div>
-        <div class="tree-node">
+        <div class="node tree-node" :class="nav==='profile'? 'selected': ''" @click="navConfig">
+          <span>设置</span>
         </div>
       </div>
     </div>
@@ -45,7 +49,8 @@
 import StyleRegistry from '../utils/StyleRegistry'
 import { Popover, Upload } from 'element-ui'
 import workType from './workType'
-import ImageDAO from '../utils/imagedao'
+import ImageDAO from '../../utils/imagedao'
+import { getImageUrl } from '../mixins/imageUtils'
 export default {
   name: 'CreativeCenter',
   components: {
@@ -62,8 +67,13 @@ export default {
   },
   computed: {
     avatar () {
-      return this.ctx.user.avatar
+      if (this.user && this.user.avatar) {
+        return this.getImageUrl(this.user.avatar, 96, 96)
+      } else {
+        return 'http://cdn.danke.fun/res/head.svg'
+      }
     },
+
     nav () {
       const path = this.$route.path
       return path.substring(path.lastIndexOf('/') + 1)
@@ -76,6 +86,7 @@ export default {
     this.ctx.styleRegistry = new StyleRegistry()
   },
   methods: {
+    getImageUrl,
     navMyWork () {
       this.$router.replace('/creative/my')
     },
@@ -83,12 +94,14 @@ export default {
       this.$router.replace('/creative/new')
     },
 
+    navConfig () {
+      this.$router.replace('/creative/profile')
+    },
+
     xd ({ width, height }) {
       window.open(`/xd?width=${width}&height=${height}`)
     },
 
-    // may be choose multiple files, should do auto upload on choose
-    // each file would trigger fileChoosed event
     async avatarChosen (file, uploadFiles) {
       const result = await this.imagedao.uploadBlob(file.raw, `profile`)
       await this.ctx.userdao.setAvatar(result.name)
@@ -119,6 +132,10 @@ export default {
 
 <style lang="scss">
 .creative-center {
+  --mainColor: #00c4cc;
+  --mainColorHover: rgba(0, 196, 204, 0.61);
+  --textMainColor: #0e1318;
+  --textMinorColor: rgba(14,19,24,.3);
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -132,6 +149,7 @@ export default {
     padding: 0 2rem;
     flex: 1;
     .nav {
+      color: var(--textMainColor);
       width: 200px;
       height: calc(100% - 4rem);
       margin: 2rem 0;
@@ -145,25 +163,33 @@ export default {
           border-radius: 50%;
           img {
             width: 48px;
-            height: 46px;
+            height: 48px;
+            border-radius: 100%;
           }
         }
         .user {
           padding-left: 10px;
+          line-height: 26px;
+          font-size: 14px;
+          .location {
+            line-height: 16px;
+            color: var(--textMinorColor);
+            cursor: pointer;
+          }
         }
       }
       button {
         font-size: 1.5rem;
         color: #fff;
         width: 160px;
-        margin: 0 20px;
+        margin: 10px;
         height: 40px;
         letter-spacing: .2rem;
         line-height: 1.4;
         transition: background-color .1s linear,border-color .1s linear,color .1s linear;
         vertical-align: middle;
         align-items: center;
-        background-color: #00c4cc;
+        background-color: var(--mainColor);
         border: 2px solid transparent;
         border-radius: 4px;
         cursor: pointer;
