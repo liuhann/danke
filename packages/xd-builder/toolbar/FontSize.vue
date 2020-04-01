@@ -20,7 +20,7 @@
 
 <script>
 import toolbarPopMixin from './toolbarPopMixin'
-import ICON_FONT_PLUS from './res/font-plus.svg'
+import ICON_FONT_PLUS from './res/font-big.svg'
 import ICON_FONT_SMALL from './res/font-smaller.svg'
 export default {
   name: 'FontSize',
