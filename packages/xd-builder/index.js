@@ -25,6 +25,9 @@ export default {
       path: 'packs',
       component: () => import(/* webpackChunkName: "xd-creative" */'./center/MyPacks.vue'),
     }, {
+      path: 'pack/:id',
+      component: () => import(/* webpackChunkName: "xd-creative" */'./center/PackDetail.vue'),
+    }, {
       path: 'profile',
       component: () => import(/* webpackChunkName: "xd-creative" */'../user/UserProfile.vue'),
     }]

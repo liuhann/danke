@@ -118,33 +118,6 @@ export default {
         background-color: #fff;
       }
     }
-
-    button {
-      display: inline-block;
-      padding: 10px 16px;
-      cursor: pointer;
-      border: none;
-      text-decoration: none;
-      background: var(--mainColor);
-      -webkit-transition: all 200ms ease;
-      transition: all 200ms ease;
-      border-radius: 4px;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-      position: relative;
-      color: #fff;
-      outline: none;
-      font-size: 14px;
-      font-weight: 500;
-      line-height: 20px;
-      height: 40px;
-      box-sizing: border-box;
-      text-align: center;
-      &:hover {
-        background: var(--mainColorHover);
-      }
-    }
   }
 }
 </style>

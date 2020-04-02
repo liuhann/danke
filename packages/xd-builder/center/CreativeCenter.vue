@@ -136,6 +136,23 @@ export default {
   height: 100%;
   display: flex;
   flex-direction: column;
+  button {
+    font-size: 1.5rem;
+    color: #fff;
+    margin: 10px;
+    height: 40px;
+    letter-spacing: .2rem;
+    line-height: 1.4;
+    transition: background-color .1s linear,border-color .1s linear,color .1s linear;
+    vertical-align: middle;
+    align-items: center;
+    background-color: var(--mainColor);
+    border: 2px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    padding: 0 10px;
+  }
   .top-header {
     height: 5rem;
     box-shadow: 0 0 3px #ccc;
@@ -174,24 +191,6 @@ export default {
             cursor: pointer;
           }
         }
-      }
-      button {
-        font-size: 1.5rem;
-        color: #fff;
-        width: 160px;
-        margin: 10px;
-        height: 40px;
-        letter-spacing: .2rem;
-        line-height: 1.4;
-        transition: background-color .1s linear,border-color .1s linear,color .1s linear;
-        vertical-align: middle;
-        align-items: center;
-        background-color: var(--mainColor);
-        border: 2px solid transparent;
-        border-radius: 4px;
-        cursor: pointer;
-        text-align: center;
-        padding: 0 6px;
       }
       .menu {
         margin: 1rem 0;
