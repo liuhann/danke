@@ -126,6 +126,10 @@ export default {
       }
     })
 
+    Mousetrap.bind('wheel', () => {
+      console.log('wheel')
+    })
+
     Mousetrap.bind('ctrl+z', () => {
       this.$emit('undo')
     })

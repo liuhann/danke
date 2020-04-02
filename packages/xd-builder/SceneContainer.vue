@@ -1,6 +1,6 @@
 <template>
 <div class="scene-wrapper">
-  <div id="workspace" @mousedown="sceneMouseDown" ref="sceneContainer" :style="styleWorkSpace">
+  <div id="workspace" @mousedown="sceneMouseDown" @wheel.prevent="sceneMouseWheel" ref="sceneContainer" :style="styleWorkSpace">
     <!-- 当前屏幕内容 -->
     <div class="screen" :style="styleScreen">
       <div class="screen-title">
@@ -402,6 +402,17 @@ export default {
           this.setElementSelected(targetElement)
         }
       }
+    },
+
+    sceneMouseWheel (event) {
+      if (event.ctrlKey) {
+        if (event.deltaY < 0) {
+          this.scaleUp()
+        } else {
+          this.scaleDown()
+        }
+      }
+      console.log('wheel', event)
     },
 
     // Drag over and set as allow drop
