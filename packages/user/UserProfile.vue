@@ -98,6 +98,7 @@ export default {
     }
     input {
       border-color: rgba(0,0,0,0.1);
+      border-width: 1px;
       font-weight: 400;
       line-height: 24px;
       width: 100%;
@@ -105,15 +106,15 @@ export default {
       height: 40px;
       padding: 10px 16px;
       outline: none;
-      border-radius: 8px;
+      border-radius: 3px;
       transition: background-color 200ms ease, outline 200ms ease, color 200ms ease, box-shadow 200ms ease;
       -webkit-appearance: none;
       -moz-appearance: none;
       appearance: none;
       color: #0d0c22;
-      background-color: #f3f3f4;
+      background-color: #fefefe;
       &:hover {
-        box-shadow: 0 0 0 4px rgba(234,76,137,0.1);
+        box-shadow: 0 0 0 4px #eee;
         background-color: #fff;
       }
     }
