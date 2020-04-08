@@ -1,13 +1,16 @@
 <template>
 <div id="pack-detail">
-  <div class="content-title">
+  <div class="content-title" v-if="!metaEditing">
     <span>{{pack.name}}</span>
     <button class="plain small" @click="editPackMeta">编辑</button>
+    <div class="desc">{{pack.desc}}</div>
   </div>
-  <div class="pack-meta">
+  <div class="pack-meta" v-if="metaEditing">
     <div class="title">
       <input v-model="pack.name" />
-      <input v-model="pack.desc" />
+    </div>
+    <div class="desc">
+      <input class="small" v-model="pack.desc" /> <button class="small" @click="savePackMeta">保存</button> <button class="plain small" @click="editPackMeta">取消</button>
     </div>
   </div>
   <div class="pack-sharing">
@@ -15,19 +18,17 @@
   </div>
   <div class="element-list-container">
     <div class="list">
-      <el-upload
-        class="box add"
-        action="https://www.danke.fun/"
-        accept="image/svg+xml"
-        :auto-upload="false"
-        :show-file-list="false"
-        :on-change="fileChange"
-        multiple>
-        <i class="el-icon-plus" />
-      </el-upload>
-      <div class="add box" @click="addNewSVG">
-        <i class="el-icon-plus"></i>
-      </div>
+        <el-upload
+          action="https://www.danke.fun/"
+          accept="image/svg+xml"
+          :auto-upload="false"
+          :show-file-list="false"
+          :on-change="fileChange"
+          multiple>
+          <div class="add box">
+            <i class="el-icon-plus" />
+          </div>
+        </el-upload>
       <div v-for="(svg, index) in svgs" :key="index" class="box">
         <div class="svg-container" :style="variableValues(svg)">
           <div class="styled-box" v-html="svg.content">
@@ -37,7 +38,7 @@
           <el-color-picker v-for="(variable, index) in svg.variables" :key="index" v-model="variable.value" size="mini"/>
         </div>
         <div class="item-btns">
-          <i class="el-icon-delete"></i>
+          <i class="el-icon-delete" @click="confirmDelete(svg)"></i>
           <i class="el-icon-edit" @click="edit(svg)"></i>
         </div>
       </div>
@@ -48,7 +49,7 @@
 
 <script>
 import RestDAO from '../../common/dao/restdao'
-import { Icon, ColorPicker, Upload } from 'element-ui'
+import { Icon, ColorPicker, Upload, MessageBox } from 'element-ui'
 
 export default {
   name: 'PackDetail',
@@ -58,6 +59,7 @@ export default {
   },
   data () {
     return {
+      metaEditing: false,
       pack: {},
       svgs: []
     }
@@ -119,7 +121,12 @@ export default {
     },
 
     editPackMeta () {
+      this.metaEditing = !this.metaEditing
+    },
 
+    savePackMeta () {
+      this.packdao.patch(this.pack._id, this.pack)
+      this.metaEditing = false
     },
 
     addNewSVG () {
@@ -141,6 +148,12 @@ export default {
       this.$router.push('../svg/edit?id=' + svg._id)
     },
 
+    async confirmDelete (svg) {
+      await MessageBox.confirm('此操作将永久删除该文件, 是否继续?', '提示')
+      await this.svgdao.delete(svg)
+      this.svgs = this.svgs.filter(item => item._id !== svg._id)
+    },
+
     // 目前暂无提示 直接删除
     async remove (style) {
       if (confirm('确认删除样式')) {
@@ -152,7 +165,8 @@ export default {
     async fetchData () {
       this.pack = await this.packdao.getOne(this.$route.params.id)
       const result = await this.svgdao.list({
-        pack: this.pack._id
+        // pack: this.pack._id,
+        count: 100
       })
       this.svgs = result.list
     }
@@ -163,12 +177,32 @@ export default {
 <style lang="scss">
 #pack-detail {
   .content-title {
+    .desc {
+      font-size: 14px;
+      color: #888;
+      line-height: 26px;
+    }
+    span {
+      display: inline-block;
+      vertical-align: middle;
+    }
     button.plain {
+      margin-right: 30px;
       display: none;
     }
     &:hover {
       button.plain {
+        vertical-align: middle;
         display: inline-block;
+      }
+    }
+  }
+  .pack-meta {
+    padding: 20px;
+    >div {
+      margin-top: 10px;
+      input {
+        width: 400px;
       }
     }
   }
@@ -183,6 +217,11 @@ export default {
         height: 160px;
         border-radius: 6px;
         position: relative;
+        .variables {
+          position: absolute;
+          right: 5px;
+          top: 5px;
+        }
         .svg-container {
           width: 100%;
           height: 100px;
@@ -191,6 +230,10 @@ export default {
           .styled-box {
             width: 100px;
             height: 100px;
+            svg {
+              width: 100px;
+              height: 100px;
+            }
           }
         }
         &:hover {
@@ -214,11 +257,6 @@ export default {
               color: var(--mainColor)
             }
           }
-        }
-        .variables {
-          position: absolute;
-          right: 10px;
-          top: 10px;
         }
       }
       .add {

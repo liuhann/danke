@@ -1,5 +1,5 @@
 <template>
-<div class="section">
+<div class="page-svg-edit">
   <div class="content-title">
     <span>编辑图片</span>
   </div>
@@ -7,6 +7,11 @@
     <el-form size="mini" label-width="90px">
       <el-form-item label="名称">
         <el-input v-model="vector.name"/>
+      </el-form-item>
+      <el-form-item label="图库">
+        <el-select v-model="vector.pack">
+          <el-option v-for="pack in packs" :key="pack._id" :value="pack._id" :label="pack.name"/>
+        </el-select>
       </el-form-item>
       <el-form-item label="SVG编辑">
         <div id="editor">
@@ -67,6 +72,7 @@ export default {
   },
   data () {
     return {
+      packs: [],
       vector: {
         name: '',
         pack: '',
@@ -88,15 +94,30 @@ export default {
   },
   watch: {},
   created () {
+    this.packdao = new RestDAO(this.ctx, 'danke/pack')
     this.svgdao = new RestDAO(this.ctx, 'danke/svg')
+  },
+  watch: {
+    // call again the method if the route changes
+    '$route': 'fetchData'
   },
   mounted () {
     this.initEditor()
-    if (this.$route.query.id) {
-      this.loadSvg(this.$route.query.id)
-    }
+    this.loadMyPacks()
+    this.fetchData()
   },
   methods: {
+    async fetchData () {
+      if (this.$route.query.id) {
+        this.loadSvg(this.$route.query.id)
+      } else {
+        this.vector.pack = this.$route.query.pack
+      }
+    },
+    async loadMyPacks() {
+      const result = await this.packdao.list()
+      this.packs = result.list
+    },
     /**
      * 替换指定Id 替换渐变定义 抽取颜色到变量之中
      */
@@ -158,12 +179,11 @@ export default {
     },
     async save () {
       this.vector.content = this.editor.getValue()
-      this.vector.pack = this.$route.query.pack
       const result = await this.svgdao.createOrPatch(this.vector)
       if (result.code === 409) {
         Message.error('ID重复')
       } else {
-        Message.success('保存成功')
+        this.cancel()
       }
     },
     async cancel () {
@@ -174,27 +194,30 @@ export default {
 </script>
 
 <style lang="scss">
+.page-svg-edit {
+  .styled-box {
+    width: 120px;
+    height: 120px;
+    svg {
+      height: 120px;
+      width: 120px;
+    }
+  }
+  .variables {
+    margin: 20px 0;
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+    td {
+      padding: 5px 10px;
+    }
+  }
+  .variables label {
+    margin: 0 20px;
+  }
+}
 #editor {
   height: 400px;
 }
-.styled-box {
-  width: 120px;
-  height: 120px;
-  svg {
-    height: 120px;
-    width: 120px;
-  }
-}
-.variables {
-  margin: 20px 0;
-  width: 100%;
-  text-align: left;
-  border-collapse: collapse;
-  td {
-    padding: 5px 10px;
-  }
-}
-.variables label {
-  margin: 0 20px;
-}
+
 </style>

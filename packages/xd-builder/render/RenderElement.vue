@@ -22,7 +22,7 @@ import TextList from '../left/TextList'
 const CSSPX = ['fontSize', 'letterSpacing']
 
 export default {
-  name: 'RenderElement',
+  name: 'ment',
   components: {
     TextList,
     RenderElement: () => import('./RenderElement.vue')
@@ -254,7 +254,6 @@ export default {
     resize: none;
     border: none;
     background: transparent;
-    width: 100%;
     overflow: auto;
   }
   /*color: transparent;*/
