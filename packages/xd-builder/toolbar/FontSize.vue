@@ -21,7 +21,7 @@
 <script>
 import toolbarPopMixin from './toolbarPopMixin'
 import ICON_FONT_PLUS from './res/font-big.svg'
-import ICON_FONT_SMALL from './res/font-smaller.svg'
+import ICON_FONT_SMALL from './res/font-small.svg'
 export default {
   name: 'FontSize',
   mixins: [toolbarPopMixin],
@@ -39,10 +39,10 @@ export default {
   },
   methods: {
     increaseFontSize (variable) {
-      variable.value += 2
+      variable.value = parseInt(variable.value) + 2
     },
-    decreaseFontSize (varialbe) {
-      varialbe.value -= 2
+    decreaseFontSize (variable) {
+      variable.value = parseInt(variable.value) - 2
     }
   }
 }

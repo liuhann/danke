@@ -48,6 +48,32 @@ export default {
         interactee.draggable(node.props.movable)
       }
     },
+
+    /**
+     * 调整组大小时同时按比例调整所有子元素的大小和形状
+     * @param node
+     * @param target
+     */
+    resizeBlockElements (node, target) {
+      if (node.elements && node.elements.length) {
+        // 按比例缩放子元素
+        const xRatio = target.width / node.width
+        const yRatio = target.height / node.height
+        for (let element of node.elements) {
+          element.x = element.x * xRatio
+          element.width = element.width * xRatio
+          element.y = element.y * yRatio
+          element.height = element.height * yRatio
+
+          let fonts = element.variables.filter(variable => variable.type === 'fontSize')
+          if (fonts.length) {
+            fonts.forEach(f => {
+              f.value = f.value * xRatio
+            })
+          }
+        }
+      }
+    },
     /**
      * 初始化元素interact拖拽功能
      */
@@ -67,10 +93,16 @@ export default {
           enabled: node.props.resizable,
           preserveAspectRatio: node.isRatioFixed
         }).on('resizemove', event => {
-          node.width = event.rect.width / this.scale
-          node.height = event.rect.height / this.scale
-          node.x += event.deltaRect.left / this.scale
-          node.y += event.deltaRect.top / this.scale
+          const target = {
+            width: event.rect.width / this.scale,
+            height: event.rect.height / this.scale,
+            x: node.x + event.deltaRect.left / this.scale,
+            y: node.y + event.deltaRect.top / this.scale
+          }
+          if (node.elements && node.elements.length) {
+            this.resizeBlockElements(node, target)
+          }
+          Object.assign(node, target)
         }).on('resizeend', event => {
           this.$emit('change')
         })

@@ -70,7 +70,7 @@ import PopSetAnimation from './PopSetAnimation'
 import PopMoreAction from './PopMoreAction'
 import PopTransparent from './PopTransparent'
 import ICON_BRUSH from './res/brush.svg'
-import ICON_GROUPING from './res/grouping.svg'
+import ICON_GROUPING from './res/group.svg'
 import ICON_COPY from './res/copy.svg'
 import ICON_TRASH from './res/trash.svg'
 import ICON_UNDO from './res/undo.svg'
@@ -349,7 +349,7 @@ export default {
         elements: [],
         name: '组合',
         props: {
-          resizable: false,
+          resizable: true,
           movable: true
         },
         style: {},
@@ -361,29 +361,25 @@ export default {
         width: this.selectedElements[0].width,
         height: this.selectedElements[0].height
       }
+      let blockRect = {
+        x1: this.selectedElements[0].x,
+        y1: this.selectedElements[0].y,
+        x2: this.selectedElements[0].x + this.selectedElements[0].width,
+        y2: this.selectedElements[0].y + this.selectedElements[0].height
+      }
       // 1、loop to set block rect
       for (let element of this.selectedElements) {
         // get corner of element
-        const x1 = element.x
-        const y1 = element.y
-        const x2 = element.x + element.width
-        const y2 = element.y + element.height
-
-        // check out and resize block size
-        if (x1 < block.x) {
-          block.x = x1
-        }
-        if (y1 < block.y) {
-          block.y = y1
-        }
-        if (x2 > block.x + block.width) {
-          block.width = x2 - block.x
-        }
-        if (y2 > block.y + block.height) {
-          block.height = y2 - block.y
-        }
+        blockRect.x1 = Math.min(element.x, blockRect.x1)
+        blockRect.y1 = Math.min(element.y, blockRect.y1)
+        blockRect.x2 = Math.max(element.x + element.width, blockRect.x2)
+        blockRect.y2 = Math.max(element.y + element.height, blockRect.y2)
         block.elements.push(element)
       }
+      block.x = blockRect.x1
+      block.y = blockRect.y1
+      block.width = blockRect.x2 - blockRect.x1
+      block.height = blockRect.y2 - blockRect.y1
 
       //2、loop to reset element rect
       for (let element of block.elements) {
