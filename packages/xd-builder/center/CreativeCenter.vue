@@ -152,6 +152,18 @@ export default {
     cursor: pointer;
     text-align: center;
     padding: 0 10px;
+    &.small {
+      line-height: 1.2;
+      margin: 0 10px;
+      height: 30px;
+    }
+    &:hover {
+      background-color: var(--mainColorHover);
+    }
+    &.plain {
+      color: var(--mainColor);
+      background-color: transparent;
+    }
   }
   .top-header {
     height: 5rem;

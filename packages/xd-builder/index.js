@@ -28,6 +28,9 @@ export default {
       path: 'pack/:id',
       component: () => import(/* webpackChunkName: "xd-creative" */'./center/PackDetail.vue'),
     }, {
+      path: 'svg/edit',
+      component: () => import(/* webpackChunkName: "res-edit" */'./center/PageSVGEdit.vue'),
+    }, {
       path: 'profile',
       component: () => import(/* webpackChunkName: "xd-creative" */'../user/UserProfile.vue'),
     }]
