@@ -81,6 +81,9 @@ export default {
           })
         }
       }
+      Object.assign(style, {
+        textAlign: 'left'
+      })
       style.height = this.element.height + 'px'
       return style
     },
@@ -192,19 +195,16 @@ export default {
   },
   data () {
     return {
-      textAreaHeight: this.element.height
     }
   },
   methods: {
     getImageUrl,
     updateTextArea () {
       const measured = textMesure(this.elementTextContent, this.elementTextFontSize, this.elementTextWeight)
-      console.log(measured)
       if (measured.width > this.element.width) {
         this.element.width = measured.width
       }
-      this.textAreaHeight = this.$refs.textarea.scrollHeight
-      this.element.height = this.$refs.textarea.scrollHeight
+      this.element.height = measured.height
     },
     assignVariables (style, variables) {
       if (variables && variables.length) {
@@ -272,11 +272,12 @@ export default {
   position: absolute;
   box-sizing: border-box;
   text-overflow: initial;
-  white-space:nowrap;
+  white-space:pre-wrap;
   textarea {
     text-align: left;
     resize: none;
     border: none;
+    outline: none !important;
     background: transparent;
     overflow: hidden;
     width: 10000px;
