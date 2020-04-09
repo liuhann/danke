@@ -59,6 +59,7 @@ export default [{
 }, {
   width: 100,
   height: 100,
+  maskable: true,
   style: {
     clipPath: 'polygon(var(--position) 0, 0% 100%, 100% 100%)',
     backgroundColor: 'var(--bgColor)'
@@ -76,6 +77,7 @@ export default [{
 }, {
   width: 100,
   height: 100,
+  maskable: true,
   style: {
     clipPath: 'polygon(0 0, 0 100%, 100% var(--position))',
     backgroundColor: 'var(--bgColor)'
@@ -93,6 +95,7 @@ export default [{
 }, {
   width: 100,
   height: 100,
+  maskable: true,
   style: {
     clipPath: 'polygon(0 0, 100% 0, var(--position) 100%',
     backgroundColor: 'var(--bgColor)'
@@ -110,6 +113,7 @@ export default [{
 }, {
   width: 100,
   height: 100,
+  maskable: true,
   style: {
     clipPath: 'polygon(100% 100%, 100% 0, 0 var(--position)',
     backgroundColor: 'var(--bgColor)'
@@ -127,6 +131,7 @@ export default [{
 }, {
   width: 100,
   height: 100,
+  maskable: true,
   style: {
     clipPath: 'polygon(var(--position) 0%, 100% 0%, calc(100% - var(--position)) 100%, 0% 100%)',
     backgroundColor: 'var(--bgColor)'
@@ -144,6 +149,7 @@ export default [{
 }, {
   width: 100,
   height: 100,
+  maskable: true,
   style: {
     clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)',
     backgroundColor: 'var(--bgColor)'
@@ -157,6 +163,7 @@ export default [{
 }, {
   width: 100,
   height: 100,
+  maskable: true,
   style: {
     clipPath: 'polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%)',
     backgroundColor: 'var(--bgColor)'
@@ -169,6 +176,7 @@ export default [{
 }, {
   width: 100,
   height: 100,
+  maskable: true,
   style: {
     clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
     backgroundColor: 'var(--bgColor)'
@@ -181,6 +189,7 @@ export default [{
 }, {
   width: 100,
   height: 100,
+  maskable: true,
   style: {
     clipPath: 'polygon(100% 0%, calc(100% - var(--position)) 50%, 100% 100%, var(--position) 100%, 0% 50%, var(--position) 0%)',
     backgroundColor: 'var(--bgColor)'
@@ -197,6 +206,7 @@ export default [{
 }, {
   width: 100,
   height: 100,
+  maskable: true,
   style: {
     clipPath: 'polygon(calc(100% - var(--position)) 0%, 100% 50%, calc(100% - var(--position)) 100%, 0% 100%, var(--position) 50%, 0% 0%)',
     backgroundColor: 'var(--bgColor)'
@@ -213,6 +223,7 @@ export default [{
 }, {
   width: 100,
   height: 100,
+  maskable: true,
   style: {
     clipPath: 'ellipse(var(--r1) var(--r2) at var(--c1) var(--c2))',
     backgroundColor: 'var(--bgColor)'
@@ -241,9 +252,11 @@ export default [{
 }, {
   width: 100,
   height: 100,
+  maskable: true,
   style: {
     borderTopLeftRadius: 'var(--radius)',
     borderBottomRightRadius: 'var(--radius)',
+    overflow: 'hidden',
     backgroundColor: 'var(--bgColor)'
   },
   variables: [{
@@ -258,9 +271,11 @@ export default [{
 }, {
   width: 100,
   height: 100,
+  maskable: true,
   style: {
     borderTopRightRadius: 'var(--radius)',
     borderBottomLeftRadius: 'var(--radius)',
+    overflow: 'hidden',
     backgroundColor: 'var(--bgColor)'
   },
   variables: [{

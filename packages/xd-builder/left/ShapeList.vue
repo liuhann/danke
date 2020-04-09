@@ -19,7 +19,6 @@
 <!--      </div>-->
 <!--    </div>-->
 <!--  </div>-->
-  <el-pagination background :total="total" :page-size="pageSize" @current-change="loadObjects" :current-page.sync="page" layout="prev, pager, next" />
 </div>
 </template>
 

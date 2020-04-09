@@ -18,7 +18,7 @@
       </div>
     </div>
     <!-- 元素被选中、移动、调整大小时的选中层 -->
-    <div class="mask" :style="styleMask" @dragover="sceneDragOver" @drop="elementDropped" v-if="scene">
+    <div class="mask" :style="styleMask" @drop="elementDropped" @dragover="sceneDragOver" v-if="scene">
       <div
         v-for="selectee in scene.elements"
         :key="selectee.id"
@@ -362,28 +362,13 @@ export default {
         }
       }).styleCursor(false)
     },
+
     /**
      * 进行鼠标点击位置检测，如果点击到元素则选中或保持多个的选择状态， 点到空白则取消所有元素选中
      */
     sceneMouseDown (ev) {
-      // 鼠标得到所点的位置
-      const rootRect = this.$refs.sceneContainer.getBoundingClientRect()
-      const point = {
-        x: ev.clientX - rootRect.x,
-        y: ev.clientY - rootRect.y
-      }
-      // 获取选择的元素，重叠的获取z最高的
-      let targetElement = null
-      for (let element of this.scene.elements) {
-        if (isPointInRect(point, {
-          x: element.x * this.scale + this.translateX,
-          y: element.y * this.scale + this.translateY,
-          width: element.width * this.scale,
-          height: element.height * this.scale
-        }, 10)) {
-          targetElement = element
-        }
-      }
+      let targetElement = this.getEventToElement(ev)
+
       // 剪贴模式
       if (this.paste) {
         if (targetElement && !targetElement.locked) {
@@ -402,7 +387,7 @@ export default {
           this.setElementSelected(targetElement)
         }
       }
-      console.log('target element', targetElement)
+      console.log('target element',ev, targetElement)
     },
 
     sceneMouseWheel (event) {
@@ -416,8 +401,38 @@ export default {
       console.log('wheel', event)
     },
 
+    getEventToElement (ev) {
+      // 鼠标得到所点的位置
+      const rootRect = this.$refs.sceneContainer.getBoundingClientRect()
+      const point = {
+        x: ev.clientX - rootRect.x,
+        y: ev.clientY - rootRect.y
+      }
+      // 获取选择的元素，重叠的获取z最高的
+      let targetElement = null
+      for (let element of this.scene.elements) {
+        if (isPointInRect(point, {
+          x: element.x * this.scale + this.translateX,
+          y: element.y * this.scale + this.translateY,
+          width: element.width * this.scale,
+          height: element.height * this.scale
+        }, 10)) {
+          targetElement = element
+        }
+      }
+      return targetElement
+    },
     // Drag over and set as allow drop
     sceneDragOver (ev) {
+      let targetElement = this.getEventToElement(ev)
+      if (targetElement) {
+        this.$set(targetElement, 'hover', true)
+      }
+      for (let element of this.scene.elements) {
+        if (element !== targetElement && element.hover) {
+          this.$set(element, 'hover', false)
+        }
+      }
       ev.preventDefault()
     },
 
@@ -426,47 +441,47 @@ export default {
      */
     elementDropped (ev) {
       ev.preventDefault()
+      const targetElement = this.getEventToElement(ev)
       const data = ev.dataTransfer.getData('Text')
       const element = JSON.parse(data)
-      const node = this.createElement()
-      node.name = element.name || ('节点' + this.scene.elements.length + 1)
-      if (element.variables) {
-        node.variables = element.variables
-      }
-      // svg 图片处理 content -> svg
-      if (element.content) {
-        const vb = getSVGViewBox(element.content)
-        if (vb) {
-          node.width = vb.width
-          node.height = vb.height
-          node.isRatioFixed = true
+      if (targetElement && element.maskable) {
+        Object.assign(targetElement.style, element.style)
+        if (targetElement.variables) {
+          targetElement.variables = targetElement.variables.concat(element.variables)
+        } else {
+          this.$set(targetElement, 'variables', element.variables)
         }
-        node.svg = element._id
-      }
-      // 文本增加
-      if (element.text) {
-        node.text = element.text
-      }
-      // 放置的图片
-      if (element.url) {
-        node.url = element.url
-        node.style.clipPath = ''
-      }
-      Object.assign(node.style, element.style)
-      // 获取元素自适应到整个画面的高度和宽度
-      Object.assign(node, fitRectIntoBounds(node, this.screen))
+        targetElement.hover = false
+      } else {
+        // 新增空白节点
+        const node = this.createElement()
+        node.name = element.name || ('节点' + this.scene.elements.length + 1)
+        Object.assign(node, element)
 
-      node.x = ev.offsetX - node.width / 2
-      node.y = ev.offsetY - node.height / 2
-      // 自动适应到屏幕内部 避免溢出
-      node.x = (node.x < 0) ? 0 : node.x
-      node.y = (node.y < 0) ? 0 : node.y
-      this.scene.elements.push(node)
-      this.setElementSelected(node)
-      this.$emit('change')
-      this.$nextTick(() => {
-        this.initElementDragResize(node)
-      })
+        // svg 图片处理 content -> svg
+        if (element.content) {
+          const vb = getSVGViewBox(element.content)
+          if (vb) {
+            node.width = vb.width
+            node.height = vb.height
+          }
+          node.svg = element._id
+        }
+        // 获取元素自适应到整个画面的高度和宽度 避免扩大超出
+        Object.assign(node, fitRectIntoBounds(node, this.screen))
+
+        node.x = ev.offsetX - node.width / 2
+        node.y = ev.offsetY - node.height / 2
+        // 自动适应到屏幕内部 避免溢出
+        node.x = (node.x < 0) ? 0 : node.x
+        node.y = (node.y < 0) ? 0 : node.y
+        this.scene.elements.push(node)
+        this.setElementSelected(node)
+        this.$emit('change')
+        this.$nextTick(() => {
+          this.initElementDragResize(node)
+        })
+      }
     },
 
     /**
@@ -536,25 +551,22 @@ export default {
      */
     getMaskStyle (element) {
       const displayStyle = {}
-      // if (!element.selected) {
-      //   displayStyle.opacity = 0
-      // } else {
-      //   if (element.editing) {
-      //     displayStyle.opacity = 0
-      //   }
-      // }
       return Object.assign(displayStyle, getRectPositionStyle(element))
     },
 
     getMaskClass (element) {
+      const classes = []
       if (!element.selected) {
-        return 'not-selected'
+        classes.push('not-selected')
+      } else if (element.editing) {
+        classes.push('not-selected')
       } else {
-        if (element.editing) {
-          return 'not-selected'
-        }
+        classes.push('selected')
       }
-      return 'selected'
+      if (element.hover) {
+        classes.push('drag-hover')
+      }
+      return classes
     },
 
     maskDblClick (element) {
@@ -682,6 +694,9 @@ export default {
       >div {
         opacity: 1;
       }
+    }
+    &.drag-hover {
+      background-color: rgba(66, 165, 245, 0.4);
     }
     >div {
       border: 1px solid #42A5F5;
