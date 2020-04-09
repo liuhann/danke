@@ -31,6 +31,7 @@
       @scale-fit="scaleChange"
       @clean-paste="cleanPaste"/>
   </section>
+  <div id="textMesure"></div>
 </div>
 </template>
 
@@ -111,6 +112,14 @@ export default {
 </script>
 
 <style lang="scss">
+#textMesure {
+  position: absolute;
+  visibility: hidden;
+  height: auto;
+  width: auto;
+  white-space: nowrap; /* Thanks to Herb Caudill comment */
+}
+
 #xd {
   @import './common.scss';
   height: 100%;

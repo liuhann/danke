@@ -7,7 +7,7 @@
   <div v-if="element.svg" class="svg-content" v-html="elementSVGContent" />
   <!--文本渲染情况下 文本内容-->
   <template v-for="(text, index) in elementTextLines">{{text}}<br></template>
-  <textarea ref="textarea" v-if="element.text != null && element.editing" :style="textEditStyle" v-model="element.text" @keydown="updateTextArea"/>
+  <textarea ref="textarea" v-if="element.text != null && element.editing" :style="textEditStyle" v-model="element.text" @change="updateTextArea"/>
   <div v-if="element.elements" class="block">
     <render-element v-for="(el, i) in element.elements" :key="el.id" :screen="viewPort" :element="el" :index="i" />
   </div>
@@ -18,6 +18,7 @@
 import { getImageUrl } from '../mixins/imageUtils.js'
 import { getRectPositionStyle } from '../mixins/rectUtils.js'
 import TextList from '../left/TextList'
+import textMesure from '../../utils/textMesure'
 
 const CSSPX = ['fontSize', 'letterSpacing']
 
@@ -160,6 +161,24 @@ export default {
       }
     },
 
+    elementTextFontSize () {
+      let fonts = this.element.variables.filter(variable => variable.type === 'fontSize')
+      if (fonts.length) {
+        return fonts[0].value
+      } else {
+        return 1
+      }
+    },
+
+    elementTextWeight () {
+      let fonts = this.element.variables.filter(variable => variable.type === 'fontWeight')
+      if (fonts.length) {
+        return fonts[0].value
+      } else {
+        return 1
+      }
+    },
+
     elementTextContent () {
       return this.element.text.replace(/\n/g, '<br>')
     },
@@ -179,8 +198,12 @@ export default {
   methods: {
     getImageUrl,
     updateTextArea () {
+      const measured = textMesure(this.elementTextContent, this.elementTextFontSize, this.elementTextWeight)
+      console.log(measured)
+      if (measured.width > this.element.width) {
+        this.element.width = measured.width
+      }
       this.textAreaHeight = this.$refs.textarea.scrollHeight
-      this.element.width = this.$refs.textarea.scrollWidth
       this.element.height = this.$refs.textarea.scrollHeight
     },
     assignVariables (style, variables) {
@@ -251,10 +274,12 @@ export default {
   text-overflow: initial;
   white-space:nowrap;
   textarea {
+    text-align: left;
     resize: none;
     border: none;
     background: transparent;
-    overflow: auto;
+    overflow: hidden;
+    width: 10000px;
   }
   /*color: transparent;*/
   /*-webkit-background-clip: text;*/
