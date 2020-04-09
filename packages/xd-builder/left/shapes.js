@@ -65,7 +65,58 @@ export default [{
   },
   variables: [{
     name: 'position',
-    value: 50,
+    value: 0,
+    type: 'percent'
+  }, {
+    label: '背景颜色',
+    name: 'bgColor',
+    value: '#00bf72',
+    type: 'color'
+  }]
+}, {
+  width: 100,
+  height: 100,
+  style: {
+    clipPath: 'polygon(0 0, 0 100%, 100% var(--position))',
+    backgroundColor: 'var(--bgColor)'
+  },
+  variables: [{
+    name: 'position',
+    value: 0,
+    type: 'percent'
+  }, {
+    label: '背景颜色',
+    name: 'bgColor',
+    value: '#00bf72',
+    type: 'color'
+  }]
+}, {
+  width: 100,
+  height: 100,
+  style: {
+    clipPath: 'polygon(0 0, 100% 0, var(--position) 100%',
+    backgroundColor: 'var(--bgColor)'
+  },
+  variables: [{
+    name: 'position',
+    value: 100,
+    type: 'percent'
+  }, {
+    label: '背景颜色',
+    name: 'bgColor',
+    value: '#00bf72',
+    type: 'color'
+  }]
+}, {
+  width: 100,
+  height: 100,
+  style: {
+    clipPath: 'polygon(100% 100%, 100% 0, 0 var(--position)',
+    backgroundColor: 'var(--bgColor)'
+  },
+  variables: [{
+    name: 'position',
+    value: 100,
     type: 'percent'
   }, {
     label: '背景颜色',
@@ -193,6 +244,23 @@ export default [{
   style: {
     borderTopLeftRadius: 'var(--radius)',
     borderBottomRightRadius: 'var(--radius)',
+    backgroundColor: 'var(--bgColor)'
+  },
+  variables: [{
+    name: 'radius',
+    value: 50,
+    type: 'percent'
+  }, {
+    name: 'bgColor',
+    value: '#00bf72',
+    type: 'color'
+  }]
+}, {
+  width: 100,
+  height: 100,
+  style: {
+    borderTopRightRadius: 'var(--radius)',
+    borderBottomLeftRadius: 'var(--radius)',
     backgroundColor: 'var(--bgColor)'
   },
   variables: [{
