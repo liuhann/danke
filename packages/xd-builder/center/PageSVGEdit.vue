@@ -171,8 +171,8 @@ export default {
     },
     addVariable () {
       this.vector.variables.push({
-        name: 'var',
-        value: '#000',
+        name: 'fillColor',
+        value: '#e20',
         label: '',
         type: 'color'
       })

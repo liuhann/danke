@@ -38,7 +38,6 @@
           <el-color-picker v-for="(variable, index) in svg.variables" :key="index" v-model="variable.value" size="mini"/>
         </div>
         <div class="item-btns">
-          {{svg.pack}}
           <i class="el-icon-delete" @click="confirmDelete(svg)"></i>
           <i class="el-icon-edit" @click="edit(svg)"></i>
         </div>
@@ -50,7 +49,7 @@
 
 <script>
 import RestDAO from '../../common/dao/restdao'
-import { Icon, ColorPicker, Upload, MessageBox } from 'element-ui'
+import { Icon, ColorPicker, Upload, MessageBox, Loading } from 'element-ui'
 
 export default {
   name: 'PackDetail',
@@ -70,6 +69,8 @@ export default {
     this.svgdao = new RestDAO(this.ctx, 'danke/svg')
     // fetch the data when the view is created and the data is
     // already being observed
+  },
+  mounted () {
     this.fetchData()
   },
   watch: {
@@ -77,7 +78,6 @@ export default {
     '$route': 'fetchData'
   },
   methods: {
-
     fileChange (file, fileList) {
       const vi = this
       const fileReader = new FileReader()
@@ -164,12 +164,17 @@ export default {
     },
 
     async fetchData () {
+      this.svgs = []
+      const instance = Loading.service({
+        target: '.element-list-container'
+      })
       this.pack = await this.packdao.getOne(this.$route.params.id)
       const result = await this.svgdao.list({
-        // pack: this.pack._id,
+        pack: this.pack._id,
         count: 100
       })
       this.svgs = result.list
+      instance.close()
     }
   }
 }

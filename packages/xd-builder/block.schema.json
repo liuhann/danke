@@ -3,7 +3,16 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "description": "An address similar to http://microformats.org/wiki/h-card",
   "type": "object",
+  "required": ["id","width", "height", "name", "elements"],
   "properties": {
+    "id": {
+      "type": "string",
+      "description": "块Id，全局唯一"
+    },
+    "name": {
+      "type": "string",
+      "description": "块名称"
+    },
     "width": {
       "type": "integer",
       "description": "默认宽度"
@@ -11,6 +20,83 @@
     "height": {
       "type": "integer",
       "description": "默认高度"
+    },
+    "elements": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/element"
+      }
+    },
+    "props": {
+      "type": "object",
+      "description": "其他属性描述信息"
+    }
+  },
+  "definitions": {
+    "element":{
+      "type": "object",
+      "description": "每个绘图元素的描述信息",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "元素id，全局唯一"
+        },
+        "x": {
+          "type": "integer",
+          "description": "元素位置x"
+        },
+        "y": {
+          "type": "integer",
+          "description": "元素位置y"
+        },
+        "width": {
+          "type": "integer",
+          "description": "宽度"
+        },
+        "height": {
+          "type": "integer",
+          "description": "高度"
+        },
+        "text": {
+          "type": "string",
+          "description": "文本呈现信息"
+        },
+        "style": {
+          "type": "object",
+          "description": "样式对象，所有的key必须是css property key, 例如 clipPath"
+        },
+
+        "variables": {
+          "type": "array",
+          "description": "对样式对象的描述值",
+          "items": {
+            "$ref": "#/definitions/variables"
+          }
+        }
+      }
+    },
+    "variables": {
+      "type": "object",
+      "description": "对象属性绑定变量信息",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "对应到style中使用的css变量名称"
+        },
+        "value": {
+          "type": "string",
+          "description": "对应到css变量值"
+        },
+        "type": {
+          "type": "string",
+          "description": "对应到css变量的值类型",
+          "enum": ["number", "px", "color", "fontSize", "textAlign", "fontWeight"]
+        },
+        "label": {
+          "type": "string",
+          "description": "元素配置项名称"
+        }
+      }
     }
   }
 }

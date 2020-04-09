@@ -9,7 +9,7 @@
   <template v-for="(text, index) in elementTextLines">{{text}}<br></template>
   <textarea ref="textarea" v-if="element.text != null && element.editing" :style="textEditStyle" v-model="element.text" @change="updateTextArea"/>
   <div v-if="element.elements" class="block">
-    <render-element v-for="(el, i) in element.elements" :key="el.id" :screen="viewPort" :element="el" :index="i" />
+    <render-element v-for="(el, i) in element.elements" :key="el.id" :screen="screen" :view-port="viewPort" :element="el" :index="i" />
   </div>
 </div>
 </template>

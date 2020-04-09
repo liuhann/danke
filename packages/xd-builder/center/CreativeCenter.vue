@@ -42,9 +42,7 @@
       </div>
     </div>
     <div class="content">
-      <keep-alive>
-        <router-view />
-      </keep-alive>
+      <router-view />
     </div>
   </div>
 </div>

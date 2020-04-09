@@ -368,7 +368,6 @@ export default {
      */
     sceneMouseDown (ev) {
       let targetElement = this.getEventToElement(ev)
-
       // 剪贴模式
       if (this.paste) {
         if (targetElement && !targetElement.locked) {
@@ -387,7 +386,7 @@ export default {
           this.setElementSelected(targetElement)
         }
       }
-      console.log('target element',ev, targetElement)
+      console.log('target element', targetElement)
     },
 
     sceneMouseWheel (event) {
