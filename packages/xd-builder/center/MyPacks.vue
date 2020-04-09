@@ -46,6 +46,10 @@ export default {
   mounted () {
     this.loadMyPacks()
   },
+  watch: {
+    // call again the method if the route changes
+    '$route': 'loadMyPacks'
+  },
   methods: {
     async loadMyPacks() {
       const result = await this.packdao.list({

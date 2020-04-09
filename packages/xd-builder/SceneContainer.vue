@@ -402,6 +402,7 @@ export default {
           this.setElementSelected(targetElement)
         }
       }
+      console.log('target element', targetElement)
     },
 
     sceneMouseWheel (event) {
@@ -428,15 +429,7 @@ export default {
       const data = ev.dataTransfer.getData('Text')
       const element = JSON.parse(data)
       const node = this.createElement()
-      let width = 100
-      let height = 100
       node.name = element.name || ('节点' + this.scene.elements.length + 1)
-      if (element.width && element.height) {
-        // 获取元素自适应到整个画面的高度和宽度
-        const fit = fitRectIntoBounds(element, this.screen)
-        width = fit.width
-        height = fit.height
-      }
       if (element.variables) {
         node.variables = element.variables
       }
@@ -444,8 +437,8 @@ export default {
       if (element.content) {
         const vb = getSVGViewBox(element.content)
         if (vb) {
-          width = vb.width
-          height = vb.height
+          node.width = vb.width
+          node.height = vb.height
           node.isRatioFixed = true
         }
         node.svg = element._id
@@ -460,10 +453,11 @@ export default {
         node.style.clipPath = ''
       }
       Object.assign(node.style, element.style)
-      node.x = ev.offsetX - width / 2
-      node.y = ev.offsetY - height / 2
-      node.width = width
-      node.height = height
+      // 获取元素自适应到整个画面的高度和宽度
+      Object.assign(node, fitRectIntoBounds(node, this.screen))
+
+      node.x = ev.offsetX - node.width / 2
+      node.y = ev.offsetY - node.height / 2
       // 自动适应到屏幕内部 避免溢出
       node.x = (node.x < 0) ? 0 : node.x
       node.y = (node.y < 0) ? 0 : node.y

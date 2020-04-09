@@ -33,8 +33,8 @@ export function fitRectIntoBounds (rect, bounds) {
 /**
  * 获取Rect类型元素的位置样式
  * @param {x, y, width, height} rect 元素位置
- * @param {width, height} origin 设计期屏幕大小
- * @param {width, height} viewPort 元素位置
+ * @param {width, height} origin 默认屏幕大小
+ * @param {width, height} viewPort 给出的可视区域大小
  * @param {string} fitMode 对齐模式
  */
 export function getRectPositionStyle (rect, origin, viewPort, fitMode = '') {

@@ -17,6 +17,7 @@
 <script>
 import { getImageUrl } from '../mixins/imageUtils.js'
 import { getRectPositionStyle } from '../mixins/rectUtils.js'
+import { assignVariables } from '../mixins/renderUtils'
 import TextList from '../left/TextList'
 import textMesure from '../../utils/textMesure'
 
@@ -99,27 +100,19 @@ export default {
       }
     },
 
-    // 位置及大小的样式
-    elementRectPositionStyle () {
-      return getRectPositionStyle(this.element, this.screen, this.viewPort)
-    },
 
     elementStyle () {
+      // 设置元素的长、宽到默认变量--width 、 --height
       const style = {
         ['--width']: this.element.width + 'px',
         ['--height']: this.element.height + 'px'
       }
-      Object.assign(style, this.elementRectPositionStyle)
+      assignVariables(style, this.element.variables)
+      Object.assign(style, getRectPositionStyle(this.element, this.screen, this.viewPort))
       Object.assign(style, this.elementAnimationStyle)
-      this.assignVariables(style, this.element.variables)
-      for (let key in this.element.style) {
-        const styled = this.element.style[key]
-        Object.assign(style, {
-          [key]: this.element.style[key]
-        })
-      this.assignVariables(style, styled.variables)
-      }
+      Object.assign(style, this.element.style)
       this.appendTextTransform(style)
+      // 按大小指定视角
       style.perspective = (this.element.width + this.element.height) + 'px'
       return style
     },
@@ -206,22 +199,8 @@ export default {
       }
       this.element.height = measured.height
     },
-    assignVariables (style, variables) {
-      if (variables && variables.length) {
-        for (let variable of variables) {
-          if (variable.type === 'number' || variable.type === 'fontSize') {
-            Object.assign(style, {
-              ['--' + variable.name]: variable.value + 'px'
-            })
-          } else {
-            Object.assign(style, {
-              ['--' + variable.name]: variable.value
-            })
-          }
-        }
-      }
-    },
 
+    // 处理viewport小的时候字体的变换，以便能在缩略情况下也看到缩小的文字
     appendTextTransform (style) {
       if (this.viewPort && this.screen && this.element.text) {
         if (style.transform) {

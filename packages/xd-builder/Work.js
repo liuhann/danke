@@ -13,14 +13,6 @@ export default {
   },
   scenes: [{
     id: 'scene-1',
-    style: {
-      // 背景为类名
-      background: {
-        color: '#fff',
-        name: 'swirly-love',
-        variables: []
-      }
-    },
     props: {},
     animation: {
       enters: [],
@@ -47,10 +39,6 @@ export default {
         resizable: true,
         movable: true
       },
-      classes: [{
-        name: '',
-        variables: []
-      }],
       style: {
         // direct style writing
         backgroundColor: '#00bf72',
@@ -64,26 +52,10 @@ export default {
         fontWeight: 400,
         // 字间距
         letterSpacing: 4,
-        // class style with variables
-        background: {
-          name: '',
-          variables: []
-        },
-        // 边框样式
-        border: {
-          name: '',
-          variables: []
-        },
-        svg: {
-          name: 'fill',
-          variables: [{
-            name: "fillColor0",
-            value: "#5CA4DA",
-            label: "颜色0",
-            type: "color"
-          }]
-        }
       },
+      variables: [{
+
+      }],
       animation: {
         // 进入特效
         enters: [{

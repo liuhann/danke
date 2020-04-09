@@ -3,7 +3,7 @@
   <div class="hint">拖拽形状到设计区</div>
   <div class="basic-shape">
     <div
-      v-for="(shape, index) in buildInShapes"
+      v-for="(shape, index) in shapes"
       :key="index"
       class="object-item" draggable @dragstart="dragStart(shape, $event)">
       <div class="shape" :style="shapeStyle(shape)">
@@ -11,20 +11,22 @@
       </div>
     </div>
   </div>
-  <div class="shape-list">
-    <div v-for="(object, index) in objects" :key="index" class="object-item" draggable @dragstart="dragStart(object, $event)" @dragend="dragEnd(object)">
-      <div class="svg-container" :style="variableStyle(object)" v-html="object.content">
-        <div class="styled-box" >
-        </div>
-      </div>
-    </div>
-  </div>
+<!--  <div class="shape-list">-->
+<!--    <div v-for="(object, index) in objects" :key="index" class="object-item" draggable @dragstart="dragStart(object, $event)" @dragend="dragEnd(object)">-->
+<!--      <div class="svg-container" :style="variableStyle(object)" v-html="object.content">-->
+<!--        <div class="styled-box" >-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
   <el-pagination background :total="total" :page-size="pageSize" @current-change="loadObjects" :current-page.sync="page" layout="prev, pager, next" />
 </div>
 </template>
 
 <script>
-import objectListMixin from '../../common/components/objectListMixin'
+// import objectListMixin from '../../common/components/objectListMixin'
+import shapes from './shapes'
+import { assignVariables} from '../mixins/renderUtils'
 import { Pagination } from 'element-ui'
 
 const buildInShapes = [{
@@ -89,12 +91,13 @@ const buildInShapes = [{
 
 export default {
   name: 'LeftShapeList',
-  mixins: [ objectListMixin ],
+  mixins: [  ],
   components: {
     [Pagination.name]: Pagination
   },
   data () {
     return {
+      shapes,
       buildInShapes,
       restPath: 'danke/svg'
     }
@@ -110,20 +113,8 @@ export default {
     },
 
     shapeStyle (shape) {
-      const style = Object.assign({}, shape.style)
-      if (shape.variables) {
-        for (let variable of shape.variables) {
-          if (variable.type === 'number') {
-            Object.assign(style, {
-              ['--' + variable.name]: variable.value + 'px'
-            })
-          } else {
-            Object.assign(style, {
-              ['--' + variable.name]: variable.value
-            })
-          }
-        }
-      }
+      const style = Object.assign({}, shape.style, assignVariables())
+      assignVariables(style, shape.variables)
       return style
     },
     // load list callback

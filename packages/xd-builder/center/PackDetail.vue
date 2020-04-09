@@ -38,6 +38,7 @@
           <el-color-picker v-for="(variable, index) in svg.variables" :key="index" v-model="variable.value" size="mini"/>
         </div>
         <div class="item-btns">
+          {{svg.pack}}
           <i class="el-icon-delete" @click="confirmDelete(svg)"></i>
           <i class="el-icon-edit" @click="edit(svg)"></i>
         </div>

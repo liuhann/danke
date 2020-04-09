@@ -1,0 +1,16 @@
+{
+  "$id": "block.schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "An address similar to http://microformats.org/wiki/h-card",
+  "type": "object",
+  "properties": {
+    "width": {
+      "type": "integer",
+      "description": "默认宽度"
+    },
+    "height": {
+      "type": "integer",
+      "description": "默认高度"
+    }
+  }
+}

@@ -5,7 +5,7 @@
     <!-- 颜色-->
     <color-pop-picker :key="index" v-if="variable.type==='color'" :color="variable.value" model="color" @input="variableColorInput(variable, $event)"/>
     <!-- 数字-->
-    <el-input-number :key="index" v-if="variable.type==='number'" v-model="variable.value" controls-position="right" size="mini"/>
+    <el-input-number :key="index" v-if="variable.type==='px' || variable.type==='number' || variable.type==='percent'" v-model="variable.value" controls-position="right" size="mini"/>
     <!--字体大小-->
     <font-size :key="index" v-if="variable.type==='fontSize'" :variable="variable" />
     <!-- 字体对齐-->
