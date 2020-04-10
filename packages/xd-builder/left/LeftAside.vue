@@ -17,9 +17,9 @@
       <i class="el-icon-news"/>
       <span>形状</span>
     </div>
-    <div class='category'>
+    <div class='category' :class="current === 'animation'? 'current': ''" @click="toggleTo('animation')">
       <i class="el-icon-magic-stick"/>
-      <span>效果</span>
+      <span>动画</span>
     </div>
     <div class='category'>
       <i class="el-icon-service"/>
@@ -51,6 +51,11 @@
         <left-shape-list v-if="current === 'shape'" />
       </keep-alive>
     </transition>
+    <transition name="fade">
+      <keep-alive>
+        <animation-list v-if="current === 'animation'"/>
+      </keep-alive>
+    </transition>
   </div>
 </aside>
 </template>
@@ -62,9 +67,11 @@ import ImageUpload from './ImageList.vue'
 import LeftSceneTemplate from './SceneList.vue'
 import LeftShapeList from './ShapeList.vue'
 import TextList from './TextList'
+import AnimationList from './AnimationList.vue'
 
 export default {
   components: {
+    AnimationList,
     TextList,
     ImageUpload,
     LeftSceneTemplate,
@@ -149,12 +156,37 @@ aside.insert-container {
       color: hsla(0,0%,100%,.5);
     }
     background: #293039;
-    padding-left: 16px;
-    padding-right: 16px;
-    padding-top: 16px;
     width: 352px;
     position: relative;
-    overflow-y: auto;
+    >div {
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      position: absolute;
+      overflow-y: auto;
+      padding: 8px;
+    }
   }
+
+
+  ::-webkit-scrollbar-track
+  {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    background-color: #293039;
+  }
+
+  ::-webkit-scrollbar
+  {
+    width: 5px;
+    height: 5px;
+    background-color: rgba(41, 48, 57, 0.39);
+  }
+
+  ::-webkit-scrollbar-thumb
+  {
+    background-color: #3b4a53;
+  }
+
 }
 </style>

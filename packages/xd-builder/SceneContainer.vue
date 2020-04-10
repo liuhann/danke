@@ -424,7 +424,7 @@ export default {
     // Drag over and set as allow drop
     sceneDragOver (ev) {
       let targetElement = this.getEventToElement(ev)
-      if (targetElement) {
+      if (targetElement && !targetElement.locked) {
         this.$set(targetElement, 'hover', true)
       }
       for (let element of this.scene.elements) {
@@ -443,7 +443,7 @@ export default {
       const targetElement = this.getEventToElement(ev)
       const data = ev.dataTransfer.getData('Text')
       const element = JSON.parse(data)
-      if (targetElement && element.maskable) {
+      if (targetElement && !targetElement.locked && element.maskable) {
         Object.assign(targetElement.style, element.style)
         if (targetElement.variables) {
           targetElement.variables = targetElement.variables.concat(element.variables)

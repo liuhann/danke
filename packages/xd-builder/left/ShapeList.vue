@@ -135,8 +135,8 @@ export default {
     display: flex;
     flex-wrap: wrap;
     .object-item {
-      width: 98px;
-      height: 100px;
+      width: 90px;
+      height: 90px;
       margin-bottom: 20px;
       margin-right: 20px;
       display: flex;

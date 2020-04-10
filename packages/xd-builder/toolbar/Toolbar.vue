@@ -112,7 +112,6 @@ export default {
     PopTransparent,
     PopTransform,
     PopMoreAction,
-    PopSetAnimation,
     ColorPopPicker,
     SettingPanel,
     IconUndo,
