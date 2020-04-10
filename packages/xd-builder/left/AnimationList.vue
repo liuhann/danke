@@ -4,10 +4,10 @@
     <tab-pane label="进入动画" name="enter"></tab-pane>
     <tab-pane label="离开动画" name="exist"></tab-pane>
   </tabs>
-  <div class="animation-container" v-infinite-scroll="loadMoreAnimation">
+  <div class="animation-container">
     <div v-for="(animation, index) in animations" :key="index"  class="animation-item"
          @mouseenter="animationMouseEnter(animation)"
-         @click="addAnimation(animation)">
+         @click="choose(animation)">
       <div class="preview-box" :class="animation.name">
         <img :src="CLOUD_HILL" v-if="animation.tags.indexOf('text') === -1"/>
         <span v-if="animation.tags.indexOf('text') > -1">{{animation.title}}</span>
@@ -16,22 +16,57 @@
     </div>
   </div>
   <pagination :total="total" :page-size="pageSize" @current-change="loadMoreAnimation" :current-page.sync="page" :pager-count="5" layout="prev, pager, next" />
+  <div class="animation-choosed" v-if="currentAnimation">
+    <div v-if="currentAnimation.tags.indexOf('text') === -1" class="animation-title">点击元素应用动画</div>
+    <div class="preview-box">
+      <img :src="CLOUD_HILL" :class="currentAnimation.name"/>
+      <div class="refresh"><i @click="refreshCurrent" class="el-icon-refresh-right" /></div>
+    </div>
+    <div class="animation-form">
+      <div class="form-item">
+        <div class="label">动画名称</div>
+        <div class="field">{{currentAnimation.title}}</div>
+      </div>
+      <div class="form-item">
+        <div class="label">持续时间</div>
+        <div class="field"><el-input-number size="mini" controls-position="right" :step="20" v-model="currentAnimation.duration" /></div>
+      </div>
+      <div class="form-item">
+        <div class="label">过渡曲线</div>
+        <div class="field">
+          <el-select v-model="currentAnimation.timing" size="mini">
+            <el-option v-for="(value, key) in cubicBeziers" :key="key" :label="key" :value="value"/>
+          </el-select>
+        </div>
+      </div>
+      <div class="form-item">
+        <div class="label">延迟</div>
+        <div class="field"><el-input-number v-model="currentAnimation.delay" size="mini" controls-position="right" :step="20" /></div>
+      </div>
+      <div class="form-item">
+        <div class="label">延迟递增</div>
+        <div class="field"><el-input-number v-model="delayInc" size="mini" controls-position="right" :step="20" /></div>
+      </div>
+    </div>
+  </div>
 </div>
 </template>
 
 <script>
 import RestDAO from '../../common/dao/restdao'
-import { Pagination, Tabs, TabPane, InfiniteScroll } from 'element-ui'
+import { Pagination, Tabs, TabPane, Button, InputNumber, Select, Option } from 'element-ui'
+import cubicBeziers from '../../frames/model/cubic-beziers'
 import CLOUD_HILL from '../../vectors/cloud-hill.webp'
 export default {
   name: 'AnimationList',
   components: {
     Pagination,
     Tabs,
-    TabPane
-  },
-  directives: {
-    InfiniteScroll
+    TabPane,
+    [InputNumber.name]: InputNumber,
+    [Select.name]: Select,
+    [Option.name]: Option,
+    Button
   },
   props: {
     type: {
@@ -40,12 +75,15 @@ export default {
   },
   data () {
     return {
+      cubicBeziers,
       animationType: 'enter',
       CLOUD_HILL,
       animations: [],
       page: 0,
       pageSize: 27,
-      total: 0
+      total: 0,
+      delayInc: 200,
+      currentAnimation: null
     }
   },
 
@@ -79,8 +117,20 @@ export default {
         animation.name = replayStore
       }, 300)
     },
-    addAnimation(animation) {
-      this.$emit('input', animation)
+
+    refreshCurrent () {
+      debugger
+      const replayStore = this.currentAnimation.name
+      this.currentAnimation.name = ''
+      setTimeout(() => {
+        this.currentAnimation.name = replayStore
+      }, 300)
+    },
+
+    choose(animation) {
+      this.currentAnimation = JSON.parse(JSON.stringify(animation))
+      this.currentAnimation.delay = 0
+      this.$emit('animation', animation)
     }
   }
 }
@@ -155,6 +205,7 @@ export default {
       perspective: 200px;
       width: 60px;
       height: 60px;
+      position: relative;
       img {
         object-fit: cover;
         width: 100%;
@@ -173,6 +224,56 @@ export default {
     .preview-box.none {
       opacity: 0;
       transition: opacity .3s ease-in;
+    }
+  }
+
+  .animation-choosed {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: #fff;
+    z-index: 999;
+    .animation-title {
+      padding: 16px;
+      font-size: 14px;
+    }
+    .preview-box {
+      perspective: 200px;
+      width: 100%;
+      height: 240px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #fafafa;
+      .refresh {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        font-size: 24px;
+        cursor: pointer;
+        &:hover {
+          color: #00c4cc;
+        }
+      }
+      img {
+        object-fit: cover;
+        width: 50%;
+        height: 50%;
+      }
+    }
+    .animation-form {
+      .form-item {
+        display: flex;
+        margin-top: 10px;
+        line-height: 28px;
+        .label {
+          width: 90px;
+          text-align: right;
+          padding-right: 10px;
+        }
+      }
     }
   }
 }

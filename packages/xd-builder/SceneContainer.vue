@@ -369,7 +369,11 @@ export default {
     sceneMouseDown (ev) {
       let targetElement = this.getEventToElement(ev)
       // 剪贴模式
-      if (this.paste) {
+      if (this.animation) {
+        if (targetElement && !targetElement.locked) {
+
+        }
+      } else if (this.paste) {
         if (targetElement && !targetElement.locked) {
           this.pasteStyleToTargetElement(targetElement)
         } else {
@@ -605,6 +609,20 @@ export default {
         element.variables = JSON.parse(JSON.stringify(this.paste.variables))
       }
     },
+
+    setElementAnimation (element, animation) {
+      const info = {
+        // css类名称
+        name: animation.name,
+        // 过渡函数，
+        timing: animation.timing,
+        // 时间区间 [0]为延迟，[1]为持续时间
+        range: [parseInt(animation.delay), parseInt(animation.duration)]
+      }
+      this.$set(element.animation, animation.type, [info])
+    },
+
+
     copyVariableValue (source, target) {
       if (source.length === target.length) {
         for (let i = 0; i < source.length; i++) {

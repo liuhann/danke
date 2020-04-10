@@ -53,7 +53,7 @@
     </transition>
     <transition name="fade">
       <keep-alive>
-        <animation-list v-if="current === 'animation'"/>
+        <animation-list v-if="current === 'animation'" @animation=""/>
       </keep-alive>
     </transition>
   </div>
@@ -168,8 +168,6 @@ aside.insert-container {
       padding: 8px;
     }
   }
-
-
   ::-webkit-scrollbar-track
   {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);

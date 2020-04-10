@@ -20,6 +20,7 @@
       @toggle-paste="togglePaste"/>
     <scene-container
       v-if="currentScene"
+      :animation="currentAnimation"
       :screen="work.screen"
       :scenes="work.scenes"
       :scene="currentScene"
@@ -56,6 +57,7 @@ export default {
   },
   data () {
     return {
+      currentAnimation: null,
       scale: 1,
       paste: null
     }
