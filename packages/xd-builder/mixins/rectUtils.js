@@ -38,17 +38,17 @@ export function fitRectIntoBounds (rect, bounds) {
  * @param {string} fitMode 对齐模式
  */
 export function getRectPositionStyle (rect, origin, viewPort, fitMode = '') {
+  let result = null
   if (origin && viewPort) {
-    const result = {
+    result = {
       position: 'absolute',
       left: rect.x * viewPort.width / origin.width + 'px',
       top: rect.y  * viewPort.height / origin.height + 'px',
       width: rect.width * viewPort.width / origin.width + 'px',
       height: rect.height * viewPort.height / origin.height + 'px'
     }
-    return result
   } else {
-    return {
+    result = {
       position: 'absolute',
       left: rect.x + 'px',
       top: rect.y + 'px',
@@ -56,6 +56,7 @@ export function getRectPositionStyle (rect, origin, viewPort, fitMode = '') {
       height: rect.height + 'px'
     }
   }
+  return result
 }
 
 /**

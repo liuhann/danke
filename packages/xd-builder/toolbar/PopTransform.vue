@@ -6,7 +6,7 @@
   @show="showPop"
   trigger="click">
   <a class="action" slot="reference">
-    <img :src="ICON">
+    <icon-rotate/>
   </a>
   <el-form label-width="140px" size="mini" >
     <el-form-item >
@@ -25,7 +25,7 @@
 
 <script>
 import toolbarPopMixin from './toolbarPopMixin'
-import ICON from './res/rotate.svg'
+import IconRotate from './res/rotate.svg'
 export const transformKeys = [{
   label: '横向扭曲',
   value: 'skewX'
@@ -46,12 +46,12 @@ export default {
   name: 'PopTransform',
   mixins: [toolbarPopMixin],
   components: {
+    IconRotate
   },
   data () {
     return {
       transforms: [],
-      transformKeys,
-      ICON
+      transformKeys
     }
   },
   methods: {

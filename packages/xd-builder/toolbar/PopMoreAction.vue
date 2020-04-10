@@ -2,19 +2,19 @@
 <el-popover
   placement="bottom-end"
   width="360"
-  title="节点设置"
+  title="视觉位置及调整"
   trigger="click">
-  <el-tooltip class="item" effect="dark" content="视觉位置及调整" placement="bottom" slot="reference">
-    <a class="action"><img :src="ICON_SIZE"></a>
+  <el-tooltip class="item" effect="dark" content="位置及层次" placement="bottom" slot="reference">
+    <a class="action"><icon-layer /></a>
   </el-tooltip>
   <el-form label-width="70px" size="mini" class="more-action-form">
     <el-form-item label="宽高">
       <el-input-number v-model="element.width" :disabled="!element.props.resizable" controls-position="right" size="mini"/>-<el-input-number v-model="element.height" :disabled="!element.props.resizable" controls-position="right" size="mini" />
-      <el-checkbox v-model="element.props.resizable" @change="reInitElementDragResize" />
+<!--      <el-checkbox v-model="element.props.resizable" @change="reInitElementDragResize" />-->
     </el-form-item>
     <el-form-item label="坐标">
       <el-input-number v-model="element.x" :disabled="!element.props.movable" controls-position="right" size="mini"/>-<el-input-number v-model="element.y" :disabled="!element.props.movable" controls-position="right" size="mini" />
-      <el-checkbox v-model="element.props.movable" @change="reInitElementDragResize" />
+<!--      <el-checkbox v-model="element.props.movable" @change="reInitElementDragResize" />-->
     </el-form-item>
     <el-form-item label="显示次序">
       <el-button-group size="mini">
@@ -31,12 +31,15 @@
 <script>
 import toolbarPopMixin from './toolbarPopMixin'
 import interactMixins from '../mixins/interactMixins'
-import ICON_SIZE from './res/size.svg'
+import IconLayer from './res/size.svg'
 import ICON_LAYER_UP from './res/layer-up.svg'
 
 export default {
   name: 'PopMoreAction',
   mixins: [ toolbarPopMixin, interactMixins ],
+  components: {
+    IconLayer
+  },
   data () {
     return {
       ICON_SIZE,

@@ -7,7 +7,7 @@
   @show="showPop"
   trigger="click">
   <a class="action" slot="reference">
-    <img :src="SVG">
+    <icon-transparent />
   </a>
   <div class="item">
     <el-slider v-model="slideVal" :min="0" :max="1" @change="slideChange" :step=".01"></el-slider>
@@ -17,14 +17,16 @@
 
 <script>
 import toolbarPopMixin from './toolbarPopMixin'
-import SVG from './res/transparent.svg'
+import IconTransparent from './res/transparent.svg'
 export default {
   name: 'PopTransparent',
   mixins: [toolbarPopMixin],
+  components: {
+    IconTransparent
+  },
   data() {
     return {
-      slideVal: 0,
-      SVG
+      slideVal: 0
     }
   },
   methods: {

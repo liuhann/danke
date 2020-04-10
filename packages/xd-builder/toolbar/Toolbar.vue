@@ -14,38 +14,49 @@
     <font-weight :key="index" v-if="variable.type==='fontWeight'" v-model="variable.value"/>
   </template>
 
-  <!--元素动画效果设置-->
-  <pop-set-animation v-if="focusedElement" :element="focusedElement"/>
-  <!--整体场景的动画效果-->
-  <pop-set-animation v-if="noFocusedElement" :element="scene"/>
-
   <!--元素变换、旋转、拉伸等-->
   <pop-transform v-if="focusedElement" :element="focusedElement"/>
-  <pop-clip-list v-if="focusedElement && focusedElement.style && focusedElement.style.clipPath != null" @input="setElementClipPath"/>
+<!--  <pop-clip-list v-if="focusedElement && focusedElement.style && focusedElement.style.clipPath != null" @input="setElementClipPath"/>-->
   <pop-transparent :element="focusedElement" v-if="focusedElement"/>
 
   <!-- 多选的对齐、平均分布功能-->
-  <a class="action" v-if="selectedElements.length > 1" @click="alignLeft"><img :src="ICON_ALIGN_LEFT"></a>
-  <a class="action" v-if="selectedElements.length > 1" @click="alignRight"><img :src="ICON_ALIGN_RIGHT"></a>
-  <a class="action" v-if="selectedElements.length > 1" @click="alignTop"><img :src="ICON_ALIGN_TOP"></a>
-  <a class="action" v-if="selectedElements.length > 1" @click="alignBottom"><img :src="ICON_ALIGN_BOTTOM"></a>
-  <a class="action" v-if="selectedElements.length > 1" @click="alignVerCenter"><img :src="ICON_ALIGN_VER_CENTER"></a>
-  <a class="action" v-if="selectedElements.length > 1" @click="alignHorCenter"><img :src="ICON_ALIGN_HOR_CENTER"></a>
-  <a class="action" v-if="selectedElements.length > 2" @click="alignAverVer"><img :src="ICON_ALGIN_AVER_VER"></a>
-  <a class="action" v-if="selectedElements.length > 2" @click="alignAverHor"><img :src="ICON_ALGIN_AVER_HOR"></a>
+  <a class="action" v-if="selectedElements.length > 1" @click="alignLeft"><icon-align-left /></a>
+  <a class="action" v-if="selectedElements.length > 1" @click="alignRight"><icon-align-right /></a>
+  <a class="action" v-if="selectedElements.length > 1" @click="alignTop"><icon-align-top /></a>
+  <a class="action" v-if="selectedElements.length > 1" @click="alignBottom"><icon-align-bottom /></a>
+  <a class="action" v-if="selectedElements.length > 1" @click="alignVerCenter"><icon-align-vertical /></a>
+  <a class="action" v-if="selectedElements.length > 1" @click="alignHorCenter"><icon-align-horizontal /></a>
+  <a class="action" v-if="selectedElements.length > 2" @click="alignAverVer"><icon-aver-ver /></a>
+  <a class="action" v-if="selectedElements.length > 2" @click="alignAverHor"><icon-aver-hor /></a>
 
   <!-- 右侧操作功能按钮-->
   <div class="pull-right">
-    <a class="action" v-if="!elementSelected && undoable" @click="$emit('undo')"><img :src="ICON_UNDO"></a>
-    <a class="action" v-if="!elementSelected && redoable" @click="$emit('redo')"><img :src="ICON_REDO"></a>
-    <a class="action" :class="paste? 'on': ''" v-if="focusedElement" @click="togglePaste"><img :src="ICON_BRUSH"></a>
-    <a class="action" v-if="selectedElements.length > 0" @click="copySelectedElement"><img :src="ICON_COPY"></a>
-    <a class="action" v-if="selectedElements.length > 1" @click="groupSelectedElement"><img :src="ICON_GROUPING"></a>
-    <a class="action on" v-if="focusedElement && focusedElement.elements && focusedElement.elements.length" @click="unGroupBlock"><img :src="ICON_GROUPING"></a>
+    <el-tooltip content="撤销">
+      <a class="action" v-if="!elementSelected && undoable" @click="$emit('undo')"><icon-undo /></a>
+    </el-tooltip>
+    <a class="action" v-if="!elementSelected && redoable" @click="$emit('redo')"><icon-redo /></a>
+    <el-tooltip class="item" effect="dark" content="格式刷" placement="bottom" v-if="focusedElement" >
+      <a class="action" :class="paste? 'on': ''" @click="togglePaste"><icon-brush /></a>
+    </el-tooltip>
+    <el-tooltip class="item" effect="dark" content="复制元素" placement="bottom" v-if="selectedElements.length > 0" >
+      <a class="action" @click="copySelectedElement"><icon-copy /></a>
+    </el-tooltip>
+    <el-tooltip class="item" effect="dark" content="建组" placement="bottom" v-if="selectedElements.length > 1" >
+      <a class="action" @click="groupSelectedElement"><icon-group /></a>
+    </el-tooltip>
+    <el-tooltip class="item" effect="dark" content="取消建组" placement="bottom" v-if="focusedElement && focusedElement.elements && focusedElement.elements.length" >
+      <a class="action on"  @click="unGroupBlock"><icon-group /></a>
+    </el-tooltip>
     <pop-more-action :element="focusedElement" :scene="scene" v-if="focusedElement" @reset="resetElementDragResize"/>
-    <a class="action" v-if="selectedElements.length" @click="removeSelectedElement"><img :src="ICON_TRASH"></a>
-    <a class="action" v-if="selectedElements.length" @click="lockSelectedElement"><img :src="ICON_LOCK"></a>
-    <a class="action" v-if="selectedLockedElements.length" @click="unLockSelectedElement"><img :src="ICON_UNLOCK"></a>
+    <el-tooltip class="item" effect="dark" content="删除" placement="bottom" v-if="selectedElements.length" >
+      <a class="action" @click="removeSelectedElement"><icon-trash /></a>
+    </el-tooltip>
+    <el-tooltip class="item" effect="dark" content="锁定" placement="bottom" v-if="selectedElements.length" >
+      <a class="action" @click="lockSelectedElement"><icon-lock /></a>
+    </el-tooltip>
+    <el-tooltip class="item" effect="dark" content="解锁" placement="bottom" v-if="selectedLockedElements.length" >
+      <a class="action"  @click="unLockSelectedElement"><icon-unlock /></a>
+    </el-tooltip>
 
     <a class="action" v-if="noFocusedElement" @click="previousScene"><i class="el-icon-arrow-up" /></a>
     <a class="action" v-if="noFocusedElement" @click="nextScene"><i class="el-icon-arrow-down" /></a>
@@ -69,23 +80,23 @@ import PopClipList from './PopClipList'
 import PopSetAnimation from './PopSetAnimation'
 import PopMoreAction from './PopMoreAction'
 import PopTransparent from './PopTransparent'
-import ICON_BRUSH from './res/brush.svg'
-import ICON_GROUPING from './res/group.svg'
-import ICON_COPY from './res/copy.svg'
-import ICON_TRASH from './res/trash.svg'
-import ICON_UNDO from './res/undo.svg'
-import ICON_REDO from './res/redo.svg'
-import ICON_ALIGN_LEFT from './res/align-left.svg'
-import ICON_ALIGN_RIGHT from './res/align-right.svg'
-import ICON_ALIGN_TOP from './res/align_top.svg'
-import ICON_ALIGN_BOTTOM from './res/align-bottom.svg'
-import ICON_ALIGN_CENTER from './res/align-center.svg'
-import ICON_ALIGN_VER_CENTER from './res/align-vertical.svg'
-import ICON_ALIGN_HOR_CENTER from './res/align-horizontal.svg'
-import ICON_ALGIN_AVER_HOR from './res/align-aver-h.svg'
-import ICON_ALGIN_AVER_VER from './res/align-aver-v.svg'
-import ICON_LOCK from './res/lock.svg'
-import ICON_UNLOCK from './res/unlock.svg'
+import IconBrush from './res/brush.svg'
+import IconGroup from './res/group.svg'
+import IconCopy from './res/copy.svg'
+import IconTrash from './res/trash.svg'
+import IconUndo from './res/undo.svg'
+import IconRedo from './res/redo.svg'
+import IconAlignLeft from './res/align-left.svg'
+import IconAlignRight from './res/align-right.svg'
+import IconAlignTop from './res/align_top.svg'
+import IconAlignBottom from './res/align-bottom.svg'
+import IconAlignCenter from './res/align-center.svg'
+import IconAlignVertical from './res/align-vertical.svg'
+import IconAlignHorizontal from './res/align-horizontal.svg'
+import IconAverHor from './res/align-aver-h.svg'
+import IconAverVer from './res/align-aver-v.svg'
+import IconLock from './res/lock.svg'
+import IconUnlock from './res/unlock.svg'
 
 import PopTransform from './PopTransform'
 import TextAlign from './TextAlign'
@@ -98,13 +109,28 @@ export default {
     FontSize,
     FontWeight,
     TextAlign,
-    PopTransform,
     PopTransparent,
+    PopTransform,
     PopMoreAction,
     PopSetAnimation,
-    PopClipList,
     ColorPopPicker,
     SettingPanel,
+    IconUndo,
+    IconBrush,
+    IconGroup,
+    IconCopy,
+    IconTrash,
+    IconRedo,
+    IconAlignLeft,
+    IconAlignRight,
+    IconAlignTop,
+    IconAlignBottom,
+    IconAlignVertical,
+    IconAlignHorizontal,
+    IconAverHor,
+    IconAverVer,
+    IconLock,
+    IconUnlock,
     [Tooltip.name]: Tooltip,
     [Select.name]: Select,
     [Option.name]: Option,
@@ -128,7 +154,8 @@ export default {
       type: Object
     },
     scale: {
-      type: Number
+      type: Number,
+      default: 1
     },
     undoable: {
       type: Boolean
@@ -139,23 +166,6 @@ export default {
   },
   data () {
     return {
-      ICON_TRASH,
-      ICON_BRUSH,
-      ICON_UNDO,
-      ICON_REDO,
-      ICON_GROUPING,
-      ICON_COPY,
-      ICON_ALIGN_LEFT,
-      ICON_ALIGN_RIGHT,
-      ICON_ALIGN_TOP,
-      ICON_ALIGN_BOTTOM,
-      ICON_ALIGN_CENTER,
-      ICON_ALIGN_VER_CENTER,
-      ICON_ALIGN_HOR_CENTER,
-      ICON_ALGIN_AVER_HOR,
-      ICON_ALGIN_AVER_VER,
-      ICON_LOCK,
-      ICON_UNLOCK
     }
   },
   computed: {
@@ -568,13 +578,18 @@ export default {
       font-size: 1.8rem;
       font-weight: bold;
     }
-    img {
+    img, svg {
       width: 18px;
       height: 28px;
       display: inline-block;
       vertical-align: top;
       &.wide {
         width: 26px;
+      }
+    }
+    svg {
+      path {
+        fill: #515151;
       }
     }
   }

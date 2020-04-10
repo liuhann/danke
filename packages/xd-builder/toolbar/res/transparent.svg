@@ -1,14 +1,5 @@
-<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
-        "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg t="1584926172786" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4117"
-     xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128">
-    <defs>
-        <style type="text/css"></style>
-    </defs>
-    <path d="M0 384a384 384 0 1 0 768 0 384 384 0 1 0-768 0z" fill="#515151" p-id="4118"
-          data-spm-anchor-id="a313x.7781069.0.i8" class="selected"></path>
-    <path d="M256 640a384 384 0 1 0 768 0 384 384 0 1 0-768 0z" fill="#FFFFFF" p-id="4119"></path>
-    <path d="M272.47 751.53a384 384 0 0 0 479.06-479.06 384 384 0 0 0-479.06 479.06z" fill="#dbdbdb" p-id="4120"></path>
-    <path d="M640 981.333a341.333 341.333 0 1 0 0-682.666 341.333 341.333 0 0 0 0 682.666z m0 42.667c-212.096 0-384-171.904-384-384s171.904-384 384-384 384 171.904 384 384-171.904 384-384 384z"
-          fill="#515151" p-id="4121" data-spm-anchor-id="a313x.7781069.0.i9" class="selected"></path>
+<?xml version="1.0" standalone="no"?>
+<svg t="1586486187800" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" width="128" height="128">
+    <path fill="#515151" d="M487.104 0L187.776 298.88A424.128 424.128 0 0 0 64 597.12c0 105.792 41.28 217.344 123.776 299.904a422.592 422.592 0 0 0 598.72 0 427.776 427.776 0 0 0 123.712-299.904 424.128 424.128 0 0 0-123.712-298.24L487.04 0zM169.792 616.448c0.512-105.792 32.768-173.248 93.056-232.96l224.256-229.056 224.256 231.424c60.288 59.968 92.544 124.8 93.056 230.592H169.792z"
+          ></path>
 </svg>

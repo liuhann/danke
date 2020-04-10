@@ -493,6 +493,7 @@ export default {
         id,
         x: 0,
         y: 0,
+        rotate: 10,
         width: 100,
         height: 100,
         props: {

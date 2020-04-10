@@ -20,10 +20,6 @@ export default {
     }
   },{
     id: 'scene-2',
-    style: {
-      // 直接指定背景样式
-      backgroundColor: '#00bf72',
-    },
     elements: [{
       id: 'element-32',
       name: '',
