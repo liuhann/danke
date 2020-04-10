@@ -64,12 +64,13 @@ export default {
           element.width = element.width * xRatio
           element.y = element.y * yRatio
           element.height = element.height * yRatio
-
-          let fonts = element.variables.filter(variable => variable.type === 'fontSize')
-          if (fonts.length) {
-            fonts.forEach(f => {
-              f.value = f.value * xRatio
-            })
+          if (element.variables) {
+            let fonts = element.variables.filter(variable => variable.type === 'fontSize')
+            if (fonts.length) {
+              fonts.forEach(f => {
+                f.value = f.value * xRatio
+              })
+            }
           }
         }
       }
