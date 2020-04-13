@@ -44,13 +44,13 @@
         <i class="el-icon-plus"></i>
       </a>
       <a class="action" @click="fitToCenter">
-        <img :src="ICON_FIT">
+        <icon-fit />
       </a>
       <a class="action" @click="toggleActionMove" :class="actionMove? 'on': ''">
-        <img :src="ICON_HAND">
+        <icon-hand />
       </a>
       <a class="action">
-        <img :src="ICON_LIST">
+        <icon-list />
       </a>
     </div>
   </div>
@@ -66,9 +66,9 @@ import { getSVGViewBox } from '../vectors/utils'
 import interactMixins from './mixins/interactMixins.js'
 import mouseMixins from './mixins/mousetrap.js'
 import { fitRectIntoBounds, getRectPositionStyle, isPointInRect, intersectRect } from './mixins/rectUtils.js'
-import ICON_HAND from './res/hand.svg'
-import ICON_FIT from './res/fit.svg'
-import ICON_LIST from './res/list.svg'
+import IconHand from './res/hand.svg'
+import IconFit from './res/fit.svg'
+import IconList from './res/list.svg'
 import textMesure from '../utils/textMesure'
 const WORKSPACE_PADDING = 20
 export default {
@@ -76,6 +76,9 @@ export default {
   mixins: [ interactMixins, mouseMixins ],
   components: {
     RenderElement,
+    IconHand,
+    IconFit,
+    IconList,
     [Slider.name]: Slider,
     [Button.name]: Button,
     [Popover.name]: Popover,
@@ -136,10 +139,7 @@ export default {
         width: 0,
         height: 0,
         visible: false
-      },
-      ICON_HAND,
-      ICON_FIT,
-      ICON_LIST
+      }
     }
   },
 
@@ -667,7 +667,7 @@ export default {
         vertical-align: text-bottom;
         font-weight: bold;
       }
-      img {
+      img, svg {
         width: 16px;
         height: 16px;
         display: inline-block;

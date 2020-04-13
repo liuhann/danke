@@ -13,18 +13,26 @@
       :value="item">
     </el-option>
   </el-select>
-  <a class="action" @click="increaseFontSize(variable)"><img :src="ICON_FONT_PLUS"></a>
-  <a class="action" @click="decreaseFontSize(variable)"><img :src="ICON_FONT_SMALL"></a>
+  <a class="action" @click="increaseFontSize(variable)">
+    <icon-font-plus />
+  </a>
+  <a class="action" @click="decreaseFontSize(variable)">
+    <icon-font-minus />
+  </a>
 </span>
 </template>
 
 <script>
 import toolbarPopMixin from './toolbarPopMixin'
-import ICON_FONT_PLUS from './res/font-big.svg'
-import ICON_FONT_SMALL from './res/font-small.svg'
+import IconFontPlus from './res/font-big.svg'
+import IconFontMinus from './res/font-small.svg'
 export default {
   name: 'FontSize',
   mixins: [toolbarPopMixin],
+  components: {
+    IconFontPlus,
+    IconFontMinus
+  },
   props: {
     variable: {
       type: Object
