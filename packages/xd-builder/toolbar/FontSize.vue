@@ -40,9 +40,7 @@ export default {
   },
   data () {
     return {
-      fontSizeOptions: [10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 36, 40, 48, 56, 64, 72, 80, 90],
-      ICON_FONT_PLUS,
-      ICON_FONT_SMALL
+      fontSizeOptions: [10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 36, 40, 48, 56, 64, 72, 80, 90]
     }
   },
   methods: {

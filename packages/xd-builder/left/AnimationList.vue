@@ -45,7 +45,7 @@
       </div>
       <div class="form-item">
         <div class="label">延迟递增</div>
-        <div class="field"><el-input-number v-model="delayInc" size="mini" controls-position="right" :step="20" /></div>
+        <div class="field"><el-input-number v-model="currentAnimation.inc" size="mini" controls-position="right" :step="20" /></div>
       </div>
     </div>
   </div>
@@ -123,7 +123,7 @@ export default {
       this.currentAnimation.name = ''
       setTimeout(() => {
         this.currentAnimation.name = replayStore
-      }, 300)
+      }, 200)
     },
 
     // 取消动画
@@ -133,9 +133,13 @@ export default {
     },
 
     choose(animation) {
-      this.currentAnimation = JSON.parse(JSON.stringify(animation))
-      this.currentAnimation.delay = 0
-      this.$emit('animation', animation)
+      const currentAnimation = JSON.parse(JSON.stringify(animation))
+      currentAnimation.stage = this.animationType
+      currentAnimation.delay = 0
+      currentAnimation.inc = 300
+
+      this.currentAnimation = currentAnimation
+      this.$emit('animation', this.currentAnimation)
     }
   }
 }

@@ -8,7 +8,7 @@
       <div class="scene" v-if="scene" :style="sceneStyle" :class="sceneClass">
          <render-element
             v-for="(element, index) of scene.elements"
-            stage="enters"
+            stage="enter"
             :element="element"
             :screen="screen"
             :view-port="screen"
@@ -18,7 +18,7 @@
       </div>
     </div>
     <!-- 元素被选中、移动、调整大小时的选中层 -->
-    <div class="mask" :style="styleMask" @drop.exact="elementDropped" @dragover="sceneDragOver" v-if="scene">
+    <div class="mask" :style="styleMask" @drop="elementDropped" @dragover="sceneDragOver" v-if="scene">
       <div
         v-for="selectee in scene.elements"
         :key="selectee.id"
@@ -378,8 +378,16 @@ export default {
       // 剪贴模式
       if (this.animation) {
         if (targetElement && !targetElement.locked) {
-
+          targetElement.animation[this.animation.stage] = [{
+            // css类名称
+            name: this.animation.name,
+            // 过渡函数，
+            timing: this.animation.timing,
+            // 时间区间 [0]为延迟，[1]为持续时间
+            range: [parseInt(this.animation.delay), parseInt(this.animation.duration)]
+          }]
         }
+        this.animation.delay += this.animation.inc
       } else if (this.paste) {
         if (targetElement && !targetElement.locked) {
           this.pasteStyleToTargetElement(targetElement)
@@ -456,8 +464,8 @@ export default {
       const element = JSON.parse(data)
       if (targetElement) {
         targetElement.hover = false
-        if (!targetElement.locked && element.maskable) {
-          // 复制拖拽样式到目标元素之上
+        if (!targetElement.locked && element.maskable && targetElement.url) {
+          // 对于图片，可以将形状覆盖上面形成遮罩
           Object.assign(targetElement.style, element.style)
           if (targetElement.variables) {
             targetElement.variables = targetElement.variables.concat(element.variables)
@@ -465,7 +473,8 @@ export default {
             this.$set(targetElement, 'variables', element.variables)
           }
         } else {
-          this.createNewElementFromTemplate(element, ev.offsetX, ev.offsetY)
+          // 获取偏移位置
+          this.createNewElementFromTemplate(element, ev.offsetX + targetElement.x, ev.offsetY + targetElement.y)
         }
       } else {
         this.createNewElementFromTemplate(element, ev.offsetX, ev.offsetY)
@@ -482,6 +491,7 @@ export default {
         height: 100,
         // 样式信息
         style: {},
+        variables: [],
         // 动效信息
         animation: {},
         // 其他属性，交互时使用
@@ -700,6 +710,7 @@ export default {
   }
   .node-mask {
     position: relative;
+    cursor: url("data:image/svg+xml,%3Csvg class='icon' viewBox='0 0 1024 1024' xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath fill='%23515151' d='M746.667 341.333v85.334A42.667 42.667 0 0 1 704 469.333H149.333a42.667 42.667 0 0 1-42.666-42.666v-256A42.667 42.667 0 0 1 149.333 128H704a42.667 42.667 0 0 1 42.667 42.667V256H896a21.333 21.333 0 0 1 21.333 21.333v322.603a21.333 21.333 0 0 1-18.56 21.163l-472.106 61.568V896a21.333 21.333 0 0 1-21.334 21.333h-42.666A21.333 21.333 0 0 1 341.333 896V630.485a21.333 21.333 0 0 1 18.56-21.162L832 547.755V341.333h-85.333zM192 213.333V384h469.333V213.333H192z'/%3E%3C/svg%3E"), auto;
     &.not-selected {
       border: 1px solid transparent;
       >div {
