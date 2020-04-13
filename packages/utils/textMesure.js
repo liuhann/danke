@@ -3,8 +3,8 @@ export default function (text, fontSize, fontWeight) {
   if (!test) {
     test = document.createElement("div")
     test.id = "textMesure"
-    text.style.posiiton = 'absolute'
-    text.style.visibility = 'hidden'
+    test.style.position = 'absolute'
+    test.style.visibility = 'hidden'
     test.style.width = 'auto'
     test.style.height = 'auto'
     test.style.whiteSpace = 'nowrap'

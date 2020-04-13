@@ -104,8 +104,8 @@ export default {
     elementStyle () {
       // 设置元素的长、宽到默认变量--width 、 --height
       const style = {
-        ['--width']: this.element.width + 'px',
-        ['--height']: this.element.height + 'px'
+        '--width': this.element.width + 'px',
+        '--height': this.element.height + 'px'
       }
       assignVariables(style, this.element.variables)
       Object.assign(style, getRectPositionStyle(this.element, this.screen, this.viewPort))
