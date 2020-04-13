@@ -2,15 +2,13 @@
 <div class="left-text-template">
   <div class="hint">拖拽文字到设计区</div>
   <div class="basic">
-    <div class="title-1" draggable @dragstart="dragStart(fontTemplates[0], $event)" @dragend="dragEnd">添加标题</div>
-    <div class="subtitle-1" draggable @dragstart="dragStart(fontTemplates[2], $event)" @dragend="dragEnd">添加标题描述</div>
-    <div class="title-2" draggable @dragstart="dragStart(fontTemplates[1], $event)" @dragend="dragEnd">添加子标题</div>
-    <div class="subtitle-2" draggable @dragstart="dragStart(fontTemplates[3], $event)" @dragend="dragEnd">添加子描述</div>
-    <div class="content" draggable @dragstart="dragStart(fontTemplates[4], $event)" @dragend="dragEnd">添加正文</div>
+    <div v-for="(template, index) in fontTemplates" :style="fontStyle(template)" draggable :key="index" @dragstart="dragStart(template, $event)" @dragend="dragEnd">{{template.text}}</div>
   </div>
 </div>
 </template>
 <script>
+
+import { assignVariables } from '../mixins/renderUtils'
 
 const fontStyles = {
   fontSize: 'var(--fontSize)',
@@ -63,7 +61,7 @@ const fontTemplates = [{
   style: fontStyles,
   variables: [{
     name: 'fontSize',
-    value: 14,
+    value: 24,
     type: 'fontSize'
   }, {
     name: 'color',
@@ -93,6 +91,15 @@ export default {
       // stringify image info as text
       ev.dataTransfer.setData('Text', JSON.stringify(element))
       this.dragging = true
+    },
+
+    fontStyle (template) {
+      const style = {}
+      Object.assign(style, template.style)
+      assignVariables(style, template.variables)
+      style.color = '#fff'
+      style.textAlign = 'left'
+      return style
     },
 
     dragEnd () {

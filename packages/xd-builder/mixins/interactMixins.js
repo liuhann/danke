@@ -40,12 +40,14 @@ export default {
      * 重设元素是否允许缩放、移动
      * @param node
      */
-    resetElementDragResize (node) {
-      const el = document.getElementById('mask-' + node.id)
-      if (el) {
-        const interactee = interact(el)
-        interactee.resizable(node.props.resizable)
-        interactee.draggable(node.props.movable)
+    setElementLocked (node, locked) {
+      if (locked) {
+        const el = document.getElementById('mask-' + node.id)
+        if (el) {
+          interact(el).unset()
+        }
+      } else {
+        this.initElementDragResize(node)
       }
     },
 
@@ -82,47 +84,47 @@ export default {
       const el = document.getElementById('mask-' + node.id)
       if (el) {
         const interactee = interact(el)
-        interactee.resizable({
-          // edges: { left: true, right: true, bottom: true, top: true },
-          edges: {
-            left: '.resize-l',
-            right: '.resize-r',
-            bottom: '.resize-b',
-            top: '.resize-t'
-          },
-          inertia: true,
-          enabled: node.props.resizable,
-          preserveAspectRatio: node.isRatioFixed
-        }).on('resizemove', event => {
-          const target = {
-            width: event.rect.width / this.scale,
-            height: event.rect.height / this.scale,
-            x: node.x + event.deltaRect.left / this.scale,
-            y: node.y + event.deltaRect.top / this.scale
-          }
-          if (node.elements && node.elements.length) {
-            this.resizeBlockElements(node, target)
-          }
-          Object.assign(node, target)
-        }).on('resizeend', event => {
-          this.$emit('change')
-        })
-
-        interactee.draggable({
-          inertia: true,
-          enabled: node.props.movable,
-          onmove: event => {
-            for (let element of this.scene.elements) {
-              if (element.selected && element.props.movable) {
-                element.x += event.dx / this.scale
-                element.y += event.dy / this.scale
-              }
+        if (!interactee.resizable().enabled) {
+          interactee.resizable({
+            edges: {
+              left: '.resize-l',
+              right: '.resize-r',
+              bottom: '.resize-b',
+              top: '.resize-t'
+            },
+            inertia: true,
+            preserveAspectRatio: node.isRatioFixed
+          }).on('resizemove', event => {
+            const target = {
+              width: event.rect.width / this.scale,
+              height: event.rect.height / this.scale,
+              x: node.x + event.deltaRect.left / this.scale,
+              y: node.y + event.deltaRect.top / this.scale
             }
-          },
-          onend: event => {
+            if (node.elements && node.elements.length) {
+              this.resizeBlockElements(node, target)
+            }
+            Object.assign(node, target)
+          }).on('resizeend', event => {
             this.$emit('change')
-          }
-        })
+          })
+        }
+        if (!interactee.draggable().enabled) {
+          interactee.draggable({
+            inertia: true,
+            onmove: event => {
+              for (let element of this.scene.elements) {
+                if (element.selected && !element.locked) {
+                  element.x += event.dx / this.scale
+                  element.y += event.dy / this.scale
+                }
+              }
+            },
+            onend: event => {
+              this.$emit('change')
+            }
+          })
+        }
       }
     }
   }

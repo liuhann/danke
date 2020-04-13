@@ -47,7 +47,7 @@
     <el-tooltip class="item" effect="dark" content="取消建组" placement="bottom" v-if="focusedElement && focusedElement.elements && focusedElement.elements.length" >
       <a class="action on"  @click="unGroupBlock"><icon-group /></a>
     </el-tooltip>
-    <pop-more-action :element="focusedElement" :scene="scene" v-if="focusedElement" @reset="resetElementDragResize"/>
+    <pop-more-action :element="focusedElement" :scene="scene" v-if="focusedElement" @reset="setElementLocked"/>
     <el-tooltip class="item" effect="dark" content="删除" placement="bottom" v-if="selectedElements.length" >
       <a class="action" @click="removeSelectedElement"><icon-trash /></a>
     </el-tooltip>
@@ -331,9 +331,7 @@ export default {
      */
     lockSelectedElement () {
       for (let element of this.selectedElements) {
-        element.props.resizable = false
-        element.props.movable = false
-        this.resetElementDragResize(element)
+        this.setElementLocked(element, true)
         this.$set(element, 'locked', true)
       }
       this.$emit('change')
@@ -341,9 +339,7 @@ export default {
 
     unLockSelectedElement () {
       for (let element of this.selectedLockedElements) {
-        element.props.resizable = true
-        element.props.draggable = true
-        this.resetElementDragResize(element)
+        this.setElementLocked(element, false)
         this.$set(element, 'locked', false)
       }
       this.$emit('change')

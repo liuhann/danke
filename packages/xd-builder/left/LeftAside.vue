@@ -53,7 +53,7 @@
     </transition>
     <transition name="fade">
       <keep-alive>
-        <animation-list v-if="current === 'animation'" @animation=""/>
+        <animation-list v-if="current === 'animation'" @animation="insertAnimation"/>
       </keep-alive>
     </transition>
   </div>
@@ -104,6 +104,10 @@ export default {
     // 增加新的场景
     insertNewScene (scene) {
       this.$emit('insert', 'scene', scene)
+    },
+
+    insertAnimation (animation) {
+      this.$emit('insert', 'animation', animation)
     }
   }
 }

@@ -18,7 +18,7 @@
       </div>
     </div>
     <!-- 元素被选中、移动、调整大小时的选中层 -->
-    <div class="mask" :style="styleMask" @drop="elementDropped" @dragover="sceneDragOver" v-if="scene">
+    <div class="mask" :style="styleMask" @drop.exact="elementDropped" @dragover="sceneDragOver" v-if="scene">
       <div
         v-for="selectee in scene.elements"
         :key="selectee.id"
@@ -27,7 +27,7 @@
         @dblclick="maskDblClick(selectee)"
         :class="getMaskClass(selectee)"
         :style="getMaskStyle(selectee)">
-        <template v-if="selectee.props && selectee.props.resizable">
+        <template v-if="!selectee.locked">
           <div class="lt resize-l resize-t"/><div class="rt resize-r resize-t"/><div class="t resize-t"/><div class="l resize-l"/><div class="lb resize-l resize-b"/><div class="rb resize-b resize-r"/><div class="r resize-r"/><div class="b resize-b"/>
         </template>
       </div>
@@ -69,6 +69,7 @@ import { fitRectIntoBounds, getRectPositionStyle, isPointInRect, intersectRect }
 import ICON_HAND from './res/hand.svg'
 import ICON_FIT from './res/fit.svg'
 import ICON_LIST from './res/list.svg'
+import textMesure from '../utils/textMesure'
 const WORKSPACE_PADDING = 20
 export default {
   name: 'SceneContainer',
@@ -97,6 +98,10 @@ export default {
     },
     // 格式刷模式
     paste: {
+      type: Object
+    },
+    // 刷入的样式名称
+    animation: {
       type: Object
     }
   },
@@ -132,10 +137,6 @@ export default {
         height: 0,
         visible: false
       },
-      // 正在编辑的选项
-      currentAddon: null,
-      // 当前正编辑的边框信息
-      currentAddonObject: null,
       ICON_HAND,
       ICON_FIT,
       ICON_LIST
@@ -159,6 +160,12 @@ export default {
       deep: true,
       handler () {
         this.fitToCenter()
+      }
+    },
+    'animation': function (newVal, oldVal) {
+      // 选择动效时 清除选定状态
+      if (oldVal == null && newVal != null) {
+        this.setElementSelected(null)
       }
     }
   },
@@ -447,68 +454,59 @@ export default {
       const targetElement = this.getEventToElement(ev)
       const data = ev.dataTransfer.getData('Text')
       const element = JSON.parse(data)
-      if (targetElement && !targetElement.locked && element.maskable) {
-        Object.assign(targetElement.style, element.style)
-        if (targetElement.variables) {
-          targetElement.variables = targetElement.variables.concat(element.variables)
-        } else {
-          this.$set(targetElement, 'variables', element.variables)
-        }
+      if (targetElement) {
         targetElement.hover = false
-      } else {
-        // 新增空白节点
-        const node = this.createElement()
-        node.name = element.name || ('节点' + this.scene.elements.length + 1)
-        Object.assign(node, element)
-
-        // svg 图片处理 content -> svg
-        if (element.content) {
-          const vb = getSVGViewBox(element.content)
-          if (vb) {
-            node.width = vb.width
-            node.height = vb.height
+        if (!targetElement.locked && element.maskable) {
+          // 复制拖拽样式到目标元素之上
+          Object.assign(targetElement.style, element.style)
+          if (targetElement.variables) {
+            targetElement.variables = targetElement.variables.concat(element.variables)
+          } else {
+            this.$set(targetElement, 'variables', element.variables)
           }
-          node.svg = element._id
+        } else {
+          this.createNewElementFromTemplate(element, ev.offsetX, ev.offsetY)
         }
-        // 获取元素自适应到整个画面的高度和宽度 避免扩大超出
-        Object.assign(node, fitRectIntoBounds(node, this.screen))
-
-        node.x = ev.offsetX - node.width / 2
-        node.y = ev.offsetY - node.height / 2
-        // 自动适应到屏幕内部 避免溢出
-        node.x = (node.x < 0) ? 0 : node.x
-        node.y = (node.y < 0) ? 0 : node.y
-        this.scene.elements.push(node)
-        this.setElementSelected(node)
-        this.$emit('change')
-        this.$nextTick(() => {
-          this.initElementDragResize(node)
-        })
+      } else {
+        this.createNewElementFromTemplate(element, ev.offsetX, ev.offsetY)
       }
     },
 
-    /**
-     * 增加一个节点
-     */
-    createElement () {
+    createNewElementFromTemplate (element, x, y) {
       const id = shortid()
       // 此处设置节点的基本属性
       const node = {
         id,
-        x: 0,
-        y: 0,
-        rotate: 10,
+        name: element.name || ('节点' + this.scene.elements.length + 1),
         width: 100,
         height: 100,
-        props: {
-          resizable: true,
-          movable: true
-        },
+        // 样式信息
         style: {},
+        // 动效信息
         animation: {},
+        // 其他属性，交互时使用
+        locked: false,
         selected: false
       }
-      return node
+      Object.assign(node, element)
+      // 设置文字的自适应大小
+      if (element.text) {
+        Object.assign(node, textMesure(element.text, element.variables.filter(variable => variable.type === 'fontSize')[0].value))
+      }
+      // 获取元素自适应到整个画面的高度和宽度 避免扩大超出
+      Object.assign(node, fitRectIntoBounds(node, this.screen))
+
+      node.x = x - node.width / 2
+      node.y = y - node.height / 2
+      // 自动适应到屏幕内部 避免溢出
+      node.x = (node.x < 0) ? 0 : node.x
+      node.y = (node.y < 0) ? 0 : node.y
+      this.scene.elements.push(node)
+      this.setElementSelected(node)
+      this.$emit('change')
+      this.$nextTick(() => {
+        this.initElementDragResize(node)
+      })
     },
 
     /**
@@ -527,6 +525,7 @@ export default {
     setElementSelected (element) {
       for (let e of this.scene.elements) {
         e.selected = false
+        // 编辑状态时，如果被编辑元素被选中，则不改变编辑状态
         if (element !== e && e.editing) {
           e.editing = false
         }

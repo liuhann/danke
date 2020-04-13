@@ -93,6 +93,8 @@ export default {
             this.addScene()
           }
           break;
+        case 'animation':
+          this.currentAnimation = object
         default:
       }
     },

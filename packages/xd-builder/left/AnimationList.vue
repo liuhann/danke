@@ -17,7 +17,7 @@
   </div>
   <pagination :total="total" :page-size="pageSize" @current-change="loadMoreAnimation" :current-page.sync="page" :pager-count="5" layout="prev, pager, next" />
   <div class="animation-choosed" v-if="currentAnimation">
-    <div v-if="currentAnimation.tags.indexOf('text') === -1" class="animation-title">点击元素应用动画</div>
+    <div class="animation-title"><i class="el-icon-arrow-left" @click="closeAnimation" /> <span>应用动画</span></div>
     <div class="preview-box">
       <img :src="CLOUD_HILL" :class="currentAnimation.name"/>
       <div class="refresh"><i @click="refreshCurrent" class="el-icon-refresh-right" /></div>
@@ -119,12 +119,17 @@ export default {
     },
 
     refreshCurrent () {
-      debugger
       const replayStore = this.currentAnimation.name
       this.currentAnimation.name = ''
       setTimeout(() => {
         this.currentAnimation.name = replayStore
       }, 300)
+    },
+
+    // 取消动画
+    closeAnimation () {
+      this.currentAnimation = null
+      this.$emit('animation', null)
     },
 
     choose(animation) {
@@ -236,8 +241,20 @@ export default {
     background-color: #fff;
     z-index: 999;
     .animation-title {
-      padding: 16px;
-      font-size: 14px;
+      font-size: 16px;
+      i {
+        border-right: 1px solid #efefef;
+        padding: 12px;
+        font-size: 16px;
+        cursor: pointer;
+        &:hover {
+          color: #00c4cc;
+        }
+      }
+      span {
+        padding: 12px;
+        display: inline-block;
+      }
     }
     .preview-box {
       perspective: 200px;
@@ -251,7 +268,7 @@ export default {
         position: absolute;
         right: 10px;
         top: 10px;
-        font-size: 24px;
+        font-size: 16px;
         cursor: pointer;
         &:hover {
           color: #00c4cc;

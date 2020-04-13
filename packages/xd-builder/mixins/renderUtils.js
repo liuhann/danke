@@ -1,3 +1,8 @@
+/**
+ * 设置样式变量具体值
+ * @param style
+ * @param variables
+ */
 export function assignVariables (style, variables) {
   if (variables && variables.length) {
     for (let variable of variables) {

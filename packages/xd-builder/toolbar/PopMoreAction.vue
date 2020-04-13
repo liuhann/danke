@@ -9,11 +9,11 @@
   </el-tooltip>
   <el-form label-width="70px" size="mini" class="more-action-form">
     <el-form-item label="宽高">
-      <el-input-number v-model="element.width" :disabled="!element.props.resizable" controls-position="right" size="mini"/>-<el-input-number v-model="element.height" :disabled="!element.props.resizable" controls-position="right" size="mini" />
+      <el-input-number v-model="element.width" controls-position="right" size="mini"/>-<el-input-number v-model="element.height" controls-position="right" size="mini" />
 <!--      <el-checkbox v-model="element.props.resizable" @change="reInitElementDragResize" />-->
     </el-form-item>
     <el-form-item label="坐标">
-      <el-input-number v-model="element.x" :disabled="!element.props.movable" controls-position="right" size="mini"/>-<el-input-number v-model="element.y" :disabled="!element.props.movable" controls-position="right" size="mini" />
+      <el-input-number v-model="element.x" controls-position="right" size="mini"/>-<el-input-number v-model="element.y" controls-position="right" size="mini" />
 <!--      <el-checkbox v-model="element.props.movable" @change="reInitElementDragResize" />-->
     </el-form-item>
     <el-form-item label="显示次序">
