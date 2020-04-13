@@ -21,18 +21,7 @@
   <pop-transform v-if="focusedElement" :element="focusedElement"/>
 <!--  <pop-clip-list v-if="focusedElement && focusedElement.style && focusedElement.style.clipPath != null" @input="setElementClipPath"/>-->
   <pop-transparent :element="focusedElement" v-if="focusedElement"/>
-
-  <!-- 多选的对齐、平均分布功能-->
-  <a class="action" v-if="selectedElements.length > 1" @click="alignLeft"><icon-align-left /></a>
-  <a class="action" v-if="selectedElements.length > 1" @click="alignRight"><icon-align-right /></a>
-  <a class="action" v-if="selectedElements.length > 1" @click="alignTop"><icon-align-top /></a>
-  <a class="action" v-if="selectedElements.length > 1" @click="alignBottom"><icon-align-bottom /></a>
-  <a class="action" v-if="selectedElements.length > 1" @click="alignVerCenter"><icon-align-vertical /></a>
-  <a class="action" v-if="selectedElements.length > 1" @click="alignHorCenter"><icon-align-horizontal /></a>
-  <a class="action" v-if="selectedElements.length > 2" @click="alignAverVer"><icon-aver-ver /></a>
-  <a class="action" v-if="selectedElements.length > 2" @click="alignAverHor"><icon-aver-hor /></a>
-
-
+  <align-element v-if="selectedElements.length > 1" :elements="selectedElements"/>
   <!-- 右侧操作功能按钮-->
   <div class="pull-right">
     <el-tooltip content="撤销" v-if="!elementSelected && undoable" >
@@ -92,15 +81,6 @@ import IconCopy from './res/copy.svg'
 import IconTrash from './res/trash.svg'
 import IconUndo from './res/undo.svg'
 import IconRedo from './res/redo.svg'
-import IconAlignLeft from './res/align-left.svg'
-import IconAlignRight from './res/align-right.svg'
-import IconAlignTop from './res/align_top.svg'
-import IconAlignBottom from './res/align-bottom.svg'
-import IconAlignCenter from './res/align-center.svg'
-import IconAlignVertical from './res/align-vertical.svg'
-import IconAlignHorizontal from './res/align-horizontal.svg'
-import IconAverHor from './res/align-aver-h.svg'
-import IconAverVer from './res/align-aver-v.svg'
 import IconLock from './res/lock.svg'
 import IconUnlock from './res/unlock.svg'
 import IconClean from './res/clean.svg'
@@ -108,10 +88,12 @@ import PopTransform from './PopTransform'
 import TextAlign from './TextAlign'
 import FontWeight from './FontWeight'
 import FontSize from './FontSize'
+import AlignElement from './AlignElement.vue'
 export default {
   name: 'Toolbar',
   mixins: [ interactMixins ],
   components: {
+    AlignElement,
     FontSize,
     FontWeight,
     TextAlign,
@@ -126,14 +108,6 @@ export default {
     IconCopy,
     IconTrash,
     IconRedo,
-    IconAlignLeft,
-    IconAlignRight,
-    IconAlignTop,
-    IconAlignBottom,
-    IconAlignVertical,
-    IconAlignHorizontal,
-    IconAverHor,
-    IconAverVer,
     IconLock,
     IconUnlock,
     IconClean,
@@ -432,102 +406,6 @@ export default {
             this.initElementDragResize(element)
           }
         })
-      }
-    },
-    alignLeft () {
-      let leftPos = null
-      for (let element of this.selectedElements) {
-        if (leftPos === null) {
-          leftPos = element.x
-        } else {
-          element.x = leftPos
-        }
-      }
-    },
-    alignRight () {
-      let rightPos = null
-      for (let element of this.selectedElements) {
-        if (rightPos === null) {
-          rightPos = element.x + element.width
-        } else {
-          element.x = rightPos - element.width
-        }
-      }
-    },
-    alignTop () {
-      let topPos = null
-      for (let element of this.selectedElements) {
-        if (topPos === null) {
-          topPos = element.y
-        } else {
-          element.y = topPos
-        }
-      }
-    },
-
-    alignHorCenter () {
-      let center = null
-      for (let element of this.selectedElements) {
-        if (center === null) {
-          center = element.x + element.width / 2
-        } else {
-          element.x = center - element.width / 2
-        }
-      }
-    },
-
-    // 竖向平分
-    alignAverHor () {
-      const dup = []
-      for (let element of this.selectedElements) {
-        dup.push(element)
-      }
-
-      dup.sort((a, b) => a.x - b.x)
-      const min = dup[0].x
-      const max = dup[dup.length -1].x
-
-      for (let i = 0; i < dup.length; i++) {
-        dup[i].x = min + i * (max - min) / (dup.length - 1)
-      }
-    },
-
-    // 橫向平分
-    alignAverVer () {
-      const dup = []
-      for (let element of this.selectedElements) {
-        dup.push(element)
-      }
-
-      dup.sort((a, b) => a.y - b.y)
-      const min = dup[0].y
-      const max = dup[dup.length -1].y
-
-      for (let i = 0; i < dup.length; i++) {
-        dup[i].y = min + i * (max - min) / (dup.length - 1)
-      }
-    },
-
-    // 橫向居中
-    alignVerCenter () {
-      let center = null
-      for (let element of this.selectedElements) {
-        if (center === null) {
-          center = element.y + element.height / 2
-        } else {
-          element.y = center - element.height / 2
-        }
-      }
-    },
-
-    alignBottom () {
-      let bottomPos = null
-      for (let element of this.selectedElements) {
-        if (bottomPos === null) {
-          bottomPos = element.y + element.height
-        } else {
-          element.y = bottomPos - element.height
-        }
       }
     },
 
