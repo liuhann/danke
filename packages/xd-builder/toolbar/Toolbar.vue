@@ -1,5 +1,8 @@
 <template>
 <div id="tool-bar">
+  <el-tooltip content="清除动画及遮罩" v-if="cleanable">
+    <a class="action" @click="cleanElement"><icon-clean /></a>
+  </el-tooltip>
   <!--  样式变量的修改-->
   <template v-for="(variable, index) in elementStyleVariables">
     <!-- 颜色-->
@@ -29,12 +32,15 @@
   <a class="action" v-if="selectedElements.length > 2" @click="alignAverVer"><icon-aver-ver /></a>
   <a class="action" v-if="selectedElements.length > 2" @click="alignAverHor"><icon-aver-hor /></a>
 
+
   <!-- 右侧操作功能按钮-->
   <div class="pull-right">
-    <el-tooltip content="撤销">
-      <a class="action" v-if="!elementSelected && undoable" @click="$emit('undo')"><icon-undo /></a>
+    <el-tooltip content="撤销" v-if="!elementSelected && undoable" >
+      <a class="action" @click="$emit('undo')"><icon-undo /></a>
     </el-tooltip>
-    <a class="action" v-if="!elementSelected && redoable" @click="$emit('redo')"><icon-redo /></a>
+    <el-tooltip content="重做" v-if="!elementSelected && redoable" >
+      <a class="action" @click="$emit('redo')"><icon-redo /></a>
+    </el-tooltip>
     <el-tooltip class="item" effect="dark" content="格式刷" placement="bottom" v-if="focusedElement" >
       <a class="action" :class="paste? 'on': ''" @click="togglePaste"><icon-brush /></a>
     </el-tooltip>
@@ -97,7 +103,7 @@ import IconAverHor from './res/align-aver-h.svg'
 import IconAverVer from './res/align-aver-v.svg'
 import IconLock from './res/lock.svg'
 import IconUnlock from './res/unlock.svg'
-
+import IconClean from './res/clean.svg'
 import PopTransform from './PopTransform'
 import TextAlign from './TextAlign'
 import FontWeight from './FontWeight'
@@ -130,6 +136,7 @@ export default {
     IconAverVer,
     IconLock,
     IconUnlock,
+    IconClean,
     [Tooltip.name]: Tooltip,
     [Select.name]: Select,
     [Option.name]: Option,
@@ -184,6 +191,14 @@ export default {
     },
     focusedFont () {
       return this.focusedElement &&  this.focusedElement.text != null
+    },
+
+    cleanable () {
+      if (this.focusedElement) {
+        return Object.entries(this.focusedElement.animation).length || this.focusedElement.style.clipPath
+      } else {
+        return false
+      }
     },
 
     elementStyleVariables () {
@@ -514,6 +529,14 @@ export default {
           element.y = bottomPos - element.height
         }
       }
+    },
+
+    cleanElement () {
+      this.$set(this.focusedElement.animation, 'enter', null)
+      this.$set(this.focusedElement.animation, 'exist', null)
+      delete this.focusedElement.animation.enter
+      delete this.focusedElement.animation.exist
+      delete this.focusedElement.style.clipPath
     },
     log () {
       console.log(this.selectedElements, this.scene, this.work)
