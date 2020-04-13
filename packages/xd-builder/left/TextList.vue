@@ -14,12 +14,17 @@ const fontStyles = {
   fontSize: 'var(--fontSize)',
   color: 'var(--color)',
   textAlign: 'var(--textAlign)',
+  fontFamily: 'var(--fontFamily)',
   fontWeight: 'var(--fontWeight)'
 }
 const fontTemplates = [{
   text: '添加标题',
   style: fontStyles,
   variables: [{
+    name: 'fontFamily',
+    value: '微软雅黑',
+    type: 'fontFamily'
+  }, {
     name: 'fontSize',
     value: 48,
     type: 'fontSize'
@@ -40,6 +45,10 @@ const fontTemplates = [{
   text: '添加子标题',
   style: fontStyles,
   variables: [{
+    name: 'fontFamily',
+    value: '微软雅黑',
+    type: 'fontFamily'
+  }, {
     name: 'fontSize',
     value: 36,
     type: 'fontSize'
@@ -60,6 +69,10 @@ const fontTemplates = [{
   text: '添加正文',
   style: fontStyles,
   variables: [{
+    name: 'fontFamily',
+    value: '微软雅黑',
+    type: 'fontFamily'
+  }, {
     name: 'fontSize',
     value: 24,
     type: 'fontSize'

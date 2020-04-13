@@ -32,7 +32,6 @@
 import toolbarPopMixin from './toolbarPopMixin'
 import interactMixins from '../mixins/interactMixins'
 import IconLayer from './res/size.svg'
-import ICON_LAYER_UP from './res/layer-up.svg'
 
 export default {
   name: 'PopMoreAction',
@@ -42,8 +41,6 @@ export default {
   },
   data () {
     return {
-      ICON_SIZE,
-      ICON_LAYER_UP
     }
   },
   computed: { },

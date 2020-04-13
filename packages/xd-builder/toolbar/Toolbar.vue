@@ -11,6 +11,8 @@
     <el-input-number :key="index" v-if="variable.type==='px' || variable.type==='number' || variable.type==='percent'" v-model="variable.value" controls-position="right" size="mini"/>
     <!--字体大小-->
     <font-size :key="index" v-if="variable.type==='fontSize'" :variable="variable" />
+
+    <font-family :key="index" v-if="variable.type === 'fontFamily'" :variable="variable"></font-family>
     <!-- 字体对齐-->
     <text-align :key="index" v-if="variable.type==='textAlign'" v-model="variable.value"/>
     <!-- 字体粗细-->
@@ -89,13 +91,16 @@ import TextAlign from './TextAlign'
 import FontWeight from './FontWeight'
 import FontSize from './FontSize'
 import AlignElement from './AlignElement.vue'
+import FontFamily from './FontFamily.vue'
 export default {
   name: 'Toolbar',
   mixins: [ interactMixins ],
   components: {
+    FontFamily,
     AlignElement,
     FontSize,
     FontWeight,
+    FontFamily,
     TextAlign,
     PopTransparent,
     PopTransform,
@@ -449,6 +454,7 @@ export default {
   .el-select {
     border: none;
     width: 64px;
+    margin-right: 5px;
   }
   .el-input-number--mini {
     width: 60px;

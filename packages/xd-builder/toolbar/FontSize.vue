@@ -5,7 +5,7 @@
     size="mini"
     filterable
     allow-create
-    placeholder="字体">
+    placeholder="字号">
     <el-option
       v-for="item in fontSizeOptions"
       :key="item"

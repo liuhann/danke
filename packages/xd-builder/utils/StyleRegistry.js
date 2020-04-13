@@ -53,12 +53,34 @@ function addAnimation (sheet, animation) {
   sheet.insertRule(rule, pos)
 }
 
+function addFontFace(sheet, url, id) {
+  let pos = sheet.length
+  sheet.insertRule(`@font-face {
+    font-family: ${id};
+    src: url('${url}');
+  }`, pos)
+}
+
+export const fontFamilies = [{
+  id: '微软雅黑',
+  name: '系统字体',
+}, {
+  id: 'HYLeMiaoTiJ',
+  name: '汉仪乐喵体简',
+  url: 'https://font-public.canva.cn/YAC1IZZZHQU/0/HYLeMiaoTiJ.woff'
+}, {
+  id: 'HYZiYanHuanLeSongW',
+  name: '汉仪字研欢乐宋',
+  url: 'https://font-public.canva.cn/YAC1EHq8QNU/0/HYZiYanHuanLeSongW.woff'
+}]
+
 export default class StyleRegistry {
   constructor () {
     this.sheet = createSheet('style-registry')
     this.styles = {}
     this.keyframes = {}
     this.svgs = {}
+    this.fonts = {}
   }
 
   /**
@@ -71,6 +93,16 @@ export default class StyleRegistry {
 
   getVector (id) {
     return this.svgs[id]
+  }
+
+  addFontFace (fontface) {
+    let font = fontface
+    if (typeof font === 'string') {
+      font = fontFamilies.filter(f => f.id === fontface)[0]
+    }
+    if (!this.fonts[font.id]) {
+      addFontFace(this.sheet, font.url, font.id)
+    }
   }
 
   /**
@@ -142,23 +174,12 @@ export default class StyleRegistry {
     const frames = {} // css 帧资源
     const styles = {} // css 样式资源
     const svgs = {}
+    const fonts = new Set()
     for (let scene of work.scenes) {
       if (!scene.animation) {
         scene.animation = {}
       }
-      for (let key in scene.style) {
-        // 抽取class类型name
-        if (scene.style[key].name) {
-          styles[key] = this.styles[scene.style[key].name]
-        }
-      }
       for (let element of scene.elements) {
-        for (let key in element.style) {
-          // 抽取class类型name
-          if (element.style[key].name) {
-            styles[key] = this.styles[element.style[key].name]
-          }
-        }
         // element.animation.enters = [{name: 'fade-in'}]
         // element.animation.exists = [{name: 'fade-out'}]
         for (let key in element.animation) {
@@ -169,12 +190,18 @@ export default class StyleRegistry {
         if (element.svg) {
           svgs[element.svg] = this.svgs[element.svg]
         }
+        element.variables.forEach(variable => {
+          if (variable.type === 'fontFamily') {
+            fonts.add(variable.value)
+          }
+        })
       }
     }
     return {
       frames,
       styles,
-      svgs
+      svgs,
+      fonts: Array.from(fonts)
     }
   }
 
@@ -193,6 +220,9 @@ export default class StyleRegistry {
         name,
         cssContent: work.styles[name]
       })
+    }
+    for (let font of work.fonts) {
+      this.addFontFace(font)
     }
     if (work.svgs) {
       for (let name in work.svgs) {
