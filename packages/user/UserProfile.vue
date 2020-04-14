@@ -19,6 +19,7 @@
     </fieldset>
     <fieldset>
       <button type="submit">保存</button>
+      <button type="button" class="danger" @click="logout">退出登录</button>
     </fieldset>
   </form>
 </div>
@@ -60,6 +61,12 @@ export default {
       this.ctx.user = user
       this.user = user
     },
+
+    async logout () {
+      await this.ctx.userdao.logout()
+      this.$route.replace('/')
+    },
+
     async updateUserProfile () {
       await this.ctx.userdao.setUserProfile({
         email: this.user.email,

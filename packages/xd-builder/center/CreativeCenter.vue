@@ -160,6 +160,9 @@ export default {
     &:hover {
       background-color: var(--mainColorHover);
     }
+    &.danger {
+      background-color: #EA4335;
+    }
     &.plain {
       color: var(--mainColor);
       background-color: transparent;

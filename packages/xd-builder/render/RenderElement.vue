@@ -21,10 +21,8 @@ import { assignVariables } from '../mixins/renderUtils'
 import TextList from '../left/TextList'
 import textMesure from '../../utils/textMesure'
 
-const CSSPX = ['fontSize', 'letterSpacing']
-
 export default {
-  name: 'ment',
+  name: 'RenderElement',
   components: {
     TextList,
     RenderElement: () => import('./RenderElement.vue')
@@ -33,7 +31,7 @@ export default {
     // 渲染的阶段
     stage: {
       type: String,
-      default: 'enters'
+      default: 'enter'
     },
     viewPort: {
       type: Object
@@ -55,6 +53,23 @@ export default {
 
   },
   computed: {
+    inlineStyle () {
+      let stageVariables = this.element.variables.filter(variable => variable[this.stage] != null)
+      if (stageVariables.length) {
+        let percent0  = {}
+        assignVariables(percent0, stageVariables, this.stage)
+        let percent100  = {}
+        assignVariables(percent100, stageVariables, 'value')
+        return `<style>
+          @keyframes ${this.element.id}-enter {
+            0% ${JSON.stringify(percent0).replace(/"/g, '')}
+            100% ${JSON.stringify(percent100).replace(/"/g, '')}
+          }
+        </style>`
+      } else {
+        return ''
+      }
+    },
     elementClass () {
       let result = []
       if (this.element.hidden) {
@@ -70,18 +85,7 @@ export default {
 
     textEditStyle () {
       const style = {}
-      for (let key in this.element.style) {
-        const styled = this.element.style[key]
-        if (CSSPX.indexOf(key) > -1) {
-          Object.assign(style, {
-            [key]: this.element.style[key] + 'px'
-          })
-        } else {
-          Object.assign(style, {
-            [key]: this.element.style[key]
-          })
-        }
-      }
+      Object.assign(style, this.element.style)
       Object.assign(style, {
         textAlign: 'left'
       })
@@ -112,6 +116,12 @@ export default {
       Object.assign(style, this.elementAnimationStyle)
       Object.assign(style, this.element.style)
       this.appendTextTransform(style)
+      // 对于正在编辑的元素不设置transform
+      if (this.element.editing) {
+        assignVariables(style, {
+          transform: ''
+        })
+      }
       // 按大小指定视角
       style.perspective = (this.element.width + this.element.height) + 'px'
       return style
@@ -251,7 +261,7 @@ export default {
   position: absolute;
   box-sizing: border-box;
   text-overflow: initial;
-  white-space:pre-wrap;
+  white-space: nowrap;
   textarea {
     text-align: left;
     resize: none;

@@ -25,6 +25,10 @@ class UserDAO {
     }).json()
   }
 
+  async logout() {
+    return this.ctx.post(`user/logout`).json()
+  }
+
   async getCaptcha () {
     return this.ctx.get(`captcha`).json()
   }

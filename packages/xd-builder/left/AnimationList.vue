@@ -65,8 +65,7 @@ export default {
     TabPane,
     [InputNumber.name]: InputNumber,
     [Select.name]: Select,
-    [Option.name]: Option,
-    Button
+    [Option.name]: Option
   },
   props: {
     type: {

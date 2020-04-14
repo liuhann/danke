@@ -1,8 +1,8 @@
 export default [{
+  name: '带边框矩形',
   style: {
     background: 'var(--backgroundColor)',
     borderColor: 'var(--borderColor)',
-    borderStyle: 'solid',
     borderRadius: 'var(--borderRadius)',
     borderWidth: 'var(--borderWidth)',
   },
@@ -273,6 +273,24 @@ export default [{
   height: 100,
   maskable: true,
   style: {
+    borderTopLeftRadius: 'var(--radius)',
+    borderBottomLeftRadius: 'var(--radius)',
+    backgroundColor: 'var(--bgColor)'
+  },
+  variables: [{
+    name: 'radius',
+    value: 50,
+    type: 'percent'
+  }, {
+    name: 'bgColor',
+    value: '#00bf72',
+    type: 'color'
+  }]
+}, {
+  width: 100,
+  height: 100,
+  maskable: true,
+  style: {
     borderTopRightRadius: 'var(--radius)',
     borderBottomLeftRadius: 'var(--radius)',
     overflow: 'hidden',
@@ -287,4 +305,56 @@ export default [{
     value: '#00bf72',
     type: 'color'
   }]
-}]
+},{
+  width: 100,
+  height: 100,
+  maskable: true,
+  style: {
+    borderRadius: 'var(--radius)',
+    backgroundColor: 'var(--bgColor)'
+  },
+  variables: [{
+    name: 'radius',
+    value: 20,
+    type: 'percent'
+  }, {
+    name: 'bgColor',
+    value: '#00bf72',
+    type: 'color'
+  }]
+}, {
+  width: 100,
+  height: 100,
+  maskable: true,
+  style: {
+    borderTopLeftRadius: 'var(--radius)',
+    borderBottomLeftRadius: 'var(--radius)',
+    backgroundColor: 'var(--bgColor)'
+  },
+  variables: [{
+    name: 'radius',
+    value: 50,
+    type: 'percent'
+  }, {
+    name: 'bgColor',
+    value: '#00bf72',
+    type: 'color'
+  }]
+}, {
+  width: 100,
+  height: 100,
+  maskable: true,
+  style: {
+    borderRadius: 'var(--radius)',
+    backgroundColor: 'var(--bgColor)'
+  },
+  variables: [{
+    name: 'radius',
+    value: 20,
+    type: 'percent'
+  }, {
+    name: 'bgColor',
+    value: '#00bf72',
+    type: 'color'
+  }]
+} ]
