@@ -6,7 +6,7 @@
   <!--  样式变量的修改-->
   <template v-for="(variable, index) in elementStyleVariables">
     <!-- 颜色-->
-    <color-pop-picker :key="index" v-if="variable.type==='color'" :color="variable.value" model="color" @input="variableColorInput(variable, $event)"/>
+    <color-pop-picker :key="index" v-if="variable.type==='color'" :work="work" :color="variable.value" model="color" @input="variableColorInput(variable, $event)"/>
     <!-- 数字-->
     <el-input-number :key="index" v-if="variable.type==='px' || variable.type==='number' || variable.type==='percent'" v-model="variable.value" controls-position="right" size="mini"/>
     <!--字体大小-->
@@ -52,9 +52,8 @@
       <a class="action" @click="lockSelectedElement"><icon-lock /></a>
     </el-tooltip>
     <el-tooltip class="item" effect="dark" content="解锁" placement="bottom" v-if="selectedLockedElements.length" >
-      <a class="action"  @click="unLockSelectedElement"><icon-unlock /></a>
+      <a class="action" @click="unLockSelectedElement"><icon-unlock /></a>
     </el-tooltip>
-
     <a class="action" v-if="noFocusedElement" @click="previousScene"><i class="el-icon-arrow-up" /></a>
     <a class="action" v-if="noFocusedElement" @click="nextScene"><i class="el-icon-arrow-down" /></a>
     <a class="action" v-if="noFocusedElement"> {{scenes.indexOf(scene) + 1}}/{{scenes.length}}</a>
@@ -96,7 +95,6 @@ export default {
   name: 'Toolbar',
   mixins: [ interactMixins ],
   components: {
-    FontFamily,
     AlignElement,
     FontSize,
     FontWeight,

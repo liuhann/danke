@@ -6,12 +6,13 @@ class UserDAO {
     return this.ctx.get(`user/current`).json()
   }
 
-  register (username, password, nickname) {
+  register (username, password, nickname, captcha) {
     return this.ctx.post(`user/register`, {
       json: {
         name: username,
         password: password,
-        nickname
+        nickname,
+        captcha
       }
     }).json()
   }
@@ -53,16 +54,6 @@ class UserDAO {
 
   async sendSmsCode (phone) {
     return this.ctx.get(`user/sms/${phone}`).json()
-  }
-
-  logout () {
-    return this.ctx.post(`user/logout`, {
-      json: {
-        name,
-        password,
-        captcha
-      }
-    }).json()
   }
 }
 export default UserDAO

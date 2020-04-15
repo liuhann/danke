@@ -2,7 +2,7 @@
 <div id="pack-detail">
   <div class="content-title" v-if="!metaEditing">
     <span>{{pack.name}}</span>
-    <button class="plain small" @click="editPackMeta">编辑</button>
+    <button class="plain small" @click="editPackMeta" v-if="pack.creator === userId">编辑</button>
     <div class="desc">{{pack.desc}}</div>
   </div>
   <div class="pack-meta" v-if="metaEditing">
@@ -13,12 +13,16 @@
       <input class="small" v-model="pack.desc" /> <button class="small" @click="savePackMeta">保存</button> <button class="plain small" @click="editPackMeta">取消</button>
     </div>
   </div>
-  <div class="pack-sharing">
+  <div class="pack-sharing" v-if="pack.creator === userId">
     <button class="plain small" @click="editPackMeta">分享</button>
+  </div>
+  <div class="pack-sharing" v-if="pack.creator !== userId">
+    <button class="plain small" @click="editPackMeta">收藏</button>
   </div>
   <div class="element-list-container">
     <div class="list">
         <el-upload
+          v-if="pack.creator === userId"
           action="https://www.danke.fun/"
           accept="image/svg+xml"
           :auto-upload="false"
@@ -37,7 +41,7 @@
         <div class="variables">
           <el-color-picker v-for="(variable, index) in svg.variables" :key="index" v-model="variable.value" size="mini"/>
         </div>
-        <div class="item-btns">
+        <div class="item-btns" v-if="svg.creator === userId">
           <i class="el-icon-delete" @click="confirmDelete(svg)"></i>
           <i class="el-icon-edit" @click="edit(svg)"></i>
         </div>
@@ -69,6 +73,14 @@ export default {
     this.svgdao = new RestDAO(this.ctx, 'danke/svg')
     // fetch the data when the view is created and the data is
     // already being observed
+  },
+  computed: {
+    userId () {
+      return this.ctx.user.id
+    },
+    isPackCreator () {
+      return this.pack.creator === this.ctx.user.id
+    }
   },
   mounted () {
     this.fetchData()

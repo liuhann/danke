@@ -1,0 +1,138 @@
+@media (min-width: 768px) {
+  .user-form {
+    height: 100%;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    overflow: hidden;
+    .auth-sidebar {
+      width: 514px;
+    }
+    main {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-grow: 1;
+      margin: 0;
+      padding: 0;
+    }
+    .auth-content {
+      padding: 30px 60px 0;
+      margin: 0;
+    }
+  }
+}
+
+
+.user-form {
+  h2 {
+    font: bold 24px/29px "Haas Grot Text R Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    margin-bottom: 26px;
+  }
+  .content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: auto;
+    .auth-link {
+      text-align: right;
+    }
+    .auth-content {
+      width: 100%;
+      max-width: 416px;
+      svg {
+        fill: currentColor;
+        height: 13px;
+        width: 13px;
+        vertical-align: middle;
+        margin-top: -3px;
+        margin-right: 2px;
+        color: #6e6d7a;
+      }
+      .divider {
+        overflow: visible;
+        padding: 0;
+        margin-bottom: 10px;
+        border: none;
+        border-top: 1px solid #e0e0e0;
+        color: #6e6d7a;
+        text-align: center;
+      }
+      form {
+        fieldset {
+          svg {
+            margin-left: 20px;
+            width: 100px;
+            height: 40px;
+          }
+          label {
+            display: block;
+            font: bold 15px/24px "Haas Grot Text R Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            margin: 14px 0 4px;
+            color: #0d0c22;
+          }
+          span.error {
+            line-height: 32px;
+            margin-top: 10px;
+            color: #EA4335;
+          }
+          input.text-input {
+            width: 100%;
+            margin-right: 8px;
+            border: 1px solid transparent;
+            line-height: 24px;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            height: 40px;
+            padding: 10px 16px;
+            outline: none;
+            border-radius: 8px;
+            transition: background-color 200ms ease, outline 200ms ease, color 200ms ease, box-shadow 200ms ease;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            color: #0d0c22;
+            background-color: #f3f3f4;
+            &.is-danger {
+              border: 1px solid #EA4335;
+            }
+          }
+          input.samll {
+            width:100px;
+          }
+          margin: 0 0 12px;
+        }
+        .button.form-sub {
+          color: #fff;
+          display: inline-block;
+          padding: 10px 16px;
+          cursor: pointer;
+          border: none;
+          text-decoration: none;
+          background: var(--mainColor);
+          -webkit-transition: all 200ms ease;
+          transition: all 200ms ease;
+          border-radius: 8px;
+          appearance: none;
+          position: relative;
+          outline: none;
+          font-family: 'Haas Grot Text R Web', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+          font-size: 14px;
+          font-weight: 500;
+          line-height: 20px;
+          height: 40px;
+          -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+          text-align: center;
+          &:hover {
+            background: var(--mainColorHover);
+          }
+          &:disabled {
+            background: #ccc;
+          }
+        }
+      }
+    }
+  }
+}

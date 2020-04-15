@@ -22,6 +22,28 @@
       </div>
     </div>
   </div>
+  <div class="content-title">
+    <span>热门图库</span>
+  </div>
+  <div class="pack-container">
+    <div class="pack" v-for="pack in popularPacks" :key="pack._id">
+      <div class="pack-svgs">
+        <div class="svg" v-for="svg in pack.children" :key="svg._id" :style="variableValues(svg)">
+          <div class="styled-box" v-html="svg.content">
+          </div>
+        </div>
+      </div>
+      <div class="pack-meta">
+        <i class="el-icon-star-off"></i>
+        <div class="name" @click="openPack(pack._id)">
+          {{pack.name}}
+        </div>
+        <div class="desc">
+          {{pack.desc}}
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 </template>
 
@@ -36,26 +58,48 @@ export default {
   data () {
     return {
       packs: [],
+      popularPacks: [],
+      starredPacks: [],
       dialogVisible: false
     }
   },
   created () {
     this.packdao = new RestDAO(this.ctx, 'danke/pack')
+    this.stardao = new RestDAO(this.ctx, 'danke/starpack')
     this.svgdao = new RestDAO(this.ctx, 'danke/svg')
   },
   mounted () {
     this.loadMyPacks()
+    this.loadPopularPacks()
+    this.loadStarredPacks()
   },
   watch: {
     // call again the method if the route changes
     '$route': 'loadMyPacks'
   },
   methods: {
-    async loadMyPacks() {
-      const result = await this.packdao.list({
+    async loadStarredPacks () {
+      const result = await this.stardao.list({
+        creator: this.ctx.user.id,
+        parentKey: 'from',
         subcount: 4
       })
       this.packs = result.list
+    },
+    async loadMyPacks() {
+      const result = await this.packdao.list({
+        creator: this.ctx.user.id,
+        subcount: 4
+      })
+      this.packs = result.list
+    },
+    async loadPopularPacks () {
+      const result = await this.packdao.list({
+        creator: '15011245191',
+        count: 10,
+        subcount: 4
+      })
+      this.popularPacks = result.list
     },
     variableValues (svg) {
       const styles = {}
@@ -106,6 +150,10 @@ export default {
         background-color: var(--mainColor);
         color: #fff;
         font-size: 20px;
+        .el-icon-star-off {
+          margin-top: 5px;
+          float: right;
+        }
         .desc {
           font-size: 12px;
         }

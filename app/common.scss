@@ -5,6 +5,10 @@ html, body {
   padding: 0;
   font-size: 62.5%;
   margin: 0;
+  --mainColor: #00c4cc;
+  --mainColorHover: rgba(0, 196, 204, 0.61);
+  --textMainColor: #0e1318;
+  --textMinorColor: rgba(14,19,24,.3);
 }
 
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, dd, dl, dt, li, ol, ul, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {
@@ -17,6 +21,13 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
   vertical-align: baseline;
 }
 
+a {
+  color: var(--mainColor);
+  text-decoration: none;
+  :hover {
+    color: var(--mainColorHover);
+  }
+}
 .centering {
   display: flex;
   justify-content: center;
@@ -58,9 +69,17 @@ section.splash {
 .margin-0 {
   margin: 0;
 }
+input[type='checkbox'], input[type='radio'] {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  padding: 0;
+  position: relative;
+  background: #fff;
+  border: 1px solid #dbdbde;
+}
 
-
-input {
+input[type='text'], input[type='password'] {
   border-color: rgba(0,0,0,0.1);
   border-width: 1px;
   font-weight: 400;

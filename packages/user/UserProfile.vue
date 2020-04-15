@@ -64,7 +64,7 @@ export default {
 
     async logout () {
       await this.ctx.userdao.logout()
-      this.$route.replace('/')
+      this.$router.replace('/')
     },
 
     async updateUserProfile () {

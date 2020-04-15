@@ -1,6 +1,5 @@
 import { shortid } from '../../utils/string'
 import { MessageBox } from 'element-ui'
-import { dura } from '../../frames/model/animation-type'
 export default {
   data () {
     return {
@@ -16,9 +15,6 @@ export default {
       const scene = {
         id: shortid(),
         elements: [],
-        style: {
-          backgroundColor: 'transparent'
-        },
         animation: {},
         z: 100
       }

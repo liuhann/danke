@@ -65,6 +65,7 @@ export default {
       if (!this.work._id) {
         const result = await this.workdao.create(work)
         this.work._id = result.object._id
+        this.$router.replace('/xd?work=' + this.work.id)
       } else {
         await this.workdao.patch(work._id, work)
       }

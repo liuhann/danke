@@ -69,24 +69,15 @@
         </a>
       </div>
       <div class="navbar-end">
-        <div class="navbar-item">
-          <router-link to="/vector/list">绘色</router-link>
-        </div>
-        <div class="navbar-item">
-          <router-link to="/frame/list">动画</router-link>
-        </div>
-        <div class="navbar-item">
-          <router-link to="/clippath/list">剪裁</router-link>
-        </div>
-        <div class="navbar-item" v-if="!avatar">
+        <div class="navbar-item" v-if="!logon">
           <div class="buttons">
-            <router-link class="button is-primary" to="/register"><strong>注册</strong></router-link>
             <router-link class="button is-light" to="/login">登录</router-link>
+            <router-link class="button form-sub" to="/register"><strong>注册</strong></router-link>
           </div>
         </div>
-        <div v-if="avatar" class="navbar-item has-dropdown is-hoverable">
-          <router-link class="button is-primary" to="/register"><strong>Danke</strong></router-link>
-        </div>
+        <router-link v-if="logon" class="navbar-item" :tag="div" to="/creative/my">
+          <img class="avatar" :src="avatar">
+        </router-link>
       </div>
     </div>
   </div>
@@ -94,6 +85,7 @@
 
 <script>
 import { resetToken } from '../../user/token'
+import { getImageUrl } from '../../xd-builder/mixins/imageUtils'
 
 export default {
   name: 'NavBar',
@@ -115,13 +107,16 @@ export default {
     burgerOpen () {
       return this.isMobileOpened ? 'is-active' : ''
     },
+    logon () {
+      return this.user.id
+    },
     avatar () {
-      if (this.user && this.user.id) {
-        return this.user.avatar || this.ctx.cdn + '/res/head.svg'
+      if (this.user && this.user.avatar) {
+        return this.getImageUrl(this.user.avatar, 96, 96)
       } else {
-        return null
+        return 'http://cdn.danke.fun/res/head.svg'
       }
-    }
+    },
   },
 
   mounted () {
@@ -132,6 +127,7 @@ export default {
   },
 
   methods: {
+    getImageUrl,
     logout () {
       this.ctx.token = resetToken()
       this.ctx.user = null
@@ -196,21 +192,49 @@ export default {
       justify-content: flex-end;
       margin-right: auto;
       flex: 1;
+      .button.form-sub {
+        color: #fff;
+        display: inline-block;
+        padding: 10px 16px;
+        cursor: pointer;
+        border: none;
+        text-decoration: none;
+        background: #ea4c89;
+        -webkit-transition: all 200ms ease;
+        transition: all 200ms ease;
+        border-radius: 8px;
+        appearance: none;
+        position: relative;
+        outline: none;
+        font-family: 'Haas Grot Text R Web', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 20px;
+        height: 40px;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        text-align: center;
+        margin: 0 20px;
+        &:hover {
+          background: rgba(234, 76, 137, 0.85);
+          color: #fff;
+        }
+        &:disabled {
+          background: #ccc;
+        }
+      }
       .navbar-item {
         margin: 0 20px;
-        a {
-          font-size: 14px;
-          color: #6e6d7a;
-          text-decoration: none;
-        }
-        a:hover {
-          color: #6e6d7a;
-        }
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
     }
   }
-  .navbar-item img {
-    max-height: 2.5rem;
+  .navbar-item img.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
   }
 }
 </style>
