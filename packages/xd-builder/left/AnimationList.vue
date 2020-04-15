@@ -210,6 +210,7 @@ export default {
       color: #fff;
     }
     .preview-box {
+      overflow: hidden;
       perspective: 200px;
       width: 60px;
       height: 60px;

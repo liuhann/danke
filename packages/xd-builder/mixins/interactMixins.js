@@ -1,4 +1,5 @@
 import interact from 'interactjs'
+import { shortid } from '../../utils/string'
 
 export default {
   methods : {
@@ -112,12 +113,24 @@ export default {
         if (!interactee.draggable().enabled) {
           interactee.draggable({
             inertia: true,
+            onstart: event => {
+              if (event.ctrlKey) {
+                // ctrl 拖拽： 复制当前元素放置在原地
+                for (let element of this.selectedElements) {
+                  const cloned = JSON.parse(JSON.stringify(element))
+                  cloned.id = shortid()
+                  cloned.selected = false
+                  this.scene.elements.push(cloned)
+                  this.$nextTick( ()=> {
+                    this.initElementDragResize(cloned)
+                  })
+                }
+              }
+            },
             onmove: event => {
-              for (let element of this.scene.elements) {
-                if (element.selected && !element.locked) {
+              for (let element of this.selectedElements) {
                   element.x += event.dx / this.scale
                   element.y += event.dy / this.scale
-                }
               }
             },
             onend: event => {

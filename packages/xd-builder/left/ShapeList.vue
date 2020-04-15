@@ -11,14 +11,6 @@
       </div>
     </div>
   </div>
-<!--  <div class="shape-list">-->
-<!--    <div v-for="(object, index) in objects" :key="index" class="object-item" draggable @dragstart="dragStart(object, $event)" @dragend="dragEnd(object)">-->
-<!--      <div class="svg-container" :style="variableStyle(object)" v-html="object.content">-->
-<!--        <div class="styled-box" >-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
 </div>
 </template>
 
@@ -114,6 +106,8 @@ export default {
     shapeStyle (shape) {
       const style = Object.assign({}, shape.style, assignVariables())
       assignVariables(style, shape.variables)
+      style.width = shape.width + 'px'
+      style.height = shape.height + 'px'
       return style
     },
     // load list callback
@@ -146,8 +140,7 @@ export default {
         margin-right: 0;
       }
       .shape {
-        width: 70px;
-        height: 70px;
+        transform: scale(.66);
         display: flex;
         justify-content: center;
         align-items: center;

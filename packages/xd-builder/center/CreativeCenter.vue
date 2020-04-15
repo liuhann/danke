@@ -31,10 +31,10 @@
           <span>模板中心</span>
         </div>
         <div class="node">
-          <span>我的图库</span>
+          <span>图片库</span>
         </div>
         <div class="node" :class="nav==='packs'? 'selected': ''" @click="navTo('packs')">
-          <span>设计图库</span>
+          <span>矢量图库</span>
         </div>
         <div class="node tree-node" :class="nav==='profile'? 'selected': ''" @click="navTo('profile')">
           <span>设置</span>

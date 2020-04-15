@@ -5,7 +5,7 @@
     <div class="screen" :style="styleScreen">
       <div class="screen-title">
       </div>
-      <div class="scene" v-if="scene" :style="sceneStyle" :class="sceneClass">
+      <div class="scene" v-if="scene" :style="sceneStyle">
          <render-element
             v-for="(element, index) of scene.elements"
             stage="enter"
@@ -212,7 +212,7 @@ export default {
       Object.assign(style, this.styleScreen)
       return style
     },
-    // 拖拽中的矩形样式
+    // 拖拽选择框的矩形样式
     styleDragingRect () {
       return {
         display: this.dragRect.visible ? 'inherit' : 'none',
@@ -222,6 +222,9 @@ export default {
         height: this.dragRect.height + 'px'
       }
     },
+    /**
+     * 场景样式信息
+     **/
     sceneStyle () {
       const styles = {
         width: this.screen.width + 'px',
@@ -231,19 +234,7 @@ export default {
       return styles
     },
     /**
-     * 获取场景class列表
-     */
-    sceneClass () {
-      const classes = []
-      for (let key in this.scene.style) {
-        if (this.scene.style[key] && this.scene.style[key].name) {
-          classes.push(this.scene.style[key].name)
-        }
-      }
-      return classes
-    },
-    /**
-     *
+     * 选择的可活动元素
      **/
     selectedElements () {
       return this.scene.elements.filter(el => el.selected && !el.locked)

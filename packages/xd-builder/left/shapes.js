@@ -14,7 +14,7 @@ export default [{
   }, {
     name: 'backgroundColor',
     label: '背景颜色',
-    value: '#10211a',
+    value: '#f8bb03',
     type: 'color'
   }, {
     name: 'borderWidth',
@@ -28,32 +28,40 @@ export default [{
     type: 'px'
   }]
 }, {
-  name: '文本框',
-  width: 48,
-  height: 48,
-  text: '文本框',
+  name: '带边框圆形',
   style: {
     background: 'var(--backgroundColor)',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    fontSize: 'var(--fontSize)',
-    color: 'var(--fontColor)'
+    borderColor: 'var(--borderColor)',
+    borderRadius: '50%',
+    borderWidth: 'var(--borderWidth)',
   },
   variables: [{
-    label: '背景颜色',
-    name: 'backgroundColor',
+    name: 'borderColor',
+    label: '边框颜色',
     value: '#00bf72',
     type: 'color'
   }, {
-    label: '文字大小',
-    name: 'fontSize',
-    value: 22,
-    type: 'fontSize'
+    name: 'backgroundColor',
+    label: '背景颜色',
+    value: '#10211a',
+    type: 'color'
   }, {
-    label: '文字颜色',
-    name: 'fontColor',
-    value: '#fff',
+    name: 'borderWidth',
+    label: '边框宽度',
+    value: 2,
+    type: 'px'
+  }]
+}, {
+  width: 50,
+  height: 100,
+  maskable: true,
+  style: {
+    clipPath: 'ellipse(100% 50% at 100% 50%)',
+    backgroundColor: 'var(--bgColor)'
+  },
+  variables: [{
+    name: 'bgColor',
+    value: '#00bf72',
     type: 'color'
   }]
 }, {

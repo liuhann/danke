@@ -2,16 +2,12 @@
 <el-popover
   placement="bottom-start"
   width="320"
-  title="扭曲与旋转"
   @show="showPop"
   trigger="click">
   <a class="action" slot="reference">
     <icon-rotate/>
   </a>
   <el-form label-width="140px" size="mini" >
-    <el-form-item >
-      <el-button slot="label" @click="addTransform" size="mini">增加</el-button>
-    </el-form-item>
     <el-form-item v-for="(transform, index) of transforms" :key="index">
       <el-select v-model="transform.key" slot="label" @change="updateTransform">
         <el-option v-for="transformKey in transformKeys" :key="transformKey.value" :label="transformKey.label" :value="transformKey.value" />
@@ -20,6 +16,12 @@
       <el-button type="text" icon="el-icon-delete" @click="removeTransform(index)" size="mini"/>
     </el-form-item>
   </el-form>
+  <div>
+    <div class="no-transform" v-if="transforms.length === 0">
+      设置旋转、扭曲等转换效果
+    </div>
+    <el-button slot="label" @click="addTransform" size="mini">增加变换</el-button>
+  </div>
 </el-popover>
 </template>
 
@@ -102,6 +104,16 @@ export default {
 .el-input-number--mini {
   width: 90px;
   margin: 0 10px;
+}
+.el-form {
+  min-height: 90px;
+}
+.no-transform {
+  height: 90px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ddd;
 }
 .el-input-number.is-controls-right .el-input__inner {
   padding-left: 5px;
