@@ -1,8 +1,8 @@
 <template>
 <div class="page-slide-preview">
   <div class="device" v-if="work && viewPort" :style="deviceStyle">
-    <render-scene v-if="currentScene" :scene="currentScene" stage="enters" :work="work" :view-port="viewPort"/>
-    <render-scene v-if="lastScene" :scene="lastScene" stage="exists" :work="work" :view-port="viewPort"/>
+    <render-scene v-if="currentScene" :scene="currentScene" stage="enter" :work="work" :view-port="viewPort"/>
+    <render-scene v-if="lastScene" :scene="lastScene" stage="exist" :work="work" :view-port="viewPort"/>
   </div>
   <i class="el-icon-right abs-actions" @click="nextScene"></i>
   <i class="el-icon-back abs-actions" @click="previousScene"></i>
@@ -38,6 +38,7 @@ export default {
     deviceStyle () {
       if (this.viewPort) {
         return {
+          perspective: '20px',
           width: this.viewPort.width + 'px',
           height: this.viewPort.height + 'px'
         }

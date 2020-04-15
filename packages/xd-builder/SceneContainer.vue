@@ -224,17 +224,9 @@ export default {
     },
     sceneStyle () {
       const styles = {
-        width: this.screenRect.width + 'px',
-        height: this.screenRect.height + 'px'
-      }
-      delete this.scene.style.backgroundColor
-      for (let key in this.scene.style) {
-        const value = this.scene.style[key]
-        if (typeof value === 'string') {
-          Object.assign(styles, {
-            [key]: value
-          })
-        }
+        width: this.screen.width + 'px',
+        height: this.screen.height + 'px',
+        perspective: this.screen.width + 'px'
       }
       return styles
     },
@@ -378,14 +370,14 @@ export default {
       // 剪贴模式
       if (this.animation) {
         if (targetElement && !targetElement.locked) {
-          targetElement.animation[this.animation.stage] = [{
+          this.$set(targetElement.animation, this.animation.stage, [{
             // css类名称
             name: this.animation.name,
             // 过渡函数，
             timing: this.animation.timing,
             // 时间区间 [0]为延迟，[1]为持续时间
             range: [parseInt(this.animation.delay), parseInt(this.animation.duration)]
-          }]
+          }])
         }
         this.animation.delay += this.animation.inc
       } else if (this.paste) {
