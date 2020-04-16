@@ -60,6 +60,11 @@ section.splash {
   text-align: center;
 }
 
+.flex-centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .is-bordered {
   border: 1px solid #c0c0c0;
 }

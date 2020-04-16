@@ -8,13 +8,13 @@
     class="upload-container"
     :on-change="fileChoosed">
     <el-button type="primary">点击上传图片/视频</el-button>
-  </el-upload>
-  <div class="image-list">
-    <div class="hint">拖拽图片到设计取</div>
-    <div class="image-item" v-for="image in images" :key="image._id" draggable @dragstart="dragStart(image, $event)" @dragend="dragEnd(image)">
-      <img :src="getImageUrl(image.url)" />
-      <i class="btn-delete el-icon-delete" @click="deleteImage(image)"/>
-    </div>
+    </el-upload>
+    <div class="image-list">
+      <div class="hint">拖拽图片到设计区</div>
+      <div class="image-item" v-for="image in images" :key="image._id" draggable @dragstart="dragStart(image, $event)" @dragend="dragEnd(image)">
+        <img :src="getImageUrl(image.url)" />
+        <i class="btn-delete el-icon-delete" @click="deleteImage(image)"/>
+      </div>
   </div>
   <el-pagination background :total="total" :page-size="pageSize" @current-change="loadImages" :current-page.sync="page" layout="prev, pager, next" />
 </div>

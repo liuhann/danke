@@ -22,8 +22,11 @@ export default {
       path: 'new',
       component: () => import(/* webpackChunkName: "xd-creative" */'./center/AddNew.vue'),
     }, {
-      path: 'packs',
-      component: () => import(/* webpackChunkName: "xd-creative" */'./center/MyPacks.vue'),
+      path: 'vectors',
+      component: () => import(/* webpackChunkName: "xd-creative" */'./center/MyVectorPacks.vue'),
+    }, {
+      path: 'images',
+      component: () => import(/* webpackChunkName: "xd-creative" */'./center/MyImagePacks.vue'),
     }, {
       path: 'pack/:id',
       component: () => import(/* webpackChunkName: "xd-creative" */'./center/PackDetail.vue'),

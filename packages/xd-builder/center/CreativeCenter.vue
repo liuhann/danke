@@ -30,11 +30,11 @@
         <div class="node">
           <span>模板中心</span>
         </div>
-        <div class="node">
-          <span>图片库</span>
-        </div>
-        <div class="node" :class="nav==='packs'? 'selected': ''" @click="navTo('packs')">
+        <div class="node" :class="nav==='vectors'? 'selected': ''" @click="navTo('vectors')">
           <span>矢量图库</span>
+        </div>
+        <div class="node" :class="nav==='images'? 'selected': ''" @click="navTo('images')">
+          <span>图片库</span>
         </div>
         <div class="node tree-node" :class="nav==='profile'? 'selected': ''" @click="navTo('profile')">
           <span>设置</span>
@@ -253,6 +253,20 @@ export default {
     .content-title {
       font-size: 2.4rem;
       padding: 1.6rem;
+      padding-bottom: .4rem;
+      span.tab {
+        margin-right: 2rem;
+        font-size: 1.8rem;
+        cursor: pointer;
+        transition: font-size .2s ease-in;
+        &:hover {
+          color: var(--mainColorHover);
+        }
+        &.on {
+          font-size: 2.4rem;
+          color: var(--mainColor);
+        }
+      }
     }
     .empty {
       font-size: 2rem;
