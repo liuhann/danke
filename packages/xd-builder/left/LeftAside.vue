@@ -5,17 +5,17 @@
       <i class="el-icon-files"/>
       <span>场景</span>
     </div>
-    <div class="category" :class="current === 'image'? 'current': ''" @click="toggleTo('image')">
-      <i class="el-icon-picture-outline"/>
-      <span>图片</span>
+    <div class='category' :class="current === 'shape'? 'current': ''" @click="toggleTo('shape')">
+      <i class="el-icon-news"/>
+      <span>形状</span>
     </div>
     <div class='category' :class="current === 'text'? 'current': ''" @click="toggleTo('text')">
       <i class="el-icon-tickets"/>
       <span>文字</span>
     </div>
-    <div class='category' :class="current === 'shape'? 'current': ''" @click="toggleTo('shape')">
-      <i class="el-icon-news"/>
-      <span>形状</span>
+    <div class="category" :class="current === 'image'? 'current': ''" @click="toggleTo('image')">
+      <i class="el-icon-picture-outline"/>
+      <span>图片</span>
     </div>
     <div class='category' :class="current === 'animation'? 'current': ''" @click="toggleTo('animation')">
       <i class="el-icon-magic-stick"/>

@@ -1,57 +1,32 @@
 export default [{
-  name: '带边框矩形',
+  name: '矩形',
+  width: 100,
+  height: 100,
   style: {
-    background: 'var(--backgroundColor)',
-    borderColor: 'var(--borderColor)',
-    borderRadius: 'var(--borderRadius)',
-    borderWidth: 'var(--borderWidth)',
+    background: 'var(--backgroundColor)'
   },
   variables: [{
-    name: 'borderColor',
-    label: '边框颜色',
-    value: '#00bf72',
-    type: 'color'
-  }, {
     name: 'backgroundColor',
     label: '背景颜色',
-    value: '#f8bb03',
+    value: '#95CFD0',
     type: 'color'
-  }, {
-    name: 'borderWidth',
-    label: '边框宽度',
-    value: 2,
-    type: 'px'
-  }, {
-    name: 'borderRadius',
-    label: '圆角',
-    value: 0,
-    type: 'px'
   }]
 }, {
-  name: '带边框圆形',
+  name: '圆形',
+  width: 100,
+  height: 100,
   style: {
     background: 'var(--backgroundColor)',
-    borderColor: 'var(--borderColor)',
     borderRadius: '50%',
-    borderWidth: 'var(--borderWidth)',
   },
   variables: [{
-    name: 'borderColor',
-    label: '边框颜色',
-    value: '#00bf72',
-    type: 'color'
-  }, {
     name: 'backgroundColor',
     label: '背景颜色',
-    value: '#10211a',
+    value: '#ED6430',
     type: 'color'
-  }, {
-    name: 'borderWidth',
-    label: '边框宽度',
-    value: 2,
-    type: 'px'
   }]
 }, {
+  name: '半圆',
   width: 50,
   height: 100,
   maskable: true,
@@ -65,6 +40,85 @@ export default [{
     type: 'color'
   }]
 }, {
+  name: '带边框矩形',
+  width: 100,
+  height: 100,
+  style: {
+    border: 'var(--borderWidth) solid var(--borderColor)',
+    background: 'var(--backgroundColor)'
+  },
+  variables: [{
+    name: 'backgroundColor',
+    label: '背景颜色',
+    value: '#95CFD0',
+    type: 'color'
+  }, {
+    name: 'borderWidth',
+    label: '边框宽度',
+    value: 4,
+    type: 'px'
+  }, {
+    name: 'borderColor',
+    label: '背景颜色',
+    value: '#FFF',
+    type: 'color'
+  }]
+}, {
+  name: '边框圆形',
+    width: 100,
+    height: 100,
+    style: {
+      background: 'var(--backgroundColor)',
+      border: 'var(--borderWidth) solid var(--borderColor)',
+      borderRadius: '50%',
+    },
+    variables: [{
+      name: 'backgroundColor',
+      label: '背景颜色',
+      value: '#F9DD99',
+      type: 'color'
+    }, {
+      name: 'borderWidth',
+      label: '边框宽度',
+      value: 4,
+      type: 'px'
+    }, {
+      name: 'borderColor',
+      label: '背景颜色',
+      value: '#FFF',
+      type: 'color'
+    }]
+},{
+  name: '边框圆角矩形',
+  width: 100,
+  height: 100,
+  style: {
+    border: 'var(--borderWidth) solid var(--borderColor)',
+    borderRadius: 'var(--radius)',
+    background: 'var(--backgroundColor)'
+  },
+  variables: [{
+    name: 'backgroundColor',
+    label: '背景颜色',
+    value: '#D1E395',
+    type: 'color'
+  }, {
+    name: 'borderWidth',
+    label: '边框宽度',
+    value: 4,
+    type: 'px'
+  }, {
+    name: 'borderColor',
+    label: '背景颜色',
+    value: '#FFF',
+    type: 'color'
+  }, {
+    name: 'radius',
+    value: 15,
+    type: 'percent'
+  },]
+}, {
+  name: '三角形',
   width: 100,
   height: 100,
   maskable: true,
@@ -74,71 +128,18 @@ export default [{
   },
   variables: [{
     name: 'position',
-    value: 0,
+    value: 50,
     type: 'percent'
   }, {
     label: '背景颜色',
     name: 'bgColor',
-    value: '#00bf72',
+    value: '#F29FA8',
     type: 'color'
   }]
 }, {
+  name: '平行四边形',
   width: 100,
-  height: 100,
-  maskable: true,
-  style: {
-    clipPath: 'polygon(0 0, 0 100%, 100% var(--position))',
-    backgroundColor: 'var(--bgColor)'
-  },
-  variables: [{
-    name: 'position',
-    value: 0,
-    type: 'percent'
-  }, {
-    label: '背景颜色',
-    name: 'bgColor',
-    value: '#00bf72',
-    type: 'color'
-  }]
-}, {
-  width: 100,
-  height: 100,
-  maskable: true,
-  style: {
-    clipPath: 'polygon(0 0, 100% 0, var(--position) 100%',
-    backgroundColor: 'var(--bgColor)'
-  },
-  variables: [{
-    name: 'position',
-    value: 100,
-    type: 'percent'
-  }, {
-    label: '背景颜色',
-    name: 'bgColor',
-    value: '#00bf72',
-    type: 'color'
-  }]
-}, {
-  width: 100,
-  height: 100,
-  maskable: true,
-  style: {
-    clipPath: 'polygon(100% 100%, 100% 0, 0 var(--position)',
-    backgroundColor: 'var(--bgColor)'
-  },
-  variables: [{
-    name: 'position',
-    value: 100,
-    type: 'percent'
-  }, {
-    label: '背景颜色',
-    name: 'bgColor',
-    value: '#00bf72',
-    type: 'color'
-  }]
-}, {
-  width: 100,
-  height: 100,
+  height: 80,
   maskable: true,
   style: {
     clipPath: 'polygon(var(--position) 0%, 100% 0%, calc(100% - var(--position)) 100%, 0% 100%)',
@@ -151,10 +152,11 @@ export default [{
   }, {
     label: '背景颜色',
     name: 'bgColor',
-    value: '#00bf72',
+    value: '#D1E395',
     type: 'color'
   }]
 }, {
+  name: '菱形',
   width: 100,
   height: 100,
   maskable: true,
@@ -165,7 +167,7 @@ export default [{
   variables: [{
     label: '背景颜色',
     name: 'bgColor',
-    value: '#00bf72',
+    value: '#D1E395',
     type: 'color'
   }]
 }, {
@@ -228,6 +230,60 @@ export default [{
     value: '#00bf72',
     type: 'color'
   }]
+}, {
+  name: '尖边矩形',
+  width: 100,
+  height: 100,
+  maskable: true,
+  style: {
+    clipPath: 'polygon(0 0, 100% 0, 100% var(--position), 50% 100%, 0 var(--position))',
+    backgroundColor: 'var(--bgColor)'
+  },
+  variables: [{
+    name: 'bgColor',
+    value: '#00bf72',
+    type: 'color'
+  }, {
+    name: 'position',
+    value: 75,
+    type: 'percent'
+  }, ]
+}, {
+  name: '凹边矩形',
+  width: 100,
+  height: 100,
+  maskable: true,
+  style: {
+    clipPath: 'polygon(0 0, 100% 0, 100% 100%, 50% var(--position), 0 100%)',
+    backgroundColor: 'var(--bgColor)'
+  },
+  variables: [{
+    name: 'bgColor',
+    value: '#00bf72',
+    type: 'color'
+  }, {
+    name: 'position',
+    value: 75,
+    type: 'percent'
+  }, ]
+}, {
+  name: '斜角矩形',
+  width: 100,
+  height: 100,
+  maskable: true,
+  style: {
+    clipPath: 'polygon(var(--position) 0%, calc(100% - var(--position)) 0%, 100% var(--position), 100% calc(100% - var(--position)), calc(100% - var(--position)) 100%, var(--position) 100%, 0% calc(100% - var(--position)), 0% var(--position))',
+    backgroundColor: 'var(--bgColor)'
+  },
+  variables: [{
+    name: 'bgColor',
+    value: '#00bf72',
+    type: 'color'
+  }, {
+    name: 'position',
+    value: 20,
+    type: 'percent'
+  }, ]
 }, {
   width: 100,
   height: 100,
@@ -330,39 +386,4 @@ export default [{
     value: '#00bf72',
     type: 'color'
   }]
-}, {
-  width: 100,
-  height: 100,
-  maskable: true,
-  style: {
-    borderTopLeftRadius: 'var(--radius)',
-    borderBottomLeftRadius: 'var(--radius)',
-    backgroundColor: 'var(--bgColor)'
-  },
-  variables: [{
-    name: 'radius',
-    value: 50,
-    type: 'percent'
-  }, {
-    name: 'bgColor',
-    value: '#00bf72',
-    type: 'color'
-  }]
-}, {
-  width: 100,
-  height: 100,
-  maskable: true,
-  style: {
-    borderRadius: 'var(--radius)',
-    backgroundColor: 'var(--bgColor)'
-  },
-  variables: [{
-    name: 'radius',
-    value: 20,
-    type: 'percent'
-  }, {
-    name: 'bgColor',
-    value: '#00bf72',
-    type: 'color'
-  }]
-} ]
+}]
