@@ -3,6 +3,8 @@
   <div class="content-title" v-if="!metaEditing">
     <span>{{pack.name}}</span>
     <button class="plain small" @click="editPackMeta" v-if="pack.creator === userId">编辑</button>
+    <button class="plain small" @click="sharePack" v-if="!pack.shared">分享</button>
+    <button class="plain small" v-if="pack.shared">已分享</button>
     <div class="desc">{{pack.desc}}</div>
   </div>
   <div class="pack-meta" v-if="metaEditing">
@@ -13,9 +15,8 @@
       <input type="text" placeholder="填写图库描述信息"  class="small" v-model="pack.desc" /> <button class="small" @click="savePackMeta">保存</button> <button class="small is-danger" @click="removePack">删除</button>  <button class="plain small" @click="editPackMeta">取消</button>
     </div>
   </div>
-  <div class="pack-sharing" v-if="pack.creator === userId">
-    <button class="plain small" @click="sharePack" v-if="!pack.shared">分享</button>
-    <button class="plain small" v-else>已分享</button>
+  <div class="pack-action" v-if="pack.creator === userId && selectedSvgs.length">
+    <button class="plain small" @click="deleteSelectedSVG" >刪除</button>
   </div>
   <div class="pack-sharing" v-if="pack.creator !== userId">
     <button class="plain small" @click="editPackMeta">收藏</button>
@@ -34,7 +35,7 @@
           <i class="el-icon-plus" />
         </div>
       </el-upload>
-      <div v-for="(svg, index) in svgs" :key="index" class="box">
+      <div v-for="(svg, index) in svgs" :key="index" class="box" :class="svg.selected? 'selected': ''" @click="toggleSelected(svg)">
         <div class="svg-container" :style="variableValues(svg)">
           <div class="styled-box" v-html="svg.content">
           </div>
@@ -104,6 +105,9 @@ export default {
     // already being observed
   },
   computed: {
+    selectedSvgs() {
+      return this.svgs.filter(svg => svg.selected)
+    },
     userId () {
       return this.ctx.user.id
     },
@@ -120,6 +124,14 @@ export default {
   },
   methods: {
     getImageUrl,
+
+    toggleSelected (svg) {
+      if (svg.selected) {
+        this.$set(svg, 'selected', false)
+      } else {
+        this.$set(svg, 'selected', true)
+      }
+    },
     async sharePack () {
       this.$set(this.pack, 'shared', true)
       await this.packdao.patch(this.pack._id, this.pack)
@@ -134,9 +146,9 @@ export default {
         }
         let textFromFileLoaded = fileLoadedEvent.target.result
         Object.assign(svgElement, vi.replaceFillColorWithVariables(textFromFileLoaded))
-        console.log(textFromFileLoaded,  svgElement)
-        await vi.svgdao.create(svgElement)
-        vi.fetchData()
+        const created = await vi.svgdao.create(svgElement)
+        svgElement._id = created.result._id
+        vi.svgs.push(svgElement)
       };
       fileReader.readAsText(file.raw, "UTF-8")
     },
@@ -247,6 +259,15 @@ export default {
       }
     },
 
+    async deleteSelectedSVG () {
+      if (confirm('确认删除图片？')) {
+        for (let svg of this.selectedSvgs) {
+          await this.svgdao.delete(svg)
+        }
+        await this.fetchData()
+      }
+    },
+
     /**
      * 获取矢量或标量图片
      * @returns {Promise<void>}
@@ -289,16 +310,6 @@ export default {
       display: inline-block;
       vertical-align: middle;
     }
-    button.plain {
-      margin-right: 30px;
-      display: none;
-    }
-    &:hover {
-      button.plain {
-        vertical-align: middle;
-        display: inline-block;
-      }
-    }
   }
   .pack-meta {
     padding: 20px;
@@ -321,6 +332,10 @@ export default {
         border-radius: 6px;
         position: relative;
         overflow: hidden;
+        cursor: pointer;
+        &.selected {
+          border-color: #F8BB03;
+        }
         img {
         }
         .variables {
@@ -360,6 +375,7 @@ export default {
             cursor: pointer;
             margin: 0 10px;
             &:hover {
+              display: initial;
               color: var(--mainColor)
             }
           }

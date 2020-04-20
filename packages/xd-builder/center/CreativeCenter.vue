@@ -129,7 +129,7 @@ export default {
 
 <style lang="scss">
 .creative-center {
-  --mainColor: #00c4cc;
+  --mainColor: rgba(0, 196, 204);
   --mainColorHover: rgba(0, 196, 204, 0.61);
   --textMainColor: #0e1318;
   --textMinorColor: rgba(14,19,24,.3);

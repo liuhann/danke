@@ -1,40 +1,56 @@
 <template>
 <div id="addon-shape-list">
-  <div class="search-box">
-    <el-input placeholder="搜索素材库" v-model="searchValue" class="input-with-select" clearable>
-      <el-button slot="append" icon="el-icon-search"></el-button>
-    </el-input>
-  </div>
-  <div class="pack">
-    <div class="pack-title">
-      <div class="text">常用形状</div>
-      <div class="more" @click="showMoreShapes">查看全部</div>
+  <template v-if="!packTitle">
+    <div class="search-box">
+      <el-input placeholder="搜索素材库" v-model="searchValue" class="input-with-select" clearable>
+        <el-button slot="append" icon="el-icon-search"></el-button>
+      </el-input>
     </div>
-    <div class="pack-shapes">
-      <div
-        v-for="(shape, index) in shapes.slice(0, 3)"
-        :key="index"
-        class="object-item" draggable @dragstart="dragStart(shape, $event)">
-        <div class="shape" :style="shapeStyle(shape)"></div>
+    <div class="pack">
+      <div class="pack-title">
+        <div class="text">常用形状</div>
+        <div class="more" @click="showMoreShapes">查看全部</div>
       </div>
-    </div>
-  </div>
-  <div class="pack" v-for="pack in myPacks" :key="pack._id">
-    <div class="pack-title">
-      <div class="text">{{pack.name}}</div>
-      <div class="more" @click="showPackVectors(pack)">查看全部</div>
-    </div>
-    <div class="pack-shapes">
-      <div
-        v-for="(vector, index) in pack.children" :key="index"
-        class="object-item" draggable @dragstart="dragStart(vector, $event)">
-        <div class="svg-container" :style="vectorVariables(vector)" v-html="vector.content">
+      <div class="pack-shapes">
+        <div
+          v-for="(shape, index) in shapes.slice(0, 3)"
+          :key="index"
+          class="object-item" draggable @dragstart="dragStart(shape, $event)">
+          <div class="shape" :style="shapeStyle(shape)"></div>
         </div>
       </div>
     </div>
-  </div>
+    <div class="pack" v-for="pack in myPacks" :key="pack._id">
+      <div class="pack-title">
+        <div class="text">{{pack.name}}</div>
+        <div class="more" @click="showPackVectors(pack)">查看全部</div>
+      </div>
+      <div class="pack-shapes">
+        <div
+          v-for="(vector, index) in pack.children" :key="index"
+          class="object-item" draggable @dragstart="dragStart(vector, $event)">
+          <div class="svg-container" :style="vectorVariables(vector)" v-html="vector.content">
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
 
-  <div class="pack-listing">
+  <div class="pack-listing pack">
+    <div class="pack-title">
+      <div class="text">{{packTitle}}</div>
+      <div class="more" @click="closePackList">关闭</div>
+    </div>
+    <div class="pack-shapes">
+      <div
+        v-for="(shape, index) in packResources"
+        :key="index"
+        class="object-item" draggable @dragstart="dragStart(shape, $event)">
+        <div class="shape" v-if="!shape._id" :style="shapeStyle(shape)"></div>
+        <div class="svg-container" v-else :style="vectorVariables(shape)" v-html="shape.content">
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 </template>
@@ -42,7 +58,7 @@
 <script>
 import shapes from './shapes'
 import { assignVariables} from '../mixins/renderUtils'
-import { Pagination, Input, Button } from 'element-ui'
+import { Pagination, Input, Button, Loading } from 'element-ui'
 import RestDAO from '../../common/dao/restdao'
 
 export default {
@@ -57,11 +73,17 @@ export default {
     return {
       myPacks: [],
       shapes,
+      packTitle: '',
+      packResources: [],
+      packPageCount: 30,
+      packPageCurrent: 1,
+      packPageTotal: 0,
       searchValue: '',
     }
   },
   created () {
     this.packdao = new RestDAO(this.ctx, 'danke/pack')
+    this.svgdao = new RestDAO(this.ctx, 'danke/svg')
   },
   mounted () {
     this.fetchMyPacks()
@@ -76,6 +98,16 @@ export default {
       })
       this.myPacks = result.list
     },
+    showMoreShapes () {
+      this.packTitle = '基本形状'
+      this.packResources = shapes
+    },
+
+    closePackList () {
+      this.packTitle = ''
+      this.packResources = []
+    },
+
     async fetchSharedPacks () {
 
     },
@@ -83,17 +115,24 @@ export default {
 
     },
 
-    showPackVectors () {
-
+    async showPackVectors (pack) {
+      this.packTitle = pack.name
+      this.packResources = pack.children
+      const instance = Loading.service({
+        target: '#addon-shape-list'
+      })
+      const result = await this.svgdao.list({
+        pack: pack._id,
+        count: 100
+      })
+      this.packResources = result.list
+      instance.close()
     },
     dragStart (object, ev) {
+      console.log('dragging', object)
       // stringify image info as text
       ev.dataTransfer.setData('Text', JSON.stringify(object))
       this.draggingImage = true
-    },
-
-    showMoreShapes () {
-
     },
 
     vectorVariables (vector) {
@@ -144,6 +183,10 @@ export default {
       }
       .more {
         color: #99a9bf;
+        cursor: pointer;
+        &:hover {
+          color: rgba(153, 169, 191, 0.6);
+        }
       }
     }
   }

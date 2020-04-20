@@ -120,7 +120,8 @@ export default {
                   const cloned = JSON.parse(JSON.stringify(element))
                   cloned.id = shortid()
                   cloned.selected = false
-                  this.scene.elements.push(cloned)
+                  this.scene.elements.splice(this.scene.elements.indexOf(element), 0, cloned)
+                  // this.scene.elements.push(cloned)
                   this.$nextTick( ()=> {
                     this.initElementDragResize(cloned)
                   })

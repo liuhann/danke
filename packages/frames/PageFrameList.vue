@@ -41,7 +41,6 @@ import objectListMixin from '../common/components/objectListMixin'
 import NavBar from '../site/components/NavBar.vue'
 import CLOUD_HILL from './cloud-hill.webp'
 import { Pagination, Button } from 'element-ui'
-import StyleRegistry from '../xd-builder/utils/StyleRegistry'
 import types from './types'
 export default {
   name: 'PageFrameList',

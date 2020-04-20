@@ -4,7 +4,7 @@
      class="element" :class="elementClass" :style="elementStyle">
   <!--图片渲染-->
   <img v-if="element.url" :id="'img-' + (element.name || element.id)" :src="getImageUrl(element.url, viewPort.width, viewPort.height)">
-  <div v-if="element.svg" class="svg-content" v-html="elementSVGContent" />
+  <div v-if="element.content" class="svg-content" v-html="element.content" />
   <!--文本渲染情况下 文本内容-->
   <template v-for="(text, index) in elementTextLines">{{text}}<br></template>
   <textarea ref="textarea" v-if="element.text != null && element.editing" :style="textEditStyle" v-model="element.text" @change="updateTextArea"/>

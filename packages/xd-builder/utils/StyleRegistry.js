@@ -167,7 +167,7 @@ export default class StyleRegistry {
   }
 
   /**
-   * 获取作品里所有元素的样式资源
+   * 抽取作品里所有元素的样式资源，包括动画、SVG图片及字体
    * @param {*} work
    */
   getStyleResource (work) {
@@ -188,13 +188,15 @@ export default class StyleRegistry {
           }
         }
         if (element.svg) {
-          svgs[element.svg] = this.svgs[element.svg]
+          svgs[element.svg] = element.content
         }
-        element.variables.forEach(variable => {
-          if (variable.type === 'fontFamily') {
-            fonts.add(variable.value)
-          }
-        })
+        if (element.variables && typeof element.variables === 'array') {
+          element.variables.forEach(variable => {
+            if (variable.type === 'fontFamily') {
+              fonts.add(variable.value)
+            }
+          })
+        }
       }
     }
     return {
@@ -221,15 +223,18 @@ export default class StyleRegistry {
         cssContent: work.styles[name]
       })
     }
-    for (let font of work.fonts) {
-      this.addFontFace(font)
+    if (work.fonts && typeof work.fonts === 'array') {
+      for (let font of work.fonts) {
+        this.addFontFace(font)
+      }
     }
-    if (work.svgs) {
-      for (let name in work.svgs) {
-        this.addVector({
-          _id: name,
-          content: work.svgs[name]
-        })
+
+    // init element svg content from work.svgs
+    for (let scene of work.scenes) {
+      for (let element of scene.elements) {
+        if (element.svg) {
+          element.content = work.svgs[element.svg]
+        }
       }
     }
   }
