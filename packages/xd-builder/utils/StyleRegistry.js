@@ -97,6 +97,7 @@ export default class StyleRegistry {
 
   addFontFace (fontface) {
     let font = fontface
+    debugger
     if (typeof font === 'string') {
       font = fontFamilies.filter(f => f.id === fontface)[0]
     }
@@ -190,7 +191,7 @@ export default class StyleRegistry {
         if (element.svg) {
           svgs[element.svg] = element.content
         }
-        if (element.variables && typeof element.variables === 'array') {
+        if (element.variables && element.variables.length) {
           element.variables.forEach(variable => {
             if (variable.type === 'fontFamily') {
               fonts.add(variable.value)
@@ -223,7 +224,7 @@ export default class StyleRegistry {
         cssContent: work.styles[name]
       })
     }
-    if (work.fonts && typeof work.fonts === 'array') {
+    if (work.fonts && work.fonts.length) {
       for (let font of work.fonts) {
         this.addFontFace(font)
       }

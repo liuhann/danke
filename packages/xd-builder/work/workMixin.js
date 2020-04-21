@@ -45,6 +45,7 @@ export default {
       this.ctx.palette = this.ctx.styleRegistry.getWorkColors(work)
       this.work = work
     },
+
     /**
      * 保存作品内容
      */

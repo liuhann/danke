@@ -1,0 +1,1 @@
+Array.from(document.querySelectorAll('img')).map(img => img.src).filter(src => src.endsWith('tl.png')).map(src=> src.replace('tl.png', 's.svg')).join('\n')

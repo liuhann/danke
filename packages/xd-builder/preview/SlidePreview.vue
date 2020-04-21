@@ -38,7 +38,7 @@ export default {
     deviceStyle () {
       if (this.viewPort) {
         return {
-          perspective: '20px',
+          perspective: this.viewPort.width + 'px',
           width: this.viewPort.width + 'px',
           height: this.viewPort.height + 'px'
         }
