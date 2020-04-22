@@ -3,14 +3,16 @@
      @click="elementClicked"
      class="element" :class="elementClass" :style="elementStyle">
   <!--图片渲染-->
-  <img v-if="element.url" :id="'img-' + (element.name || element.id)" :src="getImageUrl(element.url, viewPort.width, viewPort.height)">
-  <div v-if="element.content" class="svg-content" v-html="element.content" />
+  <img v-if="element.url" :id="'img-' + (element.name || element.id)" :src="getImageUrl(element.url, viewPort.width, viewPort.height)" :style="element.style">
+  <div v-else-if="element.content" class="svg-content" v-html="element.content" :style="element.style"/>
+  <div v-else-if="element.elements" class="block" :style="element.style">
+    <render-element v-for="(el, i) in element.elements" :key="el.id" :screen="screen" :view-port="viewPort" :element="el" :index="i" />
+  </div>
+  <div v-else-if="!element.text" class="shape" :style="element.style">
+  </div>
   <!--文本渲染情况下 文本内容-->
   <template v-for="(text, index) in elementTextLines">{{text}}<br></template>
   <textarea ref="textarea" v-if="element.text != null && element.editing" :style="textEditStyle" v-model="element.text" @change="updateTextArea"/>
-  <div v-if="element.elements" class="block">
-    <render-element v-for="(el, i) in element.elements" :key="el.id" :screen="screen" :view-port="viewPort" :element="el" :index="i" />
-  </div>
 </div>
 </template>
 
@@ -114,7 +116,10 @@ export default {
       assignVariables(style, this.element.variables)
       Object.assign(style, getRectPositionStyle(this.element, this.screen, this.viewPort))
       Object.assign(style, this.elementAnimationStyle)
-      Object.assign(style, this.element.style)
+      if (this.element.text != null) {
+        Object.assign(style, this.element.style)
+      }
+      // Object.assign(style, this.element.style)
       this.appendTextTransform(style)
       // 对于正在编辑的元素不设置transform
       if (this.element.editing) {
@@ -125,6 +130,10 @@ export default {
       // 按大小指定视角
       style.perspective = (this.element.width + this.element.height) + 'px'
       return style
+    },
+
+    elementInnerStyle() {
+
     },
     /**
      * 取 element.animations 计算元素的动画样式
@@ -280,6 +289,10 @@ export default {
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+  .shape {
+    width: 100%;
+    height: 100%;
   }
   .svg-content {
     width: 100%;
