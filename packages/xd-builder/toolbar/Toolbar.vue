@@ -21,7 +21,10 @@
 
   <!--元素变换、旋转、拉伸等-->
   <pop-transform v-if="focusedElement" :element="focusedElement"/>
-<!--  <pop-clip-list v-if="focusedElement && focusedElement.style && focusedElement.style.clipPath != null" @input="setElementClipPath"/>-->
+
+  <pop-set-animation v-if="focusedElement" :element="focusedElement"/>
+
+  <!--  <pop-clip-list v-if="focusedElement && focusedElement.style && focusedElement.style.clipPath != null" @input="setElementClipPath"/>-->
   <pop-transparent :element="focusedElement" v-if="focusedElement"/>
   <align-element v-if="selectedElements.length > 1" :elements="selectedElements"/>
   <!-- 右侧操作功能按钮-->
@@ -85,6 +88,7 @@ import IconRedo from './res/redo.svg'
 import IconLock from './res/lock.svg'
 import IconUnlock from './res/unlock.svg'
 import IconClean from './res/clean.svg'
+import IconEffect from './res/effect.svg'
 import PopTransform from './PopTransform'
 import TextAlign from './TextAlign'
 import FontWeight from './FontWeight'
@@ -95,6 +99,7 @@ export default {
   name: 'Toolbar',
   mixins: [ interactMixins ],
   components: {
+    PopSetAnimation,
     AlignElement,
     FontSize,
     FontWeight,

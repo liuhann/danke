@@ -2,23 +2,20 @@
   <div id="page-frames-list"
     class="site-page">
     <nav-bar />
-    <section class="section splash">
-      <div class="container">
-        <h1>可调整的动画</h1>
-        <h2>css frame直出</h2>
-      </div>
-    </section>
-    <section class="section list-section">
+    <section class="first section list-section">
       <div class="container">
         <el-button size="mini" type="primary" @click="newObject">新建</el-button>
         <div class="category">
           <span :class="type==='' ? 'checked': ''" @click="setType({value: ''})">所有</span>
           <span v-for="t in types" :key="t.name" :class="type===t.value ? 'checked': ''" @click="setType(t)">{{t.label}}</span>
         </div>
+        <div class="group">
+          <span v-for="group in groups" :key="group" :class="currentGroup===group ? 'checked': ''">{{group}}</span>
+        </div>
         <div class="object-list">
           <div v-for="(object, index) in objects" :key="index" class="object-item" @mouseenter="animationMouseEnter(object)">
             <div class="animation-name" v-if="object.name !== 'none'">
-              {{object.title || object.name}}
+              {{object.type}}-{{object.group}}-{{object.direction}}
             </div>
             <div class="object-container">
               <span v-if="object.tags.join('').indexOf('text') > -1" :class="object.name">{{object.title}}</span>
@@ -42,6 +39,8 @@ import NavBar from '../site/components/NavBar.vue'
 import CLOUD_HILL from './cloud-hill.webp'
 import { Pagination, Button } from 'element-ui'
 import types from './types'
+import RestDAO from '../common/dao/restdao'
+import StyleRegistry from '../xd-builder/utils/StyleRegistry'
 export default {
   name: 'PageFrameList',
   mixins: [ objectListMixin ],
@@ -54,6 +53,8 @@ export default {
     return {
       types,
       type: 'enter',
+      groups: [],
+      currentGroup: '',
       restPath: 'danke/animation',
       CLOUD_HILL
     }
@@ -67,6 +68,7 @@ export default {
   },
   created () {
     this.styleRegistry = new StyleRegistry()
+    this.framedao = new RestDAO(this.ctx, 'danke/animation')
   },
   methods: {
     newObject () {
@@ -85,9 +87,17 @@ export default {
         animation.name = animation.dataName
       }, 300)
     },
-    setType (type) {
+    async setType (type) {
       this.type = type.value
+      await this.loadTypeGroup()
       this.loadObjects()
+    },
+
+    async loadTypeGroup () {
+      const result = await this.framedao.distinct('group', {
+        type: this.type
+      })
+      this.groups = result
     },
     // 新窗口编辑
     edit (object) {

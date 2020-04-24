@@ -1,13 +1,24 @@
 <template>
 <div>
-  <nav-bar></nav-bar>
   <div class="section" style="background: #dfdfdf;">
     <div class="container" style="background: #fff;padding: 20px;box-shadow: 0 1px 5px 0 rgba(0,0,0,.1);">
       <el-row :gutter="20">
         <el-col :span="16">
           <el-form size="mini" label-width="90px">
-            <el-form-item label="title">
-              <el-input v-model="animation.title" style="width: 360px;"></el-input>
+            <el-form-item label="一级分类">
+              <el-select v-model="animation.type" size="mini" @change="loadTypeGroup">
+                <el-option v-for="type in types" :key="type.label" :label="type.label" :value="type.value"/>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="二级分类">
+              <el-select v-model="animation.group" size="mini" allow-create filterable>
+                <el-option v-for="group in groups" :key="group" :label="group" :value="group"/>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="方向">
+              <el-select v-model="animation.direction" size="mini" allow-create filterable>
+                <el-option v-for="d in directions" :key="d" :label="d" :value="d"/>
+              </el-select>
             </el-form-item>
             <el-form-item label="名称">
               <el-input v-model="animation.name" style="width: 360px;"></el-input>
@@ -15,16 +26,13 @@
             <el-form-item label="持续时间">
               <el-input-number v-model.number="animation.duration" controls-position="right" :step="50" /> ms
             </el-form-item>
+            <el-form-item label="次数">
+              <el-input-number v-model.number="animation.iteration" :disabled="animation.infinite" controls-position="right" />
+              <el-checkbox style="margin-left: 20px;" v-model="animation.infinite">循环</el-checkbox>
+            </el-form-item>
             <el-form-item label="过渡函数">
               <el-select v-model="animation.timing" size="mini" filterable>
                 <el-option v-for="(value, key) in cubicBerziers" :value="value" :key="key" :label="key" />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="类型">
-              <el-select v-model="animation.tags" size="mini" multiple>
-                <el-option value="enter" />
-                <el-option value="exist" />
-                <el-option value="text" />
               </el-select>
             </el-form-item>
             <el-form-item label="样式文本">
@@ -50,10 +58,9 @@
             </el-radio-group>
           </div>
           <div id="preview" :style="{background: previewType==='文字'? 'none': ''}" style="border-left: 1px solid #efefef;">
-<!--            <div v-if="previewType==='方块'" class="preview-box" :class="boxClass" :style="frameStyle"></div>-->
             <div v-if="previewType==='文字'" class="preview-text" :class="boxClass" :style="frameStyle">frames@danke</div>
             <div v-if="previewType==='方块'" class="preview-box" :class="boxClass" :style="frameStyle">
-              <img :src="PREVIEW_IMG" width="160" height="160" />
+              <preview-image />
             </div>
           </div>
         </el-col>
@@ -64,13 +71,13 @@
 </template>
 
 <script>
-import { Message, Row, Col, Form, FormItem, Input, InputNumber, Select, Option, Radio, Tag, Button, RadioGroup, RadioButton } from 'element-ui'
+import { Message, Row, Col, Form, FormItem, Input, InputNumber, Select, Option, Radio, Tag, Button, RadioGroup, RadioButton, Checkbox } from 'element-ui'
 import { createSheet, addAnimationStyle, clearAnimation } from './keyframe'
-import PREVIEW_IMG from './project.svg'
+import PreviewImage from './project.svg'
 import NavBar from '../site/components/NavBar'
 import cubicBerziers from './model/cubic-beziers.js'
 import RestDAO from '../common/dao/restdao'
-
+import types from './types'
 export default {
   name: 'FrameTool',
   components: {
@@ -87,7 +94,8 @@ export default {
     [RadioGroup.name]: RadioGroup,
     [RadioButton.name]: RadioButton,
     [Radio.name]: Radio,
-    NavBar
+    [Checkbox.name]: Checkbox,
+    PreviewImage
   },
   computed: {
     previewTypes () {
@@ -96,24 +104,30 @@ export default {
   },
   data () {
     return {
-      PREVIEW_IMG,
+      types,
       cubicBerziers,
       // 动态增加标签相关处理
       inputVisible: false,
       inputValue: '',
-      previewType: '文字',
+      previewType: '方块',
       frameIndex: -1,
       frameStyle: '',
       boxClass: '',
+      groups: [],
+      directions: ['向上', '向下', '向左', '向右', '向前', '向后', '对角'],
       animation: {
         _id: '',
-        title: '',
+        type: '',
+        group: '',
         name: 'my-animation',
         cssFrame: '',
         svgFilter: '',
-        tags: [],
         duration: 400,
         iteration: 1,
+        infinite: false,
+        variables: [{
+
+        }],
         timing: 'linear'
       }
     }
@@ -132,6 +146,12 @@ export default {
     async loadFrame (id) {
       const result = await this.framedao.getOne(id)
       this.animation = result
+    },
+    async loadTypeGroup () {
+      const result = await this.framedao.distinct('group', {
+        type: this.animation.type
+      })
+      this.groups = result
     },
 
     handleClose (tag) {

@@ -1,8 +1,7 @@
 <template>
 <div id="left-animation-tab">
   <tabs v-model="animationType" @tab-click="handleClick">
-    <tab-pane label="进入动画" name="enter"></tab-pane>
-    <tab-pane label="离开动画" name="exist"></tab-pane>
+    <tab-pane v-for="type in types" :key="type.value" :label="type.label" :name="type.value"></tab-pane>
   </tabs>
   <div class="animation-container">
     <div v-for="(animation, index) in animations" :key="index"  class="animation-item"
@@ -57,6 +56,7 @@ import RestDAO from '../../common/dao/restdao'
 import { Pagination, Tabs, TabPane, Button, InputNumber, Select, Option } from 'element-ui'
 import cubicBeziers from '../../frames/model/cubic-beziers'
 import CLOUD_HILL from '../../vectors/cloud-hill.webp'
+import types from '../../frames/types'
 export default {
   name: 'AnimationList',
   components: {
@@ -74,8 +74,9 @@ export default {
   },
   data () {
     return {
+      types,
       cubicBeziers,
-      animationType: 'enter',
+      animationType: 'basic',
       CLOUD_HILL,
       animations: [],
       page: 0,

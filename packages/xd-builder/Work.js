@@ -5,9 +5,8 @@ export default {
     width: 414,
     height: 896
   },
-  style: {},
   frames: {},
-  svgs: {},
+  vectors: {},
   fonts: {
     ['华文行楷间']: ''
   },
@@ -32,8 +31,7 @@ export default {
       // text content
       text: '文本类元素的正文',
       props: {
-        resizable: true,
-        movable: true
+        resizable: true
       },
       style: {
         // direct style writing

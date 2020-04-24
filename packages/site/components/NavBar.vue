@@ -168,7 +168,7 @@ export default {
   position: fixed;
   will-change: transform;
   top: 0;
-  height: 60px;
+  height: 80px;
   #logo {
     a {
       display: flex;
@@ -236,5 +236,9 @@ export default {
     height: 40px;
     border-radius: 50%;
   }
+}
+
+.section.first {
+  margin-top: 80px;
 }
 </style>
