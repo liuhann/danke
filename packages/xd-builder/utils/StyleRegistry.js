@@ -97,7 +97,6 @@ export default class StyleRegistry {
 
   addFontFace (fontface) {
     let font = fontface
-    debugger
     if (typeof font === 'string') {
       font = fontFamilies.filter(f => f.id === fontface)[0]
     }

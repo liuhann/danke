@@ -1,8 +1,5 @@
 <template>
 <div id="tool-bar">
-  <el-tooltip content="清除动画及遮罩" v-if="cleanable">
-    <a class="action" @click="cleanElement"><icon-clean /></a>
-  </el-tooltip>
   <!--  样式变量的修改-->
   <template v-for="(variable, index) in elementStyleVariables">
     <!-- 颜色-->
@@ -417,13 +414,6 @@ export default {
       }
     },
 
-    cleanElement () {
-      this.$set(this.focusedElement.animation, 'enter', null)
-      this.$set(this.focusedElement.animation, 'exist', null)
-      delete this.focusedElement.animation.enter
-      delete this.focusedElement.animation.exist
-      delete this.focusedElement.style.clipPath
-    },
     log () {
       console.log(this.selectedElements, this.scene, this.work)
     },

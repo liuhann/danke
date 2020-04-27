@@ -128,7 +128,7 @@ export default {
         })
       }
       // 按大小指定视角
-      style.perspective = (this.element.width + this.element.height) + 'px'
+      style.perspective = this.element.width + 'px'
       return style
     },
 
@@ -139,7 +139,7 @@ export default {
      * 取 element.animations 计算元素的动画样式
      */
 
-    elementAnimationStyle (                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ) {
+    elementAnimationStyle () {
       const element = this.element
       if (element.animation) {
         const animations = element.animation[this.stage]
@@ -148,14 +148,16 @@ export default {
           if (animations.length === 1) {
             const animation = animations[0]
             return {
-              animation: `${animation.name} ${animation.range[1]}ms ${animation.timing} ${animation.range[0]}ms both`
+              animation: `${animation.name} ${animation.range[1]}s ${animation.timing} ${animation.range[0]}s ${animation.infinite? 'infinite': animation.iteration} both`
             }
           } else {
+            let lastFinished = 0
             const animationsOrdered = []
             // 多个动画次序或者重叠播放
             for (let i = 0; i < animations.length; i++) {
               const animation = animations[i]
-              animationsOrdered.push(`${animation.name} ${animation.range[1]}ms ${animation.timing} ${animation.range[0]}ms ${i === animations.length - 1 ? '' : ''}`)
+              animationsOrdered.push(`${animation.name} ${animation.range[1]}s ${animation.timing} ${animation.range[0] + lastFinished}s ${animation.infinite? 'infinite': animation.iteration} ${i === animations.length - 1 ? '' : ''}`)
+              lastFinished += animation.range[1] + animation.range[0]
             }
             if (animationsOrdered.length) {
               return {
@@ -164,8 +166,9 @@ export default {
             }
           }
         }
+      } else {
+        return {}
       }
-      return {}
     },
 
     elementTextLines () {
