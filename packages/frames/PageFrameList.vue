@@ -3,38 +3,27 @@
     class="site-page">
     <nav-bar />
     <section class="first section list-section">
-      <div class="container">
+      <div class="body">
         <el-button size="mini" type="primary" @click="newObject">新建</el-button>
         <div class="category">
-          <span :class="type==='' ? 'checked': ''" @click="setType({value: ''})">所有</span>
-          <span v-for="t in types" :key="t.name" :class="type===t.value ? 'checked': ''" @click="setType(t)">{{t.label}}</span>
+          <span v-for="t in types" :key="t.name" :class="type===t.value ? 'checked': ''" @click="typeChange(t.value)">{{t.label}}</span>
         </div>
-        <div class="group">
-          <span v-for="group in groups" :key="group" :class="currentGroup===group ? 'checked': ''">{{group}}</span>
+        <div class="type-groups">
+          <div v-for="g in groups" :key="g" class="group" :class="g=== group? 'current': ''" @click="groupChange(g)">{{g}}</div>
         </div>
-        <div class="object-list">
-          <div v-for="(object, index) in objects" :key="index" class="object-item" @mouseenter="animationMouseEnter(object)">
-            <div class="animation-name" v-if="object.name !== 'none'">
-              {{object.type}}-{{object.group}}-{{object.direction}}
-            </div>
-            <div class="object-container">
-              <span v-if="object.tags.join('').indexOf('text') > -1" :class="object.name">{{object.title}}</span>
-              <img v-else :src="CLOUD_HILL" :class="object.name"/>
-            </div>
-            <div class="item-btns">
-              <el-button circle icon="el-icon-delete" @click="remove(object)"/>
-              <el-button circle icon="el-icon-edit" @click="edit(object)"/>
-            </div>
-          </div>
+        <div class="animations">
+          <div v-for="a in animations" :key="a.name" class="animation" :class="a.name === animation.name? 'current': ''" @click="animationChange(a)">{{a.direction}}</div>
         </div>
-        <el-pagination background :total="total" :page-size="pageSize" @current-change="loadObjects" :current-page.sync="page" layout="prev, pager, next" />
+        <div class="animation-box">
+          <img :src="CLOUD_HILL" :class="animation && animation.name"/>
+          <div class="refresh"><i @click="refreshCurrent" class="el-icon-refresh-right" /> <i @click="edit(animation)" class="el-icon-edit" /></div>
+        </div>
       </div>
     </section>
   </div>
 </template>
 
 <script>
-import objectListMixin from '../common/components/objectListMixin'
 import NavBar from '../site/components/NavBar.vue'
 import CLOUD_HILL from './cloud-hill.webp'
 import { Pagination, Button } from 'element-ui'
@@ -43,7 +32,6 @@ import RestDAO from '../common/dao/restdao'
 import StyleRegistry from '../xd-builder/utils/StyleRegistry'
 export default {
   name: 'PageFrameList',
-  mixins: [ objectListMixin ],
   components: {
     NavBar,
     [Pagination.name]: Pagination,
@@ -52,9 +40,12 @@ export default {
   data () {
     return {
       types,
-      type: 'enter',
+      type: 'basic',
+      showAnimationChoose: false,
+      group: '',
       groups: [],
-      currentGroup: '',
+      animation: {},
+      animations: [],
       restPath: 'danke/animation',
       CLOUD_HILL
     }
@@ -70,7 +61,56 @@ export default {
     this.styleRegistry = new StyleRegistry()
     this.framedao = new RestDAO(this.ctx, 'danke/animation')
   },
+
+  mounted () {
+    this.typeChange()
+  },
   methods: {
+    async typeChange (type) {
+      if (type) {
+        this.type = type
+      }
+      await this.loadTypeGroup()
+      this.groupChange(this.groups[0])
+    },
+    async loadTypeGroup () {
+      const result = await this.framedao.distinct('group', {
+        type: this.type
+      })
+      this.groups = result
+    },
+
+    async groupChange(group) {
+      this.group = group
+      await this.loadGroupAnimations()
+      if (this.animations.length) {
+        this.animation = this.animations[0]
+        this.styleRegistry.addFrame(this.animation)
+      }
+    },
+
+    async loadGroupAnimations () {
+      const result = await this.framedao.list({
+        type: this.type,
+        group: this.group
+      })
+      this.animations = result.list
+    },
+
+    refreshCurrent () {
+      const replayStore = this.animation.name
+      this.animation.name = ''
+      setTimeout(() => {
+        this.animation.name = replayStore
+      }, 200)
+    },
+
+    animationChange (animation) {
+      this.animation = animation
+      this.animation.delay = 0
+      this.styleRegistry.addFrame(this.animation)
+    },
+
     newObject () {
       window.open('/frame/edit')
     },
@@ -93,12 +133,6 @@ export default {
       this.loadObjects()
     },
 
-    async loadTypeGroup () {
-      const result = await this.framedao.distinct('group', {
-        type: this.type
-      })
-      this.groups = result
-    },
     // 新窗口编辑
     edit (object) {
       window.open('/frame/edit?id=' + object._id)
@@ -110,22 +144,12 @@ export default {
 <style lang="scss">
 #page-frames-list {
   min-height: 100%;
-  color: #fff;
+  color: #0a0a0a;
   font-size: 16px;
-  background: linear-gradient(180deg, #0C003C 0%, #BFFFAF 120%), linear-gradient(165deg, #480045 25%, #E9EAAF 120%), linear-gradient(145deg, #480045 25%, #E9EAAF 100%), linear-gradient(300deg, rgba(233, 223, 255, 0) 0%, #AF89FF 100%), linear-gradient(90deg, #45EBA5 0%, #45EBA5 30%, #21ABA5 30%, #21ABA5 60%, #1D566E 60%, #1D566E 70%, #163A5F 70%, #163A5F 10%);
-  background-blend-mode: overlay, overlay, overlay, multiply, normal;
 
-  .splash {
-    h1 {
-      font-size: 40px;
-      text-align: center;
-    }
-    h2 {
-      font-size: 22px;
-      text-align: center;
-    }
-    height: 10rem;
-    margin: 4rem 0;
+  .body {
+    margin: 30px;
+    width: 100%;
   }
   .list-section {
     background: #fff;
@@ -145,75 +169,67 @@ export default {
       }
     }
   }
-  .object-list {
+
+  .animations {
     display: flex;
     flex-wrap: wrap;
-    .object-item {
-      position: relative;
-      border: #e6e6e6 solid 1px;
-      margin: 20px;
-      justify-content: space-between;
-      border-radius: 1rem;
-      overflow: hidden;
-      width: calc(25% - 60px);
-      padding: 40px 10px;
-      color: #666;
-      perspective: 200px;
-      display: flex;
-      align-items: center;
-      .animation-name {
-        position: absolute;
-        left: 0;
-        top: 10px;
-        width: 100%;
-        text-align: center;
-      }
-      &:nth-of-type(4n) {
-        margin-right: 0;
-      }
-      .item-btns {
-        position: absolute;
-        width: 100%;
-        left: 20px;
-        bottom: 20px;
-        display: none;
-      }
-      &:hover {
-        .item-btns {
-          display: initial;
-        }
-      }
-      .object-container {
-        margin: 30px auto;
-        height: 120px;
-        width: 120px;
-        text-align: center;
-        line-height: 120px;
-        font-size: 22px;
-        img {
-          width: 120px;
-          height: 120px;
-          object-fit: cover;
-        }
-        span {
-          display: block;
-          width: 200px;
-          text-align: center;
-          margin-left: -40px;
-        }
-      }
-      div.svg {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        svg {
-          width: 100%;
-          height: 100%;
-        }
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    .animation {
+      width: 20%;
+      text-align: center;
+      line-height: 32px;
+      cursor: pointer;
+      &.current {
+        background: #00c4cc;
+        color: #fff;
       }
     }
   }
 
+  .animation-box {
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fafafa;
+    position: relative;
+    overflow: hidden;
+    perspective: 160px;
+    img {
+      width: 240px;
+      height: 160px;
+    }
+    .refresh {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      i {
+        font-size: 22px;
+      }
+    }
+  }
+
+  .type-groups {
+    display: flex;
+    flex-wrap: wrap;
+    .group {
+      width: 100px;
+      height: 100px;
+      cursor: pointer;
+      border-radius: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 10px;
+      background-color: #efefef;
+      &.current {
+        background: #00c4cc;
+        color: #fff;
+      }
+    }
+    margin-bottom: 10px;
+  }
 }
 
 </style>

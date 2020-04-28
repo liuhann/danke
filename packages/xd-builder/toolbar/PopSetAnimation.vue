@@ -18,14 +18,19 @@
       <div class="list" v-if="element.animation.enter && element.animation.enter.length">
         <div v-for="(animation, index) in element.animation.enter" :key="index">
           <div class="animation-form">
-            <div class="left">
-              <div class="title">{{animation.title}}</div>
-              <div class="config">
+            <div class="title">{{animation.title}}</div>
+            <div class="config">
+              <div class="line">
                 <div class="delay">
                   延迟 <el-input-number size="mini" v-model="animation.range[0]" controls-position="right" :step="0.1"/> 秒
                 </div>
                 <div class="duration">
-                  次数 <el-input-number :disabled="animation.infinite" size="mini" v-model="animation.iteration" controls-position="right"/>
+                  持续 <el-input-number size="mini" v-model="animation.range[1]" controls-position="right" :step="0.1"/> 秒
+                </div>
+              </div>
+              <div class="line">
+                <div class="duration">
+                  次数 <el-input-number :disabled="animation.infinite" size="mini" v-model="animation.iteration" controls-position="right"/> 次
                 </div>
                 <div class="infinite">
                   循环 <el-checkbox v-model="animation.infinite"></el-checkbox>
@@ -33,7 +38,7 @@
               </div>
             </div>
             <div class="right">
-              <el-button type="danger" icon="el-icon-delete" circle size="mini" @click="removeAnimation('enter', index)"></el-button>
+                <el-button type="danger" icon="el-icon-delete" circle size="mini" @click="removeAnimation('enter', index)"></el-button>
             </div>
           </div>
         </div>
@@ -112,7 +117,6 @@
 </template>
 
 <script>
-import AnimationList from './AnimationList.vue'
 import cubicBeziers from '../../frames/model/cubic-beziers'
 import IconEffect from './res/effects.svg'
 import types from '../../frames/types'
@@ -265,17 +269,27 @@ export default {
       min-height: 160px;
       .animation-form {
         padding: 10px 0;
+        margin-bottom: 10px;
         display: flex;
-        .left {
+        .title {
+          font-size: 1.5rem;
+          width: 90px;
+          padding: 10px;
+          box-sizing: border-box;
+          text-align: center;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .config {
           flex: 1;
-          .title {
-            font-size: 1.5rem;
-            padding: 8px 0;
-          }
-          .config {
-            line-height: 30px;
+          line-height: 30px;
+          .line {
             display: flex;
-            justify-content: space-between;
+            >div {
+              margin-right: 10px;
+            }
           }
         }
         .right {
@@ -284,8 +298,12 @@ export default {
           justify-content: center;
           align-items: center;
         }
+        .el-input-number.is-controls-right .el-input__inner {
+          padding-left: 5px;
+          padding-right: 32px;
+        }
         .el-input-number--mini {
-          width: 88px;
+          width: 64px;
         }
       }
     }
@@ -375,18 +393,6 @@ export default {
         .icon-del {
           width: 36px;
           text-align: right;
-        }
-      }
-    }
-    .animation-form {
-      .form-item {
-        display: flex;
-        margin-top: 10px;
-        line-height: 28px;
-        .label {
-          width: 90px;
-          text-align: right;
-          padding-right: 10px;
         }
       }
     }
