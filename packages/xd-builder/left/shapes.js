@@ -8,8 +8,8 @@ export default [{
   variables: [{
     name: 'backgroundColor',
     label: '背景颜色',
-    value: '#95CFD0',
-    type: 'color'
+    value: 'linear-gradient(0deg, rgba(34,193,195,1) 0%, rgba(34,193,195,1) 100%)',
+    type: 'gradient'
   }]
 }, {
   name: '圆形',

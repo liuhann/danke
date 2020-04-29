@@ -4,6 +4,8 @@
   <template v-for="(variable, index) in elementStyleVariables">
     <!-- 颜色-->
     <el-color-picker :key="index" v-if="variable.type==='color'" v-model="variable.value" show-alpha :predefine="workColors"/>
+    <!-- 渐变颜色的处理-->
+    <pop-set-gradient :key="index" v-if="variable.type==='gradient'" :variable="variable"></pop-set-gradient>
     <!-- 数字-->
     <el-input-number :key="index" v-if="variable.type==='px' || variable.type==='number' || variable.type==='percent'" v-model="variable.value" controls-position="right" size="mini"/>
     <!--字体大小-->
@@ -97,10 +99,12 @@ import FontWeight from './FontWeight'
 import FontSize from './FontSize'
 import AlignElement from './AlignElement.vue'
 import FontFamily from './FontFamily.vue'
+import PopSetGradient from './PopSetGradient'
 export default {
   name: 'Toolbar',
   mixins: [ interactMixins ],
   components: {
+    PopSetGradient,
     PopSetAnimation,
     AlignElement,
     FontSize,
@@ -483,6 +487,13 @@ export default {
     height: 28px;
     width: 28px;
     margin: 0 6px;
+  }
+  i.action {
+    width: 28px;
+    height: 28px;
+    margin: 0 6px;
+    display: inline-block;
+    border-radius: 4px;
   }
   a.action {
     line-height: 28px;
