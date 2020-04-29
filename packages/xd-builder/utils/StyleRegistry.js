@@ -127,6 +127,15 @@ export default class StyleRegistry {
     }
   }
 
+  addFrames (frames) {
+    for (let key in frames) {
+      this.addFrame({
+        name: key,
+        cssFrame: frames[key]
+      })
+    }
+  }
+
   /**
    * 增加frame列表
    * @param {*} frame

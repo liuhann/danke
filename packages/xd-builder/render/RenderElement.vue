@@ -156,7 +156,7 @@ export default {
             // 多个动画次序或者重叠播放
             for (let i = 0; i < animations.length; i++) {
               const animation = animations[i]
-              animationsOrdered.push(`${animation.name} ${animation.range[1]}s ${animation.timing} ${animation.range[0] + lastFinished}s ${animation.infinite? 'infinite': animation.iteration} ${i === animations.length - 1 ? '' : ''}`)
+              animationsOrdered.push(`${animation.name} ${animation.range[1]}s ${animation.timing} ${animation.range[0] + lastFinished}s ${animation.infinite? 'infinite': animation.iteration} ${i === animations.length - 1 ? '' : 'both'}`)
               lastFinished += animation.range[1] + animation.range[0]
             }
             if (animationsOrdered.length) {

@@ -12,65 +12,18 @@
     <div class="element-animation" v-show="!showAnimationChoose">
       <div class="type-title">
         <span>进入动画</span>
-        <el-button size="mini" type="primary" @click="openAnimationChoose('enter')">增加</el-button>
+        <el-button type="text" size="mini" v-if="enterAnimationPastes" @click="pasteAnimation('enter')" icon="el-icon-document-checked" />
+        <el-button type="text" size="mini" @click="copyAnimation('enter')" icon="el-icon-document-copy" />
+        <el-button type="text" size="mini" @click="openAnimationChoose('enter')" icon="el-icon-plus" />
       </div>
-      <div class="empty" v-if="!element.animation.enter || element.animation.enter.length === 0"></div>
-      <div class="list" v-if="element.animation.enter && element.animation.enter.length">
-        <div v-for="(animation, index) in element.animation.enter" :key="index">
-          <div class="animation-form">
-            <div class="title">{{animation.title}}</div>
-            <div class="config">
-              <div class="line">
-                <div class="delay">
-                  延迟 <el-input-number size="mini" v-model="animation.range[0]" controls-position="right" :step="0.1"/> 秒
-                </div>
-                <div class="duration">
-                  持续 <el-input-number size="mini" v-model="animation.range[1]" controls-position="right" :step="0.1"/> 秒
-                </div>
-              </div>
-              <div class="line">
-                <div class="duration">
-                  次数 <el-input-number :disabled="animation.infinite" size="mini" v-model="animation.iteration" controls-position="right"/> 次
-                </div>
-                <div class="infinite">
-                  循环 <el-checkbox v-model="animation.infinite"></el-checkbox>
-                </div>
-              </div>
-            </div>
-            <div class="right">
-                <el-button type="danger" icon="el-icon-delete" circle size="mini" @click="removeAnimation('enter', index)"></el-button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div class="empty" v-if="!element.animation.enter || element.animation.enter.length === 0">未设置动态效果</div>
+      <animation-form v-if="element.animation.enter && element.animation.enter.length" :element="element" type="enter"></animation-form>
       <div class="type-title">
         <span>离开动画</span>
-        <el-button size="mini" type="primary" @click="openAnimationChoose('exist')">增加</el-button>
+        <el-button size="mini" type="text" @click="openAnimationChoose('exist')" icon="el-icon-plus" />
       </div>
-      <div class="empty" v-if="!element.animation.exist || element.animation.exist.length === 0"></div>
-      <div class="list" v-if="element.animation.exist && element.animation.exist.length">
-        <div v-for="(animation, index) in element.animation.exist" :key="index">
-          <div class="animation-form">
-            <div class="left">
-              <div class="title">{{animation.title}}</div>
-              <div class="config">
-                <div class="delay">
-                  延迟 <el-input-number size="mini" v-model="animation.range[0]" controls-position="right" :step="0.1"/> 秒
-                </div>
-                <div class="duration">
-                  次数 <el-input-number :disabled="animation.infinite" size="mini" v-model="animation.iteration" controls-position="right"/>
-                </div>
-                <div class="infinite">
-                  循环 <el-checkbox v-model="animation.infinite"></el-checkbox>
-                </div>
-              </div>
-            </div>
-            <div class="right">
-              <el-button type="danger" icon="el-icon-delete" circle size="mini" @click="removeAnimation('exist', index)"></el-button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div class="empty" v-if="!element.animation.exist || element.animation.exist.length === 0">未设置动态效果</div>
+      <animation-form v-if="element.animation.exist && element.animation.exist.length" :element="element" type="exist"></animation-form>
     </div>
     <div class="animations-choose" v-show="showAnimationChoose">
       <tabs v-model="type" @tab-click="typeChange">
@@ -90,25 +43,6 @@
       <div >
         <el-button size="small" @click="showAnimationChoose = false">取消</el-button> <el-button type="primary" size="small" @click="addAnimation">选择</el-button>
       </div>
-
-      <div class="animation-form">
-        <div class="form-item">
-          <div class="label">持续时间</div>
-          <div class="field"><el-input-number size="mini" controls-position="right" :step="20" v-model="animation.duration" /></div>
-        </div>
-        <div class="form-item">
-          <div class="label">过渡曲线</div>
-          <div class="field">
-            <el-select v-model="animation.timing" size="mini">
-              <el-option v-for="(value, key) in cubicBeziers" :key="key" :label="key" :value="value"/>
-            </el-select>
-          </div>
-        </div>
-        <div class="form-item">
-          <div class="label">延迟</div>
-          <div class="field"><el-input-number v-model="animation.delay" size="mini" controls-position="right" :step="20" /></div>
-        </div>
-      </div>
     </div>
   </div>
 </el-popover>
@@ -123,6 +57,7 @@ import types from '../../frames/types'
 import { TabPane, Tabs, Slider, Button, Popover, InputNumber, Select, Option, Checkbox } from 'element-ui'
 import RestDAO from '../../common/dao/restdao'
 import CLOUD_HILL from '../../vectors/cloud-hill.webp'
+import AnimationForm from './AnimationForm'
 export default {
   name: 'PopSetAnimation',
   props: {
@@ -131,6 +66,7 @@ export default {
     }
   },
   components: {
+    AnimationForm,
     [InputNumber.name]: InputNumber,
     [Popover.name]: Popover,
     [Button.name]: Button,
@@ -161,6 +97,12 @@ export default {
       } else {
         return 'enter'
       }
+    },
+    enterAnimationPastes () {
+      return this.ctx['animation-enter']
+    },
+    existAnimationPastes () {
+      return this.ctx['animation-enter']
     },
     enterAnimations () {
       return this.element.animation.enters || []
@@ -224,8 +166,12 @@ export default {
       this.ctx.styleRegistry.addFrame(this.animation)
     },
 
-    removeAnimation (type, index) {
-      this.element.animation[type].splice(index, 1)
+    pasteAnimation (type) {
+      this.$set(this.element.animation, type, JSON.parse(JSON.stringify(this.ctx['animation-' + type])))
+    },
+
+    copyAnimation (type) {
+      this.$set(this.ctx, 'animation-' + type, JSON.parse(JSON.stringify(this.element.animation[type])))
     },
     // 增加动画
     addAnimation () {
@@ -258,57 +204,21 @@ export default {
   .element-animation {
     .type-title {
       display: flex;
-      font-size: 2rem;
+      font-size: 1.5rem;
       padding: .4rem;
       border-bottom: 1px solid #eee;
+      line-height: 30px;
       span {
         flex: 1;
       }
     }
-    .list {
-      min-height: 160px;
-      .animation-form {
-        padding: 10px 0;
-        margin-bottom: 10px;
-        display: flex;
-        .title {
-          font-size: 1.5rem;
-          width: 90px;
-          padding: 10px;
-          box-sizing: border-box;
-          text-align: center;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        .config {
-          flex: 1;
-          line-height: 30px;
-          .line {
-            display: flex;
-            >div {
-              margin-right: 10px;
-            }
-          }
-        }
-        .right {
-          width: 40px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-        .el-input-number.is-controls-right .el-input__inner {
-          padding-left: 5px;
-          padding-right: 32px;
-        }
-        .el-input-number--mini {
-          width: 64px;
-        }
-      }
-    }
     .empty {
       height: 160px;
+      color: #999999;
+      font-size: 1.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   }
   .animations-choose {

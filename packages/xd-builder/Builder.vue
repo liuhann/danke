@@ -14,6 +14,7 @@
       @change="workChange"
       @undo="undo"
       @redo="redo"
+      @refresh="refreshScene"
       @scale-change="scaleChange"
       @prev-scene="previousScene"
       @next-scene="nextScene"
@@ -45,6 +46,7 @@ import SceneContainer from './SceneContainer.vue'
 import LeftAside from './left/LeftAside.vue'
 import 'element-ui/packages/theme-chalk/lib/icon.css'
 import Toolbar from './toolbar/Toolbar'
+import { shortid } from '../utils/string'
 export default {
   name: 'Builder',
   components: {
@@ -97,6 +99,20 @@ export default {
           this.currentAnimation = object
         default:
       }
+    },
+
+    refreshScene () {
+      let current = this.currentScene
+      this.currentScene = {
+        id: shortid(),
+        elements: [],
+        animation: {},
+        z: 100
+      }
+
+      this.$nextTick(() => {
+        this.currentScene = current
+      })
     },
 
     workChange () {

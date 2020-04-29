@@ -17,10 +17,6 @@
       <i class="el-icon-picture-outline"/>
       <span>图片</span>
     </div>
-    <div class='category' :class="current === 'animation'? 'current': ''" @click="toggleTo('animation')">
-      <i class="el-icon-magic-stick"/>
-      <span>动画</span>
-    </div>
     <div class='category'>
       <i class="el-icon-service"/>
       <span>音乐</span>
@@ -51,11 +47,6 @@
         <left-shape-list v-if="current === 'shape'" />
       </keep-alive>
     </transition>
-    <transition name="fade">
-      <keep-alive>
-        <animation-list v-if="current === 'animation'" @animation="insertAnimation"/>
-      </keep-alive>
-    </transition>
   </div>
 </aside>
 </template>
@@ -67,11 +58,9 @@ import ImageUpload from './ImageList.vue'
 import LeftSceneTemplate from './SceneList.vue'
 import LeftShapeList from './ShapeList.vue'
 import TextList from './TextList'
-import AnimationList from './AnimationList.vue'
 
 export default {
   components: {
-    AnimationList,
     TextList,
     ImageUpload,
     LeftSceneTemplate,

@@ -3,12 +3,10 @@
   <div class="content-title">我的作品</div>
   <div class="my-work-list" ref="myWorkList">
     <div class="work" v-for="work in works" :key="work.id">
-      <render-scene :work="work" :scene="work.scenes[0]" :view-port="work.viewport"/>
+      <render-scene :work="work" :scene="work.scenes[0]" :view-port="work.viewport" :stage="work.stage"/>
       <div class="actions">
-        <div class="name">
-          {{work.name}}
-        </div>
         <div class="btns">
+          <i class="el-icon-video-camera" @click="replayWork(work)"/>
           <i class="el-icon-delete" @click="removeWork(work)"/>
           <i class="el-icon-edit" @click="editWork(work)"/>
         </div>
@@ -48,7 +46,7 @@ export default {
       if (this.ctx.user) {
         const result = await this.workdao.list({
           'creator': this.ctx.user.id,
-          'projection': 'scenes.1,updated,created,ratio,creator,screen,name,id'
+          'projection': 'scenes.1,updated,created,ratio,creator,screen,name,id,frames'
         })
 
         const svgs = []
@@ -58,6 +56,11 @@ export default {
               svgs.push(element.svg)
             }
           })
+          work.stage = 'enter'
+
+          if (work.frames) {
+            this.ctx.styleRegistry.addFrames(work.frames)
+          }
         }
         console.log('svgs', svgs)
         const svgRes = await this.svgdao.multiGet(svgs)
@@ -75,6 +78,14 @@ export default {
         // this.lines = flowSchedule(this.works, this.$refs.myWorkList.offsetWidth, 25, 256)
       }
     },
+
+    replayWork (work) {
+      work.stage = 'exist'
+      setTimeout(() => {
+        work.stage = 'enter'
+      }, 100)
+    },
+
     editWork (work) {
       window.open('/xd?work=' + work.id)
     },
@@ -94,11 +105,23 @@ export default {
     display: flex;
     flex-wrap: wrap;
     .work {
-      height: 296px;
+      height: 246px;
       margin: 20px 16px;
+      cursor: pointer;
+
+      &:hover {
+        .scene {
+          border: 1px solid var(--mainColorHover);
+        }
+        .actions {
+          display: flex;
+        }
+      }
+
       .actions {
-        display: flex;
+        display: none;
         padding: 10px 0;
+        justify-content: center;
         .name {
           flex: 1;
         }
@@ -107,6 +130,7 @@ export default {
           i {
             font-size: 16px;
             cursor: pointer;
+            color: var(--mainColor);
             margin: 0 10px;
           }
         }

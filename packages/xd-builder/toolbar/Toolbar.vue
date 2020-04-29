@@ -3,7 +3,7 @@
   <!--  样式变量的修改-->
   <template v-for="(variable, index) in elementStyleVariables">
     <!-- 颜色-->
-    <color-pop-picker :key="index" v-if="variable.type==='color'" :work="work" :color="variable.value" model="color" @input="variableColorInput(variable, $event)"/>
+    <el-color-picker :key="index" v-if="variable.type==='color'" v-model="variable.value" show-alpha :predefine="workColors"/>
     <!-- 数字-->
     <el-input-number :key="index" v-if="variable.type==='px' || variable.type==='number' || variable.type==='percent'" v-model="variable.value" controls-position="right" size="mini"/>
     <!--字体大小-->
@@ -58,8 +58,12 @@
     <a class="action" v-if="noFocusedElement" @click="nextScene"><i class="el-icon-arrow-down" /></a>
     <a class="action" v-if="noFocusedElement"> {{scenes.indexOf(scene) + 1}}/{{scenes.length}}</a>
 
+    <el-tooltip class="item" effect="dark" content="播放" placement="bottom" v-if="noFocusedElement" >
+      <a class="action" @click="playScene"><icon-play/></a>
+    </el-tooltip>
+
     <el-popover v-if="noFocusedElement" placement="bottom" width="360" trigger="click" popper-class="padding-0">
-      <a class="action" slot="reference"><i class="el-icon-setting" /></a>
+      <a class="action" slot="reference"><icon-share /></a>
       <setting-panel :work="work"/>
     </el-popover>
   </div>
@@ -67,12 +71,11 @@
 </template>
 
 <script>
-import { Button, ButtonGroup, Popover, Slider, Select, Option, Tooltip, InputNumber } from 'element-ui'
+import { Button, ButtonGroup, Popover, Slider, Select, Option, Tooltip, InputNumber, ColorPicker } from 'element-ui'
 import { shortid } from '../../utils/string'
 import interactMixins from '../mixins/interactMixins.js'
 import SettingPanel from './SettingPanel'
 import ColorPopPicker from './ColorPopPicker'
-import PopClipList from './PopClipList'
 import PopSetAnimation from './PopSetAnimation'
 import PopMoreAction from './PopMoreAction'
 import PopTransparent from './PopTransparent'
@@ -85,6 +88,8 @@ import IconRedo from './res/redo.svg'
 import IconLock from './res/lock.svg'
 import IconUnlock from './res/unlock.svg'
 import IconClean from './res/clean.svg'
+import IconPlay from './res/play.svg'
+import IconShare from './res/share.svg'
 import IconEffect from './res/effect.svg'
 import PopTransform from './PopTransform'
 import TextAlign from './TextAlign'
@@ -105,17 +110,18 @@ export default {
     PopTransparent,
     PopTransform,
     PopMoreAction,
-    ColorPopPicker,
     SettingPanel,
     IconUndo,
     IconBrush,
     IconGroup,
     IconCopy,
+    IconShare,
     IconTrash,
     IconRedo,
     IconLock,
     IconUnlock,
-    IconClean,
+    IconPlay,
+    [ColorPicker.name]: ColorPicker,
     [Tooltip.name]: Tooltip,
     [Select.name]: Select,
     [Option.name]: Option,
@@ -154,6 +160,22 @@ export default {
     }
   },
   computed: {
+    workColors () {
+      const colors = []
+      for (let scene of this.work.scenes) {
+        for (let element of scene.elements) {
+          if (element.variables) {
+            for (let variable of element.variables) {
+              if (variable.type === 'color') {
+                colors.push(variable.value)
+              }
+            }
+          }
+        }
+      }
+      return Array.from(new Set(colors))
+    },
+
     noFocusedElement () {
       if (this.scene && this.scene.elements) {
         return this.scene.elements.filter(el => el.selected).length === 0
@@ -414,6 +436,10 @@ export default {
       }
     },
 
+    playScene () {
+      this.$emit('refresh')
+    },
+
     log () {
       console.log(this.selectedElements, this.scene, this.work)
     },
@@ -451,6 +477,12 @@ export default {
   }
   .el-input-number--mini {
     width: 60px;
+  }
+  .el-color-picker__trigger {
+    padding: 0;
+    height: 28px;
+    width: 28px;
+    margin: 0 6px;
   }
   a.action {
     line-height: 28px;
