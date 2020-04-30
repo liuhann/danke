@@ -1,14 +1,16 @@
 <template>
 <div class="page-slide-preview">
-  <div class="device" v-if="work && viewPort" :style="deviceStyle">
-    <render-scene v-if="currentScene" :scene="currentScene" stage="enter" :work="work" :view-port="viewPort"/>
-    <render-scene v-if="lastScene" :scene="lastScene" stage="exist" :work="work" :view-port="viewPort"/>
+  <div class="preview-container">
+    <div class="device" v-if="work && viewPort" :style="deviceStyle">
+      <render-scene v-if="currentScene" :scene="currentScene" stage="enter" :work="work" :view-port="viewPort"/>
+      <render-scene v-if="lastScene" :scene="lastScene" stage="exist" :work="work" :view-port="viewPort"/>
+    </div>
   </div>
-  <i class="el-icon-right abs-actions" @click="nextScene"></i>
-  <i class="el-icon-back abs-actions" @click="previousScene"></i>
+  <i class="el-icon-right abs-actions" v-if="nextScene" @click="enterScene(nextScene)"></i>
+  <i class="el-icon-back abs-actions" v-if="prevScene" @click="enterScene(prevScene)"></i>
   <div class="action-bar">
     <div class="action-button"><i class="el-icon-position" /></div>
-    <div class="action-button"><i class="el-icon-full-screen" /></div>
+    <div class="action-button" @click="enterFullScreen"><i class="el-icon-full-screen" /></div>
   </div>
 </div>
 </template>
@@ -27,6 +29,9 @@ export default {
   },
   data () {
     return {
+      nextScene: null,
+      currentScene: null,
+      prevScene: null,
       viewPort: null,
       work: null
     }
@@ -53,6 +58,16 @@ export default {
   mounted () {
     let workId = this.$route.query.work || this.$route.params.work
     this.loadAndInitDevice(workId)
+
+    window.addEventListener(
+      "resize", () => {
+        // 设置显示屏幕大小
+        this.viewPort = fitRectIntoBounds(this.work.screen, {
+          width: this.$el.offsetWidth - 48,
+          height: this.$el.offsetHeight - 48 - 48
+        })
+      },false
+    );
   },
   methods: {
     async loadAndInitDevice (workId) {
@@ -63,7 +78,29 @@ export default {
         width: this.$el.offsetWidth - 48,
         height: this.$el.offsetHeight - 48 - 48
       })
-      this.currentScene = this.work.scenes[0]
+      this.enterScene(0)
+    },
+
+    async enterScene (scene) {
+      let index = scene
+      if (typeof scene !== 'number') {
+        index = this.work.scenes.indexOf(scene)
+      }
+      this.currentScene = this.work.scenes[index]
+      if (this.work.scenes.length - 1 > index) {
+        this.nextScene = this.work.scenes[index + 1]
+      } else {
+        this.nextScene = null
+      }
+      if (index > 0) {
+        this.prevScene = this.work.scenes[index - 1]
+      } else {
+        this.prevScene = null
+      }
+    },
+
+    enterFullScreen () {
+
     }
   }
 }
@@ -74,9 +111,15 @@ export default {
 .page-slide-preview {
   height: 100%;
   box-sizing: border-box;
-  padding: 24px 0 0 0;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
-
+  .preview-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
   .abs-actions {
     position: absolute;
     font-size: 3rem;
@@ -95,6 +138,7 @@ export default {
   }
 
   .action-bar {
+    border-top: 1px solid #efefef;
     font-size: 2rem;
     height: 48px;
     line-height: 48px;

@@ -494,6 +494,11 @@ export default {
     margin: 0 6px;
     display: inline-block;
     border-radius: 4px;
+    cursor: pointer;
+    &:hover, &.on {
+      cursor: pointer;
+      box-shadow:inset 0 0 0 2px var(--mainColor);
+    }
   }
   a.action {
     line-height: 28px;
