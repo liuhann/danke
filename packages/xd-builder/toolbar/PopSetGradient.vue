@@ -13,16 +13,17 @@
     <el-radio-group v-model="gradientType" @change="typeChange">
       <el-radio label="radial-gradient">圆形渐变</el-radio>
       <el-radio label="linear-gradient">线型渐变</el-radio>
+      <el-radio label="repeating-linear-gradient">线型重复渐变</el-radio>
     </el-radio-group>
 
-    <div class="set-deg form-item" v-if="gradients && gradientType === 'linear-gradient'">
+    <div class="set-deg form-item" v-if="gradients && gradients.colorStopList.length > 1 && gradientType.indexOf('linear-gradient')>-1">
       <label>角度</label>
       <div class="position">
         <el-slider v-model="gradients.angle" :max="360"/>
       </div>
     </div>
 
-    <div class="set-cc form-item" v-if="gradients && gradientType === 'radial-gradient'">
+    <div class="set-cc form-item" v-if="gradients && gradients.colorStopList.length > 1 && gradientType === 'radial-gradient'">
       <label>圆心</label>
       <div class="field">
         <el-input-number @change="generate" size="mini" controls-position="right" v-model="cc[0]"/>
@@ -33,9 +34,7 @@
     <div class="steps" v-if="gradients">
       <div class="stops-title stop">
         <div class="stop-color">颜色</div>
-        <div class="stop-position">
-          位置
-        </div>
+        <div class="stop-position">位置</div>
         <div class="stop-action"> <i @click="addColorStop" class="el-icon-plus"></i> </div>
       </div>
 
@@ -44,10 +43,10 @@
           <el-color-picker show-alpha v-model="step.color"/>
         </div>
         <div class="stop-position">
-          <el-slider v-model="step.position" :max="100"/>
+          <el-input-number size="mini" controls-position="right" v-model="step.position"/>
         </div>
         <div class="stop-action">
-          <i class="el-icon-close"></i>
+          <i class="el-icon-close" @click="deleteColorStop(index)"></i>
         </div>
       </div>
     </div>
@@ -57,7 +56,7 @@
 </template>
 
 <script>
-import { RadioGroup, Radio, Popover, Slider, ColorPicker, InputNumber } from 'element-ui'
+import { RadioGroup, Radio, Popover, Slider, ColorPicker, InputNumber, Checkbox } from 'element-ui'
 import { generateRegExp, parseGradient } from '../utils/parseGradient'
 
 const regExpLib = generateRegExp()
@@ -70,6 +69,7 @@ export default {
     [Radio.name]: Radio,
     [ColorPicker.name]: ColorPicker,
     [Slider.name]: Slider,
+    [Checkbox.name]: Checkbox,
     [InputNumber.name]: InputNumber
   },
   props: {
@@ -80,6 +80,7 @@ export default {
   data () {
     return {
       gradientType: '',
+      repeating: false,
       cc: [50, 50],
       gradients: null,
     }
@@ -106,21 +107,31 @@ export default {
     show () {
       const rGradientEnclosedInBrackets = /.*gradient\s*\(((?:\([^\)]*\)|[^\)\(]*)*)\)/ // Captures inside brackets - max one additional inner set.
       const match = rGradientEnclosedInBrackets.exec(this.variable.value);
-      this.gradientType = this.variable.value.match('[^(]+')[0]
-      const gradients = parseGradient(regExpLib, match[1])
-      if (this.gradientType === 'linear-gradient') {
-        gradients.angle = parseInt(gradients.angle)
+      if (match && match.length) {
+        this.gradientType = this.variable.value.match('[^(]+')[0]
+        const gradients = parseGradient(regExpLib, match[1])
+        if (this.gradientType.indexOf('linear-gradient') > -1 ) {
+          // include linear-gradient
+          gradients.angle = parseInt(gradients.angle)
+        } else {
+          if (gradients.colorStopList[0].color === 'at') {
+            this.cc = gradients.original.substring(0, gradients.original.indexOf(',')).match(/ \d+/g).map(m => parseInt(m))
+            gradients.colorStopList.shift()
+          }
+        }
+        for (let stop of gradients.colorStopList) {
+          stop.position = parseInt(stop.position)
+        }
+        this.gradients = gradients
       } else {
-        if (gradients.colorStopList[0].color === 'at') {
-          this.cc = gradients.original.substring(0, gradients.original.indexOf(',')).match(/ \d+/g).map(m => parseInt(m))
-          gradients.colorStopList.shift()
+        this.gradientType = 'linear-gradient'
+        this.gradients = {
+          colorStopList: [{
+            color: this.variable.value,
+            position: 0
+          }]
         }
       }
-
-      for (let stop of gradients.colorStopList) {
-        stop.position = parseInt(stop.position)
-      }
-      this.gradients = gradients
     },
 
     typeChange () {
@@ -135,20 +146,24 @@ export default {
     },
 
     deleteColorStop (index) {
-      if (this.gradients.colorStopList.length > 2) {
+      if (this.gradients.colorStopList.length > 1) {
         this.gradients.colorStopList.splice(index, 1)
       }
     },
 
     generate () {
-      if (this.gradientType === 'linear-gradient') {
-        this.variable.value = this.gradientType + '(' + this.gradients.angle + 'deg,'
+      if (this.gradients.colorStopList.length > 1) {
+        if (this.gradientType.indexOf('linear-gradient') > -1) {
+          this.variable.value = this.gradientType + '(' + this.gradients.angle + 'deg,'
+              + this.gradients.colorStopList.map(stop => stop.color + ' ' + stop.position + '%').join(',')
+            + ')'
+        } else {
+          this.variable.value = `radial-gradient(at ${this.cc[0]}% ${this.cc[1]}%,`
             + this.gradients.colorStopList.map(stop => stop.color + ' ' + stop.position + '%').join(',')
-          + ')'
+            + ')'
+        }
       } else {
-        this.variable.value = `radial-gradient(at ${this.cc[0]}% ${this.cc[1]}%,`
-          + this.gradients.colorStopList.map(stop => stop.color + ' ' + stop.position + '%').join(',')
-          + ')'
+        this.variable.value = this.gradients.colorStopList[0].color
       }
     }
   }
