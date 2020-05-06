@@ -41,14 +41,13 @@ export default class RestDAO {
   }
 
   async create (o) {
-    return (await this.ctx.post(`${this.path}`, {
-      json: o
-    })).json()
+    const response = await this.ctx.post(`${this.path}`, o)
+    return response.data
   }
 
   async regex (prop, value, limit) {
-    const result = await this.ctx.get(`${this.path}/regex/${prop}/${value}?limit=${limit || 1000}`, {}).json()
-    return result
+    const result = await this.ctx.get(`${this.path}/regex/${prop}/${value}?limit=${limit || 1000}`)
+    return result.data
   }
 
   async patch (id, json) {
@@ -57,13 +56,11 @@ export default class RestDAO {
   }
 
   async delete (o) {
-    const result = await this.ctx.delete(`${this.path}/${o._id}`).json()
-    return result
+    const response = await this.ctx.delete(`${this.path}/${o._id}`)
+    return response.data
   }
   async distinct (field, json) {
-    const result = await this.ctx.post(`${this.path}/distinct/${field}`, {
-      json
-    }).json()
-    return result
+    const response = await this.ctx.post(`${this.path}/distinct/${field}`, json)
+    return response.data
   }
 }
