@@ -17,10 +17,10 @@ export default {
     ctx.userdao = new UserDAO(ctx)
     const mi = new Date().getTime()
     ctx.user = await ctx.userdao.getCurrentUser()
-    const dura = new Date().getTime() - mi
-
-    if (dura < 700) {
-      await sleep( 700 - dura)
-    }
+    // const dura = new Date().getTime() - mi
+    //
+    // if (dura < 500) {
+    //   await sleep( 700 - dura)
+    // }
   }
 }

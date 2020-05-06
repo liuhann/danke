@@ -62,7 +62,6 @@ export default {
             this.ctx.styleRegistry.addFrames(work.frames)
           }
         }
-        console.log('svgs', svgs)
         const svgRes = await this.svgdao.multiGet(svgs)
         for (let res of svgRes.list) {
           this.ctx.styleRegistry.addVector(res)

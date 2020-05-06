@@ -2,8 +2,9 @@ class UserDAO {
   constructor (ctx) {
     this.ctx = ctx
   }
-  getCurrentUser () {
-    return this.ctx.get(`user/current`).json()
+  async getCurrentUser () {
+    const response = await this.ctx.get(`user/current`)
+    return response.data
   }
 
   register (username, password, nickname, captcha) {
@@ -16,14 +17,13 @@ class UserDAO {
       }
     }).json()
   }
-  login (name, password, captcha) {
-    return this.ctx.post(`user/login`, {
-      json: {
-        name,
-        password,
-        captcha
-      }
-    }).json()
+  async login (name, password, captcha) {
+    const response = await this.ctx.post(`user/login`, {
+      name,
+      password,
+      captcha
+    })
+    return response.data
   }
 
   async logout() {
@@ -31,7 +31,8 @@ class UserDAO {
   }
 
   async getCaptcha () {
-    return this.ctx.get(`captcha`).json()
+    const response = await this.ctx.get(`captcha`)
+    return response.data
   }
 
   async setAvatar (url) {

@@ -14,21 +14,18 @@ export default class RestDAO {
     return str.join('&')
   }
   async getOne (id) {
-    const result = await this.ctx.get(`${this.path}/${id}`).json()
-    return result
+    const result = await this.ctx.get(`${this.path}/${id}`)
+    return result.data
   }
   async list (filter) {
-    const result = await this.ctx.get(`${this.path}?${this.serialize(filter)}`).json()
-    return result
+    const result = await this.ctx.get(`${this.path}?${this.serialize(filter)}`)
+    return result.data
   }
   async multiGet (ids) {
     const result = await this.ctx.post(`${this.path}/id`, {
-      json: {
-        ids
-      }
-    }).json()
-
-    return result
+      ids
+    })
+    return result.data
   }
 
   /**
@@ -55,10 +52,8 @@ export default class RestDAO {
   }
 
   async patch (id, json) {
-    const result = await this.ctx.ky.patch(`${this.path}/${id}`, {
-      json
-    }).json()
-    return result
+    const result = await this.ctx.patch(`${this.path}/${id}`, json)
+    return result.data
   }
 
   async delete (o) {
