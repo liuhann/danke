@@ -1,5 +1,6 @@
 import UserDAO from './userdao'
 import { getToken, resetToken } from './token'
+import sleep from '../common/utils/sleep'
 export default {
   routes: [{
     path: '/login',
@@ -14,7 +15,12 @@ export default {
   async onload (ctx) {
     ctx.token = getToken()
     ctx.userdao = new UserDAO(ctx)
-    const user = await ctx.userdao.getCurrentUser()
-    ctx.user = user
+    const mi = new Date().getTime()
+    ctx.user = await ctx.userdao.getCurrentUser()
+    const dura = new Date().getTime() - mi
+
+    if (dura < 700) {
+      await sleep( 700 - dura)
+    }
   }
 }

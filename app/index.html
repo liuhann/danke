@@ -37,23 +37,51 @@ window.onerror = function(message, source, lineno, colno, error) {
 </head>
 <body>
 <div id="app">
-</div>
-<footer class="footer" id="footer">
-  <div class="container">
-    <div class="columns">
-      <div class="column is-4">
-        <div class="bd-footer-tsp">
-          Source code licensed <a href="https://opensource.org/licenses/mit-license.php">MIT</a>.
-        </div>
-        <div >
-          网站备案号<a href="http://www.beian.miit.gov.cn"> 京ICP备14044474号-3</a> | 蛋壳分享
-        </div>
-        <div >
-          © 2018-2020 DANKE.FUN
-        </div>
-      </div>
+  <style>
+    #app {
+      height: 90vh;
+    }
+    .focus-in-contract {
+      animation: focus-in-contract 0.7s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+    }
+    @keyframes focus-in-contract {
+      0% {
+        letter-spacing: 1em;
+        filter: blur(12px);
+        opacity: 0;
+      }
+      100% {
+        filter: blur(0px);
+        opacity: 1;
+      }
+    }
+    h2.msg {
+      height: 90%;
+      line-height: 80vh;
+      font-size: 24px;
+      display: flex;
+      justify-content: center;
+      font-weight: normal;
+    }
+    #footer {
+      display: none;
+    }
+    .beian {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      text-align: right;
+    }
+  </style>
+  <h2 class="msg focus-in-contract">正在进入网站</h2>
+  <div class="beian">
+    <div>
+      网站备案号<a href="http://www.beian.miit.gov.cn"> 京ICP备14044474号-3</a> | 蛋壳分享
+    </div>
+    <div >
+      © 2018-2020 DANKE.FUN
     </div>
   </div>
-</footer>
+</div>
 </body>
 </html>

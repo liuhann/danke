@@ -6,7 +6,6 @@ const beforeEnter = (to, from, next) => {
     to.meta.ctx.toPath = to.path
     next('/login')
   } else {
-    document.getElementById('footer').style.display = 'none'
     next()
   }
 }
@@ -43,7 +42,6 @@ export default {
     component: () => import(/* webpackChunkName: "xd" */'./Builder.vue')
   }, {
     path: '/slide/:work',
-    beforeEnter,
     component: () => import(/* webpackChunkName: "preview" */'./preview/SlidePreview.vue')
   }],
   async onload (ctx) {

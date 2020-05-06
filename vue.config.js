@@ -1,7 +1,6 @@
 module.exports = {
-  productionSourceMap: true,
+  productionSourceMap: false,
   transpileDependencies: ['async-boot', 'ky'],
-
   devServer: {
     host: 'localhost',
     contentBase: './public',
@@ -27,15 +26,15 @@ module.exports = {
   chainWebpack: config => {
     // remove the prefetch plugin
     config.plugins.delete('prefetch-index')
-
-    const svgRule = config.module.rule('svg');
-    svgRule.uses.clear();
-    svgRule
-      .use('babel-loader')
-      .loader('babel-loader')
-      .end()
-      .use('vue-svg-loader')
-      .loader('vue-svg-loader');
+    //
+    // const svgRule = config.module.rule('svg');
+    // svgRule.uses.clear();
+    // svgRule
+    //   .use('babel-loader')
+    //   .loader('babel-loader')
+    //   .end()
+    //   .use('vue-svg-loader')
+    //   .loader('vue-svg-loader');
   },
 
   lintOnSave: undefined

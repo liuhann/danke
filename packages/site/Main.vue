@@ -89,13 +89,15 @@
       </div>
     </div>
   </section>
+  <nav-footer />
 </div>
 </template>
 <script>
 import NavBar from './components/NavBar'
+import NavFooter from './components/NavFooter'
 export default {
   name: 'view.vue',
-  components: { NavBar },
+  components: { NavFooter, NavBar },
   created () {
 
   }
