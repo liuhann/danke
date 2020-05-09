@@ -10,7 +10,7 @@
         v-for="(block, index) in blocks"
         :key="index"
         class="block" draggable @dragstart="dragStart(block, $event)">
-        <render-scene :scene="block" :view-port="block.viewPort" :view-box="block.viewBox" stage="in"/>
+        <render-scene :scene="block" :view-port="block.viewPort" :view-box="block.viewBox" stage="enter"/>
       </div>
     </div>
 </div>
@@ -46,21 +46,18 @@ export default {
     this.fetchBlocks()
   },
   methods: {
+    dragStart (block, ev) {
+      ev.dataTransfer.setData('Text', JSON.stringify(block))
+    },
     async fetchBlocks () {
       const result = await this.blockdao.list({
         page: this.currentPage,
         count: this.pageCount
       })
       for (let block of result.list) {
-        if (block.viewBox) {
-          block.viewBox = {
-            width: 500,
-            height: 200
-          }
-        }
         block.viewPort = fitRectIntoBounds(block.viewBox, {
-          width: 120,
-          height: 120
+          width: 140,
+          height: 140
         })
       }
       this.blocks = result.list
@@ -72,30 +69,35 @@ export default {
 <style lang="scss">
 #addon-block-list {
   .search-box {
+    .el-input {
+      background: transparent;
+      border: none;
+
+      .el-input-group__append {
+        background: #545961;
+        border: none;
+      }
+    }
     margin: 10px;
     input {
+      background: rgba(255, 255, 255,.1);
+      border: none;
+      color: #ddd;
       &:hover {
         box-shadow: none;
       }
     }
   }
-  .pack {
-    .pack-title {
-      padding: 10px;
+  .block-list-container {
+    display: flex;
+    flex-wrap: wrap;
+    .block {
+      justify-content: center;
+      align-items: center;
+      width: 148px;
+      height: 148px;
+      padding: 8px;
       display: flex;
-      font-size: 1.5rem;
-      .text {
-        flex: 1;
-        font-weight: bold;
-        color: #fff;
-      }
-      .more {
-        color: #99a9bf;
-        cursor: pointer;
-        &:hover {
-          color: rgba(153, 169, 191, 0.6);
-        }
-      }
     }
   }
 }

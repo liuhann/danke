@@ -423,20 +423,20 @@ export default {
       }
       return targetElement
     },
+
     // Drag over and set as allow drop
     sceneDragOver (ev) {
-      let targetElement = this.getEventToElement(ev)
-      if (targetElement && !targetElement.locked) {
-        this.$set(targetElement, 'hover', true)
-      }
-      for (let element of this.scene.elements) {
-        if (element !== targetElement && element.hover) {
-          this.$set(element, 'hover', false)
-        }
-      }
+      // let targetElement = this.getEventToElement(ev)
+      // if (targetElement && !targetElement.locked) {
+      //   this.$set(targetElement, 'hover', true)
+      // }
+      // for (let element of this.scene.elements) {
+      //   if (element !== targetElement && element.hover) {
+      //     this.$set(element, 'hover', false)
+      //   }
+      // }
       ev.preventDefault()
     },
-
     /**
      * 放置元素到页面
      */
@@ -446,25 +446,24 @@ export default {
       const data = ev.dataTransfer.getData('Text')
       const element = JSON.parse(data)
       if (targetElement) {
-        targetElement.hover = false
-        if (!targetElement.locked && element.maskable && targetElement.url) {
-          // 对于图片，可以将形状覆盖上面形成遮罩
-          Object.assign(targetElement.style, element.style)
-          if (targetElement.variables) {
-            targetElement.variables = targetElement.variables.concat(element.variables)
-          } else {
-            this.$set(targetElement, 'variables', element.variables)
-          }
-        } else {
-          // 获取偏移位置
-          this.createNewElementFromTemplate(element, ev.offsetX + targetElement.x, ev.offsetY + targetElement.y)
-        }
+        // targetElement.hover = false
+        this.createNewElementFromTemplate(element, ev.offsetX + targetElement.x, ev.offsetY + targetElement.y)
       } else {
         this.createNewElementFromTemplate(element, ev.offsetX, ev.offsetY)
       }
     },
 
     createNewElementFromTemplate (element, x, y) {
+      if (element.elements) {
+        // 从模板创建  自动成为一个block
+        this.createBlockFromTemplate(element, x, y)
+      } else {
+        // 单节点创建
+        this.createSingleElement(element, x, y)
+      }
+    },
+
+    createSingleElement (element, x, y) {
       const id = shortid()
       // 此处设置节点的基本属性
       const node = {
@@ -503,6 +502,31 @@ export default {
       this.$emit('change')
       this.$nextTick(() => {
         this.initElementDragResize(node)
+      })
+    },
+
+    createBlockFromTemplate(element, x, y) {
+      for (let frame in element.frames) {
+        this.ctx.styleRegistry.addFrame({
+          name: frame,
+          cssFrame: element.frames[frame]
+        })
+      }
+      const block = {
+        id: shortid(),
+        elements: element.elements,
+        name: element.name,
+        animation: {},
+        selected: true,
+        x: x,
+        y: y,
+        width: element.viewBox.width,
+        height: element.viewBox.height
+      }
+      this.scene.elements.push(block)
+
+      this.$nextTick( ()=> {
+        this.initElementDragResize(block)
       })
     },
 

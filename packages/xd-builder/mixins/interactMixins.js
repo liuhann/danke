@@ -63,10 +63,16 @@ export default {
         const xRatio = target.width / node.width
         const yRatio = target.height / node.height
         for (let element of node.elements) {
-          element.x = element.x * xRatio
-          element.width = element.width * xRatio
-          element.y = element.y * yRatio
-          element.height = element.height * yRatio
+          const elementResize = {
+            x: element.x * xRatio,
+            y: element.y * yRatio,
+            width: element.width * xRatio,
+            height: element.height * yRatio
+          }
+          if (node.elements && node.elements.length) {
+            this.resizeBlockElements(element, elementResize )
+          }
+          Object.assign(element, elementResize)
           if (element.variables) {
             let fonts = element.variables.filter(variable => variable.type === 'fontSize')
             if (fonts.length) {
@@ -75,6 +81,7 @@ export default {
               })
             }
           }
+
         }
       }
     },

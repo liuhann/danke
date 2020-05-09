@@ -38,6 +38,11 @@
     </transition>
     <transition name="fade">
       <keep-alive>
+         <left-block-list v-if="current === 'block'"/>
+      </keep-alive>
+    </transition>
+    <transition name="fade">
+      <keep-alive>
         <left-scene-template v-if="current === 'scene'" @insert="insertNewScene"/>
       </keep-alive>
     </transition>
@@ -62,9 +67,11 @@ import ImageUpload from './ImageList.vue'
 import LeftSceneTemplate from './SceneList.vue'
 import LeftShapeList from './ShapeList.vue'
 import TextList from './TextList'
+import LeftBlockList from './LeftBlockList.vue'
 
 export default {
   components: {
+    LeftBlockList,
     TextList,
     ImageUpload,
     LeftSceneTemplate,

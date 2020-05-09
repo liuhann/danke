@@ -54,7 +54,7 @@ export default {
       if (this.ctx.user) {
         const result = await this.workdao.list({
           'creator': this.ctx.user.id,
-          'projection': 'scenes.1,updated,created,ratio,creator,screen,name,id,frames'
+          'projection': 'scenes.1,updated,created,ratio,creator,screen,name,id,frames,viewBox'
         })
 
         const svgs = []

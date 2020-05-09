@@ -5,7 +5,7 @@
   <!--图片渲染-->
   <img v-if="element.url" :id="'img-' + (element.name || element.id)" :src="getImageUrl(element.url, viewPort.width, viewPort.height)" :style="element.style">
   <div v-else-if="element.content" class="svg-content" v-html="element.content" :style="element.style"/>
-  <div v-else-if="element.elements" class="block" :style="element.style">
+  <div v-else-if="element.elements" class="block-elements" :style="element.style">
     <render-element v-for="(el, i) in element.elements" :key="el.id" :view-box="viewBox" :view-port="viewPort" :element="el" :index="i" />
   </div>
   <div v-else-if="!element.text" class="shape" :style="element.style">
