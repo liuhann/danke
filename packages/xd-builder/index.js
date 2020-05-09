@@ -24,6 +24,9 @@ export default {
       path: 'vectors',
       component: () => import(/* webpackChunkName: "xd-creative" */'./center/MyVectorPacks.vue'),
     }, {
+      path: 'blocks',
+      component: () => import(/* webpackChunkName: "xd-creative" */'./center/MyBlocks.vue'),
+    }, {
       path: 'images',
       component: () => import(/* webpackChunkName: "xd-creative" */'./center/MyImagePacks.vue'),
     }, {

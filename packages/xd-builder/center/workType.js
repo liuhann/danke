@@ -1,10 +1,4 @@
 export default [{
-  name: '全面屏手机',
-  width: 414,
-  height: 896,
-  img: '/res/1x2.png',
-  desc: '适用iPhone X/Mate 30等全面屏手机'
-}, {
   name: '手机展示',
   width: 360,
   height: 640,

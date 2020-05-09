@@ -40,7 +40,7 @@
 
       <div class="stop form-item" v-for="(step, index) in gradients.colorStopList" :key="index">
         <div class="stop-color">
-          <el-color-picker show-alpha v-model="step.color"/>
+          <el-color-picker show-alpha size="small" v-model="step.color"/>
         </div>
         <div class="stop-position">
           <el-input-number size="mini" controls-position="right" v-model="step.position"/>

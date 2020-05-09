@@ -22,7 +22,7 @@
     <scene-container
       v-if="currentScene"
       :animation="currentAnimation"
-      :screen="work.screen"
+      :view-box="work.viewBox"
       :scenes="work.scenes"
       :scene="currentScene"
       :exist-scene="lastScene"

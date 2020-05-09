@@ -175,6 +175,28 @@ export default class StyleRegistry {
     return colors
   }
 
+  assignSceneResource (scene, frames, svgs, fonts) {
+    for (let element of scene.elements) {
+      // element.animation.enters = [{name: 'fade-in'}]
+      // element.animation.exists = [{name: 'fade-out'}]
+      for (let stage in element.animation) {
+        for (let animation of element.animation[stage]) {
+          frames[animation.name] = this.keyframes[animation.name]
+        }
+      }
+      if (element.svg) {
+        svgs[element.svg] = element.content
+      }
+      if (element.variables && element.variables.length) {
+        element.variables.forEach(variable => {
+          if (variable.type === 'fontFamily') {
+            fonts.add(variable.value)
+          }
+        })
+      }
+    }
+  }
+
   /**
    * 抽取作品里所有元素的样式资源，包括动画、SVG图片及字体
    * @param {*} work
@@ -188,25 +210,7 @@ export default class StyleRegistry {
       if (!scene.animation) {
         scene.animation = {}
       }
-      for (let element of scene.elements) {
-        // element.animation.enters = [{name: 'fade-in'}]
-        // element.animation.exists = [{name: 'fade-out'}]
-        for (let key in element.animation) {
-          for (let anima of element.animation[key]) {
-            frames[anima.name] = this.keyframes[anima.name]
-          }
-        }
-        if (element.svg) {
-          svgs[element.svg] = element.content
-        }
-        if (element.variables && element.variables.length) {
-          element.variables.forEach(variable => {
-            if (variable.type === 'fontFamily') {
-              fonts.add(variable.value)
-            }
-          })
-        }
-      }
+      this.assignSceneResource(scene, frames, svgs, fonts)
     }
     return {
       frames,

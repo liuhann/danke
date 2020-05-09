@@ -1,7 +1,7 @@
 /**
    * Fits a rectangle into anothers rectangles bounds
-   * @param rect
-   * @param bounds
+   * @param rect   原始大小
+   * @param bounds  容器，大小不定
    * @returns {width: Number, height: Number}
    */
 export function fitRectIntoBounds (rect, bounds) {
@@ -33,19 +33,19 @@ export function fitRectIntoBounds (rect, bounds) {
 /**
  * 获取Rect类型元素的位置样式
  * @param {x, y, width, height} rect 元素位置
- * @param {width, height} origin 默认屏幕大小
+ * @param {width, height} viewBox 默认屏幕大小
  * @param {width, height} viewPort 给出的可视区域大小
  * @param {string} fitMode 对齐模式
  */
-export function getRectPositionStyle (rect, origin, viewPort, fitMode = '') {
+export function getRectPositionStyle (rect, viewBox, viewPort, fitMode = '') {
   let result = null
-  if (origin && viewPort) {
+  if (viewBox && viewPort) {
     result = {
       position: 'absolute',
-      left: rect.x * viewPort.width / origin.width + 'px',
-      top: rect.y  * viewPort.height / origin.height + 'px',
-      width: rect.width * viewPort.width / origin.width + 'px',
-      height: rect.height * viewPort.height / origin.height + 'px'
+      left: rect.x * viewPort.width / viewBox.width + 'px',
+      top: rect.y  * viewPort.height / viewBox.height + 'px',
+      width: rect.width * viewPort.width / viewBox.width + 'px',
+      height: rect.height * viewPort.height / viewBox.height + 'px'
     }
   } else {
     result = {

@@ -62,7 +62,7 @@ export default {
     window.addEventListener(
       "resize", () => {
         // 设置显示屏幕大小
-        this.viewPort = fitRectIntoBounds(this.work.screen, {
+        this.viewPort = fitRectIntoBounds(this.work.viewBox, {
           width: this.$el.offsetWidth - 48,
           height: this.$el.offsetHeight - 48 - 48
         })
@@ -74,7 +74,7 @@ export default {
       // 加载作品
       await this.loadWork(workId)
       // 设置显示屏幕大小
-      this.viewPort = fitRectIntoBounds(this.work.screen, {
+      this.viewPort = fitRectIntoBounds(this.work.viewBox, {
         width: this.$el.offsetWidth - 48,
         height: this.$el.offsetHeight - 48 - 48
       })

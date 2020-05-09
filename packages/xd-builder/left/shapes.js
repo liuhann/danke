@@ -45,6 +45,47 @@ export default [{
     type: 'gradient'
   }]
 }, {
+  name: '空心圆',
+  width: 100,
+  height: 100,
+  style: {
+    background: 'transparent',
+    border: 'var(--borderWidth) var(--borderStyle) var(--borderColor)',
+    borderRadius: '50%',
+  },
+  variables: [{
+    name: 'borderWidth',
+    value: 1,
+    type: 'px'
+  }, {
+    name: 'borderStyle',
+    value: 'solid',
+    type: 'border'
+  }, {
+    name: 'borderColor',
+    value: '#c5a',
+    type: 'color'
+  }]
+}, {
+  name: '圆角矩形',
+  width: 100,
+  height: 100,
+  style: {
+    background: 'var(--bgc)',
+    borderRadius: 'var(--br)'
+  },
+  variables: [{
+    name: 'bgc',
+    label: '背景颜色',
+    value: getGradientColor(),
+    type: 'gradient'
+  }, {
+    name: 'br',
+    label: '边框',
+    value: 10,
+    type: 'px'
+  }]
+}, {
   name: '带边框矩形',
   width: 100,
   height: 100,
@@ -160,7 +201,7 @@ export default [{
     value: getGradientColor(),
     type: 'gradient'
   }]
-},  {
+}, {
   name: '平行四边形-竖',
   width: 60,
   height: 100,
@@ -198,7 +239,30 @@ export default [{
     value: getGradientColor(),
     type: 'gradient'
   }]
-},  {
+}, {
+  name: '梯形',
+  width: 100,
+  height: 100,
+  maskable: true,
+  style: {
+    clipPath: 'polygon(var(--p1) 0, var(--p2) 0, 100% 100%, 0% 100%)',
+    background: 'var(--bg)'
+  },
+  variables: [{
+    name: 'p1',
+    value: 25,
+    type: 'percent'
+  }, {
+    name: 'p2',
+    value: 80,
+    type: 'percent'
+  }, {
+    label: '背景颜色',
+    name: 'bg',
+    value: getGradientColor(),
+    type: 'gradient'
+  }]
+}, {
   name: '菱形',
   width: 100,
   height: 100,

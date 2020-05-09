@@ -15,6 +15,9 @@ export default {
     [ButtonGroup.name]: ButtonGroup
   },
   props: {
+    variable: {
+      type: Object
+    },
     element: {
       type: Object
     },

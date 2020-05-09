@@ -78,4 +78,34 @@ export const fontTemplates = [{
     value: 200,
     type: 'fontWeight'
   }]
+}, {
+  text: 'Neon文字效果',
+  style: Object.assign(fontStyles, {
+    textShadow: `0 0 5px var(--color), 0 0 10px var(--color), 0 0 20px var(--color),0 0 40px var(--shadow),0 0 80px var(--shadow),0 0 90px var(--shadow),0 0 100px var(--shadow),0 0 150px var(--shadow)`
+  }),
+  variables: [{
+    name: 'fontFamily',
+    value: '微软雅黑',
+    type: 'fontFamily'
+  }, {
+    name: 'fontSize',
+    value: 24,
+    type: 'fontSize'
+  }, {
+    name: 'color',
+    value: '#fff',
+    type: 'color'
+  }, {
+    name: 'shadow',
+    value: '#0ff',
+    type: 'color'
+  }, {
+    name: 'textAlign',
+    value: 'left',
+    type: 'textAlign'
+  }, {
+    name: 'fontWeight',
+    value: 200,
+    type: 'fontWeight'
+  }]
 }]

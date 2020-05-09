@@ -6,7 +6,7 @@
   <img v-if="element.url" :id="'img-' + (element.name || element.id)" :src="getImageUrl(element.url, viewPort.width, viewPort.height)" :style="element.style">
   <div v-else-if="element.content" class="svg-content" v-html="element.content" :style="element.style"/>
   <div v-else-if="element.elements" class="block" :style="element.style">
-    <render-element v-for="(el, i) in element.elements" :key="el.id" :screen="screen" :view-port="viewPort" :element="el" :index="i" />
+    <render-element v-for="(el, i) in element.elements" :key="el.id" :view-box="viewBox" :view-port="viewPort" :element="el" :index="i" />
   </div>
   <div v-else-if="!element.text" class="shape" :style="element.style">
   </div>
@@ -35,10 +35,12 @@ export default {
       type: String,
       default: 'enter'
     },
+    // 缩放后的可用区域
     viewPort: {
       type: Object
     },
-    screen: {
+    // 实际原始坐标的区域
+    viewBox: {
       type: Object
     },
     element: { // 元素定义
@@ -97,9 +99,9 @@ export default {
 
     // 呈现时根据vp进行进一步缩放
     elementTextTransform () {
-      if (this.viewPort && this.screen && this.element.text) {
+      if (this.viewPort && this.viewBox && this.element.text) {
         return {
-          transform: `scale(${this.viewPort.width/this.screen.width})`
+          transform: `scale(${this.viewPort.width/this.viewBox.width})`
         }
       } else {
         return  {}
@@ -114,7 +116,7 @@ export default {
         '--height': this.element.height + 'px'
       }
       assignVariables(style, this.element.variables)
-      Object.assign(style, getRectPositionStyle(this.element, this.screen, this.viewPort))
+      Object.assign(style, getRectPositionStyle(this.element, this.viewBox, this.viewPort))
       Object.assign(style, this.elementAnimationStyle)
       if (this.element.text != null) {
         Object.assign(style, this.element.style)
@@ -224,11 +226,11 @@ export default {
 
     // 处理viewport小的时候字体的变换，以便能在缩略情况下也看到缩小的文字
     appendTextTransform (style) {
-      if (this.viewPort && this.screen && this.element.text) {
+      if (this.viewPort && this.viewBox && this.element.text) {
         if (style.transform) {
-          style.transform = style.transform + ` scale(${this.viewPort.width/this.screen.width})`
+          style.transform = style.transform + ` scale(${this.viewPort.width/this.viewBox.width})`
         } else {
-          style.transform = `scale(${this.viewPort.width/this.screen.width})`
+          style.transform = `scale(${this.viewPort.width/this.viewBox.width})`
         }
         if (this.element.style.textAlign === 'left') {
           style.transformOrigin = 'left top'
@@ -296,6 +298,7 @@ export default {
   .shape {
     width: 100%;
     height: 100%;
+    box-sizing: border-box;
   }
   .svg-content {
     width: 100%;

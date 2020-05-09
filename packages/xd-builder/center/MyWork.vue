@@ -3,7 +3,9 @@
   <div class="content-title">我的作品</div>
   <div class="my-work-list" ref="myWorkList">
     <div class="work" v-for="work in works" :key="work.id">
-      <render-scene :work="work" :scene="work.scenes[0]" :view-port="work.viewport" :stage="work.stage"/>
+      <div class="scene-wrapper">
+        <render-scene :view-box="work.viewBox || work.screen" :scene="work.scenes[0]" :view-port="work.viewport" :stage="work.stage"/>
+      </div>
       <div class="actions">
         <div class="btns">
           <i class="el-icon-video-camera" @click="replayWork(work)"/>
@@ -13,9 +15,13 @@
       </div>
     </div>
   </div>
-  <div class="empty" v-if="works.length === 0">
+  <div class="empty" v-if="!loading && works.length === 0">
     <div class="msg">还没有任何作品</div>
     <div class="desc">期待您的创作，快速开始去模板中心看看</div>
+  </div>
+  <div class="empty" v-if="loading">
+    <div class="msg">作品获取中</div>
+    <div class="desc">请稍候</div>
   </div>
 </div>
 </template>
@@ -24,12 +30,14 @@
 import RenderScene from '../render/RenderScene'
 import RestDAO from '../../common/dao/restdao'
 import StyleRegistry from '../utils/StyleRegistry'
+import { fitRectIntoBounds } from '../mixins/rectUtils'
 
 export default {
   name: 'MyWork',
   components: { RenderScene  },
   data () {
     return {
+      loading: true,
       works: []
     }
   },
@@ -69,11 +77,12 @@ export default {
 
         this.works = result.list
         for (let work of this.works) {
-          work.viewport = {
-            height: 200,
-            width: 200 / work.screen.height * work.screen.width
-          }
+          work.viewport = fitRectIntoBounds(work.viewBox || work.screen, {
+            width: 200,
+            height: 200
+          })
         }
+        this.loading = false
         // this.lines = flowSchedule(this.works, this.$refs.myWorkList.offsetWidth, 25, 256)
       }
     },
@@ -108,8 +117,22 @@ export default {
       margin: 20px 16px;
       cursor: pointer;
 
-      &:hover {
+      .scene-wrapper {
+        width: 200px;
+        height: 200px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid #ccc;
+        border-radius: 4px;
         .scene {
+          position: relative;
+          overflow: hidden;
+        }
+      }
+
+      &:hover {
+        .scene-wrapper {
           border: 1px solid var(--mainColorHover);
         }
         .actions {

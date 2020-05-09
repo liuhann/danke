@@ -1,25 +1,32 @@
 <template>
-<span>
-  <el-select
-    v-model="variable.value"
-    size="mini"
-    filterable
-    allow-create
-    placeholder="字号">
-    <el-option
-      v-for="item in fontSizeOptions"
-      :key="item"
-      :label="item"
-      :value="item">
-    </el-option>
-  </el-select>
-  <a class="action" @click="increaseFontSize(variable)">
-    <icon-font-plus />
-  </a>
-  <a class="action" @click="decreaseFontSize(variable)">
-    <icon-font-minus />
-  </a>
-</span>
+  <span>
+    <el-tooltip content="字体大小">
+      <el-select
+        v-model="variable.value"
+        size="mini"
+        filterable
+        allow-create
+        placeholder="字号">
+        <el-option
+          v-for="item in fontSizeOptions"
+          :key="item"
+          :label="item"
+          :value="item">
+        </el-option>
+      </el-select>
+    </el-tooltip>
+    <el-tooltip content="放大字体">
+      <a class="action" @click="increaseFontSize(variable)">
+        <icon-font-plus />
+      </a>
+    </el-tooltip>
+    <el-tooltip content="缩小字体">
+      <a class="action" @click="decreaseFontSize(variable)">
+        <icon-font-minus />
+      </a>
+    </el-tooltip>
+  </span>
+
 </template>
 
 <script>

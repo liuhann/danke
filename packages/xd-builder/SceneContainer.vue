@@ -10,8 +10,8 @@
             v-for="(element, index) of scene.elements"
             stage="enter"
             :element="element"
-            :screen="screen"
-            :view-port="screen"
+            :view-box="viewBox"
+            :view-port="viewBox"
             :key="index"
             :index="index"
             :ref="element.id"/>
@@ -96,7 +96,7 @@ export default {
     existScene: {
       type: Object
     },
-    screen: {
+    viewBox: {
       type: Object
     },
     // 格式刷模式
@@ -156,7 +156,7 @@ export default {
         this.setElementsInteract()
       })
     },
-    'screen': {
+    'viewBox': {
       deep: true,
       handler () {
         this.fitToCenter()
@@ -188,8 +188,8 @@ export default {
       const screenStyle = {
         transform: `translateX(${this.translateX}px) translateY(${this.translateY}px) scale(${this.scale})`,
         transformOrigin: 'top left',
-        width: this.screen.width + 'px',
-        height: this.screen.height + 'px',
+        width: this.viewBox.width + 'px',
+        height: this.viewBox.height + 'px',
         transition: 'transform .2s ease-out'
       }
       if (this.actionMove) {
@@ -227,9 +227,9 @@ export default {
      **/
     sceneStyle () {
       const styles = {
-        width: this.screen.width + 'px',
-        height: this.screen.height + 'px',
-        perspective: this.screen.width + 'px'
+        width: this.viewBox.width + 'px',
+        height: this.viewBox.height + 'px',
+        perspective: this.viewBox.width + 'px'
       }
       return styles
     },
@@ -255,12 +255,12 @@ export default {
      */
     fitToCenter () {
       // 上下左右边距30px  自适应到容器大小
-      const fitSize = fitRectIntoBounds(this.screen, {
+      const fitSize = fitRectIntoBounds(this.viewBox, {
         width: this.workSpace.width - WORKSPACE_PADDING * 2,
         height: this.workSpace.height - WORKSPACE_PADDING * 2
       })
       // 自适应后，伸缩的比率
-      this.scale = fitSize.width / this.screen.width
+      this.scale = fitSize.width / this.viewBox.width
       if (fitSize.fitTo === 'width') {
         this.translateX = WORKSPACE_PADDING
         this.translateY = (this.workSpace.height - fitSize.height) / 2
@@ -491,7 +491,7 @@ export default {
         node.content = element.content
       }
       // 获取元素自适应到整个画面的高度和宽度 避免扩大超出
-      Object.assign(node, fitRectIntoBounds(node, this.screen))
+      Object.assign(node, fitRectIntoBounds(node, this.viewBox))
 
       node.x = x - node.width / 2
       node.y = y - node.height / 2

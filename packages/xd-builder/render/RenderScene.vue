@@ -1,6 +1,6 @@
 <template>
 <div class="scene" :style="sceneStyle" :class="sceneClass">
-  <render-element v-for="element of scene.elements" :view-port="viewPort"  :key="element.id" :element="element" :screen="work.screen" :stage="stage">
+  <render-element v-for="element of scene.elements" :view-port="viewPort"  :key="element.id" :element="element" :view-box="viewBox" :stage="stage">
   </render-element>
 </div>
 </template>
@@ -18,7 +18,7 @@ export default {
     stage: {
       type: String
     },
-    work: {
+    viewBox: {
       type: Object
     },
     // 场景内容
@@ -58,11 +58,8 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .scene {
   position: relative;
-  overflow: hidden;
-  border: 1px solid #ccc;
-  border-radius: 4px;
 }
 </style>

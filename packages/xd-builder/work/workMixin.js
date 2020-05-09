@@ -13,7 +13,6 @@ export default {
   },
   created () {
     this.workdao = new RestDAO(this.ctx, 'danke/work')
-    this.blockdao = new RestDAO(this.ctx, 'danke/block')
   },
   methods: {
     /**
@@ -23,7 +22,7 @@ export default {
       this.work = {
         id: shortid(10),
         title: '未命名的作品',
-        screen: {
+        viewBox: {
           width: parseInt(this.$route.query.width) || 414,
           height: parseInt(this.$route.query.height) || 896
         },
@@ -41,6 +40,10 @@ export default {
      */
     async loadWork (workId) {
       const work = await this.workdao.getOne(workId)
+      if (!work.viewBox) {
+        work.viewBox = work.screen
+        delete work.screen
+      }
       this.ctx.styleRegistry.initWorkStyleResource(work)
       this.ctx.palette = this.ctx.styleRegistry.getWorkColors(work)
       this.work = work

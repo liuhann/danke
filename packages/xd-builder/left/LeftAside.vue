@@ -5,6 +5,10 @@
       <i class="el-icon-files"/>
       <span>场景</span>
     </div>
+    <div class='category' :class="current === 'shape'? 'current': ''" @click="toggleTo('block')">
+      <i class="el-icon-news"/>
+      <span>图块</span>
+    </div>
     <div class='category' :class="current === 'shape'? 'current': ''" @click="toggleTo('shape')">
       <i class="el-icon-news"/>
       <span>形状</span>

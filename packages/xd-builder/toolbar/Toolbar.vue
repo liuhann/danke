@@ -7,7 +7,11 @@
     <!-- 渐变颜色的处理-->
     <pop-set-gradient :key="index" v-if="variable.type==='gradient'" :variable="variable"></pop-set-gradient>
     <!-- 数字-->
-    <el-input-number :key="index" v-if="variable.type==='px' || variable.type==='number' || variable.type==='percent'" v-model="variable.value" controls-position="right" size="mini"/>
+    <el-tooltip content="数值" :key="index" v-if="variable.type==='px' || variable.type==='number' || variable.type==='percent'">
+      <el-input-number v-model="variable.value" controls-position="right" size="mini"/>
+    </el-tooltip>
+    <!--边框样式-->
+    <border-style :key="index" v-if="variable.type==='border'" :variable="variable" />
     <!--字体大小-->
     <font-size :key="index" v-if="variable.type==='fontSize'" :variable="variable" />
 
@@ -63,11 +67,7 @@
     <el-tooltip class="item" effect="dark" content="播放" placement="bottom" v-if="noFocusedElement" >
       <a class="action" @click="playScene"><icon-play/></a>
     </el-tooltip>
-
-    <el-popover v-if="noFocusedElement" placement="bottom" width="360" trigger="click" popper-class="padding-0">
-      <a class="action" slot="reference"><icon-share /></a>
-      <setting-panel :work="work"/>
-    </el-popover>
+    <setting-panel v-if="noFocusedElement" :work="work" :scene="scene"/>
   </div>
 </div>
 </template>
@@ -91,7 +91,6 @@ import IconLock from './res/lock.svg'
 import IconUnlock from './res/unlock.svg'
 import IconClean from './res/clean.svg'
 import IconPlay from './res/play.svg'
-import IconShare from './res/share.svg'
 import IconEffect from './res/effect.svg'
 import PopTransform from './PopTransform'
 import TextAlign from './TextAlign'
@@ -100,10 +99,12 @@ import FontSize from './FontSize'
 import AlignElement from './AlignElement.vue'
 import FontFamily from './FontFamily.vue'
 import PopSetGradient from './PopSetGradient'
+import BorderStyle from './BorderStyle'
 export default {
   name: 'Toolbar',
   mixins: [ interactMixins ],
   components: {
+    BorderStyle,
     PopSetGradient,
     PopSetAnimation,
     AlignElement,
@@ -119,7 +120,6 @@ export default {
     IconBrush,
     IconGroup,
     IconCopy,
-    IconShare,
     IconTrash,
     IconRedo,
     IconLock,
@@ -478,6 +478,7 @@ export default {
     border: none;
     width: 64px;
     margin-right: 5px;
+    margin-left: 5px;
   }
   .el-input-number--mini {
     width: 60px;

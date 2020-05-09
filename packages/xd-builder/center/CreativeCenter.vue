@@ -28,13 +28,13 @@
           <span>我的作品</span>
         </div>
         <div class="node">
-          <span>模板中心</span>
+          <span>作品模板</span>
+        </div>
+        <div class="node" :class="nav==='images'? 'selected': ''" @click="navTo('blocks')">
+          <span>图片模板</span>
         </div>
         <div class="node" :class="nav==='vectors'? 'selected': ''" @click="navTo('vectors')">
-          <span>矢量图库</span>
-        </div>
-        <div class="node" :class="nav==='images'? 'selected': ''" @click="navTo('images')">
-          <span>图片库</span>
+          <span>我的SVG图库</span>
         </div>
         <div class="node tree-node" :class="nav==='profile'? 'selected': ''" @click="navTo('profile')">
           <span>设置</span>
