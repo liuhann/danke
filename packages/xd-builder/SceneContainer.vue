@@ -485,6 +485,9 @@ export default {
       if (element.text) {
         Object.assign(node, textMesure(element.text, element.variables.filter(variable => variable.type === 'fontSize')[0].value))
       }
+      if (element.ratio) {
+        node.ratio = element.ratio
+      }
       if (element.content && element._id) {
         node.svg = element._id
         node.content = element.content
@@ -497,9 +500,11 @@ export default {
       // 自动适应到屏幕内部 避免溢出
       node.x = (node.x < 0) ? 0 : node.x
       node.y = (node.y < 0) ? 0 : node.y
+
       this.scene.elements.push(node)
       this.setElementSelected(node)
       this.$emit('change')
+      console.log('element dropped', node)
       this.$nextTick(() => {
         this.initElementDragResize(node)
       })

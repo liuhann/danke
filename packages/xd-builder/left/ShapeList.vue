@@ -17,6 +17,7 @@
           :key="index"
           class="object-item" draggable @dragstart="dragStart(shape, $event)">
           <div class="shape" :style="shapeStyle(shape)"></div>
+          <div class="shape-name">{{shape.name}}</div>
         </div>
       </div>
     </div>
@@ -47,6 +48,7 @@
         :key="index"
         class="object-item" draggable @dragstart="dragStart(shape, $event)">
         <div class="shape" v-if="!shape._id" :style="shapeStyle(shape)"></div>
+        <div class="shape-name" v-if="!shape._id">{{shape.name}}</div>
         <div class="svg-container" v-else :style="vectorVariables(shape)" v-html="shape.content">
         </div>
       </div>
@@ -200,6 +202,7 @@ export default {
       display: flex;
       justify-content: center;
       align-items: center;
+      position: relative;
       &:nth-of-type(3n) {
         margin-right: 0;
       }
@@ -214,6 +217,12 @@ export default {
           height: 100%;
         }
       }
+      .shape-name {
+        position: absolute;
+        color: #fff;
+        bottom: -16px;
+        color: #eee;
+      }
       .shape {
         transform: scale(.8);
         display: flex;
@@ -221,19 +230,6 @@ export default {
         align-items: center;
         font-size: 14px;
         color: #fff;
-      }
-    }
-  }
-  .shape-list {
-    display: flex;
-    flex-wrap: wrap;
-    .object-item {
-      width: 98px;
-      height: 100px;
-      margin-bottom: 20px;
-      margin-right: 20px;
-      &:nth-of-type(3n) {
-        margin-right: 0;
       }
     }
   }

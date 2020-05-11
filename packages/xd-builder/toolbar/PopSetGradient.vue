@@ -12,8 +12,8 @@
   <div class="gradient form">
     <el-radio-group v-model="gradientType" @change="typeChange">
       <el-radio label="radial-gradient">圆形渐变</el-radio>
-      <el-radio label="linear-gradient">线型渐变</el-radio>
-      <el-radio label="repeating-linear-gradient">线型重复渐变</el-radio>
+      <el-radio label="linear-gradient">线性渐变</el-radio>
+      <el-radio label="repeating-linear-gradient">线性重复渐变</el-radio>
     </el-radio-group>
 
     <div class="set-deg form-item" v-if="gradients && gradients.colorStopList.length > 1 && gradientType.indexOf('linear-gradient')>-1">
@@ -35,7 +35,7 @@
       <div class="stops-title stop">
         <div class="stop-color">颜色</div>
         <div class="stop-position">位置</div>
-        <div class="stop-action"> <i @click="addColorStop" class="el-icon-plus"></i> </div>
+        <div class="stop-action"><i @click="addColorStop" class="el-icon-plus"></i> </div>
       </div>
 
       <div class="stop form-item" v-for="(step, index) in gradients.colorStopList" :key="index">
@@ -49,34 +49,27 @@
           <i class="el-icon-close" @click="deleteColorStop(index)"></i>
         </div>
       </div>
+      <div class="form-item">
+        <el-button size="mini" type="primary" @click="addColorStop">增加颜色</el-button>
+        <el-button size="mini" @click="randomGradientColor">随机颜色</el-button>
+      </div>
     </div>
-
   </div>
 </el-popover>
 </template>
 
 <script>
-import { RadioGroup, Radio, Popover, Slider, ColorPicker, InputNumber, Checkbox } from 'element-ui'
+import toolbarPopMixin from './toolbarPopMixin'
 import { generateRegExp, parseGradient } from '../utils/parseGradient'
+import lights from './color/lights'
+import darks from './color/darks'
 
 const regExpLib = generateRegExp()
+const colorGradients = lights.concat(darks)
 
 export default {
   name: 'PopSetGradient',
-  components: {
-    [Popover.name]: Popover,
-    [RadioGroup.name]: RadioGroup,
-    [Radio.name]: Radio,
-    [ColorPicker.name]: ColorPicker,
-    [Slider.name]: Slider,
-    [Checkbox.name]: Checkbox,
-    [InputNumber.name]: InputNumber
-  },
-  props: {
-    variable: {
-      type: Object
-    }
-  },
+  mixins: [toolbarPopMixin],
   data () {
     return {
       gradientType: '',
@@ -104,6 +97,10 @@ export default {
     }
   },
   methods: {
+
+    /**
+     * 颜色转换，将 liner-gradient(10deg, color1, color2) 这样的css属性抽取为颜色列表、角度等信息
+     */
     show () {
       const rGradientEnclosedInBrackets = /.*gradient\s*\(((?:\([^\)]*\)|[^\)\(]*)*)\)/ // Captures inside brackets - max one additional inner set.
       const match = rGradientEnclosedInBrackets.exec(this.variable.value);
@@ -151,6 +148,20 @@ export default {
       }
     },
 
+    randomGradientColor () {
+      const rand = colorGradients[Math.floor(Math.random() * colorGradients.length)]
+      this.gradients.colorStopList = [{
+        color: rand[0],
+        position: 0
+      }, {
+        color: rand[1],
+        position: 100
+      }]
+    },
+
+    /**
+     * 反向操作，将数据合并为css属性
+     */
     generate () {
       if (this.gradients.colorStopList.length > 1) {
         if (this.gradientType.indexOf('linear-gradient') > -1) {
@@ -202,16 +213,19 @@ export default {
       width: 50px
     }
     .stop-position {
-      width: 240px;
+      flex: 1;
     }
     .stop-action {
-      width: 50px;
+      width: 30px;
+      display: flex;
+      align-items: center;
       .el-icon-plus {
-        margin-left: 50px;
+        cursor: pointer;
+      }
+      .el-icon-refresh {
         cursor: pointer;
       }
       .el-icon-close {
-        margin-left: 50px;
         color: #7B7B7B;
         cursor: pointer;
       }

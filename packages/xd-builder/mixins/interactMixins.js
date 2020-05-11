@@ -69,6 +69,9 @@ export default {
             width: element.width * xRatio,
             height: element.height * yRatio
           }
+          if (element.ratio) {
+            elementResize.height = elementResize.width * element.ratio
+          }
           if (node.elements && node.elements.length) {
             this.resizeBlockElements(element, elementResize )
           }
@@ -108,6 +111,9 @@ export default {
               height: event.rect.height / this.scale,
               x: node.x + event.deltaRect.left / this.scale,
               y: node.y + event.deltaRect.top / this.scale
+            }
+            if (node.ratio) {
+              target.height = target.width * node.ratio
             }
             if (node.elements && node.elements.length) {
               this.resizeBlockElements(node, target)

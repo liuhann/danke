@@ -21,6 +21,7 @@ export default [{
   name: '圆形',
   width: 100,
   height: 100,
+  ratio: 1,
   style: {
     background: 'var(--backgroundColor)',
     borderRadius: '50%',
@@ -32,9 +33,31 @@ export default [{
     type: 'gradient'
   }]
 }, {
+  name: '空心矩形',
+  width: 100,
+  height: 100,
+  style: {
+    background: 'transparent',
+    border: 'var(--borderWidth) var(--borderStyle) var(--borderColor)'
+  },
+  variables: [{
+    name: 'borderWidth',
+    value: 1,
+    type: 'px'
+  }, {
+    name: 'borderStyle',
+    value: 'solid',
+    type: 'border'
+  }, {
+    name: 'borderColor',
+    value: '#005bea',
+    type: 'color'
+  }]
+}, {
   name: '半圆',
   width: 50,
   height: 100,
+  ratio: 1,
   style: {
     clipPath: 'ellipse(100% 50% at 100% 50%)',
     background: 'var(--bgColor)'
@@ -64,6 +87,35 @@ export default [{
   }, {
     name: 'borderColor',
     value: '#c5a',
+    type: 'color'
+  }]
+}, {
+  name: '箭头',
+  width: 50,
+  height: 50,
+  ratio: 1,
+  style: {
+    borderTop: '1px solid var(--color)',
+    borderLeft: '1px solid var(--color)',
+    transform: 'rotate(45deg)'
+  },
+  variables: [{
+    label: '颜色',
+    name: 'color',
+    value: '#8d3',
+    type: 'color'
+  }]
+}, {
+  name: '直线',
+  width: 80,
+  height: 10,
+  style: {
+    borderTop: '1px solid var(--color)'
+  },
+  variables: [{
+    label: '颜色',
+    name: 'color',
+    value: '#8d3',
     type: 'color'
   }]
 }, {
@@ -134,7 +186,7 @@ export default [{
       value: '#FFF',
       type: 'color'
     }]
-},{
+}, {
   name: '边框圆角矩形',
   width: 100,
   height: 100,
