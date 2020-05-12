@@ -8,8 +8,8 @@
   </div>
   <i class="el-icon-right abs-actions" v-if="nextScene" @click="enterScene(nextScene)"></i>
   <i class="el-icon-back abs-actions" v-if="prevScene" @click="enterScene(prevScene)"></i>
-  <div class="action-bar">
-    <div class="action-button"><i class="el-icon-position" /></div>
+  <div class="action-bar" v-show="!isFullScreen">
+    <div class="action-button" @click="refreshWork"><i class="el-icon-refresh-right" /></div>
     <div class="action-button" @click="enterFullScreen"><i class="el-icon-full-screen" /></div>
   </div>
 </div>
@@ -29,6 +29,7 @@ export default {
   },
   data () {
     return {
+      isFullScreen: false,
       nextScene: null,
       currentScene: null,
       prevScene: null,
@@ -61,10 +62,21 @@ export default {
 
     window.addEventListener(
       "resize", () => {
+        let padding = 48
+        if (document.fullscreenElement) {
+          padding = 0
+          this.isFullScreen = true
+          this.currentScene = null
+          setTimeout(() => {
+            this.enterScene(0)
+          }, 100)
+        } else {
+          this.isFullScreen = false
+        }
         // 设置显示屏幕大小
         this.viewPort = fitRectIntoBounds(this.work.viewBox, {
-          width: this.$el.offsetWidth - 48,
-          height: this.$el.offsetHeight - 48 - 48
+          width: this.$el.offsetWidth - padding,
+          height: this.$el.offsetHeight - padding * 2
         })
       },false
     );
@@ -99,8 +111,24 @@ export default {
       }
     },
 
-    enterFullScreen () {
+    refreshWork () {
+      this.currentScene = null
+      setTimeout(() => {
+        this.enterScene(0)
+      }, 100)
+    },
 
+    enterFullScreen () {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().then(() => {
+          this.isFullScreeen = true
+        })
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen()
+          this.isFullScreeen = false
+        }
+      }
     }
   }
 }

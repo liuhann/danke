@@ -128,6 +128,9 @@ export default {
         .scene {
           position: relative;
           overflow: hidden;
+          .element {
+            position: absolute;
+          }
         }
       }
 
