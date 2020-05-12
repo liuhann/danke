@@ -41,7 +41,6 @@ export function getRectPositionStyle (rect, viewBox, viewPort, fitMode = '') {
   let result = null
   if (viewBox && viewPort) {
     result = {
-      position: 'absolute',
       left: rect.x * viewPort.width / viewBox.width + 'px',
       top: rect.y  * viewPort.height / viewBox.height + 'px',
       width: rect.width * viewPort.width / viewBox.width + 'px',
@@ -49,7 +48,6 @@ export function getRectPositionStyle (rect, viewBox, viewPort, fitMode = '') {
     }
   } else {
     result = {
-      position: 'absolute',
       left: rect.x + 'px',
       top: rect.y + 'px',
       width: rect.width + 'px',

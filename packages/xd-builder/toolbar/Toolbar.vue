@@ -1,5 +1,11 @@
 <template>
 <div id="tool-bar">
+  <pop-element-list :scene="scene" :checked-elements="checkedElements"/>
+  <a class="action" v-if="noFocusedElement" @click="previousScene"><i class="el-icon-arrow-up" /></a>
+  <a class="action" v-if="noFocusedElement" @click="nextScene"><i class="el-icon-arrow-down" /></a>
+  <a class="action" v-if="noFocusedElement"> {{scenes.indexOf(scene) + 1}}/{{scenes.length}}</a>
+
+
   <!--  样式变量的修改-->
   <template v-for="(variable, index) in elementStyleVariables">
     <!-- 颜色-->
@@ -60,9 +66,6 @@
     <el-tooltip class="item" effect="dark" content="解锁" placement="bottom" v-if="selectedLockedElements.length" >
       <a class="action" @click="unLockSelectedElement"><icon-unlock /></a>
     </el-tooltip>
-    <a class="action" v-if="noFocusedElement" @click="previousScene"><i class="el-icon-arrow-up" /></a>
-    <a class="action" v-if="noFocusedElement" @click="nextScene"><i class="el-icon-arrow-down" /></a>
-    <a class="action" v-if="noFocusedElement"> {{scenes.indexOf(scene) + 1}}/{{scenes.length}}</a>
 
     <el-tooltip class="item" effect="dark" content="播放" placement="bottom" v-if="noFocusedElement" >
       <a class="action" @click="playScene"><icon-play/></a>
@@ -100,10 +103,12 @@ import AlignElement from './AlignElement.vue'
 import FontFamily from './FontFamily.vue'
 import PopSetGradient from './PopSetGradient'
 import BorderStyle from './BorderStyle'
+import PopElementList from './PopElementList'
 export default {
   name: 'Toolbar',
   mixins: [ interactMixins ],
   components: {
+    PopElementList,
     BorderStyle,
     PopSetGradient,
     PopSetAnimation,
@@ -178,6 +183,13 @@ export default {
         }
       }
       return Array.from(new Set(colors))
+    },
+
+    checkedElements () {
+      if (this.scene && this.scene.elements) {
+        return this.scene.elements.filter(el => el.selected)
+      }
+      return []
     },
 
     noFocusedElement () {

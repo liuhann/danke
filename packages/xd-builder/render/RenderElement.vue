@@ -272,10 +272,14 @@ export default {
 
 <style lang="scss">
 .element {
-  position: absolute;
   box-sizing: border-box;
   text-overflow: initial;
   white-space: nowrap;
+  .block-elements {
+    .element {
+      position: absolute;
+    }
+  }
   textarea {
     text-align: left;
     resize: none;

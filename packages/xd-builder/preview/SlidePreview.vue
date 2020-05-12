@@ -2,8 +2,8 @@
 <div class="page-slide-preview">
   <div class="preview-container">
     <div class="device" v-if="work && viewPort" :style="deviceStyle">
-      <render-scene v-if="currentScene" :scene="currentScene" stage="enter" :work="work" :view-port="viewPort"/>
-      <render-scene v-if="lastScene" :scene="lastScene" stage="exist" :work="work" :view-port="viewPort"/>
+      <render-scene v-if="currentScene" :scene="currentScene" stage="enter" :work="work" :view-port="viewPort" :view-box="work.viewBox"/>
+      <render-scene v-if="lastScene" :scene="lastScene" stage="exist" :work="work" :view-port="viewPort" :view-box="work.viewBox"/>
     </div>
   </div>
   <i class="el-icon-right abs-actions" v-if="nextScene" @click="enterScene(nextScene)"></i>
@@ -166,6 +166,9 @@ export default {
     width: 100%;
     height: 100%;
     position: absolute;
+    .element {
+      position: absolute;
+    }
   }
 }
 </style>
