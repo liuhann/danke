@@ -1,21 +1,9 @@
 <template>
 <div class="user-form">
-  <section class="auth-sidebar">
-    <div class="auth-sidebar-content">
-      <header>
-        <a href="/" class="logo">
-        </a>
-        <h1>Discover the world’s top Designers &amp; Creatives.</h1>
-      </header>
-      <div class="artwork">
-        <div class="artwork-image"></div>
-        <p class="artwork-attribution">
-          Art by
-          <a class="url" rel="contact" href="/karicca">Irina Valeeva</a>
-        </p>
-      </div>
-    </div>
-  </section>
+  <div class="auth-sidebar">
+    <render-scene v-if="showWork" :scene="showWork.scenes[0]" :view-box="showWork.viewBox" :view-port="showWork.viewport" stage="enter"/>
+    <div class="by" v-if="showWork">Art by {{showWork.author}}</div>
+  </div>
   <section class="content">
     <nav class="auth-nav">
       <p class="auth-link">
@@ -60,9 +48,12 @@
 </template>
 
 <script>
-
+import workListMixins from '../xd-builder/mixins/workListMixins'
+import RenderScene from '../xd-builder/render/RenderScene'
 export default {
   name: 'Register',
+  components: { RenderScene },
+  mixins: [ workListMixins ],
   data () {
     return {
       username: '',
@@ -74,18 +65,51 @@ export default {
       },
       svg: '',
       captcha: '',
-      password: ''
+      password: '',
+      workViewPort: {
+        width: 200,
+        height: 200
+      }
+    }
+  },
+
+  computed: {
+    showWork () {
+      if (this.works.length) {
+        return this.works[0]
+      } else {
+        return null
+      }
     }
   },
 
   created () {
+
   },
 
   mounted () {
     this.refreshCaptcha()
+    this.initViewPort()
+    this.loadWorks()
   },
 
   methods: {
+    initViewPort () {
+      const siderRect = document.querySelector('.auth-sidebar').getBoundingClientRect()
+      this.workViewPort = {
+        width: siderRect.width,
+        height: siderRect.height
+      }
+    },
+    viewport () {
+      return this.workViewPort
+    },
+    listQuery () {
+      return {
+        'count': 1,
+        'system.site': 'on',
+      }
+    },
     async refreshCaptcha () {
       const result = await this.ctx.userdao.getCaptcha()
       this.svg = result.svg
@@ -131,4 +155,25 @@ export default {
 
 <style lang="scss">
 @import "user-form";
+
+.auth-sidebar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(27, 63, 60, 1);
+  position: relative;
+  .by {
+    position: absolute;
+    bottom: 20px;
+    right: 10px;
+    color: #fff;
+  }
+  .scene {
+    position: relative;
+    overflow: hidden;
+  }
+  .element {
+    position: absolute;
+  }
+}
 </style>

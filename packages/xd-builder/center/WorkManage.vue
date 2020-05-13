@@ -6,6 +6,7 @@
         <div class="work-item">
           <div class="title">{{work.title}}</div>
           <div class="creator">{{work.creator}}</div>
+          <div class="creator">{{work.viewBox}}</div>
           <div class="is-home">{{(work.system && work.system.site)}}</div>
           <div class="action">
             <el-button size="mini" type="text" @click="openWork(work)">打开</el-button>

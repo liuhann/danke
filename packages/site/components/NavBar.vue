@@ -8,10 +8,8 @@
       </div>
       <div class="navbar-end">
         <div class="navbar-item" v-if="!logon">
-          <div class="buttons">
-            <router-link class="button is-light" to="/login">登录</router-link>
-            <router-link class="button form-sub" to="/register"><strong>注册</strong></router-link>
-          </div>
+          <router-link class="button is-light" to="/login">登录</router-link>
+          <router-link class="button form-sub" to="/register">注册</router-link>
         </div>
         <router-link v-if="logon" class="navbar-item" tag="div" to="/creative/my">
           <img class="avatar" :src="avatar">
@@ -132,28 +130,21 @@ export default {
       .button.form-sub {
         color: #fff;
         display: inline-block;
-        padding: 10px 16px;
         cursor: pointer;
         border: none;
+        padding: 0 16px;
         text-decoration: none;
-        background: #ea4c89;
+        background: var(--mainColor);
         -webkit-transition: all 200ms ease;
         transition: all 200ms ease;
-        border-radius: 8px;
-        appearance: none;
-        position: relative;
-        outline: none;
-        font-family: 'Haas Grot Text R Web', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-        font-size: 14px;
+        border-radius: 4px;
         font-weight: 500;
-        line-height: 20px;
-        height: 40px;
-        -webkit-box-sizing: border-box;
+        height: 32px;
         box-sizing: border-box;
         text-align: center;
         margin: 0 20px;
         &:hover {
-          background: rgba(234, 76, 137, 0.85);
+          background: var(--mainColorHover);
           color: #fff;
         }
         &:disabled {
@@ -161,10 +152,12 @@ export default {
         }
       }
       .navbar-item {
-        margin: 0 20px;
+        margin: 18px 20px;
+        line-height: 32px;
         display: flex;
         justify-content: center;
         align-items: center;
+        font-size: 14px;
       }
     }
   }

@@ -33,37 +33,37 @@
 <script>
 import NavBar from './components/NavBar'
 import NavFooter from './components/NavFooter'
-import RestDAO from '../common/dao/restdao'
-import StyleRegistry from '../xd-builder/utils/StyleRegistry'
-import { fitRectIntoBounds } from '../xd-builder/mixins/rectUtils'
 import RenderScene from '../xd-builder/render/RenderScene'
+import workListMixins from '../xd-builder/mixins/workListMixins'
 import { getImageUrl } from '../xd-builder/mixins/imageUtils'
 
 export default {
   name: 'Main',
+  mixins: [ workListMixins ],
   components: { RenderScene, NavFooter, NavBar },
   data () {
     return {
-      works: [],
-      loading: true,
       workViewPort: {
         width: 100,
         height: 100
       }
     }
   },
-  computed: {
-  },
   created () {
-    this.workdao = new RestDAO(this.ctx, 'danke/work')
-    this.svgdao = new RestDAO(this.ctx, 'danke/svg')
-    this.ctx.styleRegistry = new StyleRegistry()
   },
   mounted () {
     this.initWorkViewPort()
     this.loadWorks()
   },
   methods: {
+    viewport () {
+      return this.workViewPort
+    },
+    listQuery () {
+      return {
+        'system.site': 'on',
+      }
+    },
     avatar () {
       if (this.user && this.user.avatar) {
         return this.getImageUrl(this.user.avatar, 96, 96)
@@ -78,42 +78,7 @@ export default {
         width: loadingBlock.getBoundingClientRect().width,
         height: loadingBlock.getBoundingClientRect().width / 4 * 3
       }
-    },
-
-    async loadWorks () {
-        const result = await this.workdao.list({
-          'system.site': 'on',
-          'projection': 'scenes.1,name,id,frames,viewBox,nick,avatar,title,author'
-        })
-
-        const svgs = []
-        for (let work of result.list) {
-          work.scenes[0].elements.forEach( element=> {
-            if (element.svg) {
-              svgs.push(element.svg)
-            }
-          })
-          work.stage = 'enter'
-
-          if (work.frames) {
-            this.ctx.styleRegistry.addFrames(work.frames)
-          }
-        }
-        const svgRes = await this.svgdao.multiGet(svgs)
-        for (let res of svgRes.list) {
-          this.ctx.styleRegistry.addVector(res)
-        }
-        this.works = result.list
-        for (let work of this.works) {
-          work.viewport = fitRectIntoBounds(work.viewBox || {
-            width: 300,
-            height: 200
-          }, this.workViewPort)
-          console.log(work.viewport)
-        }
-        this.loading = false
-        // this.lines = flowSchedule(this.works, this.$refs.myWorkList.offsetWidth, 25, 256)
-    },
+    }
   }
 }
 </script>

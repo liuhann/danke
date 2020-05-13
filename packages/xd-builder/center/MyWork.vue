@@ -28,65 +28,20 @@
 
 <script>
 import RenderScene from '../render/RenderScene'
-import RestDAO from '../../common/dao/restdao'
-import StyleRegistry from '../utils/StyleRegistry'
-import { fitRectIntoBounds } from '../mixins/rectUtils'
+import workListMixins from '../mixins/workListMixins'
 
 export default {
   name: 'MyWork',
   components: { RenderScene  },
+  mixins: [ workListMixins ],
   data () {
-    return {
-      loading: true,
-      works: []
-    }
+    return {}
   },
-  created () {
-    this.workdao = new RestDAO(this.ctx, 'danke/work')
-    this.svgdao = new RestDAO(this.ctx, 'danke/svg')
-    this.ctx.styleRegistry = new StyleRegistry()
-  },
+  created () { },
   mounted () {
-    this.loadMyWorks()
+    this.loadWorks()
   },
   methods: {
-    async loadMyWorks () {
-      if (this.ctx.user) {
-        const result = await this.workdao.list({
-          'creator': this.ctx.user.id,
-          'projection': 'scenes.1,updated,created,ratio,creator,screen,name,id,frames,viewBox'
-        })
-
-        const svgs = []
-        for (let work of result.list) {
-          work.scenes[0].elements.forEach( element=> {
-            if (element.svg) {
-              svgs.push(element.svg)
-            }
-          })
-          work.stage = 'enter'
-
-          if (work.frames) {
-            this.ctx.styleRegistry.addFrames(work.frames)
-          }
-        }
-        const svgRes = await this.svgdao.multiGet(svgs)
-        for (let res of svgRes.list) {
-          this.ctx.styleRegistry.addVector(res)
-        }
-
-        this.works = result.list
-        for (let work of this.works) {
-          work.viewport = fitRectIntoBounds(work.viewBox || work.screen, {
-            width: 200,
-            height: 200
-          })
-        }
-        this.loading = false
-        // this.lines = flowSchedule(this.works, this.$refs.myWorkList.offsetWidth, 25, 256)
-      }
-    },
-
     replayWork (work) {
       work.stage = 'exist'
       setTimeout(() => {
