@@ -59,6 +59,7 @@ export default {
   },
   data () {
     return {
+      work: null,
       currentAnimation: null,
       scale: 1,
       paste: null
@@ -83,9 +84,9 @@ export default {
         this.currentScene = this.work.scenes[0]
         this.takeSnapshot()
       }
-      setInterval(() => {
-        this.saveWork()
-      }, 3000)
+      // setInterval(() => {
+      //   this.saveWork()
+      // }, 3000)
     },
 
     insert (type, object) {

@@ -1,167 +1,185 @@
 <template>
 <div id="site">
   <nav-bar></nav-bar>
-  <section class="section primary-background">
-    <div class="container">
-      <p class="intro-title">
-        快速设计各种精美的动态展示
-      </p>
-      <p class="has-text-white">
-        一键分享 带动全场
-      </p>
-      <router-link class="button is-large is-rounded installation chrome-installation" to="/creative/my">
-        立刻开始
-      </router-link>
-    </div>
-  </section>
-  <section class="section intro">
-    <div class="container">
-      <div class="columns">
-        <div class="column">
-          <p class="title is-3 is-spaced">
-            微自适应
-          </p>
-          <p class="subtitle is-5">
-          通过合理的自适应设计，可以让您的展示在各种设备与情境
-          </p>
+  <div class="main-full loading" v-if="loading">
+    <ol class="shots-grid container-fluid">
+      <li class="work-loading" v-for="n in 24" :key="n" :style="{
+        height: '240px'
+      }"></li>
+    </ol>
+  </div>
+  <div class="main-full">
+    <ol class="shots-grid container-fluid">
+      <li v-for="work in works" :key="work._id">
+        <div class="scene-wrapper" :style="{
+            width: workViewPort.width + 'px',
+            height: workViewPort.height + 'px'
+        }">
+          <render-scene :view-box="work.viewBox || work.screen" :scene="work.scenes[0]" :view-port="work.viewport" :stage="work.stage"/>
         </div>
-        <div class="column">
-          <img src="https://about.canva.com/wp-content/uploads/sites/3/2019/09/canva-white-and-black-business-plan-presentation-MADWz9UUqCk.png">
+        <div class="author-likes">
+          <img class="avatar" v-if="work.avatar" :src="getImageUrl(work.avatar, 24, 24)">
+          <div class="author">
+            {{work.author}}
+          </div>
         </div>
-      </div>
-    </div>
-  </section>
-  <section class="section intro">
-    <div class="container">
-      <div class="columns">
-        <div class="column">
-          <img src="https://about.canva.com/wp-content/uploads/sites/3/2019/09/canva-white-and-black-business-plan-presentation-MADWz9UUqCk.png">
-        </div>
-        <div class="column">
-          <p class="title is-3 is-spaced">
-            节奏与交互
-          </p>
-          <p class="subtitle is-5">
-            多个场景，自由切换。变换触手可及
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-  <section class="section intro">
-    <div class="container">
-      <div class="columns">
-        <div class="column">
-          <p class="title is-3 is-spaced">
-            随意的动画效果
-          </p>
-          <p class="subtitle is-5">
-            动画设计器，让变换随心所欲
-          </p>
-        </div>
-        <div class="column">
-          <img src="https://about.canva.com/wp-content/uploads/sites/3/2019/09/canva-white-and-black-business-plan-presentation-MADWz9UUqCk.png">
-        </div>
-      </div>
-    </div>
-  </section>
-  <section class="section intro">
-    <div class="container">
-      <div class="columns">
-        <div class="column">
-          <img src="https://about.canva.com/wp-content/uploads/sites/3/2019/09/canva-white-and-black-business-plan-presentation-MADWz9UUqCk.png">
-        </div>
-        <div class="column">
-          <p class="title is-3 is-spaced">
-            自由分享
-          </p>
-          <p class="subtitle is-5">
-            蛋壳云服务托管，或者导出到自己的站点
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-  <section class="hero">
-    <div class="hero-body">
-      <div class="container is-centered">
-        <a class="button is-success is-rounded is-medium">马上使用</a>
-      </div>
-    </div>
-  </section>
+      </li>
+    </ol>
+  </div>
+
   <nav-footer />
 </div>
 </template>
 <script>
 import NavBar from './components/NavBar'
 import NavFooter from './components/NavFooter'
-export default {
-  name: 'view.vue',
-  components: { NavFooter, NavBar },
-  created () {
+import RestDAO from '../common/dao/restdao'
+import StyleRegistry from '../xd-builder/utils/StyleRegistry'
+import { fitRectIntoBounds } from '../xd-builder/mixins/rectUtils'
+import RenderScene from '../xd-builder/render/RenderScene'
+import { getImageUrl } from '../xd-builder/mixins/imageUtils'
 
+export default {
+  name: 'Main',
+  components: { RenderScene, NavFooter, NavBar },
+  data () {
+    return {
+      works: [],
+      loading: true,
+      workViewPort: {
+        width: 100,
+        height: 100
+      }
+    }
+  },
+  computed: {
+  },
+  created () {
+    this.workdao = new RestDAO(this.ctx, 'danke/work')
+    this.svgdao = new RestDAO(this.ctx, 'danke/svg')
+    this.ctx.styleRegistry = new StyleRegistry()
+  },
+  mounted () {
+    this.initWorkViewPort()
+    this.loadWorks()
+  },
+  methods: {
+    avatar () {
+      if (this.user && this.user.avatar) {
+        return this.getImageUrl(this.user.avatar, 96, 96)
+      } else {
+        return 'http://cdn.danke.fun/res/head.svg'
+      }
+    },
+    getImageUrl,
+    initWorkViewPort () {
+      const loadingBlock = document.querySelector('.work-loading')
+      this.workViewPort = {
+        width: loadingBlock.getBoundingClientRect().width,
+        height: loadingBlock.getBoundingClientRect().width / 4 * 3
+      }
+    },
+
+    async loadWorks () {
+        const result = await this.workdao.list({
+          'system.site': 'on',
+          'projection': 'scenes.1,name,id,frames,viewBox,nick,avatar,title,author'
+        })
+
+        const svgs = []
+        for (let work of result.list) {
+          work.scenes[0].elements.forEach( element=> {
+            if (element.svg) {
+              svgs.push(element.svg)
+            }
+          })
+          work.stage = 'enter'
+
+          if (work.frames) {
+            this.ctx.styleRegistry.addFrames(work.frames)
+          }
+        }
+        const svgRes = await this.svgdao.multiGet(svgs)
+        for (let res of svgRes.list) {
+          this.ctx.styleRegistry.addVector(res)
+        }
+        this.works = result.list
+        for (let work of this.works) {
+          work.viewport = fitRectIntoBounds(work.viewBox || {
+            width: 300,
+            height: 200
+          }, this.workViewPort)
+          console.log(work.viewport)
+        }
+        this.loading = false
+        // this.lines = flowSchedule(this.works, this.$refs.myWorkList.offsetWidth, 25, 256)
+    },
   }
 }
 </script>
 
-<style lang="scss" scoped>
-#site {
-  color: #fff;
-  font-size: 16px;
-  .primary-background {
-    color: #fff;
-    height: 48rem;
-    text-align: center;
-    .intro-title {
-      margin-top: 18rem;
-      position: relative;
-      font-size: 3.2rem;
-      line-height: 2rem;
-      color: #fff;
-      margin-bottom: 0;
-      text-shadow: 0 2px 4px rgba(13,0,77,.08), 0 3px 6px rgba(13,0,77,.08), 0 8px 16px rgba(13,0,77,.08);
-    }
-    .has-text-white {
-      font-size: 2rem;
-      margin-bottom: 5rem;
-    }
-    a.installation {
-      background-color: #fff;
-      color: #0d004d;
-      box-shadow: 0 2px 4px rgba(13,0,77,.08), 0 8px 16px rgba(13,0,77,.08), 0 32px 80px rgba(13,0,77,.08);
-      line-height: 28px;
-      border-radius: 4px;
-      border: none;
-      text-decoration: none;
-      font-size: 20px;
-      padding: 16px 40px;
-      cursor: pointer;
-    }
-    .heading {
-      font-size: 36px;
-      line-height: 60px;
-      font-family: Poppins,sans-serif;
-      font-weight: 600;
-      color: #234689;
-      letter-spacing: 0;
+<style lang="scss">
+.shots-grid {
+  margin-top: 108px;
+  display: grid;
+  list-style: none;
+  grid-gap: 36px;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  .scene-wrapper {
+    overflow: hidden;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0px 0px 5px 0px rgba(62,66,66,0.13);
+  }
+  .scene {
+    position: relative;
+    overflow: hidden;
+    .element {
+      position: absolute;
     }
   }
-  section.intro {
-    margin: 20px 0;
-    .columns {
-      display: flex;
-      .column {
-        flex: 1;
-        img {
-          width: 90%;
-        }
-      }
-    }
-    .title {
-      margin-top: 80px;
-      font-size: 36px;
-    }
+}
+
+.author-likes {
+  margin: 10px 0;
+  display: flex;
+  img.avatar {
+    border-radius: 50%;
   }
-  // background-image: linear-gradient(to right top, #051937, #004d7a, #008793, #00bf72, #a8eb12);
+  .author {
+    margin-left: 10px;
+    color: #3d3d4e;
+    font-weight: bold;
+    line-height: 22px;
+  }
+}
+.container-fluid {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+@media (min-width: 768px) {
+  .container-fluid {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .container-fluid {
+    padding-left: 72px;
+    padding-right: 72px;
+  }
+}
+@media (min-width: 1600px) {
+  .container-fluid {
+    padding-left: 72px;
+    padding-right: 72px;
+  }
+  .shots-grid {
+    grid-template-columns: repeat(auto-fill, minmax(336px, 1fr));
+  }
 }
 </style>

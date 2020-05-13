@@ -46,6 +46,9 @@ export default {
   }, {
     path: '/slide/:work',
     component: () => import(/* webpackChunkName: "preview" */'./preview/SlidePreview.vue')
+  }, {
+    path: '/work/manage',
+    component: () => import(/* webpackChunkName: "preview" */'./center/WorkManage.vue')
   }],
   async onload (ctx) {
   }

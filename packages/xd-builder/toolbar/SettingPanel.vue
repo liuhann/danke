@@ -2,7 +2,20 @@
 <el-popover placement="bottom" width="320" trigger="click" popper-class="padding-0" v-model="visible">
   <a class="action" slot="reference"><icon-share /></a>
   <div class="setting-panel">
-    <div class="share-list" v-if="!showShareScene">
+    <div class="share-list" v-if="!showShareScene && !showWorkForm">
+      <el-form size="mini" label-width="80px">
+        <el-form-item label="作品名称">
+          <el-input size="mini" v-model="work.title"/>
+        </el-form-item>
+        <el-form-item label="标签">
+          <el-select size="mini" v-model="tags" multiple filterable allow-create>
+            <el-option v-for="tag of work.tags" :key="tag" :label="tag" :value="tag"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item align="right">
+          <el-button type="success" @click="commitSaveWork" size="small">保存作品</el-button>
+        </el-form-item>
+      </el-form>
       <div class="share" @click="slidePreview">
         <div class="icon">
           <i class="el-icon-full-screen" />
@@ -49,6 +62,7 @@
 
 <script>
 import IconShare from './res/share.svg'
+import workMixin from '../work/workMixin'
 import { Input, Select, Option, Popover, Button, Form, FormItem, Notification } from 'element-ui'
 import RestDAO from '../../common/dao/restdao'
 
@@ -56,6 +70,7 @@ const templateTags = ['图文', '图片']
 
 export default {
   name: 'SettingPanel',
+  mixins: [ workMixin ],
   components: {
     IconShare,
     [Popover.name]: Popover,
@@ -81,7 +96,8 @@ export default {
       templateTags,
       savingBlock: false,
       shareSceneName: '',
-      showShareScene: false
+      showShareScene: false,
+      showWorkForm: false
     }
   },
 
@@ -89,8 +105,13 @@ export default {
     this.blockdao = new RestDAO(this.ctx, 'danke/block')
   },
   methods: {
-    slidePreview () {
-      window.open('/slide/' + this.work.id)
+
+    async commitSaveWork () {
+      await this.saveWork()
+      Notification.success({
+        message: '保存作品信息成功'
+      })
+      this.visible = false
     },
 
     async commitShareScene () {
@@ -109,12 +130,14 @@ export default {
       this.savingBlock = true
       await this.blockdao.create(sceneImage)
       this.savingBlock = false
-
       Notification.success({
         message: '保存模板成功'
       })
       this.showShareScene = false
       this.visible = false
+    },
+    editWorkForm () {
+      this.showWorkForm = true
     },
 
     shareSceneAsTemplate () {

@@ -103,7 +103,6 @@ export default {
               bottom: '.resize-b',
               top: '.resize-t'
             },
-            inertia: true,
             preserveAspectRatio: node.isRatioFixed
           }).on('resizemove', event => {
             const target = {
@@ -125,7 +124,6 @@ export default {
         }
         if (!interactee.draggable().enabled) {
           interactee.draggable({
-            inertia: true,
             onstart: event => {
               if (event.ctrlKey) {
                 // ctrl 拖拽： 复制当前元素放置在原地

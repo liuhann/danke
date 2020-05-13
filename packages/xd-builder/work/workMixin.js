@@ -7,7 +7,6 @@ import RestDAO from '../../common/dao/restdao'
 export default {
   data () {
     return {
-      work: null,
       blockPageNum: 1
     }
   },
@@ -15,6 +14,9 @@ export default {
     this.workdao = new RestDAO(this.ctx, 'danke/work')
   },
   methods: {
+    slidePreview () {
+      window.open('/slide/' + this.work.id)
+    },
     /**
      * 新增作品
      */
@@ -57,11 +59,9 @@ export default {
       // 抽取所有使用的frame style到work上，以便压缩使用空间
       Object.assign(work, this.ctx.styleRegistry.getStyleResource(work))
       const stringify = JSON.stringify(work)
-      if (stringify === this.lastStringify) {
-        return
-      }
       work.colors = this.ctx.styleRegistry.getWorkColors(work)
-      this.lastStringify = stringify
+      work.author = this.ctx.user.nick
+      work.avatar = this.ctx.user.avatar
       if (this.savingWork) {
         return
       }
@@ -79,21 +79,6 @@ export default {
     async runWork () {
       await this.saveWork()
       window.open('/play/fit/' + this.work._id)
-    },
-
-    /**
-     * @deprecated
-     */
-    async exportWork () {
-      const JSZip = (await import(/* webpackChunkName: "jszip" */'jszip')).default
-      const { saveAs } = (await import(/* webpackChunkName: "jszip" */'file-saver')).default
-      const zip = new JSZip()
-      zip.file('work.json', JSON.stringify(this.getWorkConfig()), '\n\r', 2)
-      const img = zip.folder('images')
-      zip.generateAsync({ type: 'blob' }).then(function (content) {
-        // see FileSaver.js
-        saveAs(content, 'example.zip')
-      })
     }
   }
 }

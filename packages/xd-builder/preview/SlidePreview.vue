@@ -11,6 +11,7 @@
   <div class="action-bar" v-show="!isFullScreen">
     <div class="action-button" @click="refreshWork"><i class="el-icon-refresh-right" /></div>
     <div class="action-button" @click="enterFullScreen"><i class="el-icon-full-screen" /></div>
+    <div class="action-button" @click="likeWork"><i class="el-icon-star-off" /></div>
   </div>
 </div>
 </template>
@@ -21,6 +22,7 @@ import { fitRectIntoBounds } from '../mixins/rectUtils.js'
 import workMixin from '../work/workMixin.js'
 import sceneMixin from '../mixins/sceneMixins.js'
 import RenderScene from '../render/RenderScene'
+import RestDAO from '../../common/dao/restdao'
 export default {
   name: 'Preview',
   mixins: [ workMixin, sceneMixin ],
@@ -38,6 +40,7 @@ export default {
     }
   },
   created () {
+    this.likedao = new RestDAO(this.ctx, 'danke/like')
     this.ctx.styleRegistry = new StyleRegistry()
   },
   computed: {
@@ -116,6 +119,10 @@ export default {
       setTimeout(() => {
         this.enterScene(0)
       }, 100)
+    },
+
+    likeWork () {
+
     },
 
     enterFullScreen () {
