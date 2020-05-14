@@ -1,11 +1,16 @@
 <template>
 <div class="user-form">
-    <div class="auth-sidebar">
+    <div class="auth-sidebar" :style="{
+      background: workBackground
+    }">
       <render-scene v-if="showWork" :scene="showWork.scenes[0]" :view-box="showWork.viewBox" :view-port="showWork.viewport" stage="enter"/>
       <div class="by" v-if="showWork">Art by {{showWork.author}}</div>
     </div>
     <section class="content">
       <nav class="auth-nav">
+        <p class="auth-home">
+          回到 <a href="/">首页</a>
+        </p>
         <p class="auth-link">
           没有账号?  <a href="/register">马上注册</a>
         </p>
@@ -14,7 +19,6 @@
         <div class="auth-content">
           <h2>登录</h2>
           <hr class="divider">
-
           <div class="auth-form sign-in-form">
             <form accept-charset="UTF-8" method="post" action="/" @submit.prevent="login"><input name="utf8" type="hidden" value="✓">
               <div class="form-fields">
@@ -25,10 +29,12 @@
                 <fieldset>
                   <label class="password">密码 <a href="/password_resets/new">忘记密码?</a></label>
                   <input type="password" name="password" v-model="password" class="text-input">
+                  <span v-if="error.username" class="error">{{error.username}}</span>
                 </fieldset>
                 <fieldset>
                   <label>验证码<span @click="refreshCaptcha" v-html="svg"></span></label>
                   <input type="text" v-model="captcha" class="text-input">
+                  <span v-if="error.captcha" class="error">{{error.captcha}}</span>
                 </fieldset>
               </div>
               <input class="button form-sub" type="submit" value="登录" tabindex="3">
@@ -66,6 +72,13 @@ export default {
   },
 
   computed: {
+    workBackground () {
+      if (this.showWork) {
+        return this.showWork.color
+      } else {
+        return ''
+      }
+    },
     showWork () {
       if (this.works.length) {
         return this.works[0]

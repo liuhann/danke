@@ -190,6 +190,7 @@ export default {
         transformOrigin: 'top left',
         width: this.viewBox.width + 'px',
         height: this.viewBox.height + 'px',
+        background: this.work.color,
         transition: 'transform .2s ease-out'
       }
       if (this.actionMove) {
@@ -210,6 +211,7 @@ export default {
         style.display = 'none'
       }
       Object.assign(style, this.styleScreen)
+      delete style.background
       return style
     },
     // 拖拽选择框的矩形样式

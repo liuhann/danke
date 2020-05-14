@@ -38,6 +38,11 @@
   <align-element v-if="selectedElements.length > 1" :elements="selectedElements"/>
   <!-- 右侧操作功能按钮-->
   <div class="pull-right">
+    <el-tooltip content="撤销" v-if="noFocusedElement"  >
+      <!-- 颜色-->
+      <el-color-picker v-model="work.color" show-alpha />
+    </el-tooltip>
+
     <el-tooltip content="撤销" v-if="!elementSelected && undoable" >
       <a class="action" @click="$emit('undo')"><icon-undo /></a>
     </el-tooltip>
@@ -66,10 +71,10 @@
     <el-tooltip class="item" effect="dark" content="解锁" placement="bottom" v-if="selectedLockedElements.length" >
       <a class="action" @click="unLockSelectedElement"><icon-unlock /></a>
     </el-tooltip>
-
     <el-tooltip class="item" effect="dark" content="播放" placement="bottom" v-if="noFocusedElement" >
       <a class="action" @click="playScene"><icon-play/></a>
     </el-tooltip>
+    <pop-scene-plays v-if="noFocusedElement" :work="work" />
     <setting-panel v-if="noFocusedElement" :work="work" :scene="scene"/>
   </div>
 </div>
@@ -104,10 +109,12 @@ import FontFamily from './FontFamily.vue'
 import PopSetGradient from './PopSetGradient'
 import BorderStyle from './BorderStyle'
 import PopElementList from './PopElementList'
+import PopScenePlays from './PopScenePlays'
 export default {
   name: 'Toolbar',
   mixins: [ interactMixins ],
   components: {
+    PopScenePlays,
     PopElementList,
     BorderStyle,
     PopSetGradient,
@@ -532,7 +539,6 @@ export default {
     i {
       vertical-align: text-bottom;
       font-size: 1.8rem;
-      font-weight: bold;
     }
     img, svg {
       width: 18px;

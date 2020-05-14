@@ -28,6 +28,11 @@ export default {
           width: parseInt(this.$route.query.width) || 414,
           height: parseInt(this.$route.query.height) || 896
         },
+        color: '#fff',
+        play: {
+          audio: '',
+          ticks: []
+        },
         frames: {},
         svgs: {},
         fonts: {},
@@ -45,6 +50,12 @@ export default {
       if (!work.viewBox) {
         work.viewBox = work.screen
         delete work.screen
+      }
+      if (!work.play) {
+        work.play = {
+          audio: '',
+          ticks: []
+        }
       }
       this.ctx.styleRegistry.initWorkStyleResource(work)
       this.ctx.palette = this.ctx.styleRegistry.getWorkColors(work)

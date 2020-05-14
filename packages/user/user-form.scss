@@ -35,6 +35,12 @@
     flex-direction: column;
     flex: 1;
     overflow: auto;
+    .auth-nav {
+      display: flex;
+    }
+    .auth-home {
+      flex: 1;
+    }
     .auth-link {
       text-align: right;
     }

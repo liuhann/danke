@@ -16,7 +16,7 @@
         </div>
         <div class="animation-box">
           <img :src="CLOUD_HILL" :class="animation && animation.name"/>
-          <div class="refresh"><i @click="refreshCurrent" class="el-icon-refresh-right" /> <i @click="edit(animation)" class="el-icon-edit" /></div>
+          <div class="refresh">{{animation.name}}<i @click="refreshCurrent" class="el-icon-refresh-right" /> <i @click="edit(animation)" class="el-icon-edit" /></div>
         </div>
       </div>
     </section>

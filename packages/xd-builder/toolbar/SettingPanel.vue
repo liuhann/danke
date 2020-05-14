@@ -50,6 +50,11 @@
           <el-option v-for="tag of templateTags" :key="tag" :label="tag" :value="tag"/>
         </el-select>
       </el-form-item>
+      <el-form-item label="背景色">
+        <el-select size="mini" v-model="tags" multiple filterable allow-create>
+          <el-option v-for="tag of templateTags" :key="tag" :label="tag" :value="tag"/>
+        </el-select>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="commitShareScene" :loading="savingBlock">提交</el-button>
         <el-button @click="showShareScene = false">取消</el-button>

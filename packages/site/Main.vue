@@ -13,7 +13,8 @@
       <li v-for="work in works" :key="work._id">
         <div class="scene-wrapper" :style="{
             width: workViewPort.width + 'px',
-            height: workViewPort.height + 'px'
+            height: workViewPort.height + 'px',
+            background: work.color
         }">
           <render-scene :view-box="work.viewBox || work.screen" :scene="work.scenes[0]" :view-port="work.viewport" :stage="work.stage"/>
         </div>

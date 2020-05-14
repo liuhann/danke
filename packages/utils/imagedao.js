@@ -21,11 +21,10 @@ export default class ImageDAO {
    * @return {Promise<void>}
    */
   async removeBlob (path) {
-    await this.ctx.post(`image/remove`, {
-      json: {
-        fileId: path
-      }
-    }).json()
+    const response = await this.ctx.post(`image/remove`, {
+      fileId: path
+    })
+    return response.data
   }
 
   /**
@@ -41,9 +40,8 @@ export default class ImageDAO {
       blob.lastModifiedDate = new Date()
     }
     formData.append('file', blob, blob.filename)
-    return this.ctx.post(`image/upload?path=${path}`, {
-      body: formData
-    }).json()
+    const response = await this.ctx.post(`image/upload?path=${path}`, formData)
+    return response.data
   }
 
   async uploadImage (file) {
