@@ -198,6 +198,16 @@ export default {
         content = content.replace(new RegExp(colorList[i].replace('(', '\\(').replace(')', '\\)'), 'gm'), `var(--fillColor${i})`)
       }
       content = content.replace(/<g>\s+<\/g>/g, '')
+      if (variables.length === 0) {
+        variables.push({
+          'name': 'globalFill',
+          'value': '#555',
+          'label': '整体颜色',
+          'type': 'color'
+        })
+        content = content.replace(/<svg/, '<svg fill="var(--globalFill)"')
+      }
+
       return {
         content,
         variables

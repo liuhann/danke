@@ -71,8 +71,6 @@ export default {
       return styles
     },
     async newPack () {
-
-
       const pack = await this.packdao.create({
         type: this.type,
         name: '图库'
