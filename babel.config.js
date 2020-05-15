@@ -1,6 +1,6 @@
 module.exports = {
   presets: [
-    '@vue/babel-preset-app'
+    '@vue/babel-preset-app', '@babel/preset-react'
   ],
   plugins: [
     [

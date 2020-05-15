@@ -47,6 +47,7 @@ export default {
     deviceStyle () {
       if (this.viewPort) {
         return {
+          background: this.work.color,
           perspective: this.viewPort.width + 'px',
           width: this.viewPort.width + 'px',
           height: this.viewPort.height + 'px'

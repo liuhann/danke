@@ -5,7 +5,6 @@
   <a class="action" v-if="noFocusedElement" @click="nextScene"><i class="el-icon-arrow-down" /></a>
   <a class="action" v-if="noFocusedElement"> {{scenes.indexOf(scene) + 1}}/{{scenes.length}}</a>
 
-
   <!--  样式变量的修改-->
   <template v-for="(variable, index) in elementStyleVariables">
     <!-- 颜色-->

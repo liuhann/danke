@@ -48,7 +48,10 @@ export default {
     component: () => import(/* webpackChunkName: "preview" */'./preview/SlidePreview.vue')
   }, {
     path: '/work/manage',
-    component: () => import(/* webpackChunkName: "preview" */'./center/WorkManage.vue')
+    component: () => import(/* webpackChunkName: "manage" */'./center/WorkManage.vue')
+  }, {
+    path: '/svg-path/maker',
+    component: () => import(/* webpackChunkName: "manage" */'./clippath-maker/Container.vue')
   }],
   async onload (ctx) {
   }

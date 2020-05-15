@@ -186,6 +186,7 @@ export default class StyleRegistry {
       }
       if (element.svg) {
         svgs[element.svg] = element.content
+        delete element.content
       }
       if (element.variables && element.variables.length) {
         element.variables.forEach(variable => {
@@ -193,6 +194,10 @@ export default class StyleRegistry {
             fonts.add(variable.value)
           }
         })
+      }
+      // assign resource in blocks
+      if (element.elements) {
+        this.assignSceneResource(element, frames, svgs, fonts)
       }
     }
   }
@@ -241,13 +246,19 @@ export default class StyleRegistry {
         this.addFontFace(font)
       }
     }
-
     // init element svg content from work.svgs
     for (let scene of work.scenes) {
-      for (let element of scene.elements) {
-        if (element.svg) {
-          element.content = work.svgs[element.svg]
-        }
+      this.initSceneSVG(scene.elements, work.svgs)
+    }
+  }
+
+  initSceneSVG (elements, svgs) {
+    for (let element of elements) {
+      if (element.svg) {
+        element.content = svgs[element.svg]
+      }
+      if (element.elements) {
+        this.initSceneSVG(element.elements, svgs)
       }
     }
   }
