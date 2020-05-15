@@ -68,26 +68,6 @@ export default {
 
 <style lang="scss">
 #addon-block-list {
-  .search-box {
-    .el-input {
-      background: transparent;
-      border: none;
-
-      .el-input-group__append {
-        background: #545961;
-        border: none;
-      }
-    }
-    margin: 10px;
-    input {
-      background: rgba(255, 255, 255,.1);
-      border: none;
-      color: #ddd;
-      &:hover {
-        box-shadow: none;
-      }
-    }
-  }
   .block-list-container {
     display: flex;
     flex-wrap: wrap;

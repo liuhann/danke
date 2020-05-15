@@ -20,6 +20,7 @@
       @next-scene="nextScene"
       @toggle-paste="togglePaste"/>
     <scene-container
+      ref="sceneContainer"
       v-if="currentScene"
       :animation="currentAnimation"
       :view-box="work.viewBox"
@@ -98,6 +99,9 @@ export default {
           break;
         case 'animation':
           this.currentAnimation = object
+        case 'element':
+          this.$refs.sceneContainer.createSingleElement(object, (this.work.viewBox.width - object.path.w) / 2, (this.work.viewBox.height - object.path.h) / 2)
+          // this.currentScene.elements.push(Object.assign(node, object))
         default:
       }
     },

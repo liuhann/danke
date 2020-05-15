@@ -7,7 +7,7 @@
   @mousemove="$emit('handleMouseMove', $event)">
   <path
     class="ad-Path"
-    :d="path" />
+    :d="path" fill="var(--fill)" stroke-width="var(--stokeWidth)" stroke="var(--stroke)"/>
   <g className="ad-Points">
     <g class="ad-PointGroup" v-for="(p, i) in points" :key="i"
        :class="[i === 0? 'ad-PointGroup--first': '', activePoint === i ? 'is-active' : '']">
@@ -35,7 +35,7 @@ import Cubic from './Cubic'
 export default {
   name: 'SvgGrid',
   components: { Cubic, Quadratic },
-  props: ['w', 'h', 'path', 'grid', 'points', 'activePoint'],
+  props: ['w', 'h', 'path', 'grid', 'points', 'activePoint', 'fillColor', 'strokeWidth', 'strokeColor'],
   methods: {
     addPoint (e) {
       this.$emit('addPoint', e)

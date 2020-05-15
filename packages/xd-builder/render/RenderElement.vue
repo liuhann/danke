@@ -8,6 +8,9 @@
   <div v-else-if="element.elements" class="block-elements" :style="element.style">
     <render-element v-for="(el, i) in element.elements" :key="el.id" :view-box="viewBox" :view-port="viewPort" :element="el" :index="i" />
   </div>
+  <svg v-else-if="element.path" :width="element.width" :height="element.height" :viewBox="'0 0 ' + element.path.w + ' ' + element.path.h ">
+    <path :d="generatePath" fill="var(--fill)" stroke-width="var(--stokeWidth)" stroke="var(--stroke)"/>
+  </svg>
   <div v-else-if="!element.text" class="shape" :style="element.style">
   </div>
   <!--文本渲染情况下 文本内容-->
@@ -108,7 +111,6 @@ export default {
       }
     },
 
-
     elementStyle () {
       // 设置元素的长、宽到默认变量--width 、 --height
       const style = {
@@ -208,7 +210,32 @@ export default {
      */
     elementSVGContent () {
       return this.ctx.styleRegistry.getVector(this.element.svg)
-    }
+    },
+
+    generatePath () {
+      let d = ""
+      this.element.path.points.forEach((p, i) => {
+        if (i === 0) {
+          // first point
+          d += "M "
+        } else if (p.q) {
+          // quadratic
+          d += `Q ${ p.q.x } ${ p.q.y } `
+        } else if (p.c) {
+          // cubic
+          d += `C ${ p.c[0].x } ${ p.c[0].y } ${ p.c[1].x } ${ p.c[1].y } `
+        } else if (p.a) {
+          // arc
+          d += `A ${ p.a.rx } ${ p.a.ry } ${ p.a.rot } ${ p.a.laf } ${ p.a.sf } `
+        } else {
+          d += "L "
+        }
+
+        d += `${ p.x } ${ p.y } `
+      })
+      // if (this.closePath) d += "Z"
+      return d
+    },
   },
   data () {
     return {

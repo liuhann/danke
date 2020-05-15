@@ -3,7 +3,7 @@
     class="ad-Container"
     @mouseup="cancelDragging">
     <div class="ad-Container-main">
-      <div class="ad-Container-svg">
+      <div class="ad-Container-svg" :style="variableStyles">
         <svg-grid
           ref="svg"
           :path="generatePath"
@@ -20,6 +20,11 @@
           @handleMouseMove="handleMouseMove"/>
       </div>
     </div>
+    <div class="action">
+      <div>ctrl + 点击新增节点</div>
+      <div>双击节点更换连线类型</div>
+      <div class="delete" v-if="activePoint" @click="removePoint">删除当前节点</div>
+    </div>
   </div>
 </template>
 
@@ -31,25 +36,47 @@ export default {
   components: {
     SvgGrid
   },
+  props: {
+    color: {
+      type: String
+    },
+    points: {
+      type: Array
+    },
+    strokeWidth: {
+      type: Number,
+      default: 4
+    },
+    strokeColor: {
+      type: String,
+      default: '#555'
+    },
+    w: {
+      type: Number,
+      default: 600
+    },
+    h: {
+      type: Number,
+      default: 600
+    }
+  },
   data () {
     return {
-      w: 600,
-      h: 600,
       grid: {
         show: true,
         snap: true,
         size: 25
       },
       ctrl: false,
-      points: [
-        { x: 100, y: 300 },
-        { x: 200, y: 300, q: { x: 150, y: 50 } },
-        { x: 300, y: 300, q: { x: 250, y: 550 } },
-        { x: 400, y: 300, q: { x: 350, y: 50 } },
+      // points: [
+      //   { x: 100, y: 300 },
+      //   { x: 200, y: 300, q: { x: 150, y: 50 } },
+      //   { x: 300, y: 300, q: { x: 250, y: 550 } },
+      //   { x: 400, y: 300, q: { x: 350, y: 50 } },
         // { x: 500, y: 300, c: [{ x: 450, y: 550 }, { x: 450, y: 50 }] },
         // { x: 600, y: 300, c: [{ x: 550, y: 50 }, { x: 550, y: 550 }] },
         // { x: 700, y: 300, a: { rx: 50, ry: 50, rot: 0, laf: 1, sf: 1 } }
-      ],
+      // ],
       activePoint: 2,
       draggedPoint: false,
       draggedQuadratic: false,
@@ -84,6 +111,13 @@ export default {
       if (this.closePath) d += "Z"
 
       return d
+    },
+    variableStyles () {
+      return {
+        '--fill': this.color,
+        '--stokeWidth': this.strokeWidth,
+        '--stroke': this.strokeColor
+      }
     }
   },
 
@@ -136,7 +170,7 @@ export default {
       }
     },
     removePoint (index) {
-      this.points.splice(index, 1)
+      this.points.splice(this.activePoint, 1)
       this.activePoint = 0
     },
     setDraggedPoint (index) {
@@ -263,4 +297,19 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.ad-Container {
+  .action {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    color: #888;
+    .delete {
+      color: #EA4335;
+    }
+  }
+}
+
+</style>
 

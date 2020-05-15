@@ -8,6 +8,17 @@
     </div>
     <div class="pack">
       <div class="pack-title">
+        <div class="text">自定义形状</div>
+      </div>
+      <div class="pack-shapes" @click="showDialogEditPath">
+        <div class="object-item add">
+          <i class="el-icon-plus"></i>
+        </div>
+      </div>
+      <dialog-edit-path ref="dialogEditPath" @insert="insert" />
+    </div>
+    <div class="pack">
+      <div class="pack-title">
         <div class="text">常用形状</div>
         <div class="more" @click="showMoreShapes">查看全部</div>
       </div>
@@ -62,11 +73,13 @@ import shapes from './shapes'
 import { assignVariables} from '../mixins/renderUtils'
 import { Pagination, Input, Button, Loading } from 'element-ui'
 import RestDAO from '../../common/dao/restdao'
+import DialogEditPath from '../clippath-maker/DialogEditPath'
 
 export default {
   name: 'LeftShapeList',
   mixins: [  ],
   components: {
+    DialogEditPath,
     [Input.name]: Input,
     [Pagination.name]: Pagination,
     [Button.name]: Button
@@ -117,6 +130,10 @@ export default {
 
     },
 
+    insert (element) {
+      this.$emit('insert', element)
+    },
+
     async showPackVectors (pack) {
       this.packTitle = pack.name
       this.packResources = pack.children
@@ -140,6 +157,10 @@ export default {
       const style = {}
       assignVariables(style, vector.variables)
       return style
+    },
+
+    showDialogEditPath () {
+      this.$refs.dialogEditPath.open()
     },
 
     shapeStyle (shape) {
@@ -203,6 +224,17 @@ export default {
       justify-content: center;
       align-items: center;
       position: relative;
+      &.add {
+        border: 1px dashed #99a9bf;
+        margin-left: 10px;
+        width: 80px;
+        height: 80px;
+        cursor: pointer;
+        i {
+          font-size: 20px;
+          color: #99a9bf;
+        }
+      }
       &:nth-of-type(3n) {
         margin-right: 0;
       }
@@ -219,7 +251,6 @@ export default {
       }
       .shape-name {
         position: absolute;
-        color: #fff;
         bottom: -16px;
         color: #eee;
       }

@@ -5,7 +5,7 @@
       <i class="el-icon-files"/>
       <span>场景</span>
     </div>
-    <div class='category' :class="current === 'shape'? 'current': ''" @click="toggleTo('block')">
+    <div class='category' :class="current === 'block'? 'current': ''" @click="toggleTo('block')">
       <i class="el-icon-news"/>
       <span>图块</span>
     </div>
@@ -53,7 +53,7 @@
     </transition>
     <transition name="fade">
       <keep-alive>
-        <left-shape-list v-if="current === 'shape'" />
+        <left-shape-list v-if="current === 'shape'" @insert="insertElement"/>
       </keep-alive>
     </transition>
   </div>
@@ -104,6 +104,11 @@ export default {
     // 增加新的场景
     insertNewScene (scene) {
       this.$emit('insert', 'scene', scene)
+    },
+
+    insertElement (element) {
+      debugger
+      this.$emit('insert', 'element', element)
     },
 
     insertAnimation (animation) {
@@ -172,6 +177,28 @@ aside.insert-container {
       padding: 8px;
     }
   }
+
+  .search-box {
+    .el-input {
+      background: transparent;
+      border: none;
+
+      .el-input-group__append {
+        background: #545961;
+        border: none;
+      }
+    }
+    margin: 10px;
+    input {
+      background: rgba(255, 255, 255,.1);
+      border: none;
+      color: #ddd;
+      &:hover {
+        box-shadow: none;
+      }
+    }
+  }
+
   ::-webkit-scrollbar-track
   {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
