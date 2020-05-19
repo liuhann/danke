@@ -57,7 +57,7 @@ export default [{
   name: '半圆',
   width: 50,
   height: 100,
-  ratio: 1,
+  ratio: 2,
   style: {
     clipPath: 'ellipse(100% 50% at 100% 50%)',
     background: 'var(--bgColor)'

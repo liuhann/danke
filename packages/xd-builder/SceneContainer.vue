@@ -11,7 +11,7 @@
             stage="enter"
             :element="element"
             :view-box="viewBox"
-            :view-port="viewBox"
+            :view-port="viewPort"
             :key="index"
             :index="index"
             :ref="element.id"/>
@@ -144,6 +144,9 @@ export default {
   },
 
   watch: {
+    scale () {
+
+    },
     // 场景更新操作，需要更新交互及其他页面元素
     scene () {
       for (let element of this.scene.elements) {
@@ -171,6 +174,12 @@ export default {
   },
 
   computed: {
+    viewPort () {
+      return {
+        width: this.viewBox.width * this.scale,
+        height: this.viewBox.height * this.scale
+      }
+    },
     scaleDisplay () {
       return Math.floor(this.scale * 100) + '%'
     },
@@ -186,10 +195,10 @@ export default {
     },
     styleScreen () {
       const screenStyle = {
-        transform: `translateX(${this.translateX}px) translateY(${this.translateY}px) scale(${this.scale})`,
+        transform: `translateX(${this.translateX}px) translateY(${this.translateY}px)`, //scale(${this.scale})
         transformOrigin: 'top left',
-        width: this.viewBox.width + 'px',
-        height: this.viewBox.height + 'px',
+        width: this.viewPort.width + 'px',
+        height: this.viewPort.height + 'px',
         background: this.work.color,
         transition: 'transform .2s ease-out'
       }
@@ -582,7 +591,7 @@ export default {
      */
     getMaskStyle (element) {
       const displayStyle = {}
-      return Object.assign(displayStyle, getRectPositionStyle(element))
+      return Object.assign(displayStyle, getRectPositionStyle(element, this.viewBox, this.viewPort))
     },
 
     getMaskClass (element) {

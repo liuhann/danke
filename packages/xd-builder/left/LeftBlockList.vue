@@ -9,8 +9,13 @@
       <div
         v-for="(block, index) in blocks"
         :key="index"
-        class="block" draggable @dragstart="dragStart(block, $event)">
-        <render-scene :scene="block" :view-port="block.viewPort" :view-box="block.viewBox" stage="enter"/>
+        class="block-container" draggable @dragstart="dragStart(block, $event)">
+        <div class="block-viewport" :style="{
+          width: block.viewPort.width + 'px',
+          height: block.viewPort.height + 'px'
+        }">
+          <render-scene :scene="block" :view-port="block.viewPort" :view-box="block.viewBox" stage="enter"/>
+        </div>
       </div>
     </div>
 </div>
@@ -71,13 +76,19 @@ export default {
   .block-list-container {
     display: flex;
     flex-wrap: wrap;
-    .block {
+    .block-container {
       justify-content: center;
       align-items: center;
       width: 148px;
       height: 148px;
       padding: 8px;
       display: flex;
+      .block-viewport {
+        position: relative;
+        .element {
+          position: absolute;
+        }
+      }
     }
   }
 }

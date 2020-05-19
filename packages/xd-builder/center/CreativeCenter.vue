@@ -27,8 +27,8 @@
         <div class="node" :class="nav==='my'? 'selected': ''" @click="navTo('my')">
           <span>我的作品</span>
         </div>
-        <div class="node">
-          <span>作品模板</span>
+        <div class="node" :class="nav==='blocks'? 'selected': ''" @click="navTo('blocks')">
+          <span>我的图块</span>
         </div>
         <div class="node" :class="nav==='images'? 'selected': ''" @click="navTo('blocks')">
           <span>图片模板</span>

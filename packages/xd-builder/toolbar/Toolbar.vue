@@ -5,6 +5,7 @@
   <a class="action" v-if="noFocusedElement" @click="nextScene"><i class="el-icon-arrow-down" /></a>
   <a class="action" v-if="noFocusedElement"> {{scenes.indexOf(scene) + 1}}/{{scenes.length}}</a>
 
+  <a class="action" v-if="noFocusedElement" @click="openPen"><icon-pen /></a>
   <!--  样式变量的修改-->
   <template v-for="(variable, index) in elementStyleVariables">
     <!-- 颜色-->
@@ -37,11 +38,7 @@
   <align-element v-if="selectedElements.length > 1" :elements="selectedElements"/>
   <!-- 右侧操作功能按钮-->
   <div class="pull-right">
-    <el-tooltip content="撤销" v-if="noFocusedElement"  >
-      <!-- 颜色-->
-      <el-color-picker v-model="work.color" show-alpha />
-    </el-tooltip>
-
+    <el-color-picker v-model="work.color" show-alpha v-if="noFocusedElement"/>
     <el-tooltip content="撤销" v-if="!elementSelected && undoable" >
       <a class="action" @click="$emit('undo')"><icon-undo /></a>
     </el-tooltip>
@@ -96,6 +93,7 @@ import IconUndo from './res/undo.svg'
 import IconRedo from './res/redo.svg'
 import IconLock from './res/lock.svg'
 import IconUnlock from './res/unlock.svg'
+import IconPen from './res/pen.svg'
 import IconClean from './res/clean.svg'
 import IconPlay from './res/play.svg'
 import IconEffect from './res/effect.svg'
@@ -136,6 +134,7 @@ export default {
     IconLock,
     IconUnlock,
     IconPlay,
+    IconPen,
     [ColorPicker.name]: ColorPicker,
     [Tooltip.name]: Tooltip,
     [Select.name]: Select,
@@ -462,6 +461,10 @@ export default {
       this.$emit('refresh')
     },
 
+    openPen () {
+      this.$emit('open-pen')
+    },
+
     log () {
       console.log(this.selectedElements, this.scene, this.work)
     },
@@ -469,6 +472,7 @@ export default {
     previousScene () {
       this.$emit('prev-scene')
     },
+
 
     nextScene () {
       this.$emit('next-scene')

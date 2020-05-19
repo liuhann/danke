@@ -6,9 +6,7 @@
   title="播放设置"
   @show="show"
   trigger="click">
-  <el-tooltip class="item" effect="dark" content="播放设置" placement="bottom" slot="reference">
-    <a class="action"><i class="el-icon-timer" /></a>
-  </el-tooltip>
+  <a class="action" slot="reference"><i class="el-icon-timer" /></a>
   <div class="scene-plays-list">
     <div class="tick-list">
       <div class="tick" v-for="(tick, index) of work.play.ticks" :key="index">

@@ -12,7 +12,8 @@
             <el-option v-for="tag of work.tags" :key="tag" :label="tag" :value="tag"/>
           </el-select>
         </el-form-item>
-        <el-form-item align="right">
+        <el-form-item align="right" class="actions">
+          <el-checkbox v-model="work.isBlock" true-label="yes" false-label="no">设置为图块</el-checkbox>
           <el-button type="success" @click="commitSaveWork" size="small">保存作品</el-button>
         </el-form-item>
       </el-form>
@@ -68,7 +69,7 @@
 <script>
 import IconShare from './res/share.svg'
 import workMixin from '../work/workMixin'
-import { Input, Select, Option, Popover, Button, Form, FormItem, Notification } from 'element-ui'
+import { Input, Select, Option, Popover, Button, Form, FormItem, Notification, Checkbox } from 'element-ui'
 import RestDAO from '../../common/dao/restdao'
 
 const templateTags = ['图文', '图片']
@@ -84,7 +85,8 @@ export default {
     [Option.name]: Option,
     [Button.name]: Button,
     [Form.name]: Form,
-    [FormItem.name]: FormItem
+    [FormItem.name]: FormItem,
+    [Checkbox.name]: Checkbox
   },
   props: {
     work: {
@@ -171,6 +173,16 @@ export default {
         width: 4rem;
         text-align: center;
         font-size: 2rem;
+      }
+    }
+  }
+
+  .el-form {
+    .actions {
+      border-bottom: 1px solid #eee;
+      padding-bottom: 10px;
+      .el-checkbox {
+        float: left;
       }
     }
   }

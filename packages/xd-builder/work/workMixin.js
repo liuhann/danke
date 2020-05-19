@@ -24,6 +24,7 @@ export default {
       this.work = {
         id: shortid(10),
         title: '未命名的作品',
+        isBlock: 'no',
         viewBox: {
           width: parseInt(this.$route.query.width) || 414,
           height: parseInt(this.$route.query.height) || 896

@@ -1,12 +1,19 @@
 <template>
 <div id="my-blocks">
   <div class="content-title">
-    我的设计图片
+    我的图块
   </div>
   <div class="blocks-list-container">
-    <div class="list-item" v-for="block in blocks" :key="block._id">
-      <div class="block">
-        <render-scene :view-box="block.viewBox" :view-port="block.viewPort" :scene="block" :stage="block.stage"/>
+    <div class="list-item" v-for="block in works" :key="block._id">
+      <div class="work-container" :style="{
+         background: block.color
+      }">
+        <div class="work-viewport" :style="{
+            width: block.viewport.width + 'px',
+            height: block.viewport.height + 'px',
+        }">
+          <render-scene :view-box="block.viewBox || block.screen" :scene="block.scenes[0]" :view-port="block.viewport" :stage="block.stage"/>
+        </div>
       </div>
       <el-dropdown size="small" trigger="click" @command="(command) => handleCommand(command, block)">
         <span class="el-dropdown-link">
@@ -24,12 +31,13 @@
 
 <script>
 import { Dialog, Dropdown, DropdownMenu, DropdownItem } from 'element-ui'
-import RestDAO from '../../common/dao/restdao'
 import { fitRectIntoBounds } from '../mixins/rectUtils'
+import workListMixins from '../mixins/workListMixins'
 import RenderScene from '../render/RenderScene'
 import sleep from '../../common/utils/sleep'
 export default {
   name: 'MyBlocks',
+  mixins: [ workListMixins ],
   components: {
     RenderScene,
     [Dialog.name]: Dialog,
@@ -44,19 +52,24 @@ export default {
       blocks: []
     }
   },
-  created () {
-    this.blockdao = new RestDAO(this.ctx, 'danke/block')
-  },
+  created () { },
   mounted () {
-    this.fetchBlocks()
+    this.loadWorks()
   },
   watch: {
     // call again the method if the route changes
     '$route': 'loadMyPacks'
   },
   methods: {
+    listQuery () {
+      return {
+        creator: this.ctx.user.id,
+        isBlock: 'yes'
+      }
+    },
     async fetchBlocks () {
-      const result = await this.blockdao.list({
+      const result = await this.workdao.list({
+        isBlock: true,
         page: this.currentPage,
         count: this.pageCount
       })
@@ -88,9 +101,15 @@ export default {
       await sleep(500)
       block.stage = 'enter'
     },
-    async removeBlock (block) {
-      await this.blockdao.delete(block)
-      await this.fetchBlocks()
+    editWork (work) {
+      window.open('/xd?work=' + work.id)
+    },
+
+    async removeWork (work) {
+      if (confirm('确认删除作品?')) {
+        await this.workdao.delete(work)
+        this.loadWorks()
+      }
     }
   }
 }
@@ -103,17 +122,26 @@ export default {
     flex-wrap: wrap;
     .list-item {
       position: relative;
-      border: 1px solid #efefef;
-      border-radius: 10px;
-      overflow: hidden;
       cursor: pointer;
       margin: 10px;
-      .block {
-        width: 160px;
-        height: 160px;
+      .work-container {
+        width: 200px;
+        height: 200px;
         display: flex;
         justify-content: center;
         align-items: center;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      .work-viewport {
+        .scene {
+          position: relative;
+          overflow: hidden;
+          .element {
+            position: absolute;
+          }
+        }
       }
       .el-dropdown {
         display: none;

@@ -11,6 +11,7 @@
       :scale="scale"
       :undoable="undoable"
       :redoable="redoable"
+      @open-pen="openPen"
       @change="workChange"
       @undo="undo"
       @redo="redo"
@@ -60,6 +61,7 @@ export default {
   },
   data () {
     return {
+      isPen: false,
       work: null,
       currentAnimation: null,
       scale: 1,
@@ -118,6 +120,10 @@ export default {
       this.$nextTick(() => {
         this.currentScene = current
       })
+    },
+
+    openPen () {
+      this.isPen = true
     },
 
     workChange () {

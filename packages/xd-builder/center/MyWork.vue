@@ -3,8 +3,15 @@
   <div class="content-title">我的作品</div>
   <div class="my-work-list" ref="myWorkList">
     <div class="work" v-for="work in works" :key="work.id">
-      <div class="scene-wrapper">
-        <render-scene :view-box="work.viewBox || work.screen" :scene="work.scenes[0]" :view-port="work.viewport" :stage="work.stage"/>
+      <div class="work-container" @click="previewWork(work)" :style="{
+         background: work.color
+      }">
+        <div class="work-viewport" :style="{
+            width: work.viewport.width + 'px',
+            height: work.viewport.height + 'px',
+        }">
+          <render-scene :view-box="work.viewBox || work.screen" :scene="work.scenes[0]" :view-port="work.viewport" :stage="work.stage"/>
+        </div>
       </div>
       <div class="actions">
         <div class="btns">
@@ -42,6 +49,22 @@ export default {
     this.loadWorks()
   },
   methods: {
+    viewport () {
+      return {
+        width: 200,
+        height: 200
+      }
+    },
+    listQuery () {
+      return {
+        creator: this.ctx.user.id,
+        isBlock: 'no'
+      }
+    },
+    previewWork (work) {
+      window.open('/slide/' + work.id)
+    },
+
     replayWork (work) {
       work.stage = 'exist'
       setTimeout(() => {
@@ -56,7 +79,7 @@ export default {
     async removeWork (work) {
       if (confirm('确认删除作品?')) {
         await this.workdao.delete(work)
-        this.loadMyWorks()
+        this.loadWorks()
       }
     }
   }
@@ -71,8 +94,7 @@ export default {
       height: 246px;
       margin: 20px 16px;
       cursor: pointer;
-
-      .scene-wrapper {
+      .work-container {
         width: 200px;
         height: 200px;
         display: flex;
@@ -80,6 +102,9 @@ export default {
         align-items: center;
         border: 1px solid #ccc;
         border-radius: 4px;
+      }
+
+      .work-viewport {
         .scene {
           position: relative;
           overflow: hidden;

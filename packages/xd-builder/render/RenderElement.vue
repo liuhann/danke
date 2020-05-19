@@ -8,7 +8,7 @@
   <div v-else-if="element.elements" class="block-elements" :style="element.style">
     <render-element v-for="(el, i) in element.elements" :key="el.id" :view-box="viewBox" :view-port="viewPort" :element="el" :index="i" />
   </div>
-  <svg v-else-if="element.path" :width="element.width" :height="element.height" :viewBox="'0 0 ' + element.path.w + ' ' + element.path.h ">
+  <svg v-else-if="element.path" :style="element.style" :viewBox="'0 0 ' + element.path.w + ' ' + element.path.h ">
     <path :d="generatePath" fill="var(--fill)" stroke-width="var(--stokeWidth)" stroke="var(--stroke)"/>
   </svg>
   <div v-else-if="!element.text" class="shape" :style="element.style">
@@ -306,6 +306,10 @@ export default {
     .element {
       position: absolute;
     }
+  }
+  svg {
+    width: 100%;
+    height: 100%;
   }
   textarea {
     text-align: left;

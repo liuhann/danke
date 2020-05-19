@@ -2,6 +2,7 @@
 <el-dialog
   title="编辑图片路径"
   top="5vh"
+  width="960px"
   :visible.sync="dialogVisible">
   <div class="path-options">
     <label>宽度</label>
@@ -18,12 +19,13 @@
   <Container :w="w" :h="h" :points="points" :color="color" :stroke-width="strokeWidth" :stroke-color="strokeColor"/>
   <div >
     <el-button @click="insertPathElement">插入图片</el-button>
+    <el-button @click="clearPath">清空</el-button>
   </div>
 </el-dialog>
 </template>
 
 <script>
-import { Dialog, InputNumber, ColorPicker, Button } from 'element-ui'
+import { Dialog, InputNumber, ColorPicker, Button, Checkbox } from 'element-ui'
 import Container from './Container'
 export default {
   name: 'DialogEditPath',
@@ -32,7 +34,8 @@ export default {
     [ColorPicker.name]: ColorPicker,
     [InputNumber.name]: InputNumber,
     [Dialog.name]: Dialog,
-    [Button.name]: Button
+    [Button.name]: Button,
+    [Checkbox.name]: Checkbox
   },
   data () {
     return {
@@ -51,6 +54,9 @@ export default {
     }
   },
   methods: {
+    clearPath () {
+      this.points = [{ x: this.w / 2, y: this.h / 2 }]
+    },
     open (element) {
       if (element) {
         this.points = element.path.points

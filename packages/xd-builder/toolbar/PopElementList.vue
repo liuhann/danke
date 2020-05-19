@@ -1,13 +1,10 @@
 <template>
 <el-popover
   placement="bottom-start"
-  popper-class="toolbar-pop"
   width="240"
   title="元素列表"
   trigger="click">
-  <el-tooltip class="item" effect="dark" content="元素列表" placement="bottom" slot="reference">
-    <a class="action"><icon-list /></a>
-  </el-tooltip>
+  <a slot="reference" class="action"><icon-list /></a>
   <div class="scene-element-list">
     <div class="element-action">
       <el-button size="mini"></el-button>
