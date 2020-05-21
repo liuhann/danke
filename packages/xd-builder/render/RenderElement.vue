@@ -233,7 +233,7 @@ export default {
 
         d += `${ p.x } ${ p.y } `
       })
-      // if (this.closePath) d += "Z"
+      if (this.closePath) d += "Z"
       return d
     },
   },

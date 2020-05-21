@@ -506,8 +506,11 @@ export default {
       // 获取元素自适应到整个画面的高度和宽度 避免扩大超出
       Object.assign(node, fitRectIntoBounds(node, this.viewBox))
 
-      node.x = x - node.width / 2
-      node.y = y - node.height / 2
+      if (x && y) {
+        // 拖拽处理
+        node.x = x - node.width / 2
+        node.y = y - node.height / 2
+      }
       // 自动适应到屏幕内部 避免溢出
       node.x = (node.x < 0) ? 0 : node.x
       node.y = (node.y < 0) ? 0 : node.y

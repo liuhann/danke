@@ -7,6 +7,7 @@
   @mousemove="$emit('handleMouseMove', $event)">
   <path
     class="ad-Path"
+    id="svg-path"
     :d="path" fill="var(--fill)" stroke-width="var(--stokeWidth)" stroke="var(--stroke)"/>
   <g className="ad-Points">
     <g class="ad-PointGroup" v-for="(p, i) in points" :key="i"

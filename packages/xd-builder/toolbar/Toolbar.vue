@@ -1,11 +1,11 @@
 <template>
 <div id="tool-bar">
-  <pop-element-list :scene="scene" :checked-elements="checkedElements"/>
+  <pop-element-list v-if="noFocusedElement" :scene="scene" :checked-elements="checkedElements"/>
   <a class="action" v-if="noFocusedElement" @click="previousScene"><i class="el-icon-arrow-up" /></a>
   <a class="action" v-if="noFocusedElement" @click="nextScene"><i class="el-icon-arrow-down" /></a>
   <a class="action" v-if="noFocusedElement"> {{scenes.indexOf(scene) + 1}}/{{scenes.length}}</a>
-
   <a class="action" v-if="noFocusedElement" @click="openPen"><icon-pen /></a>
+  <a class="action" v-if="focusedElement && focusedElement.path" @click="openPen(focusedElement)"><icon-pen /></a>
   <!--  样式变量的修改-->
   <template v-for="(variable, index) in elementStyleVariables">
     <!-- 颜色-->
@@ -30,9 +30,7 @@
 
   <!--元素变换、旋转、拉伸等-->
   <pop-transform v-if="focusedElement" :element="focusedElement"/>
-
   <pop-set-animation v-if="focusedElement" :element="focusedElement"/>
-
   <!--  <pop-clip-list v-if="focusedElement && focusedElement.style && focusedElement.style.clipPath != null" @input="setElementClipPath"/>-->
   <pop-transparent :element="focusedElement" v-if="focusedElement"/>
   <align-element v-if="selectedElements.length > 1" :elements="selectedElements"/>

@@ -1,7 +1,7 @@
 <template>
   <div
     class="ad-Container"
-    @mouseup="cancelDragging">
+    @mouseup="cancelDragging" @mouseleave="cancelDragging">
     <div class="ad-Container-main">
       <div class="ad-Container-svg" :style="variableStyles">
         <svg-grid
@@ -20,11 +20,6 @@
           @handleMouseMove="handleMouseMove"/>
       </div>
     </div>
-    <div class="action">
-      <div>ctrl + 点击新增节点</div>
-      <div>双击节点更换连线类型</div>
-      <div class="delete" v-if="activePoint" @click="removePoint">删除当前节点</div>
-    </div>
   </div>
 </template>
 
@@ -39,6 +34,9 @@ export default {
   props: {
     color: {
       type: String
+    },
+    closePath: {
+      type: Boolean
     },
     points: {
       type: Array
@@ -80,8 +78,7 @@ export default {
       activePoint: 2,
       draggedPoint: false,
       draggedQuadratic: false,
-      draggedCubic: false,
-      closePath: false
+      draggedCubic: false
     }
   },
   computed: {
@@ -170,8 +167,10 @@ export default {
       }
     },
     removePoint (index) {
-      this.points.splice(this.activePoint, 1)
-      this.activePoint = 0
+      if (this.activePoint > 0) {
+        this.points.splice(this.activePoint, 1)
+        this.activePoint = 0
+      }
     },
     setDraggedPoint (index) {
       if (!this.ctrl) {

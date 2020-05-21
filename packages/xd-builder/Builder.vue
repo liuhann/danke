@@ -34,6 +34,7 @@
       @change="workChange"
       @scale-fit="scaleChange"
       @clean-paste="cleanPaste"/>
+    <clippath-editor @close="isPen = false" @input="pathConfirmed" :view-port-rect="viewPortRect" :scene="currentScene" :view-box="work.viewBox" :work="work" v-if="isPen"/>
   </section>
   <div id="textMesure"></div>
 </div>
@@ -49,9 +50,11 @@ import LeftAside from './left/LeftAside.vue'
 import 'element-ui/packages/theme-chalk/lib/icon.css'
 import Toolbar from './toolbar/Toolbar'
 import { shortid } from '../utils/string'
+import ClippathEditor from './clippath-maker/ClippathEditor'
 export default {
   name: 'Builder',
   components: {
+    ClippathEditor,
     Toolbar,
     SceneContainer,
     LeftAside
@@ -61,6 +64,12 @@ export default {
   },
   data () {
     return {
+      viewPortRect: {
+        left: 0,
+        top: 0,
+        width: 0,
+        height: 0
+      },
       isPen: false,
       work: null,
       currentAnimation: null,
@@ -108,6 +117,35 @@ export default {
       }
     },
 
+    pathConfirmed (object) {
+      console.log('insert path', object)
+      this.$refs.sceneContainer.createSingleElement({
+        variables: [{
+          name: 'fill',
+          value: object.color,
+          type: 'color'
+        }, {
+          name: 'stokeWidth',
+          value: object.strokeWidth,
+          type: 'px'
+        }, {
+          name: 'stroke',
+          value: object.strokeColor,
+          type: 'color'
+        }],
+        path: {
+          w: object.w,
+          h: object.h,
+          points: object.points
+        },
+        x: object.x / this.scale,
+        y: object.y / this.scale,
+        width: object.w / this.scale,
+        height: object.h / this.scale
+      })
+      this.isPen = false
+    },
+
     refreshScene () {
       let current = this.currentScene
       this.currentScene = {
@@ -124,6 +162,10 @@ export default {
 
     openPen () {
       this.isPen = true
+      this.viewPortRect.left = this.$refs.sceneContainer.translateX
+      this.viewPortRect.top = this.$refs.sceneContainer.translateY
+      this.viewPortRect.width = this.$refs.sceneContainer.viewPort.width
+      this.viewPortRect.height = this.$refs.sceneContainer.viewPort.height
     },
 
     workChange () {
@@ -161,6 +203,7 @@ export default {
   background-color: #f5f5f4;
 
   .right-section {
+    position: relative;
     width: calc(100% - 460px);
     padding: 0;
     flex: 1;
