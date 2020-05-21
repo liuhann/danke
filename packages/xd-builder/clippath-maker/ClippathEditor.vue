@@ -78,9 +78,7 @@ export default {
       closePath: false,
       points:  [
         { x: 100, y: 300 },
-        { x: 200, y: 300, q: { x: 150, y: 50 } },
-        { x: 300, y: 300, q: { x: 250, y: 450 } },
-        { x: 400, y: 300, q: { x: 350, y: 50 } }
+        { x: 200, y: 300, q: { x: 150, y: 50 } }
       ]
     }
   },
@@ -144,6 +142,9 @@ export default {
   z-index: 1001;
   background-color: #f5f5f4;
   .clippath-tools {
+    position: absolute;
+    left: 0;
+    top: 0;
     width: 100%;
     box-sizing: border-box;
     height: 40px;
@@ -151,6 +152,7 @@ export default {
     line-height: 28px;
     padding: 6px 12px;
     display: flex;
+    z-index: 10001;
     box-shadow: rgba(0, 0, 0, 0.2) 0px 0 2px;
     font-size: 14px;
     .field-item {
@@ -186,7 +188,12 @@ export default {
     }
   }
   .clippath-container {
-    position: relative;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 40px;
+    overflow: hidden;
     .paint-container {
       position: absolute;
     }

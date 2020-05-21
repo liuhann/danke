@@ -34,7 +34,7 @@
       @change="workChange"
       @scale-fit="scaleChange"
       @clean-paste="cleanPaste"/>
-    <clippath-editor @close="isPen = false" @input="pathConfirmed" :view-port-rect="viewPortRect" :scene="currentScene" :view-box="work.viewBox" :work="work" v-if="isPen"/>
+    <clippath-editor @close="pen = ''" @input="pathConfirmed" :view-port-rect="viewPortRect" :scene="currentScene" :view-box="work.viewBox" :work="work" v-if="pen"/>
   </section>
   <div id="textMesure"></div>
 </div>
@@ -70,7 +70,7 @@ export default {
         width: 0,
         height: 0
       },
-      isPen: false,
+      pen: '',
       work: null,
       currentAnimation: null,
       scale: 1,
@@ -143,7 +143,7 @@ export default {
         width: object.w / this.scale,
         height: object.h / this.scale
       })
-      this.isPen = false
+      this.pen = ''
     },
 
     refreshScene () {
@@ -160,8 +160,8 @@ export default {
       })
     },
 
-    openPen () {
-      this.isPen = true
+    openPen (type) {
+      this.pen = type
       this.viewPortRect.left = this.$refs.sceneContainer.translateX
       this.viewPortRect.top = this.$refs.sceneContainer.translateY
       this.viewPortRect.width = this.$refs.sceneContainer.viewPort.width

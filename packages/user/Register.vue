@@ -1,6 +1,8 @@
 <template>
 <div class="user-form">
-  <div class="auth-sidebar">
+  <div class="auth-sidebar" :style="{
+      background: workBackground
+    }">
     <render-scene v-if="showWork" :scene="showWork.scenes[0]" :view-box="showWork.viewBox" :view-port="showWork.viewport" stage="enter"/>
     <div class="by" v-if="showWork">Art by {{showWork.author}}</div>
   </div>
@@ -74,6 +76,13 @@ export default {
   },
 
   computed: {
+    workBackground () {
+      if (this.showWork) {
+        return this.showWork.color
+      } else {
+        return ''
+      }
+    },
     showWork () {
       if (this.works.length) {
         return this.works[0]
@@ -164,9 +173,11 @@ export default {
   position: relative;
   .by {
     position: absolute;
-    bottom: 20px;
+    bottom: 10px;
     right: 10px;
     color: #fff;
+    padding: 8px;
+    background: rgba(0,0,0, .5);
   }
   .scene {
     position: relative;

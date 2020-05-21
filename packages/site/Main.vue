@@ -15,7 +15,7 @@
             width: workViewPort.width + 'px',
             height: workViewPort.height + 'px',
             background: work.color
-        }">
+        }" @click="openWork(work)">
           <render-scene :view-box="work.viewBox || work.screen" :scene="work.scenes[0]" :view-port="work.viewport" :stage="work.stage"/>
         </div>
         <div class="author-likes">
@@ -73,6 +73,9 @@ export default {
       }
     },
     getImageUrl,
+    openWork (work) {
+      window.open('/slide/' + work.id)
+    },
     initWorkViewPort () {
       const loadingBlock = document.querySelector('.work-loading')
       this.workViewPort = {

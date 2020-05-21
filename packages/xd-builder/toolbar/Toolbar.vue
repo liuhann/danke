@@ -4,7 +4,7 @@
   <a class="action" v-if="noFocusedElement" @click="previousScene"><i class="el-icon-arrow-up" /></a>
   <a class="action" v-if="noFocusedElement" @click="nextScene"><i class="el-icon-arrow-down" /></a>
   <a class="action" v-if="noFocusedElement"> {{scenes.indexOf(scene) + 1}}/{{scenes.length}}</a>
-  <a class="action" v-if="noFocusedElement" @click="openPen"><icon-pen /></a>
+  <a class="action" v-if="noFocusedElement" @click="openPen('vector')"><icon-pen /></a>
   <a class="action" v-if="focusedElement && focusedElement.path" @click="openPen(focusedElement)"><icon-pen /></a>
   <!--  样式变量的修改-->
   <template v-for="(variable, index) in elementStyleVariables">
@@ -459,8 +459,8 @@ export default {
       this.$emit('refresh')
     },
 
-    openPen () {
-      this.$emit('open-pen')
+    openPen (type) {
+      this.$emit('open-pen', type)
     },
 
     log () {

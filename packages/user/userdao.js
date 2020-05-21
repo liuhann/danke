@@ -37,21 +37,19 @@ class UserDAO {
   }
 
   async setAvatar (url) {
-    return this.ctx.post(`user/avatar`, {
-      json: {
-        url
-      }
-    }).json()
+    const response = await this.ctx.post(`user/avatar`, {
+      url
+    })
+    return response.data
   }
 
   async setUserProfile ({email, location, nick}) {
-    return this.ctx.post(`user/update`, {
-      json: {
+    const response = await this.ctx.post(`user/update`, {
         nick,
         email,
         location
-      }
-    }).json()
+    })
+    return response.data
   }
 
   async sendSmsCode (phone) {
