@@ -31,10 +31,13 @@
       :work="work"
       :paste="paste"
       @undo="undo"
+      @toggle-scenes="showSceneList = true"
+      @save-work="saveWork"
       @change="workChange"
       @scale-fit="scaleChange"
       @clean-paste="cleanPaste"/>
     <clippath-editor @close="pen = ''" @input="pathConfirmed" :view-port-rect="viewPortRect" :scene="currentScene" :view-box="work.viewBox" :work="work" v-if="pen"/>
+    <scene-list :work="work" v-if="showSceneList" @close="showSceneList = false" :current="currentScene" @choose-scene="chooseScene"/>
   </section>
   <div id="textMesure"></div>
 </div>
@@ -51,9 +54,11 @@ import 'element-ui/packages/theme-chalk/lib/icon.css'
 import Toolbar from './toolbar/Toolbar'
 import { shortid } from '../utils/string'
 import ClippathEditor from './clippath-maker/ClippathEditor'
+import SceneList from './SceneList'
 export default {
   name: 'Builder',
   components: {
+    SceneList,
     ClippathEditor,
     Toolbar,
     SceneContainer,
@@ -73,6 +78,7 @@ export default {
       pen: '',
       work: null,
       currentAnimation: null,
+      showSceneList: false,
       scale: 1,
       paste: null
     }
@@ -154,10 +160,13 @@ export default {
         animation: {},
         z: 100
       }
-
       this.$nextTick(() => {
         this.currentScene = current
       })
+    },
+
+    resizeWorkViewBox () {
+
     },
 
     openPen (type) {

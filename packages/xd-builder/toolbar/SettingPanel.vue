@@ -1,6 +1,6 @@
 <template>
-<el-popover placement="bottom" width="320" trigger="click" popper-class="padding-0" v-model="visible">
-  <a class="action" slot="reference"><icon-share /></a>
+<el-popover placement="bottom" width="360" trigger="click" popper-class="padding-0" v-model="visible">
+  <a class="action" slot="reference"><i class="el-icon-setting"/></a>
   <div class="setting-panel">
     <div class="share-list" v-if="!showShareScene && !showWorkForm">
       <el-form size="mini" label-width="80px">
@@ -17,29 +17,29 @@
           <el-button type="success" @click="commitSaveWork" size="small">保存作品</el-button>
         </el-form-item>
       </el-form>
+      <el-divider content-position="left" >调整长宽</el-divider>
+      <el-form size="mini" :inline="true">
+        <el-form-item label="宽">
+          <el-input-number size="mini" v-model="viewBox.width" controls-position="right"/>
+        </el-form-item>
+        <el-form-item label="长">
+          <el-input-number size="mini" v-model="viewBox.height" controls-position="right"/>
+        </el-form-item>
+        <el-form-item style="float:right">
+          <el-button @click="resizeWorkViewBox">确定</el-button>
+        </el-form-item>
+      </el-form>
       <div class="share" @click="slidePreview">
         <div class="icon">
           <i class="el-icon-full-screen" />
         </div>
         <div class="name">新页面预览</div>
-        <div class="extro"></div>
-      </div>
-      <div class="share" @click="shareSceneAsTemplate">
-        <div class="icon">
-          <i class="el-icon-chat-dot-round" />
-        </div>
-        <div class="name">分享场景为模板</div>
-        <div class="extro"></div>
-      </div>
-      <div class="share">
-        <div class="icon"></div>
-        <div class="name">分享为作品模板</div>
-        <div class="extro"></div>
+        <div class="extra"></div>
       </div>
       <div class="share">
         <div class="icon"></div>
         <div class="name">长页面预览</div>
-        <div class="extro"></div>
+        <div class="extra"></div>
       </div>
     </div>
     <el-form size="mini" v-if="showShareScene" label-width="80px">
@@ -67,9 +67,8 @@
 </template>
 
 <script>
-import IconShare from './res/share.svg'
 import workMixin from '../work/workMixin'
-import { Input, Select, Option, Popover, Button, Form, FormItem, Notification, Checkbox } from 'element-ui'
+import { Input, Select, Option, Popover, Button, Form, FormItem, Notification, Checkbox, InputNumber, Divider } from 'element-ui'
 import RestDAO from '../../common/dao/restdao'
 
 const templateTags = ['图文', '图片']
@@ -78,7 +77,6 @@ export default {
   name: 'SettingPanel',
   mixins: [ workMixin ],
   components: {
-    IconShare,
     [Popover.name]: Popover,
     [Input.name]: Input,
     [Select.name]: Select,
@@ -86,7 +84,9 @@ export default {
     [Button.name]: Button,
     [Form.name]: Form,
     [FormItem.name]: FormItem,
-    [Checkbox.name]: Checkbox
+    [Checkbox.name]: Checkbox,
+    [InputNumber.name]: InputNumber,
+    [Divider.name]: Divider
   },
   props: {
     work: {
@@ -98,6 +98,7 @@ export default {
   },
   data () {
     return {
+      viewBox: JSON.parse(JSON.stringify(this.work.viewBox)),
       visible: false,
       tags: [],
       templateTags,
@@ -112,6 +113,10 @@ export default {
     this.blockdao = new RestDAO(this.ctx, 'danke/block')
   },
   methods: {
+    async resizeWorkViewBox () {
+      this.work.viewBox = this.viewBox
+      await this.saveWork()
+    },
 
     async commitSaveWork () {
       await this.saveWork()
@@ -179,11 +184,12 @@ export default {
 
   .el-form {
     .actions {
-      border-bottom: 1px solid #eee;
-      padding-bottom: 10px;
       .el-checkbox {
         float: left;
       }
+    }
+    .el-input-number {
+      width: 96px;
     }
   }
 }

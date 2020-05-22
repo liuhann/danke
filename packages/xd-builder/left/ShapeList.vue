@@ -8,17 +8,6 @@
     </div>
     <div class="pack">
       <div class="pack-title">
-        <div class="text">自定义形状</div>
-      </div>
-      <div class="pack-shapes" @click="showDialogEditPath">
-        <div class="object-item add">
-          <i class="el-icon-plus"></i>
-        </div>
-      </div>
-      <dialog-edit-path ref="dialogEditPath" @insert="insert" />
-    </div>
-    <div class="pack">
-      <div class="pack-title">
         <div class="text">常用形状</div>
         <div class="more" @click="showMoreShapes">查看全部</div>
       </div>
@@ -73,13 +62,11 @@ import shapes from './shapes'
 import { assignVariables} from '../mixins/renderUtils'
 import { Pagination, Input, Button, Loading } from 'element-ui'
 import RestDAO from '../../common/dao/restdao'
-import DialogEditPath from '../clippath-maker/DialogEditPath'
 
 export default {
   name: 'LeftShapeList',
   mixins: [  ],
   components: {
-    DialogEditPath,
     [Input.name]: Input,
     [Pagination.name]: Pagination,
     [Button.name]: Button
@@ -157,10 +144,6 @@ export default {
       const style = {}
       assignVariables(style, vector.variables)
       return style
-    },
-
-    showDialogEditPath () {
-      this.$refs.dialogEditPath.open()
     },
 
     shapeStyle (shape) {

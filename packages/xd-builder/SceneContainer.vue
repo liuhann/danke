@@ -12,7 +12,7 @@
             :element="element"
             :view-box="viewBox"
             :view-port="viewPort"
-            :key="index"
+            :key="element.id"
             :index="index"
             :ref="element.id"/>
       </div>
@@ -46,10 +46,10 @@
       <a class="action" @click="fitToCenter">
         <icon-fit />
       </a>
-      <a class="action" @click="toggleActionMove" :class="actionMove? 'on': ''">
+      <a class="action" @click.stop="toggleActionMove" :class="actionMove? 'on': ''">
         <icon-hand />
       </a>
-      <a class="action">
+      <a class="action" @click="$emit('toggle-scenes')">
         <icon-list />
       </a>
     </div>
@@ -368,6 +368,9 @@ export default {
      * 进行鼠标点击位置检测，如果点击到元素则选中或保持多个的选择状态， 点到空白则取消所有元素选中
      */
     sceneMouseDown (ev) {
+      if (ev.target.closest('.screen-actions')) {
+        return
+      }
       let targetElement = this.getEventToElement(ev)
       // 剪贴模式
       if (this.animation) {
@@ -494,6 +497,7 @@ export default {
       Object.assign(node, element)
       // 设置文字的自适应大小
       if (element.text) {
+        node.name = '文本'
         Object.assign(node, textMesure(element.text, element.variables.filter(variable => variable.type === 'fontSize')[0].value))
       }
       if (element.ratio) {

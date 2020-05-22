@@ -31,10 +31,8 @@ export default {
       this.currentScene = scene
     },
 
-    cloneScene (scene) {
-      const newScene = JSON.parse(JSON.stringify(scene))
-      newScene.id = shortid()
-      this.chooseScene(scene)
+    chooseScene (scene) {
+      this.currentScene = scene
     },
 
     // 切换到下一场景
