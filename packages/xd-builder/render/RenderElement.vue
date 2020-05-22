@@ -14,7 +14,7 @@
   <div v-else-if="!element.text" class="shape" :style="element.style">
   </div>
   <!--文本渲染情况下 文本内容-->
-  <template v-for="(text, index) in elementTextLines">{{text}}<br></template>
+  <div v-for="(text, index) in elementTextLines" :style="textTransformStyle" class="text" :key="index">{{text}}</div>
   <textarea ref="textarea" v-if="element.text != null && element.editing" :style="textEditStyle" v-model="element.text" @change="updateTextArea"/>
 </div>
 </template>
@@ -124,7 +124,7 @@ export default {
         Object.assign(style, this.element.style)
       }
       // Object.assign(style, this.element.style)
-      this.appendTextTransform(style)
+      // this.appendTextTransform(style)
       // 对于正在编辑的元素不设置transform
       if (this.element.editing) {
         assignVariables(style, {
@@ -133,6 +133,27 @@ export default {
       }
       // 按大小指定视角
       style.perspective = this.element.width + 'px'
+      return style
+    },
+
+    textTransformStyle () {
+      const style = {}
+      if (this.viewPort && this.viewBox) {
+        style.transform = `scale(${this.viewPort.width/this.viewBox.width})`
+        const avs = this.element.variables.filter(variable => variable.type === 'textAlign')
+        if (avs.length) {
+          const align = avs[0].value
+          if (align === 'left') {
+            style.transformOrigin = 'left top'
+          }
+          if (align === 'center') {
+            style.transformOrigin = 'center top'
+          }
+          if (align === 'right') {
+            style.transformOrigin = 'right top'
+          }
+        }
+      }
       return style
     },
 
@@ -308,6 +329,10 @@ export default {
     }
   }
   svg {
+    width: 100%;
+    height: 100%;
+  }
+  .text {
     width: 100%;
     height: 100%;
   }

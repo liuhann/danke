@@ -1,8 +1,8 @@
 <template>
 <div id="tool-bar">
   <pop-element-list v-if="noFocusedElement" :scene="scene" :checked-elements="checkedElements"/>
-<!--  <a class="action" v-if="noFocusedElement" @click="previousScene"><i class="el-icon-arrow-up" /></a>-->
-<!--  <a class="action" v-if="noFocusedElement" @click="nextScene"><i class="el-icon-arrow-down" /></a>-->
+  <a class="action" v-if="noFocusedElement" @click="previousScene"><i class="el-icon-arrow-up" /></a>
+  <a class="action" v-if="noFocusedElement" @click="nextScene"><i class="el-icon-arrow-down" /></a>
 <!--  <a class="action" v-if="noFocusedElement"> {{scenes.indexOf(scene) + 1}}/{{scenes.length}}</a>-->
   <a class="action" v-if="noFocusedElement" @click="openPen('vector')"><icon-pen /></a>
   <a class="action" v-if="focusedElement && focusedElement.path" @click="openPen(focusedElement)"><icon-pen /></a>
