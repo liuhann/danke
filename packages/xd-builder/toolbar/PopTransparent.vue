@@ -7,7 +7,7 @@
   @show="showPop"
   trigger="click">
   <a class="action" slot="reference">
-    <icon-transparent />
+    <i class="el-icon-sunrise"/>
   </a>
   <div class="item">
     <el-slider v-model="slideVal" :min="0" :max="1" @change="slideChange" :step=".01"></el-slider>
@@ -17,13 +17,10 @@
 
 <script>
 import toolbarPopMixin from './toolbarPopMixin'
-import IconTransparent from './res/transparent.svg'
 export default {
   name: 'PopTransparent',
   mixins: [toolbarPopMixin],
-  components: {
-    IconTransparent
-  },
+  components: { },
   data() {
     return {
       slideVal: 0

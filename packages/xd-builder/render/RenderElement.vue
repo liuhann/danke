@@ -25,6 +25,7 @@ import { getRectPositionStyle } from '../mixins/rectUtils.js'
 import { assignVariables } from '../mixins/renderUtils'
 import TextList from '../left/TextList'
 import textMesure from '../../utils/textMesure'
+import { svg2url } from '../../utils/svg2url'
 
 export default {
   name: 'RenderElement',
@@ -122,6 +123,10 @@ export default {
       Object.assign(style, this.elementAnimationStyle)
       if (this.element.text != null) {
         Object.assign(style, this.element.style)
+      }
+
+      if (this.element.maskImage) {
+        style.maskImage = `url(${svg2url(this.element.maskImage)})`
       }
       // Object.assign(style, this.element.style)
       // this.appendTextTransform(style)

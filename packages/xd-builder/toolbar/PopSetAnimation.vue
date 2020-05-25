@@ -6,7 +6,7 @@
   width="400"
   trigger="click">
   <a class="action" slot="reference" title="特效">
-    <IconEffect/>
+    <i class="el-icon-magic-stick"/>
   </a>
   <div id="animation-config">
     <div class="element-animation" v-show="!showAnimationChoose">

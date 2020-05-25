@@ -2,12 +2,13 @@
 <el-popover
   placement="bottom-start"
   width="320"
+  title="变换"
   @show="showPop"
   trigger="click">
   <a class="action" slot="reference">
-    <icon-rotate/>
+    <i class="el-icon-connection"/>
   </a>
-  <el-form label-width="140px" size="mini" >
+  <el-form label-width="140px" size="mini" v-if="transforms.length">
     <el-form-item v-for="(transform, index) of transforms" :key="index">
       <el-select v-model="transform.key" slot="label" @change="updateTransform">
         <el-option v-for="transformKey in transformKeys" :key="transformKey.value" :label="transformKey.label" :value="transformKey.value" />

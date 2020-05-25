@@ -1,5 +1,6 @@
 <template>
 <div id="tool-bar">
+  <pop-new-element v-if="noFocusedElement"/>
   <pop-element-list v-if="noFocusedElement" :scene="scene" :checked-elements="checkedElements"/>
   <a class="action" v-if="noFocusedElement" @click="previousScene"><i class="el-icon-arrow-up" /></a>
   <a class="action" v-if="noFocusedElement" @click="nextScene"><i class="el-icon-arrow-down" /></a>
@@ -28,6 +29,7 @@
     <font-weight :key="index" v-if="variable.type==='fontWeight'" v-model="variable.value"/>
   </template>
 
+  <pop-image-mask v-if="selectedImages.length === 1" :element="selectedImages[0]"/>
   <!--元素变换、旋转、拉伸等-->
   <pop-transform v-if="focusedElement" :element="focusedElement"/>
   <pop-set-animation v-if="focusedElement" :element="focusedElement"/>
@@ -47,7 +49,7 @@
       <a class="action" :class="paste? 'on': ''" @click="togglePaste"><icon-brush /></a>
     </el-tooltip>
     <el-tooltip class="item" effect="dark" content="复制元素" placement="bottom" v-if="selectedElements.length > 0" >
-      <a class="action" @click="copySelectedElement"><icon-copy /></a>
+      <a class="action" @click="copySelectedElement"><i class="el-icon-document-copy"/></a>
     </el-tooltip>
     <el-tooltip class="item" effect="dark" content="建组" placement="bottom" v-if="selectedElements.length > 1" >
       <a class="action" @click="groupSelectedElement"><icon-group /></a>
@@ -60,15 +62,14 @@
       <a class="action" @click="removeSelectedElement"><icon-trash /></a>
     </el-tooltip>
     <el-tooltip class="item" effect="dark" content="锁定" placement="bottom" v-if="selectedElements.length" >
-      <a class="action" @click="lockSelectedElement"><icon-lock /></a>
+      <a class="action" @click="lockSelectedElement"><i class="el-icon-lock"/></a>
     </el-tooltip>
     <el-tooltip class="item" effect="dark" content="解锁" placement="bottom" v-if="selectedLockedElements.length" >
-      <a class="action" @click="unLockSelectedElement"><icon-unlock /></a>
+      <a class="action" @click="unLockSelectedElement"><i class="el-icon-unlock"/></a>
     </el-tooltip>
     <el-tooltip class="item" effect="dark" content="播放" placement="bottom" v-if="noFocusedElement" >
-      <a class="action" @click="playScene"><icon-play/></a>
+      <a class="action" @click="playScene"><i class="el-icon-video-play"/></a>
     </el-tooltip>
-    <pop-scene-plays v-if="noFocusedElement" :work="work" />
     <setting-panel v-if="noFocusedElement" :work="work" :scene="scene"/>
   </div>
 </div>
@@ -89,11 +90,8 @@ import IconCopy from './res/copy.svg'
 import IconTrash from './res/trash.svg'
 import IconUndo from './res/undo.svg'
 import IconRedo from './res/redo.svg'
-import IconLock from './res/lock.svg'
-import IconUnlock from './res/unlock.svg'
 import IconPen from './res/pen.svg'
 import IconClean from './res/clean.svg'
-import IconPlay from './res/play.svg'
 import IconEffect from './res/effect.svg'
 import PopTransform from './PopTransform'
 import TextAlign from './TextAlign'
@@ -105,10 +103,14 @@ import PopSetGradient from './PopSetGradient'
 import BorderStyle from './BorderStyle'
 import PopElementList from './PopElementList'
 import PopScenePlays from './PopScenePlays'
+import PopImageMask from './PopImageMask'
+import PopNewElement from './PopNewElement'
 export default {
   name: 'Toolbar',
   mixins: [ interactMixins ],
   components: {
+    PopNewElement,
+    PopImageMask,
     PopScenePlays,
     PopElementList,
     BorderStyle,
@@ -129,9 +131,6 @@ export default {
     IconCopy,
     IconTrash,
     IconRedo,
-    IconLock,
-    IconUnlock,
-    IconPlay,
     IconPen,
     [ColorPicker.name]: ColorPicker,
     [Tooltip.name]: Tooltip,
@@ -262,7 +261,7 @@ export default {
 
     selectedImages () {
       if (this.scene && this.scene.elements) {
-        return this.scene.elements.filter(el => el.selected && el.url)
+        return this.scene.elements.filter(el => el.selected && !el.locked && el.url)
       }
       return []
     },

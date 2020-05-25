@@ -113,7 +113,6 @@ export default {
 
     async reloadList () {
       if (this.currentAlbum) {
-
       } else {
         this.loadAlbums()
       }

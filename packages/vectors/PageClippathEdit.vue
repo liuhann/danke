@@ -135,7 +135,6 @@ export default {
     },
     async save () {
       this.object.content = this.editor.getValue()
-      alert(this.object.content)
       await this.dao.createOrPatch(this.object)
       Message.success('保存成功')
       window.close()

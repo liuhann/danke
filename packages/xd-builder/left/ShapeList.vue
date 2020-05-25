@@ -39,7 +39,8 @@
 
   <div class="pack-listing pack">
     <div class="pack-title">
-      <div class="text">{{packTitle}}</div>
+      <div class="text">{{currentPack.name}}</div>
+      <div class="is-mask"><el-checkbox v-model="packIsMask" @change="setPackMasktable">遮罩</el-checkbox></div>
       <div class="more" @click="closePackList">关闭</div>
     </div>
     <div class="pack-shapes">
@@ -60,7 +61,7 @@
 <script>
 import shapes from './shapes'
 import { assignVariables} from '../mixins/renderUtils'
-import { Pagination, Input, Button, Loading } from 'element-ui'
+import { Pagination, Input, Button, Loading, Checkbox } from 'element-ui'
 import RestDAO from '../../common/dao/restdao'
 
 export default {
@@ -69,13 +70,16 @@ export default {
   components: {
     [Input.name]: Input,
     [Pagination.name]: Pagination,
+    [Checkbox.name]: Checkbox,
     [Button.name]: Button
   },
   data () {
     return {
       myPacks: [],
       shapes,
+      currentPack: null,
       packTitle: '',
+      packIsMask: false,
       packResources: [],
       packPageCount: 30,
       packPageCurrent: 1,
@@ -121,9 +125,17 @@ export default {
       this.$emit('insert', element)
     },
 
+    setPackMasktable (val) {
+      this.packdao.patch(this.currentPack._id, {
+        mask: val
+      })
+    },
+
     async showPackVectors (pack) {
+      this.currentPack = pack
       this.packTitle = pack.name
       this.packResources = pack.children
+      this.packIsMask = pack.mask
       const instance = Loading.service({
         target: '#addon-shape-list'
       })

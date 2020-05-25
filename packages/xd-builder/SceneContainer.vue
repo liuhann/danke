@@ -500,6 +500,10 @@ export default {
         node.name = '文本'
         Object.assign(node, textMesure(element.text, element.variables.filter(variable => variable.type === 'fontSize')[0].value))
       }
+      // image has mask attr
+      if (element.url) {
+        element.mask = ''
+      }
       if (element.ratio) {
         node.ratio = element.ratio
       }

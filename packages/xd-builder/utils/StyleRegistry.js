@@ -184,10 +184,19 @@ export default class StyleRegistry {
           frames[animation.name] = this.keyframes[animation.name]
         }
       }
+
+      // when use svg as element content image
       if (element.svg) {
         svgs[element.svg] = element.content
         delete element.content
       }
+
+      // when use svg as element mask image
+      if (element.mask) {
+        svgs[element.mask] = element.maskImage
+        delete element.masksvg
+      }
+
       if (element.variables && element.variables.length) {
         element.variables.forEach(variable => {
           if (variable.type === 'fontFamily') {
@@ -256,6 +265,9 @@ export default class StyleRegistry {
     for (let element of elements) {
       if (element.svg) {
         element.content = svgs[element.svg]
+      }
+      if (element.mask) {
+        element.maskImage = svgs[element.svg]
       }
       if (element.elements) {
         this.initSceneSVG(element.elements, svgs)

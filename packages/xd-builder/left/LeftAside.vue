@@ -6,8 +6,8 @@
       <span>场景</span>
     </div>
     <div class='category' :class="current === 'block'? 'current': ''" @click="toggleTo('block')">
-      <i class="el-icon-news"/>
-      <span>图块</span>
+      <i class="el-icon-office-building"/>
+      <span>图库</span>
     </div>
     <div class='category' :class="current === 'shape'? 'current': ''" @click="toggleTo('shape')">
       <i class="el-icon-news"/>
@@ -19,7 +19,7 @@
     </div>
     <div class="category" :class="current === 'image'? 'current': ''" @click="toggleTo('image')">
       <i class="el-icon-picture-outline"/>
-      <span>图片</span>
+      <span>我的</span>
     </div>
     <div class='category'>
       <i class="el-icon-service"/>

@@ -4,7 +4,7 @@
     <div class="container" style="background: #fff;padding: 20px;box-shadow: 0 1px 5px 0 rgba(0,0,0,.1);">
       <el-row :gutter="20">
         <el-col :span="16">
-          <el-form size="mini" label-width="90px">
+          <el-form size="mini" inline label-width="90px">
             <el-form-item label="一级分类">
               <el-select v-model="animation.type" size="mini" @change="loadTypeGroup">
                 <el-option v-for="type in types" :key="type.label" :label="type.label" :value="type.value"/>
@@ -35,11 +35,34 @@
                 <el-option v-for="(value, key) in cubicBerziers" :value="value" :key="key" :label="key" />
               </el-select>
             </el-form-item>
+          </el-form>
+          <el-form size="mini" label-width="90px">
             <el-form-item label="样式文本">
-              <el-input type="textarea" v-model="animation.cssFrame" :rows="10" />
+              <div id="editor">
+              </div>
             </el-form-item>
-            <el-form-item label="SVG滤镜">
-              <el-input type="textarea" v-model="animation.svgFilter" :rows="5" />
+            <el-form-item label="变量信息">
+              <el-button size="mini" @click="addVariable">增加</el-button>
+              <div class="variables" v-for="(variable, index) in animation.variables" :key="index" style="display:flex;">
+                <label>标题</label>
+                <span>
+              <el-input v-model="variable.label"/>
+            </span>
+                <label>变量名</label>
+                <span>
+              <el-input v-model="variable.name"/>
+            </span>
+                <label>默认值</label>
+                <span>
+              <el-input v-if="variable.type==='number'" v-model.number="variable.value"/>
+              <el-input v-else v-model="variable.value"/>
+            </span>
+                <label>类型</label>
+                <el-select v-model="variable.type">
+                  <el-option value="color"/>
+                  <el-option value="number"/>
+                </el-select>
+              </div>
             </el-form-item>
             <el-form-item label="">
               <el-button size="mini" type="primary" @click="save">保存</el-button>
@@ -74,7 +97,9 @@
 import { Message, Row, Col, Form, FormItem, Input, InputNumber, Select, Option, Radio, Tag, Button, RadioGroup, RadioButton, Checkbox } from 'element-ui'
 import { createSheet, addAnimationStyle, clearAnimation } from './keyframe'
 import PreviewImage from './project.svg'
-import NavBar from '../site/components/NavBar'
+import ace from 'brace'
+import 'brace/mode/css'
+import 'brace/theme/monokai'
 import cubicBerziers from './model/cubic-beziers.js'
 import RestDAO from '../common/dao/restdao'
 import types from './types'
@@ -125,9 +150,7 @@ export default {
         duration: 400,
         iteration: 1,
         infinite: false,
-        variables: [{
-
-        }],
+        variables: [],
         timing: 'linear'
       }
     }
@@ -138,13 +161,23 @@ export default {
     this.framedao = new RestDAO(this.ctx, 'danke/animation')
   },
   mounted () {
+    this.initEditor()
     if (this.$route.query.id) {
       this.loadFrame(this.$route.query.id)
     }
   },
   methods: {
+    initEditor () {
+      this.editor = ace.edit('editor')
+      this.editor.getSession().setMode('ace/mode/css')
+      this.editor.setTheme('ace/theme/monokai')
+    },
     async loadFrame (id) {
       const result = await this.framedao.getOne(id)
+      this.editor.setValue(result.cssFrame)
+      if (result.variables == null) {
+        result.variables = []
+      }
       this.animation = result
     },
     async loadTypeGroup () {
@@ -162,6 +195,15 @@ export default {
       this.inputVisible = true
       this.$nextTick(_ => {
         this.$refs.saveTagInput.$refs.input.focus()
+      })
+    },
+
+    addVariable () {
+      this.animation.variables.push({
+        name: 'var',
+        value: '#000',
+        label: '',
+        type: 'color'
       })
     },
 
@@ -183,6 +225,8 @@ export default {
       }
       this.sheet = createSheet()
       this.boxClass = ''
+
+      this.animation.cssFrame = this.editor.getValue()
       addAnimationStyle(this.sheet, this.animation)
       this.frameStyle = ''
       setTimeout(() => {
@@ -204,6 +248,7 @@ export default {
         Message.error('请输入动画名称')
         return
       }
+      this.animation.cssFrame = this.editor.getValue()
       const result = await this.framedao.createOrPatch(this.animation)
       if (result.code === 409) {
         Message.error('动画名称和现有的冲突')
@@ -235,6 +280,9 @@ export default {
 }
 .CodeMirror {
  border: 1px solid #efefef;
+}
+#editor {
+  height: 400px;
 }
 #preview {
   position: relative;
