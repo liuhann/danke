@@ -29,12 +29,11 @@
     <font-weight :key="index" v-if="variable.type==='fontWeight'" v-model="variable.value"/>
   </template>
 
-  <pop-image-mask v-if="selectedImages.length === 1" :element="selectedImages[0]"/>
+  <pop-image-mask v-show="selectedImages.length === 1" :element="selectedImages[0]"/>
+  <pop-set-filter v-show="focusedElement" :element="focusedElement"/>
   <!--元素变换、旋转、拉伸等-->
   <pop-transform v-if="focusedElement" :element="focusedElement"/>
   <pop-set-animation v-if="focusedElement" :element="focusedElement"/>
-  <!--  <pop-clip-list v-if="focusedElement && focusedElement.style && focusedElement.style.clipPath != null" @input="setElementClipPath"/>-->
-  <pop-transparent :element="focusedElement" v-if="focusedElement"/>
   <align-element v-if="selectedElements.length > 1" :elements="selectedElements"/>
   <!-- 右侧操作功能按钮-->
   <div class="pull-right">
@@ -105,10 +104,12 @@ import PopElementList from './PopElementList'
 import PopScenePlays from './PopScenePlays'
 import PopImageMask from './PopImageMask'
 import PopNewElement from './PopNewElement'
+import PopSetFilter from './PopSetFilter'
 export default {
   name: 'Toolbar',
   mixins: [ interactMixins ],
   components: {
+    PopSetFilter,
     PopNewElement,
     PopImageMask,
     PopScenePlays,
@@ -479,10 +480,6 @@ export default {
 </script>
 
 <style lang="scss">
-.toolbar-pop {
-  max-height: calc(100vh - 77px);
-  overflow-y: auto;
-}
 #tool-bar {
   width: 100%;
   box-sizing: border-box;

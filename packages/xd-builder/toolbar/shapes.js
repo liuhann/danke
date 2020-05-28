@@ -6,16 +6,25 @@ function getGradientColor () {
 
 export default [{
   name: '矩形',
-  width: 100,
-  height: 100,
   style: {
-    background: 'var(--backgroundColor)'
+    border: 'var(--borderWidth) solid var(--borderColor)',
+    background: 'var(--bg)'
   },
   variables: [{
-    name: 'backgroundColor',
+    name: 'bg',
     label: '背景颜色',
-    value: getGradientColor(),
+    value: 'transparent',
     type: 'gradient'
+  }, {
+    name: 'borderWidth',
+    label: '边框宽度',
+    value: 1,
+    type: 'px'
+  }, {
+    name: 'borderColor',
+    label: '边框',
+    value: '#999',
+    type: 'color'
   }]
 }, {
   name: '圆形',
@@ -23,34 +32,54 @@ export default [{
   height: 100,
   ratio: 1,
   style: {
-    background: 'var(--backgroundColor)',
+    background: 'var(--bg)',
+    border: 'var(--bw) solid var(--bc)',
     borderRadius: '50%',
   },
   variables: [{
-    name: 'backgroundColor',
+    name: 'bg',
     label: '背景颜色',
-    value: getGradientColor(),
+    value: 'transparent',
     type: 'gradient'
-  }]
-}, {
-  name: '空心矩形',
-  width: 100,
-  height: 100,
-  style: {
-    background: 'transparent',
-    border: 'var(--borderWidth) var(--borderStyle) var(--borderColor)'
-  },
-  variables: [{
-    name: 'borderWidth',
+  }, {
+    name: 'bw',
+    label: '边框宽度',
     value: 1,
     type: 'px'
   }, {
-    name: 'borderStyle',
-    value: 'solid',
-    type: 'border'
+    name: 'bc',
+    label: '边框',
+    value: '#999',
+    type: 'color'
+  }]
+}, {
+  name: '圆角矩形',
+  width: 100,
+  height: 100,
+  style: {
+    background: 'var(--bgc)',
+    border: 'var(--borderWidth) solid var(--borderColor)',
+    borderRadius: 'var(--br)'
+  },
+  variables: [{
+    name: 'bgc',
+    label: '背景颜色',
+    value: 'transparent',
+    type: 'gradient'
+  }, {
+    name: 'br',
+    label: '',
+    value: 5,
+    type: 'px'
+  }, {
+    name: 'borderWidth',
+    label: '边框宽度',
+    value: 1,
+    type: 'px'
   }, {
     name: 'borderColor',
-    value: '#005bea',
+    label: '边框',
+    value: '#999',
     type: 'color'
   }]
 }, {
@@ -67,45 +96,7 @@ export default [{
     value: getGradientColor(),
     type: 'gradient'
   }]
-}, {
-  name: '空心圆',
-  width: 100,
-  height: 100,
-  style: {
-    background: 'transparent',
-    border: 'var(--borderWidth) var(--borderStyle) var(--borderColor)',
-    borderRadius: '50%',
-  },
-  variables: [{
-    name: 'borderWidth',
-    value: 1,
-    type: 'px'
-  }, {
-    name: 'borderStyle',
-    value: 'solid',
-    type: 'border'
-  }, {
-    name: 'borderColor',
-    value: '#c5a',
-    type: 'color'
-  }]
-}, {
-  name: '箭头',
-  width: 50,
-  height: 50,
-  ratio: 1,
-  style: {
-    borderTop: '1px solid var(--color)',
-    borderLeft: '1px solid var(--color)',
-    transform: 'rotate(45deg)'
-  },
-  variables: [{
-    label: '颜色',
-    name: 'color',
-    value: '#8d3',
-    type: 'color'
-  }]
-}, {
+},  {
   name: '直线',
   width: 80,
   height: 10,
@@ -118,103 +109,6 @@ export default [{
     value: '#8d3',
     type: 'color'
   }]
-}, {
-  name: '圆角矩形',
-  width: 100,
-  height: 100,
-  style: {
-    background: 'var(--bgc)',
-    borderRadius: 'var(--br)'
-  },
-  variables: [{
-    name: 'bgc',
-    label: '背景颜色',
-    value: getGradientColor(),
-    type: 'gradient'
-  }, {
-    name: 'br',
-    label: '边框',
-    value: 10,
-    type: 'px'
-  }]
-}, {
-  name: '带边框矩形',
-  width: 100,
-  height: 100,
-  style: {
-    border: 'var(--borderWidth) solid var(--borderColor)',
-    background: 'var(--backgroundColor)'
-  },
-  variables: [{
-    name: 'backgroundColor',
-    label: '背景颜色',
-    value: getGradientColor(),
-    type: 'gradient'
-  }, {
-    name: 'borderWidth',
-    label: '边框宽度',
-    value: 4,
-    type: 'px'
-  }, {
-    name: 'borderColor',
-    label: '背景颜色',
-    value: '#FFF',
-    type: 'color'
-  }]
-}, {
-  name: '边框圆形',
-    width: 100,
-    height: 100,
-    style: {
-      background: 'var(--backgroundColor)',
-      border: 'var(--borderWidth) solid var(--borderColor)',
-      borderRadius: '50%',
-    },
-    variables: [{
-      name: 'backgroundColor',
-      label: '背景颜色',
-      value: getGradientColor(),
-      type: 'gradient'
-    }, {
-      name: 'borderWidth',
-      label: '边框宽度',
-      value: 4,
-      type: 'px'
-    }, {
-      name: 'borderColor',
-      label: '背景颜色',
-      value: '#FFF',
-      type: 'color'
-    }]
-}, {
-  name: '边框圆角矩形',
-  width: 100,
-  height: 100,
-  style: {
-    border: 'var(--borderWidth) solid var(--borderColor)',
-    borderRadius: 'var(--radius)',
-    background: 'var(--backgroundColor)'
-  },
-  variables: [{
-    name: 'backgroundColor',
-    label: '背景颜色',
-    value: getGradientColor(),
-    type: 'gradient'
-  }, {
-    name: 'borderWidth',
-    label: '边框宽度',
-    value: 4,
-    type: 'px'
-  }, {
-    name: 'borderColor',
-    label: '边框颜色',
-    value: '#FFF',
-    type: 'color'
-  }, {
-    name: 'radius',
-    value: 15,
-    type: 'percent'
-  },]
 }, {
   name: '三角形',
   width: 100,

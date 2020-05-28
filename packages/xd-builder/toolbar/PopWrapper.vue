@@ -3,14 +3,17 @@
   v-if="popover"
   :placement="placement"
   popper-class="toolbar-pop"
-  width="240"
+  :width="width"
   :title="title"
+  @show="$emit('show')"
   trigger="click">
   <a class="action" slot="reference">
     <i v-if="icon" :class="icon" />
     <slot v-else name="reference"/>
   </a>
-  <slot></slot>
+  <div class="container">
+    <slot></slot>
+  </div>
 </el-popover>
 <div v-else>
   <a class="action" slot="reference" @click="openDialog">
@@ -39,6 +42,10 @@ export default {
       type: Boolean,
       default: true
     },
+    width: {
+      type: Number,
+      default: 480
+    },
     placement: {
       type: String,
       default: 'bottom-start'
@@ -60,11 +67,18 @@ export default {
   methods: {
     openDialog () {
       this.dialogVisible = true
+      this.$emit('show')
     }
   }
 }
 </script>
 
-<style scoped>
-
+<style lang="scss">
+.toolbar-pop {
+  padding-right: 4px;
+  .container {
+    max-height: calc(100vh - 77px);
+    overflow-y: auto;
+  }
+}
 </style>

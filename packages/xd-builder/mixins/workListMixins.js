@@ -54,13 +54,12 @@ export default {
           height: 150
         }, this.viewport())
       }
-      const svgRes = await this.svgdao.multiGet(svgs)
-      for (let res of svgRes.list) {
-        this.ctx.styleRegistry.addVector(res)
-      }
+      // const svgRes = await this.svgdao.multiGet(svgs)
+      // for (let res of svgRes.list) {
+      //   this.ctx.styleRegistry.addVector(res)
+      // }
 
       this.works = result.list
-      console.log(this.works)
       this.total = result.total
       this.loading = false
     },

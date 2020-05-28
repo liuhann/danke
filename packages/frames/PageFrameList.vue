@@ -155,7 +155,8 @@ export default {
     background: #fff;
     padding: 3rem 0;
     .category {
-      text-align: center;
+      margin-top: 20px;
+      text-align: left;
       color: #666;
       cursor: pointer;
       margin-bottom: 20px;

@@ -1,13 +1,5 @@
 <template>
-<el-popover
-  placement="bottom-start"
-  visible-arrow
-  popper-class="toolbar-pop"
-  width="400"
-  trigger="click">
-  <a class="action" slot="reference" title="特效">
-    <i class="el-icon-magic-stick"/>
-  </a>
+<pop-wrapper :width="400" icon="el-icon-data-line">
   <div id="animation-config">
     <div class="element-animation" v-show="!showAnimationChoose">
       <div class="type-title">
@@ -26,56 +18,39 @@
       <animation-form v-if="element.animation.exist && element.animation.exist.length" :element="element" type="exist"></animation-form>
     </div>
     <div class="animations-choose" v-show="showAnimationChoose">
-      <tabs v-model="type" @tab-click="typeChange">
-        <tab-pane v-for="type in types" :key="type.value" :label="type.label" :name="type.value" />
-      </tabs>
+      <el-tabs v-model="type" @tab-click="typeChange">
+        <el-tab-pane v-for="type in types" :key="type.value" :label="type.label" :name="type.value" />
+      </el-tabs>
       <div class="type-groups">
         <div v-for="g in groups" :key="g" class="group" :class="g=== group? 'current': ''" @click="groupChange(g)">{{g}}</div>
       </div>
       <div class="animations">
         <div v-for="a in animations" :key="a.name" class="animation" :class="a.name === animation.name? 'current': ''" @click="animationChange(a)">{{a.direction}}</div>
       </div>
-
       <div class="animation-box">
-          <img :src="CLOUD_HILL" :class="animation && animation.name"/>
-          <div class="refresh"><i @click="refreshCurrent" class="el-icon-refresh-right" /></div>
+        <img :src="CLOUD_HILL" :class="animation && animation.name"/>
+        <div class="refresh"><i @click="refreshCurrent" class="el-icon-refresh-right" /></div>
       </div>
       <div >
         <el-button size="small" @click="showAnimationChoose = false">取消</el-button> <el-button type="primary" size="small" @click="addAnimation">选择</el-button>
       </div>
     </div>
   </div>
-</el-popover>
-
-
+</pop-wrapper>
 </template>
 
 <script>
 import cubicBeziers from '../../frames/model/cubic-beziers'
-import IconEffect from './res/effects.svg'
+import toolbarPopMixin from './toolbarPopMixin'
 import types from '../../frames/types'
-import { TabPane, Tabs, Slider, Button, Popover, InputNumber, Select, Option, Checkbox } from 'element-ui'
 import RestDAO from '../../common/dao/restdao'
 import CLOUD_HILL from '../../vectors/cloud-hill.webp'
 import AnimationForm from './AnimationForm'
 export default {
   name: 'PopSetAnimation',
-  props: {
-    element: {
-      type: Object
-    }
-  },
+  mixins: [ toolbarPopMixin ],
   components: {
-    AnimationForm,
-    [InputNumber.name]: InputNumber,
-    [Popover.name]: Popover,
-    [Button.name]: Button,
-    [Select.name]: Select,
-    [Option.name]: Option,
-    [Checkbox.name]: Checkbox,
-    IconEffect,
-    TabPane,
-    Tabs
+    AnimationForm
   },
   data () {
     return {

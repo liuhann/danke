@@ -1,41 +1,39 @@
 <template>
-<el-popover
-  placement="bottom-start"
-  popper-class="toolbar-pop"
+<pop-wrapper
   title="选择裁切图案"
-  width="360"
+  icon="el-icon-picture-outline-round"
   @show="loadMaskVectors"
-  trigger="click">
-  <a class="action" slot="reference">
-    <i class="el-icon-picture-outline-round"/>
-  </a>
-  <div class="clippath-list">
+  width="360">
+  <div class="packs-list">
     <div class="pack" v-for="pack in maskPacks" :key="pack._id">
       <div class="pack-title">
         <div class="text">{{pack.name}}</div>
         <div class="more" @click="showPackVectors(pack)">查看全部</div>
       </div>
-      <div class="pack-shapes">
+      <div class="pack-shapes" v-if="pack.covers">
         <div
-          v-for="(vector, index) in pack.children" :key="index"
-          class="object-item">
-          <div class="svg-container" v-html="vector.content">
-          </div>
+          v-for="(cover, index) in pack.covers" :key="index"
+          @click="useMask(cover)"
+          class="svg-item">
+          <img :src="getImageUrl(cover.url, 120, 120)" />
         </div>
       </div>
     </div>
   </div>
-</el-popover>
+</pop-wrapper>
 </template>
 
 <script>
-import { Popover } from 'element-ui'
+import toolbarPopMixin from './toolbarPopMixin'
 import RestDAO from '../../common/dao/restdao'
+import PopWrapper from './PopWrapper'
+import { getImageUrl} from '../mixins/imageUtils'
 
 export default {
   name: 'PopImageMask',
+  mixins: [ toolbarPopMixin ],
   components: {
-    [Popover.name]: Popover
+    PopWrapper
   },
   data () {
     return {
@@ -53,24 +51,16 @@ export default {
     this.packdao = new RestDAO(this.ctx, 'danke/pack')
   },
   methods: {
+    getImageUrl,
     async loadMaskVectors () {
       const result = await this.packdao.list({
-        'type': 'vector',
-        'system.public': 'on',
-        'subcount': 3
+        mask: true
       })
       this.publicPacks = result.list
-
-      const mine = await this.packdao.list({
-        'type': 'vector',
-        'creator': this.ctx.user.id,
-        'mask': true,
-        'subcount': 3
-      })
-      this.myPacks = mine.list
-
     },
-
+    useMask (cover) {
+      this.$set(this.element.style, 'maskImage', `url(${this.getImageUrl(cover.url)})`)
+    },
     showPackVectors () {
 
     }
@@ -78,25 +68,29 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-.clippath-list {
-  display: flex;
-  flex-wrap: wrap;
-  .clippath {
-    width: 75px;
-    height: 75px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0 7px;
-    &:hover {
-      background-color: #efefef;
-      cursor: pointer;
+<style lang="scss">
+.packs-list {
+  .pack {
+    .pack-title {
+      display: flex;
+      .text {
+        flex: 1;
+      }
     }
-    .container {
-      width: 48px;
-      height: 48px;
-      background: #00bf72;
+    .pack-shapes {
+      display: flex;
+      .svg-item {
+        width: 120px;
+        height: 120px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        img {
+          width: 80px;
+          height: 80px;
+        }
+      }
+
     }
   }
 }

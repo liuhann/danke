@@ -32,17 +32,39 @@
         <div class="input" v-show="showNewAlbumName">
           <el-input size="mini" v-model="newAlbumName"/>
         </div>
-        <div class="confirm" v-show="showNewAlbumName" @click="confirmAddNewAlbum">确定</div>
-        <div class="confirm" v-show="showNewAlbumName" @click="showNewAlbumName = false">取消</div>
+        <div class="confirm" v-show="showNewAlbumName" @click="confirmAddNewAlbum"><i class="el-icon-check"/></div>
+        <div class="confirm" v-show="showNewAlbumName" @click="showNewAlbumName = false"><i class="el-icon-close"/></div>
       </div>
     </div>
   </div>
 
   <div class="album-opened album" v-if="currentAlbum">
-    <div class="album-title">
-      <div class="text">{{currentAlbum.name}}</div>
-      <div class="trash" v-if="currentAlbum.covers.length === 0" @click="removeAlbum">删除</div>
-      <div class="more" @click="closeAlbum">关闭</div>
+    <div class="album-title" v-if="!albumEditing">
+      <div class="more" @click="closeAlbum"><i class="el-icon-arrow-left"/></div>
+      <div class="text">{{currentAlbum.name}} <span class="tag" v-if="currentAlbum.mask">mask</span> <span class="tag" v-if="currentAlbum.shared">shared</span></div>
+      <div class="edit" @click="editAlbum">
+        <i class="el-icon-edit"/>
+      </div>
+      <div class="trash" @click="removeAlbum">
+        <i class="el-icon-delete"/>
+      </div>
+    </div>
+    <div class="album-editing" v-if="albumEditing">
+      <div class="input">
+        <el-input size="mini" v-model="currentAlbum.name"/>
+      </div>
+      <div class="field">
+        <el-checkbox v-model="currentAlbum.mask">遮罩</el-checkbox>
+        <el-checkbox v-model="currentAlbum.shared">分享</el-checkbox>
+        <div class="confirm">
+          <div class="icon-btn" @click="confirmAlbumEditing">
+            <i class="el-icon-check"/>
+          </div>
+          <div class="icon-btn" @click="albumEditing = false">
+            <i class="el-icon-close"/>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="album-images">
       <div class="item add">
@@ -74,14 +96,15 @@ import RestDAO from '../../common/dao/restdao'
 import { getImageUrl } from '../mixins/imageUtils.js'
 import ImageDAO from '../../utils/imagedao'
 import ky from 'ky'
-import { Upload, Button, Pagination, Checkbox, Input } from 'element-ui'
+import { Upload, Button, Pagination, Checkbox, Input, Popconfirm, Message } from 'element-ui'
 export default {
   components: {
     [Button.name]: Button,
     [Upload.name]: Upload,
     [Pagination.name]: Pagination,
     [Checkbox.name]: Checkbox,
-    [Input.name]: Input
+    [Input.name]: Input,
+    [Popconfirm.name]: Popconfirm
   },
   data () {
     return {
@@ -95,13 +118,14 @@ export default {
       page: 1,
       pageSize: 30,
       total: 0,
+      choosedFiles: [],
+      albumEditing: false
     }
   },
   created () {
     this.imagedao = new ImageDAO(this.ctx)
     this.albumdao = new RestDAO(this.ctx, 'danke/pack')
     this.restdao = new RestDAO(this.ctx, 'danke/image')
-    this.choosedFiles = []
   },
 
   mounted () {
@@ -132,8 +156,7 @@ export default {
 
     async loadAlbums () {
       const result = await this.albumdao.list({
-        type: 'album',
-        creator: this.ctx.user.id,
+        creator: this.ctx.user.id
       })
       this.albums = result.list.reverse()
       if (this.albums.length === 0) {
@@ -146,10 +169,35 @@ export default {
       this.loadAlbumImages()
     },
 
+
+    editAlbum () {
+      this.albumEditing = true
+    },
+
+    async confirmAlbumEditing () {
+      await this.albumdao.patch(this.currentAlbum._id, {
+        name: this.currentAlbum.name,
+        mask: this.currentAlbum.mask,
+        shared: this.currentAlbum.shared
+      })
+
+      Message.success('图库信息已保存')
+      this.albumEditing = false
+    },
+
+    async shareAlbum () {
+      this.currentAlbum.shared = true
+      await this.albumdao.patch(this.currentAlbum._id, {
+        shared: true
+      })
+    },
+
     async removeAlbum () {
-      await this.albumdao.delete(this.currentAlbum)
-      this.currentAlbum = null
-      this.loadAlbums()
+      if (this.albumImages.length === 0) {
+        await this.albumdao.delete(this.currentAlbum)
+        this.currentAlbum = null
+        this.loadAlbums()
+      }
     },
 
     async closeAlbum () {
@@ -164,7 +212,6 @@ export default {
       })
       await this.loadAlbums()
     },
-
 
     async loadAlbumImages () {
       if (this.currentAlbum) {
@@ -184,23 +231,35 @@ export default {
     // may be choose multiple files, should do auto upload on choose
     // each file would trigger fileChoosed event
     async fileChoosed (file, uploadFiles, album) {
-      this.choosedFiles.push(file)
+      const choose = {
+        uploaded: false,
+        name: file.name,
+        size: file.size
+      }
+      this.choosedFiles.push(choose)
       const result = await this.imagedao.uploadBlob(file.raw, `images`)
-      const imageInfo = await ky.get(this.IMG_SERVER + '/' + result.name + '?x-oss-process=image/info').json()
-      // write file info
-      await this.restdao.create({
+      const imageObject = {
         url: result.name,
         name: file.name,
         size: file.size,
         album: album._id,
-        height: parseInt(imageInfo.ImageHeight.value),
-        width: parseInt(imageInfo.ImageWidth.value)
-      })
-      file.uploaded = true
-      await this.updateAlbumCover(album)
-
-      // 更新已经打开的图集列表
-      this.loadAlbumImages()
+      }
+      if (file.name.endsWith('svg')) {
+      } else {
+        const imageInfo = await ky.get(this.IMG_SERVER + '/' + result.name + '?x-oss-process=image/info').json()
+        Object.assign(imageObject, {
+          height: parseInt(imageInfo.ImageHeight.value),
+          width: parseInt(imageInfo.ImageWidth.value)
+        })
+      }
+      // write file info
+      await this.restdao.create(imageObject)
+      choose.uploaded = true
+      if (this.choosedFiles.filter(file => !file.uploaded).length === 0) {
+        await this.updateAlbumCover(album)
+        // 更新已经打开的图集列表
+        this.loadAlbumImages()
+      }
     },
 
     async updateAlbumCover (album) {
@@ -212,6 +271,7 @@ export default {
       album.covers = listResult.list.map(image => ({
         width: image.width,
         height: image.height,
+        name: image.name,
         url: image.url
       }))
       await this.albumdao.patch(album._id, album)
@@ -242,7 +302,7 @@ export default {
 
   .album {
     .album-title {
-      padding: 10px;
+      padding: 10px 0;
       display: flex;
       font-size: 1.5rem;
       line-height: 30px;
@@ -251,29 +311,61 @@ export default {
         font-weight: bold;
         color: #fff;
       }
-      .more, .confirm, .trash {
+      .tag {
+        font-size: 10px;
+        font-weight: normal;
+        background-color: rgba(0,0,0, .5);
+        border-radius: 5px;
+        margin-left: 5px;
+        padding: 0 5px;
+        position: relative;
+        top: -5px;
+      }
+      .edit, .trash, .more {
+        margin-right: 12px;
         color: #99a9bf;
         cursor: pointer;
-        margin-left: 10px;
         &:hover {
           color: rgba(153, 169, 191, 0.6);
         }
       }
       .trash {
-        color: #EA4335;
         &:hover {
           color: #ea6463;
         }
       }
       .input {
         margin-right: 10px;
+        flex: 1;
       }
+
+    }
+    .album-editing {
+      padding: 10px;
+      font-size: 1.5rem;
       input {
-        background: transparent;
-        color: #fff;
-        box-shadow: none;
-        border: 1px solid #99a9bf;
-        padding: 5px;
+        background: rgba(0,0,0, .2);
+        color: #eee;
+        padding: 10px;
+        border: none;
+      }
+      .field {
+        display: flex;
+        margin: 8px 0;
+        display: flex;
+        .confirm {
+          display: flex;
+          flex: 1;
+          flex-direction: row-reverse;
+          .icon-btn {
+            margin-right: 12px;
+            color: #99a9bf;
+            cursor: pointer;
+            &:hover {
+              color: rgba(153, 169, 191, 0.6);
+            }
+          }
+        }
       }
     }
     .album-images {
@@ -292,7 +384,7 @@ export default {
           top: 0;
           width: 70px;
           height: 70px;
-          object-fit: cover;
+          object-fit: contain;
           cursor: pointer;
         }
         .el-icon-delete {

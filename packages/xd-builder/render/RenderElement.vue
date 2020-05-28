@@ -333,6 +333,9 @@ export default {
       position: absolute;
     }
   }
+  img {
+    mask-size: 100% 100%;
+  }
   svg {
     width: 100%;
     height: 100%;
