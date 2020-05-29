@@ -59,7 +59,7 @@ export default {
       this.publicPacks = result.list
     },
     useMask (cover) {
-      this.$set(this.element.style, 'maskImage', `url(${this.getImageUrl(cover.url)})`)
+      this.$set(this.element, 'maskImage', `url(${this.getImageUrl(cover.url)})`)
     },
     showPackVectors () {
 

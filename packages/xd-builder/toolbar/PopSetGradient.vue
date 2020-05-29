@@ -1,12 +1,6 @@
 <template>
-<el-popover
-  placement="bottom-start"
-  popper-class="toolbar-pop"
-  width="360"
-  title="设置渐变"
-  @show="show"
-  trigger="click">
-  <i class="action" slot="reference" :style="{
+<pop-wrapper :width="360" title="设置背景颜色/渐变" @show="show">
+  <i class="action gradient-box" slot="reference" :style="{
       background: variable.value
     }"></i>
   <div class="gradient form">
@@ -55,7 +49,7 @@
       </div>
     </div>
   </div>
-</el-popover>
+</pop-wrapper>
 </template>
 
 <script>
@@ -182,6 +176,9 @@ export default {
 </script>
 
 <style lang="scss">
+.gradient-box {
+  box-shadow: 0 0 0 1px #ccc;
+}
 .gradient.form {
   .form-item {
     display: flex;

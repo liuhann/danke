@@ -5,6 +5,7 @@
     <section class="first section list-section">
       <div class="body">
         <el-button size="mini" type="primary" @click="newObject">新建</el-button>
+        <el-input-number size="mini" v-model="perspective" />
         <div class="category">
           <span v-for="t in types" :key="t.name" :class="type===t.value ? 'checked': ''" @click="typeChange(t.value)">{{t.label}}</span>
         </div>
@@ -14,8 +15,10 @@
         <div class="animations">
           <div v-for="a in animations" :key="a.name" class="animation" :class="a.name === animation.name? 'current': ''" @click="animationChange(a)">{{a.direction}}</div>
         </div>
-        <div class="animation-box">
-          <img :src="CLOUD_HILL" :class="animation && animation.name"/>
+        <div class="animation-box" :style="boxStyle">
+          <img :src="CLOUD_HILL" :style="{
+            maskImage: 'url(http://image.danke.fun/15011245191/images/mGuzU_K7ro_.svg)'
+          }" :class="animation && animation.name"/>
           <div class="refresh">{{animation.name}}<i @click="refreshCurrent" class="el-icon-refresh-right" /> <i @click="edit(animation)" class="el-icon-edit" /></div>
         </div>
       </div>
@@ -26,21 +29,24 @@
 <script>
 import NavBar from '../site/components/NavBar.vue'
 import CLOUD_HILL from './cloud-hill.webp'
-import { Pagination, Button } from 'element-ui'
+import { Pagination, Button, InputNumber } from 'element-ui'
 import types from './types'
 import RestDAO from '../common/dao/restdao'
 import StyleRegistry from '../xd-builder/utils/StyleRegistry'
+import { assignVariables } from '../xd-builder/mixins/renderUtils'
 export default {
   name: 'PageFrameList',
   components: {
     NavBar,
     [Pagination.name]: Pagination,
-    [Button.name]: Button
+    [Button.name]: Button,
+    [InputNumber.name]: InputNumber
   },
   data () {
     return {
       types,
       type: 'basic',
+      perspective: 400,
       showAnimationChoose: false,
       group: '',
       groups: [],
@@ -55,6 +61,13 @@ export default {
       return {
         tags: this.type
       }
+    },
+    boxStyle () {
+      const style = {
+        perspective: this.perspective + 'px'
+      }
+      assignVariables(style, this.animation.variables)
+      return style
     }
   },
   created () {
@@ -66,6 +79,14 @@ export default {
     this.typeChange()
   },
   methods: {
+
+    boxStyle (animation) {
+
+      const style = {
+
+      }
+    },
+
     async typeChange (type) {
       if (type) {
         this.type = type
@@ -148,7 +169,7 @@ export default {
   font-size: 16px;
 
   .body {
-    margin: 30px;
+    margin: 0 30px;
     width: 100%;
   }
   .list-section {
@@ -200,6 +221,7 @@ export default {
     img {
       width: 240px;
       height: 160px;
+      mask-repeat: no-repeat;
     }
     .refresh {
       position: absolute;

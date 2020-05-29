@@ -228,6 +228,17 @@ export default {
       }
     },
 
+    async readFileAsync(file) {
+      return new Promise((resolve, reject) => {
+        let reader = new FileReader()
+        reader.onload = () => {
+          resolve(reader.result)
+        }
+        reader.onerror = reject
+        reader.readAsText(file, "UTF-8")
+      })
+    },
+
     // may be choose multiple files, should do auto upload on choose
     // each file would trigger fileChoosed event
     async fileChoosed (file, uploadFiles, album) {
@@ -237,21 +248,37 @@ export default {
         size: file.size
       }
       this.choosedFiles.push(choose)
-      const result = await this.imagedao.uploadBlob(file.raw, `images`)
+
       const imageObject = {
-        url: result.name,
         name: file.name,
         size: file.size,
         album: album._id,
       }
-      if (file.name.endsWith('svg')) {
+
+      // 尝试对于颜色<=2的图片进行转换
+      if (file.name.endsWith('.svg')) {
+        const fileContent = await this.readFileAsync(file.raw)
+        const replaced = this.replaceFillColorWithVariables(fileContent)
+        if (replaced.variables.length === 1) {
+          // 保存svg正文直接到图片，不使用阿里云
+          imageObject.content = replaced.content
+          imageObject.variables = replaced.variables
+        } else {
+          // 颜色太多就直接存正文到aliyun 和png同样处理 （宽度和高度不做调整）
+          let result = await this.imagedao.uploadBlob(file.raw, `images`)
+          imageObject.url = result.name
+        }
       } else {
-        const imageInfo = await ky.get(this.IMG_SERVER + '/' + result.name + '?x-oss-process=image/info').json()
-        Object.assign(imageObject, {
-          height: parseInt(imageInfo.ImageHeight.value),
-          width: parseInt(imageInfo.ImageWidth.value)
-        })
+        let result = await this.imagedao.uploadBlob(file.raw, `images`)
+        try {
+          const imageInfo = await ky.get(this.IMG_SERVER + '/' + result.name + '?x-oss-process=image/info').json()
+          Object.assign(imageObject, {
+            height: parseInt(imageInfo.ImageHeight.value),
+            width: parseInt(imageInfo.ImageWidth.value)
+          })
+        } catch (e) {}
       }
+
       // write file info
       await this.restdao.create(imageObject)
       choose.uploaded = true
@@ -259,6 +286,42 @@ export default {
         await this.updateAlbumCover(album)
         // 更新已经打开的图集列表
         this.loadAlbumImages()
+      }
+    },
+
+
+    /**
+     * 获取及替换颜色操作
+     */
+    replaceFillColorWithVariables (svg) {
+      let content = svg
+      let rgbRegex = /[rR][gG][Bb][Aa]?[\\(]((2[0-4][0-9]|25[0-5]|[01]?[0-9][0-9]?),){2}(2[0-4][0-9]|25[0-5]|[01]?[0-9][0-9]?),?(0\\.\\d{1,2}|1|0)?[\\)]{1}/g
+      let colorRegex = /#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})|rgb[a]?\([^)]+\)/g
+      const colorMatched = svg.match(colorRegex);
+      const colorList = Array.from(new Set(colorMatched))
+      const variables = []
+      for (let i = 0; i < colorList.length; i++) {
+        variables.push({
+          'name': 'fillColor' + i,
+          'value': colorList[i],
+          'label': '颜色' + i,
+          'type': 'color'
+        })
+        content = content.replace(new RegExp(colorList[i].replace('(', '\\(').replace(')', '\\)'), 'gm'), `var(--fillColor${i})`)
+      }
+      content = content.replace(/<g>\s+<\/g>/g, '')
+      if (variables.length === 0) {
+        variables.push({
+          'name': 'globalFill',
+          'value': '#555',
+          'label': '整体颜色',
+          'type': 'color'
+        })
+        content = content.replace(/<svg/, '<svg fill="var(--globalFill)"')
+      }
+      return {
+        content,
+        variables
       }
     },
 

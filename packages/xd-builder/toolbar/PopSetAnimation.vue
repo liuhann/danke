@@ -18,11 +18,13 @@
       <animation-form v-if="element.animation.exist && element.animation.exist.length" :element="element" type="exist"></animation-form>
     </div>
     <div class="animations-choose" v-show="showAnimationChoose">
-      <el-tabs v-model="type" @tab-click="typeChange">
-        <el-tab-pane v-for="type in types" :key="type.value" :label="type.label" :name="type.value" />
-      </el-tabs>
-      <div class="type-groups">
-        <div v-for="g in groups" :key="g" class="group" :class="g=== group? 'current': ''" @click="groupChange(g)">{{g}}</div>
+      <div class="animation-category">
+        <el-select size="mini" v-model="type" @change="typeChange">
+          <el-option v-for="type in types" :key="type.value" :label="type.label" :value="type.value"></el-option>
+        </el-select>
+        <el-select size="mini" v-model="group" @change="groupChange">
+          <el-option v-for="g in groups" :key="g" :label="g" :value="g"></el-option>
+        </el-select>
       </div>
       <div class="animations">
         <div v-for="a in animations" :key="a.name" class="animation" :class="a.name === animation.name? 'current': ''" @click="animationChange(a)">{{a.direction}}</div>
@@ -31,7 +33,7 @@
         <img :src="CLOUD_HILL" :class="animation && animation.name"/>
         <div class="refresh"><i @click="refreshCurrent" class="el-icon-refresh-right" /></div>
       </div>
-      <div >
+      <div>
         <el-button size="small" @click="showAnimationChoose = false">取消</el-button> <el-button type="primary" size="small" @click="addAnimation">选择</el-button>
       </div>
     </div>
@@ -101,7 +103,8 @@ export default {
     },
     async typeChange () {
       await this.loadTypeGroup()
-      this.groupChange(this.groups[0])
+      this.group = this.groups[0]
+      this.groupChange()
     },
     async loadTypeGroup () {
       const result = await this.framedao.distinct('group', {
@@ -110,8 +113,7 @@ export default {
       this.groups = result
     },
 
-    async groupChange(group) {
-      this.group = group
+    async groupChange() {
       await this.loadGroupAnimations()
       if (this.animations.length) {
         this.animation = this.animations[0]
@@ -198,25 +200,9 @@ export default {
   }
   .animations-choose {
     width: 400px;
-    .type-groups {
+    .animation-category {
       display: flex;
-      flex-wrap: wrap;
-      .group {
-        width: 60px;
-        height: 60px;
-        cursor: pointer;
-        border-radius: 40px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin: 4px 3px;
-        background-color: #efefef;
-        &.current {
-          background: #00c4cc;
-          color: #fff;
-        }
-      }
-      margin-bottom: 10px;
+      margin: 8px 0;
     }
     .animations {
       display: flex;
@@ -224,8 +210,9 @@ export default {
       padding-bottom: 10px;
       border-bottom: 1px solid #eee;
       .animation {
-        width: 25%;
         text-align: center;
+        float: left;
+        padding: 0 10px;
         line-height: 32px;
         cursor: pointer;
         &.current {
@@ -237,6 +224,7 @@ export default {
 
     .animation-box {
       height: 160px;
+      margin-bottom: 10px;
       display: flex;
       justify-content: center;
       align-items: center;

@@ -10,6 +10,7 @@
       <div
         v-for="(shape, index) in rects"
         :key="index"
+        @click="chooseShapeItem(shape)"
         class="shape-item">
         <div class="shape" :style="shapeStyle(shape)"></div>
       </div>
@@ -32,6 +33,9 @@ export default {
     }
   },
   methods: {
+    chooseShapeItem (shape) {
+      this.$emit('draw', shape)
+    },
     shapeStyle (shape) {
       const style = Object.assign({}, shape.style)
       assignVariables(style, shape.variables)

@@ -1,10 +1,9 @@
 <template>
 <div id="tool-bar">
-  <pop-new-element v-if="noFocusedElement"/>
+  <pop-new-element v-if="noFocusedElement" @draw="emitDraw"/>
   <pop-element-list v-if="noFocusedElement" :scene="scene" :checked-elements="checkedElements"/>
   <a class="action" v-if="noFocusedElement" @click="previousScene"><i class="el-icon-arrow-up" /></a>
   <a class="action" v-if="noFocusedElement" @click="nextScene"><i class="el-icon-arrow-down" /></a>
-<!--  <a class="action" v-if="noFocusedElement"> {{scenes.indexOf(scene) + 1}}/{{scenes.length}}</a>-->
   <a class="action" v-if="noFocusedElement" @click="openPen('vector')"><icon-pen /></a>
   <a class="action" v-if="focusedElement && focusedElement.path" @click="openPen(focusedElement)"><icon-pen /></a>
   <!--  样式变量的修改-->
@@ -226,17 +225,6 @@ export default {
       if (this.focusedElement) {
         if (this.focusedElement.variables) {
           variables = variables.concat(this.focusedElement.variables)
-        }
-        for (let key in this.focusedElement.style) {
-          if (typeof this.focusedElement.style[key] === 'object' && this.focusedElement.style[key].variables) {
-            variables = variables.concat(this.focusedElement.style[key].variables)
-          }
-        }
-      } else {
-        for (let key in this.scene.style) {
-          if (this.scene.style[key].variables) {
-            variables = variables.concat(this.scene.style[key].variables)
-          }
         }
       }
       return variables
@@ -471,6 +459,9 @@ export default {
       this.$emit('prev-scene')
     },
 
+    emitDraw (element) {
+      this.$emit('draw', element)
+    },
 
     nextScene () {
       this.$emit('next-scene')

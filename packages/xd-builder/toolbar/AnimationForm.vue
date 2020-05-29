@@ -22,6 +22,7 @@
             循环 <el-checkbox v-model="animation.infinite"></el-checkbox>
           </div>
         </div>
+
       </div>
       <div class="right">
         <el-button type="danger" icon="el-icon-delete" circle size="mini" @click="removeAnimation(index)"></el-button>

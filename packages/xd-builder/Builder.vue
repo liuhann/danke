@@ -11,6 +11,7 @@
       :scale="scale"
       :undoable="undoable"
       :redoable="redoable"
+      @draw="drawElement"
       @open-pen="openPen"
       @change="workChange"
       @undo="undo"
@@ -91,6 +92,9 @@ export default {
     this.onMounted()
   },
   methods: {
+    drawElement (element) {
+      this.insert('element', element)
+    },
     async onMounted () {
       let workId = this.$route.query.work
       if (!workId) {
@@ -117,7 +121,7 @@ export default {
         case 'animation':
           this.currentAnimation = object
         case 'element':
-          this.$refs.sceneContainer.createSingleElement(object, (this.work.viewBox.width - object.path.w) / 2, (this.work.viewBox.height - object.path.h) / 2)
+          this.$refs.sceneContainer.createSingleElement(object, 100, 100)
           // this.currentScene.elements.push(Object.assign(node, object))
         default:
       }

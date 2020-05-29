@@ -58,7 +58,9 @@ export default {
     }
   },
   mounted () {
-
+    if (this.element.url && this.element.url.endsWith('.svg')) {
+      this.loadSvgContent()
+    }
   },
   computed: {
     inlineStyle () {
@@ -126,7 +128,7 @@ export default {
       }
 
       if (this.element.maskImage) {
-        style.maskImage = `url(${svg2url(this.element.maskImage)})`
+        style.maskImage = this.element.maskImage
       }
       // Object.assign(style, this.element.style)
       // this.appendTextTransform(style)
@@ -181,13 +183,11 @@ export default {
               animation: `${animation.name} ${animation.range[1]}s ${animation.timing} ${animation.range[0]}s ${animation.infinite? 'infinite': animation.iteration} both`
             }
           } else {
-            let lastFinished = 0
             const animationsOrdered = []
             // 多个动画次序或者重叠播放
             for (let i = 0; i < animations.length; i++) {
               const animation = animations[i]
-              animationsOrdered.push(`${animation.name} ${animation.range[1]}s ${animation.timing} ${animation.range[0] + lastFinished}s ${animation.infinite? 'infinite': animation.iteration} ${i === animations.length - 1 ? '' : 'both'}`)
-              lastFinished += animation.range[1] + animation.range[0]
+              animationsOrdered.push(`${animation.name} ${animation.range[1]}s ${animation.timing} ${animation.range[0]}s ${animation.infinite? 'infinite': animation.iteration}`)
             }
             if (animationsOrdered.length) {
               return {
@@ -268,6 +268,10 @@ export default {
     }
   },
   methods: {
+    async loadSvgContent () {
+      const result = await this.ctx.get(this.getImageUrl(this.element.url))
+      this.$set(this.element, 'content', result.data)
+    },
     getImageUrl,
     updateTextArea () {
       const measured = textMesure(this.elementTextContent, this.elementTextFontSize, this.elementTextWeight)

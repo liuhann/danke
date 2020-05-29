@@ -103,6 +103,9 @@ export default {
     paste: {
       type: Object
     },
+    drawing: {
+      type: Object
+    },
     // 刷入的样式名称
     animation: {
       type: Object
