@@ -1,5 +1,5 @@
 <template>
-<div class="scene-wrapper">
+<div id="scene-container">
   <div id="workspace" @mousedown="sceneMouseDown" @wheel.prevent="sceneMouseWheel" ref="sceneContainer" :style="styleWorkSpace">
     <!-- 当前屏幕内容 -->
     <div class="screen" :style="styleScreen">
@@ -687,11 +687,10 @@ export default {
 </script>
 
 <style lang="scss">
-.scene-wrapper {
+#scene-container {
   flex: 1;
   overflow: hidden;
   width: 100%;
-
   .screen-actions {
     z-index: 1001;
     position: absolute;

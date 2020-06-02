@@ -1,6 +1,6 @@
 <template>
 <pop-wrapper :width="360" title="设置背景颜色/渐变" @show="show">
-  <i class="action gradient-box" slot="reference" :style="{
+  <i class="gradient-box action" slot="reference" :style="{
       background: variable.value
     }"></i>
   <div class="gradient form">
@@ -178,6 +178,7 @@ export default {
 <style lang="scss">
 .gradient-box {
   box-shadow: 0 0 0 1px #ccc;
+  width: 30px;
 }
 .gradient.form {
   .form-item {

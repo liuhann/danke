@@ -1,9 +1,9 @@
 <template>
 <pop-wrapper
   title="选择裁切图案"
-  icon="el-icon-picture-outline-round"
+  icon="el-icon-crop"
   @show="loadMaskVectors"
-  width="360">
+  :width="360">
   <div class="packs-list">
     <div class="pack" v-for="pack in maskPacks" :key="pack._id">
       <div class="pack-title">

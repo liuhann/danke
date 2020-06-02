@@ -7,10 +7,10 @@
   :title="title"
   @show="$emit('show')"
   trigger="click">
-  <a class="action" slot="reference">
-    <i v-if="icon" :class="icon" />
-    <slot v-else name="reference"/>
+  <a class="action" slot="reference" v-if="icon">
+    <i :class="icon" />
   </a>
+  <slot v-else slot="reference" name="reference"/>
   <div class="container">
     <slot></slot>
   </div>
@@ -51,8 +51,7 @@ export default {
       default: 'bottom-start'
     },
     icon: {
-      type: String,
-      default: 'el-icon-timer'
+      type: String
     },
     title: {
       type: String

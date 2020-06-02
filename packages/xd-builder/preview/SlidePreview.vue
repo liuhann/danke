@@ -36,7 +36,8 @@ export default {
       currentScene: null,
       prevScene: null,
       viewPort: null,
-      work: null
+      work: null,
+      autoPlay: false
     }
   },
   created () {
@@ -109,10 +110,11 @@ export default {
         this.nextScene = null
       }
       if (index > 0) {
-        this.prevScene = this.work.scenes[index - 1]
+        this.lastScene = this.work.scenes[index - 1]
       } else {
-        this.prevScene = null
+        this.lastScene = null
       }
+
     },
 
     refreshWork () {

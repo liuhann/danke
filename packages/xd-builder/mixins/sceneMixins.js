@@ -16,7 +16,8 @@ export default {
         id: shortid(),
         elements: [],
         animation: {},
-        z: 100
+        faward: true,
+        duration: 3
       }
       this.insertScene(scene)
     },

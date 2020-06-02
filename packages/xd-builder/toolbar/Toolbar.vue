@@ -11,7 +11,8 @@
     <!-- 颜色-->
     <el-color-picker :key="index" v-if="variable.type==='color'" v-model="variable.value" show-alpha :predefine="workColors"/>
     <!-- 渐变颜色的处理-->
-    <pop-set-gradient :key="index" v-if="variable.type==='gradient'" :variable="variable"></pop-set-gradient>
+    <pop-set-gradient :key="index" v-if="variable.type==='gradient'" :variable="variable">
+    </pop-set-gradient>
     <!-- 数字-->
     <el-tooltip content="数值" :key="index" v-if="variable.type==='px' || variable.type==='number' || variable.type==='percent'">
       <el-input-number v-model="variable.value" controls-position="right" size="mini"/>
@@ -28,7 +29,7 @@
     <font-weight :key="index" v-if="variable.type==='fontWeight'" v-model="variable.value"/>
   </template>
 
-  <pop-image-mask v-show="selectedImages.length === 1" :element="selectedImages[0]"/>
+  <pop-image-mask v-show="focusedElement" :element="focusedElement"/>
   <pop-set-filter v-show="focusedElement" :element="focusedElement"/>
   <!--元素变换、旋转、拉伸等-->
   <pop-transform v-if="focusedElement" :element="focusedElement"/>
@@ -104,10 +105,12 @@ import PopScenePlays from './PopScenePlays'
 import PopImageMask from './PopImageMask'
 import PopNewElement from './PopNewElement'
 import PopSetFilter from './PopSetFilter'
+import PopSetVariable from './PopSetVariable'
 export default {
   name: 'Toolbar',
   mixins: [ interactMixins ],
   components: {
+    PopSetVariable,
     PopSetFilter,
     PopNewElement,
     PopImageMask,

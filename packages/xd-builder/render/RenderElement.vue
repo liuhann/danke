@@ -59,7 +59,6 @@ export default {
   },
   mounted () {
     if (this.element.url && this.element.url.endsWith('.svg')) {
-      this.loadSvgContent()
     }
   },
   computed: {
@@ -268,10 +267,6 @@ export default {
     }
   },
   methods: {
-    async loadSvgContent () {
-      const result = await this.ctx.get(this.getImageUrl(this.element.url))
-      this.$set(this.element, 'content', result.data)
-    },
     getImageUrl,
     updateTextArea () {
       const measured = textMesure(this.elementTextContent, this.elementTextFontSize, this.elementTextWeight)

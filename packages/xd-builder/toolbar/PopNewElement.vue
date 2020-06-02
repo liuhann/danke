@@ -1,9 +1,8 @@
 <template>
 <pop-wrapper icon="el-icon-circle-plus-outline" :popover="true">
   <div class="blocks">
-
+    <div class="block-title">自定义图案</div>
   </div>
-
   <div class="blocks">
     <div class="block-title">基本图形</div>
     <div class="shape-list">
@@ -34,7 +33,7 @@ export default {
   },
   methods: {
     chooseShapeItem (shape) {
-      this.$emit('draw', shape)
+      this.$emit('draw', JSON.parse(JSON.stringify(shape)))
     },
     shapeStyle (shape) {
       const style = Object.assign({}, shape.style)

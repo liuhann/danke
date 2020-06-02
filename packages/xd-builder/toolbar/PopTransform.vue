@@ -2,11 +2,11 @@
 <el-popover
   placement="bottom-start"
   width="320"
-  title="变换"
+  title="旋转及拉伸"
   @show="showPop"
   trigger="click">
   <a class="action" slot="reference">
-    <i class="el-icon-connection"/>
+    <i class="el-icon-refresh-right"/>
   </a>
   <el-form label-width="140px" size="mini" v-if="transforms.length">
     <el-form-item v-for="(transform, index) of transforms" :key="index">
