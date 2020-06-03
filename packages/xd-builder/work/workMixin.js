@@ -52,14 +52,13 @@ export default {
         work.viewBox = work.screen
         delete work.screen
       }
-      if (!work.play) {
-        work.play = {
-          audio: '',
-          ticks: []
-        }
-      }
       this.ctx.styleRegistry.initWorkStyleResource(work)
       this.ctx.palette = this.ctx.styleRegistry.getWorkColors(work)
+
+      for (let scene of work.scenes) {
+        scene.visible = false
+        scene.stage = ''
+      }
       this.work = work
     },
 

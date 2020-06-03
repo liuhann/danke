@@ -2,12 +2,13 @@
 <div class="page-slide-preview">
   <div class="preview-container">
     <div class="device" v-if="work && viewPort" :style="deviceStyle">
-      <render-scene v-if="currentScene" :scene="currentScene" stage="enter" :work="work" :view-port="viewPort" :view-box="work.viewBox"/>
-      <render-scene v-if="lastScene" :scene="lastScene" stage="exist" :work="work" :view-port="viewPort" :view-box="work.viewBox"/>
+      <render-scene v-for="(scene, index) in work.scenes" :key="index" v-show="scene.visible" :scene="scene" :stage="scene.stage" :view-port="viewPort" :view-box="work.viewBox"/>
     </div>
   </div>
-  <i class="el-icon-right abs-actions" v-if="nextScene" @click="enterScene(nextScene)"></i>
-  <i class="el-icon-back abs-actions" v-if="prevScene" @click="enterScene(prevScene)"></i>
+  <template v-if="work">
+    <i class="el-icon-right abs-actions" v-if="currentSceneIndex > 0" @click="enterScene(currentSceneIndex - 1)"></i>
+    <i class="el-icon-back abs-actions" v-if="(currentSceneIndex < work.scenes.length - 1) && !currentAutoPlay" @click="enterScene(currentSceneIndex + 1)"></i>
+  </template>
   <div class="action-bar" v-show="!isFullScreen">
     <div class="action-button" @click="refreshWork"><i class="el-icon-refresh-right" /></div>
     <div class="action-button" @click="enterFullScreen"><i class="el-icon-full-screen" /></div>
@@ -32,9 +33,7 @@ export default {
   data () {
     return {
       isFullScreen: false,
-      nextScene: null,
-      currentScene: null,
-      prevScene: null,
+      currentSceneIndex: 0,
       viewPort: null,
       work: null,
       autoPlay: false
@@ -45,6 +44,13 @@ export default {
     this.ctx.styleRegistry = new StyleRegistry()
   },
   computed: {
+    currentAutoPlay () {
+      if (this.work) {
+        return this.work.scenes[this.currentSceneIndex].duration > 0
+      } else {
+        return false
+      }
+    },
     deviceStyle () {
       if (this.viewPort) {
         return {
@@ -98,30 +104,28 @@ export default {
       this.enterScene(0)
     },
 
-    async enterScene (scene) {
-      let index = scene
-      if (typeof scene !== 'number') {
-        index = this.work.scenes.indexOf(scene)
+    async enterScene (index) {
+      this.work.scenes[index].visible = true
+      this.work.scenes[index].stage = 'enter'
+      if (this.currentAutoPlay) {
+        this.nextInteval = setTimeout(() => {
+          this.currentSceneIndex ++
+          this.enterScene(this.currentSceneIndex)
+          this.leaveScene(this.currentSceneIndex - 1)
+        }, this.work.scenes[index].duration * 1000)
       }
-      this.currentScene = this.work.scenes[index]
-      if (this.work.scenes.length - 1 > index) {
-        this.nextScene = this.work.scenes[index + 1]
-      } else {
-        this.nextScene = null
-      }
-      if (index > 0) {
-        this.lastScene = this.work.scenes[index - 1]
-      } else {
-        this.lastScene = null
-      }
+    },
 
+    async leaveScene (index) {
+      this.work.scenes[index].stage = 'exist'
+      setTimeout(() => {
+        this.work.scenes[index].visible = false
+      }, this.work.scenes[index].exit * 1000)
     },
 
     refreshWork () {
-      this.currentScene = null
-      setTimeout(() => {
-        this.enterScene(0)
-      }, 100)
+      this.currentSceneIndex = 0
+      this.enterScene(this.currentSceneIndex)
     },
 
     likeWork () {

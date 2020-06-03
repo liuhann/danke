@@ -18,7 +18,7 @@
       <div class="work-type">
         <div class="name">
           其他
-        </div>
+        </div>d
         <div class="ratios">
           <el-input-number v-model="workWidth" size="mini" width="80" controls-position="right"/> X <el-input-number v-model="workHeight" size="mini" width="80" controls-position="right"/>
         </div>

@@ -16,16 +16,24 @@
         <div class="more" style="padding: 0 5px">
           <el-button type="text" @click="moveScenePrev(index)" icon="el-icon-back" v-if="index > 0"></el-button>
           <el-button type="text" @click="moveSceneNext(index)" icon="el-icon-right" v-if="index < work.scenes.length - 1"></el-button>
-          <el-popover placement="bottom">
+          <el-popover placement="top" title="场景">
             <el-button icon="el-icon-more" style="margin: 0 10px;" slot="reference" type="text" size="mini"/>
             <div class="more-menu">
-              <div class="menu-item" style="margin-bottom: 20px;">
-                <label style="margin-right: 20px;">持续时间</label>
+              <div class="menu-item" style="margin-bottom: 10px;">
+                <el-button size="mini" plain @click="deleteScene(index)">复制</el-button>
+                <el-button type="danger" size="mini" plain icon="el-icon-delete-solid" @click="deleteScene(index)">删除</el-button>
+              </div>
+              <div class="menu-item" style="margin-bottom: 10px;">
+                <label style="margin-right: 10px;">持续时间</label>
                 <el-input-number v-model="scene.duration" controls-position="right" size="mini"/>  秒
               </div>
-              <div class="menu-item">
-                <el-checkbox v-model="scene.forward">层次靠前</el-checkbox>
-                <el-button style="margin-left: 60px;" type="text" icon="el-icon-delete-solid" @click="deleteScene(index)">删除场景</el-button>
+              <div class="menu-item" style="margin-bottom: 10px;">
+                <label style="margin-right: 10px;">离开时间</label>
+                <el-input-number v-model="scene.exit" controls-position="right" size="mini"/>  秒
+              </div>
+              <div class="menu-item" style="margin-bottom: 10px;">
+                <label style="margin-right: 10px;">视角层次</label>
+                <el-input-number v-model="scene.z" controls-position="right" size="mini"/>
               </div>
             </div>
           </el-popover>

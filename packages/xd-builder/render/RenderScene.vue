@@ -43,7 +43,8 @@ export default {
     sceneStyle () {
       const styles = {
         width: this.viewPort.width + 'px',
-        height: this.viewPort.height + 'px'
+        height: this.viewPort.height + 'px',
+        zIndex: this.scene.z
       }
       for (let key in this.scene.style) {
         if (this.scene.style[key] && !this.scene.style[key].name) {
