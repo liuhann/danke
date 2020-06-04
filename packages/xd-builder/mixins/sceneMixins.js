@@ -18,6 +18,7 @@ export default {
         animation: {},
         z: 100,
         duration: 3,
+        renderExit: true,
         exit: 1
       }
       this.insertScene(scene)

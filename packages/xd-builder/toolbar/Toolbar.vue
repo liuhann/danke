@@ -35,6 +35,8 @@
   <pop-transform v-if="focusedElement" :element="focusedElement"/>
   <pop-set-animation v-if="focusedElement" :element="focusedElement"/>
   <align-element v-if="selectedElements.length > 1" :elements="selectedElements"/>
+  <pop-more-action :element="focusedElement" :scene="scene" v-if="focusedElement" @reset="setElementLocked"/>
+
   <!-- 右侧操作功能按钮-->
   <div class="pull-right">
     <el-color-picker v-model="work.color" show-alpha v-if="noFocusedElement"/>
@@ -56,7 +58,6 @@
     <el-tooltip class="item" effect="dark" content="取消建组" placement="bottom" v-if="focusedElement && focusedElement.elements && focusedElement.elements.length" >
       <a class="action on"  @click="unGroupBlock"><icon-group /></a>
     </el-tooltip>
-    <pop-more-action :element="focusedElement" :scene="scene" v-if="focusedElement" @reset="setElementLocked"/>
     <el-tooltip class="item" effect="dark" content="删除" placement="bottom" v-if="selectedElements.length" >
       <a class="action" @click="removeSelectedElement"><icon-trash /></a>
     </el-tooltip>

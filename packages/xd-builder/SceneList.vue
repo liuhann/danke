@@ -32,6 +32,10 @@
                 <el-input-number v-model="scene.exit" controls-position="right" size="mini"/>  秒
               </div>
               <div class="menu-item" style="margin-bottom: 10px;">
+                <label style="margin-right: 10px;">离开动画</label>
+                <el-checkbox v-model="scene.renderExit"/>
+              </div>
+              <div class="menu-item" style="margin-bottom: 10px;">
                 <label style="margin-right: 10px;">视角层次</label>
                 <el-input-number v-model="scene.z" controls-position="right" size="mini"/>
               </div>
@@ -46,21 +50,17 @@
 </template>
 
 <script>
-import { Button, Checkbox, MessageBox, InputNumber, Popover } from 'element-ui'
+import toolbarPopMixin from './toolbar/toolbarPopMixin'
 import draggable from 'vuedraggable'
 import sceneMixins from './mixins/sceneMixins'
 import RenderScene from './render/RenderScene'
 import { shortid } from '../utils/string'
 export default {
   name: 'SceneList',
-  mixins: [ sceneMixins ],
+  mixins: [ sceneMixins, toolbarPopMixin ],
   components: {
     RenderScene,
-    draggable,
-    [Button.name]: Button,
-    [Checkbox.name]: Checkbox,
-    [Popover.name]: Popover,
-    [InputNumber.name]: InputNumber
+    draggable
   },
   props: {
     work: {

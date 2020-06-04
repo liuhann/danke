@@ -117,7 +117,9 @@ export default {
     },
 
     async leaveScene (index) {
-      this.work.scenes[index].stage = 'exist'
+      if (this.work.scenes[index].renderExit) {
+        this.work.scenes[index].stage = 'exist'
+      }
       setTimeout(() => {
         this.work.scenes[index].visible = false
       }, this.work.scenes[index].exit * 1000)

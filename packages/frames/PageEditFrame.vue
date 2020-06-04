@@ -83,8 +83,8 @@
           </div>
           <div id="preview" :style="{background: previewType==='文字'? 'none': ''}" style="border-left: 1px solid #efefef;">
             <div v-if="previewType==='文字'" class="preview-text" :class="boxClass" :style="frameStyle">frames@danke</div>
-            <div v-if="previewType==='方块'" class="preview-box" :class="boxClass" :style="frameStyle">
-              <preview-image />
+            <div v-if="previewType==='方块'" class="preview-box" :style="frameStyle">
+              <preview-image :class="boxClass"/>
             </div>
           </div>
         </el-col>
