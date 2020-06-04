@@ -9,22 +9,25 @@
     <div class="element-action">
       <el-button size="mini"></el-button>
     </div>
-    <div class="list-content">
+    <draggable class="list-content" v-model="scene.elements">
       <div class="element-item" :class="element.selected? 'checked': ''" v-for="element of scene.elements" :key="element.id" @click="checkElement(element, $event)">
         <div class="element-icon">
-          <render-element :element="element" :view-port="viewPort" :view-box="element" />
+          <img :src="getImageUrl(element.url)" v-if="element.url">
+          <span v-if="element.text">A</span>
+          <i class="el-icon-files" v-else/>
         </div>
         <div class="element-name">{{element.name}}</div>
       </div>
-    </div>
+    </draggable>
   </div>
 </el-popover>
 </template>
 
 <script>
+import draggable from 'vuedraggable'
+import { getImageUrl } from '../mixins/imageUtils.js'
 import toolbarPopMixin from './toolbarPopMixin'
 import IconList from './res/list.svg'
-import RenderElement from '../render/RenderElement'
 export default {
   name: 'PopElementList',
   mixins: [ toolbarPopMixin ],
@@ -34,8 +37,8 @@ export default {
     }
   },
   components: {
-    RenderElement,
-    IconList
+    IconList,
+    draggable
   },
 
   computed: {
@@ -48,6 +51,7 @@ export default {
   },
 
   methods: {
+    getImageUrl,
     checkElement (element, event) {
       if (!event.ctrlKey) {
         this.scene.elements.forEach(element => {
@@ -72,7 +76,7 @@ export default {
       line-height: 24px;
       cursor: pointer;
       &:hover {
-        background: #f1f1f1;
+        background: #fefefe;
       }
       &.checked {
         background: #293039;
@@ -81,6 +85,11 @@ export default {
       .element-icon {
         width: 24px;
         height: 24px;
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+        }
       }
       .element-name {
         margin: 0 5px;
