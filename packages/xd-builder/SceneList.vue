@@ -6,7 +6,7 @@
     <el-button type="danger" size="mini" @click="deleteScene" v-if="checkedScenes.length">删除</el-button>
     <el-button size="mini" @click="close">关闭</el-button>
   </div>
-  <div class="list-wrapper">
+  <draggable v-model="work.scenes" class="list-wrapper">
     <div v-for="(scene, index) in work.scenes" :key="scene._id" class="scene-wrapper" :class="(scene === current || scene.checked)? 'current': ''" :style="{
       width: viewPort.width + 'px',
       height: (viewPort.height + 40) + 'px'
@@ -41,12 +41,13 @@
         </div>
       </div>
     </div>
-  </div>
+  </draggable>
 </div>
 </template>
 
 <script>
 import { Button, Checkbox, MessageBox, InputNumber, Popover } from 'element-ui'
+import draggable from 'vuedraggable'
 import sceneMixins from './mixins/sceneMixins'
 import RenderScene from './render/RenderScene'
 import { shortid } from '../utils/string'
@@ -55,6 +56,7 @@ export default {
   mixins: [ sceneMixins ],
   components: {
     RenderScene,
+    draggable,
     [Button.name]: Button,
     [Checkbox.name]: Checkbox,
     [Popover.name]: Popover,
