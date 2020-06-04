@@ -67,7 +67,10 @@
       <a class="action" @click="unLockSelectedElement"><i class="el-icon-unlock"/></a>
     </el-tooltip>
     <el-tooltip class="item" effect="dark" content="播放" placement="bottom" v-if="noFocusedElement" >
-      <a class="action" @click="playScene"><i class="el-icon-video-play"/></a>
+      <a class="action" @click="playScene"><i class="el-icon-refresh"/></a>
+    </el-tooltip>
+    <el-tooltip class="item" effect="dark" content="预览" placement="bottom" v-if="noFocusedElement" >
+      <a class="action" @click="slidePreview"><i class="el-icon-video-play"/></a>
     </el-tooltip>
     <setting-panel v-if="noFocusedElement" :work="work" :scene="scene"/>
   </div>
@@ -75,23 +78,19 @@
 </template>
 
 <script>
-import { Button, ButtonGroup, Popover, Slider, Select, Option, Tooltip, InputNumber, ColorPicker } from 'element-ui'
 import { shortid } from '../../utils/string'
 import interactMixins from '../mixins/interactMixins.js'
+import toolbarPopMixin from './toolbarPopMixin'
 import SettingPanel from './SettingPanel'
-import ColorPopPicker from './ColorPopPicker'
+import workMixin from '../work/workMixin'
 import PopSetAnimation from './PopSetAnimation'
 import PopMoreAction from './PopMoreAction'
-import PopTransparent from './PopTransparent'
 import IconBrush from './res/brush.svg'
 import IconGroup from './res/group.svg'
-import IconCopy from './res/copy.svg'
 import IconTrash from './res/trash.svg'
 import IconUndo from './res/undo.svg'
 import IconRedo from './res/redo.svg'
 import IconPen from './res/pen.svg'
-import IconClean from './res/clean.svg'
-import IconEffect from './res/effect.svg'
 import PopTransform from './PopTransform'
 import TextAlign from './TextAlign'
 import FontWeight from './FontWeight'
@@ -101,20 +100,16 @@ import FontFamily from './FontFamily.vue'
 import PopSetGradient from './PopSetGradient'
 import BorderStyle from './BorderStyle'
 import PopElementList from './PopElementList'
-import PopScenePlays from './PopScenePlays'
 import PopImageMask from './PopImageMask'
 import PopNewElement from './PopNewElement'
 import PopSetFilter from './PopSetFilter'
-import PopSetVariable from './PopSetVariable'
 export default {
   name: 'Toolbar',
-  mixins: [ interactMixins ],
+  mixins: [ interactMixins, workMixin, toolbarPopMixin ],
   components: {
-    PopSetVariable,
     PopSetFilter,
     PopNewElement,
     PopImageMask,
-    PopScenePlays,
     PopElementList,
     BorderStyle,
     PopSetGradient,
@@ -124,26 +119,15 @@ export default {
     FontWeight,
     FontFamily,
     TextAlign,
-    PopTransparent,
     PopTransform,
     PopMoreAction,
     SettingPanel,
     IconUndo,
     IconBrush,
     IconGroup,
-    IconCopy,
     IconTrash,
     IconRedo,
-    IconPen,
-    [ColorPicker.name]: ColorPicker,
-    [Tooltip.name]: Tooltip,
-    [Select.name]: Select,
-    [Option.name]: Option,
-    [Slider.name]: Slider,
-    [Button.name]: Button,
-    [Popover.name]: Popover,
-    [InputNumber.name]: InputNumber,
-    [ButtonGroup.name]: ButtonGroup
+    IconPen
   },
   props: {
     scene: {
@@ -306,6 +290,10 @@ export default {
     }
   },
   methods: {
+    async slidePreview () {
+      await this.saveWork()
+      window.open('/slide/' + this.work.id)
+    },
     togglePaste () {
       if (this.paste) {
         this.$emit('toggle-paste', null)

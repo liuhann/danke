@@ -12,35 +12,16 @@
             <el-option v-for="tag of work.tags" :key="tag" :label="tag" :value="tag"/>
           </el-select>
         </el-form-item>
+        <el-form-item label="宽">
+          <el-input-number size="mini" v-model="work.viewBox.width" controls-position="right"/>
+        </el-form-item>
+        <el-form-item label="长">
+          <el-input-number size="mini" v-model="work.viewBox.height" controls-position="right"/>
+        </el-form-item>
         <el-form-item align="right" class="actions">
-          <el-checkbox v-model="work.isBlock" true-label="yes" false-label="no">设置为图块</el-checkbox>
           <el-button type="success" @click="commitSaveWork" size="small">保存作品</el-button>
         </el-form-item>
       </el-form>
-      <el-divider content-position="left" >调整长宽</el-divider>
-      <el-form size="mini" :inline="true">
-        <el-form-item label="宽">
-          <el-input-number size="mini" v-model="viewBox.width" controls-position="right"/>
-        </el-form-item>
-        <el-form-item label="长">
-          <el-input-number size="mini" v-model="viewBox.height" controls-position="right"/>
-        </el-form-item>
-        <el-form-item style="float:right">
-          <el-button @click="resizeWorkViewBox">确定</el-button>
-        </el-form-item>
-      </el-form>
-      <div class="share" @click="slidePreview">
-        <div class="icon">
-          <i class="el-icon-full-screen" />
-        </div>
-        <div class="name">新页面预览</div>
-        <div class="extra"></div>
-      </div>
-      <div class="share">
-        <div class="icon"></div>
-        <div class="name">长页面预览</div>
-        <div class="extra"></div>
-      </div>
     </div>
     <el-form size="mini" v-if="showShareScene" label-width="80px">
       <el-form-item label="模板名称">
