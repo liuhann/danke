@@ -1,47 +1,25 @@
 <template>
   <div class="animation-form-list">
-    <div v-for="(animation, index) in element.animation.enter" :key="index" class="animation-form">
-      <div class="title">
-        {{animation.title}}
-        <i>{{index + 1}}</i>
-      </div>
-      <div class="config">
-        <div class="line">
-          <div class="delay">
-            延迟 <el-input-number size="mini" v-model="animation.range[0]" controls-position="right" :step="0.1"/> 秒
-          </div>
-          <div class="duration">
-            持续 <el-input-number size="mini" v-model="animation.range[1]" controls-position="right" :step="0.1"/> 秒
-          </div>
-        </div>
-        <div class="line">
-          <div class="duration">
-            次数 <el-input-number :disabled="animation.infinite" size="mini" v-model="animation.iteration" controls-position="right"/> 次
-          </div>
-          <div class="infinite">
-            循环 <el-checkbox v-model="animation.infinite"></el-checkbox>
-          </div>
-        </div>
-
-      </div>
-      <div class="right">
-        <el-button type="danger" icon="el-icon-delete" circle size="mini" @click="removeAnimation(index)"></el-button>
-      </div>
-    </div>
+    <el-form :title="animation.title" size="mini" v-for="(animation, index) in element.animation.enter" :key="index" class="animation-form" inline>
+      <el-form-item :label="animation.title" />
+      <el-form-item label="延迟"> <el-input-number size="mini" v-model="animation.range[0]" controls-position="right" :step="0.1"/> 秒</el-form-item>
+      <el-form-item label="持续"> <el-input-number size="mini" v-model="animation.range[1]" controls-position="right" :step="0.1"/> 秒</el-form-item>
+      <el-form-item label="循环"> <el-checkbox v-model="animation.infinite" /></el-form-item>
+      <el-form-item label="次数"> <el-input-number :disabled="animation.infinite" size="mini" v-model="animation.iteration" controls-position="right"/> 次</el-form-item>
+      <el-form-item label="过渡曲线"> <el-select v-model="animation.timing">
+          <el-option v-for="(value, key) in cubicBerziers" :key="key" :label="key" :value="value"></el-option>
+      </el-select></el-form-item>
+      <el-form-item >  <el-button type="danger" icon="el-icon-delete" circle size="mini" @click="removeAnimation(index)"></el-button> </el-form-item>
+    </el-form>
   </div>
 </template>
 
 <script>
-import { TabPane, Tabs, Slider, Button, Popover, InputNumber, Select, Option, Checkbox } from 'element-ui'
+import toolbarPopMixin from './toolbarPopMixin'
+import cubicBerziers from '../../frames/model/cubic-beziers.js'
 export default {
   name: 'AnimationForm',
-  components: {
-    [InputNumber.name]: InputNumber,
-    [Button.name]: Button,
-    [Select.name]: Select,
-    [Option.name]: Option,
-    [Checkbox.name]: Checkbox,
-  },
+  mixins: [ toolbarPopMixin ],
   props: {
     element: {
       type: Object
@@ -49,6 +27,11 @@ export default {
     type: {
       type: String,
       default: 'enter'
+    }
+  },
+  data () {
+    return {
+      cubicBerziers
     }
   },
   computed: {
@@ -70,7 +53,6 @@ export default {
   .animation-form {
     padding: 10px 0;
     border-bottom: 1px solid #eee;
-    display: flex;
     .title {
       position: relative;
       font-size: 1.25rem;

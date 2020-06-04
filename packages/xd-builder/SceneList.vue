@@ -20,7 +20,7 @@
             <el-button icon="el-icon-more" style="margin: 0 10px;" slot="reference" type="text" size="mini"/>
             <div class="more-menu">
               <div class="menu-item" style="margin-bottom: 10px;">
-                <el-button size="mini" plain @click="deleteScene(index)">复制</el-button>
+                <el-button size="mini" plain @click="copyScene(index)">复制</el-button>
                 <el-button type="danger" size="mini" plain icon="el-icon-delete-solid" @click="deleteScene(index)">删除</el-button>
               </div>
               <div class="menu-item" style="margin-bottom: 10px;">
@@ -49,6 +49,7 @@
 import { Button, Checkbox, MessageBox, InputNumber, Popover } from 'element-ui'
 import sceneMixins from './mixins/sceneMixins'
 import RenderScene from './render/RenderScene'
+import { shortid } from '../utils/string'
 export default {
   name: 'SceneList',
   mixins: [ sceneMixins ],
@@ -86,6 +87,13 @@ export default {
       }
       this.work.scenes.splice(index, 1)
     },
+
+    copyScene (index) {
+      const cloned = JSON.parse(JSON.stringify(this.work.scenes[index]))
+      cloned.id = shortid()
+      this.work.scenes.push(cloned)
+    },
+
     moveSceneNext (index) {
       const current = this.work.scenes[index]
 
