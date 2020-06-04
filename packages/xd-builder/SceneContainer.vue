@@ -435,7 +435,13 @@ export default {
           width: element.width * this.scale,
           height: element.height * this.scale
         }, 10)) {
-          targetElement = element
+          if (targetElement === null) {
+            targetElement = element
+          } else {
+            if (!targetElement.locked && !element.locked) {
+              targetElement = element
+            }
+          }
         }
       }
       return targetElement
