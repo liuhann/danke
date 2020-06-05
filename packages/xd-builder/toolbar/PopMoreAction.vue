@@ -8,6 +8,9 @@
     <a class="action"><i class="el-icon-warning-outline"/></a>
   </el-tooltip>
   <el-form label-width="60px" size="mini" class="more-action-form">
+    <el-form-item label="名称">
+      <el-input v-model="element.name"/>
+    </el-form-item>
     <el-form-item label="宽高">
       <el-input-number v-model="element.width" :precision="2" controls-position="right" size="mini"/>-<el-input-number v-model="element.height" :precision="2" controls-position="right" size="mini" />
     </el-form-item>
@@ -29,13 +32,11 @@
 <script>
 import toolbarPopMixin from './toolbarPopMixin'
 import interactMixins from '../mixins/interactMixins'
-import IconLayer from './res/size.svg'
 
 export default {
   name: 'PopMoreAction',
   mixins: [ toolbarPopMixin, interactMixins ],
   components: {
-    IconLayer
   },
   data () {
     return {

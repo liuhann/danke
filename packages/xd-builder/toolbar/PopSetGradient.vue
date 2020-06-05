@@ -5,9 +5,10 @@
     }"></i>
   <div class="gradient form">
     <el-radio-group v-model="gradientType" @change="typeChange">
-      <el-radio label="radial-gradient">圆形渐变</el-radio>
-      <el-radio label="linear-gradient">线性渐变</el-radio>
-      <el-radio label="repeating-linear-gradient">线性重复渐变</el-radio>
+      <el-radio label="radial-gradient" >圆形渐变</el-radio>
+
+      <el-radio label="linear-gradient" >线性渐变</el-radio>
+      <el-radio label="repeating-linear-gradient" >线性重复渐变</el-radio>
     </el-radio-group>
 
     <div class="set-deg form-item" v-if="gradients && gradients.colorStopList.length > 1 && gradientType.indexOf('linear-gradient')>-1">

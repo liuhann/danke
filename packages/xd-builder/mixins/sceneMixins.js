@@ -13,6 +13,7 @@ export default {
      */
     addScene () {
       const scene = {
+        name: '场景',
         id: shortid(),
         elements: [],
         animation: {},

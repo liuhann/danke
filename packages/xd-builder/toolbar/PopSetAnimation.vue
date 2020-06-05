@@ -1,44 +1,56 @@
 <template>
-<pop-wrapper :width="400" icon="el-icon-data-line">
-  <div id="animation-config">
-    <div class="element-animation" v-show="!showAnimationChoose">
-      <div class="type-title">
-        <span>进入动画</span>
-        <el-button type="text" size="mini" v-if="enterAnimationPastes" @click="pasteAnimation('enter')" icon="el-icon-document-checked" />
-        <el-button type="text" size="mini" @click="copyAnimation('enter')" icon="el-icon-document-copy" />
-        <el-button type="text" size="mini" @click="openAnimationChoose('enter')" icon="el-icon-plus" />
+  <pop-wrapper :width="400" icon="el-icon-data-line">
+    <div id="animation-config">
+      <div v-show="!showAnimationChoose" class="element-animation">
+        <div class="type-title">
+          <span>进入动画</span>
+          <el-button v-if="enterAnimationPastes" type="text" size="mini" icon="el-icon-document-checked" @click="pasteAnimation('enter')" />
+          <el-button type="text" size="mini" icon="el-icon-document-copy" @click="copyAnimation('enter')" />
+          <el-button type="text" size="mini" icon="el-icon-plus" @click="openAnimationChoose('enter')" />
+        </div>
+        <div v-if="!element.animation.enter || element.animation.enter.length === 0" class="empty">
+          未设置动态效果
+        </div>
+        <animation-form v-if="element.animation.enter && element.animation.enter.length" :element="element" type="enter" />
+        <div class="type-title">
+          <span>离开动画</span>
+          <el-button size="mini" type="text" icon="el-icon-plus" @click="openAnimationChoose('exist')" />
+        </div>
+        <div v-if="!element.animation.exist || element.animation.exist.length === 0" class="empty">
+          未设置动态效果
+        </div>
+        <animation-form v-if="element.animation.exist && element.animation.exist.length" :element="element" type="exist" />
       </div>
-      <div class="empty" v-if="!element.animation.enter || element.animation.enter.length === 0">未设置动态效果</div>
-      <animation-form v-if="element.animation.enter && element.animation.enter.length" :element="element" type="enter"></animation-form>
-      <div class="type-title">
-        <span>离开动画</span>
-        <el-button size="mini" type="text" @click="openAnimationChoose('exist')" icon="el-icon-plus" />
+      <div v-show="showAnimationChoose" class="animations-choose">
+        <div class="animation-category">
+          <el-select v-model="type" size="mini" @change="typeChange">
+            <el-option v-for="type in types" :key="type.value" :label="type.label" :value="type.value" />
+          </el-select>
+          <el-select v-model="group" size="mini" @change="groupChange">
+            <el-option v-for="g in groups" :key="g" :label="g" :value="g" />
+          </el-select>
+        </div>
+        <div class="animations">
+          <div v-for="a in animations" :key="a.name" class="animation" :class="a.name === animation.name? 'current': ''" @click="animationChange(a)">
+            {{ a.direction }}
+          </div>
+        </div>
+        <div class="animation-box">
+          <img :src="CLOUD_HILL" :class="animation && animation.name">
+          <div class="refresh">
+            <i class="el-icon-refresh-right" @click="refreshCurrent" />
+          </div>
+        </div>
+        <div>
+          <el-button size="small" @click="showAnimationChoose = false">
+            取消
+          </el-button> <el-button type="primary" size="small" @click="addAnimation">
+            选择
+          </el-button>
+        </div>
       </div>
-      <div class="empty" v-if="!element.animation.exist || element.animation.exist.length === 0">未设置动态效果</div>
-      <animation-form v-if="element.animation.exist && element.animation.exist.length" :element="element" type="exist"></animation-form>
     </div>
-    <div class="animations-choose" v-show="showAnimationChoose">
-      <div class="animation-category">
-        <el-select size="mini" v-model="type" @change="typeChange">
-          <el-option v-for="type in types" :key="type.value" :label="type.label" :value="type.value"></el-option>
-        </el-select>
-        <el-select size="mini" v-model="group" @change="groupChange">
-          <el-option v-for="g in groups" :key="g" :label="g" :value="g"></el-option>
-        </el-select>
-      </div>
-      <div class="animations">
-        <div v-for="a in animations" :key="a.name" class="animation" :class="a.name === animation.name? 'current': ''" @click="animationChange(a)">{{a.direction}}</div>
-      </div>
-      <div class="animation-box">
-        <img :src="CLOUD_HILL" :class="animation && animation.name"/>
-        <div class="refresh"><i @click="refreshCurrent" class="el-icon-refresh-right" /></div>
-      </div>
-      <div>
-        <el-button size="small" @click="showAnimationChoose = false">取消</el-button> <el-button type="primary" size="small" @click="addAnimation">选择</el-button>
-      </div>
-    </div>
-  </div>
-</pop-wrapper>
+  </pop-wrapper>
 </template>
 
 <script>
@@ -50,10 +62,10 @@ import CLOUD_HILL from '../../vectors/cloud-hill.webp'
 import AnimationForm from './AnimationForm'
 export default {
   name: 'PopSetAnimation',
-  mixins: [ toolbarPopMixin ],
   components: {
     AnimationForm
   },
+  mixins: [ toolbarPopMixin ],
   data () {
     return {
       CLOUD_HILL,
@@ -168,7 +180,7 @@ export default {
       if (!this.element.animation[this.stage]) {
         this.$set(this.element.animation, this.stage, [])
       }
-      this.element.animation[this.stage].push(info)
+      this.element.animation[this.stage].push(JSON.parse(JSON.stringify(info)))
       this.showAnimationChoose = false
     }
   }

@@ -270,6 +270,7 @@ export default {
         }
       } else {
         let result = await this.imagedao.uploadBlob(file.raw, `images`)
+        imageObject.url = result.name
         try {
           const imageInfo = await ky.get(this.IMG_SERVER + '/' + result.name + '?x-oss-process=image/info').json()
           Object.assign(imageObject, {

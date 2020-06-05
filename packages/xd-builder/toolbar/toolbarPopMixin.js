@@ -1,4 +1,4 @@
-import { Popover, Tooltip, Switch, Form, FormItem, InputNumber, Checkbox, Slider, Button, ButtonGroup, Select, Option, RadioGroup, Radio, ColorPicker, Tabs, TabPane } from 'element-ui'
+import { Input, Popover, Tooltip, Switch, Form, FormItem, InputNumber, Checkbox, Slider, Button, ButtonGroup, Select, Option, RadioGroup, Radio, ColorPicker, Tabs, TabPane } from 'element-ui'
 import PopWrapper from './PopWrapper'
 export default {
   components: {
@@ -19,6 +19,7 @@ export default {
     [ColorPicker.name]: ColorPicker,
     [Tabs.name]: Tabs,
     [TabPane.name]: TabPane,
+    [Input.name]: Input,
     PopWrapper
   },
   props: {

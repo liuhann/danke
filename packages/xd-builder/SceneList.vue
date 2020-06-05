@@ -1,52 +1,65 @@
 <template>
-<div id="scene-list">
-  <div class="actions">
-    <el-button type="primary" size="mini" @click="addScene">新增场景</el-button>
-    <el-button type="primary" size="mini" v-if="checkedScenes.length">复制</el-button>
-    <el-button type="danger" size="mini" @click="deleteScene" v-if="checkedScenes.length">删除</el-button>
-    <el-button size="mini" @click="close">关闭</el-button>
-  </div>
-  <draggable v-model="work.scenes" class="list-wrapper">
-    <div v-for="(scene, index) in work.scenes" :key="scene._id" class="scene-wrapper" :class="(scene === current || scene.checked)? 'current': ''" :style="{
-      width: viewPort.width + 'px',
-      height: (viewPort.height + 40) + 'px'
-    }" >
-      <render-scene :scene="scene" :view-box="work.viewBox" :view-port="viewPort"/>
-      <div class="config">
-        <div class="more" style="padding: 0 5px">
-          <el-button type="text" @click="moveScenePrev(index)" icon="el-icon-back" v-if="index > 0"></el-button>
-          <el-button type="text" @click="moveSceneNext(index)" icon="el-icon-right" v-if="index < work.scenes.length - 1"></el-button>
+  <div id="scene-list">
+    <div class="actions">
+      <el-button type="primary" size="mini" @click="addScene">
+        新增场景
+      </el-button>
+      <el-button v-if="checkedScenes.length" type="primary" size="mini">
+        复制
+      </el-button>
+      <el-button v-if="checkedScenes.length" type="danger" size="mini" @click="deleteScene">
+        删除
+      </el-button>
+      <el-button size="mini" @click="close">
+        关闭
+      </el-button>
+    </div>
+    <draggable v-model="work.scenes" class="list-wrapper">
+      <div v-for="(scene, index) in work.scenes" :key="scene._id" class="scene-wrapper" :class="(scene === current || scene.checked)? 'current': ''" :style="{
+        width: viewPort.width + 'px',
+        height: (viewPort.height + 40) + 'px'
+      }"
+      >
+        <render-scene :scene="scene" :view-box="work.viewBox" :view-port="viewPort" />
+        <div class="config">
+          <span class="scene-name">{{ scene.name }}</span>
           <el-popover placement="top" title="场景">
-            <el-button icon="el-icon-more" style="margin: 0 10px;" slot="reference" type="text" size="mini"/>
+            <el-button slot="reference" icon="el-icon-more" style="margin: 0 10px;" type="text" size="mini" />
             <div class="more-menu">
               <div class="menu-item" style="margin-bottom: 10px;">
-                <el-button size="mini" plain @click="copyScene(index)">复制</el-button>
-                <el-button type="danger" size="mini" plain icon="el-icon-delete-solid" @click="deleteScene(index)">删除</el-button>
+                <el-input v-model="scene.name" style="width: 120px;" width="120" size="mini" />
+                <el-button size="mini" plain @click="copyScene(index)">
+                  复制
+                </el-button>
+                <el-button type="danger" size="mini" plain icon="el-icon-delete-solid" @click="deleteScene(index)">
+                  删除
+                </el-button>
               </div>
               <div class="menu-item" style="margin-bottom: 10px;">
                 <label style="margin-right: 10px;">持续时间</label>
-                <el-input-number v-model="scene.duration" controls-position="right" size="mini"/>  秒
+                <el-input-number v-model="scene.duration" controls-position="right" size="mini" />  秒
               </div>
               <div class="menu-item" style="margin-bottom: 10px;">
                 <label style="margin-right: 10px;">离开时间</label>
-                <el-input-number v-model="scene.exit" controls-position="right" size="mini"/>  秒
+                <el-input-number v-model="scene.exit" controls-position="right" size="mini" />  秒
               </div>
               <div class="menu-item" style="margin-bottom: 10px;">
                 <label style="margin-right: 10px;">离开动画</label>
-                <el-checkbox v-model="scene.renderExit"/>
+                <el-checkbox v-model="scene.renderExit" />
               </div>
               <div class="menu-item" style="margin-bottom: 10px;">
                 <label style="margin-right: 10px;">视角层次</label>
-                <el-input-number v-model="scene.z" controls-position="right" size="mini"/>
+                <el-input-number v-model="scene.z" controls-position="right" size="mini" />
               </div>
             </div>
           </el-popover>
-          <el-button type="text" style="float: right" @click="chooseScene(scene)">选择</el-button>
+          <el-button type="text" @click="chooseScene(scene)">
+            选择
+          </el-button>
         </div>
       </div>
-    </div>
-  </draggable>
-</div>
+    </draggable>
+  </div>
 </template>
 
 <script>
@@ -57,11 +70,11 @@ import RenderScene from './render/RenderScene'
 import { shortid } from '../utils/string'
 export default {
   name: 'SceneList',
-  mixins: [ sceneMixins, toolbarPopMixin ],
   components: {
     RenderScene,
     draggable
   },
+  mixins: [ sceneMixins, toolbarPopMixin ],
   props: {
     work: {
       type: Object
@@ -138,26 +151,34 @@ export default {
     background: #fff;
     box-shadow: rgba(0, 0, 0, 0.2) 0px 0 2px;
   }
-
   .list-wrapper {
     padding: 10px;
     height: calc(100% - 40px);
     box-sizing: border-box;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     overflow: auto;
   }
 
-
-
   .scene-wrapper {
-    display: inline-block;
     margin: 5px;
-    position: relative;
     input[type="number"] {
       margin: 0 5px;
       border: 1px solid #eee;
       padding: 4px;
       width: 36px;
     }
+    .config {
+      height: 40px;
+      line-height: 40px;
+      display: flex;
+      padding: 0 5px;
+      .scene-name {
+        flex: 1;
+      }
+    }
+
     .scene {
       position: relative;
       overflow: hidden;

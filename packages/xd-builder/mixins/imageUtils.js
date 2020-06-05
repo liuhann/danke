@@ -1,4 +1,7 @@
 export function getImageUrl (url, w, h) {
+  if (!url) {
+    return null
+  }
   if (url.endsWith('.svg')) {
     return this.ctx.IMG_SERVER + '/' + url
   } else {

@@ -12,15 +12,15 @@ import IconTextRight from './res/text-align-right.svg'
 import IconTextCenter from './res/text-align-center.svg'
 export default {
   name: 'FontAlign',
-  props: {
-    value: {
-      type: String
-    }
-  },
   components: {
     IconTextLeft,
     IconTextRight,
     IconTextCenter
+  },
+  props: {
+    value: {
+      type: String
+    }
   },
   data () {
     return {

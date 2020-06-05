@@ -1,81 +1,80 @@
 <template>
-<div id="tool-bar">
-  <pop-new-element v-if="noFocusedElement" @draw="emitDraw"/>
-  <pop-element-list v-if="noFocusedElement" :scene="scene" :checked-elements="checkedElements"/>
-  <a class="action" v-if="noFocusedElement" @click="previousScene"><i class="el-icon-arrow-up" /></a>
-  <a class="action" v-if="noFocusedElement" @click="nextScene"><i class="el-icon-arrow-down" /></a>
-  <a class="action" v-if="noFocusedElement" @click="openPen('vector')"><icon-pen /></a>
-  <a class="action" v-if="focusedElement && focusedElement.path" @click="openPen(focusedElement)"><icon-pen /></a>
-  <!--  样式变量的修改-->
-  <template v-for="(variable, index) in elementStyleVariables">
-    <!-- 颜色-->
-    <el-color-picker :key="index" v-if="variable.type==='color'" v-model="variable.value" show-alpha :predefine="workColors"/>
-    <!-- 渐变颜色的处理-->
-    <pop-set-gradient :key="index" v-if="variable.type==='gradient'" :variable="variable">
-    </pop-set-gradient>
-    <!-- 数字-->
-    <el-tooltip content="数值" :key="index" v-if="variable.type==='px' || variable.type==='number' || variable.type==='percent'">
-      <el-input-number v-model="variable.value" controls-position="right" size="mini"/>
-    </el-tooltip>
-    <!--边框样式-->
-    <border-style :key="index" v-if="variable.type==='border'" :variable="variable" />
-    <!--字体大小-->
-    <font-size :key="index" v-if="variable.type==='fontSize'" :variable="variable" />
+  <div id="tool-bar">
+    <pop-new-element v-if="noFocusedElement" @draw="emitDraw" />
+    <pop-element-list v-if="noFocusedElement" :scene="scene" :checked-elements="checkedElements" />
+    <a v-if="noFocusedElement" class="action" @click="previousScene"><i class="el-icon-arrow-up" /></a>
+    <a v-if="noFocusedElement" class="action" @click="nextScene"><i class="el-icon-arrow-down" /></a>
+    <a v-if="noFocusedElement" class="action" @click="openPen('vector')"><icon-pen /></a>
+    <a v-if="focusedElement && focusedElement.path" class="action" @click="openPen(focusedElement)"><icon-pen /></a>
+    <!--  样式变量的修改-->
+    <template v-for="(variable, index) in elementStyleVariables">
+      <!-- 颜色-->
+      <el-color-picker v-if="variable.type==='color'" :key="index" v-model="variable.value" show-alpha :predefine="workColors" />
+      <!-- 渐变颜色的处理-->
+      <pop-set-gradient v-if="variable.type==='gradient'" :key="index" :variable="variable" />
+      <!-- 数字-->
+      <el-tooltip v-if="variable.type==='px' || variable.type==='number' || variable.type==='percent'" :key="index" content="数值">
+        <el-input-number v-model="variable.value" controls-position="right" size="mini" />
+      </el-tooltip>
+      <!--边框样式-->
+      <border-style v-if="variable.type==='border'" :key="index" :variable="variable" />
+      <!--字体大小-->
+      <font-size v-if="variable.type==='fontSize'" :key="index" :variable="variable" />
 
-    <font-family :key="index" v-if="variable.type === 'fontFamily'" :variable="variable"></font-family>
-    <!-- 字体对齐-->
-    <text-align :key="index" v-if="variable.type==='textAlign'" v-model="variable.value"/>
-    <!-- 字体粗细-->
-    <font-weight :key="index" v-if="variable.type==='fontWeight'" v-model="variable.value"/>
-  </template>
+      <font-family v-if="variable.type === 'fontFamily'" :key="index" :variable="variable" />
+      <!-- 字体对齐-->
+      <text-align v-if="variable.type==='textAlign'" :key="index" v-model="variable.value" />
+      <!-- 字体粗细-->
+      <font-weight v-if="variable.type==='fontWeight'" :key="index" v-model="variable.value" />
+    </template>
 
-  <pop-image-mask v-show="focusedElement" :element="focusedElement"/>
-  <pop-set-filter v-show="focusedElement" :element="focusedElement"/>
-  <!--元素变换、旋转、拉伸等-->
-  <pop-transform v-if="focusedElement" :element="focusedElement"/>
-  <pop-set-animation v-if="focusedElement" :element="focusedElement"/>
-  <align-element v-if="selectedElements.length > 1" :elements="selectedElements"/>
-  <pop-more-action :element="focusedElement" :scene="scene" v-if="focusedElement" @reset="setElementLocked"/>
+    <pop-image-mask v-show="focusedElement" :element="focusedElement" />
+    <pop-set-filter v-show="focusedElement" :element="focusedElement" />
+    <!--元素变换、旋转、拉伸等-->
+    <pop-transform v-if="focusedElement" :element="focusedElement" />
+    <pop-set-animation v-if="focusedElement" :element="focusedElement" />
+    <align-element v-if="selectedElements.length > 1" :elements="selectedElements" />
+    <pop-more-action v-if="focusedElement" :element="focusedElement" :scene="scene" @reset="setElementLocked" />
 
-  <!-- 右侧操作功能按钮-->
-  <div class="pull-right">
-    <el-color-picker v-model="work.color" show-alpha v-if="noFocusedElement"/>
-    <el-tooltip content="撤销" v-if="!elementSelected && undoable" >
-      <a class="action" @click="$emit('undo')"><icon-undo /></a>
-    </el-tooltip>
-    <el-tooltip content="重做" v-if="!elementSelected && redoable" >
-      <a class="action" @click="$emit('redo')"><icon-redo /></a>
-    </el-tooltip>
-    <el-tooltip class="item" effect="dark" content="格式刷" placement="bottom" v-if="focusedElement" >
-      <a class="action" :class="paste? 'on': ''" @click="togglePaste"><icon-brush /></a>
-    </el-tooltip>
-    <el-tooltip class="item" effect="dark" content="复制元素" placement="bottom" v-if="selectedElements.length > 0" >
-      <a class="action" @click="copySelectedElement"><i class="el-icon-document-copy"/></a>
-    </el-tooltip>
-    <el-tooltip class="item" effect="dark" content="建组" placement="bottom" v-if="selectedElements.length > 1" >
-      <a class="action" @click="groupSelectedElement"><icon-group /></a>
-    </el-tooltip>
-    <el-tooltip class="item" effect="dark" content="取消建组" placement="bottom" v-if="focusedElement && focusedElement.elements && focusedElement.elements.length" >
-      <a class="action on"  @click="unGroupBlock"><icon-group /></a>
-    </el-tooltip>
-    <el-tooltip class="item" effect="dark" content="删除" placement="bottom" v-if="selectedElements.length" >
-      <a class="action" @click="removeSelectedElement"><icon-trash /></a>
-    </el-tooltip>
-    <el-tooltip class="item" effect="dark" content="锁定" placement="bottom" v-if="selectedElements.length" >
-      <a class="action" @click="lockSelectedElement"><i class="el-icon-lock"/></a>
-    </el-tooltip>
-    <el-tooltip class="item" effect="dark" content="解锁" placement="bottom" v-if="selectedLockedElements.length" >
-      <a class="action" @click="unLockSelectedElement"><i class="el-icon-unlock"/></a>
-    </el-tooltip>
-    <el-tooltip class="item" effect="dark" content="播放" placement="bottom" v-if="noFocusedElement" >
-      <a class="action" @click="playScene"><i class="el-icon-refresh"/></a>
-    </el-tooltip>
-    <el-tooltip class="item" effect="dark" content="预览" placement="bottom" v-if="noFocusedElement" >
-      <a class="action" @click="slidePreview"><i class="el-icon-video-play"/></a>
-    </el-tooltip>
-    <setting-panel v-if="noFocusedElement" :work="work" :scene="scene"/>
+    <!-- 右侧操作功能按钮-->
+    <div class="pull-right">
+      <el-color-picker v-if="noFocusedElement" v-model="work.color" show-alpha />
+      <el-tooltip v-if="!elementSelected && undoable" content="撤销">
+        <a class="action" @click="$emit('undo')"><icon-undo /></a>
+      </el-tooltip>
+      <el-tooltip v-if="!elementSelected && redoable" content="重做">
+        <a class="action" @click="$emit('redo')"><icon-redo /></a>
+      </el-tooltip>
+      <el-tooltip v-if="focusedElement" class="item" effect="dark" content="格式刷" placement="bottom">
+        <a class="action" :class="paste? 'on': ''" @click="togglePaste"><icon-brush /></a>
+      </el-tooltip>
+      <el-tooltip v-if="selectedElements.length > 0" class="item" effect="dark" content="复制元素" placement="bottom">
+        <a class="action" @click="copySelectedElement"><i class="el-icon-document-copy" /></a>
+      </el-tooltip>
+      <el-tooltip v-if="selectedElements.length > 1" class="item" effect="dark" content="建组" placement="bottom">
+        <a class="action" @click="groupSelectedElement"><icon-group /></a>
+      </el-tooltip>
+      <el-tooltip v-if="focusedElement && focusedElement.elements && focusedElement.elements.length" class="item" effect="dark" content="取消建组" placement="bottom">
+        <a class="action on" @click="unGroupBlock"><icon-group /></a>
+      </el-tooltip>
+      <el-tooltip v-if="selectedElements.length" class="item" effect="dark" content="删除" placement="bottom">
+        <a class="action" @click="removeSelectedElement"><icon-trash /></a>
+      </el-tooltip>
+      <el-tooltip v-if="selectedElements.length" class="item" effect="dark" content="锁定" placement="bottom">
+        <a class="action" @click="lockSelectedElement"><i class="el-icon-lock" /></a>
+      </el-tooltip>
+      <el-tooltip v-if="selectedLockedElements.length" class="item" effect="dark" content="解锁" placement="bottom">
+        <a class="action" @click="unLockSelectedElement"><i class="el-icon-unlock" /></a>
+      </el-tooltip>
+      <el-tooltip v-if="noFocusedElement" class="item" effect="dark" content="播放" placement="bottom">
+        <a class="action" @click="playScene"><i class="el-icon-refresh" /></a>
+      </el-tooltip>
+      <el-tooltip v-if="noFocusedElement" class="item" effect="dark" content="预览" placement="bottom">
+        <a class="action" @click="slidePreview"><i class="el-icon-video-play" /></a>
+      </el-tooltip>
+      <setting-panel v-if="noFocusedElement" :work="work" :scene="scene" />
+    </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -106,7 +105,6 @@ import PopNewElement from './PopNewElement'
 import PopSetFilter from './PopSetFilter'
 export default {
   name: 'Toolbar',
-  mixins: [ interactMixins, workMixin, toolbarPopMixin ],
   components: {
     PopSetFilter,
     PopNewElement,
@@ -130,6 +128,7 @@ export default {
     IconRedo,
     IconPen
   },
+  mixins: [ interactMixins, workMixin, toolbarPopMixin ],
   props: {
     scene: {
       type: Object
