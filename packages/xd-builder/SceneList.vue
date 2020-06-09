@@ -157,7 +157,6 @@ export default {
     box-sizing: border-box;
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
     overflow: auto;
   }
 

@@ -1,10 +1,90 @@
 <template>
-<div id="my-uploaded-images">
-  <div class="album-list" v-if="!currentAlbum">
-    <div class="album" v-for="album in albums" :key="album._id">
-      <div class="album-title">
-        <div class="text">{{album.name}}</div>
-        <div class="more" @click="openAlbum(album)">打开</div>
+  <div id="my-uploaded-images">
+    <div v-if="!currentAlbum" class="album-list">
+      <div v-for="album in albums" :key="album._id" class="album">
+        <div class="album-title">
+          <div class="text">
+            {{ album.name }}
+          </div>
+          <div class="more" @click="openAlbum(album)">
+            打开
+          </div>
+        </div>
+        <div class="album-images">
+          <div class="item add">
+            <el-upload
+              :auto-upload="false"
+              action="none"
+              accept="image/*"
+              :show-file-list="false"
+              multiple
+              class="upload-container"
+              :on-change="(file, uploadFiles) => fileChoosed(file, uploadFiles, album)"
+            >
+              <i class="el-icon-plus" />
+            </el-upload>
+          </div>
+          <div
+            v-for="(image, index) in album.covers" :key="index"
+            class="item image" draggable @dragstart="dragStart(image, $event)"
+          >
+            <img :src="getImageUrl(image.url)">
+          </div>
+        </div>
+      </div>
+      <div class="album">
+        <div class="album-title">
+          <div v-show="!showNewAlbumName" class="more" @click="showNewAlbumName = true">
+            +新增图库
+          </div>
+          <div v-show="showNewAlbumName" class="input">
+            <el-input v-model="newAlbumName" size="mini" />
+          </div>
+          <div v-show="showNewAlbumName" class="confirm" @click="confirmAddNewAlbum">
+            <i class="el-icon-check" />
+          </div>
+          <div v-show="showNewAlbumName" class="confirm" @click="showNewAlbumName = false">
+            <i class="el-icon-close" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="currentAlbum" class="album-opened album">
+      <div v-if="!albumEditing" class="album-title">
+        <div class="more" @click="closeAlbum">
+          <i class="el-icon-arrow-left" />
+        </div>
+        <div class="text">
+          {{ currentAlbum.name }} <span v-if="currentAlbum.mask" class="tag">mask</span> <span v-if="currentAlbum.shared" class="tag">shared</span>
+        </div>
+        <div class="edit" @click="editAlbum">
+          <i class="el-icon-edit" />
+        </div>
+        <div class="trash" @click="removeAlbum">
+          <i class="el-icon-delete" />
+        </div>
+      </div>
+      <div v-if="albumEditing" class="album-editing">
+        <div class="input">
+          <el-input v-model="currentAlbum.name" size="mini" />
+        </div>
+        <div class="field">
+          <el-checkbox v-model="currentAlbum.mask">
+            遮罩
+          </el-checkbox>
+          <el-checkbox v-model="currentAlbum.shared">
+            分享
+          </el-checkbox>
+          <div class="confirm">
+            <div class="icon-btn" @click="confirmAlbumEditing">
+              <i class="el-icon-check" />
+            </div>
+            <div class="icon-btn" @click="albumEditing = false">
+              <i class="el-icon-close" />
+            </div>
+          </div>
+        </div>
       </div>
       <div class="album-images">
         <div class="item add">
@@ -15,80 +95,22 @@
             :show-file-list="false"
             multiple
             class="upload-container"
-            :on-change="(file, uploadFiles) => fileChoosed(file, uploadFiles, album)">
-            <i class="el-icon-plus"></i>
+            :on-change="(file, uploadFiles) => fileChoosed(file, uploadFiles, currentAlbum)"
+          >
+            <i class="el-icon-plus" />
           </el-upload>
         </div>
         <div
-          v-for="(image, index) in album.covers" :key="index"
-          class="item image" draggable @dragstart="dragStart(image, $event)">
-          <img :src="getImageUrl(image.url)" />
+          v-for="(image, index) in albumImages" :key="index"
+          class="item image" draggable @dragstart="dragStart(image, $event)"
+        >
+          <img :src="getImageUrl(image.url)">
+          <i class="el-icon-delete" @click="removeImage(image)" />
         </div>
       </div>
-    </div>
-    <div class="album">
-      <div class="album-title">
-        <div class="more" v-show="!showNewAlbumName" @click="showNewAlbumName = true">+新增图库</div>
-        <div class="input" v-show="showNewAlbumName">
-          <el-input size="mini" v-model="newAlbumName"/>
-        </div>
-        <div class="confirm" v-show="showNewAlbumName" @click="confirmAddNewAlbum"><i class="el-icon-check"/></div>
-        <div class="confirm" v-show="showNewAlbumName" @click="showNewAlbumName = false"><i class="el-icon-close"/></div>
-      </div>
+      <el-pagination background :total="total" :page-size="pageSize" :current-page.sync="page" layout="prev, pager, next" @current-change="loadAlbumImages" />
     </div>
   </div>
-
-  <div class="album-opened album" v-if="currentAlbum">
-    <div class="album-title" v-if="!albumEditing">
-      <div class="more" @click="closeAlbum"><i class="el-icon-arrow-left"/></div>
-      <div class="text">{{currentAlbum.name}} <span class="tag" v-if="currentAlbum.mask">mask</span> <span class="tag" v-if="currentAlbum.shared">shared</span></div>
-      <div class="edit" @click="editAlbum">
-        <i class="el-icon-edit"/>
-      </div>
-      <div class="trash" @click="removeAlbum">
-        <i class="el-icon-delete"/>
-      </div>
-    </div>
-    <div class="album-editing" v-if="albumEditing">
-      <div class="input">
-        <el-input size="mini" v-model="currentAlbum.name"/>
-      </div>
-      <div class="field">
-        <el-checkbox v-model="currentAlbum.mask">遮罩</el-checkbox>
-        <el-checkbox v-model="currentAlbum.shared">分享</el-checkbox>
-        <div class="confirm">
-          <div class="icon-btn" @click="confirmAlbumEditing">
-            <i class="el-icon-check"/>
-          </div>
-          <div class="icon-btn" @click="albumEditing = false">
-            <i class="el-icon-close"/>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="album-images">
-      <div class="item add">
-        <el-upload
-          :auto-upload="false"
-          action="none"
-          accept="image/*"
-          :show-file-list="false"
-          multiple
-          class="upload-container"
-          :on-change="(file, uploadFiles) => fileChoosed(file, uploadFiles, currentAlbum)">
-          <i class="el-icon-plus"></i>
-        </el-upload>
-      </div>
-      <div
-        v-for="(image, index) in albumImages" :key="index"
-        class="item image" draggable @dragstart="dragStart(image, $event)">
-        <img :src="getImageUrl(image.url)" />
-        <i class="el-icon-delete" @click="removeImage(image)"></i>
-      </div>
-    </div>
-    <el-pagination background :total="total" :page-size="pageSize" @current-change="loadAlbumImages" :current-page.sync="page" layout="prev, pager, next" />
-  </div>
-</div>
 </template>
 
 <script>
@@ -169,7 +191,6 @@ export default {
       this.loadAlbumImages()
     },
 
-
     editAlbum () {
       this.albumEditing = true
     },
@@ -214,6 +235,7 @@ export default {
     },
 
     async loadAlbumImages () {
+      this.albumImages = []
       if (this.currentAlbum) {
         const result = await this.restdao.list({
           album: this.currentAlbum._id,
@@ -256,7 +278,8 @@ export default {
       }
 
       // 尝试对于颜色<=2的图片进行转换
-      if (file.name.endsWith('.svg')) {
+      // 暂时去掉inline-SVG的支持
+      if (false && file.name.endsWith('.svg')) {
         const fileContent = await this.readFileAsync(file.raw)
         const replaced = this.replaceFillColorWithVariables(fileContent)
         if (replaced.variables.length === 1) {

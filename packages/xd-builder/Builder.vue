@@ -1,47 +1,48 @@
 <template>
-<div id="xd">
-  <left-aside @insert="insert"/>
-  <section class="right-section" v-if="work">
-    <toolbar
-      v-if="currentScene"
-      :scenes="work.scenes"
-      :work="work"
-      :scene="currentScene"
-      :paste="paste"
-      :scale="scale"
-      :undoable="undoable"
-      :redoable="redoable"
-      @draw="drawElement"
-      @open-pen="openPen"
-      @change="workChange"
-      @undo="undo"
-      @redo="redo"
-      @refresh="refreshScene"
-      @scale-change="scaleChange"
-      @prev-scene="previousScene"
-      @next-scene="nextScene"
-      @toggle-paste="togglePaste"/>
-    <scene-container
-      ref="sceneContainer"
-      v-if="currentScene"
-      :animation="currentAnimation"
-      :view-box="work.viewBox"
-      :scenes="work.scenes"
-      :scene="currentScene"
-      :exist-scene="lastScene"
-      :work="work"
-      :paste="paste"
-      @undo="undo"
-      @toggle-scenes="showSceneList = true"
-      @save-work="saveWork"
-      @change="workChange"
-      @scale-fit="scaleChange"
-      @clean-paste="cleanPaste"/>
-    <clippath-editor @close="pen = ''" @input="pathConfirmed" :view-port-rect="viewPortRect" :scene="currentScene" :view-box="work.viewBox" :work="work" v-if="pen"/>
-    <scene-list :work="work" v-if="showSceneList" @close="showSceneList = false" :current="currentScene" @choose-scene="chooseScene"/>
-  </section>
-  <div id="textMesure"></div>
-</div>
+  <div id="xd">
+    <left-aside @insert="insert" />
+    <section v-if="work" class="right-section">
+      <toolbar
+        v-if="currentScene"
+        :scenes="work.scenes"
+        :work="work"
+        :scene="currentScene"
+        :paste="paste"
+        :scale="scale"
+        :undoable="undoable"
+        :redoable="redoable"
+        @draw="drawElement"
+        @open-pen="openPen"
+        @change="workChange"
+        @undo="undo"
+        @redo="redo"
+        @scale-change="scaleChange"
+        @prev-scene="previousScene"
+        @next-scene="nextScene"
+        @toggle-paste="togglePaste"
+      />
+      <scene-container
+        v-if="currentScene"
+        ref="sceneContainer"
+        :animation="currentAnimation"
+        :view-box="work.viewBox"
+        :scenes="work.scenes"
+        :scene="currentScene"
+        :exist-scene="lastScene"
+        :work="work"
+        :paste="paste"
+        @undo="undo"
+        @toggle-scenes="showSceneList = true"
+        @save-work="saveWork"
+        @change="workChange"
+        @scale-fit="scaleChange"
+        @clean-paste="cleanPaste"
+      />
+      <clippath-editor v-if="pen" :view-port-rect="viewPortRect" :scene="currentScene" :view-box="work.viewBox" :work="work" @close="pen = ''" @input="pathConfirmed" />
+      <scene-list v-if="showSceneList" :work="work" :current="currentScene" @close="showSceneList = false" @choose-scene="chooseScene" />
+    </section>
+    <div id="textMesure" />
+  </div>
 </template>
 
 <script>
@@ -154,19 +155,6 @@ export default {
         height: object.h / this.scale
       })
       this.pen = ''
-    },
-
-    refreshScene () {
-      let current = this.currentScene
-      this.currentScene = {
-        id: shortid(),
-        elements: [],
-        animation: {},
-        z: 100
-      }
-      this.$nextTick(() => {
-        this.currentScene = current
-      })
     },
 
     resizeWorkViewBox () {

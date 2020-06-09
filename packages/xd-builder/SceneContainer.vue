@@ -1,60 +1,61 @@
 <template>
-<div id="scene-container">
-  <div id="workspace" @mousedown="sceneMouseDown" @wheel.prevent="sceneMouseWheel" ref="sceneContainer" :style="styleWorkSpace">
-    <!-- 当前屏幕内容 -->
-    <div class="screen" :style="styleScreen">
-      <div class="screen-title">
-      </div>
-      <div class="scene" v-if="scene" :style="sceneStyle">
-         <render-element
+  <div id="scene-container">
+    <div id="workspace" ref="sceneContainer" :style="styleWorkSpace" @mousedown="sceneMouseDown" @wheel.prevent="sceneMouseWheel">
+      <!-- 当前屏幕内容 -->
+      <div class="screen" :style="styleScreen">
+        <div class="screen-title" />
+        <div v-if="scene" class="scene" :style="sceneStyle">
+          <render-element
             v-for="(element, index) of scene.elements"
-            stage="enter"
+            :key="element.id"
+            :ref="element.id"
+            :stage="element.stage"
             :element="element"
             :view-box="viewBox"
             :view-port="viewPort"
-            :key="element.id"
             :index="index"
-            :ref="element.id"/>
+          />
+        </div>
       </div>
-    </div>
-    <!-- 元素被选中、移动、调整大小时的选中层 -->
-    <div class="mask" :style="styleMask" @drop="elementDropped" @dragover="sceneDragOver" v-if="scene">
-      <div
-        v-for="selectee in scene.elements"
-        :key="selectee.id"
-        :id="'mask-' + selectee.id"
-        class="node-mask"
-        @dblclick="maskDblClick(selectee)"
-        :class="getMaskClass(selectee)"
-        :style="getMaskStyle(selectee)">
-        <template v-if="!selectee.locked">
-          <div class="lt resize-l resize-t"/><div class="rt resize-r resize-t"/><div class="t resize-t"/><div class="l resize-l"/><div class="lb resize-l resize-b"/><div class="rb resize-b resize-r"/><div class="r resize-r"/><div class="b resize-b"/>
-        </template>
+      <!-- 元素被选中、移动、调整大小时的选中层 -->
+      <div v-if="scene" class="mask" :style="styleMask" @drop="elementDropped" @dragover="sceneDragOver">
+        <div
+          v-for="selectee in scene.elements"
+          :id="'mask-' + selectee.id"
+          :key="selectee.id"
+          class="node-mask"
+          :class="getMaskClass(selectee)"
+          :style="getMaskStyle(selectee)"
+          @dblclick="maskDblClick(selectee)"
+        >
+          <template v-if="!selectee.locked">
+            <div class="lt resize-l resize-t" /><div class="rt resize-r resize-t" /><div class="t resize-t" /><div class="l resize-l" /><div class="lb resize-l resize-b" /><div class="rb resize-b resize-r" /><div class="r resize-r" /><div class="b resize-b" />
+          </template>
+        </div>
       </div>
-    </div>
-    <!-- 拖拽选择层 -->
-    <div class="dragging-rect" :style="styleDragingRect"></div>
-    <!--缩放、平移操作区-->
-    <div class="screen-actions">
-      <a class="action" @click="scaleDown">
-        <i class="el-icon-minus"></i>
-      </a>
-      <span class="info">{{scaleDisplay}}</span>
-      <a class="action" @click="scaleUp">
-        <i class="el-icon-plus"></i>
-      </a>
-      <a class="action" @click="fitToCenter">
-        <icon-fit />
-      </a>
-      <a class="action" @click.stop="toggleActionMove" :class="actionMove? 'on': ''">
-        <icon-hand />
-      </a>
-      <a class="action" @click="$emit('toggle-scenes')">
-        <icon-list />
-      </a>
+      <!-- 拖拽选择层 -->
+      <div class="dragging-rect" :style="styleDragingRect" />
+      <!--缩放、平移操作区-->
+      <div class="screen-actions">
+        <a class="action" @click="scaleDown">
+          <i class="el-icon-minus" />
+        </a>
+        <span class="info">{{ scaleDisplay }}</span>
+        <a class="action" @click="scaleUp">
+          <i class="el-icon-plus" />
+        </a>
+        <a class="action" @click="fitToCenter">
+          <icon-fit />
+        </a>
+        <a class="action" :class="actionMove? 'on': ''" @click.stop="toggleActionMove">
+          <icon-hand />
+        </a>
+        <a class="action" @click="$emit('toggle-scenes')">
+          <icon-list />
+        </a>
+      </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -73,7 +74,6 @@ import textMesure from '../utils/textMesure'
 const WORKSPACE_PADDING = 20
 export default {
   name: 'SceneContainer',
-  mixins: [ interactMixins, mouseMixins ],
   components: {
     RenderElement,
     IconHand,
@@ -84,6 +84,7 @@ export default {
     [Popover.name]: Popover,
     [ButtonGroup.name]: ButtonGroup
   },
+  mixins: [ interactMixins, mouseMixins ],
   props: {
     work: {
       type: Object
@@ -142,36 +143,6 @@ export default {
         width: 0,
         height: 0,
         visible: false
-      }
-    }
-  },
-
-  watch: {
-    scale () {
-
-    },
-    // 场景更新操作，需要更新交互及其他页面元素
-    scene () {
-      for (let element of this.scene.elements) {
-        this.destroyInteract(element)
-      }
-      this.$nextTick(() => {
-        for (let element of this.scene.elements) {
-          this.destroyInteract(element)
-        }
-        this.setElementsInteract()
-      })
-    },
-    'viewBox': {
-      deep: true,
-      handler () {
-        this.fitToCenter()
-      }
-    },
-    'animation': function (newVal, oldVal) {
-      // 选择动效时 清除选定状态
-      if (oldVal == null && newVal != null) {
-        this.setElementSelected(null)
       }
     }
   },
@@ -252,6 +223,36 @@ export default {
      **/
     selectedElements () {
       return this.scene.elements.filter(el => el.selected && !el.locked)
+    }
+  },
+
+  watch: {
+    scale () {
+
+    },
+    // 场景更新操作，需要更新交互及其他页面元素
+    scene () {
+      for (let element of this.scene.elements) {
+        this.destroyInteract(element)
+      }
+      this.$nextTick(() => {
+        for (let element of this.scene.elements) {
+          this.destroyInteract(element)
+        }
+        this.setElementsInteract()
+      })
+    },
+    'viewBox': {
+      deep: true,
+      handler () {
+        this.fitToCenter()
+      }
+    },
+    'animation': function (newVal, oldVal) {
+      // 选择动效时 清除选定状态
+      if (oldVal == null && newVal != null) {
+        this.setElementSelected(null)
+      }
     }
   },
 

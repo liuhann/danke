@@ -37,7 +37,7 @@ export default {
     // 渲染的阶段
     stage: {
       type: String,
-      default: 'enter'
+      default: ''
     },
     // 缩放后的可用区域
     viewPort: {
