@@ -512,7 +512,12 @@ export default {
       }
       // image has mask attr
       if (element.url) {
-        element.mask = ''
+        if (element.url.endsWith('.svg')) {
+          element.fit = 'fill'
+        } else {
+          element.fit = 'cover'
+          element.mask = ''
+        }
       }
       if (element.ratio) {
         node.ratio = element.ratio

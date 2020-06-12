@@ -1,74 +1,90 @@
 <template>
-<el-popover placement="bottom" width="360" trigger="click" popper-class="padding-0" v-model="visible">
-  <a class="action" slot="reference"><i class="el-icon-setting"/></a>
-  <div class="setting-panel">
-    <div class="share-list" v-if="!showShareScene && !showWorkForm">
-      <el-form size="mini" label-width="80px">
-        <el-form-item label="作品名称">
-          <el-input size="mini" v-model="work.title"/>
+  <el-popover v-model="visible" placement="bottom" width="360" trigger="click" popper-class="padding-0">
+    <a slot="reference" class="action"><i class="el-icon-setting" /></a>
+    <div class="setting-panel">
+      <el-tabs stretch>
+        <el-tab-pane label="场景">
+          <el-form size="mini" label-width="80px">
+            <el-form-item label="持续时间">
+              <el-input-number v-model="scene.duration" controls-position="right" size="mini" />  秒
+            </el-form-item>
+            <el-form-item label="离开时间">
+              <el-input-number v-model="scene.exit" controls-position="right" size="mini" />  秒
+            </el-form-item>
+            <el-form-item label="离开动画">
+              <el-checkbox v-model="scene.renderExit">
+                渲染
+              </el-checkbox>
+            </el-form-item>
+            <el-form-item label="堆叠视角">
+              <el-input-number v-model="scene.z" controls-position="right" size="mini" />
+            </el-form-item>
+          </el-form>
+        </el-tab-pane>
+        <el-tab-pane label="作品">
+          <el-form size="mini" label-width="80px">
+            <el-form-item label="作品名称">
+              <el-input v-model="work.title" size="mini" />
+            </el-form-item>
+            <el-form-item label="标签">
+              <el-select v-model="tags" size="mini" multiple filterable allow-create>
+                <el-option v-for="tag of work.tags" :key="tag" :label="tag" :value="tag" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="宽-高">
+              <el-input-number v-model="work.viewBox.width" size="mini" controls-position="right" />
+              <el-input-number v-model="work.viewBox.height" size="mini" controls-position="right" />
+            </el-form-item>
+            <el-form-item label="背景颜色">
+              <el-color-picker v-model="work.color" />
+            </el-form-item>
+
+            <el-form-item align="right" class="actions">
+              <el-button type="success" size="small" @click="commitSaveWork">
+                保存作品
+              </el-button>
+            </el-form-item>
+          </el-form>
+        </el-tab-pane>
+      </el-tabs>
+      <div v-if="!showShareScene && !showWorkForm" class="share-list" />
+      <el-form v-if="showShareScene" size="mini" label-width="80px">
+        <el-form-item label="模板名称">
+          <el-input v-model="shareSceneName" size="mini" />
         </el-form-item>
         <el-form-item label="标签">
-          <el-select size="mini" v-model="tags" multiple filterable allow-create>
-            <el-option v-for="tag of work.tags" :key="tag" :label="tag" :value="tag"/>
+          <el-select v-model="tags" size="mini" multiple filterable allow-create>
+            <el-option v-for="tag of templateTags" :key="tag" :label="tag" :value="tag" />
           </el-select>
         </el-form-item>
-        <el-form-item label="宽">
-          <el-input-number size="mini" v-model="work.viewBox.width" controls-position="right"/>
+        <el-form-item label="背景色">
+          <el-select v-model="tags" size="mini" multiple filterable allow-create>
+            <el-option v-for="tag of templateTags" :key="tag" :label="tag" :value="tag" />
+          </el-select>
         </el-form-item>
-        <el-form-item label="长">
-          <el-input-number size="mini" v-model="work.viewBox.height" controls-position="right"/>
-        </el-form-item>
-        <el-form-item align="right" class="actions">
-          <el-button type="success" @click="commitSaveWork" size="small">保存作品</el-button>
+        <el-form-item>
+          <el-button type="primary" :loading="savingBlock" @click="commitShareScene">
+            提交
+          </el-button>
+          <el-button @click="showShareScene = false">
+            取消
+          </el-button>
         </el-form-item>
       </el-form>
     </div>
-    <el-form size="mini" v-if="showShareScene" label-width="80px">
-      <el-form-item label="模板名称">
-        <el-input size="mini" v-model="shareSceneName"/>
-      </el-form-item>
-      <el-form-item label="标签">
-        <el-select size="mini" v-model="tags" multiple filterable allow-create>
-          <el-option v-for="tag of templateTags" :key="tag" :label="tag" :value="tag"/>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="背景色">
-        <el-select size="mini" v-model="tags" multiple filterable allow-create>
-          <el-option v-for="tag of templateTags" :key="tag" :label="tag" :value="tag"/>
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="commitShareScene" :loading="savingBlock">提交</el-button>
-        <el-button @click="showShareScene = false">取消</el-button>
-      </el-form-item>
-    </el-form>
-  </div>
-</el-popover>
-
+  </el-popover>
 </template>
 
 <script>
 import workMixin from '../work/workMixin'
-import { Input, Select, Option, Popover, Button, Form, FormItem, Notification, Checkbox, InputNumber, Divider } from 'element-ui'
+import toolbarPopMixin from './toolbarPopMixin'
 import RestDAO from '../../common/dao/restdao'
 
 const templateTags = ['图文', '图片']
 
 export default {
   name: 'SettingPanel',
-  mixins: [ workMixin ],
-  components: {
-    [Popover.name]: Popover,
-    [Input.name]: Input,
-    [Select.name]: Select,
-    [Option.name]: Option,
-    [Button.name]: Button,
-    [Form.name]: Form,
-    [FormItem.name]: FormItem,
-    [Checkbox.name]: Checkbox,
-    [InputNumber.name]: InputNumber,
-    [Divider.name]: Divider
-  },
+  mixins: [ workMixin, toolbarPopMixin ],
   props: {
     work: {
       type: Object

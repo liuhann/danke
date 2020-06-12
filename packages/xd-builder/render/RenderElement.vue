@@ -1,17 +1,17 @@
 <template>
 <div :id="'element-' + element.id"
      @click="elementClicked"
-     class="element" :class="elementClass" :style="elementStyle">
+     class="element" :class="elementClass" :style="elementWrapperStyle">
   <!--图片渲染-->
-  <img v-if="element.url" :id="'img-' + (element.name || element.id)" :src="getImageUrl(element.url, viewPort.width * 2, viewPort.height * 2)" :style="element.style">
-  <div v-else-if="element.content" class="svg-content" v-html="element.content" :style="element.style"/>
-  <div v-else-if="element.elements" class="block-elements" :style="element.style">
+  <img v-if="element.url" :id="'img-' + (element.name || element.id)" :src="getImageUrl(element.url, viewPort.width * 2, viewPort.height * 2)" :style="elementStyle">
+  <div v-else-if="element.content" class="svg-content" v-html="element.content" :style="elementStyle"/>
+  <div v-else-if="element.elements" class="block-elements" :style="elementStyle">
     <render-element v-for="(el, i) in element.elements" :key="el.id" :view-box="viewBox" :view-port="viewPort" :element="el" :index="i" />
   </div>
-  <svg v-else-if="element.path" :style="element.style" :viewBox="'0 0 ' + element.path.w + ' ' + element.path.h ">
+  <svg v-else-if="element.path" :style="elementStyle" :viewBox="'0 0 ' + element.path.w + ' ' + element.path.h ">
     <path :d="generatePath" fill="var(--fill)" stroke-width="var(--stokeWidth)" stroke="var(--stroke)"/>
   </svg>
-  <div v-else-if="!element.text" class="shape" :style="element.style">
+  <div v-else-if="!element.text" class="shape" :style="elementStyle">
   </div>
   <!--文本渲染情况下 文本内容-->
   <div v-for="(text, index) in elementTextLines" :style="textTransformStyle" class="text" :key="index">{{text}}</div>
@@ -113,7 +113,7 @@ export default {
       }
     },
 
-    elementStyle () {
+    elementWrapperStyle () {
       // 设置元素的长、宽到默认变量--width 、 --height
       const style = {
         '--width': this.element.width + 'px',
@@ -140,6 +140,14 @@ export default {
       // 按大小指定视角
       style.perspective = this.element.width + 'px'
       return style
+    },
+
+    elementStyle () {
+      const style = {}
+      if (this.element.fit) {
+        style.object = this.element.fit
+      }
+      return Object.assign({}, this.element.style, style)
     },
 
     textTransformStyle () {
@@ -327,6 +335,8 @@ export default {
   box-sizing: border-box;
   text-overflow: initial;
   white-space: nowrap;
+  position: absolute;
+  mask-repeat: no-repeat;
   .block-elements {
     .element {
       position: absolute;
@@ -360,7 +370,6 @@ export default {
     z-index: 10;
     width: 100%;
     height: 100%;
-    object-fit: cover;
   }
   .shape {
     width: 100%;

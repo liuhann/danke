@@ -1,97 +1,112 @@
 <template>
-<div>
-  <div class="section" style="background: #dfdfdf;">
-    <div class="container" style="background: #fff;padding: 20px;box-shadow: 0 1px 5px 0 rgba(0,0,0,.1);">
-      <el-row :gutter="20">
-        <el-col :span="16">
-          <el-form size="mini" inline label-width="90px">
-            <el-form-item label="一级分类">
-              <el-select v-model="animation.type" size="mini" @change="loadTypeGroup">
-                <el-option v-for="type in types" :key="type.label" :label="type.label" :value="type.value"/>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="二级分类">
-              <el-select v-model="animation.group" size="mini" allow-create filterable>
-                <el-option v-for="group in groups" :key="group" :label="group" :value="group"/>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="方向">
-              <el-select v-model="animation.direction" size="mini" allow-create filterable>
-                <el-option v-for="d in directions" :key="d" :label="d" :value="d"/>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="名称">
-              <el-input v-model="animation.name" style="width: 360px;"></el-input>
-            </el-form-item>
-            <el-form-item label="持续时间">
-              <el-input-number v-model.number="animation.duration" controls-position="right" :step="50" /> ms
-            </el-form-item>
-            <el-form-item label="次数">
-              <el-input-number v-model.number="animation.iteration" :disabled="animation.infinite" controls-position="right" />
-              <el-checkbox style="margin-left: 20px;" v-model="animation.infinite">循环</el-checkbox>
-            </el-form-item>
-            <el-form-item label="过渡函数">
-              <el-select v-model="animation.timing" size="mini" filterable>
-                <el-option v-for="(value, key) in cubicBerziers" :value="value" :key="key" :label="key" />
-              </el-select>
-            </el-form-item>
-          </el-form>
-          <el-form size="mini" label-width="90px">
-            <el-form-item label="样式文本">
-              <div id="editor">
-              </div>
-            </el-form-item>
-            <el-form-item label="变量信息">
-              <el-button size="mini" @click="addVariable">增加</el-button>
-              <div class="variables" v-for="(variable, index) in animation.variables" :key="index" style="display:flex;">
-                <label>标题</label>
-                <span>
-              <el-input v-model="variable.label"/>
-            </span>
-                <label>变量名</label>
-                <span>
-              <el-input v-model="variable.name"/>
-            </span>
-                <label>默认值</label>
-                <span>
-              <el-input v-if="variable.type==='number'" v-model.number="variable.value"/>
-              <el-input v-else v-model="variable.value"/>
-            </span>
-                <label>类型</label>
-                <el-select v-model="variable.type">
-                  <el-option value="color"/>
-                  <el-option value="px"/>
-                  <el-option value="percent"/>
+  <div>
+    <div class="section" style="background: #dfdfdf;">
+      <div class="container" style="background: #fff;padding: 20px;box-shadow: 0 1px 5px 0 rgba(0,0,0,.1);">
+        <el-row :gutter="20">
+          <el-col :span="16">
+            <el-form size="mini" inline label-width="90px">
+              <el-form-item label="一级分类">
+                <el-select v-model="animation.type" size="mini" @change="loadTypeGroup">
+                  <el-option v-for="type in types" :key="type.label" :label="type.label" :value="type.value" />
                 </el-select>
-              </div>
-            </el-form-item>
-            <el-form-item label="">
-              <el-button size="mini" type="primary" @click="save">保存</el-button>
-              <el-button size="mini" @click="cloneCreate">复制新增</el-button>
-              <el-button v-if="animation._id" size="mini" type="danger" @click="remove">删除</el-button>
-              <el-button size="mini" @click="play">预览</el-button>
-              <el-button size="mini" type="text" @click="$router.replace('/frames')">返回</el-button>
-            </el-form-item>
-          </el-form>
-        </el-col>
-        <el-col :span="8">
-          <div style="margin: 0 auto;text-align: center;">
-            <el-radio-group v-model="previewType" size="mini">
-              <el-radio-button label="文字"></el-radio-button>
-              <el-radio-button label="方块"></el-radio-button>
-            </el-radio-group>
-          </div>
-          <div id="preview" :style="{background: previewType==='文字'? 'none': ''}" style="border-left: 1px solid #efefef;">
-            <div v-if="previewType==='文字'" class="preview-text" :class="boxClass" :style="frameStyle">frames@danke</div>
-            <div v-if="previewType==='方块'" class="preview-box" :style="frameStyle">
-              <preview-image :class="boxClass"/>
+              </el-form-item>
+              <el-form-item label="二级分类">
+                <el-select v-model="animation.group" size="mini" allow-create filterable>
+                  <el-option v-for="group in groups" :key="group" :label="group" :value="group" />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="方向">
+                <el-select v-model="animation.direction" size="mini" allow-create filterable>
+                  <el-option v-for="d in directions" :key="d" :label="d" :value="d" />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="名称">
+                <el-input v-model="animation.name" style="width: 360px;" />
+              </el-form-item>
+              <el-form-item label="持续时间">
+                <el-input-number v-model.number="animation.duration" controls-position="right" :step="50" /> ms
+              </el-form-item>
+              <el-form-item label="次数">
+                <el-input-number v-model.number="animation.iteration" :disabled="animation.infinite" controls-position="right" />
+                <el-checkbox v-model="animation.infinite" style="margin-left: 20px;">
+                  循环
+                </el-checkbox>
+              </el-form-item>
+              <el-form-item label="过渡函数">
+                <el-select v-model="animation.timing" size="mini" filterable>
+                  <el-option v-for="(value, key) in cubicBerziers" :key="key" :value="value" :label="key" />
+                </el-select>
+              </el-form-item>
+            </el-form>
+            <el-form size="mini" label-width="90px">
+              <el-form-item label="样式文本">
+                <div id="editor" />
+              </el-form-item>
+              <el-form-item label="变量信息">
+                <el-button size="mini" @click="addVariable">
+                  增加
+                </el-button>
+                <div v-for="(variable, index) in animation.variables" :key="index" class="variables" style="display:flex;">
+                  <label>标题</label>
+                  <span>
+                    <el-input v-model="variable.label" />
+                  </span>
+                  <label>变量名</label>
+                  <span>
+                    <el-input v-model="variable.name" />
+                  </span>
+                  <label>默认值</label>
+                  <span>
+                    <el-input v-if="variable.type==='number'" v-model.number="variable.value" />
+                    <el-input v-else v-model="variable.value" />
+                  </span>
+                  <label>类型</label>
+                  <el-select v-model="variable.type">
+                    <el-option value="color" />
+                    <el-option value="px" />
+                    <el-option value="percent" />
+                  </el-select>
+                </div>
+              </el-form-item>
+              <el-form-item label="">
+                <el-button size="mini" type="primary" @click="save">
+                  保存
+                </el-button>
+                <el-button size="mini" @click="cloneCreate">
+                  复制新增
+                </el-button>
+                <el-button v-if="animation._id" size="mini" type="danger" @click="remove">
+                  删除
+                </el-button>
+                <el-button size="mini" @click="play">
+                  预览
+                </el-button>
+                <el-button size="mini" type="text" @click="$router.replace('/frames')">
+                  返回
+                </el-button>
+              </el-form-item>
+            </el-form>
+          </el-col>
+          <el-col :span="8">
+            <div style="margin: 0 auto;text-align: center;">
+              <el-radio-group v-model="previewType" size="mini">
+                <el-radio-button label="文字" />
+                <el-radio-button label="方块" />
+              </el-radio-group>
             </div>
-          </div>
-        </el-col>
-      </el-row>
+            <div id="preview" :style="{background: previewType==='文字'? 'none': ''}" style="border-left: 1px solid #efefef;">
+              <div v-if="previewType==='文字'" class="preview-text" :class="boxClass" :style="frameStyle">
+                frames@danke
+              </div>
+              <div v-if="previewType==='方块'" class="preview-box" :style="frameStyle">
+                <preview-image :class="boxClass" />
+              </div>
+            </div>
+          </el-col>
+        </el-row>
+      </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -123,11 +138,6 @@ export default {
     [Checkbox.name]: Checkbox,
     PreviewImage
   },
-  computed: {
-    previewTypes () {
-      return ['方块', '文字', '图片']
-    }
-  },
   data () {
     return {
       types,
@@ -154,6 +164,11 @@ export default {
         variables: [],
         timing: 'linear'
       }
+    }
+  },
+  computed: {
+    previewTypes () {
+      return ['方块', '文字', '图片']
     }
   },
   watch: {
@@ -302,7 +317,6 @@ export default {
     background-color: #666;
     width: 160px;
     height: 160px;
-    overflow: hidden;
     box-sizing: border-box;
   }
 

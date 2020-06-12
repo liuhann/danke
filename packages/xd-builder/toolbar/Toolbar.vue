@@ -1,9 +1,7 @@
 <template>
   <div id="tool-bar">
-    <pop-new-element v-if="noFocusedElement" @draw="emitDraw" />
-    <pop-element-list v-if="noFocusedElement" :scene="scene" :checked-elements="checkedElements" />
-    <a v-if="noFocusedElement" class="action" @click="previousScene"><i class="el-icon-arrow-up" /></a>
-    <a v-if="noFocusedElement" class="action" @click="nextScene"><i class="el-icon-arrow-down" /></a>
+    <pop-new-element @draw="emitDraw" />
+    <pop-element-list :scene="scene" :checked-elements="checkedElements" />
     <a v-if="noFocusedElement" class="action" @click="openPen('vector')"><icon-pen /></a>
     <a v-if="focusedElement && focusedElement.path" class="action" @click="openPen(focusedElement)"><icon-pen /></a>
     <!--  样式变量的修改-->
@@ -28,6 +26,7 @@
       <font-weight v-if="variable.type==='fontWeight'" :key="index" v-model="variable.value" />
     </template>
 
+    <!-- 图片遮罩-->
     <pop-image-mask v-show="focusedElement" :element="focusedElement" />
     <pop-set-filter v-show="focusedElement" :element="focusedElement" />
     <!--元素变换、旋转、拉伸等-->
@@ -38,7 +37,6 @@
 
     <!-- 右侧操作功能按钮-->
     <div class="pull-right">
-      <el-color-picker v-if="noFocusedElement" v-model="work.color" show-alpha />
       <el-tooltip v-if="!elementSelected && undoable" content="撤销">
         <a class="action" @click="$emit('undo')"><icon-undo /></a>
       </el-tooltip>
@@ -47,9 +45,6 @@
       </el-tooltip>
       <el-tooltip v-if="focusedElement" class="item" effect="dark" content="格式刷" placement="bottom">
         <a class="action" :class="paste? 'on': ''" @click="togglePaste"><icon-brush /></a>
-      </el-tooltip>
-      <el-tooltip v-if="selectedElements.length > 0" class="item" effect="dark" content="复制元素" placement="bottom">
-        <a class="action" @click="copySelectedElement"><i class="el-icon-document-copy" /></a>
       </el-tooltip>
       <el-tooltip v-if="selectedElements.length > 1" class="item" effect="dark" content="建组" placement="bottom">
         <a class="action" @click="groupSelectedElement"><icon-group /></a>
@@ -67,7 +62,7 @@
         <a class="action" @click="unLockSelectedElement"><i class="el-icon-unlock" /></a>
       </el-tooltip>
       <el-tooltip v-if="noFocusedElement" class="item" effect="dark" content="播放" placement="bottom">
-        <a class="action" @click="playScene"><i class="el-icon-refresh" /></a>
+        <a class="action" @click="playScene"><i class="el-icon-view" /></a>
       </el-tooltip>
       <el-tooltip v-if="noFocusedElement" class="item" effect="dark" content="预览" placement="bottom">
         <a class="action" @click="slidePreview"><i class="el-icon-video-play" /></a>
@@ -315,22 +310,6 @@ export default {
     setElementClipPath (clippath) {
       this.focusedElement.style.clipPath = clippath
     },
-    copySelectedElement () {
-      // 拷贝元素
-      for (let element of this.selectedElements) {
-        element.selected = false
-        const cloned = JSON.parse(JSON.stringify(element))
-        cloned.id = shortid()
-        cloned.selected = true
-        cloned.x += 10
-        cloned.y += 10
-        this.scene.elements.push(cloned)
-        this.$nextTick( ()=> {
-          this.initElementDragResize(cloned)
-        })
-      }
-    },
-
     removeSelectedElement () {
       for (let element of this.selectedElements) {
         element.selected = false

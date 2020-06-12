@@ -26,7 +26,6 @@
         ref="sceneContainer"
         :animation="currentAnimation"
         :view-box="work.viewBox"
-        :scenes="work.scenes"
         :scene="currentScene"
         :exist-scene="lastScene"
         :work="work"

@@ -15,12 +15,18 @@
       </el-button>
     </div>
     <draggable v-model="work.scenes" class="list-wrapper">
-      <div v-for="(scene, index) in work.scenes" :key="scene._id" class="scene-wrapper" :class="(scene === current || scene.checked)? 'current': ''" :style="{
+      <div v-for="(scene, index) in work.scenes" :key="scene._id" class="list-item" :class="(scene === current || scene.checked)? 'current': ''" :style="{
         width: viewPort.width + 'px',
         height: (viewPort.height + 40) + 'px'
       }"
       >
-        <render-scene :scene="scene" :view-box="work.viewBox" :view-port="viewPort" />
+        <div :style="{
+               background: work.color
+             }"
+             class="scene-wrapper"
+        >
+          <render-scene :scene="scene" :view-box="work.viewBox" :view-port="viewPort" />
+        </div>
         <div class="config">
           <span class="scene-name">{{ scene.name }}</span>
           <el-popover placement="top" title="场景">
@@ -160,7 +166,7 @@ export default {
     overflow: auto;
   }
 
-  .scene-wrapper {
+  .list-item {
     margin: 5px;
     input[type="number"] {
       margin: 0 5px;
@@ -178,14 +184,13 @@ export default {
       }
     }
 
-    .scene {
+    .scene-wrapper {
       position: relative;
       overflow: hidden;
-      border: 1px solid #CCC;
       border-radius: 5px;
       &:hover, &.current {
         cursor: pointer;
-        border: 1px solid #00bf72;
+        opacity: .8;
       }
       .element {
         position: absolute;

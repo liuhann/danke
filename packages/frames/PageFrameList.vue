@@ -1,25 +1,42 @@
 <template>
   <div id="page-frames-list"
-    class="site-page">
+       class="site-page"
+  >
     <nav-bar />
     <section class="first section list-section">
       <div class="body">
-        <el-button size="mini" type="primary" @click="newObject">新建</el-button>
-        <el-input-number size="mini" v-model="perspective" />
+        <el-button type="success" @click="newObject">
+          新建
+        </el-button>
+
         <div class="category">
-          <span v-for="t in types" :key="t.name" :class="type===t.value ? 'checked': ''" @click="typeChange(t.value)">{{t.label}}</span>
+          <span v-for="t in types" :key="t.name" :class="type===t.value ? 'checked': ''" @click="typeChange(t.value)">{{ t.label }}</span>
         </div>
         <div class="type-groups">
-          <div v-for="g in groups" :key="g" class="group" :class="g=== group? 'current': ''" @click="groupChange(g)">{{g}}</div>
+          <div v-for="g in groups" :key="g" class="group" :class="g=== group? 'current': ''" @click="groupChange(g)">
+            {{ g }}
+          </div>
         </div>
         <div class="animations">
-          <div v-for="a in animations" :key="a.name" class="animation" :class="a.name === animation.name? 'current': ''" @click="animationChange(a)">{{a.direction}}</div>
+          <div v-for="a in animations" :key="a.name" class="animation" :class="a.name === animation.name? 'current': ''" @click="animationChange(a)">
+            {{ a.direction }}
+          </div>
         </div>
         <div class="animation-box" :style="boxStyle">
-          <img :src="CLOUD_HILL" :style="{
-            maskImage: 'url(http://image.danke.fun/15011245191/images/mGuzU_K7ro_.svg)'
-          }" :class="animation && animation.name"/>
-          <div class="refresh">{{animation.name}}<i @click="refreshCurrent" class="el-icon-refresh-right" /> <i @click="edit(animation)" class="el-icon-edit" /></div>
+          <img :src="CLOUD_HILL" :style="chillStyle" :class="animation && animation.name">
+          <div class="refresh">
+            <div>{{ animation.name }}</div>
+            <div>
+              <el-checkbox v-model="hasMask">
+                带遮罩
+              </el-checkbox>
+            </div>
+            <div>
+              perspect: <el-input-number v-model="perspective" size="mini" controls-position="right" />
+            </div>
+            <el-button type="text" icon="el-icon-refresh-right" @click="refreshCurrent" />
+            <el-button type="text" icon="el-icon-edit" @click="edit(animation)" />
+          </div>
         </div>
       </div>
     </section>
@@ -29,7 +46,7 @@
 <script>
 import NavBar from '../site/components/NavBar.vue'
 import CLOUD_HILL from './cloud-hill.webp'
-import { Pagination, Button, InputNumber } from 'element-ui'
+import { Pagination, Button, InputNumber, Checkbox } from 'element-ui'
 import types from './types'
 import RestDAO from '../common/dao/restdao'
 import StyleRegistry from '../xd-builder/utils/StyleRegistry'
@@ -40,10 +57,12 @@ export default {
     NavBar,
     [Pagination.name]: Pagination,
     [Button.name]: Button,
+    [Checkbox.name]: Checkbox,
     [InputNumber.name]: InputNumber
   },
   data () {
     return {
+      hasMask: false,
       types,
       type: 'basic',
       perspective: 400,
@@ -57,6 +76,15 @@ export default {
     }
   },
   computed: {
+    chillStyle () {
+      if (this.hasMask) {
+        return {
+          maskImage: 'url(http://image.danke.fun/15011245191/images/mGuzU_K7ro_.svg)'
+        }
+      } else {
+        return {}
+      }
+    },
     filter () {
       return {
         tags: this.type
@@ -225,11 +253,9 @@ export default {
     }
     .refresh {
       position: absolute;
+      width: 200px;
       right: 10px;
       top: 10px;
-      i {
-        font-size: 22px;
-      }
     }
   }
 
