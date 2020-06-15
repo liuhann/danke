@@ -44,16 +44,16 @@
         <a class="action" @click="$emit('redo')"><icon-redo /></a>
       </el-tooltip>
       <el-tooltip v-if="focusedElement" class="item" effect="dark" content="格式刷" placement="bottom">
-        <a class="action" :class="paste? 'on': ''" @click="togglePaste"><icon-brush /></a>
+        <a class="action" :class="paste? 'on': ''" @click="togglePaste"><i class="el-icon-brush" /></a>
       </el-tooltip>
       <el-tooltip v-if="selectedElements.length > 1" class="item" effect="dark" content="建组" placement="bottom">
-        <a class="action" @click="groupSelectedElement"><icon-group /></a>
+        <a class="action" @click="groupSelectedElement"><i class="el-icon-folder-checked" /></a>
       </el-tooltip>
       <el-tooltip v-if="focusedElement && focusedElement.elements && focusedElement.elements.length" class="item" effect="dark" content="取消建组" placement="bottom">
-        <a class="action on" @click="unGroupBlock"><icon-group /></a>
+        <a class="action on" @click="unGroupBlock"><i class="el-icon-folder-delete" /></a>
       </el-tooltip>
       <el-tooltip v-if="selectedElements.length" class="item" effect="dark" content="删除" placement="bottom">
-        <a class="action" @click="removeSelectedElement"><icon-trash /></a>
+        <a class="action" @click="removeSelectedElement"><i class="el-icon-delete" /></a>
       </el-tooltip>
       <el-tooltip v-if="selectedElements.length" class="item" effect="dark" content="锁定" placement="bottom">
         <a class="action" @click="lockSelectedElement"><i class="el-icon-lock" /></a>
@@ -62,12 +62,13 @@
         <a class="action" @click="unLockSelectedElement"><i class="el-icon-unlock" /></a>
       </el-tooltip>
       <el-tooltip v-if="noFocusedElement" class="item" effect="dark" content="播放" placement="bottom">
-        <a class="action" @click="playScene"><i class="el-icon-view" /></a>
+        <a class="action" @click="playScene"><i class="el-icon-refresh-right" /></a>
       </el-tooltip>
       <el-tooltip v-if="noFocusedElement" class="item" effect="dark" content="预览" placement="bottom">
         <a class="action" @click="slidePreview"><i class="el-icon-video-play" /></a>
       </el-tooltip>
-      <setting-panel v-if="noFocusedElement" :work="work" :scene="scene" />
+      <a class="action" @click="saveWork"><i class="el-icon-upload" /></a>
+      <setting-panel :work="work" :scene="scene" />
     </div>
   </div>
 </template>
@@ -81,8 +82,6 @@ import workMixin from '../work/workMixin'
 import PopSetAnimation from './PopSetAnimation'
 import PopMoreAction from './PopMoreAction'
 import IconBrush from './res/brush.svg'
-import IconGroup from './res/group.svg'
-import IconTrash from './res/trash.svg'
 import IconUndo from './res/undo.svg'
 import IconRedo from './res/redo.svg'
 import IconPen from './res/pen.svg'
@@ -118,8 +117,6 @@ export default {
     SettingPanel,
     IconUndo,
     IconBrush,
-    IconGroup,
-    IconTrash,
     IconRedo,
     IconPen
   },

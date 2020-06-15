@@ -1,32 +1,35 @@
 <template>
-<el-popover
-  v-if="popover"
-  :placement="placement"
-  popper-class="toolbar-pop"
-  :width="width"
-  :title="title"
-  @show="$emit('show')"
-  trigger="click">
-  <a class="action" slot="reference" v-if="icon">
-    <i :class="icon" />
-  </a>
-  <slot v-else slot="reference" name="reference"/>
-  <div class="container">
-    <slot></slot>
-  </div>
-</el-popover>
-<div v-else>
-  <a class="action" slot="reference" @click="openDialog">
-    <i v-if="icon" :class="icon" />
-    <slot v-else name="reference"/>
-  </a>
-  <el-dialog
-    :fullscreen="true"
+  <el-popover
+    v-if="popover"
+    v-model="dialogVisible"
+    :placement="placement"
+    popper-class="toolbar-pop"
+    :width="width"
     :title="title"
-    :visible.sync="dialogVisible">
-    <slot></slot>
-  </el-dialog>
-</div>
+    trigger="manual"
+    @show="$emit('show')"
+  >
+    <a v-if="icon" slot="reference" class="action" @click="dialogVisible = true">
+      <i :class="icon" />
+    </a>
+    <slot v-else slot="reference" name="reference" />
+    <div class="container">
+      <slot />
+    </div>
+  </el-popover>
+  <div v-else>
+    <a slot="reference" class="action" @click="openDialog">
+      <i v-if="icon" :class="icon" />
+      <slot v-else name="reference" />
+    </a>
+    <el-dialog
+      :fullscreen="true"
+      :title="title"
+      :visible.sync="dialogVisible"
+    >
+      <slot />
+    </el-dialog>
+  </div>
 </template>
 
 <script>

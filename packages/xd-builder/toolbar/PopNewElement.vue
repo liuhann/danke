@@ -1,21 +1,27 @@
 <template>
-<pop-wrapper icon="el-icon-circle-plus-outline" :popover="true">
-  <div class="blocks">
-    <div class="block-title">自定义图案</div>
-  </div>
-  <div class="blocks">
-    <div class="block-title">基本图形</div>
-    <div class="shape-list">
-      <div
-        v-for="(shape, index) in rects"
-        :key="index"
-        @click="chooseShapeItem(shape)"
-        class="shape-item">
-        <div class="shape" :style="shapeStyle(shape)"></div>
+  <pop-wrapper ref="popWrapper" icon="el-icon-circle-plus-outline" :popover="true">
+    <div class="blocks">
+      <div class="block-title">
+        自定义图案
       </div>
     </div>
-  </div>
-</pop-wrapper>
+    <div class="blocks" />
+    <div class="blocks">
+      <div class="block-title">
+        基本图形
+      </div>
+      <div class="shape-list">
+        <div
+          v-for="(shape, index) in rects"
+          :key="index"
+          class="shape-item"
+          @click="chooseShapeItem(shape)"
+        >
+          <div class="shape" :style="shapeStyle(shape)" />
+        </div>
+      </div>
+    </div>
+  </pop-wrapper>
 </template>
 
 <script>
@@ -34,6 +40,7 @@ export default {
   methods: {
     chooseShapeItem (shape) {
       this.$emit('draw', JSON.parse(JSON.stringify(shape)))
+      this.$refs.popWrapper.dialogVisible = false
     },
     shapeStyle (shape) {
       const style = Object.assign({}, shape.style)

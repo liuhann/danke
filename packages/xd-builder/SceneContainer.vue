@@ -35,6 +35,9 @@
       </div>
       <!-- 拖拽选择层 -->
       <div class="dragging-rect" :style="styleDragingRect" />
+
+
+
       <!--缩放、平移操作区-->
       <div class="screen-actions">
         <a class="action" @click="scaleDown">
