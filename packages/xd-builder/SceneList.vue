@@ -1,18 +1,34 @@
 <template>
   <div id="scene-list">
     <div class="actions">
-      <el-button type="primary" size="mini" @click="addScene">
-        新增场景
-      </el-button>
-      <el-button v-if="checkedScenes.length" type="primary" size="mini">
-        复制
-      </el-button>
-      <el-button v-if="checkedScenes.length" type="danger" size="mini" @click="deleteScene">
-        删除
-      </el-button>
-      <el-button size="mini" @click="close">
-        关闭
-      </el-button>
+      <div v-if="!this.work.audioUrl">
+        <el-upload
+          class="upload-demo"
+          action="https://danke.fun/posts/"
+          :auto-upload="false"
+          :show-file-list="false"
+          :on-change="audioFileChoosed"
+        >
+          <el-button size="mini" type="primary">
+            上传并编辑背景音乐
+          </el-button>
+        </el-upload>
+      </div>
+      <div v-if="this.work.audioUrl" class="music-control">
+        <el-button v-if="!audioPlaying" icon="el-icon-video-play" type="text" @click="audioPlay" />
+        <el-button v-if="audioPlaying" icon="el-icon-video-pause" type="text" @click="audioPause" />
+        <span class="current-seconds seconds"> {{ formatAudioSecond(this.audioCurrentSeconds) }}/ {{ formatAudioSecond(this.audioTotalSeconds) }} </span>
+        <div class="slider">
+          <el-slider ref="slider" v-model="audioCurrentSeconds" :marks="marks" :min="0" :max="audioTotalSeconds" @change="audioCurrentChange" />
+        </div>
+      </div>
+      <div v-if="this.work.audioUrl" class="music-control">
+        <el-button v-show="isNewAudio" icon="el-icon-back" type="text" @click="setClipStart" />
+        <el-button v-show="isNewAudio" icon="el-icon-right" type="text" @click="setClipEnd" />
+        <el-button v-show="isNewAudio" icon="el-icon-scissors" type="text" @click="cutAndUseAudio" />
+        <el-button icon="el-icon-reading" type="text" @click="setSceneTurn" />
+        <el-button icon="el-icon-delete" type="text" @click="removeAudio" />
+      </div>
     </div>
     <draggable v-model="work.scenes" class="list-wrapper">
       <div v-for="(scene, index) in work.scenes" :key="scene._id" class="list-item" :class="(scene === current || scene.checked)? 'current': ''" :style="{
@@ -24,6 +40,7 @@
                background: work.color
              }"
              class="scene-wrapper"
+             @click="chooseScene(scene)"
         >
           <render-scene :scene="scene" :view-box="work.viewBox" :view-port="viewPort" />
         </div>
@@ -34,10 +51,10 @@
             <div class="more-menu">
               <div class="menu-item" style="margin-bottom: 10px;">
                 <el-input v-model="scene.name" style="width: 120px;" width="120" size="mini" />
-                <el-button size="mini" plain @click="copyScene(index)">
+                <el-button type="text" size="mini" @click="copyScene(index)">
                   复制
                 </el-button>
-                <el-button type="danger" size="mini" plain icon="el-icon-delete-solid" @click="deleteScene(index)">
+                <el-button type="text" size="mini" @click="deleteScene(index)">
                   删除
                 </el-button>
               </div>
@@ -59,10 +76,15 @@
               </div>
             </div>
           </el-popover>
-          <el-button type="text" @click="chooseScene(scene)">
-            选择
-          </el-button>
         </div>
+      </div>
+      <div class="add-new-item" :style="{
+             width: viewPort.width + 'px',
+             height: (viewPort.height + 40) + 'px'
+           }"
+           @click="addScene"
+      >
+        <span>增加场景</span>
       </div>
     </draggable>
   </div>
@@ -72,15 +94,17 @@
 import toolbarPopMixin from './toolbar/toolbarPopMixin'
 import draggable from 'vuedraggable'
 import sceneMixins from './mixins/sceneMixins'
+import workMixin from './work/workMixin'
 import RenderScene from './render/RenderScene'
 import { shortid } from '../utils/string'
+import ImageDAO from '../utils/imagedao'
 export default {
   name: 'SceneList',
   components: {
     RenderScene,
     draggable
   },
-  mixins: [ sceneMixins, toolbarPopMixin ],
+  mixins: [ sceneMixins, toolbarPopMixin, workMixin ],
   props: {
     work: {
       type: Object
@@ -89,7 +113,36 @@ export default {
       type: Object
     }
   },
+  data () {
+    return {
+      markStart: 0,
+      markEnd: 0,
+      audioStartPoint: 0,
+      audioDragging: false,
+      audioEndPoint: 0,
+      audioPlaying: false,
+      audioTotalSeconds: 0,
+      audioCurrentSeconds: 0
+    }
+  },
   computed :{
+    isNewAudio () {
+      if (this.work.audioUrl && this.work.audioUrl.startsWith('blob:')) {
+        return true
+      } else {
+        return false
+      }
+    },
+    marks () {
+      if (this.isNewAudio) {
+        return {
+          [this.markStart]: '',
+          [this.markEnd]: '',
+        }
+      } else {
+        return {}
+      }
+    },
     viewPort () {
       return {
         height: 160,
@@ -100,7 +153,62 @@ export default {
       return this.work.scenes.filter(scene => scene.checked)
     }
   },
+
+  mounted () {
+    if (this.work.audioUrl) {
+      this.loadAudio(this.work.audioUrl)
+    }
+  },
+  created () {
+    this.mediadao = new ImageDAO(this.ctx)
+  },
   methods: {
+    async removeAudio () {
+      this.audioInstance.pause()
+      await this.mediadao.removeBlob(new URL(this.work.audioUrl).pathname)
+      this.audioFile = null
+      this.work.audioUrl = null
+      this.work.audioName = null
+      this.audioInstance = null
+      this.audioPlaying = false
+      this.markStart = 0
+      this.markEnd = 0
+
+      await this.saveWork()
+    },
+
+    fileExtension (fname) {
+      return fname.slice((fname.lastIndexOf('.') - 1 >>> 0) + 2).toLowerCase()
+    },
+
+    async cutAndUseAudio () {
+      const result = await this.mediadao.uploadAndCutMp3(this.audioFile, '15011245191/audios/' + shortid(10) + '.' + this.fileExtension(this.audioFile.name), this.markStart, this.markEnd)
+      this.audioInstance.pause()
+      this.audioFile = null
+      this.work.audioUrl = result.url
+      await this.saveWork()
+      // this.audioInstance = new Audio(result.name)
+    },
+    setSceneTurn () {
+
+    },
+    setClipStart () {
+      this.markStart = this.audioCurrentSeconds
+
+      if (this.markStart > this.markEnd) {
+        this.markEnd = this.audioTotalSeconds
+      }
+    },
+    setClipEnd () {
+      this.markEnd = this.audioCurrentSeconds
+      if (this.markStart > this.markEnd) {
+        this.markStart = 0
+      }
+    },
+    audioCurrentChange (time) {
+      this.audioInstance.currentTime = time
+      this.audioCurrentSeconds = time
+    },
     deleteScene (index) {
       if (this.work.scenes.length === this.checkedScenes.length) {
         MessageBox.prompt('不能将所有场景删除，请至少保留一个场景')
@@ -117,7 +225,6 @@ export default {
 
     moveSceneNext (index) {
       const current = this.work.scenes[index]
-
       this.$set(this.work.scenes, index, this.work.scenes[index + 1])
       this.$set(this.work.scenes, index + 1, current)
     },
@@ -125,6 +232,47 @@ export default {
       const current = this.work.scenes[index]
       this.$set(this.work.scenes, index, this.work.scenes[index - 1])
       this.$set(this.work.scenes, index - 1 , current)
+    },
+
+    loadAudio (url) {
+      this.audioInstance = new Audio(url)
+      this.audioInstance.onloadedmetadata = () => {
+        this.audioTotalSeconds = this.audioInstance.duration
+        this.markEnd = this.audioTotalSeconds
+      }
+      this.audioInstance.ontimeupdate = () => {
+        if (this.$refs.slider && !this.$refs.slider.dragging) {
+          this.audioCurrentSeconds = this.audioInstance.currentTime
+        }
+      }
+      this.audioInstance.onended = () => {
+        this.audioPlaying = false
+      }
+      this.audioInstance.load()
+    },
+
+    audioFileChoosed (file) {
+      if (this.audioFile) {
+        this.audioFile.pause()
+      }
+      this.audioFile = file.raw
+      this.$set(this.work, 'audioUrl', URL.createObjectURL(this.audioFile))
+      this.work.audioName = this.audioFile.name
+      this.loadAudio(this.work.audioUrl)
+    },
+
+    audioPlay () {
+      this.audioInstance.play()
+      this.audioPlaying = true
+    },
+
+    audioPause () {
+      this.audioInstance.pause()
+      this.audioPlaying = false
+    },
+
+    formatAudioSecond (second) {
+      return new Date(second * 1000).toISOString().replace(/.*(\d{2}:\d{2}.\d{2}).*/, "$1");
     },
 
     chooseScene (scene) {
@@ -156,6 +304,27 @@ export default {
     padding: 0 20px;
     background: #fff;
     box-shadow: rgba(0, 0, 0, 0.2) 0px 0 2px;
+    display: flex;
+    .music-control {
+      flex: 1;
+      display: flex;
+      margin-right: 20px;
+      .el-button--text {
+        font-size: 18px;
+        padding: 10px 0;
+        &:hover {
+          color: #00c7ae;
+        }
+      }
+      .slider {
+        flex: 1;
+      }
+      .seconds {
+        padding-left: 10px;
+        line-height: 40px;
+        width: 130px;
+      }
+    }
   }
   .list-wrapper {
     padding: 10px;
@@ -166,6 +335,13 @@ export default {
     overflow: auto;
   }
 
+  .add-new-item {
+    border: 1px solid #eee;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
   .list-item {
     margin: 5px;
     input[type="number"] {

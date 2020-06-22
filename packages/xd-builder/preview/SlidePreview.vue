@@ -1,20 +1,17 @@
 <template>
-<div class="page-slide-preview">
-  <div class="preview-container">
-    <div class="device" v-if="work && viewPort" :style="deviceStyle">
-      <render-scene v-for="(scene, index) in work.scenes" :key="index" v-show="scene.visible" :scene="scene" :stage="scene.stage" :view-port="viewPort" :view-box="work.viewBox"/>
+  <div class="page-slide-preview" :style="workStyle">
+    <div v-if="work && viewPort" class="preview-container">
+      <div class="device" :style="deviceStyle">
+        <render-scene v-show="!playing" :scene="work.scenes[0]" stage="enter" :view-port="viewPort" :view-box="work.viewBox" />
+        <render-scene v-for="(scene, index) in work.scenes" v-show="scene.visible" :key="index" :scene="scene" :stage="scene.stage" :view-port="viewPort" :view-box="work.viewBox" />
+      </div>
+    </div>
+    <div v-if="work && viewPort" class="action" :style="actionStyle">
+      <i v-if="currentSceneIndex > 0 && !currentAutoPlay" class="el-icon-right next-scene" @click="enterScene(currentSceneIndex + 1)" />
+      <i v-if="(currentSceneIndex < work.scenes.length - 1) && !currentAutoPlay" class="el-icon-back prev-scene" @click="enterScene(currentSceneIndex - 1)" />
+      <i class="el-icon-video-play play" @click="play" />
     </div>
   </div>
-  <template v-if="work">
-    <i class="el-icon-right abs-actions" v-if="currentSceneIndex > 0" @click="enterScene(currentSceneIndex - 1)"></i>
-    <i class="el-icon-back abs-actions" v-if="(currentSceneIndex < work.scenes.length - 1) && !currentAutoPlay" @click="enterScene(currentSceneIndex + 1)"></i>
-  </template>
-  <div class="action-bar" v-show="!isFullScreen">
-    <div class="action-button" @click="refreshWork"><i class="el-icon-refresh-right" /></div>
-    <div class="action-button" @click="enterFullScreen"><i class="el-icon-full-screen" /></div>
-    <div class="action-button" @click="likeWork"><i class="el-icon-star-off" /></div>
-  </div>
-</div>
 </template>
 
 <script>
@@ -26,22 +23,18 @@ import RenderScene from '../render/RenderScene'
 import RestDAO from '../../common/dao/restdao'
 export default {
   name: 'Preview',
-  mixins: [ workMixin, sceneMixin ],
   components: {
     RenderScene,
   },
+  mixins: [ workMixin, sceneMixin ],
   data () {
     return {
-      isFullScreen: false,
+      playing: false,
+      playend: false,
       currentSceneIndex: 0,
       viewPort: null,
-      work: null,
-      autoPlay: false
+      work: null
     }
-  },
-  created () {
-    this.likedao = new RestDAO(this.ctx, 'danke/like')
-    this.ctx.styleRegistry = new StyleRegistry()
   },
   computed: {
     currentAutoPlay () {
@@ -49,6 +42,27 @@ export default {
         return this.work.scenes[this.currentSceneIndex].duration > 0
       } else {
         return false
+      }
+    },
+    workStyle () {
+      if (this.work) {
+        return {
+          background: this.work.color
+        }
+      } else {
+        return  {}
+      }
+    },
+
+    actionStyle () {
+      if (!this.playing) {
+        return {
+          opacity: .3
+        }
+      } else {
+        return {
+          opacity: 0
+        }
       }
     },
     deviceStyle () {
@@ -66,6 +80,10 @@ export default {
         }
       }
     }
+  },
+  created () {
+    this.likedao = new RestDAO(this.ctx, 'danke/like')
+    this.ctx.styleRegistry = new StyleRegistry()
   },
   mounted () {
     let workId = this.$route.query.work || this.$route.params.work
@@ -98,10 +116,29 @@ export default {
       await this.loadWork(workId)
       // 设置显示屏幕大小
       this.viewPort = fitRectIntoBounds(this.work.viewBox, {
-        width: this.$el.offsetWidth - 48,
-        height: this.$el.offsetHeight - 48 - 48
+        width: this.$el.offsetWidth,
+        height: this.$el.offsetHeight
       })
+      if (this.work.audioUrl) {
+        this.audioInstance = new Audio(this.work.audioUrl)
+        this.audioInstance.loop = true
+        this.audioInstance.onloadedmetadata = () => {
+        }
+        this.audioInstance.onended = () => {
+
+        }
+        this.audioInstance.load()
+      } else {
+      }
+    },
+
+    play () {
       this.enterScene(0)
+      if (this.audioInstance)
+        this.playing = true
+        this.audioInstance.currentTime = 0
+        this.audioInstance.play()
+      }
     },
 
     async enterScene (index) {
@@ -109,9 +146,15 @@ export default {
       this.work.scenes[index].stage = 'enter'
       if (this.currentAutoPlay) {
         this.nextInteval = setTimeout(() => {
-          this.currentSceneIndex ++
-          this.enterScene(this.currentSceneIndex)
-          this.leaveScene(this.currentSceneIndex - 1)
+          if (this.currentSceneIndex < this.work.scenes.length - 1) {
+            this.currentSceneIndex ++
+            this.enterScene(this.currentSceneIndex)
+            this.leaveScene(this.currentSceneIndex - 1)
+          } else {
+            this.audioInstance.pause()
+            this.playing = false
+            this.playend = true
+          }
         }, this.work.scenes[index].duration * 1000)
       }
     },
@@ -146,7 +189,6 @@ export default {
         }
       }
     }
-  }
 }
 </script>
 
@@ -178,6 +220,28 @@ export default {
     &.el-icon-back {
       left: 24px;
       top: calc(50vh - 20px);
+    }
+  }
+
+  .action {
+    position: absolute;
+    background-color: #000;
+    transition: opacity .6s linear;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    .play, .replay {
+      transition: transform .3s linear;
+      cursor: pointer;
+      font-size: 10vh;
+      color: #fff;
+      position: absolute;
+      left: calc(100% / 2 - 5vh);
+      top: calc(100% / 2 - 5vh);
+      &:hover {
+        transform: scale(1.1);
+      }
     }
   }
 

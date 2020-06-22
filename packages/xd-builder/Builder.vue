@@ -1,6 +1,6 @@
 <template>
   <div id="xd">
-    <left-aside @insert="insert" />
+    <left-aside @insert="insert" @replace="replace" />
     <section v-if="work" class="right-section">
       <toolbar
         v-if="currentScene"
@@ -38,7 +38,7 @@
         @clean-paste="cleanPaste"
       />
       <clippath-editor v-if="pen" :view-port-rect="viewPortRect" :scene="currentScene" :view-box="work.viewBox" :work="work" @close="pen = ''" @input="pathConfirmed" />
-      <scene-list v-if="showSceneList" :work="work" :current="currentScene" @close="showSceneList = false" @choose-scene="chooseScene" />
+      <scene-list v-show="showSceneList" :work="work" :current="currentScene" @close="showSceneList = false" @choose-scene="chooseScene" />
     </section>
     <div id="textMesure" />
   </div>
@@ -124,6 +124,12 @@ export default {
           this.$refs.sceneContainer.createSingleElement(object, 100, 100)
           // this.currentScene.elements.push(Object.assign(node, object))
         default:
+      }
+    },
+
+    replace (element) {
+      if (element.url) {
+        this.$refs.sceneContainer.replaceElement(element)
       }
     },
 

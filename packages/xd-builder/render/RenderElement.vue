@@ -95,22 +95,21 @@ export default {
     textEditStyle () {
       const style = {}
       Object.assign(style, this.element.style)
-      Object.assign(style, {
-        textAlign: 'left'
-      })
+
+      if (this.viewPort && this.viewBox) {
+        if (this.element.variables.filter(variable => variable.name === 'fontSize').length) {
+          const fontSize = this.element.variables.filter(variable => variable.name === 'fontSize')[0].value
+          const zoomedSize = fontSize * this.viewPort.width/this.viewBox.width
+          if (zoomedSize < 8) {
+            style.display = 'none'
+          } else {
+            style.fontSize = zoomedSize + 'px'
+          }
+        }
+      }
+
       style.height = this.element.height + 'px'
       return style
-    },
-
-    // 呈现时根据vp进行进一步缩放
-    elementTextTransform () {
-      if (this.viewPort && this.viewBox && this.element.text) {
-        return {
-          transform: `scale(${this.viewPort.width/this.viewBox.width})`
-        }
-      } else {
-        return  {}
-      }
     },
 
     elementWrapperStyle () {
@@ -153,18 +152,13 @@ export default {
     textTransformStyle () {
       const style = {}
       if (this.viewPort && this.viewBox) {
-        style.transform = `scale(${this.viewPort.width/this.viewBox.width})`
-        const avs = this.element.variables.filter(variable => variable.type === 'textAlign')
-        if (avs.length) {
-          const align = avs[0].value
-          if (align === 'left') {
-            style.transformOrigin = 'left top'
-          }
-          if (align === 'center') {
-            style.transformOrigin = 'center top'
-          }
-          if (align === 'right') {
-            style.transformOrigin = 'right top'
+        if (this.element.variables.filter(variable => variable.name === 'fontSize').length) {
+          const fontSize = this.element.variables.filter(variable => variable.name === 'fontSize')[0].value
+          const zoomedSize = fontSize * this.viewPort.width/this.viewBox.width
+          if (zoomedSize < 8) {
+            style.display = 'none'
+          } else {
+            style.fontSize = zoomedSize + 'px'
           }
         }
       }
@@ -360,7 +354,7 @@ export default {
     outline: none !important;
     background: transparent;
     overflow: hidden;
-    width: 10000px;
+    width: 100%;
   }
   /*color: transparent;*/
   /*-webkit-background-clip: text;*/

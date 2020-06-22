@@ -50,6 +50,8 @@ function addAnimation (sheet, animation) {
   const rule = `.${animation.name} {
     animation: ${animation.name} ${animation.duration}ms ${animation.timing} both
   }`
+
+  console.log('insert rule', rule)
   sheet.insertRule(rule, pos)
 }
 

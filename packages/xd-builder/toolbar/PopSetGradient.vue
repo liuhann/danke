@@ -1,56 +1,72 @@
 <template>
-<pop-wrapper :width="360" title="设置背景颜色/渐变" @show="show">
-  <i class="gradient-box action" slot="reference" :style="{
+  <pop-wrapper :width="360" title="设置背景颜色/渐变" @show="show">
+    <i slot="reference" class="gradient-box action" :style="{
       background: variable.value
-    }"></i>
-  <div class="gradient form">
-    <el-radio-group v-model="gradientType" @change="typeChange">
-      <el-radio label="radial-gradient" >圆形渐变</el-radio>
+    }"
+    />
+    <div class="gradient form">
+      <el-radio-group v-model="gradientType" @change="typeChange">
+        <el-radio label="radial-gradient">
+          圆形渐变
+        </el-radio>
+        <el-radio label="linear-gradient">
+          线性渐变
+        </el-radio>
+        <el-radio label="repeating-linear-gradient">
+          线性重复渐变
+        </el-radio>
+      </el-radio-group>
 
-      <el-radio label="linear-gradient" >线性渐变</el-radio>
-      <el-radio label="repeating-linear-gradient" >线性重复渐变</el-radio>
-    </el-radio-group>
-
-    <div class="set-deg form-item" v-if="gradients && gradients.colorStopList.length > 1 && gradientType.indexOf('linear-gradient')>-1">
-      <label>角度</label>
-      <div class="position">
-        <el-slider v-model="gradients.angle" :max="360"/>
-      </div>
-    </div>
-
-    <div class="set-cc form-item" v-if="gradients && gradients.colorStopList.length > 1 && gradientType === 'radial-gradient'">
-      <label>圆心</label>
-      <div class="field">
-        <el-input-number @change="generate" size="mini" controls-position="right" v-model="cc[0]"/>
-        <el-input-number @change="generate" size="mini" controls-position="right" v-model="cc[1]"/>
-      </div>
-    </div>
-
-    <div class="steps" v-if="gradients">
-      <div class="stops-title stop">
-        <div class="stop-color">颜色</div>
-        <div class="stop-position">位置</div>
-        <div class="stop-action"><i @click="addColorStop" class="el-icon-plus"></i> </div>
-      </div>
-
-      <div class="stop form-item" v-for="(step, index) in gradients.colorStopList" :key="index">
-        <div class="stop-color">
-          <el-color-picker show-alpha size="small" v-model="step.color"/>
-        </div>
-        <div class="stop-position">
-          <el-input-number size="mini" controls-position="right" v-model="step.position"/>
-        </div>
-        <div class="stop-action">
-          <i class="el-icon-close" @click="deleteColorStop(index)"></i>
+      <div v-if="gradients && gradients.colorStopList.length > 1 && gradientType.indexOf('linear-gradient')>-1" class="set-deg form-item">
+        <label>角度</label>
+        <div class="position">
+          <el-slider v-model="gradients.angle" :max="360" />
         </div>
       </div>
-      <div class="form-item">
-        <el-button size="mini" type="primary" @click="addColorStop">增加颜色</el-button>
-        <el-button size="mini" @click="randomGradientColor">随机颜色</el-button>
+
+      <div v-if="gradients && gradients.colorStopList.length > 1 && gradientType === 'radial-gradient'" class="set-cc form-item">
+        <label>圆心</label>
+        <div class="field">
+          <el-input-number v-model="cc[0]" size="mini" controls-position="right" @change="generate" />
+          <el-input-number v-model="cc[1]" size="mini" controls-position="right" @change="generate" />
+        </div>
+      </div>
+
+      <div v-if="gradients" class="steps">
+        <div class="stops-title stop">
+          <div class="stop-color">
+            颜色
+          </div>
+          <div class="stop-position">
+            位置
+          </div>
+          <div class="stop-action">
+            <i class="el-icon-plus" @click="addColorStop" />
+          </div>
+        </div>
+
+        <div v-for="(step, index) in gradients.colorStopList" :key="index" class="stop form-item">
+          <div class="stop-color">
+            <el-color-picker v-model="step.color" show-alpha size="small" />
+          </div>
+          <div class="stop-position">
+            <el-input-number v-model="step.position" size="mini" controls-position="right" />
+          </div>
+          <div class="stop-action">
+            <i class="el-icon-close" @click="deleteColorStop(index)" />
+          </div>
+        </div>
+        <div class="form-item">
+          <el-button size="mini" type="primary" @click="addColorStop">
+            增加颜色
+          </el-button>
+          <el-button size="mini" @click="randomGradientColor">
+            随机颜色
+          </el-button>
+        </div>
       </div>
     </div>
-  </div>
-</pop-wrapper>
+  </pop-wrapper>
 </template>
 
 <script>

@@ -10,9 +10,8 @@ export default class ImageDAO {
       blob.lastModifiedDate = new Date()
     }
     formData.append('file', blob, blob.filename)
-    return this.ctx.post(`mp3/upload?path=${path}&start=${start}&end=${end}`, {
-      body: formData
-    }).json()
+    const result = await this.ctx.post(`mp3/upload?path=${path}&start=${start}&end=${end}`, formData)
+    return result.data
   }
 
   /**

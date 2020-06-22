@@ -1,70 +1,60 @@
 <template>
-<aside class="insert-container">
-  <div class="category-side">
-    <div class='category' :class="current === 'scene'? 'current': ''" @click="toggleTo('scene')">
-      <i class="el-icon-files"/>
-      <span>场景</span>
+  <aside class="insert-container">
+    <div class="category-side">
+      <div class="category" :class="current === 'block'? 'current': ''" @click="toggleTo('block')">
+        <i class="el-icon-office-building" />
+        <span>图库</span>
+      </div>
+      <div class="category" :class="current === 'shape'? 'current': ''" @click="toggleTo('shape')">
+        <i class="el-icon-news" />
+        <span>形状</span>
+      </div>
+      <div class="category" :class="current === 'text'? 'current': ''" @click="toggleTo('text')">
+        <i class="el-icon-tickets" />
+        <span>文字</span>
+      </div>
+      <div class="category" :class="current === 'image'? 'current': ''" @click="toggleTo('image')">
+        <i class="el-icon-picture-outline" />
+        <span>我的</span>
+      </div>
+      <div class="category">
+        <i class="el-icon-service" />
+        <span>音乐</span>
+      </div>
+      <div class="category">
+        <i class="el-icon-service" />
+        <span>音乐</span>
+      </div>
     </div>
-    <div class='category' :class="current === 'block'? 'current': ''" @click="toggleTo('block')">
-      <i class="el-icon-office-building"/>
-      <span>图库</span>
+    <div class="element-container">
+      <transition name="fade">
+        <keep-alive>
+          <image-list v-if="current === 'image'" @choose="imageClicked" />
+        </keep-alive>
+      </transition>
+      <transition name="fade">
+        <keep-alive>
+          <left-block-list v-if="current === 'block'" />
+        </keep-alive>
+      </transition>
+      <transition name="fade">
+        <keep-alive>
+          <text-list v-if="current==='text'" />
+        </keep-alive>
+      </transition>
+      <transition name="fade">
+        <keep-alive>
+          <left-shape-list v-if="current === 'shape'" @insert="insertElement" />
+        </keep-alive>
+      </transition>
     </div>
-    <div class='category' :class="current === 'shape'? 'current': ''" @click="toggleTo('shape')">
-      <i class="el-icon-news"/>
-      <span>形状</span>
-    </div>
-    <div class='category' :class="current === 'text'? 'current': ''" @click="toggleTo('text')">
-      <i class="el-icon-tickets"/>
-      <span>文字</span>
-    </div>
-    <div class="category" :class="current === 'image'? 'current': ''" @click="toggleTo('image')">
-      <i class="el-icon-picture-outline"/>
-      <span>我的</span>
-    </div>
-    <div class='category'>
-      <i class="el-icon-service"/>
-      <span>音乐</span>
-    </div>
-     <div class='category'>
-      <i class="el-icon-service"/>
-      <span>音乐</span>
-    </div>
-  </div>
-  <div class="element-container">
-    <transition name="fade">
-      <keep-alive>
-        <image-upload v-if="current === 'image'"/>
-      </keep-alive>
-    </transition>
-    <transition name="fade">
-      <keep-alive>
-         <left-block-list v-if="current === 'block'"/>
-      </keep-alive>
-    </transition>
-    <transition name="fade">
-      <keep-alive>
-        <left-scene-template v-if="current === 'scene'" @insert="insertNewScene"/>
-      </keep-alive>
-    </transition>
-    <transition name="fade">
-      <keep-alive>
-        <text-list v-if="current==='text'" />
-      </keep-alive>
-    </transition>
-    <transition name="fade">
-      <keep-alive>
-        <left-shape-list v-if="current === 'shape'" @insert="insertElement"/>
-      </keep-alive>
-    </transition>
-  </div>
-</aside>
+  </aside>
 </template>
 
 <script>
 import ImageDAO from '../../utils/imagedao'
 import RestDAO from '../../common/dao/restdao'
-import ImageUpload from './ImageList.vue'
-import LeftSceneTemplate from './SceneList.vue'
+import ImageList from './ImageList.vue'
 import LeftShapeList from './ShapeList.vue'
 import TextList from './TextList'
 import LeftBlockList from './LeftBlockList.vue'
@@ -73,8 +63,7 @@ export default {
   components: {
     LeftBlockList,
     TextList,
-    ImageUpload,
-    LeftSceneTemplate,
+    ImageList,
     LeftShapeList
   },
   data () {
@@ -107,12 +96,15 @@ export default {
     },
 
     insertElement (element) {
-      debugger
       this.$emit('insert', 'element', element)
     },
 
     insertAnimation (animation) {
       this.$emit('insert', 'animation', animation)
+    },
+
+    imageClicked (image) {
+      this.$emit('replace',  image)
     }
   }
 }

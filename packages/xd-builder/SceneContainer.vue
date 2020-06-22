@@ -36,33 +36,23 @@
       <!-- 拖拽选择层 -->
       <div class="dragging-rect" :style="styleDragingRect" />
 
-
-
       <!--缩放、平移操作区-->
-      <div class="screen-actions">
-        <a class="action" @click="scaleDown">
-          <i class="el-icon-minus" />
-        </a>
-        <span class="info">{{ scaleDisplay }}</span>
-        <a class="action" @click="scaleUp">
-          <i class="el-icon-plus" />
-        </a>
-        <a class="action" @click="fitToCenter">
-          <icon-fit />
-        </a>
-        <a class="action" :class="actionMove? 'on': ''" @click.stop="toggleActionMove">
-          <icon-hand />
-        </a>
-        <a class="action" @click="$emit('toggle-scenes')">
-          <icon-list />
-        </a>
-      </div>
+      <el-button-group class="screen-actions">
+        <el-button size="mini" icon="el-icon-minus" round @click="scaleDown" />
+        <el-button size="mini">
+          {{ scaleDisplay }}
+        </el-button>
+        <el-button size="mini" icon="el-icon-plus" @click="scaleUp" />
+        <el-button size="mini" icon="el-icon-full-screen" @click="fitToCenter" />
+        <el-button size="mini" icon="el-icon-s-grid" round @click="$emit('toggle-scenes')" />
+      </el-button-group>
     </div>
   </div>
 </template>
 
 <script>
 import { Button, ButtonGroup, Popover, Slider } from 'element-ui'
+import workplaceMixins from './mixins/workplaceMixins'
 import interact from 'interactjs'
 import RenderElement from './render/RenderElement.vue'
 import { shortid } from '../utils/string'
@@ -70,32 +60,19 @@ import { getSVGViewBox } from '../vectors/utils'
 import interactMixins from './mixins/interactMixins.js'
 import mouseMixins from './mixins/mousetrap.js'
 import { fitRectIntoBounds, getRectPositionStyle, isPointInRect, intersectRect } from './mixins/rectUtils.js'
-import IconHand from './res/hand.svg'
-import IconFit from './res/fit.svg'
-import IconList from './res/list.svg'
 import textMesure from '../utils/textMesure'
 const WORKSPACE_PADDING = 20
 export default {
   name: 'SceneContainer',
   components: {
     RenderElement,
-    IconHand,
-    IconFit,
-    IconList,
     [Slider.name]: Slider,
     [Button.name]: Button,
     [Popover.name]: Popover,
     [ButtonGroup.name]: ButtonGroup
   },
-  mixins: [ interactMixins, mouseMixins ],
+  mixins: [ interactMixins, mouseMixins, workplaceMixins ],
   props: {
-    work: {
-      type: Object
-    },
-    // 渲染当前的场景
-    scene: {
-      type: Object
-    },
     // 渲染正在离开的场景
     existScene: {
       type: Object
@@ -490,6 +467,17 @@ export default {
       }
     },
 
+    replaceElement (element) {
+      if (element.url && this.focusedElement && this.focusedElement.url) {
+        this.focusedElement.url = element.url
+        for (let el of this.scene.elements) {
+          if (el.url === this.focusedElement.url) {
+            el.url = element.url
+          }
+        }
+      }
+    },
+
     createSingleElement (element, x, y) {
       const id = shortid()
       // 此处设置节点的基本属性
@@ -711,37 +699,7 @@ export default {
     position: absolute;
     right: 20px;
     bottom: 20px;
-    background: rgba(255,255,255, .6);
-    border: 1px solid #eee;
-    padding: 5px;
-    border-radius: 10px;
     font-size: 16px;
-
-    .action {
-      line-height: 36px;
-      cursor: pointer;
-      margin: 0 5px;
-      color: #0e1318;
-      font-weight: 400;
-      padding: 0 8px;
-      display: inline-block;
-      &:hover, &.on {
-        background-color: #f1f3f4;
-      }
-      i {
-        vertical-align: text-bottom;
-        font-weight: bold;
-      }
-      img, svg {
-        width: 16px;
-        height: 16px;
-        display: inline-block;
-        vertical-align: text-bottom;
-      }
-      &.scenes {
-        width: 32px;
-      }
-    }
   }
 }
 #workspace {

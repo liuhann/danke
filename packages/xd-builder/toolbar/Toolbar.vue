@@ -27,7 +27,7 @@
     </template>
 
     <!-- 图片遮罩-->
-    <pop-image-mask v-show="focusedElement" :element="focusedElement" />
+    <pop-image-mask v-show="elementMasktable" :element="focusedElement" />
     <pop-set-filter v-show="focusedElement" :element="focusedElement" />
     <!--元素变换、旋转、拉伸等-->
     <pop-transform v-if="focusedElement" :element="focusedElement" />
@@ -37,15 +37,15 @@
 
     <!-- 右侧操作功能按钮-->
     <div class="pull-right">
-      <el-tooltip v-if="!elementSelected && undoable" content="撤销">
-        <a class="action" @click="$emit('undo')"><icon-undo /></a>
-      </el-tooltip>
-      <el-tooltip v-if="!elementSelected && redoable" content="重做">
-        <a class="action" @click="$emit('redo')"><icon-redo /></a>
-      </el-tooltip>
-      <el-tooltip v-if="focusedElement" class="item" effect="dark" content="格式刷" placement="bottom">
-        <a class="action" :class="paste? 'on': ''" @click="togglePaste"><i class="el-icon-brush" /></a>
-      </el-tooltip>
+      <!--      <el-tooltip v-if="!elementSelected && undoable" content="撤销">-->
+      <!--        <a class="action" @click="$emit('undo')"><icon-undo /></a>-->
+      <!--      </el-tooltip>-->
+      <!--      <el-tooltip v-if="!elementSelected && redoable" content="重做">-->
+      <!--        <a class="action" @click="$emit('redo')"><icon-redo /></a>-->
+      <!--      </el-tooltip>-->
+      <!--      <el-tooltip v-if="focusedElement" class="item" effect="dark" content="格式刷" placement="bottom">-->
+      <!--        <a class="action" :class="paste? 'on': ''" @click="togglePaste"><i class="el-icon-brush" /></a>-->
+      <!--      </el-tooltip>-->
       <el-tooltip v-if="selectedElements.length > 1" class="item" effect="dark" content="建组" placement="bottom">
         <a class="action" @click="groupSelectedElement"><i class="el-icon-folder-checked" /></a>
       </el-tooltip>
@@ -67,7 +67,9 @@
       <el-tooltip v-if="noFocusedElement" class="item" effect="dark" content="预览" placement="bottom">
         <a class="action" @click="slidePreview"><i class="el-icon-video-play" /></a>
       </el-tooltip>
-      <a class="action" @click="saveWork"><i class="el-icon-upload" /></a>
+      <el-tooltip class="item" effect="dark" content="保存作品" placement="bottom">
+        <a class="action" title="保存" @click="saveWork"><i class="el-icon-upload2" /></a>
+      </el-tooltip>
       <setting-panel :work="work" :scene="scene" />
     </div>
   </div>
@@ -81,9 +83,6 @@ import SettingPanel from './SettingPanel'
 import workMixin from '../work/workMixin'
 import PopSetAnimation from './PopSetAnimation'
 import PopMoreAction from './PopMoreAction'
-import IconBrush from './res/brush.svg'
-import IconUndo from './res/undo.svg'
-import IconRedo from './res/redo.svg'
 import IconPen from './res/pen.svg'
 import PopTransform from './PopTransform'
 import TextAlign from './TextAlign'
@@ -115,9 +114,6 @@ export default {
     PopTransform,
     PopMoreAction,
     SettingPanel,
-    IconUndo,
-    IconBrush,
-    IconRedo,
     IconPen
   },
   mixins: [ interactMixins, workMixin, toolbarPopMixin ],
@@ -185,6 +181,14 @@ export default {
         return this.selectedElements[0]
       } else {
         return null
+      }
+    },
+
+    elementMasktable () {
+      if (this.focusedElement && !this.focusedFont) {
+        return true
+      } else {
+        return false
       }
     },
     focusedFont () {

@@ -1,11 +1,5 @@
 <template>
-  <el-popover
-    placement="bottom-start"
-    width="240"
-    title="元素列表"
-    trigger="click"
-  >
-    <a slot="reference" class="action"><icon-list /></a>
+  <pop-wrapper ref="popWrapper" icon="el-icon-notebook-2" width="240" :popover="true">
     <div class="scene-element-list">
       <draggable v-model="scene.elements" class="list-content">
         <div v-for="element of scene.elements" :key="element.id" class="element-item" :class="element.selected? 'checked': ''" @click="checkElement(element, $event)">
@@ -20,18 +14,16 @@
         </div>
       </draggable>
     </div>
-  </el-popover>
+  </pop-wrapper>
 </template>
 
 <script>
 import draggable from 'vuedraggable'
 import { getImageUrl } from '../mixins/imageUtils.js'
 import toolbarPopMixin from './toolbarPopMixin'
-import IconList from './res/list.svg'
 export default {
   name: 'PopElementList',
   components: {
-    IconList,
     draggable
   },
   mixins: [ toolbarPopMixin ],
@@ -59,7 +51,7 @@ export default {
         })
       }
       element.selected = true
-
+      this.$refs.popWrapper.dialogVisible = false
     }
   }
 
@@ -79,7 +71,7 @@ export default {
         background: #fefefe;
       }
       &.checked {
-        background: #293039;
+        background: #00c7ae;
         color: #fff;
       }
       .element-icon {

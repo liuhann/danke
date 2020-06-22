@@ -2,17 +2,17 @@
   <el-popover
     v-if="popover"
     v-model="dialogVisible"
-    :placement="placement"
     popper-class="toolbar-pop"
+    :placement="placement"
     :width="width"
     :title="title"
-    trigger="manual"
+    trigger="click"
     @show="$emit('show')"
   >
-    <a v-if="icon" slot="reference" class="action" @click="dialogVisible = true">
+    <a v-if="icon" slot="reference" class="action">
       <i :class="icon" />
     </a>
-    <slot v-else slot="reference" name="reference" />
+    <slot v-else slot="reference" name="reference" @click="openDialog" />
     <div class="container">
       <slot />
     </div>
@@ -65,6 +65,10 @@ export default {
     return {
       dialogVisible: false
     }
+  },
+
+  watch: {
+
   },
   methods: {
     openDialog () {

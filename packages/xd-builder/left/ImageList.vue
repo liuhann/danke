@@ -27,6 +27,7 @@
           <div
             v-for="(image, index) in album.covers" :key="index"
             class="item image" draggable @dragstart="dragStart(image, $event)"
+            @click="imageClicked(image)"
           >
             <img :src="getImageUrl(image.url)">
           </div>
@@ -103,6 +104,7 @@
         <div
           v-for="(image, index) in albumImages" :key="index"
           class="item image" draggable @dragstart="dragStart(image, $event)"
+          @click="imageClicked(image)"
         >
           <img :src="getImageUrl(image.url)">
           <i class="el-icon-delete" @click="removeImage(image)" />
@@ -375,6 +377,10 @@ export default {
       // stringify image info as text
       ev.dataTransfer.setData('Text', JSON.stringify(image))
       this.draggingImage = true
+    },
+
+    imageClicked (image) {
+      this.$emit('choose', image)
     },
 
     dragEnd () {
