@@ -12,7 +12,7 @@ export function assignVariables (style, variables, valueFrom) {
         Object.assign(style, {
           ['--' + variable.name]: variable[key] + 'px'
         })
-      } else if (variable.type === 'percent'){
+      } else if (variable.type === 'percent') {
         Object.assign(style, {
           ['--' + variable.name]: variable[key] + '%'
         })
@@ -24,4 +24,3 @@ export function assignVariables (style, variables, valueFrom) {
     }
   }
 }
-

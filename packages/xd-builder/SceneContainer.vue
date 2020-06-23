@@ -188,6 +188,8 @@ export default {
      **/
     sceneStyle () {
       const styles = {
+        '--vw': this.viewBox.width + 'px',
+        '--vh': this.viewBox.height + 'px',
         width: this.work.viewBox.width + 'px',
         height: this.work.viewBox.height + 'px',
         perspective: this.work.viewBox.width + 'px'
@@ -465,12 +467,12 @@ export default {
 
     replaceElement (element) {
       if (element.url && this.focusedElement && this.focusedElement.url) {
-        this.focusedElement.url = element.url
         for (let el of this.scene.elements) {
           if (el.url === this.focusedElement.url) {
             el.url = element.url
           }
         }
+        this.focusedElement.url = element.url
       }
     },
 

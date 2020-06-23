@@ -1,5 +1,5 @@
 <template>
-  <pop-wrapper :width="400" icon="el-icon-data-line">
+  <pop-wrapper icon="el-icon-data-line">
     <div id="animation-config">
       <div v-show="!showAnimationChoose" class="element-animation">
         <div class="type-title">
@@ -59,7 +59,7 @@ import toolbarPopMixin from './toolbarPopMixin'
 import types from '../../frames/types'
 import RestDAO from '../../common/dao/restdao'
 import CLOUD_HILL from '../../vectors/cloud-hill.webp'
-import AnimationForm from './AnimationForm'
+import AnimationForm from './AnimationForm.vue'
 export default {
   name: 'PopSetAnimation',
   components: {
@@ -175,7 +175,8 @@ export default {
         // 无限循环
         infinite: this.animation.infinite || false,
         // 时间区间 [0]为延迟，[1]为持续时间
-        range: [0, parseInt(this.animation.duration) / 1000]
+        range: [0, parseInt(this.animation.duration) / 1000],
+        variables: this.animation.variables
       }
       if (!this.element.animation[this.stage]) {
         this.$set(this.element.animation, this.stage, [])

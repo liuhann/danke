@@ -174,32 +174,30 @@ export default {
 
     elementAnimationStyle () {
       const element = this.element
+      const style = {}
       if (element.animation) {
         const animations = element.animation[this.stage]
         if (animations && animations.length) {
           // 单个动画
           if (animations.length === 1) {
             const animation = animations[0]
-            return {
-              animation: `${animation.name} ${animation.range[1]}s ${animation.timing} ${animation.range[0]}s ${animation.infinite? 'infinite': animation.iteration} both`
-            }
+            assignVariables(style, animation.variables)
+            style.animation = `${animation.name} ${animation.range[1]}s ${animation.timing} ${animation.range[0]}s ${animation.infinite? 'infinite': animation.iteration} both`
           } else {
             const animationsOrdered = []
             // 多个动画次序或者重叠播放
             for (let i = 0; i < animations.length; i++) {
               const animation = animations[i]
+              assignVariables(style, animation)
               animationsOrdered.push(`${animation.name} ${animation.range[1]}s ${animation.timing} ${animation.range[0]}s ${animation.infinite? 'infinite': animation.iteration}`)
             }
             if (animationsOrdered.length) {
-              return {
-                animation: animationsOrdered.join(',')
-              }
+              style.animation = animationsOrdered.join(',')
             }
           }
         }
-      } else {
-        return {}
       }
+      return style
     },
 
     elementTextLines () {

@@ -1,15 +1,28 @@
 <template>
   <div class="animation-form-list">
-    <el-form :title="animation.title" size="mini" v-for="(animation, index) in element.animation.enter" :key="index" class="animation-form" inline>
+    <el-form v-for="(animation, index) in element.animation.enter" :key="index" :title="animation.title" size="mini" class="animation-form" inline>
       <el-form-item :label="animation.title" />
-      <el-form-item label="延迟"> <el-input-number size="mini" v-model="animation.range[0]" controls-position="right" :step="0.1"/> 秒</el-form-item>
-      <el-form-item label="持续"> <el-input-number size="mini" v-model="animation.range[1]" controls-position="right" :step="0.1"/> 秒</el-form-item>
-      <el-form-item label="循环"> <el-checkbox v-model="animation.infinite" /></el-form-item>
-      <el-form-item label="次数"> <el-input-number :disabled="animation.infinite" size="mini" v-model="animation.iteration" controls-position="right"/> 次</el-form-item>
-      <el-form-item label="过渡曲线"> <el-select v-model="animation.timing">
-          <el-option v-for="(value, key) in cubicBerziers" :key="key" :label="key" :value="value"></el-option>
-      </el-select></el-form-item>
-      <el-form-item >  <el-button type="danger" icon="el-icon-delete" circle size="mini" @click="removeAnimation(index)"></el-button> </el-form-item>
+      <el-form-item label="延迟">
+        <el-input-number v-model="animation.range[0]" size="mini" controls-position="right" :step="0.1" /> 秒
+      </el-form-item>
+      <el-form-item label="持续">
+        <el-input-number v-model="animation.range[1]" size="mini" controls-position="right" :step="0.1" /> 秒
+      </el-form-item>
+      <el-form-item label="循环">
+        <el-checkbox v-model="animation.infinite" />
+      </el-form-item>
+      <el-form-item label="次数">
+        <el-input-number v-model="animation.iteration" :disabled="animation.infinite" size="mini" controls-position="right" /> 次
+      </el-form-item>
+      <el-form-item label="过渡曲线">
+        <el-select v-model="animation.timing">
+          <el-option v-for="(value, key) in cubicBerziers" :key="key" :label="key" :value="value" />
+        </el-select>
+      </el-form-item>
+      <el-form-item v-for="variable in animation.variables" :key="variable.name" :label="variable.name">
+        <el-input v-model="variable.value" />
+      </el-form-item>
+      <el-form-item> <el-button type="danger" icon="el-icon-delete" circle size="mini" @click="removeAnimation(index)" /> </el-form-item>
     </el-form>
   </div>
 </template>

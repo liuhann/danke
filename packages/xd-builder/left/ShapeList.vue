@@ -1,61 +1,82 @@
 <template>
-<div id="addon-shape-list">
-  <template v-if="!packTitle">
-    <div class="search-box">
-      <el-input placeholder="搜索素材库" v-model="searchValue" class="input-with-select" clearable>
-        <el-button slot="append" icon="el-icon-search"></el-button>
-      </el-input>
-    </div>
-    <div class="pack">
-      <div class="pack-title">
-        <div class="text">常用形状</div>
-        <div class="more" @click="showMoreShapes">查看全部</div>
+  <div id="addon-shape-list">
+    <template v-if="!packTitle">
+      <div class="search-box">
+        <el-input v-model="searchValue" placeholder="搜索素材库" class="input-with-select" clearable>
+          <el-button slot="append" icon="el-icon-search" />
+        </el-input>
       </div>
-      <div class="pack-shapes">
-        <div
-          v-for="(shape, index) in shapes.slice(0, 3)"
-          :key="index"
-          class="object-item" draggable @dragstart="dragStart(shape, $event)">
-          <div class="shape" :style="shapeStyle(shape)"></div>
-          <div class="shape-name">{{shape.name}}</div>
+      <div class="pack">
+        <div class="pack-title">
+          <div class="text">
+            常用形状
+          </div>
+          <div class="more" @click="showMoreShapes">
+            查看全部
+          </div>
         </div>
-      </div>
-    </div>
-    <div class="pack" v-for="pack in myPacks" :key="pack._id">
-      <div class="pack-title">
-        <div class="text">{{pack.name}}</div>
-        <div class="more" @click="showPackVectors(pack)">查看全部</div>
-      </div>
-      <div class="pack-shapes">
-        <div
-          v-for="(vector, index) in pack.children" :key="index"
-          class="object-item" draggable @dragstart="dragStart(vector, $event)">
-          <div class="svg-container" :style="vectorVariables(vector)" v-html="vector.content">
+        <div class="pack-shapes">
+          <div
+            v-for="(shape, index) in shapes.slice(0, 3)"
+            :key="index"
+            class="object-item" draggable @dragstart="dragStart(shape, $event)"
+          >
+            <div class="shape" :style="shapeStyle(shape)" />
+            <div class="shape-name">
+              {{ shape.name }}
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </template>
+      <div v-for="pack in myPacks" :key="pack._id" class="pack">
+        <div class="pack-title">
+          <div class="text">
+            {{ pack.name }}
+          </div>
+          <div class="more" @click="showPackVectors(pack)">
+            查看全部
+          </div>
+        </div>
+        <div class="pack-shapes">
+          <div
+            v-for="(vector, index) in pack.children" :key="index"
+            class="object-item" draggable @dragstart="dragStart(vector, $event)"
+          >
+            <div class="svg-container" :style="vectorVariables(vector)" v-html="vector.content" />
+          </div>
+        </div>
+      </div>
+    </template>
 
-  <div class="pack-listing pack">
-    <div class="pack-title">
-      <div class="text">{{currentPack.name}}</div>
-      <div class="is-mask"><el-checkbox v-model="packIsMask" @change="setPackMasktable">遮罩</el-checkbox></div>
-      <div class="more" @click="closePackList">关闭</div>
-    </div>
-    <div class="pack-shapes">
-      <div
-        v-for="(shape, index) in packResources"
-        :key="index"
-        class="object-item" draggable @dragstart="dragStart(shape, $event)">
-        <div class="shape" v-if="!shape._id" :style="shapeStyle(shape)"></div>
-        <div class="shape-name" v-if="!shape._id">{{shape.name}}</div>
-        <div class="svg-container" v-else :style="vectorVariables(shape)" v-html="shape.content">
+    <div class="pack-listing pack">
+      <div class="pack-title">
+        <div class="text">
+          {{ currentPack.name }}
+        </div>
+        <div class="is-mask">
+          <el-checkbox v-model="packIsMask" @change="setPackMasktable">
+            遮罩
+          </el-checkbox>
+        </div>
+        <div class="more" @click="closePackList">
+          关闭
+        </div>
+      </div>
+      <div class="pack-shapes">
+        <div
+          v-for="(shape, index) in packResources"
+          :key="index"
+          class="object-item" draggable @dragstart="dragStart(shape, $event)"
+        >
+          <div v-if="!shape._id" class="shape" :style="shapeStyle(shape)" />
+          <div v-if="!shape._id" class="shape-name">
+            {{ shape.name }}
+          </div>
+          <div v-else class="svg-container" :style="vectorVariables(shape)" v-html="shape.content" />
         </div>
       </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -65,13 +86,13 @@ import RestDAO from '../../common/dao/restdao'
 
 export default {
   name: 'LeftShapeList',
-  mixins: [  ],
   components: {
     [Input.name]: Input,
     [Pagination.name]: Pagination,
     [Checkbox.name]: Checkbox,
     [Button.name]: Button
   },
+  mixins: [  ],
   data () {
     return {
       myPacks: [],

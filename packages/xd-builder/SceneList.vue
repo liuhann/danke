@@ -45,18 +45,16 @@
           <render-scene :scene="scene" :view-box="work.viewBox" :view-port="viewPort" />
         </div>
         <div class="config">
-          <span class="scene-name">{{ scene.name }}</span>
+          <div class="scene-name">
+            {{ scene.name }}
+          </div>
+          <el-button type="text" size="mini" icon="el-icon-document-copy" @click="copyScene(index)" />
+          <el-button type="text" size="mini" icon="el-icon-delete" @click="deleteScene(index)" />
           <el-popover placement="top" title="场景">
             <el-button slot="reference" icon="el-icon-more" style="margin: 0 10px;" type="text" size="mini" />
             <div class="more-menu">
               <div class="menu-item" style="margin-bottom: 10px;">
                 <el-input v-model="scene.name" style="width: 120px;" width="120" size="mini" />
-                <el-button type="text" size="mini" @click="copyScene(index)">
-                  复制
-                </el-button>
-                <el-button type="text" size="mini" @click="deleteScene(index)">
-                  删除
-                </el-button>
               </div>
               <div class="menu-item" style="margin-bottom: 10px;">
                 <label style="margin-right: 10px;">持续时间</label>
@@ -220,7 +218,7 @@ export default {
     copyScene (index) {
       const cloned = JSON.parse(JSON.stringify(this.work.scenes[index]))
       cloned.id = shortid()
-      this.work.scenes.push(cloned)
+      this.work.scenes.splice(index, 0, cloned)
     },
 
     moveSceneNext (index) {

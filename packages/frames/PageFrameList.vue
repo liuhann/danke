@@ -8,7 +8,6 @@
         <el-button type="success" @click="newObject">
           新建
         </el-button>
-
         <div class="category">
           <span v-for="t in types" :key="t.name" :class="type===t.value ? 'checked': ''" @click="typeChange(t.value)">{{ t.label }}</span>
         </div>
@@ -23,8 +22,26 @@
           </div>
         </div>
         <div class="animation-box" :style="boxStyle">
-          <img :src="CLOUD_HILL" :style="chillStyle" :class="animation && animation.name">
-          <div class="refresh">
+          <div class="animation-preview">
+            <img :src="CLOUD_HILL" :style="chillStyle" :class="animation && animation.name">
+          </div>
+          <el-form size="mini" class="refresh" label-width="80px">
+            <el-form-item label="名称">
+              {{ animation.name }}
+            </el-form-item>
+            <el-form-item label="带遮罩">
+              <el-checkbox v-model="hasMask" />
+            </el-form-item>
+            <el-form-item label="视角">
+              <el-input-number v-model="perspective" size="mini" controls-position="right" />px
+            </el-form-item>
+            <el-form-item v-for="variable in animation.variables" :key="variable.name" :label="variable.name">
+              <el-input v-model="variable.value" size="mini" />
+            </el-form-item>
+            <el-button type="text" icon="el-icon-refresh-right" @click="refreshCurrent" />
+            <el-button type="text" icon="el-icon-edit" @click="edit(animation)" />
+          </el-form>
+          <!-- <div class="refresh">
             <div>{{ animation.name }}</div>
             <div>
               <el-checkbox v-model="hasMask">
@@ -34,9 +51,12 @@
             <div>
               perspect: <el-input-number v-model="perspective" size="mini" controls-position="right" />
             </div>
+            <div v-for="variable in animation.variables" :key="variable.name">
+              {{ variable.name }} 
+            </div>
             <el-button type="text" icon="el-icon-refresh-right" @click="refreshCurrent" />
             <el-button type="text" icon="el-icon-edit" @click="edit(animation)" />
-          </div>
+          </div> -->
         </div>
       </div>
     </section>
@@ -46,7 +66,7 @@
 <script>
 import NavBar from '../site/components/NavBar.vue'
 import CLOUD_HILL from './cloud-hill.webp'
-import { Pagination, Button, InputNumber, Checkbox } from 'element-ui'
+import { Pagination, Button, InputNumber, Checkbox, Form, FormItem, Input } from 'element-ui'
 import types from './types'
 import RestDAO from '../common/dao/restdao'
 import StyleRegistry from '../xd-builder/utils/StyleRegistry'
@@ -58,7 +78,10 @@ export default {
     [Pagination.name]: Pagination,
     [Button.name]: Button,
     [Checkbox.name]: Checkbox,
-    [InputNumber.name]: InputNumber
+    [InputNumber.name]: InputNumber,
+    [Form.name]: Form,
+    [Input.name]: Input,
+    [FormItem.name]: FormItem
   },
   data () {
     return {
@@ -238,24 +261,21 @@ export default {
   }
 
   .animation-box {
-    height: 400px;
+    height: 480px;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #fafafa;
-    position: relative;
-    overflow: hidden;
-    perspective: 160px;
+    .animation-preview {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
     img {
-      width: 240px;
-      height: 160px;
+      width: 480px;
+      height: 320px;
       mask-repeat: no-repeat;
     }
     .refresh {
-      position: absolute;
-      width: 200px;
-      right: 10px;
-      top: 10px;
+      width: 480px;
     }
   }
 

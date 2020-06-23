@@ -6,7 +6,6 @@ export default [{
   },
   variables: [{
     name: 'bg',
-    label: '背景颜色',
     value: 'transparent',
     type: 'gradient'
   }, {
@@ -17,6 +16,26 @@ export default [{
   }, {
     name: 'bc',
     label: '边框',
+    value: '#999',
+    type: 'color'
+  }]
+}, {
+  name: '圆形',
+  style: {
+    border: 'var(--width) solid var(--color)',
+    borderRadius: '50%',
+    background: 'var(--bg)'
+  },
+  variables: [{
+    name: 'bg',
+    value: 'rgba(148,187,233,1)',
+    type: 'gradient'
+  }, {
+    name: 'width',
+    value: 1,
+    type: 'px'
+  }, {
+    name: 'color',
     value: '#999',
     type: 'color'
   }]

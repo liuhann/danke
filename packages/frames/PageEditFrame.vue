@@ -66,6 +66,7 @@
                     <el-option value="px" />
                     <el-option value="percent" />
                   </el-select>
+                  <el-button type="text" icon="el-icon-delete" @click="removeVariable(index)" />
                 </div>
               </el-form-item>
               <el-form-item label="">
@@ -253,6 +254,10 @@ export default {
     async remove () {
       await this.framedao.delete(this.animation)
       this.$router.replace('/frames')
+    },
+
+    removeVariable (index) {
+      this.animation.variables.splice(index, 1)
     },
 
     cloneCreate () {
