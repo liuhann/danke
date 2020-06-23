@@ -107,6 +107,7 @@
           @click="imageClicked(image)"
         >
           <img :src="getImageUrl(image.url)">
+          <span v-if="image.width" class="image-size">{{ image.width }}X{{ image.height }}</span>
           <i class="el-icon-delete" @click="removeImage(image)" />
         </div>
       </div>
@@ -492,8 +493,21 @@ export default {
           cursor: pointer;
           display: none;
         }
+        .image-size {
+          position: absolute;
+          bottom: 2px;
+          left: 2px;
+          display: none;
+          font-size: 10px;
+          color: #fff;
+          transform: scale(.8);
+          background-color: rgba(0,0,0, .7);
+        }
         &:hover {
           .el-icon-delete {
+            display: initial;
+          }
+          .image-size {
             display: initial;
           }
         }

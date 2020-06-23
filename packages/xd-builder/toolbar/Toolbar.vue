@@ -121,9 +121,6 @@ export default {
     scene: {
       type: Object
     },
-    scenes: {
-      type: Array
-    },
     work: {
       type: Object
     },
@@ -146,6 +143,9 @@ export default {
     }
   },
   computed: {
+    scenes () {
+      return this.work.scenes
+    },
     workColors () {
       const colors = []
       for (let scene of this.work.scenes) {

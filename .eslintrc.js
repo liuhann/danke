@@ -9,6 +9,7 @@ module.exports = {
   rules: {
     'no-console': 'off',
     'no-debugger': 'off',
+    'vue/require-default-prop': 'off',
     "vue/max-attributes-per-line": 'off'
   }
 }

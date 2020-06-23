@@ -4,7 +4,6 @@
     <section v-if="work" class="right-section">
       <toolbar
         v-if="currentScene"
-        :scenes="work.scenes"
         :work="work"
         :scene="currentScene"
         :paste="paste"
@@ -16,7 +15,6 @@
         @change="workChange"
         @undo="undo"
         @redo="redo"
-        @scale-change="scaleChange"
         @prev-scene="previousScene"
         @next-scene="nextScene"
         @toggle-paste="togglePaste"
@@ -25,9 +23,7 @@
         v-if="currentScene"
         ref="sceneContainer"
         :animation="currentAnimation"
-        :view-box="work.viewBox"
         :scene="currentScene"
-        :exist-scene="lastScene"
         :work="work"
         :paste="paste"
         @undo="undo"
@@ -48,14 +44,14 @@
 import StyleRegistry from './utils/StyleRegistry.js'
 import workMixin from './work/workMixin.js'
 import sceneMixin from './mixins/sceneMixins.js'
-import redoMixins from './work/redoMixins'
+import redoMixins from './work/redoMixins.js'
 import SceneContainer from './SceneContainer.vue'
 import LeftAside from './left/LeftAside.vue'
 import 'element-ui/packages/theme-chalk/lib/icon.css'
-import Toolbar from './toolbar/Toolbar'
+import Toolbar from './toolbar/Toolbar.vue'
 import { shortid } from '../utils/string'
 import ClippathEditor from './clippath-maker/ClippathEditor'
-import SceneList from './SceneList'
+import SceneList from './SceneList.vue'
 export default {
   name: 'Builder',
   components: {
@@ -106,9 +102,6 @@ export default {
         this.currentScene = this.work.scenes[0]
         this.takeSnapshot()
       }
-      // setInterval(() => {
-      //   this.saveWork()
-      // }, 3000)
     },
 
     insert (type, object) {
@@ -134,7 +127,6 @@ export default {
     },
 
     pathConfirmed (object) {
-      console.log('insert path', object)
       this.$refs.sceneContainer.createSingleElement({
         variables: [{
           name: 'fill',

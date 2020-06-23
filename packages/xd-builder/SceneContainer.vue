@@ -73,13 +73,6 @@ export default {
   },
   mixins: [ interactMixins, mouseMixins, workplaceMixins ],
   props: {
-    // 渲染正在离开的场景
-    existScene: {
-      type: Object
-    },
-    viewBox: {
-      type: Object
-    },
     // 格式刷模式
     paste: {
       type: Object
@@ -128,10 +121,13 @@ export default {
   },
 
   computed: {
+    viewBox () {
+      return this.work.viewBox
+    },
     viewPort () {
       return {
-        width: this.viewBox.width * this.scale,
-        height: this.viewBox.height * this.scale
+        width: this.work.viewBox.width * this.scale,
+        height: this.work.viewBox.height * this.scale
       }
     },
     scaleDisplay () {
@@ -192,9 +188,9 @@ export default {
      **/
     sceneStyle () {
       const styles = {
-        width: this.viewBox.width + 'px',
-        height: this.viewBox.height + 'px',
-        perspective: this.viewBox.width + 'px'
+        width: this.work.viewBox.width + 'px',
+        height: this.work.viewBox.height + 'px',
+        perspective: this.work.viewBox.width + 'px'
       }
       return styles
     },

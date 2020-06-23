@@ -1,7 +1,7 @@
 <template>
   <div id="scene-list">
     <div class="actions">
-      <div v-if="!this.work.audioUrl">
+      <div v-if="!work.audioUrl">
         <el-upload
           class="upload-demo"
           action="https://danke.fun/posts/"
@@ -14,15 +14,15 @@
           </el-button>
         </el-upload>
       </div>
-      <div v-if="this.work.audioUrl" class="music-control">
+      <div v-if="work.audioUrl" class="music-control">
         <el-button v-if="!audioPlaying" icon="el-icon-video-play" type="text" @click="audioPlay" />
         <el-button v-if="audioPlaying" icon="el-icon-video-pause" type="text" @click="audioPause" />
-        <span class="current-seconds seconds"> {{ formatAudioSecond(this.audioCurrentSeconds) }}/ {{ formatAudioSecond(this.audioTotalSeconds) }} </span>
+        <span class="current-seconds seconds"> {{ formatAudioSecond(audioCurrentSeconds) }}/ {{ formatAudioSecond(audioTotalSeconds) }} </span>
         <div class="slider">
           <el-slider ref="slider" v-model="audioCurrentSeconds" :marks="marks" :min="0" :max="audioTotalSeconds" @change="audioCurrentChange" />
         </div>
       </div>
-      <div v-if="this.work.audioUrl" class="music-control">
+      <div v-if="work.audioUrl" class="music-control">
         <el-button v-show="isNewAudio" icon="el-icon-back" type="text" @click="setClipStart" />
         <el-button v-show="isNewAudio" icon="el-icon-right" type="text" @click="setClipEnd" />
         <el-button v-show="isNewAudio" icon="el-icon-scissors" type="text" @click="cutAndUseAudio" />

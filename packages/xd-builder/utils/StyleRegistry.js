@@ -51,11 +51,10 @@ function addAnimation (sheet, animation) {
     animation: ${animation.name} ${animation.duration}ms ${animation.timing} both
   }`
 
-  console.log('insert rule', rule)
   sheet.insertRule(rule, pos)
 }
 
-function addFontFace(sheet, url, id) {
+function addFontFace (sheet, url, id) {
   let pos = sheet.length
   sheet.insertRule(`@font-face {
     font-family: ${id};
@@ -65,7 +64,7 @@ function addFontFace(sheet, url, id) {
 
 export const fontFamilies = [{
   id: '微软雅黑',
-  name: '系统字体',
+  name: '系统字体'
 }, {
   id: 'HYLeMiaoTiJ',
   name: '汉仪乐喵体简',

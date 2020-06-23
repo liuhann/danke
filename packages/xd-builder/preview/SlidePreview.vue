@@ -138,9 +138,8 @@ export default {
         this.playing = true
         this.audioInstance.currentTime = 0
         this.audioInstance.play()
-      }
     },
-
+    
     async enterScene (index) {
       this.work.scenes[index].visible = true
       this.work.scenes[index].stage = 'enter'
@@ -189,6 +188,7 @@ export default {
         }
       }
     }
+  }
 }
 </script>
 
