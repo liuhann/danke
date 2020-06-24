@@ -16,6 +16,10 @@ export function assignVariables (style, variables, valueFrom) {
         Object.assign(style, {
           ['--' + variable.name]: variable[key] + '%'
         })
+      } else if (variable.type === 'deg') {
+        Object.assign(style, {
+          ['--' + variable.name]: variable[key] + 'deg'
+        })
       } else {
         Object.assign(style, {
           ['--' + variable.name]: variable[key]

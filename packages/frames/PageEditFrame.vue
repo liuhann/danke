@@ -63,6 +63,8 @@
                   <label>类型</label>
                   <el-select v-model="variable.type">
                     <el-option value="color" />
+                    <el-option value="deg" />
+                    <el-option value="number" />
                     <el-option value="px" />
                     <el-option value="percent" />
                   </el-select>

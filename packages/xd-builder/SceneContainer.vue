@@ -414,12 +414,9 @@ export default {
           width: element.width * this.scale,
           height: element.height * this.scale
         }, 10)) {
-          if (targetElement === null) {
+          // 获得最上层的未锁定的元素
+          if (!element.locked) {
             targetElement = element
-          } else {
-            if (!targetElement.locked && !element.locked) {
-              targetElement = element
-            }
           }
         }
       }
@@ -606,6 +603,10 @@ export default {
      */
     getMaskStyle (element) {
       const displayStyle = {}
+      // 锁定的元素 放置到最底层  操作最后
+      if (element.locked) {
+        displayStyle.zIndex = -1
+      }
       return Object.assign(displayStyle, getRectPositionStyle(element, this.viewBox, this.viewPort))
     },
 

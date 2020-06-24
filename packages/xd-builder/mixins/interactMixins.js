@@ -2,7 +2,7 @@ import interact from 'interactjs'
 import { shortid } from '../../utils/string'
 
 export default {
-  methods : {
+  methods: {
     /**
      * only drag
      * @param node
@@ -84,7 +84,6 @@ export default {
               })
             }
           }
-
         }
       }
     },
@@ -133,7 +132,7 @@ export default {
                   cloned.selected = false
                   this.scene.elements.splice(this.scene.elements.indexOf(element), 0, cloned)
                   // this.scene.elements.push(cloned)
-                  this.$nextTick( ()=> {
+                  this.$nextTick(() => {
                     this.initElementDragResize(cloned)
                   })
                 }
@@ -141,8 +140,8 @@ export default {
             },
             onmove: event => {
               for (let element of this.selectedElements) {
-                  element.x += event.dx / this.scale
-                  element.y += event.dy / this.scale
+                element.x += event.dx / this.scale
+                element.y += event.dy / this.scale
               }
             },
             onend: event => {

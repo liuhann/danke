@@ -1,5 +1,5 @@
 <template>
-  <pop-wrapper ref="popWrapper" icon="el-icon-notebook-2" width="240" :popover="true">
+  <pop-wrapper ref="popWrapper" icon="el-icon-notebook-2" :width="240" :popover="true">
     <div class="scene-element-list">
       <draggable v-model="scene.elements" class="list-content">
         <div v-for="element of scene.elements" :key="element.id" class="element-item" :class="element.selected? 'checked': ''" @click="checkElement(element, $event)">
