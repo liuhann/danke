@@ -1,6 +1,6 @@
 <template>
   <a-form-model class="tick-form">
-    <a-form-model-item>
+    <a-form-model-item v-if="!audio._id">
       <a-upload
         class="upload-demo"
         :show-file-list="false"
@@ -27,14 +27,19 @@
       </div>
     </a-form-model-item>
     <a-form-model-item>
-      <el-button @click="setClipStart">
+      <el-button v-if="!audio._id" @click="setClipStart">
         起始点{{ formatAudioSecond(cutStart) }}
       </el-button>
-      <el-button @click="setClipEnd">
+      <el-button v-if="!audio._id" @click="setClipEnd">
         结束点{{ formatAudioSecond(cutEnd) }}
       </el-button>
       <el-button @click="setTick">
         打点
+      </el-button>
+    </a-form-model-item>
+    <a-form-model-item>
+      <el-button @click="saveAudio">
+        保存
       </el-button>
     </a-form-model-item>
   </a-form-model>
@@ -44,6 +49,7 @@
 import ImageDAO from '../utils/imagedao'
 import RestDAO from '../common/dao/restdao'
 import antVueMixin from '../utils/ant-vue-mixins'
+import { shortid, fileExtension } from '../utils/string'
 import { Form, FormItem, Upload, Slider, Button } from 'element-ui'
 export default {
   components: {
@@ -62,6 +68,7 @@ export default {
         ticks: [],
         name: ''
       },
+      fileName: '',
       cutStart: 0,
       cutEnd: 0,
       audioStartPoint: 0,
@@ -77,6 +84,8 @@ export default {
       for (let tick of this.audio.ticks) {
         marks[tick] = ''
       }
+      marks[this.cutStart] = '起始点'
+      marks[this.cutEnd] = '结束点'
       return marks
     }
   },
@@ -103,6 +112,7 @@ export default {
       this.audioFile = file
       this.audio.url = URL.createObjectURL(this.audioFile)
       this.audio.name = this.audioFile.name
+      this.fileName = this.audioFile.name
       this.loadAudio(this.audio.url)
       return false
     },
@@ -111,6 +121,7 @@ export default {
       this.audioInstance = new Audio(url)
       this.audioInstance.onloadedmetadata = () => {
         this.audio.dura = this.audioInstance.duration
+        this.audioEndPoint = this.audioInstance.duration
       }
       this.audioInstance.ontimeupdate = () => {
         if (this.$refs.slider && !this.$refs.slider.dragging) {
@@ -159,19 +170,16 @@ export default {
 
       this.audiodao
     },
-    async cutAndUseAudio () {
+    async saveAudio () {
       if (this.cutEnd <= this.cutStart) {
          return
       }
-      const result = await this.mediadao.uploadAndCutMp3(this.audioFile, '15011245191/audios/' + shortid(10) + '.' + this.fileExtension(this.audio.name), this.cutStart, this.cutEnd)
-      this.audioFile = null
+      const result = await this.mediadao.uploadAndCutMp3(this.audioFile, '15011245191/audios/' + shortid(10) + '.' + fileExtension(this.audio.name), this.cutStart, this.cutEnd)
       this.audio.url = result.url
-
+      await this.audiodao.createOrPatch(JSON.stringify(this.audio))
       this.audioPause()
       this.loadAudio(this.audio.url)
-
-      await this.audiodao.createOrPatch(JSON.stringify(this.audio))
-    },
+    }
   }
 }
 </script>
@@ -179,7 +187,7 @@ export default {
 <style lang="scss">
 .tick-form {
   margin: 20px auto;
-  width: 1600px;
+  width: 80%;
 }
 
 </style>

@@ -179,10 +179,6 @@ export default {
       await this.saveWork()
     },
 
-    fileExtension (fname) {
-      return fname.slice((fname.lastIndexOf('.') - 1 >>> 0) + 2).toLowerCase()
-    },
-
     async cutAndUseAudio () {
       const result = await this.mediadao.uploadAndCutMp3(this.audioFile, '15011245191/audios/' + shortid(10) + '.' + this.fileExtension(this.audioFile.name), this.markStart, this.markEnd)
       this.audioInstance.pause()

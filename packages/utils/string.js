@@ -12,7 +12,12 @@ function shortid (length) {
   return randomRangeId(length || 6)
 }
 
+function fileExtension (fname) {
+  return fname.slice((fname.lastIndexOf('.') - 1 >>> 0) + 2).toLowerCase()
+}
+
 export {
+  fileExtension,
   randomRangeId,
   shortid
 }
