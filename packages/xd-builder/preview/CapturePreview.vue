@@ -1,19 +1,25 @@
 <template>
-<div id="capture-preview">
-  <div class="preview-container">
-    <div class="device" v-if="work && viewPort" :style="deviceStyle" @click="refreshWork">
-      <render-scene v-if="currentScene" :scene="currentScene" stage="enter" :work="work" :view-port="viewPort" :view-box="work.viewBox"/>
-      <render-scene v-if="lastScene" :scene="lastScene" stage="exist" :work="work" :view-port="viewPort" :view-box="work.viewBox"/>
+  <div id="capture-preview">
+    <div class="preview-container">
+      <div v-if="work && viewPort" class="device" :style="deviceStyle" @click="refreshWork">
+        <render-scene v-if="currentScene" :scene="currentScene" stage="enter" :work="work" :view-port="viewPort" :view-box="work.viewBox" />
+        <render-scene v-if="lastScene" :scene="lastScene" stage="exist" :work="work" :view-port="viewPort" :view-box="work.viewBox" />
+      </div>
+    </div>
+    <i v-if="nextScene" class="el-icon-right abs-actions" @click="enterScene(nextScene)" />
+    <i v-if="prevScene" class="el-icon-back abs-actions" @click="enterScene(prevScene)" />
+    <div v-show="!isFullScreen" class="action-bar">
+      <div class="action-button" @click="refreshWork">
+        <i class="el-icon-refresh-right" />
+      </div>
+      <div class="action-button" @click="enterFullScreen">
+        <i class="el-icon-full-screen" />
+      </div>
+      <div class="action-button" @click="likeWork">
+        <i class="el-icon-star-off" />
+      </div>
     </div>
   </div>
-  <i class="el-icon-right abs-actions" v-if="nextScene" @click="enterScene(nextScene)"></i>
-  <i class="el-icon-back abs-actions" v-if="prevScene" @click="enterScene(prevScene)"></i>
-  <div class="action-bar" v-show="!isFullScreen">
-    <div class="action-button" @click="refreshWork"><i class="el-icon-refresh-right" /></div>
-    <div class="action-button" @click="enterFullScreen"><i class="el-icon-full-screen" /></div>
-    <div class="action-button" @click="likeWork"><i class="el-icon-star-off" /></div>
-  </div>
-</div>
 </template>
 
 <script>
@@ -25,10 +31,10 @@ import RenderScene from '../render/RenderScene'
 import RestDAO from '../../common/dao/restdao'
 export default {
   name: 'CapturePreview',
-  mixins: [ workMixin, sceneMixin ],
   components: {
     RenderScene,
   },
+  mixins: [ workMixin, sceneMixin ],
   data () {
     return {
       isFullScreen: false,
@@ -38,10 +44,6 @@ export default {
       viewPort: null,
       work: null
     }
-  },
-  created () {
-    this.likedao = new RestDAO(this.ctx, 'danke/like')
-    this.ctx.styleRegistry = new StyleRegistry()
   },
   computed: {
     deviceStyle () {
@@ -59,6 +61,10 @@ export default {
         }
       }
     }
+  },
+  created () {
+    this.likedao = new RestDAO(this.ctx, 'danke/like')
+    this.ctx.styleRegistry = new StyleRegistry()
   },
   mounted () {
     let workId = this.$route.query.work || this.$route.params.work

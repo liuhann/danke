@@ -182,7 +182,7 @@ export default {
           if (animations.length === 1) {
             const animation = animations[0]
             assignVariables(style, animation.variables)
-            style.animation = `${animation.name} ${animation.range[1]}s ${animation.timing} ${animation.range[0]}s ${animation.infinite? 'infinite': animation.iteration} both`
+            style.animation = `${animation.name} ${animation.range[1]}s ${animation.timing} ${animation.range[0]}s ${animation.infinite? 'infinite': animation.iteration}`
           } else {
             const animationsOrdered = []
             // 多个动画次序或者重叠播放

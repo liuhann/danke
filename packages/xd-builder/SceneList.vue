@@ -65,8 +65,12 @@
                 <el-input-number v-model="scene.exit" controls-position="right" size="mini" />  秒
               </div>
               <div class="menu-item" style="margin-bottom: 10px;">
-                <label style="margin-right: 10px;">离开动画</label>
-                <el-checkbox v-model="scene.renderExit" />
+                <el-checkbox v-model="scene.renderExit">
+                  离开动画
+                </el-checkbox>
+                <el-checkbox v-model="scene.transitionFrame">
+                  过场动画
+                </el-checkbox>
               </div>
               <div class="menu-item" style="margin-bottom: 10px;">
                 <label style="margin-right: 10px;">视角层次</label>

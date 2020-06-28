@@ -11,6 +11,9 @@
       <i v-if="(currentSceneIndex < work.scenes.length - 1) && !currentAutoPlay" class="el-icon-back prev-scene" @click="enterScene(currentSceneIndex - 1)" />
       <i class="el-icon-video-play play" @click="play" />
     </div>
+    <div class="seconds">
+      {{ currentSecondsFormated }}
+    </div>
   </div>
 </template>
 
@@ -32,11 +35,17 @@ export default {
       playing: false,
       playend: false,
       currentSceneIndex: 0,
+      currentSeconds: 0,
       viewPort: null,
       work: null
     }
   },
   computed: {
+
+    currentSecondsFormated() {
+      return new Date(this.currentSeconds).toISOString().replace(/.*(\d{2}:\d{2}.\d{2}).*/, "$1");
+    },
+
     currentAutoPlay () {
       if (this.work) {
         return this.work.scenes[this.currentSceneIndex].duration > 0
@@ -104,8 +113,8 @@ export default {
         }
         // 设置显示屏幕大小
         this.viewPort = fitRectIntoBounds(this.work.viewBox, {
-          width: this.$el.offsetWidth - padding,
-          height: this.$el.offsetHeight - padding * 2
+          width: this.$el.offsetWidth,
+          height: this.$el.offsetHeight
         })
       },false
     );
@@ -133,6 +142,13 @@ export default {
     },
 
     play () {
+      this.currentSeconds = 0
+      const startMinuts = new Date().getTime()
+
+      this.updInterval = setInterval(() => {
+        this.currentSeconds = new Date().getTime() - startMinuts
+      }, 20)
+      this.currentSceneIndex = 0
       this.enterScene(0)
       if (this.audioInstance)
         this.playing = true
@@ -143,6 +159,7 @@ export default {
     async enterScene (index) {
       this.work.scenes[index].visible = true
       this.work.scenes[index].stage = 'enter'
+      console.log(this.currentSecondsFormated)
       if (this.currentAutoPlay) {
         this.nextInteval = setTimeout(() => {
           if (this.currentSceneIndex < this.work.scenes.length - 1) {
@@ -200,6 +217,13 @@ export default {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  .seconds {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-color: #000;
+    color: #fff;
+  }
   .preview-container {
     flex: 1;
     display: flex;
