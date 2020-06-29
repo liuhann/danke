@@ -113,6 +113,10 @@ export default {
           break;
         case 'animation':
           this.currentAnimation = object
+          break;
+        case 'tick':
+          this.applyTicksToWork(object)
+          break;
         case 'element':
           this.$refs.sceneContainer.createSingleElement(object, 100, 100)
           // this.currentScene.elements.push(Object.assign(node, object))

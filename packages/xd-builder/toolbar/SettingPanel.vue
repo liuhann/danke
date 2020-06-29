@@ -38,7 +38,10 @@
             <el-form-item label="背景颜色">
               <el-color-picker v-model="work.color" />
             </el-form-item>
-
+            <el-form-item label="背景音乐">
+              {{work.audioName || '无'}} 
+              <el-button type="text" @click="removeAudio">删除</el-button>
+            </el-form-item>
             <el-form-item align="right" class="actions">
               <el-button type="success" size="small" @click="commitSaveWork">
                 保存作品
@@ -145,6 +148,13 @@ export default {
       this.showShareScene = false
       this.visible = false
     },
+
+    removeAudio () {
+      debugger
+      this.work.audioUrl = null
+      this.work.audioName = null
+    },
+
     editWorkForm () {
       this.showWorkForm = true
     },

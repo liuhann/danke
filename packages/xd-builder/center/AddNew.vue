@@ -1,38 +1,44 @@
 <template>
-<div id="add-new-work">
-  <div class="content-title">选择作品的尺寸</div>
-  <div >可以在后续修改</div>
-  <div class="column">
-    <div class="new-types">
-      <div v-for="work of workType" :key="work.name" class="work-type" :style="workSizeStyle(work)">
-        <div class="name">
-          {{work.name}}
-        </div>
-        <div class="ratios">
-          {{work.width}} X {{work.height}}
-        </div>
-        <div class="action">
-          <button @click="newWork(work.width, work.height)">创建</button>
+  <div id="add-new-work">
+    <div class="content-title">选择作品的默认尺寸</div>
+    <div class="group">
+      <div class="group-title">演示 & PPT</div>
+      <div class="new-types">
+        <div v-for="work of slideShow" :key="work.name" class="work-type" :style="workSizeStyle(work)">
+          <div class="name">
+            {{ work.name }}
+          </div>
+          <div class="ratios">
+            {{ work.width }} X {{ work.height }}
+          </div>
+          <div class="action">
+            <button @click="newWork(work.width, work.height)">创建</button>
+          </div>
         </div>
       </div>
-      <div class="work-type">
-        <div class="name">
-          其他
-        </div>d
-        <div class="ratios">
-          <el-input-number v-model="workWidth" size="mini" width="80" controls-position="right"/> X <el-input-number v-model="workHeight" size="mini" width="80" controls-position="right"/>
-        </div>
-        <div class="action">
-          <button @click="newWork(workWidth, workHeight)">创建</button>
+    </div>
+
+    <div class="group">
+      <div class="group-title">视频</div>
+      <div class="new-types">
+        <div v-for="work of video" :key="work.name" class="work-type" :style="workSizeStyle(work)">
+          <div class="name">
+            {{ work.name }}
+          </div>
+          <div class="ratios">
+            {{ work.width }} X {{ work.height }}
+          </div>
+          <div class="action">
+            <button @click="newWork(work.width, work.height)">创建</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
-import workType from './workType'
+import { slideShow, video } from './workType'
 import { InputNumber } from 'element-ui'
 export default {
   name: 'AddNew',
@@ -41,7 +47,8 @@ export default {
   },
   data () {
     return {
-      workType,
+      slideShow,
+      video,
       columnHeight: 200,
       workWidth: 300,
       workHeight: 200
@@ -68,9 +75,18 @@ export default {
     width: 100%;
     overflow: hidden;
   }
+
+  .group {
+    margin-top: 20px;
+    .group-title {
+      font-size: 1.75rem;
+      padding:0 16px;
+      color: #434343;
+    }
+  }
   .new-types {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     overflow-x: auto;
     .work-type {
       flex-shrink: 0;

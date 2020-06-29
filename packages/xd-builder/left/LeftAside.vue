@@ -17,11 +17,7 @@
         <i class="el-icon-picture-outline" />
         <span>我的</span>
       </div>
-      <div class="category">
-        <i class="el-icon-service" />
-        <span>音乐</span>
-      </div>
-      <div class="category">
+      <div class="category" :class="current === 'tick'? 'current': ''" @click="toggleTo('tick')">
         <i class="el-icon-service" />
         <span>音乐</span>
       </div>
@@ -47,6 +43,11 @@
           <left-shape-list v-if="current === 'shape'" @insert="insertElement" />
         </keep-alive>
       </transition>
+      <transition name="fade">
+        <keep-alive>
+          <tick-list v-if="current === 'tick'" @insert="insertTick" />
+        </keep-alive>
+      </transition>
     </div>
   </aside>
 </template>
@@ -58,13 +59,15 @@ import ImageList from './ImageList.vue'
 import LeftShapeList from './ShapeList.vue'
 import TextList from './TextList'
 import LeftBlockList from './LeftBlockList.vue'
+import TickList from './TickList.vue'
 
 export default {
   components: {
     LeftBlockList,
     TextList,
     ImageList,
-    LeftShapeList
+    LeftShapeList,
+    TickList
   },
   data () {
     return {
@@ -97,6 +100,10 @@ export default {
 
     insertElement (element) {
       this.$emit('insert', 'element', element)
+    },
+
+    insertTick (tick) {
+      this.$emit('insert', 'tick', tick)
     },
 
     insertAnimation (animation) {

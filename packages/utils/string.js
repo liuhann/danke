@@ -1,3 +1,13 @@
+
+// mill -> 12:03.23
+function formatAudioSecond (second) {
+  return new Date(second * 1000).toISOString().replace(/.*(\d{2}:\d{2}.\d{2}).*/, '$1')
+}
+
+function formatAudioSecondShow (second) {
+  return new Date(second * 1000).toISOString().replace(/.*(\d{2}:\d{2}).*/, '$1')
+}
+
 function randomRangeId (num) {
   let returnStr = ''
   const charStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -19,5 +29,7 @@ function fileExtension (fname) {
 export {
   fileExtension,
   randomRangeId,
-  shortid
+  shortid,
+  formatAudioSecond,
+  formatAudioSecondShow
 }

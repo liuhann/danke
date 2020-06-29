@@ -42,6 +42,23 @@ export default {
       }
     },
 
+    applyTicksToWork (tick) {
+      this.work.audioUrl = tick.url
+      this.work.audioName = tick.name
+      let tickIndex = 0
+      let passedSeconds = 0
+      for (let scene of this.work.scenes) {
+        if (!tick.ticks[tickIndex]) {
+          break
+        }
+        if (!scene.transitionFrame) {
+          scene.duration = tick.ticks[tickIndex] - passedSeconds
+          tickIndex++
+        }
+        passedSeconds += scene.duration
+      }
+    },
+
     /**
      * 加载作品 并且根据规则重新组织回写一些信息
      * @param {string} workId 作品Id

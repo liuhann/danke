@@ -1,32 +1,36 @@
 <template>
-<el-popover
-  placement="bottom-start"
-  width="360"
-  title="视觉位置及调整"
-  trigger="click">
-  <el-tooltip class="item" effect="dark" content="位置及层次" placement="bottom" slot="reference">
-    <a class="action"><i class="el-icon-warning-outline"/></a>
-  </el-tooltip>
-  <el-form label-width="60px" size="mini" class="more-action-form">
-    <el-form-item label="名称">
-      <el-input v-model="element.name"/>
-    </el-form-item>
-    <el-form-item label="宽高">
-      <el-input-number v-model="element.width" :precision="2" controls-position="right" size="mini"/>-<el-input-number v-model="element.height" :precision="2" controls-position="right" size="mini" />
-    </el-form-item>
-    <el-form-item label="坐标">
-      <el-input-number v-model="element.x" :precision="2" controls-position="right" size="mini"/>-<el-input-number v-model="element.y" :precision="2" controls-position="right" size="mini" />
-    </el-form-item>
-    <el-form-item label="次序">
-      <el-button-group size="mini">
-        <el-button @click="moveElementTop">顶层</el-button>
-        <el-button @click="moveElementUp">上一层</el-button>
-        <el-button @click="moveElementDown">下一层</el-button>
-        <el-button @click="moveElementBottom">底层</el-button>
-      </el-button-group>
-    </el-form-item>
-  </el-form>
-</el-popover>
+  <el-popover
+    placement="bottom-start"
+    width="360"
+    title="视觉位置及调整"
+    trigger="click"
+  >
+    <el-tooltip slot="reference" class="item" effect="dark" content="位置及层次" placement="bottom">
+      <a class="action"><i class="el-icon-warning-outline" /></a>
+    </el-tooltip>
+    <el-form label-width="60px" size="mini" class="more-action-form">
+      <el-form-item label="名称">
+        <el-input v-model="element.name" />
+      </el-form-item>
+      <el-form-item label="宽高">
+        <el-input-number v-model="element.width" :precision="2" controls-position="right" size="mini" />-<el-input-number v-model="element.height" :precision="2" controls-position="right" size="mini" />
+      </el-form-item>
+      <el-form-item label="坐标">
+        <el-input-number v-model="element.x" :precision="2" controls-position="right" size="mini" />-<el-input-number v-model="element.y" :precision="2" controls-position="right" size="mini" />
+      </el-form-item>
+      <el-form-item label="适应">
+        <el-input v-model="element.fit" size="mini" />
+      </el-form-item>
+      <el-form-item label="次序">
+        <el-button-group size="mini">
+          <el-button @click="moveElementTop">顶层</el-button>
+          <el-button @click="moveElementUp">上一层</el-button>
+          <el-button @click="moveElementDown">下一层</el-button>
+          <el-button @click="moveElementBottom">底层</el-button>
+        </el-button-group>
+      </el-form-item>
+    </el-form>
+  </el-popover>
 </template>
 
 <script>
@@ -35,9 +39,9 @@ import interactMixins from '../mixins/interactMixins'
 
 export default {
   name: 'PopMoreAction',
-  mixins: [ toolbarPopMixin, interactMixins ],
   components: {
   },
+  mixins: [ toolbarPopMixin, interactMixins ],
   data () {
     return {
     }

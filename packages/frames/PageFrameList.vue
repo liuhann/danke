@@ -264,6 +264,7 @@ export default {
     height: 480px;
     display: flex;
     .animation-preview {
+      overflow: hidden;
       flex: 1;
       display: flex;
       justify-content: center;

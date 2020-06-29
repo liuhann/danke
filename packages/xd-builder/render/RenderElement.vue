@@ -144,8 +144,9 @@ export default {
     elementStyle () {
       const style = {}
       if (this.element.fit) {
-        style.object = this.element.fit
+        style.objectFit = this.element.fit
       }
+      
       return Object.assign({}, this.element.style, style)
     },
 
@@ -182,7 +183,7 @@ export default {
           if (animations.length === 1) {
             const animation = animations[0]
             assignVariables(style, animation.variables)
-            style.animation = `${animation.name} ${animation.range[1]}s ${animation.timing} ${animation.range[0]}s ${animation.infinite? 'infinite': animation.iteration}`
+            style.animation = `${animation.name} ${animation.range[1]}s ${animation.timing} ${animation.range[0]}s ${animation.infinite? 'infinite': animation.iteration} both`
           } else {
             const animationsOrdered = []
             // 多个动画次序或者重叠播放
@@ -192,7 +193,7 @@ export default {
               animationsOrdered.push(`${animation.name} ${animation.range[1]}s ${animation.timing} ${animation.range[0]}s ${animation.infinite? 'infinite': animation.iteration}`)
             }
             if (animationsOrdered.length) {
-              style.animation = animationsOrdered.join(',')
+              style.animation = animationsOrdered.join(',') + ' both'
             }
           }
         }
