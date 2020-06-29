@@ -36,11 +36,15 @@
       <el-button @click="setTick">
         打点
       </el-button>
+      <el-button @click="clearTick">
+        清除打点
+      </el-button>
     </a-form-model-item>
     <a-form-model-item>
       <el-button @click="saveAudio">
         保存
       </el-button>
+      <el-button v-if="audio._id" type="danger" @click="removeAudio">删除</el-button>
     </a-form-model-item>
   </a-form-model>
 </template>
@@ -103,12 +107,10 @@ export default {
     async fetchAudioObject (id) {
       const result = await this.audiodao.getOne(id)
       this.audio = result
+      this.loadAudio(this.audio.url)
     },
 
     audioFileChoosed (file) {
-      if (this.audioFile) {
-        this.audioFile.pause()
-      }
       this.audioFile = file
       this.audio.url = URL.createObjectURL(this.audioFile)
       this.audio.name = this.audioFile.name
@@ -165,20 +167,30 @@ export default {
       this.audio.ticks.push(this.audioCurrentSeconds)
     },
 
+    clearTick () {
+      this.audio.ticks = []
+    },
+
     async removeAudio () {
+      await this.audiodao.delete(this.audio)
       await this.mediadao.removeBlob(new URL(this.audio.url).pathname)
 
-      this.audiodao
     },
     async saveAudio () {
-      if (this.cutEnd <= this.cutStart) {
-         return
-      }
-      const result = await this.mediadao.uploadAndCutMp3(this.audioFile, '15011245191/audios/' + shortid(10) + '.' + fileExtension(this.audio.name), this.cutStart, this.cutEnd)
-      this.audio.url = result.url
-      await this.audiodao.createOrPatch(JSON.stringify(this.audio))
+      
       this.audioPause()
-      this.loadAudio(this.audio.url)
+      if (!this.audio._id) {
+        if (this.cutEnd <= this.cutStart) {
+          this.$message.error('开始时间 > 结束时间')
+          return
+        }
+        const result = await this.mediadao.uploadAndCutMp3(this.audioFile, '15011245191/audios/' + shortid(10) + '.mp3', this.cutStart, this.cutEnd)
+        this.audio.url = result.url
+        this.audio.dura = this.cutEnd - this.cutStart
+        this.loadAudio(this.audio.url)
+      }
+      await this.audiodao.createOrPatch(this.audio)
+      this.$message.success('已保存打点信息')
     }
   }
 }
