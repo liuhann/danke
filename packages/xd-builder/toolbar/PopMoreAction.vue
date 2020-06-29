@@ -19,7 +19,11 @@
         <el-input-number v-model="element.x" :precision="2" controls-position="right" size="mini" />-<el-input-number v-model="element.y" :precision="2" controls-position="right" size="mini" />
       </el-form-item>
       <el-form-item label="适应">
-        <el-input v-model="element.fit" size="mini" />
+        <el-select v-model="element.fit">
+          <el-option label="适应" value="cover" />
+          <el-option label="包含" value="contain" />
+          <el-option label="拉伸" value="fill" />
+        </el-select>
       </el-form-item>
       <el-form-item label="次序">
         <el-button-group size="mini">
