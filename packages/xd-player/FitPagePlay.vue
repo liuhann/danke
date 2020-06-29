@@ -8,7 +8,7 @@
 
 <script>
 import Player from './Player'
-import RestDAO from '../common/dao/restdao'
+import RestDAO from '../utils/restdao.js'
 import { fitBy } from '../danke-core/utils/common'
 export default {
   name: 'PagePlayVue',

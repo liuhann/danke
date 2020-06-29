@@ -82,7 +82,7 @@
 <script>
 import { assignVariables} from '../mixins/renderUtils'
 import { Pagination, Input, Button, Loading, Checkbox } from 'element-ui'
-import RestDAO from '../../common/dao/restdao'
+import RestDAO from '../../utils/restdao.js'
 
 export default {
   name: 'LeftShapeList',

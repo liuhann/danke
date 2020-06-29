@@ -59,7 +59,7 @@ import ace from 'brace'
 import 'brace/mode/css'
 import 'brace/theme/monokai'
 import { Message, Form, FormItem, Input, Select, Option, Button } from 'element-ui'
-import RestDAO from '../common/dao/restdao'
+import RestDAO from '../utils/restdao.js'
 export default {
   name: 'StyleEdit',
   components: {

@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import RestDAO from '../common/dao/restdao'
+import RestDAO from '../utils/restdao.js'
 import PREVIEW_IMG from './project.svg'
 import { Message, Row, Col, Tag, Button, Input, Select, Option, RadioGroup, RadioButton } from 'element-ui'
 import { addAnimationStyle, createSheet } from './keyframe'

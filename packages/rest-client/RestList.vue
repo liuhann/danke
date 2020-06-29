@@ -1,55 +1,67 @@
 <template>
-<div class="rest-list">
-  模板地址 <el-input size="mini" v-model="templateUrl" style="width: 300px"></el-input>
-  投影 <el-input size="mini" v-model="projection" style="width: 300px"></el-input>
-  <el-button size="mini" @click="load">更新</el-button>
-  <el-table
-    :data="tableData"
-    style="width: 100%"
-    size="mini"
-    stripe>
-    <el-table-column v-for="column of columns" :key="column" :show-overflow-tooltip="true"
-       :prop="column"
-       :label="column">
-    </el-table-column>
-    <el-table-column>
-      <template slot-scope="scope">
-        <el-button type="info" size="mini" @click="showRow(scope.row)">属性设置</el-button>
-        <el-button type="success" size="mini" @click="applyUrl(scope.row)">打开</el-button>
-        <el-button type="danger" size="mini" @click="removeObject(scope.row)">删除</el-button>
-      </template>
-    </el-table-column>
-  </el-table>
-  <el-dialog title="修改对象属性" :visible.sync="dialogVisible" fullscreen>
-    <el-form ref="form" v-if="objectEditing" :model="objectEditing" label-width="80px" size="mini">
-      <!--既有字段的修改-->
-      <el-form-item v-for="(value, key) in objectEditing" :label="key" :key="key">
-        <el-input v-model="objectEditing[key]" style="width: 400px"></el-input>
-      </el-form-item>
-      <!--处理新增的字段-->
-      <el-form-item v-for="(field, index) in formNewSets" label="新增项" :key="index">
-        <el-input v-model="field.key" style="width: 120px"></el-input>
-        <el-input v-model="field.value" style="width: 200px"></el-input>
-        <el-button type="danger" @click="formNewSets.splice(index, 1)">删除</el-button>
-      </el-form-item>
-      <!--新增按钮-->
-      <el-form-item>
-        <el-button type="success" @click="formNewSets.push({key: '', value: ''})">新增</el-button>
-      </el-form-item>
-      <!--保存与取消-->
-      <el-form-item>
-        <el-button type="primary" @click="patchObject">保存</el-button>
-        <el-button @click="dialogVisible = false">取消</el-button>
-      </el-form-item>
-    </el-form>
-  </el-dialog>
-  <el-pagination :page-size.sync="pageSize" :total="total" @current-change="currentChange"/>
-</div>
+  <div class="rest-list">
+    模板地址 <el-input v-model="templateUrl" size="mini" style="width: 300px"></el-input>
+    投影 <el-input v-model="projection" size="mini" style="width: 300px"></el-input>
+    <el-button size="mini" @click="load">
+      更新
+    </el-button>
+    <el-table :data="tableData" style="width: 100%" size="mini" stripe>
+      <el-table-column v-for="column of columns" :key="column" 
+                       :show-overflow-tooltip="true"
+                       :prop="column"
+                       :label="column"
+      >
+      </el-table-column>
+      <el-table-column>
+        <template slot-scope="scope">
+          <el-button type="info" size="mini" @click="showRow(scope.row)">
+            属性设置
+          </el-button>
+          <el-button type="success" size="mini" @click="applyUrl(scope.row)">
+            打开
+          </el-button>
+          <el-button type="danger" size="mini" @click="removeObject(scope.row)">
+            删除
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-dialog title="修改对象属性" :visible.sync="dialogVisible" fullscreen>
+      <el-form v-if="objectEditing" ref="form" :model="objectEditing" label-width="80px" size="mini">
+        <!--既有字段的修改-->
+        <el-form-item v-for="(value, key) in objectEditing" :key="key" :label="key">
+          <el-input v-model="objectEditing[key]" style="width: 400px"></el-input>
+        </el-form-item>
+        <!--处理新增的字段-->
+        <el-form-item v-for="(field, index) in formNewSets" :key="index" label="新增项">
+          <el-input v-model="field.key" style="width: 120px"></el-input>
+          <el-input v-model="field.value" style="width: 200px"></el-input>
+          <el-button type="danger" @click="formNewSets.splice(index, 1)">
+            删除
+          </el-button>
+        </el-form-item>
+        <!--新增按钮-->
+        <el-form-item>
+          <el-button type="success" @click="formNewSets.push({key: '', value: ''})">新增</el-button>
+        </el-form-item>
+        <!--保存与取消-->
+        <el-form-item>
+          <el-button type="primary" @click="patchObject">
+            保存
+          </el-button>
+          <el-button @click="dialogVisible = false">
+            取消
+          </el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+    <el-pagination :page-size.sync="pageSize" :total="total" @current-change="currentChange" />
+  </div>
 </template>
 
 <script>
 import { Table, TableColumn, Pagination, Input, Button, Dialog, Form, FormItem } from 'element-ui'
-import RestDAO from '../common/dao/restdao.js'
+import RestDAO from '../utils/restdao.js'
 window.ResizeObserver = undefined
 export default {
   name: 'RestList',

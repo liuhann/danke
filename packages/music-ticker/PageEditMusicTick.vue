@@ -47,7 +47,7 @@
 
 <script>
 import ImageDAO from '../utils/imagedao'
-import RestDAO from '../common/dao/restdao'
+import RestDAO from '../utils/restdao.js'
 import antVueMixin from '../utils/ant-vue-mixins'
 import { shortid, fileExtension } from '../utils/string'
 import { Form, FormItem, Upload, Slider, Button } from 'element-ui'

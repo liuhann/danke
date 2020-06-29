@@ -75,7 +75,7 @@
 </template>
 
 <script>
-import RestDAO from '../../common/dao/restdao'
+import RestDAO from '../../utils/restdao.js'
 import { Icon, ColorPicker, Upload, MessageBox, Loading } from 'element-ui'
 import ky from 'ky'
 import { getImageUrl } from '../mixins/imageUtils'

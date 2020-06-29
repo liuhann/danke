@@ -28,7 +28,7 @@ import { fitRectIntoBounds } from '../mixins/rectUtils.js'
 import workMixin from '../work/workMixin.js'
 import sceneMixin from '../mixins/sceneMixins.js'
 import RenderScene from '../render/RenderScene'
-import RestDAO from '../../common/dao/restdao'
+import RestDAO from '../../utils/restdao.js'
 export default {
   name: 'CapturePreview',
   components: {

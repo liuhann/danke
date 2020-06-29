@@ -29,7 +29,7 @@
 
 <script>
 import { Dialog } from 'element-ui'
-import RestDAO from '../../common/dao/restdao'
+import RestDAO from '../../utils/restdao.js'
 export default {
   name: 'MyVectorPacks',
   components: {

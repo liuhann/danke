@@ -3,7 +3,7 @@
  */
 import { shortid } from '../../utils/string'
 import { Loading, Message } from 'element-ui'
-import RestDAO from '../../common/dao/restdao'
+import RestDAO from '../../utils/restdao.js'
 
 export default {
   data () {

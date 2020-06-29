@@ -120,7 +120,7 @@ import ace from 'brace'
 import 'brace/mode/css'
 import 'brace/theme/monokai'
 import cubicBerziers from './model/cubic-beziers.js'
-import RestDAO from '../common/dao/restdao'
+import RestDAO from '../utils/restdao.js'
 import types from './types'
 export default {
   name: 'FrameTool',

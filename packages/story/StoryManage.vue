@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import RestDAO from '../common/dao/restdao.js'
+import RestDAO from '../utils/restdao.js.js'
 export default {
   data: function () {
     return {

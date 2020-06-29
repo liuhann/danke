@@ -68,7 +68,7 @@ import NavBar from '../site/components/NavBar.vue'
 import CLOUD_HILL from './cloud-hill.webp'
 import { Pagination, Button, InputNumber, Checkbox, Form, FormItem, Input } from 'element-ui'
 import types from './types'
-import RestDAO from '../common/dao/restdao'
+import RestDAO from '../utils/restdao.js'
 import StyleRegistry from '../xd-builder/utils/StyleRegistry'
 import { assignVariables } from '../xd-builder/mixins/renderUtils'
 export default {

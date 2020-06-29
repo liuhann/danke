@@ -1,4 +1,4 @@
-import RestDAO from '../../common/dao/restdao'
+import RestDAO from '../../utils/restdao.js'
 import StyleRegistry from '../utils/StyleRegistry'
 import { fitRectIntoBounds } from './rectUtils'
 

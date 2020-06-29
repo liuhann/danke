@@ -32,7 +32,7 @@
 <script>
 import RestList from '../common/components/RestList'
 import { Dialog, TabPane, Tabs, Upload, Button } from 'element-ui'
-import RestDAO from '../common/dao/restdao'
+import RestDAO from '../utils/restdao.js'
 export default {
   name: 'DialogImageChoose',
   components: {

@@ -1,4 +1,4 @@
-import RestDAO from '../dao/restdao'
+import RestDAO from '../../utils/restdao'
 export default {
   data () {
     return {

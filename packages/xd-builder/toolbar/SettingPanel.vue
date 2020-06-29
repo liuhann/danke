@@ -78,7 +78,7 @@
 <script>
 import workMixin from '../work/workMixin'
 import toolbarPopMixin from './toolbarPopMixin'
-import RestDAO from '../../common/dao/restdao'
+import RestDAO from '../../utils/restdao.js'
 
 const templateTags = ['图文', '图片']
 

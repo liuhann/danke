@@ -53,7 +53,7 @@
 
 <script>
 import ImageDAO from '../../utils/imagedao'
-import RestDAO from '../../common/dao/restdao'
+import RestDAO from '../../utils/restdao.js'
 import ImageList from './ImageList.vue'
 import LeftShapeList from './ShapeList.vue'
 import TextList from './TextList'

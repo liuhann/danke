@@ -1,26 +1,27 @@
 <template>
-<div class="rest-list">
-  <div class="columns is-mobile is-multiline is-gapless">
-    <div class="column" :class="column" v-for="(item, index) in listData" :key="index">
-      <slot name="item" v-bind:item="item">
-        {{ item }}
-      </slot>
+  <div class="rest-list">
+    <div class="columns is-mobile is-multiline is-gapless">
+      <div v-for="(item, index) in listData" :key="index" class="column" :class="column">
+        <slot name="item" :item="item">
+          {{ item }}
+        </slot>
+      </div>
     </div>
+    <el-pagination
+      v-if="withPagination"
+      background
+      layout="prev, pager, next"
+      :current-page.sync="pageNumber"
+      :current-change="list"
+      :page-size="20"
+      :total="total"
+    >
+    </el-pagination>
   </div>
-  <el-pagination
-    v-if="withPagination"
-    background
-    layout="prev, pager, next"
-    :current-page.sync="pageNumber"
-    :current-change="list"
-    :page-size="20"
-    :total="total">
-  </el-pagination>
-</div>
 </template>
 
 <script>
-import RestDAO from '../dao/restdao'
+import RestDAO from '../../utils/restdao'
 import { Pagination } from 'element-ui'
 
 export default {

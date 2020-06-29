@@ -23,7 +23,7 @@
 
 <script>
 import { Pagination, Input, Button, Loading } from 'element-ui'
-import RestDAO from '../../common/dao/restdao'
+import RestDAO from '../../utils/restdao.js'
 import RenderScene from '../render/RenderScene'
 import { fitRectIntoBounds } from '../mixins/rectUtils'
 

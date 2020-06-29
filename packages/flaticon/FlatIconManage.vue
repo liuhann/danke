@@ -48,7 +48,7 @@
 <script>
 import { Table, Input, Button, TableColumn, Select, Option, Row, Col } from 'element-ui'
 import ky from 'ky'
-import RestDAO from '../common/dao/restdao'
+import RestDAO from '../utils/restdao.js'
 import 'element-ui/packages/theme-chalk/lib/icon.css'
 import FlatTags from './tags'
 

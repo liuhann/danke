@@ -41,7 +41,7 @@ import { Button, Upload, Message, Tag } from 'element-ui'
 import ImageDAO from '../common/dao/imagedao'
 import FormEditDialog from '../common/components/FormEditDialog'
 import RestList from '../common/components/RestList'
-import RestDAO from '../common/dao/restdao'
+import RestDAO from '../utils/restdao.js'
 
 export default {
   name: 'Vectors.vue',

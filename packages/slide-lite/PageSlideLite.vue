@@ -76,7 +76,7 @@ import SCENE from '../danke-core/elements/scene'
 import DialogAudioTap from '../xd-builder/components/DialogAudioTap.vue'
 import ModelChooseFrame from '../frames/ModelChooseFrame.vue'
 import ImageDAO from '../common/dao/imagedao'
-import RestDAO from '../common/dao/restdao'
+import RestDAO from '../utils/restdao.js'
 import UploadButton from './UploadButton.vue'
 import fixedAppearances from './fixedAppearances'
 

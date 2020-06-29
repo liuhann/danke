@@ -48,7 +48,7 @@
 <script>
 import { Dialog, Loading } from 'element-ui'
 import ImageDAO from '../../utils/imagedao'
-import RestDAO from '../../common/dao/restdao'
+import RestDAO from '../../utils/restdao.js'
 import { Howl } from 'howler'
 export default {
   name: 'DialogAudioTap',

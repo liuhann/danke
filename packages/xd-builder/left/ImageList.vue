@@ -117,7 +117,7 @@
 </template>
 
 <script>
-import RestDAO from '../../common/dao/restdao'
+import RestDAO from '../../utils/restdao.js'
 import { getImageUrl } from '../mixins/imageUtils.js'
 import ImageDAO from '../../utils/imagedao'
 import ky from 'ky'

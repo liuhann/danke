@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import RestDAO from '../common/dao/restdao'
+import RestDAO from '../utils/restdao.js'
 import WorkCover from '../xd-builder/components/WorkCover'
 import { MessageBox, Loading } from 'element-ui'
 

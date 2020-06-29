@@ -57,7 +57,7 @@
 import cubicBeziers from '../../frames/model/cubic-beziers'
 import toolbarPopMixin from './toolbarPopMixin'
 import types from '../../frames/types'
-import RestDAO from '../../common/dao/restdao'
+import RestDAO from '../../utils/restdao.js'
 import CLOUD_HILL from '../../vectors/cloud-hill.webp'
 import AnimationForm from './AnimationForm.vue'
 export default {

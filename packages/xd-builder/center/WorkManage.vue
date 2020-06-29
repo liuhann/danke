@@ -21,7 +21,7 @@
 
 <script>
 import { Pagination, Button } from 'element-ui'
-import RestDAO from '../../common/dao/restdao'
+import RestDAO from '../../utils/restdao.js'
 
 export default {
   name: 'WorkManage',

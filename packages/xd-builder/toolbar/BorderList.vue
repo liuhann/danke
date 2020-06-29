@@ -30,7 +30,7 @@
 
 <script>
 import { Pagination, Button, Slider, ColorPicker, InputNumber } from 'element-ui'
-import RestDAO from '../../common/dao/restdao'
+import RestDAO from '../../utils/restdao.js'
 export default {
   name: 'BorderList',
   components: {

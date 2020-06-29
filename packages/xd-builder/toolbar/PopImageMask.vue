@@ -51,7 +51,7 @@
 
 <script>
 import toolbarPopMixin from './toolbarPopMixin'
-import RestDAO from '../../common/dao/restdao'
+import RestDAO from '../../utils/restdao.js'
 import PopWrapper from './PopWrapper'
 import { getImageUrl} from '../mixins/imageUtils'
 

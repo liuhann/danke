@@ -19,7 +19,7 @@
 
 <script>
 import { Dialog, Tabs, TabPane } from 'element-ui'
-import RestDAO from '../common/dao/restdao'
+import RestDAO from '../utils/restdao.js'
 import FlatTags from './tags'
 export default {
   name: 'DialogChooseFlatIcon',

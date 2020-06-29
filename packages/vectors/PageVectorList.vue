@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import RestDAO from '../common/dao/restdao'
+import RestDAO from '../utils/restdao.js'
 import NavBar from '../site/components/NavBar.vue'
 import { Pagination, Button } from 'element-ui'
 export default {

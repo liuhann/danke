@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import RestDAO from '../common/dao/restdao'
+import RestDAO from '../utils/restdao.js'
 import { Pagination, Button } from 'element-ui'
 import { createSheet, addStyle } from '../frames/keyframe.js'
 import NavBar from '../site/components/NavBar'

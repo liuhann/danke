@@ -22,7 +22,7 @@
 
 <script>
 import { Dialog } from 'element-ui'
-import RestDAO from '../../common/dao/restdao'
+import RestDAO from '../../utils/restdao.js'
 import IconFolder from './photo.svg'
 export default {
   name: 'MyPacks',
