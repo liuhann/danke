@@ -24,7 +24,7 @@
       <div v-show="showAnimationChoose" class="animations-choose">
         <div class="animation-category">
           <el-select v-model="type" size="mini" @change="typeChange">
-            <el-option v-for="type in types" :key="type.value" :label="type.label" :value="type.value" />
+            <el-option v-for="t in types" :key="t.value" :label="t.label" :value="t.value" />
           </el-select>
           <el-select v-model="group" size="mini" @change="groupChange">
             <el-option v-for="g in groups" :key="g" :label="g" :value="g" />
@@ -70,6 +70,7 @@ export default {
     return {
       CLOUD_HILL,
       types,
+      stage: '',
       cubicBeziers,
       type: 'basic',
       showAnimationChoose: false,

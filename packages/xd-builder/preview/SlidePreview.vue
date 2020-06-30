@@ -2,7 +2,7 @@
   <div class="page-slide-preview" :style="workStyle">
     <div v-if="work && viewPort" class="preview-container">
       <div class="device" :style="deviceStyle">
-        <render-scene v-show="!playing" :scene="work.scenes[0]" stage="enter" :view-port="viewPort" :view-box="work.viewBox" />
+        <render-scene v-show="!playing && !playend" :scene="work.scenes[0]" stage="enter" :view-port="viewPort" :view-box="work.viewBox" />
         <render-scene v-for="(scene, index) in work.scenes" v-show="scene.visible" :key="index" :scene="scene" :stage="scene.stage" :view-port="viewPort" :view-box="work.viewBox" />
       </div>
     </div>
@@ -150,10 +150,11 @@ export default {
       }, 20)
       this.currentSceneIndex = 0
       this.enterScene(0)
-      if (this.audioInstance)
-        this.playing = true
+      this.playing = true
+      if (this.audioInstance) {
         this.audioInstance.currentTime = 0
         this.audioInstance.play()
+      }
     },
     
     async enterScene (index) {
@@ -162,12 +163,16 @@ export default {
       console.log(this.currentSecondsFormated)
       if (this.currentAutoPlay) {
         this.nextInteval = setTimeout(() => {
+          // 继续进入下一幕
           if (this.currentSceneIndex < this.work.scenes.length - 1) {
             this.currentSceneIndex ++
             this.enterScene(this.currentSceneIndex)
             this.leaveScene(this.currentSceneIndex - 1)
           } else {
-            this.audioInstance.pause()
+            // 最后一幕
+            if (this.audioInstance) {
+              this.audioInstance.pause()
+            }
             this.playing = false
             this.playend = true
           }
@@ -180,7 +185,9 @@ export default {
         this.work.scenes[index].stage = 'exist'
       }
       setTimeout(() => {
+        console.log('hide scene' , index)
         this.work.scenes[index].visible = false
+
       }, this.work.scenes[index].exit * 1000)
     },
 
