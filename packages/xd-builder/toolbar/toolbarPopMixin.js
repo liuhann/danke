@@ -1,4 +1,4 @@
-import { Input, Popover, Tooltip, Switch, Form, FormItem, InputNumber, Checkbox, Slider, Button, ButtonGroup, Select, Option, RadioGroup, Radio, ColorPicker, Tabs, TabPane, Upload } from 'element-ui'
+import { Input, Popover, Tooltip, Switch, Form, FormItem, InputNumber, Checkbox, Slider, Button, ButtonGroup, Select, OptionGroup, Option, RadioGroup, Radio, ColorPicker, Tabs, TabPane, Upload, Cascader } from 'element-ui'
 import PopWrapper from './PopWrapper.vue'
 export default {
   components: {
@@ -20,7 +20,9 @@ export default {
     [Tabs.name]: Tabs,
     [TabPane.name]: TabPane,
     [Input.name]: Input,
+    [Cascader.name]: Cascader,
     [Upload.name]: Upload,
+    [OptionGroup.name]: OptionGroup,
     PopWrapper
   },
   props: {

@@ -190,10 +190,10 @@ export default {
             for (let i = 0; i < animations.length; i++) {
               const animation = animations[i]
               assignVariables(style, animation.variables)
-              animationsOrdered.push(`${animation.name} ${animation.range[1]}s ${animation.timing} ${animation.range[0]}s ${animation.infinite? 'infinite': animation.iteration}`)
+              animationsOrdered.push(`${animation.name} ${animation.range[1]}s ${animation.timing} ${animation.range[0]}s ${animation.infinite? 'infinite': animation.iteration} both`)
             }
             if (animationsOrdered.length) {
-              style.animation = animationsOrdered.join(',') + ' both'
+              style.animation = animationsOrdered.join(',')
             }
           }
         }

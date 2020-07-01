@@ -3,11 +3,56 @@
        class="site-page"
   >
     <nav-bar />
+    <el-button type="success" @click="newObject">新建</el-button>
+    <div class="main-frame">
+      <div class="table-frame-list">
+        <el-table :data="allFrames" size="mini" :height="800" @current-change="handleCurrentChange">
+          <el-table-column type="index" />
+          <el-table-column prop="type" label="类型" sortable />
+          <el-table-column prop="group" label="组" sortable />
+          <el-table-column prop="name" label="名称" />
+        </el-table>
+      </div>
+      <div class="animation-box" :style="boxStyle">
+        <div class="animation-preview">
+          <img :src="CLOUD_HILL" :style="chillStyle" :class="animation && animation.name">
+        </div>
+        <el-form size="mini" class="refresh" label-width="80px">
+          <el-form-item label="名称">
+            {{ animation.name }}
+          </el-form-item>
+          <el-form-item label="带遮罩">
+            <el-checkbox v-model="hasMask" />
+          </el-form-item>
+          <el-form-item label="视角">
+            <el-input-number v-model="perspective" size="mini" controls-position="right" />px
+          </el-form-item>
+          <el-form-item v-for="variable in animation.variables" :key="variable.name" :label="variable.name">
+            <el-input v-model="variable.value" size="mini" />
+          </el-form-item>
+          <el-button type="text" icon="el-icon-refresh-right" @click="refreshCurrent" />
+          <el-button type="text" icon="el-icon-edit" @click="edit(animation)" />
+        </el-form>
+        <!-- <div class="refresh">
+          <div>{{ animation.name }}</div>
+          <div>
+            <el-checkbox v-model="hasMask">
+              带遮罩
+            </el-checkbox>
+          </div>
+          <div>
+            perspect: <el-input-number v-model="perspective" size="mini" controls-position="right" />
+          </div>
+          <div v-for="variable in animation.variables" :key="variable.name">
+            {{ variable.name }} 
+          </div>
+          <el-button type="text" icon="el-icon-refresh-right" @click="refreshCurrent" />
+          <el-button type="text" icon="el-icon-edit" @click="edit(animation)" />
+        </div> -->
+      </div>
+    </div>
     <section class="first section list-section">
       <div class="body">
-        <el-button type="success" @click="newObject">
-          新建
-        </el-button>
         <div class="category">
           <span v-for="t in types" :key="t.name" :class="type===t.value ? 'checked': ''" @click="typeChange(t.value)">{{ t.label }}</span>
         </div>
@@ -21,43 +66,7 @@
             {{ a.direction }}
           </div>
         </div>
-        <div class="animation-box" :style="boxStyle">
-          <div class="animation-preview">
-            <img :src="CLOUD_HILL" :style="chillStyle" :class="animation && animation.name">
-          </div>
-          <el-form size="mini" class="refresh" label-width="80px">
-            <el-form-item label="名称">
-              {{ animation.name }}
-            </el-form-item>
-            <el-form-item label="带遮罩">
-              <el-checkbox v-model="hasMask" />
-            </el-form-item>
-            <el-form-item label="视角">
-              <el-input-number v-model="perspective" size="mini" controls-position="right" />px
-            </el-form-item>
-            <el-form-item v-for="variable in animation.variables" :key="variable.name" :label="variable.name">
-              <el-input v-model="variable.value" size="mini" />
-            </el-form-item>
-            <el-button type="text" icon="el-icon-refresh-right" @click="refreshCurrent" />
-            <el-button type="text" icon="el-icon-edit" @click="edit(animation)" />
-          </el-form>
-          <!-- <div class="refresh">
-            <div>{{ animation.name }}</div>
-            <div>
-              <el-checkbox v-model="hasMask">
-                带遮罩
-              </el-checkbox>
-            </div>
-            <div>
-              perspect: <el-input-number v-model="perspective" size="mini" controls-position="right" />
-            </div>
-            <div v-for="variable in animation.variables" :key="variable.name">
-              {{ variable.name }} 
-            </div>
-            <el-button type="text" icon="el-icon-refresh-right" @click="refreshCurrent" />
-            <el-button type="text" icon="el-icon-edit" @click="edit(animation)" />
-          </div> -->
-        </div>
+
       </div>
     </section>
   </div>
@@ -66,7 +75,7 @@
 <script>
 import NavBar from '../site/components/NavBar.vue'
 import CLOUD_HILL from './cloud-hill.webp'
-import { Pagination, Button, InputNumber, Checkbox, Form, FormItem, Input } from 'element-ui'
+import { Pagination, Button, InputNumber, Checkbox, Form, FormItem, Input, Table, TableColumn } from 'element-ui'
 import types from './types'
 import RestDAO from '../utils/restdao.js'
 import StyleRegistry from '../xd-builder/utils/StyleRegistry'
@@ -81,10 +90,13 @@ export default {
     [InputNumber.name]: InputNumber,
     [Form.name]: Form,
     [Input.name]: Input,
+    [Table.name]: Table,
+    [TableColumn.name]: TableColumn,
     [FormItem.name]: FormItem
   },
   data () {
     return {
+      allFrames: [],
       hasMask: false,
       types,
       type: 'basic',
@@ -128,14 +140,22 @@ export default {
 
   mounted () {
     this.typeChange()
+    this.loadAllFrames()
   },
   methods: {
 
-    boxStyle (animation) {
+    handleCurrentChange (val) {
+      this.animation = val
+      this.animation.delay = 0
+      this.styleRegistry.addFrame(this.animation)
+    },
 
-      const style = {
+    async loadAllFrames () {
+      const response = await this.framedao.list({count: 10000})
+      this.allFrames = response.list
 
-      }
+      this.animation = this.allFrames[22]
+      this.styleRegistry.addFrame(this.animation)
     },
 
     async typeChange (type) {
@@ -219,6 +239,13 @@ export default {
   color: #0a0a0a;
   font-size: 16px;
 
+  .main-frame {
+    margin-top: 40px;
+    display: flex;
+    .table-frame-list {
+      flex: 1;
+    }
+  }
   .body {
     margin: 0 30px;
     width: 100%;
@@ -262,6 +289,7 @@ export default {
 
   .animation-box {
     height: 480px;
+    width: 800px;
     display: flex;
     .animation-preview {
       overflow: hidden;
@@ -276,7 +304,7 @@ export default {
       mask-repeat: no-repeat;
     }
     .refresh {
-      width: 480px;
+      width: 240px;
     }
   }
 

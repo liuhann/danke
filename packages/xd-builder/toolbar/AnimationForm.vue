@@ -1,6 +1,6 @@
 <template>
   <div class="animation-form-list">
-    <el-form v-for="(animation, index) in element.animation.enter" :key="index" :title="animation.title" size="mini" class="animation-form" inline>
+    <el-form :title="animation.title" size="mini" class="animation-form" inline>
       <el-form-item :label="animation.title" />
       <el-form-item label="延迟">
         <el-input-number v-model="animation.range[0]" size="mini" controls-position="right" :step="0.1" /> 秒
@@ -20,7 +20,7 @@
         </el-select>
       </el-form-item>
       <el-form-item v-for="variable in animation.variables" :key="variable.name" :label="variable.name">
-        <el-input v-model="variable.value" />
+        <el-input v-model="variable.value" style="width: 80px;"/>
       </el-form-item>
       <el-form-item> <el-button type="danger" icon="el-icon-delete" circle size="mini" @click="removeAnimation(index)" /> </el-form-item>
     </el-form>
@@ -34,12 +34,8 @@ export default {
   name: 'AnimationForm',
   mixins: [ toolbarPopMixin ],
   props: {
-    element: {
+    animation: {
       type: Object
-    },
-    type: {
-      type: String,
-      default: 'enter'
     }
   },
   data () {

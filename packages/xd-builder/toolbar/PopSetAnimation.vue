@@ -6,10 +6,22 @@
           <span>进入动画</span>
           <el-button v-if="enterAnimationPastes" type="text" size="mini" icon="el-icon-document-checked" @click="pasteAnimation('enter')" />
           <el-button type="text" size="mini" icon="el-icon-document-copy" @click="copyAnimation('enter')" />
-          <el-button type="text" size="mini" icon="el-icon-plus" @click="openAnimationChoose('enter')" />
+          <el-button type="text" size="mini" icon="el-icon-plus" @click="newFrame('enter')" />
         </div>
         <div v-if="!element.animation.enter || element.animation.enter.length === 0" class="empty">
           未设置动态效果
+        </div>
+        <div class="in-animation-list">
+          <div v-for="(step, index) in element.animation.enter" :key="index" class="animation-entry">
+            <div class="summary">
+              <el-cascader v-model="step.name" size="mini" :options="CASOptions" @change="casArray => frameChange(step, casArray)">
+              </el-cascader>
+              <div class="duration">
+              </div>
+              <el-button :icon="step.edit? 'el-icon-arrow-up': 'el-icon-arrow-down'" size="mini" type="text" @click="toggleStepShow(step)" />
+            </div>
+            <animation-form v-show="step.edit" :animation="step" />
+          </div>
         </div>
         <animation-form v-if="element.animation.enter && element.animation.enter.length" :element="element" type="enter" />
         <div class="type-title">
@@ -55,11 +67,22 @@
 
 <script>
 import cubicBeziers from '../../frames/model/cubic-beziers'
-import toolbarPopMixin from './toolbarPopMixin'
 import types from '../../frames/types'
+import toolbarPopMixin from './toolbarPopMixin'
 import RestDAO from '../../utils/restdao.js'
 import CLOUD_HILL from '../../vectors/cloud-hill.webp'
 import AnimationForm from './AnimationForm.vue'
+
+
+function foundInArray(array, key, value) {
+  const filtered = array.filter(i => i[key] === value)
+  if (filtered.length) {
+    return filtered[0]
+  } else {
+    return null
+  }
+}
+
 export default {
   name: 'PopSetAnimation',
   components: {
@@ -68,6 +91,7 @@ export default {
   mixins: [ toolbarPopMixin ],
   data () {
     return {
+      allFrames: [],
       CLOUD_HILL,
       types,
       stage: '',
@@ -81,6 +105,39 @@ export default {
     }
   },
   computed: {
+    CASOptions () {
+      const all = JSON.parse(JSON.stringify(types))
+      for (let frame of this.allFrames.filter(f => f.group && f.type)) {
+        let type = foundInArray(all, 'value', frame.type)
+        if (!type) {
+          type = {
+            value: frame.type,
+            label: frame.type,
+            children: []
+          }
+          all.push(type)
+        }
+        
+        if (!type.children) {
+          type.children = []
+        }
+        let group = foundInArray(type.children, 'value', frame.group)
+        if (!group) {
+            group = {
+              value: frame.group,
+              label: frame.group,
+              children: []
+            }
+            type.children.push(group)
+        }
+        group.children.push({
+          value: frame.name,
+          label: frame.direction,
+          frame
+        })
+      }
+      return all
+    },
     elementType () {
       if (this.element.text != null) {
         return 'text'
@@ -105,8 +162,15 @@ export default {
     this.framedao = new RestDAO(this.ctx, 'danke/animation')
   },
   mounted () {
+    this.loadAllFrames()
   },
   methods: {
+    async loadAllFrames () {
+      const result = await this.framedao.list({
+        count: 1000
+      })
+      this.allFrames = result.list
+    },
     async openAnimationChoose (type) {
       this.stage = type
       this.showAnimationChoose = true
@@ -163,6 +227,43 @@ export default {
     copyAnimation (type) {
       this.$set(this.ctx, 'animation-' + type, JSON.parse(JSON.stringify(this.element.animation[type])))
     },
+
+    frameChange (step, value) {
+      const frame = this.allFrames.filter(f => f.name === value[2])[0]
+      step.name = frame.name
+      step.variables = frame.variables
+    },
+
+    changeFrame (step, frame) {
+      step.name = frame.name
+      step.timing = frame.timing
+      step.iteration = frame.iteration
+      step.infinite = frame.infinite
+      step.range = [0, parseInt(frame.duration) / 1000]
+      step.variables = frame.variables || []
+    },
+
+    newFrame (stage) {
+      const step = {}
+
+      const frame = this.allFrames.filter(f => f.name === '')[0]
+      step.name = frame.name
+      step.timing = frame.timing
+      step.iteration = frame.iteration
+      step.infinite = frame.infinite
+      step.range = [0, parseInt(frame.duration) / 1000]
+      step.variables = frame.variables || []
+
+      this.changeFrame(info, this.allFrames[0])
+      if (!this.element.animation[stage]) {
+        this.$set(this.element.animation, stage, [])
+      }
+      this.element.animation[stage].push(info)
+    },
+
+    toggleStepShow (step) {
+      this.$set(step, 'edit', !step.edit)
+    },
     // 增加动画
     addAnimation () {
       const info = {
@@ -192,6 +293,25 @@ export default {
 <style lang="scss">
 #animation-config {
   overflow: auto;
+
+  .el-input-number.is-controls-right .el-input__inner {
+    padding-left: 5px;
+    padding-right: 32px;
+  }
+  .el-input-number--mini {
+    width: 64px;
+  }
+
+  .animation-entry {
+    .summary {
+      padding: 5px 10px;
+      display: flex;
+      line-height: 36px;
+    }
+    .duration {
+      flex: 1;
+    }
+  }
   .element-animation {
     .type-title {
       display: flex;

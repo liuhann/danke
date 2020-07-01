@@ -31,7 +31,7 @@
     <pop-set-filter v-show="focusedElement" :element="focusedElement" />
     <!--元素变换、旋转、拉伸等-->
     <pop-transform v-if="focusedElement" :element="focusedElement" />
-    <pop-set-animation v-if="focusedElement" :element="focusedElement" />
+    <pop-set-animation v-if="focusedElement" :element="focusedElement" :scene="scene"/>
     <align-element v-if="selectedElements.length > 1" :elements="selectedElements" />
     <pop-more-action v-if="focusedElement" :element="focusedElement" :scene="scene" @reset="setElementLocked" />
 

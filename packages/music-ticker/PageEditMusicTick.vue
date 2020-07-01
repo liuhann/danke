@@ -85,8 +85,10 @@ export default {
   computed: {
     radioMarks () {
       const marks = {}
+      let last = 0
       for (let tick of this.audio.ticks) {
-        marks[tick] = ''
+        marks[tick] = Math.floor(10 * (tick - last)) / 10
+        last = tick
       }
       marks[this.cutStart] = '起始点'
       marks[this.cutEnd] = '结束点'
