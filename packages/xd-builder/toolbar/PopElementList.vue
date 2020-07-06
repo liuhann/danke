@@ -11,6 +11,11 @@
           <div class="element-name">
             {{ element.name }}
           </div>
+          <div v-if="element.animation && element.animation.enter" class="duration-lines">
+            <div v-for="(step, index) in element.animation.enter" :key="index" class="duration-line">
+              <div class="inner" :style="process(step)" />
+            </div>
+          </div>
         </div>
       </draggable>
     </div>
@@ -43,6 +48,13 @@ export default {
   },
 
   methods: {
+    process (step) {
+      return {
+        left: (step.range[0] / this.scene.duration * 100) + '%',
+        width: (step.range[1] / this.scene.duration * 100) + '%'
+      }
+    },
+
     getImageUrl,
     checkElement (element, event) {
       if (!event.ctrlKey) {
@@ -51,7 +63,7 @@ export default {
         })
       }
       element.selected = true
-      this.$refs.popWrapper.dialogVisible = false
+      // this.$refs.popWrapper.dialogVisible = false
     }
   }
 
@@ -66,7 +78,6 @@ export default {
     .element-item {
       padding: 5px;
       line-height: 24px;
-      cursor: pointer;
       &:hover {
         background: #fefefe;
       }
@@ -91,8 +102,28 @@ export default {
           height: 14px;
         }
       }
+      .duration-lines {
+        width: 120px;
+        .duration-line {
+          width: 100%;
+          position: relative;
+          background: #eee;
+          border-radius: 4px;
+          height: 4px;
+          .inner {
+            position: absolute;
+            top: 0;
+            background: green;
+            height: 4px;;
+          }
+        }
+      }
       .element-name {
         margin: 0 5px;
+        flex: 1;
+        overflow: hidden;
+        text-overflow:ellipsis;
+        white-space: nowrap;
       }
       display: flex;
     }

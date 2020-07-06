@@ -6,7 +6,8 @@
       <div class="table-frame-list">
         <el-table :data="allFrames" size="mini" :height="800" @current-change="handleCurrentChange">
           <el-table-column type="index" />
-          <el-table-column prop="group" label="组" sortable />
+          <el-table-column prop="type" label="分类" sortable :filters="typeFilter" :filter-method="typeFilterHandler" />
+          <el-table-column prop="group" label="组" sortable :filters="groupFilter" :filter-method="groupFilterHandler" />
           <el-table-column prop="name" label="名称" />
         </el-table>
       </div>
@@ -65,7 +66,6 @@ import { assignVariables } from '../xd-builder/mixins/renderUtils'
 export default {
   name: 'PageFrameList',
   components: {
-    NavBar,
     [Button.name]: Button,
     [Checkbox.name]: Checkbox,
     [InputNumber.name]: InputNumber,
@@ -106,6 +106,20 @@ export default {
         tags: this.type
       }
     },
+
+    groupFilter () {
+      return Array.from(new Set(this.allFrames.map(frame => frame.group))).map(g => ({
+        text: g,
+        value: g
+      }))
+    },
+
+    typeFilter () {
+        return types.map(type => ({
+          text: type.label,
+          value: type.value
+        }))
+    },
     boxStyle () {
       const style = {
         perspective: this.perspective + 'px'
@@ -126,6 +140,13 @@ export default {
   },
 
   methods: {
+    typeFilterHandler(value, row, column) {
+      return row['type'] === value;
+    },
+    groupFilterHandler(value, row, column) {
+      return row['group'] === value;
+    },
+
     handleCurrentChange (val) {
       this.animation = val
       this.animation.delay = 0

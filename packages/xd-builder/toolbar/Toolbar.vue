@@ -415,24 +415,18 @@ export default {
     },
 
     playScene () {
+      const elements = this.scene.elements
       for (let element of this.scene.elements) {
-        this.$set(element, 'stage', 'enter')
-      }
-      const duration = this.scene.duration || 5
-      const exitDuration = this.scene.exit || 1
-
-      if (this.scene.renderExit) {
-        setTimeout(() => {
-          for (let element of this.scene.elements) {
-            this.$set(element, 'stage', 'exit')
-          }
-        }, duration * 1000)
-      }
-      setTimeout(() => {
-        for (let element of this.scene.elements) {
           this.$set(element, 'stage', '')
         }
-      }, (duration + exitDuration) * 1000)
+      this.scene.elements = []
+
+      this.$nextTick(() => {
+        this.scene.elements = elements
+        for (let element of this.scene.elements) {
+          this.$set(element, 'stage', 'enter')
+        }
+      })
     },
 
     openPen (type) {

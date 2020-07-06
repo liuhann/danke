@@ -11,7 +11,7 @@
         <div v-if="!element.animation.enter || element.animation.enter.length === 0" class="empty">
           未设置动态效果
         </div>
-        <div class="in-animation-list">
+        <draggable v-model="element.animation.enter" class="in-animation-list">
           <div v-for="(step, index) in element.animation.enter" :key="index" class="animation-entry">
             <div class="summary">
               <el-cascader v-model="step.name" size="mini" :options="CASOptions" @change="casArray => frameChange(step, casArray)">
@@ -23,7 +23,7 @@
             </div>
             <animation-form v-show="step.edit" :animation="step" />
           </div>
-        </div>
+        </draggable>
         <div class="type-title">
           <span>离开动画</span>
           <el-button type="text" size="mini" icon="el-icon-plus" @click="newFrame('exist')" />
@@ -50,6 +50,7 @@
 </template>
 
 <script>
+import draggable from 'vuedraggable'
 import cubicBeziers from '../../frames/model/cubic-beziers'
 import types from '../../frames/types'
 import toolbarPopMixin from './toolbarPopMixin'

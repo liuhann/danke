@@ -17,10 +17,9 @@
         <el-option v-for="(value, key) in cubicBerziers" :key="key" :label="key" :value="value" />
       </el-select>
     </el-form-item>
-    <el-form-item v-for="variable in animation.variables" :key="variable.name" :label="variable.title || variable.name">
+    <el-form-item v-for="variable in animation.variables" :key="variable.name" :label="variable.label || variable.name">
       <el-input v-model="variable.value" style="width: 80px;" />
     </el-form-item>
-    <el-form-item> <el-button type="danger" icon="el-icon-delete" circle size="mini" @click="removeAnimation(index)" /> </el-form-item>
   </el-form>
 </template>
 

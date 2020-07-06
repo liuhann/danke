@@ -85,7 +85,7 @@
                   预览
                 </el-button>
                 <el-button size="mini" type="text" @click="$router.replace('/frames')">
-                  返回
+                  返回@
                 </el-button>
               </el-form-item>
             </el-form>
@@ -323,6 +323,8 @@ export default {
     background-color: #666;
     width: 160px;
     height: 160px;
+    --width: 160px;
+    --height: 160px;
     box-sizing: border-box;
   }
 
