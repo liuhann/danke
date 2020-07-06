@@ -64,7 +64,7 @@ export default {
      * @param {string} workId 作品Id
      */
     async loadWork (workId) {
-      let loadingInstance1 = Loading.service({ fullscreen: true, text: '加载作品中' });
+      let loadingInstance1 = Loading.service({ fullscreen: true, text: '加载作品中' })
       const work = await this.workdao.getOne(workId)
       if (!work.viewBox) {
         work.viewBox = work.screen

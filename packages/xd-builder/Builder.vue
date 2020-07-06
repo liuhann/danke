@@ -102,6 +102,7 @@ export default {
         this.currentScene = this.work.scenes[0]
         this.takeSnapshot()
       }
+      this.ctx.styleRegisty.loadAllFrames()
     },
 
     insert (type, object) {

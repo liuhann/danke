@@ -1,3 +1,4 @@
+import RestDAO from '../../utils/restdao.js'
 /**
  * 创建样式标签
  * @param {*} id
@@ -78,10 +79,21 @@ export const fontFamilies = [{
 export default class StyleRegistry {
   constructor () {
     this.sheet = createSheet('style-registry')
+    this.framedao = new RestDAO(this.ctx, 'danke/animation')
     this.styles = {}
     this.keyframes = {}
     this.svgs = {}
     this.fonts = {}
+  }
+
+  async loadAllFrames () {
+    const result = await this.framedao.list({
+      count: 1000
+    })
+
+    for (let frame of result.list) {
+      this.addFrame(frame)
+    }
   }
 
   /**
@@ -239,12 +251,12 @@ export default class StyleRegistry {
    * 获取、初始化作品里所有元素的样式资源
    */
   initWorkStyleResource (work) {
-    for (let name in work.frames) {
-      this.addFrame({
-        name,
-        cssFrame: work.frames[name]
-      })
-    }
+    // for (let name in work.frames) {
+    //   this.addFrame({
+    //     name,
+    //     cssFrame: work.frames[name]
+    //   })
+    // }
     for (let name in work.styles) {
       this.addStyle({
         name,
