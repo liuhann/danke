@@ -1,14 +1,11 @@
 <template>
   <div id="page-frames-list"
-       class="site-page"
-  >
-    <nav-bar />
-    <el-button type="success" @click="newObject">新建</el-button>
+       class="site-page">
+    <el-button size="mini" @click="newObject">新建</el-button>
     <div class="main-frame">
       <div class="table-frame-list">
         <el-table :data="allFrames" size="mini" :height="800" @current-change="handleCurrentChange">
           <el-table-column type="index" />
-          <el-table-column prop="type" label="类型" sortable />
           <el-table-column prop="group" label="组" sortable />
           <el-table-column prop="name" label="名称" />
         </el-table>
@@ -28,10 +25,13 @@
             <el-input-number v-model="perspective" size="mini" controls-position="right" />px
           </el-form-item>
           <el-form-item v-for="variable in animation.variables" :key="variable.name" :label="variable.name">
-            <el-input v-model="variable.value" size="mini" />
+            <el-input v-model="variable.value" size="mini" :width="200" />
           </el-form-item>
-          <el-button type="text" icon="el-icon-refresh-right" @click="refreshCurrent" />
-          <el-button type="text" icon="el-icon-edit" @click="edit(animation)" />
+          <el-form-item>
+            <el-button icon="el-icon-refresh-right" @click="refreshCurrent" />
+            <el-button icon="el-icon-edit" @click="edit(animation)" />
+            <el-button icon="el-icon-delete" @click="deleteObject(animation)" />
+          </el-form-item>
         </el-form>
         <!-- <div class="refresh">
           <div>{{ animation.name }}</div>
@@ -51,31 +51,13 @@
         </div> -->
       </div>
     </div>
-    <section class="first section list-section">
-      <div class="body">
-        <div class="category">
-          <span v-for="t in types" :key="t.name" :class="type===t.value ? 'checked': ''" @click="typeChange(t.value)">{{ t.label }}</span>
-        </div>
-        <div class="type-groups">
-          <div v-for="g in groups" :key="g" class="group" :class="g=== group? 'current': ''" @click="groupChange(g)">
-            {{ g }}
-          </div>
-        </div>
-        <div class="animations">
-          <div v-for="a in animations" :key="a.name" class="animation" :class="a.name === animation.name? 'current': ''" @click="animationChange(a)">
-            {{ a.direction }}
-          </div>
-        </div>
-
-      </div>
-    </section>
   </div>
 </template>
 
 <script>
 import NavBar from '../site/components/NavBar.vue'
 import CLOUD_HILL from './cloud-hill.webp'
-import { Pagination, Button, InputNumber, Checkbox, Form, FormItem, Input, Table, TableColumn } from 'element-ui'
+import { Pagination, Button, InputNumber, Checkbox, Form, FormItem, Input, Table, TableColumn, MessageBox } from 'element-ui'
 import types from './types'
 import RestDAO from '../utils/restdao.js'
 import StyleRegistry from '../xd-builder/utils/StyleRegistry'
@@ -84,7 +66,6 @@ export default {
   name: 'PageFrameList',
   components: {
     NavBar,
-    [Pagination.name]: Pagination,
     [Button.name]: Button,
     [Checkbox.name]: Checkbox,
     [InputNumber.name]: InputNumber,
@@ -129,7 +110,9 @@ export default {
       const style = {
         perspective: this.perspective + 'px'
       }
-      assignVariables(style, this.animation.variables)
+      if (this.animation) {
+        assignVariables(style, this.animation.variables)
+      }
       return style
     }
   },
@@ -139,11 +122,10 @@ export default {
   },
 
   mounted () {
-    this.typeChange()
     this.loadAllFrames()
   },
-  methods: {
 
+  methods: {
     handleCurrentChange (val) {
       this.animation = val
       this.animation.delay = 0
@@ -156,37 +138,6 @@ export default {
 
       this.animation = this.allFrames[22]
       this.styleRegistry.addFrame(this.animation)
-    },
-
-    async typeChange (type) {
-      if (type) {
-        this.type = type
-      }
-      await this.loadTypeGroup()
-      this.groupChange(this.groups[0])
-    },
-    async loadTypeGroup () {
-      const result = await this.framedao.distinct('group', {
-        type: this.type
-      })
-      this.groups = result
-    },
-
-    async groupChange(group) {
-      this.group = group
-      await this.loadGroupAnimations()
-      if (this.animations.length) {
-        this.animation = this.animations[0]
-        this.styleRegistry.addFrame(this.animation)
-      }
-    },
-
-    async loadGroupAnimations () {
-      const result = await this.framedao.list({
-        type: this.type,
-        group: this.group
-      })
-      this.animations = result.list
     },
 
     refreshCurrent () {
@@ -225,6 +176,12 @@ export default {
       this.loadObjects()
     },
 
+    async deleteObject (object) {
+      await MessageBox.confirm('确认删除')
+      await this.framedao.delete(object)
+      this.loadAllFrames()
+    },
+
     // 新窗口编辑
     edit (object) {
       window.open('/frame/edit?id=' + object._id)
@@ -238,12 +195,13 @@ export default {
   min-height: 100%;
   color: #0a0a0a;
   font-size: 16px;
+  padding: 20px;
 
   .main-frame {
     margin-top: 40px;
     display: flex;
     .table-frame-list {
-      flex: 1;
+      width: 430px;
     }
   }
   .body {
@@ -252,7 +210,6 @@ export default {
   }
   .list-section {
     background: #fff;
-    padding: 3rem 0;
     .category {
       margin-top: 20px;
       text-align: left;
@@ -289,7 +246,7 @@ export default {
 
   .animation-box {
     height: 480px;
-    width: 800px;
+    flex: 1;
     display: flex;
     .animation-preview {
       overflow: hidden;
@@ -299,12 +256,15 @@ export default {
       align-items: center;
     }
     img {
-      width: 480px;
-      height: 320px;
+      width: 120px;
+      height: 80px;
       mask-repeat: no-repeat;
     }
     .refresh {
-      width: 240px;
+      width: 320px;
+      border: 1px solid #eee;
+      border-radius: 5px;
+      background: #fbfbfb;
     }
   }
 

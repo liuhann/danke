@@ -18,47 +18,31 @@
               </el-cascader>
               <div class="duration">
               </div>
+              <el-button icon="el-icon-delete" size="mini" type="text" @click="deleteStep('enter', index)" />
               <el-button :icon="step.edit? 'el-icon-arrow-up': 'el-icon-arrow-down'" size="mini" type="text" @click="toggleStepShow(step)" />
             </div>
             <animation-form v-show="step.edit" :animation="step" />
           </div>
         </div>
-        <animation-form v-if="element.animation.enter && element.animation.enter.length" :element="element" type="enter" />
         <div class="type-title">
           <span>离开动画</span>
-          <el-button size="mini" type="text" icon="el-icon-plus" @click="openAnimationChoose('exist')" />
+          <el-button type="text" size="mini" icon="el-icon-plus" @click="newFrame('exist')" />
         </div>
         <div v-if="!element.animation.exist || element.animation.exist.length === 0" class="empty">
           未设置动态效果
         </div>
-        <animation-form v-if="element.animation.exist && element.animation.exist.length" :element="element" type="exist" />
-      </div>
-      <div v-show="showAnimationChoose" class="animations-choose">
-        <div class="animation-category">
-          <el-select v-model="type" size="mini" @change="typeChange">
-            <el-option v-for="t in types" :key="t.value" :label="t.label" :value="t.value" />
-          </el-select>
-          <el-select v-model="group" size="mini" @change="groupChange">
-            <el-option v-for="g in groups" :key="g" :label="g" :value="g" />
-          </el-select>
-        </div>
-        <div class="animations">
-          <div v-for="a in animations" :key="a.name" class="animation" :class="a.name === animation.name? 'current': ''" @click="animationChange(a)">
-            {{ a.direction }}
+        <div class="out-animation-list">
+          <div v-for="(step, index) in element.animation.exists" :key="index" class="animation-entry">
+            <div class="summary">
+              <el-cascader v-model="step.name" size="mini" :options="CASOptions" @change="casArray => frameChange(step, casArray)">
+              </el-cascader>
+              <div class="duration">
+              </div>
+              <el-button icon="el-icon-delete" size="mini" type="text" @click="deleteStep('enter', index)" />
+              <el-button :icon="step.edit? 'el-icon-arrow-up': 'el-icon-arrow-down'" size="mini" type="text" @click="toggleStepShow(step)" />
+            </div>
+            <animation-form v-show="step.edit" :animation="step" />
           </div>
-        </div>
-        <div class="animation-box">
-          <img :src="CLOUD_HILL" :class="animation && animation.name">
-          <div class="refresh">
-            <i class="el-icon-refresh-right" @click="refreshCurrent" />
-          </div>
-        </div>
-        <div>
-          <el-button size="small" @click="showAnimationChoose = false">
-            取消
-          </el-button> <el-button type="primary" size="small" @click="addAnimation">
-            选择
-          </el-button>
         </div>
       </div>
     </div>
@@ -106,6 +90,21 @@ export default {
   },
   computed: {
     CASOptions () {
+      // const groups = Array.from(new Set(this.allFrames.map(f => f.group))).map(group => ({
+      //   value: group,
+      //   label: group,
+      //   children: []
+      // }))
+
+      // for (let frame of this.allFrames) {
+      //   groups.filter(g => g.value === frame.group)[0].children.push({
+      //     value: frame.name,
+      //     label: frame.direction,
+      //     frame
+      //   })
+      // }
+
+      // return groups
       const all = JSON.parse(JSON.stringify(types))
       for (let frame of this.allFrames.filter(f => f.group && f.type)) {
         let type = foundInArray(all, 'value', frame.type)
@@ -169,6 +168,10 @@ export default {
       const result = await this.framedao.list({
         count: 1000
       })
+
+      for (let frame of result.list) {
+        this.ctx.styleRegistry.addFrame(frame)
+      }
       this.allFrames = result.list
     },
     async openAnimationChoose (type) {
@@ -234,19 +237,11 @@ export default {
       step.variables = frame.variables
     },
 
-    changeFrame (step, frame) {
-      step.name = frame.name
-      step.timing = frame.timing
-      step.iteration = frame.iteration
-      step.infinite = frame.infinite
-      step.range = [0, parseInt(frame.duration) / 1000]
-      step.variables = frame.variables || []
-    },
-
     newFrame (stage) {
       const step = {}
 
-      const frame = this.allFrames.filter(f => f.name === '')[0]
+      //默认设置一个frame
+      let frame = this.allFrames.filter(f => f.name === 'slide-any-in')[0] || this.allFrames[0]
       step.name = frame.name
       step.timing = frame.timing
       step.iteration = frame.iteration
@@ -254,15 +249,17 @@ export default {
       step.range = [0, parseInt(frame.duration) / 1000]
       step.variables = frame.variables || []
 
-      this.changeFrame(info, this.allFrames[0])
       if (!this.element.animation[stage]) {
         this.$set(this.element.animation, stage, [])
       }
-      this.element.animation[stage].push(info)
+      this.element.animation[stage].push(JSON.parse(JSON.stringify(step)))
     },
 
     toggleStepShow (step) {
       this.$set(step, 'edit', !step.edit)
+    },
+    deleteStep (stage, index) {
+      this.element.animation[stage].splice(index, 1)
     },
     // 增加动画
     addAnimation () {

@@ -181,6 +181,7 @@ export default {
   },
   mounted () {
     this.initEditor()
+    this.loadTypeGroup()
     if (this.$route.query.id) {
       this.loadFrame(this.$route.query.id)
     }
@@ -200,9 +201,7 @@ export default {
       this.animation = result
     },
     async loadTypeGroup () {
-      const result = await this.framedao.distinct('group', {
-        type: this.animation.type
-      })
+      const result = await this.framedao.distinct('group')
       this.groups = result
     },
 
