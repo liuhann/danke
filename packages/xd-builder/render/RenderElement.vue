@@ -118,7 +118,9 @@ export default {
         '--width': this.element.width + 'px',
         '--height': this.element.height + 'px'
       }
+      // 变量配置信息
       assignVariables(style, this.element.variables)
+      // 位置信息
       Object.assign(style, getRectPositionStyle(this.element, this.viewBox, this.viewPort))
       Object.assign(style, this.elementAnimationStyle)
       if (this.element.text != null) {
@@ -147,7 +149,7 @@ export default {
         style.objectFit = this.element.fit
       }
       
-      return Object.assign({}, this.element.style, style)
+      return Object.assign({}, this.element.style, style, this.elementInnerAnimationStyle)
     },
 
     textTransformStyle () {
@@ -166,13 +168,9 @@ export default {
       return style
     },
 
-    elementInnerStyle() {
-
-    },
     /**
      * 取 element.animations 计算元素的动画样式
      */
-
     elementAnimationStyle () {
       const element = this.element
       const style = {}
@@ -182,15 +180,58 @@ export default {
           // 单个动画
           if (animations.length === 1) {
             const animation = animations[0]
-            assignVariables(style, animation.variables)
-            style.animation = `${animation.name} ${animation.range[1]}s ${animation.timing} ${animation.range[0]}s ${animation.infinite? 'infinite': animation.iteration} both`
+            // 非内部动画 
+            if (!animation.inner) {
+              assignVariables(style, animation.variables)
+              style.animation = `${animation.name} ${animation.range[1]}s ${animation.timing} ${animation.range[0]}s ${animation.infinite? 'infinite': animation.iteration} both`
+            }
           } else {
             const animationsOrdered = []
             // 多个动画次序或者重叠播放
             for (let i = 0; i < animations.length; i++) {
               const animation = animations[i]
+              // // 非内部动画 
+              if (!animation.inner) {
+                assignVariables(style, animation.variables)
+                animationsOrdered.push(`${animation.name} ${animation.range[1]}s ${animation.timing} ${animation.range[0]}s ${animation.infinite? 'infinite': animation.iteration} both`)
+              }
+            }
+            if (animationsOrdered.length) {
+              style.animation = animationsOrdered.join(',')
+            }
+          }
+        }
+      }
+      return style
+    },
+
+    /**
+     * 取 element.animations 计算元素的动画样式
+     */
+    elementInnerAnimationStyle () {
+      const element = this.element
+      const style = {}
+      if (element.animation) {
+        const animations = element.animation[this.stage]
+        if (animations && animations.length) {
+          // 单个动画
+          if (animations.length === 1) {
+            const animation = animations[0]
+            // 非内部动画 
+            if (animation.inner) {
               assignVariables(style, animation.variables)
-              animationsOrdered.push(`${animation.name} ${animation.range[1]}s ${animation.timing} ${animation.range[0]}s ${animation.infinite? 'infinite': animation.iteration} both`)
+              style.animation = `${animation.name} ${animation.range[1]}s ${animation.timing} ${animation.range[0]}s ${animation.infinite? 'infinite': animation.iteration} both`
+            }
+          } else {
+            const animationsOrdered = []
+            // 多个动画次序或者重叠播放
+            for (let i = 0; i < animations.length; i++) {
+              const animation = animations[i]
+              // // 非内部动画 
+              if (animation.inner) {
+                assignVariables(style, animation.variables)
+                animationsOrdered.push(`${animation.name} ${animation.range[1]}s ${animation.timing} ${animation.range[0]}s ${animation.infinite? 'infinite': animation.iteration} both`)
+              }
             }
             if (animationsOrdered.length) {
               style.animation = animationsOrdered.join(',')

@@ -1,6 +1,7 @@
 <template>
   <div id="page-frames-list"
-       class="site-page">
+       class="site-page"
+  >
     <el-button size="mini" @click="newObject">新建</el-button>
     <div class="main-frame">
       <div class="table-frame-list">
@@ -198,7 +199,6 @@ export default {
     },
 
     async deleteObject (object) {
-      await MessageBox.confirm('确认删除')
       await this.framedao.delete(object)
       this.loadAllFrames()
     },
