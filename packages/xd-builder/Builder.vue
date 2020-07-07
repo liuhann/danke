@@ -84,7 +84,7 @@ export default {
   created () { },
 
   mounted () {
-    this.ctx.styleRegistry = new StyleRegistry()
+    this.ctx.styleRegistry = new StyleRegistry(this.ctx)
     this.onMounted()
   },
   methods: {

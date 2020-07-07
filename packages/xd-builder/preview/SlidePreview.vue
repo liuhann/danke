@@ -41,7 +41,6 @@ export default {
     }
   },
   computed: {
-
     currentSecondsFormated() {
       return new Date(this.currentSeconds).toISOString().replace(/.*(\d{2}:\d{2}.\d{2}).*/, "$1");
     },
@@ -92,7 +91,7 @@ export default {
   },
   created () {
     this.likedao = new RestDAO(this.ctx, 'danke/like')
-    this.ctx.styleRegistry = new StyleRegistry()
+    this.ctx.styleRegistry = new StyleRegistry(this.ctx)
   },
   mounted () {
     let workId = this.$route.query.work || this.$route.params.work
@@ -121,6 +120,7 @@ export default {
   },
   methods: {
     async loadAndInitDevice (workId) {
+      await this.ctx.styleRegistry.loadAllFrames()
       // 加载作品
       await this.loadWork(workId)
       // 设置显示屏幕大小

@@ -1,15 +1,16 @@
 <template>
-<pop-wrapper
-  title="设置过滤效果"
-  icon="el-icon-set-up"
-  @show="initFilter"
-  :width="360">
-  <div class="filter-item" v-for="filter in filters" :key="filter.name">
-    <el-checkbox v-model="filter.enabled">{{filter.title}}</el-checkbox>
-    <el-input-number :disabled="!filter.enabled" size="mini" controls-position="right" v-model="filter.value" :step="filter.step || 1"/>
-  </div>
-  <el-button type="success" size="mini" @click="setElementFilter">设置</el-button>
-</pop-wrapper>
+  <pop-wrapper
+    title="设置过滤效果"
+    icon="el-icon-set-up"
+    :width="360"
+    @show="initFilter"
+  >
+    <div v-for="filter in filters" :key="filter.name" class="filter-item">
+      <el-checkbox v-model="filter.enabled">{{ filter.title }}</el-checkbox>
+      <el-input-number v-model="filter.value" :disabled="!filter.enabled" size="mini" controls-position="right" :step="filter.step || 1" />
+    </div>
+    <el-button type="success" size="mini" @click="setElementFilter">设置</el-button>
+  </pop-wrapper>
 </template>
 
 <script>
@@ -28,7 +29,8 @@ const defaultFilter = [{
   enabled: false,
   name: 'brightness',
   value: 1,
-  step: .01
+  step: .01,
+  end: '%'
 }, {
   enabled: false,
   title: '对比度',

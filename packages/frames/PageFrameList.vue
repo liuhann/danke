@@ -9,6 +9,7 @@
           <el-table-column type="index" />
           <el-table-column prop="type" label="分类" sortable :filters="typeFilter" :filter-method="typeFilterHandler" />
           <el-table-column prop="group" label="组" sortable :filters="groupFilter" :filter-method="groupFilterHandler" />
+          <el-table-column prop="direction" label="组" sortable />
           <el-table-column prop="name" label="名称" />
         </el-table>
       </div>

@@ -77,9 +77,9 @@ export const fontFamilies = [{
 }]
 
 export default class StyleRegistry {
-  constructor () {
+  constructor (ctx) {
     this.sheet = createSheet('style-registry')
-    this.framedao = new RestDAO(this.ctx, 'danke/animation')
+    this.framedao = new RestDAO(ctx, 'danke/animation')
     this.styles = {}
     this.keyframes = {}
     this.svgs = {}

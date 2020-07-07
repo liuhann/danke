@@ -25,6 +25,9 @@
           <el-option label="拉伸" value="fill" />
         </el-select>
       </el-form-item>
+      <el-form-item label="视角高度">
+        <el-input-number v-model="element.style.perspective" controls-position="right" size="mini" />
+      </el-form-item>
       <el-form-item label="次序">
         <el-button-group size="mini">
           <el-button @click="moveElementTop">顶层</el-button>

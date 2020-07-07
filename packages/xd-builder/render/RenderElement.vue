@@ -1,7 +1,7 @@
 <template>
 <div :id="'element-' + element.id"
      @click="elementClicked"
-     class="element" :class="elementClass" :style="elementWrapperStyle">
+     class="element" :style="elementWrapperStyle">
   <!--图片渲染-->
   <img v-if="element.url" :id="'img-' + (element.name || element.id)" :src="getImageUrl(element.url, viewPort.width * 2, viewPort.height * 2)" :style="elementStyle">
   <div v-else-if="element.content" class="svg-content" v-html="element.content" :style="elementStyle"/>
@@ -122,7 +122,7 @@ export default {
       assignVariables(style, this.element.variables)
       // 位置信息
       Object.assign(style, getRectPositionStyle(this.element, this.viewBox, this.viewPort))
-      Object.assign(style, this.elementAnimationStyle)
+      // Object.assign(style, this.elementAnimationStyle)
       if (this.element.text != null) {
         Object.assign(style, this.element.style)
       }
@@ -139,7 +139,7 @@ export default {
         })
       }
       // 按大小指定视角
-      style.perspective = this.element.width + 'px'
+      style.perspective = (this.element.style.perspective || this.element.width) + 'px'
       return style
     },
 
@@ -149,7 +149,7 @@ export default {
         style.objectFit = this.element.fit
       }
       
-      return Object.assign({}, this.element.style, style, this.elementInnerAnimationStyle)
+      return Object.assign({}, this.element.style, style, this.elementAnimationStyle)
     },
 
     textTransformStyle () {
