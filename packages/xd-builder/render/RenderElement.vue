@@ -193,7 +193,7 @@ export default {
               // // 非内部动画 
               if (!animation.inner) {
                 assignVariables(style, animation.variables)
-                animationsOrdered.push(`${animation.name} ${animation.range[1]}s ${animation.timing} ${animation.range[0]}s ${animation.infinite? 'infinite': animation.iteration} both`)
+                animationsOrdered.push(`${animation.name} ${animation.range[1]}s ${animation.timing} ${animation.range[0]}s ${animation.infinite? 'infinite': animation.iteration} ${i===0? 'backwards': ''}`)
               }
             }
             if (animationsOrdered.length) {

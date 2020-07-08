@@ -36,22 +36,6 @@
             <el-button icon="el-icon-delete" @click="deleteObject(animation)" />
           </el-form-item>
         </el-form>
-        <!-- <div class="refresh">
-          <div>{{ animation.name }}</div>
-          <div>
-            <el-checkbox v-model="hasMask">
-              带遮罩
-            </el-checkbox>
-          </div>
-          <div>
-            perspect: <el-input-number v-model="perspective" size="mini" controls-position="right" />
-          </div>
-          <div v-for="variable in animation.variables" :key="variable.name">
-            {{ variable.name }} 
-          </div>
-          <el-button type="text" icon="el-icon-refresh-right" @click="refreshCurrent" />
-          <el-button type="text" icon="el-icon-edit" @click="edit(animation)" />
-        </div> -->
       </div>
     </div>
   </div>
