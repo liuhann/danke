@@ -5,7 +5,15 @@
     <el-button size="mini" @click="newObject">新建</el-button>
     <div class="main-frame">
       <div class="table-frame-list">
-        <el-table :data="allFrames" size="mini" :height="800" @current-change="handleCurrentChange">
+        <div style="display:flex">
+          <el-select v-model="type">
+            <el-option v-for="t in types" :key="t.value" :value="t.value" :label="t.label" />
+          </el-select>
+          <el-select v-model="group">
+            <el-option v-for="g in groups" :key="g" :value="g" :label="g" />
+          </el-select>
+        </div>
+        <el-table :data="filteredFrames" size="mini" :height="800" @current-change="handleCurrentChange">
           <el-table-column type="index" />
           <el-table-column prop="type" label="分类" sortable :filters="typeFilter" :filter-method="typeFilterHandler" />
           <el-table-column prop="group" label="组" sortable :filters="groupFilter" :filter-method="groupFilterHandler" />
@@ -44,7 +52,7 @@
 <script>
 import NavBar from '../site/components/NavBar.vue'
 import CLOUD_HILL from './cloud-hill.webp'
-import { Pagination, Button, InputNumber, Checkbox, Form, FormItem, Input, Table, TableColumn, MessageBox } from 'element-ui'
+import { Pagination, Button, InputNumber, Checkbox, Form, FormItem, Input, Table, TableColumn, MessageBox, Select, Option } from 'element-ui'
 import types from './types'
 import RestDAO from '../utils/restdao.js'
 import StyleRegistry from '../xd-builder/utils/StyleRegistry'
@@ -58,6 +66,8 @@ export default {
     [Form.name]: Form,
     [Input.name]: Input,
     [Table.name]: Table,
+    [Select.name]: Select,
+    [Option.name]: Option,
     [TableColumn.name]: TableColumn,
     [FormItem.name]: FormItem
   },
@@ -66,11 +76,10 @@ export default {
       allFrames: [],
       hasMask: false,
       types,
-      type: 'basic',
+      type: '',
       perspective: 400,
       showAnimationChoose: false,
       group: '',
-      groups: [],
       animation: {},
       animations: [],
       restPath: 'danke/animation',
@@ -87,6 +96,11 @@ export default {
         return {}
       }
     },
+
+    groups () {
+      return Array.from(new Set(this.allFrames.filter(f => f.type === this.type).map(f => f.group)))
+    },
+
     filter () {
       return {
         tags: this.type
@@ -98,6 +112,12 @@ export default {
         text: g,
         value: g
       }))
+    },
+
+    filteredFrames () {
+      return this.allFrames.filter(frame => {
+        return (this.type === '' || frame.type === this.type) && (this.group === '' || frame.group === this.group);
+      })
     },
 
     typeFilter () {
