@@ -21,8 +21,8 @@
           <el-table-column prop="name" label="名称" />
         </el-table>
       </div>
-      <div class="animation-box" :style="boxStyle">
-        <div class="animation-preview">
+      <div class="animation-box">
+        <div class="animation-preview" :style="boxStyle">
           <img :src="CLOUD_HILL" :style="chillStyle" :class="animation && animation.name">
         </div>
         <el-form size="mini" class="refresh" label-width="80px">
@@ -35,7 +35,7 @@
           <el-form-item label="视角">
             <el-input-number v-model="perspective" size="mini" controls-position="right" />px
           </el-form-item>
-          <el-form-item v-for="variable in animation.variables" :key="variable.name" :label="variable.name">
+          <el-form-item v-for="variable in animation.variables" :key="variable.name" :label="variable.label">
             <el-input v-model="variable.value" size="mini" :width="200" />
           </el-form-item>
           <el-form-item>
