@@ -1,10 +1,10 @@
 export default {
   routes: [{
-    path: '/style/edit',
-    component: () => import(/* webpackChunkName: "style-edit" */'./PageStyleEdit.vue')
+    path: '/filter/edit',
+    component: () => import(/* webpackChunkName: "style-edit" */'./PageFilterEdit.vue')
   }, {
-    path: '/style/list',
-    component: () => import(/* webpackChunkName: "style-edit" */'./PageStyleList.vue')
+    path: '/filter/list',
+    component: () => import(/* webpackChunkName: "style-edit" */'./PageFilterList.vue')
   }],
   async onload (ctx) {
   }

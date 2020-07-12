@@ -86,6 +86,17 @@ export default class StyleRegistry {
     this.fonts = {}
   }
 
+  clear () {
+    if (this.sheet && this.sheet.parentElement) {
+      this.sheet.parentElement.removeChild(this.sheet)
+    }
+    this.sheet = createSheet('style-registry')
+    this.styles = {}
+    this.keyframes = {}
+    this.svgs = {}
+    this.fonts = {}
+  }
+
   async loadAllFrames () {
     const result = await this.framedao.list({
       count: 1000
@@ -127,7 +138,7 @@ export default class StyleRegistry {
     if (!this.styles[style.name]) {
       this.styles[style.name] = style.cssContent
       // 用2个回车来切分样式表中多个
-      const splits = style.cssContent.split('\n\n')
+      const splits = style.cssContent.split('\n\r')
       for (let css of splits) {
         if (css && css.trim()) {
           try {
@@ -164,7 +175,7 @@ export default class StyleRegistry {
   /**
    * 收集所有的作品使用颜色
    */
-  getWorkColors(work) {
+  getWorkColors (work) {
     let colors = []
     for (let scene of work.scenes) {
       colors = colors.concat(this.getColorsFromStyle(scene.style))

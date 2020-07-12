@@ -1,46 +1,48 @@
 <template>
-<div id="clippath-editor">
-  <div class="clippath-tools">
-    <div class="field-item">
-      <label>填充</label>
-      <el-color-picker size="mini" v-model="color" show-alpha/>
+  <div id="clippath-editor">
+    <div class="clippath-tools">
+      <div class="field-item">
+        <label>填充</label>
+        <el-color-picker v-model="color" size="mini" show-alpha />
+      </div>
+      <div class="field-item">
+        <label>边宽</label>
+        <el-input-number v-model="strokeWidth" size="mini" controls-position="right" />
+      </div>
+      <div class="field-item">
+        <label>颜色</label>
+        <el-color-picker v-model="strokeColor" size="mini" show-alpha />
+      </div>
+      <div class="field-item">
+        <label>闭合</label>
+        <el-checkbox v-model="closePath" />
+      </div>
+      <div class="field-item">
+        <div class="action" @click="removePoint">删除节点</div>
+      </div>
+      <div class="field-item align-right">
+        <i class="el-icon-close" @click="closePathEditor" />
+        <i class="el-icon-check" @click="confirmPath" />
+      </div>
     </div>
-    <div class="field-item">
-      <label>边宽</label>
-      <el-input-number size="mini" controls-position="right" v-model="strokeWidth"/>
-    </div>
-    <div class="field-item">
-      <label>颜色</label>
-      <el-color-picker size="mini" v-model="strokeColor" show-alpha/>
-    </div>
-    <div class="field-item">
-      <label>闭合</label>
-      <el-checkbox v-model="closePath"/>
-    </div>
-    <div class="field-item">
-      <div class="action" @click="removePoint">删除节点</div>
-    </div>
-    <div class="field-item align-right">
-      <i class="el-icon-close" @click="closePathEditor"/>
-      <i class="el-icon-check" @click="confirmPath"/>
+    <div class="clippath-container">
+      <div class="scene-back" :style="{
+        left: viewPortRect.left + 'px',
+        top: viewPortRect.top + 'px',
+        background: work.color
+      }"
+      >
+        <render-scene :scene="scene" :view-port="viewPortRect" :view-box="viewBox" />
+      </div>
+      <div id="paint-container" class="paint-container" :style="{
+        left: viewPortRect.left + 'px',
+        top: viewPortRect.top + 'px'
+      }"
+      >
+        <Container ref="container" :w="viewPortRect.width" :h="viewPortRect.height" :close-path="closePath" :points="points" :color="color" :stroke-width="strokeWidth" :stroke-color="strokeColor" />
+      </div>
     </div>
   </div>
-  <div class="clippath-container">
-    <div class="scene-back" :style="{
-      left: viewPortRect.left + 'px',
-      top: viewPortRect.top + 'px',
-      background: work.color
-    }">
-      <render-scene :scene="scene" :view-port="viewPortRect" :view-box="viewBox"/>
-    </div>
-    <div class="paint-container" id="paint-container" :style="{
-      left: viewPortRect.left + 'px',
-      top: viewPortRect.top + 'px'
-    }">
-      <Container ref="container" :w="viewPortRect.width" :h="viewPortRect.height" :close-path="closePath" :points="points" :color="color" :stroke-width="strokeWidth" :stroke-color="strokeColor"/>
-    </div>
-  </div>
-</div>
 </template>
 
 <script>
