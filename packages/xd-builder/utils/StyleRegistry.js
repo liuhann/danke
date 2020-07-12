@@ -19,6 +19,20 @@ function createSheet (id) {
   return style.sheet
 }
 
+function createSvg (id) {
+  var svg = document.createElement('svg')
+  if (id) {
+    svg.id = id
+  }
+  // Add a media (and/or media query) here if you'd like!
+
+  svg.style.display = 'none'
+
+  // Add the <style> element to the page
+  document.body.appendChild(svg)
+  return svg
+}
+
 /**
  * 增加一项样式规则
  * @param {*} sheet
@@ -81,6 +95,7 @@ export default class StyleRegistry {
     this.sheet = createSheet('style-registry')
     this.framedao = new RestDAO(ctx, 'danke/animation')
     this.styles = {}
+    this.svgfilters = []
     this.keyframes = {}
     this.svgs = {}
     this.fonts = {}
@@ -91,6 +106,7 @@ export default class StyleRegistry {
       this.sheet.parentElement.removeChild(this.sheet)
     }
     this.sheet = createSheet('style-registry')
+    this.svg = createSvg('svg-filter-registry')
     this.styles = {}
     this.keyframes = {}
     this.svgs = {}
@@ -147,6 +163,11 @@ export default class StyleRegistry {
             // ignore css text errors
           }
         }
+      }
+
+      debugger
+      if (style.svgContent) {
+        this.svgfilters.push(style.svgContent)
       }
     }
   }

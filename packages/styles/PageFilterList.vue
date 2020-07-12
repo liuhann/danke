@@ -5,8 +5,10 @@
         <el-button size="mini" type="primary" @click="newStyle">新建</el-button>
         <div class="style-list">
           <div v-for="(style, index) in styles" :key="index" class="style-item">
-            <div class="style-container" :class="style.name">
-              <img src="https://picturepan2.github.io/instagram.css/assets/img/instagram.jpg" />
+            <div class="style-container">
+              <div class="element" :class="style.name">
+                <img src="https://picturepan2.github.io/instagram.css/assets/img/instagram.jpg" />
+              </div>
             </div>
             <div class="btns">
               {{ style.title }}
@@ -18,6 +20,8 @@
         <el-pagination background :total="total" :page-size="pageSize" :current-page.sync="page" layout="prev, pager, next" @current-change="loadStyles" />
       </div>
     </section>
+    <svg v-for="(svgfilter, index) of svgFilters" :key="index" v-html="svgfilter">
+    </svg>
   </div>
 </template>
 
@@ -37,7 +41,8 @@ export default {
       styles: [],
       page: 0,
       pageSize: 20,
-      total: 0
+      total: 0,
+      svgFilters: []
     }
   },
   created () {
@@ -65,6 +70,7 @@ export default {
       } catch (e) {
         console.log(e)
       }
+      this.svgFilters = this.styleRegistry.svgfilters;
     },
     // 新窗口编辑
     editStyle (style) {
@@ -92,15 +98,26 @@ export default {
     box-sizing: border-box;
     padding: 1rem;
     .style-container {
+      .element {
+        width: 75%;
+        box-shadow: 0 0.3rem 2rem rgba(51,51,51,.15);
+        &::before {
+          display: block;
+          height: 100%;
+          left: 0;
+          position: absolute;
+          top: 0;
+          width: 100%;
+          z-index: 1;
+        }
+        img {
+          width: 100%;
+        }
+      }
       padding: 3rem 1rem;
       justify-content: center;
       display: flex;
       align-items: center;
-      img {
-        width: 75%;
-        box-shadow: 0 0.3rem 2rem rgba(51,51,51,.15);
-      }
-
     }
      .btns {
       padding: 2rem;

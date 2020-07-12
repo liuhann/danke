@@ -45,9 +45,15 @@
       </el-form-item>
     </el-form>
 
-    <div class="image-preview" :class="style.name">
-      <img src="https://picturepan2.github.io/instagram.css/assets/img/instagram.jpg" style="width: 360px; height: 360px;">
+   
+    <div class="image-preview">
+      <div class="element" :class="style.name">
+        <img src="https://picturepan2.github.io/instagram.css/assets/img/instagram.jpg">
+      </div>
     </div>
+    
+    <svg v-for="(svgfilter, index) of svgFilters" :key="index" v-html="svgfilter">
+    </svg>
   </div>
 </template>
 
@@ -78,7 +84,8 @@ export default {
         cssContent: '', // css 正文
         svgContent: '',
         variables: [] // 变量替换列表
-      }
+      },
+      svgFilters: []
     }
   },
   watch: {
@@ -105,7 +112,9 @@ export default {
     refresh () {
       this.styleRegistry.clear()
       this.style.cssContent = this.cssEditor.getValue()
+      this.style.svgContent = this.svgEditor.getValue()
       this.styleRegistry.addStyle(this.style)
+      this.svgFilters = this.styleRegistry.svgfilters
     },
     initEditor () {
       this.cssEditor = ace.edit('css')
@@ -144,7 +153,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 .image-preview {
   width: 600px;
   display: flex;
@@ -152,6 +161,21 @@ export default {
   height: 100vh;
   justify-content: center;
   align-items: center;
+  .element {
+    &::before {
+      display: block;
+      height: 100%;
+      left: 0;
+      position: absolute;
+      top: 0;
+      width: 100%;
+      z-index: 1;
+    }
+    img {
+      width: 360px;
+      height: 360px;
+    }
+  }
 }
 #css, #svg {
   height: 240px;
