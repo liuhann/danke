@@ -14,7 +14,7 @@
           </div>
         </div>
         <div class="desc">
-          {{style.name}}
+          {{ style.name }}
         </div>
       </div>
     </div>
@@ -75,10 +75,16 @@ export default {
       margin: 5px;
       width: 100px;
       height: 120px;
+      .desc {
+        color: #ddd;
+        text-align: center;
+        line-height: 28px;
+      }
       .style-container {
         height: 100px;
         .element {
           border-radius: 10px;
+          overflow: hidden;
           img {
             width: 100px;
             object-fit: cover;

@@ -93,7 +93,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .filter-item {
   display: flex;
   margin-bottom: 10px;
