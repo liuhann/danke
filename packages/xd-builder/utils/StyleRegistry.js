@@ -164,8 +164,6 @@ export default class StyleRegistry {
           }
         }
       }
-
-      debugger
       if (style.svgContent) {
         this.svgfilters.push(style.svgContent)
       }

@@ -7,7 +7,7 @@
           <div v-for="(style, index) in styles" :key="index" class="style-item">
             <div class="style-container">
               <div class="element" :class="style.name">
-                <img src="https://picturepan2.github.io/instagram.css/assets/img/instagram.jpg" />
+                <img src="https://media-public.canva.cn/MADLFoi3fk0/1/screen.jpg" />
               </div>
             </div>
             <div class="btns">
@@ -112,6 +112,7 @@ export default {
         }
         img {
           width: 100%;
+          height: calc(width);
         }
       }
       padding: 3rem 1rem;

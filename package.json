@@ -36,7 +36,7 @@
     "vue-circle-slider": "^1.0.2",
     "vue-router": "^3.3.4",
     "vue-svg-inline-loader": "^1.5.0",
-    "vuedraggable": "^2.23.2"
+    "vuedraggable": "^2.24.0"
   },
   "devDependencies": {
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.10.4",

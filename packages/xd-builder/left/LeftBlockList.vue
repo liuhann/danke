@@ -1,7 +1,7 @@
 <template>
-<div id="addon-block-list">
+  <div id="addon-block-list">
     <div class="search-box">
-      <el-input placeholder="搜索素材库" v-model="searchValue" class="input-with-select" clearable>
+      <el-input v-model="searchValue" placeholder="搜索素材库" class="input-with-select" clearable>
         <el-button slot="append" icon="el-icon-search"></el-button>
       </el-input>
     </div>
@@ -9,16 +9,18 @@
       <div
         v-for="(block, index) in blocks"
         :key="index"
-        class="block-container" draggable @dragstart="dragStart(block, $event)">
+        class="block-container" draggable @dragstart="dragStart(block, $event)"
+      >
         <div class="block-viewport" :style="{
           width: block.viewPort.width + 'px',
           height: block.viewPort.height + 'px'
-        }">
-          <render-scene :scene="block" :view-port="block.viewPort" :view-box="block.viewBox" stage="enter"/>
+        }"
+        >
+          <render-scene :scene="block" :view-port="block.viewPort" :view-box="block.viewBox" stage="enter" />
         </div>
       </div>
     </div>
-</div>
+  </div>
 </template>
 
 <script>
@@ -29,13 +31,13 @@ import { fitRectIntoBounds } from '../mixins/rectUtils'
 
 export default {
   name: 'LeftBlockList',
-  mixins: [  ],
   components: {
     RenderScene,
     [Input.name]: Input,
     [Pagination.name]: Pagination,
     [Button.name]: Button
   },
+  mixins: [  ],
   data () {
     return {
       searchValue: '',

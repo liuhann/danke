@@ -44,16 +44,16 @@
         <el-button size="mini" type="primary" @click="save">保存</el-button>
       </el-form-item>
     </el-form>
-
-   
     <div class="image-preview">
       <div class="element" :class="style.name">
-        <img src="https://picturepan2.github.io/instagram.css/assets/img/instagram.jpg">
+        <img src="https://media-public.canva.cn/MADLFoi3fk0/1/screen.jpg">
       </div>
     </div>
     
-    <svg v-for="(svgfilter, index) of svgFilters" :key="index" v-html="svgfilter">
-    </svg>
+    <div style="display:none">
+      <svg v-for="(svgfilter, index) of svgFilters" :key="index" v-html="svgfilter">
+      </svg>
+    </div>
   </div>
 </template>
 
@@ -173,7 +173,6 @@ export default {
     }
     img {
       width: 360px;
-      height: 360px;
     }
   }
 }

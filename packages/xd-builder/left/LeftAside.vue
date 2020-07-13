@@ -9,6 +9,10 @@
         <i class="el-icon-news" />
         <span>形状</span>
       </div>
+      <div class="category" :class="current === 'filter'? 'current': ''" @click="toggleTo('filter')">
+        <i class="el-icon-sunrise" />
+        <span>滤镜</span>
+      </div>
       <div class="category" :class="current === 'text'? 'current': ''" @click="toggleTo('text')">
         <i class="el-icon-tickets" />
         <span>文字</span>
@@ -48,6 +52,11 @@
           <tick-list v-if="current === 'tick'" @insert="insertTick" />
         </keep-alive>
       </transition>
+      <transition name="fade">
+        <keep-alive>
+          <left-filter-list v-if="current === 'filter'" @insert="insertFilter" />
+        </keep-alive>
+      </transition>
     </div>
   </aside>
 </template>
@@ -59,6 +68,7 @@ import ImageList from './ImageList.vue'
 import LeftShapeList from './ShapeList.vue'
 import TextList from './TextList'
 import LeftBlockList from './LeftBlockList.vue'
+import LeftFilterList from './LeftFilterList.vue'
 import TickList from './TickList.vue'
 
 export default {
@@ -67,6 +77,7 @@ export default {
     TextList,
     ImageList,
     LeftShapeList,
+    LeftFilterList,
     TickList
   },
   data () {
@@ -110,8 +121,12 @@ export default {
       this.$emit('insert', 'animation', animation)
     },
 
+    insertFilter (filter) {
+      this.$emit('replace', filter)
+    },
+
     imageClicked (image) {
-      this.$emit('replace',  image)
+      this.$emit('replace', image)
     }
   }
 }

@@ -52,6 +52,14 @@ import Toolbar from './toolbar/Toolbar.vue'
 import { shortid } from '../utils/string'
 import ClippathEditor from './clippath-maker/ClippathEditor'
 import SceneList from './SceneList.vue'
+
+import Vue from 'vue'
+
+import { Input, Popover, Tooltip, Switch, Form, FormItem, InputNumber, Checkbox, Slider, Button, ButtonGroup, Select, OptionGroup, Option, RadioGroup, Radio, ColorPicker, Tabs, TabPane, Upload, Cascader } from 'element-ui'
+
+Vue.use(Input)
+Vue.use(Button)
+
 export default {
   name: 'Builder',
   components: {
@@ -102,7 +110,7 @@ export default {
         this.currentScene = this.work.scenes[0]
         this.takeSnapshot()
       }
-      this.ctx.styleRegisty.loadAllFrames()
+      this.ctx.styleRegistry.loadAllFrames()
     },
 
     insert (type, object) {
