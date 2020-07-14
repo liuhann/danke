@@ -7,10 +7,10 @@
     </div>
 
     <div class="list">
-      <div v-for="(style, index) in styles" :key="index" class="filter-item">
+      <div v-for="(style, index) in styles" :key="index" class="filter-item" @click="chooseFilter(style)">
         <div class="style-container">
           <div class="element" :class="style.name">
-            <img src="https://media-public.canva.cn/MADLFoi3fk0/1/screen.jpg" />
+            <img :src="preview || 'https://media-public.canva.cn/MADLFoi3fk0/1/screen.jpg'" />
           </div>
         </div>
         <div class="desc">
@@ -18,7 +18,10 @@
         </div>
       </div>
     </div>
-
+    <div style="display:none">
+      <svg v-for="(svgfilter, index) of svgFilters" :key="index" v-html="svgfilter">
+      </svg>
+    </div>
     <div class="pager">
     </div>
   </div>
@@ -28,6 +31,11 @@
 import RestDAO from '../../utils/restdao.js'
 import StyleRegistry from '../utils/StyleRegistry.js'
 export default {
+  props: {
+    preview: {
+      type: String
+    }
+  },
   data () {
     return {
       searchValue: '',
@@ -62,6 +70,10 @@ export default {
       }
       this.svgFilters = this.styleRegistry.svgfilters;
     },
+
+    chooseFilter (style) {
+      this.$emit('insert', style)
+    }
   }
 }
 </script>
@@ -84,7 +96,18 @@ export default {
         height: 100px;
         .element {
           border-radius: 10px;
+          height: 100px;
+          width: 100px;
           overflow: hidden;
+          &::before {
+            display: block;
+            height: 100%;
+            left: 0;
+            position: absolute;
+            top: 0;
+            width: 100%;
+            z-index: 11;
+          }
           img {
             width: 100px;
             object-fit: cover;

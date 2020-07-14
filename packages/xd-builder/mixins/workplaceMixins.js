@@ -1,3 +1,5 @@
+import { getImageUrl } from './imageUtils'
+
 export default {
   props: {
     work: {
@@ -9,11 +11,19 @@ export default {
     }
   },
 
-  computed : {
+  computed: {
     // 当前唯一选中的元素
     focusedElement () {
       if (this.selectedElements.length === 1) {
         return this.selectedElements[0]
+      } else {
+        return null
+      }
+    },
+
+    focusedUrl () {
+      if (this.focusedElement && this.focusedElement.url) {
+        return this.getImageUrl(this.focusedElement.url)
       } else {
         return null
       }
@@ -29,6 +39,9 @@ export default {
         return this.scene.elements.filter(el => el.selected && el.locked)
       }
       return []
-    },
+    }
+  },
+  methods: {
+    getImageUrl
   }
 }

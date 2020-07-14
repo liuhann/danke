@@ -610,6 +610,12 @@ export default {
       return Object.assign(displayStyle, getRectPositionStyle(element, this.viewBox, this.viewPort))
     },
 
+    applyFilter (filter) {
+      if (this.focusedElement) {
+        this.$set(this.focusedElement, 'filter', filter)
+      }
+    },
+
     getMaskClass (element) {
       const classes = []
       if (!element.selected) {

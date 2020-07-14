@@ -1,6 +1,6 @@
 <template>
   <div id="xd">
-    <left-aside @insert="insert" @replace="replace" />
+    <left-aside :scene="currentScene" @insert="insert" @replace="replace" />
     <section v-if="work" class="right-section">
       <toolbar
         v-if="currentScene"
@@ -136,6 +136,8 @@ export default {
     replace (element) {
       if (element.url) {
         this.$refs.sceneContainer.replaceElement(element)
+      } else if (element.cssContent) {
+        this.$refs.sceneContainer.applyFilter(element)
       }
     },
 

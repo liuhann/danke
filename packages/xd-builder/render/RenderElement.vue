@@ -1,7 +1,7 @@
 <template>
 <div :id="'element-' + element.id"
      @click="elementClicked"
-     class="element" :style="elementWrapperStyle">
+     class="element" :class="elementClass" :style="elementWrapperStyle">
   <!--图片渲染-->
   <img v-if="element.url" :id="'img-' + (element.name || element.id)" :src="getImageUrl(element.url, viewPort.width * 2, viewPort.height * 2)" :style="elementStyle">
   <div v-else-if="element.content" class="svg-content" v-html="element.content" :style="elementStyle"/>
@@ -16,6 +16,11 @@
   <!--文本渲染情况下 文本内容-->
   <div v-for="(text, index) in elementTextLines" :style="textTransformStyle" class="text" :key="index">{{text}}</div>
   <textarea ref="textarea" v-if="element.text != null && element.editing" :style="textEditStyle" v-model="element.text" @change="updateTextArea"/>
+
+  <div style="display:none;" v-if="filterSVG">
+    <svg v-html="filterSVG">
+      </svg>
+  </div>
 </div>
 </template>
 
@@ -84,13 +89,21 @@ export default {
       if (this.element.hidden) {
         result.push('hidden')
       }
-      for (let key in this.element.style) {
-        if (this.element.style[key].name) {
-          result.push(this.element.style[key].name)
-        }
+      if (this.element.filter) {
+        result.push(this.element.filter.name)
       }
       return result
     },
+
+    filterSVG () {
+      if (this.element.filter && this.element.filter.svgContent) {
+        return this.element.filter.svgContent
+      } else {
+        return null
+      }
+    },
+
+
 
     textEditStyle () {
       const style = {}
@@ -371,6 +384,15 @@ export default {
   white-space: nowrap;
   position: absolute;
   mask-repeat: no-repeat;
+  &::before {
+    display: block;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 11;
+  }
   .block-elements {
     .element {
       position: absolute;

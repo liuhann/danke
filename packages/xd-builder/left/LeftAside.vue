@@ -54,7 +54,7 @@
       </transition>
       <transition name="fade">
         <keep-alive>
-          <left-filter-list v-if="current === 'filter'" @insert="insertFilter" />
+          <left-filter-list v-if="current === 'filter'" :preview="focusedUrl" @insert="insertFilter" />
         </keep-alive>
       </transition>
     </div>
@@ -70,6 +70,7 @@ import TextList from './TextList'
 import LeftBlockList from './LeftBlockList.vue'
 import LeftFilterList from './LeftFilterList.vue'
 import TickList from './TickList.vue'
+import workplaceMixin from '../mixins/workplaceMixins'
 
 export default {
   components: {
@@ -80,6 +81,7 @@ export default {
     LeftFilterList,
     TickList
   },
+  mixins: [ workplaceMixin ],
   data () {
     return {
       current: 'scene'
