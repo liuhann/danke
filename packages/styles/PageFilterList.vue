@@ -100,6 +100,7 @@ export default {
     .style-container {
       .element {
         width: 75%;
+        position: relative;
         box-shadow: 0 0.3rem 2rem rgba(51,51,51,.15);
         &::before {
           display: block;

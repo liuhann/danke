@@ -11,7 +11,7 @@ export default {
   },
   computed: {
     filter () {
-      return  {}
+      return {}
     }
   },
   created () {
@@ -24,7 +24,7 @@ export default {
     async loadObjects () {
       const result = await this.dao.list(Object.assign({
         page: this.page,
-        count: this.pageSize,
+        count: this.pageSize
       }, this.filter))
       this.total = result.total
       this.objects = result.list

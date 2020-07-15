@@ -113,6 +113,7 @@ export default {
       this.styleRegistry.clear()
       this.style.cssContent = this.cssEditor.getValue()
       this.style.svgContent = this.svgEditor.getValue()
+
       this.styleRegistry.addStyle(this.style)
       this.svgFilters = this.styleRegistry.svgfilters
     },
@@ -162,6 +163,7 @@ export default {
   justify-content: center;
   align-items: center;
   .element {
+    position: relative;
     &::before {
       display: block;
       height: 100%;

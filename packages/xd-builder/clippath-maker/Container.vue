@@ -1,7 +1,8 @@
 <template>
   <div
     class="ad-Container"
-    @mouseup="cancelDragging" @mouseleave="cancelDragging">
+    @mouseup="cancelDragging" @mouseleave="cancelDragging"
+  >
     <div class="ad-Container-main">
       <div class="ad-Container-svg" :style="variableStyles">
         <svg-grid
@@ -15,9 +16,10 @@
           @addPoint="addPoint"
           @pointDblClick="togglePointType"
           @setDraggedPoint="setDraggedPoint"
-          @setDraggedQuadratic='setDraggedQuadratic'
+          @setDraggedQuadratic="setDraggedQuadratic"
           @setDraggedCubic="setDraggedCubic"
-          @handleMouseMove="handleMouseMove"/>
+          @handleMouseMove="handleMouseMove"
+        />
       </div>
     </div>
   </div>

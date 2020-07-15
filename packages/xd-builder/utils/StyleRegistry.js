@@ -107,6 +107,7 @@ export default class StyleRegistry {
     }
     this.sheet = createSheet('style-registry')
     this.svg = createSvg('svg-filter-registry')
+    this.svgfilters = []
     this.styles = {}
     this.keyframes = {}
     this.svgs = {}
@@ -154,12 +155,13 @@ export default class StyleRegistry {
     if (!this.styles[style.name]) {
       this.styles[style.name] = style.cssContent
       // 用2个回车来切分样式表中多个
-      const splits = style.cssContent.split('\n\r')
+      const splits = style.cssContent.split('}')
       for (let css of splits) {
         if (css && css.trim()) {
           try {
-            addStyle(this.sheet, css)
+            addStyle(this.sheet, css + '}')
           } catch (e) {
+            console.log('illgel css content', css)
             // ignore css text errors
           }
         }

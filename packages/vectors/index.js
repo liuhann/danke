@@ -5,11 +5,11 @@
  */
 export default {
   routes: [{
-    path: '/vector/edit',
-    component: () => import(/* webpackChunkName: "vector" */'./PageVectorEdit.vue')
+    path: '/path/edit',
+    component: () => import(/* webpackChunkName: "vector" */'./SVGPathEditor.vue')
   }, {
-    path: '/vector/list',
-    component: () => import(/* webpackChunkName: "vector" */'./PageVectorList.vue')
+    path: '/path/list',
+    component: () => import(/* webpackChunkName: "vector" */'./PageSVGPathList.vue')
   }, {
     path: '/clippath/list',
     component: () => import(/* webpackChunkName: "vector" */'./PageClippathList.vue')
