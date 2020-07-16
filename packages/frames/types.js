@@ -14,6 +14,6 @@ export default [{
   value: 'attention',
   label: '关注'
 }, {
-  value: 'background',
-  label: '背景'
+  value: 'image',
+  label: '图片'
 }]

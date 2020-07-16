@@ -19,8 +19,8 @@
       </el-form-item>
       <el-form-item label="点坐标">
         <span v-for="(point,index) in points" :key="index" class="points">
-          <el-input-number :value="point.x - borderX" @input="v => { point.x = v + borderX }" size="mini" controls-position="right" />
-          <el-input-number :value="point.y - borderY" @input="v => { point.y = v + borderY }" size="mini" controls-position="right" /></span>
+          <el-input-number :value="point.x - borderX" size="mini" controls-position="right" @input="v => { point.x = v + borderX }" />
+          <el-input-number :value="point.y - borderY" size="mini" controls-position="right" @input="v => { point.y = v + borderY }" /></span>
       </el-form-item>
       <el-form-item label="">
         <el-button @click="removePoint">删除节点</el-button>
@@ -65,11 +65,12 @@ export default {
         width: 400,
         height: 400
       },
+      svgContent: '',
       color: 'rgba(0,0,0,0)',
       strokeWidth: 1,
       strokeColor: '#555',
       closePath: false,
-      points:  [
+      points: [
         { x: 100, y: 300 },
         { x: 200, y: 300, q: { x: 150, y: 50 } }
       ]

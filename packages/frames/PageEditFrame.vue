@@ -5,22 +5,13 @@
         <el-row :gutter="20">
           <el-col :span="16">
             <el-form size="mini" inline label-width="90px">
-              <el-form-item label="一级分类">
-                <el-select v-model="animation.type" size="mini" @change="loadTypeGroup">
-                  <el-option v-for="type in types" :key="type.label" :label="type.label" :value="type.value" />
-                </el-select>
-              </el-form-item>
-              <el-form-item label="二级分类">
-                <el-select v-model="animation.group" size="mini" allow-create filterable>
-                  <el-option v-for="group in groups" :key="group" :label="group" :value="group" />
-                </el-select>
-              </el-form-item>
-              <el-form-item label="方向">
-                <el-select v-model="animation.direction" size="mini" allow-create filterable>
-                  <el-option v-for="d in directions" :key="d" :label="d" :value="d" />
-                </el-select>
-              </el-form-item>
               <el-form-item label="名称">
+                <el-input v-model="animation.direction" size="mini" />
+              </el-form-item>
+              <el-form-item label="分组">
+                <el-input v-model="animation.group" size="mini" />
+              </el-form-item>
+              <el-form-item label="类名">
                 <el-input v-model="animation.name" style="width: 360px;" />
               </el-form-item>
               <el-form-item label="持续时间">
