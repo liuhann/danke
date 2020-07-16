@@ -68,14 +68,8 @@
                 <el-button size="mini" @click="cloneCreate">
                   复制新增
                 </el-button>
-                <el-button v-if="animation._id" size="mini" type="danger" @click="remove">
-                  删除
-                </el-button>
                 <el-button size="mini" @click="play">
                   预览
-                </el-button>
-                <el-button size="mini" type="text" @click="$router.replace('/frames')">
-                  返回@
                 </el-button>
               </el-form-item>
             </el-form>

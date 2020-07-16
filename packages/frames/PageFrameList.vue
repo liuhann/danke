@@ -4,10 +4,10 @@
   >
     <el-button size="mini" @click="newObject">新建</el-button>
     <div class="main-frame">
-      <div class="table-frame-list">
-        <el-select v-model="group" @change="groupChange">
-          <el-option v-for="g in groups" :key="g" :label="g" :value="g" />
-        </el-select>
+      <div class="table-frame-list" style="display:flex;">
+        <el-tabs v-model="group" tab-position="left" style="height: calc(100vh - 90px)" @tab-click="groupChange">
+          <el-tab-pane v-for="g in groups" :key="g" :label="g" :name="g" />
+        </el-tabs>
         <el-table :data="filteredFrames" size="mini" :show-header="false" @current-change="handleCurrentChange">
           <el-table-column type="index" />
           <el-table-column prop="direction" label="组" sortable />
@@ -194,7 +194,7 @@ export default {
 
     async deleteObject (object) {
       await this.framedao.delete(object)
-      this.loadAllFrames()
+      await this.groupChange()
     },
 
     // 新窗口编辑
@@ -271,8 +271,8 @@ export default {
       align-items: center;
     }
     img {
-      width: 120px;
-      height: 80px;
+      width: 240px;
+      height: 200px;
       mask-repeat: no-repeat;
     }
     .refresh {
