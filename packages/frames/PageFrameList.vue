@@ -5,18 +5,11 @@
     <el-button size="mini" @click="newObject">新建</el-button>
     <div class="main-frame">
       <div class="table-frame-list">
-        <div style="display:flex">
-          <el-select v-model="type">
-            <el-option v-for="t in types" :key="t.value" :value="t.value" :label="t.label" />
-          </el-select>
-          <el-select v-model="group">
-            <el-option v-for="g in groups" :key="g" :value="g" :label="g" />
-          </el-select>
-        </div>
-        <el-table :data="filteredFrames" size="mini" :height="800" @current-change="handleCurrentChange">
+        <el-select v-model="group" @change="groupChange">
+          <el-option v-for="g in groups" :key="g" :label="g" :value="g" />
+        </el-select>
+        <el-table :data="filteredFrames" size="mini" :show-header="false" @current-change="handleCurrentChange">
           <el-table-column type="index" />
-          <el-table-column prop="type" label="分类" sortable :filters="typeFilter" :filter-method="typeFilterHandler" />
-          <el-table-column prop="group" label="组" sortable :filters="groupFilter" :filter-method="groupFilterHandler" />
           <el-table-column prop="direction" label="组" sortable />
           <el-table-column prop="name" label="名称" />
         </el-table>
@@ -52,7 +45,7 @@
 <script>
 import NavBar from '../site/components/NavBar.vue'
 import CLOUD_HILL from './cloud-hill.webp'
-import { Pagination, Button, InputNumber, Checkbox, Form, FormItem, Input, Table, TableColumn, MessageBox, Select, Option } from 'element-ui'
+import { Pagination, Button, InputNumber, Checkbox, Form, FormItem, Input, Table, TableColumn, MessageBox, Select, Option, Tabs, TabPane } from 'element-ui'
 import types from './types'
 import RestDAO from '../utils/restdao.js'
 import StyleRegistry from '../xd-builder/utils/StyleRegistry'
@@ -68,12 +61,16 @@ export default {
     [Table.name]: Table,
     [Select.name]: Select,
     [Option.name]: Option,
+    [Tabs.name]: Tabs,
+    [TabPane.name]: TabPane,
     [TableColumn.name]: TableColumn,
     [FormItem.name]: FormItem
   },
   data () {
     return {
       allFrames: [],
+      filteredFrames: [],
+      groups: [],
       hasMask: false,
       types,
       type: '',
@@ -97,35 +94,6 @@ export default {
       }
     },
 
-    groups () {
-      return Array.from(new Set(this.allFrames.filter(f => f.type === this.type).map(f => f.group)))
-    },
-
-    filter () {
-      return {
-        tags: this.type
-      }
-    },
-
-    groupFilter () {
-      return Array.from(new Set(this.allFrames.map(frame => frame.group))).map(g => ({
-        text: g,
-        value: g
-      }))
-    },
-
-    filteredFrames () {
-      return this.allFrames.filter(frame => {
-        return (this.type === '' || frame.type === this.type) && (this.group === '' || frame.group === this.group);
-      })
-    },
-
-    typeFilter () {
-        return types.map(type => ({
-          text: type.label,
-          value: type.value
-        }))
-    },
     boxStyle () {
       const style = {
         perspective: this.perspective + 'px'
@@ -142,10 +110,31 @@ export default {
   },
 
   mounted () {
-    this.loadAllFrames()
+    // this.loadAllFrames()
+    this.loadGroups ()
   },
 
   methods: {
+    async loadGroups () {
+       this.groups = await this.framedao.distinct('group')
+       this.group = this.groups[0]
+       this.groupChange()
+    },
+    typeChange () {
+      this.groups = Array.from(new Set(this.allFrames.filter(f => f.type === this.type).map(f => f.group)))
+      this.group = this.groups[0]
+      this.groupChange()
+    },
+
+    async groupChange () {
+      this.filteredFrames = (await this.framedao.list({
+        group: this.group
+      })).list
+      if (this.filteredFrames.length) {
+        this.handleCurrentChange(this.filteredFrames[0])
+      }
+    },
+
     typeFilterHandler(value, row, column) {
       return row['type'] === value;
     },
@@ -154,9 +143,11 @@ export default {
     },
 
     handleCurrentChange (val) {
-      this.animation = val
-      this.animation.delay = 0
-      this.styleRegistry.addFrame(this.animation)
+      if (val) {
+        this.styleRegistry.addFrame(val)
+        this.animation = val
+        this.animation.delay = 0
+      }
     },
 
     async loadAllFrames () {
@@ -165,6 +156,9 @@ export default {
 
       this.animation = this.allFrames[22]
       this.styleRegistry.addFrame(this.animation)
+
+      this.type = this.types[0].value
+      this.typeChange()
     },
 
     refreshCurrent () {
@@ -196,11 +190,6 @@ export default {
       setTimeout(() => {
         animation.name = animation.dataName
       }, 300)
-    },
-    async setType (type) {
-      this.type = type.value
-      await this.loadTypeGroup()
-      this.loadObjects()
     },
 
     async deleteObject (object) {

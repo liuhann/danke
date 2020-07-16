@@ -19,8 +19,7 @@
       </div>
     </div>
     <div style="display:none">
-      <svg v-for="(svgfilter, index) of svgFilters" :key="index" v-html="svgfilter">
-      </svg>
+      <svg v-for="(svgfilter, index) of svgFilters" :key="index" v-html="svgfilter" />
     </div>
     <div class="pager">
     </div>
@@ -86,18 +85,21 @@ export default {
     .filter-item {
       margin: 5px;
       width: 100px;
-      height: 120px;
+      height: 100px;
       .desc {
         color: #ddd;
         text-align: center;
         line-height: 28px;
       }
       .style-container {
-        height: 100px;
+        height: 80px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         .element {
-          border-radius: 10px;
-          height: 100px;
+          border-radius: 3px;
           width: 100px;
+          height: 80px;
           overflow: hidden;
           &::before {
             display: block;
@@ -111,7 +113,7 @@ export default {
           img {
             width: 100px;
             object-fit: cover;
-            height: 100px;
+            height: 80px;
           }
         }
       }
