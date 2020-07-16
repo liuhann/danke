@@ -58,6 +58,7 @@ export default {
     },
     async loadStyles () {
       const result = await this.styledao.list({
+        // type: this.$route.query.type || 'filter',
         page: this.page,
         count: this.pageSize
       })

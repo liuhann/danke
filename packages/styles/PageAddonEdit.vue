@@ -1,14 +1,8 @@
 <template>
-  <div id="page-filter-edit" style="display: flex; margin: 3rem;">
+  <div id="page-addon-edit" style="display: flex; margin: 3rem;">
     <el-form size="mini" label-width="90px" style="flex: 1;">
       <el-form-item label="名称">
         <el-input v-model="style.title" style="width: 360px;"></el-input>
-      </el-form-item>
-      <el-form-item label="类型">
-        <el-select v-model="style.type">
-          <el-option label="过滤" value="filter" />
-          <el-option label="修饰" value="addon" />
-        </el-select>
       </el-form-item>
       <el-form-item label="类名">
         <el-input v-model="style.name" style="width: 360px;"></el-input>
@@ -17,8 +11,8 @@
         <div id="css">
         </div>
       </el-form-item>
-      <el-form-item label="SVG">
-        <div id="svg">
+      <el-form-item label="HTML">
+        <div id="html">
         </div>
       </el-form-item>
       <el-form-item label="变量信息">
@@ -66,13 +60,13 @@
 <script>
 import ace from 'brace'
 import 'brace/mode/css'
-import 'brace/mode/svg'
+import 'brace/mode/html'
 import 'brace/theme/monokai'
 import StyleRegistry from '../xd-builder/utils/StyleRegistry.js'
 import { Message, Form, FormItem, Input, Select, Option, Button } from 'element-ui'
 import RestDAO from '../utils/restdao.js'
 export default {
-  name: 'StyleEdit',
+  name: 'AddonEdit',
   components: {
     [Form.name]: Form,
     [Input.name]: Input,
@@ -86,9 +80,9 @@ export default {
       style: {
         title: '', // 标题 供描述使用
         name: '', // class 类名
-        category: 'filter', // 效果分类
+        category: 'style', // 效果分类
         cssContent: '', // css 正文
-        svgContent: '',
+        htmlContent: '',
         variables: [] // 变量替换列表
       },
       svgFilters: []

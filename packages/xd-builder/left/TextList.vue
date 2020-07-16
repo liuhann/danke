@@ -1,10 +1,10 @@
 <template>
-<div class="left-text-template">
-  <div class="hint">拖拽文字到设计区</div>
-  <div class="basic">
-    <div v-for="(template, index) in fontTemplates" :style="fontStyle(template)" draggable :key="index" @dragstart="dragStart(template, $event)" @dragend="dragEnd">{{template.text}}</div>
+  <div class="left-text-template">
+    <div class="hint">拖拽文字到设计区</div>
+    <div class="basic">
+      <div v-for="(template, index) in fontTemplates" :key="index" :style="fontStyle(template)" draggable @dragstart="dragStart(template, $event)" @dragend="dragEnd">{{ template.text }}</div>
+    </div>
   </div>
-</div>
 </template>
 <script>
 
