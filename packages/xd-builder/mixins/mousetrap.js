@@ -123,7 +123,7 @@ export default {
           element.x += 10
           element.y += 10
           this.scene.elements.push(element)
-          this.$nextTick( ()=> {
+          this.$nextTick(() => {
             this.initElementDragResize(element)
           })
         }

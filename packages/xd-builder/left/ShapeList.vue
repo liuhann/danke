@@ -83,6 +83,7 @@
 import { assignVariables} from '../mixins/renderUtils'
 import { Pagination, Input, Button, Loading, Checkbox } from 'element-ui'
 import RestDAO from '../../utils/restdao.js'
+import shapes from './shapes'
 
 export default {
   name: 'LeftShapeList',
@@ -96,7 +97,7 @@ export default {
   data () {
     return {
       myPacks: [],
-      shapes: [],
+      shapes,
       currentPack: null,
       packTitle: '',
       packIsMask: false,

@@ -5,7 +5,7 @@
         <i class="el-icon-office-building" />
         <span>图库</span>
       </div>
-      <div class="category" :class="current === 'shape'? 'current': ''" @click="toggleTo('shape')">
+      <div class="category" :class="current === 'html'? 'current': ''" @click="toggleTo('html')">
         <i class="el-icon-news" />
         <span>形状</span>
       </div>
@@ -57,6 +57,11 @@
           <left-filter-list v-if="current === 'filter'" :preview="focusedUrl" @insert="insertFilter" />
         </keep-alive>
       </transition>
+      <transition name="fade">
+        <keep-alive>
+          <html-element-list v-if="current === 'html'" />
+        </keep-alive>
+      </transition>
     </div>
   </aside>
 </template>
@@ -70,6 +75,7 @@ import TextList from './TextList'
 import LeftBlockList from './LeftBlockList.vue'
 import LeftFilterList from './LeftFilterList.vue'
 import TickList from './TickList.vue'
+import HtmlElementList from './HtmlElementList.vue'
 import workplaceMixin from '../mixins/workplaceMixins'
 
 export default {
@@ -79,6 +85,7 @@ export default {
     ImageList,
     LeftShapeList,
     LeftFilterList,
+    HtmlElementList,
     TickList
   },
   mixins: [ workplaceMixin ],

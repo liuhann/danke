@@ -210,6 +210,7 @@ export default {
     },
     // 场景更新操作，需要更新交互及其他页面元素
     scene () {
+      console.log('scene change triggered')
       for (let element of this.scene.elements) {
         this.destroyInteract(element)
       }
@@ -448,7 +449,7 @@ export default {
         // targetElement.hover = false
         this.createNewElementFromTemplate(element, ev.offsetX + targetElement.x, ev.offsetY + targetElement.y)
       } else {
-        this.createNewElementFromTemplate(element, ev.offsetX, ev.offsetY)
+        this.createNewElementFromTemplate(element, ev.offsetX / this.scale, ev.offsetY / this.scale)
       }
     },
 

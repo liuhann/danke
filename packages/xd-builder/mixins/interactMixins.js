@@ -73,7 +73,7 @@ export default {
             elementResize.height = elementResize.width * element.ratio
           }
           if (node.elements && node.elements.length) {
-            this.resizeBlockElements(element, elementResize )
+            this.resizeBlockElements(element, elementResize)
           }
           Object.assign(element, elementResize)
           if (element.variables) {
@@ -139,6 +139,7 @@ export default {
               }
             },
             onmove: event => {
+              console.log('onmove triggered', this.selectedElements.length)
               for (let element of this.selectedElements) {
                 element.x += event.dx / this.scale
                 element.y += event.dy / this.scale

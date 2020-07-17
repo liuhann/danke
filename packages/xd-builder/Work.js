@@ -8,7 +8,6 @@ export default {
   frames: {},
   vectors: {},
   fonts: {
-    ['华文行楷间']: ''
   },
   scenes: [{
     id: 'scene-1',
@@ -17,7 +16,7 @@ export default {
       enters: [],
       exists: []
     }
-  },{
+  }, {
     id: 'scene-2',
     elements: [{
       id: 'element-32',

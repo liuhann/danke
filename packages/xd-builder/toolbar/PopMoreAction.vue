@@ -1,14 +1,6 @@
 <template>
-  <el-popover
-    placement="bottom-start"
-    width="360"
-    title="视觉位置及调整"
-    trigger="click"
-  >
-    <el-tooltip slot="reference" class="item" effect="dark" content="位置及层次" placement="bottom">
-      <a class="action"><i class="el-icon-warning-outline" /></a>
-    </el-tooltip>
-    <el-form label-width="60px" size="mini" class="more-action-form">
+  <pop-wrapper v-slot="{ visible }" title="元素属性" :width="420" icon="el-icon-warning-outline">
+    <el-form v-if="visible" label-width="80px" size="mini" class="more-action-form">
       <el-form-item label="名称">
         <el-input v-model="element.name" />
       </el-form-item>
@@ -37,7 +29,7 @@
         </el-button-group>
       </el-form-item>
     </el-form>
-  </el-popover>
+  </pop-wrapper>
 </template>
 
 <script>

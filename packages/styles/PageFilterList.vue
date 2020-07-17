@@ -6,7 +6,7 @@
         <div class="style-list">
           <div v-for="(style, index) in styles" :key="index" class="style-item">
             <div class="style-container">
-              <div class="element" :class="style.name">
+              <div class="element" :class="[style.name, style.category]">
                 <img src="https://media-public.canva.cn/MADLFoi3fk0/1/screen.jpg" />
               </div>
             </div>
@@ -103,7 +103,7 @@ export default {
         width: 75%;
         position: relative;
         box-shadow: 0 0.3rem 2rem rgba(51,51,51,.15);
-        &::before {
+        &.category::before {
           display: block;
           height: 100%;
           left: 0;
@@ -114,7 +114,7 @@ export default {
         }
         img {
           width: 100%;
-          height: calc(width);
+          height: 100%;
         }
       }
       padding: 3rem 1rem;

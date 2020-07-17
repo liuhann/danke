@@ -28,7 +28,7 @@ export default [{
   variables: [{
     name: 'bg',
     label: '背景颜色',
-    value: 'transparent',
+    value: 'rgba(148,187,233,1)',
     type: 'gradient'
   }, {
     name: 'br',
@@ -49,7 +49,7 @@ export default [{
     type: 'percent'
   }, {
     name: 'bg',
-    value: 'transparent',
+    value: 'rgba(148,187,233,1)',
     type: 'gradient'
   }]
 }, {
@@ -65,7 +65,7 @@ export default [{
     type: 'percent'
   }, {
     name: 'bg',
-    value: 'transparent',
+    value: 'rgba(148,187,233,1)',
     type: 'gradient'
   }]
 }]

@@ -7,14 +7,15 @@
     :width="width"
     :title="title"
     trigger="click"
-    @show="$emit('show')"
+    @hide="closeDialog"
+    @show="openDialog"
   >
     <a v-if="icon" slot="reference" class="action">
       <i :class="icon" />
     </a>
     <slot v-else slot="reference" name="reference" @click="openDialog" />
     <div class="container">
-      <slot />
+      <slot :visible="dialogVisible" />
     </div>
   </el-popover>
   <div v-else>
@@ -25,7 +26,7 @@
     <el-dialog
       :fullscreen="true"
       :title="title"
-      :visible.sync="dialogVisible"
+      @close="closeDialog"
     >
       <slot />
     </el-dialog>
@@ -74,6 +75,11 @@ export default {
     openDialog () {
       this.dialogVisible = true
       this.$emit('show')
+    },
+
+    closeDialog () {
+      this.dialogVisible = false
+      this.$emit('hide')
     }
   }
 }
