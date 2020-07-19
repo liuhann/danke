@@ -5,7 +5,7 @@
         <el-input v-model="style.title" style="width: 360px;"></el-input>
       </el-form-item>
       <el-form-item label="类型">
-        <el-select v-model="style.type">
+        <el-select v-model="style.category">
           <el-option label="过滤" value="filter" />
           <el-option label="修饰" value="addon" />
         </el-select>

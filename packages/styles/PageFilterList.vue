@@ -94,7 +94,6 @@ export default {
   display: flex;
   flex-wrap: wrap;
   .style-item {
-    margin-bottom: 3rem;
     width: 20%;
     box-sizing: border-box;
     padding: 1rem;
@@ -102,8 +101,7 @@ export default {
       .element {
         width: 75%;
         position: relative;
-        box-shadow: 0 0.3rem 2rem rgba(51,51,51,.15);
-        &.category::before {
+        &.filter::before {
           display: block;
           height: 100%;
           left: 0;
@@ -113,6 +111,7 @@ export default {
           z-index: 1;
         }
         img {
+          display: block;
           width: 100%;
           height: 100%;
         }
@@ -123,7 +122,7 @@ export default {
       align-items: center;
     }
      .btns {
-      padding: 2rem;
+      padding: 5px;
       font-size: 1.5rem;
       color: #999;
     }
