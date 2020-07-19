@@ -7,6 +7,7 @@ module.exports = {
     'plugin:vue/recommended'
   ],
   rules: {
+    'vue/no-v-html': 'off',
     'no-console': 'off',
     'no-debugger': 'off',
     'vue/require-default-prop': 'off',

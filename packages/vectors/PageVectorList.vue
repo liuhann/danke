@@ -1,49 +1,47 @@
 <template>
-<div id="page-vector-list">
-  <nav-bar />
-  <section class="section splash align-centered">
+  <div id="page-vector-list">
     <div class="container">
-      <h1>可定制颜色的SVG图片</h1>
-      <h2>基于SVG文件格式，可任意配置、下载</h2>
-    </div>
-  </section>
-  <section class="section vector-section">
-    <div class="container">
-      <el-button size="mini" type="primary" @click="newStyle">新建</el-button>
+      <div class="tool-bar">
+        <el-button size="mini" type="primary" @click="newStyle">新建</el-button>
+      </div>
+      <el-tabs v-model="currentAlbum" @tab-click="albumChange">
+        <el-tab-pane v-for="album in albums" :key="album" :name="album" :label="album" /> 
+      </el-tabs>
       <div class="svg-list">
         <div v-for="(svg, index) in svgs" :key="index" class="svg-item">
-          <div class="title">{{svg.title || svg.name}}</div>
-          <div class="album">{{svg.album}}</div>
+          <div class="album">{{ svg.album }}</div>
           <div class="svg-container" :style="variableValues(svg)">
             <div class="styled-box" v-html="svg.content">
             </div>
           </div>
           <div class="item-btns">
-            <el-button circle icon="el-icon-delete" @click="remove(svg)"/>
-            <el-button circle icon="el-icon-edit" @click="edit(svg)"/>
+            <el-button circle icon="el-icon-delete" @click="remove(svg)" />
+            <el-button circle icon="el-icon-edit" @click="edit(svg)" />
           </div>
         </div>
       </div>
-      <el-pagination background :total="total" :page-size="pageSize" @current-change="loadSVGs" :current-page.sync="page" layout="prev, pager, next" />
+      <el-pagination background :total="total" :page-size="pageSize" :current-page.sync="page" layout="prev, pager, next" @current-change="loadSVGs" />
     </div>
-  </section>
-</div>
+  </div>
 </template>
 
 <script>
 import RestDAO from '../utils/restdao.js'
 import NavBar from '../site/components/NavBar.vue'
-import { Pagination, Button } from 'element-ui'
+import { Pagination, Button, Tabs, TabPane } from 'element-ui'
 export default {
   name: 'PageStyleList',
   components: {
-    NavBar,
     [Pagination.name]: Pagination,
+    [Tabs.name]: Tabs,
+    [TabPane.name]: TabPane,
     [Button.name]: Button
   },
   data () {
     return {
+      currentAlbum: '',
       svgs: [],
+      albums: [],
       page: 0,
       pageSize: 20,
       total: 0
@@ -54,10 +52,21 @@ export default {
   },
   mounted () {
     this.loadSVGs()
+    this.loadSvgAlbums()
   },
   methods: {
+    async albumChange () {
+      const result = await this.svgdao.list({
+        album: this.currentAlbum
+      })
+      this.svgs = result.list
+    },
     newStyle () {
       window.open('/vector/edit')
+    },
+    async loadSvgAlbums () {
+      const result = await this.svgdao.distinct('album')
+      this.albums = result
     },
     async loadSVGs () {
       const result = await this.svgdao.list({
@@ -69,7 +78,7 @@ export default {
     },
     // 新窗口编辑
     edit (svg) {
-      window.open('/vector/edit?id=' + svg.name)
+      window.open('/vector/edit?id=' + svg._id)
     },
 
     variableValues (svg) {
@@ -86,7 +95,7 @@ export default {
     async remove (style) {
       if (confirm('确认删除样式')) {
         await this.svgdao.delete(style)
-        this.loadSVGs()
+        this.albumChange()
       }
     }
   }
@@ -97,8 +106,9 @@ export default {
 #page-vector-list {
   color: #fff;
   font-size: 16px;
-  background: linear-gradient(180deg, #0C003C 0%, #BFFFAF 120%), linear-gradient(165deg, #480045 25%, #E9EAAF 120%), linear-gradient(145deg, #480045 25%, #E9EAAF 100%), linear-gradient(300deg, rgba(233, 223, 255, 0) 0%, #AF89FF 100%), linear-gradient(90deg, #45EBA5 0%, #45EBA5 30%, #21ABA5 30%, #21ABA5 60%, #1D566E 60%, #1D566E 70%, #163A5F 70%, #163A5F 10%);
-  background-blend-mode: overlay, overlay, overlay, multiply, normal;
+  .container {
+    margin: 20px;
+  }
 }
 .splash {
   h1 {
@@ -116,14 +126,16 @@ export default {
   background: #fff;
   padding: 3rem 0;
 }
+
 .svg-list {
   display: flex;
   flex-wrap: wrap;
   .svg-item {
-    width: calc(25% - 52px);
+    width: calc(12.5% - 16px);
+    box-sizing: border-box;
     position: relative;
     border: #e6e6e6 solid 1px;
-    margin: 0 32px 50px 0;
+    margin: 0 16px 16px 0;
     border-radius: 20px;
     padding: 30px 10px;
     .title {
@@ -138,7 +150,7 @@ export default {
       top: 16px;
       right: 16px;
     }
-    &:nth-of-type(4n) {
+    &:nth-of-type(8n) {
       margin-right: 0;
     }
     .item-btns {
@@ -148,13 +160,7 @@ export default {
       bottom: 20px;
       display: none;
     }
-    &:hover {
-      .item-btns {
-        display: initial;
-      }
-    }
     .svg-container {
-      height: 240px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -167,8 +173,14 @@ export default {
           width: 100%;
           height: 100%;
         }
+      }
     }
+    &:hover {
+      .item-btns {
+        display: initial;
+      }
     }
+    
   }
   .btns {
     padding: 0 20px;

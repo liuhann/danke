@@ -1,9 +1,9 @@
 <template>
-<section class="section" style="background: #dfdfdf;">
+  <section class="section" style="background: #dfdfdf;">
     <div class="container" style="background: #fff;padding: 20px;box-shadow: 0 1px 5px 0 rgba(0,0,0,.1);">
       <el-form size="mini" label-width="90px">
         <el-form-item label="ID">
-          <el-input v-model="vector.name"/>
+          <el-input v-model="vector.name" />
         </el-form-item>
         <el-form-item label="样式文本">
           <div id="editor">
@@ -11,44 +11,44 @@
         </el-form-item>
         <el-form-item label="类型">
           <el-select v-model="vector.album" size="mini" allow-create filterable>
-            <el-option :value="album" v-for="album in albums" :key="album"/>
+            <el-option v-for="album in albums" :key="album" :value="album" />
           </el-select>
         </el-form-item>
         <el-form-item label="预览">
-          <div class="styled-box" v-html="vector.content" :style="variableStyle">
+          <div class="styled-box" :style="variableStyle" v-html="vector.content">
           </div>
         </el-form-item>
         <el-form-item label="变量信息">
           <el-button size="mini" @click="addVariable">增加</el-button>
-          <div class="variables" v-for="(variable, index) in vector.variables" :key="index" style="display:flex;">
+          <div v-for="(variable, index) in vector.variables" :key="index" class="variables" style="display:flex;">
             <label>标题</label>
             <span>
-              <el-input v-model="variable.label"/>
+              <el-input v-model="variable.label" />
             </span>
             <label>变量名</label>
             <span>
-              <el-input v-model="variable.name"/>
+              <el-input v-model="variable.name" />
             </span>
             <label>默认值</label>
             <span>
-              <el-input v-if="variable.type==='number'" v-model.number="variable.value"/>
-              <el-input v-else v-model="variable.value"/>
+              <el-input v-if="variable.type==='number'" v-model.number="variable.value" />
+              <el-input v-else v-model="variable.value" />
             </span>
             <label>类型</label>
             <el-select v-model="variable.type">
-              <el-option value="color"/>
-              <el-option value="number"/>
+              <el-option value="color" />
+              <el-option value="number" />
             </el-select>
           </div>
-          </el-form-item>
-          <el-form-item label="">
-            <el-button size="mini" @click="reFill">数据填充</el-button>
-            <el-button size="mini" @click="replaceFillColorWithVariables">replaceFillColorWithVariables</el-button>
-            <el-button size="mini" type="primary" @click="save">保存</el-button>
-          </el-form-item>
+        </el-form-item>
+        <el-form-item label="">
+          <el-button size="mini" @click="reFill">数据填充</el-button>
+          <el-button size="mini" @click="replaceFillColorWithVariables">replaceFillColorWithVariables</el-button>
+          <el-button size="mini" type="primary" @click="save">保存</el-button>
+        </el-form-item>
       </el-form>
     </div>
-</section>
+  </section>
 </template>
 
 <script>

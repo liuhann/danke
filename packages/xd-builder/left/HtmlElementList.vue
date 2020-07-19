@@ -3,7 +3,21 @@
     <div class="left-block">
       <div class="block-title">
         <div class="text">
-          常用形状
+          基础形状
+        </div>
+      </div>
+      <div class="block-list">
+        <div
+          v-for="(shape, index) in shapes"
+          :key="index"
+          class="object-item" draggable @dragstart="dragStart(shape, $event)"
+        >
+          <div class="shape" :style="shapeStyle(shape)" />
+        </div>
+      </div>
+      <div class="block-title">
+        <div class="text">
+          气泡
         </div>
       </div>
       <div class="block-list">
