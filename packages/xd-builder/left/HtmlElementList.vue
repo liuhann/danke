@@ -1,12 +1,11 @@
 <template>
-  <div id="addon-html-list">
+  <div id="addon-html-list" class="left-aside-content">
+    <el-tabs v-model="currentAlbum" @tab-click="albumChange">
+      <el-tab-pane name="基础" label="基础" />
+      <el-tab-pane v-for="album in albums" :key="album" :name="album" :label="album" />
+    </el-tabs>
     <div class="left-block">
-      <div class="block-title">
-        <div class="text">
-          基础形状
-        </div>
-      </div>
-      <div class="block-list">
+      <div v-if="currentAlbum === '基础'" class="block-list">
         <div
           v-for="(shape, index) in shapes"
           :key="index"
@@ -15,18 +14,17 @@
           <div class="shape" :style="shapeStyle(shape)" />
         </div>
       </div>
-      <div class="block-title">
-        <div class="text">
-          气泡
-        </div>
-      </div>
-      <div class="block-list">
+
+      <div v-if="currentAlbum !== '基础'" class="block-list">
         <div
-          v-for="(shape, index) in shapes"
+          v-for="(svg, index) in svgs"
           :key="index"
-          class="object-item" draggable @dragstart="dragStart(shape, $event)"
+          class="object-item" draggable @dragstart="dragStart(svg, $event)"
         >
-          <div class="shape" :style="shapeStyle(shape)" />
+          <div class="svg-container" :style="variableValues(svg)">
+            <div class="styled-box" v-html="svg.content">
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -35,7 +33,7 @@
 
 <script>
 import { assignVariables} from '../mixins/renderUtils'
-import { Pagination, Input, Button, Loading, Checkbox } from 'element-ui'
+import { Pagination, Input, Button, Loading, Checkbox, Tabs, TabPane } from 'element-ui'
 import RestDAO from '../../utils/restdao.js'
 import shapes from './shapes'
 
@@ -45,25 +43,48 @@ export default {
     [Input.name]: Input,
     [Pagination.name]: Pagination,
     [Checkbox.name]: Checkbox,
+    [Tabs.name]: Tabs,
+    [TabPane.name]: TabPane,
     [Button.name]: Button
   },
-  mixins: [  ],
+  mixins: [ ],
   data () {
     return {
+      albums: [],
+      currentAlbum: '',
       shapes,
-      searchValue: '',
+      svgs: []
     }
   },
   created () {
     this.svgdao = new RestDAO(this.ctx, 'danke/svg')
   },
   mounted () {
+    this.loadSvgs()
+    this.currentAlbum = '基础'
   },
   methods: {
-     shapeStyle (shape) {
+    async loadSvgs() {
+      const result = await this.svgdao.distinct('album')
+      this.albums = result
+    },
+
+    async albumChange () {
+      const result = await this.svgdao.list({
+        album: this.currentAlbum
+      })
+      this.svgs = result.list
+    },
+    shapeStyle (shape) {
       const style = Object.assign({}, shape.style)
       assignVariables(style, shape.variables)
       return style
+    },
+
+    variableValues (svg) {
+      const styles = {}
+      assignVariables(styles, svg.variables)
+      return styles
     },
 
     dragStart (shape, ev) {
@@ -76,84 +97,23 @@ export default {
 <style lang="scss">
 @import './common.scss';
 #addon-html-list {
-  .search-box {
-    margin: 10px;
-    input {
-      &:hover {
-        box-shadow: none;
-      }
-    }
-  }
-  .pack {
-    .pack-title {
-      padding: 10px;
-      display: flex;
-      font-size: 1.5rem;
-      .text {
-        flex: 1;
-        font-weight: bold;
-        color: #fff;
-      }
-      .more {
-        color: #99a9bf;
-        cursor: pointer;
-        &:hover {
-          color: rgba(153, 169, 191, 0.6);
-        }
-      }
-    }
-  }
-  .pack-shapes {
+  .svg-container {
+    width: 100%;
+    height: 100%;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    .object-item {
-      width: 100px;
-      height: 100px;
-      margin-bottom: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    align-items: center;
+    justify-content: center;
+    .styled-box {
+      width: 80%;
+      height: 80%;
+      z-index: 10;
       position: relative;
-      &.add {
-        border: 1px dashed #99a9bf;
-        margin-left: 10px;
-        width: 80px;
-        height: 80px;
-        cursor: pointer;
-        i {
-          font-size: 20px;
-          color: #99a9bf;
-        }
-      }
-      &:nth-of-type(3n) {
-        margin-right: 0;
-      }
-      .svg-container {
+      svg {
         width: 100%;
         height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        svg {
-          width: 100%;
-          height: 100%;
-        }
-      }
-      .shape-name {
-        position: absolute;
-        bottom: -16px;
-        color: #eee;
-      }
-      .shape {
-        transform: scale(.8);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 14px;
-        color: #fff;
       }
     }
   }
+
 }
 </style>

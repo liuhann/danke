@@ -9,13 +9,21 @@
         <i class="el-icon-news" />
         <span>形状</span>
       </div>
+      <div class="category" :class="current === 'text'? 'current': ''" @click="toggleTo('text')">
+        <i class="el-icon-tickets" />
+        <span>文字</span>
+      </div>
+      <div class="category" :class="current === 'animation'? 'current': ''" @click="toggleTo('animation')">
+        <i class="el-icon-data-line" />
+        <span>动画</span>
+      </div>
       <div class="category" :class="current === 'filter'? 'current': ''" @click="toggleTo('filter')">
         <i class="el-icon-sunrise" />
         <span>滤镜</span>
       </div>
-      <div class="category" :class="current === 'text'? 'current': ''" @click="toggleTo('text')">
-        <i class="el-icon-tickets" />
-        <span>文字</span>
+      <div class="category" :class="current === 'filter'? 'current': ''" @click="toggleTo('filter')">
+        <i class="el-icon-files" />
+        <span>相框</span>
       </div>
       <div class="category" :class="current === 'image'? 'current': ''" @click="toggleTo('image')">
         <i class="el-icon-picture-outline" />
@@ -44,7 +52,7 @@
       </transition>
       <transition name="fade">
         <keep-alive>
-          <left-shape-list v-if="current === 'shape'" @insert="insertElement" />
+          <frame-list-config v-if="current === 'animation'" />
         </keep-alive>
       </transition>
       <transition name="fade">
@@ -76,6 +84,7 @@ import LeftBlockList from './LeftBlockList.vue'
 import LeftFilterList from './LeftFilterList.vue'
 import TickList from './TickList.vue'
 import HtmlElementList from './HtmlElementList.vue'
+import FrameListConfig from './FrameListConfig.vue'
 import workplaceMixin from '../mixins/workplaceMixins'
 
 export default {
@@ -86,6 +95,7 @@ export default {
     LeftShapeList,
     LeftFilterList,
     HtmlElementList,
+    FrameListConfig,
     TickList
   },
   mixins: [ workplaceMixin ],

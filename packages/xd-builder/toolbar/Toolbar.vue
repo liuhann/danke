@@ -1,8 +1,6 @@
 <template>
   <div id="tool-bar">
-    <pop-new-element @draw="emitDraw" />
     <pop-element-list :scene="scene" :checked-elements="checkedElements" />
-    <a v-if="noFocusedElement" class="action" @click="openPen('vector')"><icon-pen /></a>
     <a v-if="focusedElement && focusedElement.path" class="action" @click="openPen(focusedElement)"><icon-pen /></a>
     <!--  样式变量的修改-->
     <template v-for="(variable, index) in elementStyleVariables">
@@ -31,7 +29,7 @@
     <pop-set-filter v-show="focusedElement" :element="focusedElement" />
     <!--元素变换、旋转、拉伸等-->
     <pop-transform v-if="focusedElement" :element="focusedElement" />
-    <pop-set-animation v-if="focusedElement" :element="focusedElement" :scene="scene"/>
+    <pop-set-animation v-if="focusedElement" :element="focusedElement" :scene="scene" />
     <align-element v-if="selectedElements.length > 1" :elements="selectedElements" />
     <pop-more-action v-if="focusedElement" :element="focusedElement" :scene="scene" @reset="setElementLocked" />
 
@@ -100,7 +98,6 @@ export default {
   name: 'Toolbar',
   components: {
     PopSetFilter,
-    PopNewElement,
     PopImageMask,
     PopElementList,
     BorderStyle,

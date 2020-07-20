@@ -1,4 +1,19 @@
+.left-aside-content {
+  .el-tabs__item {
+    color:rgba(153, 169, 191, 0.6);
+    padding: 0 10px;
+    &.is-active {
+      color: #eee;
+    }
+  }
+}
+
 .left-block {
+  
+  .el-tabs__active-bar {
+    background-color: rgba(153, 169, 191, 1);
+  }
+
   .block-title {
     background-color: rgba(255,255,255,.2);
     padding: 6px;
@@ -12,8 +27,8 @@
     flex-wrap: wrap;
     .object-item {
       margin: 6px;
-      width: 100px;
-      height: 100px;
+      width: 98px;
+      height: 98px;
       display: flex;
       justify-content: center;
       align-items: center;

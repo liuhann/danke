@@ -9,7 +9,6 @@
       </el-tabs>
       <div class="svg-list">
         <div v-for="(svg, index) in svgs" :key="index" class="svg-item">
-          <div class="album">{{ svg.album }}</div>
           <div class="svg-container" :style="variableValues(svg)">
             <div class="styled-box" v-html="svg.content">
             </div>
