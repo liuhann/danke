@@ -79,6 +79,7 @@ export default {
 
 <style lang="scss">
 #addon-filter-list {
+  padding: 8px;
   .list {
     display: flex;
     flex-wrap: wrap;

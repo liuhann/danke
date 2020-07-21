@@ -44,6 +44,7 @@ export default {
 
 <style lang="scss">
 .left-text-template {
+  padding: 8px;
   .hint {
     margin: 10px 0;
     color: hsla(0,0%,100%,.5);

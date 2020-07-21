@@ -52,7 +52,7 @@
       </transition>
       <transition name="fade">
         <keep-alive>
-          <frame-list-config v-if="current === 'animation'" />
+          <frame-list-config v-if="current === 'animation'" :element="focusedElement" />
         </keep-alive>
       </transition>
       <transition name="fade">
@@ -92,7 +92,6 @@ export default {
     LeftBlockList,
     TextList,
     ImageList,
-    LeftShapeList,
     LeftFilterList,
     HtmlElementList,
     FrameListConfig,
@@ -200,35 +199,14 @@ aside.insert-container {
     background: #293039;
     width: 352px;
     position: relative;
-    >div {
-      left: 0;
-      right: 0;
-      top: 0;
-      bottom: 0;
-      position: absolute;
-      overflow-y: auto;
-      padding: 8px;
-    }
   }
 
-  .search-box {
-    .el-input {
-      background: transparent;
-      border: none;
-
-      .el-input-group__append {
-        background: #545961;
-        border: none;
-      }
-    }
-    margin: 10px;
-    input {
-      background: rgba(255, 255, 255,.1);
-      border: none;
-      color: #ddd;
-      &:hover {
-        box-shadow: none;
-      }
+  input {
+    background: rgba(255, 255, 255,.1);
+    border: none;
+    color: #ddd;
+    &:hover {
+      box-shadow: none;
     }
   }
 

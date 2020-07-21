@@ -14,8 +14,6 @@
         <draggable v-model="element.animation.enter" class="in-animation-list">
           <div v-for="(step, index) in element.animation.enter" :key="index" class="animation-entry">
             <div class="summary">
-              <el-cascader v-model="step.name" size="mini" :options="CASOptions" @change="casArray => frameChange(step, casArray)">
-              </el-cascader>
               <div class="duration">
               </div>
               <el-button icon="el-icon-delete" size="mini" type="text" @click="deleteStep('enter', index)" />

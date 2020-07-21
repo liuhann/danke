@@ -97,6 +97,7 @@ export default {
 <style lang="scss">
 @import './common.scss';
 #addon-html-list {
+  padding: 8px;
   .svg-container {
     width: 100%;
     height: 100%;

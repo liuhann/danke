@@ -143,7 +143,6 @@ export default {
       if (this.element.maskImage) {
         style.maskImage = this.element.maskImage
       }
-      // Object.assign(style, this.element.style)
       // this.appendTextTransform(style)
       // 对于正在编辑的元素不设置transform
       if (this.element.editing) {
@@ -187,9 +186,15 @@ export default {
     elementAnimationStyle () {
       const element = this.element
       const style = {}
-      if (element.animation) {
-        const animations = element.animation[this.stage]
-        if (animations && animations.length) {
+      let animations = [];
+
+      if (element.previewAnimations && element.previewAnimations.length) {
+        animations = element.previewAnimations
+      } else if (element.animation) {
+        animations = element.animation[this.stage]
+      }
+      if (animations) {
+        if (animations.length) {
           // 单个动画
           if (animations.length === 1) {
             const animation = animations[0]
@@ -215,6 +220,8 @@ export default {
           }
         }
       }
+      
+      console.log('reset animation style', style)
       return style
     },
 
