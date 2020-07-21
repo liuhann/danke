@@ -90,7 +90,8 @@ export default {
    
    selectFrame (frame) {
      this.currentFrame = frame
-     this.element.previewAnimations = [this.getFrameStep(frame)]
+     this.$set(this.element, 'previewAnimation', this.getFrameStep(frame))
+     // this.element.previewAnimations = [this.getFrameStep(frame)]
    },
 
    addFrame () {
