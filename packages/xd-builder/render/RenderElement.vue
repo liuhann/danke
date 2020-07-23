@@ -188,8 +188,8 @@ export default {
       const style = {}
       let animations = [];
 
-      if (element.previewAnimation && element.previewAnimation.name) {
-        animations = [element.previewAnimation]
+      if (element.previewAnimation && element.previewAnimation.length) {
+        animations = element.previewAnimation
       } else if (element.animation) {
         animations = element.animation[this.stage]
       }

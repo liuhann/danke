@@ -14,11 +14,12 @@
             #{{ index + 1 }} {{ step.group }} - {{ step.direction }}
           </div>
           <i class="el-icon-edit-outline" @click="replaceFrame(step)">重新选择</i>
-          <i class="el-icon-delete" @click="deleteStep('enter', index)" />
+          <i class="el-icon-delete" @click="deleteFrame(index)" />
         </div>
         <animation-form :animation="step" />
       </div>
       <el-button size="mini" type="success" @click="addFrame">增加</el-button>
+      <el-button size="mini" type="warn" @click="previewFrames">预览</el-button>
     </div>
 
     <div v-show="showChoose && element" class="animation-choose">
@@ -90,7 +91,7 @@ export default {
    
    selectFrame (frame) {
      this.currentFrame = frame
-     this.$set(this.element, 'previewAnimation', this.getFrameStep(frame))
+     this.$set(this.element, 'previewAnimation', [this.getFrameStep(frame)])
      // this.element.previewAnimations = [this.getFrameStep(frame)]
    },
 
@@ -104,6 +105,19 @@ export default {
      this.showChoose = true
    },
 
+   deleteFrame (index) {
+    this.element.animation[this.animationType].splice(index, 1)
+   },
+
+  previewFrames () {
+    const currentFrame = JSON.parse(JSON.stringify(this.element.animation[this.animationType]))
+    this.$set(this.element, 'previewAnimation', [])
+    this.element.animation[this.animationType] = []
+    setTimeout(() => {
+      this.$set(this.element, 'previewAnimation', currentFrame)
+      this.element.animation[this.animationType] = currentFrame
+    }, 500)
+  },
 
   confirmFrame () {
     if (this.currentStep) {
@@ -119,6 +133,7 @@ export default {
       }
       this.element.animation[this.animationType].push(JSON.parse(JSON.stringify(step)))
     }
+    this.showChoose = false
   },
 
   getFrameStep(frame) {
