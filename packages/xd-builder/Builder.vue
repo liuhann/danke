@@ -55,10 +55,31 @@ import SceneList from './SceneList.vue'
 
 import Vue from 'vue'
 
-import { Input, Popover, Tooltip, Switch, Form, FormItem, InputNumber, Checkbox, Slider, Button, ButtonGroup, Select, OptionGroup, Option, RadioGroup, Radio, ColorPicker, Tabs, TabPane, Upload, Cascader } from 'element-ui'
+import { 
+  Input, 
+  Popover, 
+  Tooltip, 
+  Form, 
+  FormItem, 
+  InputNumber, 
+  Checkbox, 
+  Slider, 
+  Button, 
+  ButtonGroup, 
+  Select, 
+  OptionGroup, 
+  Option, 
+  ColorPicker, 
+  Tabs, 
+  TabPane, 
+  Upload, 
+  Cascader,
+  Pagination
+} from 'element-ui'
 
 Vue.use(Input)
 Vue.use(Button)
+Vue.use(Pagination)
 
 export default {
   name: 'Builder',

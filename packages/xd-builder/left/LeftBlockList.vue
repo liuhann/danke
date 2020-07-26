@@ -1,5 +1,5 @@
 <template>
-  <div id="addon-block-list">
+  <div id="addon-block-list" class="left-aside-content">
     <div class="search-box">
       <el-input v-model="searchValue" placeholder="搜索素材库" class="input-with-select" clearable>
         <el-button slot="append" icon="el-icon-search"></el-button>

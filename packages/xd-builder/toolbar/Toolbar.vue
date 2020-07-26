@@ -25,25 +25,16 @@
     </template>
 
     <!-- 图片遮罩-->
-    <pop-image-mask v-show="elementMasktable" :element="focusedElement" />
-    <pop-set-filter v-show="focusedElement" :element="focusedElement" />
+    <!-- <pop-image-mask v-show="elementMasktable" :element="focusedElement" /> -->
+    <!-- <pop-set-filter v-show="focusedElement" :element="focusedElement" /> -->
     <!--元素变换、旋转、拉伸等-->
     <pop-transform v-if="focusedElement" :element="focusedElement" />
-    <pop-set-animation v-if="focusedElement" :element="focusedElement" :scene="scene" />
+    <!-- <pop-set-animation v-if="focusedElement" :element="focusedElement" :scene="scene" /> -->
     <align-element v-if="selectedElements.length > 1" :elements="selectedElements" />
     <pop-more-action v-if="focusedElement" :element="focusedElement" :scene="scene" @reset="setElementLocked" />
 
     <!-- 右侧操作功能按钮-->
     <div class="pull-right">
-      <!--      <el-tooltip v-if="!elementSelected && undoable" content="撤销">-->
-      <!--        <a class="action" @click="$emit('undo')"><icon-undo /></a>-->
-      <!--      </el-tooltip>-->
-      <!--      <el-tooltip v-if="!elementSelected && redoable" content="重做">-->
-      <!--        <a class="action" @click="$emit('redo')"><icon-redo /></a>-->
-      <!--      </el-tooltip>-->
-      <!--      <el-tooltip v-if="focusedElement" class="item" effect="dark" content="格式刷" placement="bottom">-->
-      <!--        <a class="action" :class="paste? 'on': ''" @click="togglePaste"><i class="el-icon-brush" /></a>-->
-      <!--      </el-tooltip>-->
       <el-tooltip v-if="selectedElements.length > 1" class="item" effect="dark" content="建组" placement="bottom">
         <a class="action" @click="groupSelectedElement"><i class="el-icon-folder-checked" /></a>
       </el-tooltip>

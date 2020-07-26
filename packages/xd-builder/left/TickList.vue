@@ -1,10 +1,10 @@
 <template>
-  <div id="left-tick-list">
+  <div id="left-tick-list" class="left-aside-content">
     <div class="list-table">
       <div v-for="tick in ticks" :key="tick.id" class="tick-entry">
         <div class="info">
           <div>{{ tick.name }}</div>
-          <div class="sum">时长：{{formatAudioSecondShow(tick.dura)}} 适用于: {{ tick.ticks.length }} 场景 </div>  
+          <div class="sum">时长：{{ formatAudioSecondShow(tick.dura) }} 适用于: {{ tick.ticks.length }} 场景 </div>  
         </div>
         <div class="play" @click="applyTick(tick)"><i class="el-icon-video-play" /></div>
       </div>

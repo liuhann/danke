@@ -1,5 +1,5 @@
 <template>
-  <div id="my-uploaded-images">
+  <div id="my-uploaded-images" class="left-aside-content">
     <div v-if="!currentAlbum" class="album-list">
       <div v-for="album in albums" :key="album._id" class="album">
         <div class="album-title">

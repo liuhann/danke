@@ -21,9 +21,9 @@
         <i class="el-icon-sunrise" />
         <span>滤镜</span>
       </div>
-      <div class="category" :class="current === 'filter'? 'current': ''" @click="toggleTo('filter')">
+      <div class="category" :class="current === 'addon'? 'current': ''" @click="toggleTo('addon')">
         <i class="el-icon-files" />
-        <span>相框</span>
+        <span>修饰</span>
       </div>
       <div class="category" :class="current === 'image'? 'current': ''" @click="toggleTo('image')">
         <i class="el-icon-picture-outline" />

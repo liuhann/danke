@@ -1,6 +1,6 @@
 <template>
   <div id="left-frames-config" class="left-aside-content">
-    <div v-if="!element">
+    <div v-if="!element" class="no-element">
       请选择要应用动画的元素
     </div>
     <div v-if="element" class="animation-config">
@@ -173,6 +173,15 @@ export default {
 #left-frames-config {
   padding: 8px;
   overflow: hidden;
+  .no-element {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.75rem;
+    color: #999;
+  }
   .animation-choose {
     position: absolute;
     left: 0;

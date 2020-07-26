@@ -1,5 +1,5 @@
 <template>
-  <div id="addon-filter-list">
+  <div id="addon-filter-list" class="left-aside-content">
     <div class="search-box">
       <el-input v-model="searchValue" placeholder="搜索滤镜" class="input-with-select" clearable>
         <el-button slot="append" icon="el-icon-search"></el-button>
@@ -10,11 +10,11 @@
       <div v-for="(style, index) in styles" :key="index" class="filter-item" @click="chooseFilter(style)">
         <div class="style-container">
           <div class="element" :class="style.name">
-            <img :src="preview || 'https://media-public.canva.cn/MADLFoi3fk0/1/screen.jpg'" />
+            <img :src="'https://media-public.canva.cn/MADLFoi3fk0/1/screen.jpg'" />
           </div>
         </div>
         <div class="desc">
-          {{ style.name }}
+          {{ style.title }}
         </div>
       </div>
     </div>
@@ -22,6 +22,11 @@
       <svg v-for="(svgfilter, index) of svgFilters" :key="index" v-html="svgfilter" />
     </div>
     <div class="pager">
+      <el-pagination
+        background layout="prev, pager, next"
+        :page-size="pageSize"
+        :total="total" :current-page.sync="page" @current-change="loadStyles"
+      />
     </div>
   </div>
 </template>
@@ -40,7 +45,7 @@ export default {
       searchValue: '',
       styles: [],
       page: 0,
-      pageSize: 20,
+      pageSize: 30,
       total: 0,
       svgFilters: []
     }

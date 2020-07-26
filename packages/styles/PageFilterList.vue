@@ -7,7 +7,7 @@
           <div v-for="(style, index) in styles" :key="index" class="style-item">
             <div class="style-container">
               <div class="element" :class="[style.name, style.category]">
-                <img src="https://media-public.canva.cn/MADLFoi3fk0/1/screen.jpg" />
+                <img v-if="style.category === 'filter'" src="https://media-public.canva.cn/MADLFoi3fk0/1/screen.jpg" />
               </div>
             </div>
             <div class="btns">
@@ -109,6 +109,9 @@ export default {
           top: 0;
           width: 100%;
           z-index: 1;
+        }
+        &.addon {
+          padding-bottom: 50%;
         }
         img {
           display: block;
