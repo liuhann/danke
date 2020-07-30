@@ -3,7 +3,9 @@
     <el-tooltip class="item" effect="dark" content="元素列表" placement="bottom">
       <a class="action" @click="toggleShowElementList"><i class="el-icon-more-outline rotate-90" /></a>
     </el-tooltip>
-    <a v-if="focusedElement && focusedElement.path" class="action" @click="openPen(focusedElement)"><icon-pen /></a>
+    <el-tooltip v-show="focusedElement" class="item" effect="dark" content="动态效果" placement="bottom">
+      <a class="action" @click="openAnimationEdit"><i class="el-icon-data-line" /></a>
+    </el-tooltip>
     <!--  样式变量的修改-->
     <template v-for="(variable, index) in elementStyleVariables">
       <!-- 颜色-->
@@ -400,6 +402,9 @@ export default {
       }
     },
 
+    openAnimationEdit () {
+      this.$emit('show-animations')
+    },
     toggleShowElementList () {
       this.$emit('show-elements')
     },
@@ -419,24 +424,8 @@ export default {
       })
     },
 
-    openPen (type) {
-      this.$emit('open-pen', type)
-    },
-
     log () {
       console.log(this.selectedElements, this.scene, this.work)
-    },
-
-    previousScene () {
-      this.$emit('prev-scene')
-    },
-
-    emitDraw (element) {
-      this.$emit('draw', element)
-    },
-
-    nextScene () {
-      this.$emit('next-scene')
     }
   }
 }

@@ -1,12 +1,9 @@
 <template>
-  <div id="left-frames-config" class="left-aside-content">
-    <div v-if="!element" class="no-element">
-      请选择要应用动画的元素
-    </div>
+  <div id="left-frames-config">
     <div v-if="element" class="animation-config">
-      <el-tabs v-model="animationType">
-        <el-tab-pane label="入场动画列表" name="enter" />
-        <el-tab-pane label="离场动画列表" name="exist" />
+      <el-tabs v-model="animationType" type="card">
+        <el-tab-pane label="进入" name="enter" />
+        <el-tab-pane label="离开" name="exist" />
       </el-tabs>
       <div v-for="(step, index) in element.animation[animationType]" :key="index" class="animation-entry">
         <div class="summary">
@@ -23,16 +20,18 @@
     </div>
 
     <div v-show="showChoose && element" class="animation-choose">
-      <el-tabs v-model="group" tab-position="left" style="height: 100%;" @tab-click="groupChange">
-        <el-tab-pane v-for="g in groups" :key="g" :label="g" :name="g" />
-      </el-tabs>
-      <div class="frames-container">
-        <div class="action">
-          <el-button size="mini" type="success" @click="confirmFrame">确认</el-button>
-          <el-button size="mini" @click="showChoose = false">取消</el-button>
-        </div>
-        <div v-for="(frame, index) in frames" :key="index" class="frame" :class="currentFrame.name === frame.name ? 'current': ''" @click="selectFrame(frame)">
-          {{ frame.direction }}
+      <div class="action">
+        <el-button size="mini" type="success" @click="confirmFrame">确认</el-button>
+        <el-button size="mini" @click="showChoose = false">取消</el-button>
+      </div>
+      <div class="hor-tabs">
+        <el-tabs v-model="group" tab-position="left" style="height: 100%;" @tab-click="groupChange">
+          <el-tab-pane v-for="g in groups" :key="g" :label="g" :name="g" />
+        </el-tabs>
+        <div class="frames-container">
+          <div v-for="(frame, index) in frames" :key="index" class="frame" :class="currentFrame.name === frame.name ? 'current': ''" @click="selectFrame(frame)">
+            {{ frame.direction }}
+          </div>
         </div>
       </div>
     </div>
@@ -43,6 +42,7 @@
 import RestDAO from '../../utils/restdao.js'
 import { assignVariables } from '../mixins/renderUtils'
 import AnimationForm from './AnimationForm.vue'
+import workplaceMixins from '../mixins/workplaceMixins'
 import { Pagination, Input, Button, Loading, Checkbox, Tabs, TabPane, Collapse, CollapseItem } from 'element-ui'
 
 export default {
@@ -58,11 +58,7 @@ export default {
     [CollapseItem.name]: CollapseItem,
     AnimationForm
   },
-  props: {
-    element: {
-      type: Object
-    }
-  },
+  mixins: [ workplaceMixins ],
   data () {
     return {
       animationType: 'enter',
@@ -169,10 +165,11 @@ export default {
 </script>
 
 <style lang="scss">
-@import './common.scss';
 #left-frames-config {
   padding: 8px;
   overflow: hidden;
+  width: 100%;
+  position: relative;
   .no-element {
     height: 100%;
     width: 100%;
@@ -185,12 +182,18 @@ export default {
   .animation-choose {
     position: absolute;
     left: 0;
+    width: 100%;
     top: 0;
-    right: 0;
     bottom: 0;
-    display: flex;
-    z-index: 101;
-    background: #293039;
+    background: #fff;
+    z-index: 99;
+    .action {
+      padding: 1rem;
+    }
+    .hor-tabs {
+      display: flex;
+      height: calc(100% - 50px);
+    }
     .frames-container {
       .action {
         text-align: right;
@@ -202,14 +205,14 @@ export default {
       .frame {
         padding: 10px 5px;
         font-size: 1.5rem;
-        color: rgba(153, 169, 191, 0.6);
+        color: #999;
         cursor: pointer;
         &:hover {
           background: rgba(153, 169, 191, .3);
         }
         &.current {
-          background: rgba(153, 169, 191, .2);
-          color: #eee;
+          background: #eee;
+          color: rgb(84, 103, 131);
         }
       }
     }

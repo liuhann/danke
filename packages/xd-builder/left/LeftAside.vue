@@ -13,10 +13,6 @@
         <i class="el-icon-tickets" />
         <span>文字</span>
       </div>
-      <div class="category" :class="current === 'animation'? 'current': ''" @click="toggleTo('animation')">
-        <i class="el-icon-data-line" />
-        <span>动画</span>
-      </div>
       <div class="category" :class="current === 'filter'? 'current': ''" @click="toggleTo('filter')">
         <i class="el-icon-sunrise" />
         <span>滤镜</span>
@@ -48,11 +44,6 @@
       <transition name="fade">
         <keep-alive>
           <text-list v-if="current==='text'" />
-        </keep-alive>
-      </transition>
-      <transition name="fade">
-        <keep-alive>
-          <frame-list-config v-if="current === 'animation'" :element="focusedElement" />
         </keep-alive>
       </transition>
       <transition name="fade">

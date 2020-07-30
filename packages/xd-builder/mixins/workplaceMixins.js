@@ -12,6 +12,9 @@ export default {
   },
 
   computed: {
+    element () {
+      return this.focusedElement
+    },
     // 当前唯一选中的元素
     focusedElement () {
       if (this.selectedElements.length === 1) {

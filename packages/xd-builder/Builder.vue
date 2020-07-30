@@ -7,17 +7,8 @@
         :work="work"
         :scene="currentScene"
         :paste="paste"
-        :scale="scale"
-        :undoable="undoable"
-        :redoable="redoable"
-        @draw="drawElement"
-        @open-pen="openPen"
-        @change="workChange"
-        @undo="undo"
-        @redo="redo"
-        @prev-scene="previousScene"
         @show-elements="navLeftShowElements"
-        @next-scene="nextScene"
+        @show-animations="showAnimationDrawer"
         @toggle-paste="togglePaste"
       />
       <scene-container
@@ -26,11 +17,8 @@
         :animation="currentAnimation"
         :scene="currentScene"
         :work="work"
-        :paste="paste"
-        @undo="undo"
         @toggle-scenes="showSceneList = true"
         @save-work="saveWork"
-        @change="workChange"
         @scale-fit="scaleChange"
         @clean-paste="cleanPaste"
       />
@@ -39,6 +27,9 @@
     </section>
     <el-drawer title="元素列表" :visible.sync="showElementList" direction="ltr" :modal="false" size="428px" :wrapper-closable="false">
       <scene-element-list :scene="currentScene" />
+    </el-drawer>
+    <el-drawer title="动画设置" :visible.sync="animationDrawer" direction="ltr" :modal="false" size="428px" :wrapper-closable="false">
+      <frame-list-config :work="work" :scene="currentScene" />
     </el-drawer> 
     <div id="textMesure" />
   </div>
@@ -48,16 +39,15 @@
 import StyleRegistry from './utils/StyleRegistry.js'
 import workMixin from './work/workMixin.js'
 import sceneMixin from './mixins/sceneMixins.js'
-import redoMixins from './work/redoMixins.js'
 import SceneContainer from './SceneContainer.vue'
 import LeftAside from './left/LeftAside.vue'
-import 'element-ui/packages/theme-chalk/lib/icon.css'
 import Toolbar from './toolbar/Toolbar.vue'
 import { shortid } from '../utils/string'
 import ClippathEditor from './clippath-maker/ClippathEditor'
 import SceneList from './SceneList.vue'
 import SceneElementList from './left/SceneElementList.vue'
-
+import FrameListConfig from './left/FrameListConfig.vue'
+import 'element-ui/packages/theme-chalk/lib/icon.css'
 import Vue from 'vue'
 
 import { 
@@ -97,14 +87,16 @@ export default {
     Toolbar,
     SceneContainer,
     SceneElementList,
+    FrameListConfig,
     LeftAside
   },
-  mixins: [ sceneMixin, workMixin, redoMixins],
+  mixins: [ sceneMixin, workMixin ],
   props: {
   },
   data () {
     return {
       showElementList: false,
+      animationDrawer: false,
       viewPortRect: {
         left: 0,
         top: 0,
@@ -131,6 +123,10 @@ export default {
     navLeftShowElements () {
       this.showElementList = true
     },
+
+    showAnimationDrawer () {
+      this.animationDrawer = true
+    },
     
     navLeftHideElements () {
       this.showElementList = false
@@ -144,11 +140,9 @@ export default {
       if (!workId) {
         this.newWork()
         this.addScene()
-        this.takeSnapshot()
       } else {
         await this.loadWork(workId)
         this.currentScene = this.work.scenes[0]
-        this.takeSnapshot()
       }
       this.ctx.styleRegistry.loadAllFrames()
     },
@@ -221,9 +215,6 @@ export default {
       this.viewPortRect.height = this.$refs.sceneContainer.viewPort.height
     },
 
-    workChange () {
-      this.takeSnapshot()
-    },
     scaleChange (scale) {
       this.scale = scale
     },
