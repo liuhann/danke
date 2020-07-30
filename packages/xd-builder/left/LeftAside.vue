@@ -98,6 +98,8 @@ export default {
     TickList
   },
   mixins: [ workplaceMixin ],
+  props: {
+  },
   data () {
     return {
       current: 'scene'

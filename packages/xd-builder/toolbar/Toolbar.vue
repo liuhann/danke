@@ -1,6 +1,8 @@
 <template>
   <div id="tool-bar">
-    <pop-element-list :scene="scene" :checked-elements="checkedElements" />
+    <el-tooltip class="item" effect="dark" content="元素列表" placement="bottom">
+      <a class="action" @click="toggleShowElementList"><i class="el-icon-more-outline rotate-90" /></a>
+    </el-tooltip>
     <a v-if="focusedElement && focusedElement.path" class="action" @click="openPen(focusedElement)"><icon-pen /></a>
     <!--  样式变量的修改-->
     <template v-for="(variable, index) in elementStyleVariables">
@@ -88,12 +90,8 @@ import PopSetFilter from './PopSetFilter'
 export default {
   name: 'Toolbar',
   components: {
-    PopSetFilter,
-    PopImageMask,
-    PopElementList,
     BorderStyle,
     PopSetGradient,
-    PopSetAnimation,
     AlignElement,
     FontSize,
     FontWeight,
@@ -400,6 +398,10 @@ export default {
           }
         })
       }
+    },
+
+    toggleShowElementList () {
+      this.$emit('show-elements')
     },
 
     playScene () {

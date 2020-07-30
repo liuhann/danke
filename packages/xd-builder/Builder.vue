@@ -16,6 +16,7 @@
         @undo="undo"
         @redo="redo"
         @prev-scene="previousScene"
+        @show-elements="navLeftShowElements"
         @next-scene="nextScene"
         @toggle-paste="togglePaste"
       />
@@ -36,6 +37,9 @@
       <clippath-editor v-if="pen" :view-port-rect="viewPortRect" :scene="currentScene" :view-box="work.viewBox" :work="work" @close="pen = ''" @input="pathConfirmed" />
       <scene-list v-show="showSceneList" :work="work" :current="currentScene" @close="showSceneList = false" @choose-scene="chooseScene" />
     </section>
+    <el-drawer title="元素列表" :visible.sync="showElementList" direction="ltr" :modal="false" size="428px" :wrapper-closable="false">
+      <scene-element-list :scene="currentScene" />
+    </el-drawer> 
     <div id="textMesure" />
   </div>
 </template>
@@ -52,6 +56,7 @@ import Toolbar from './toolbar/Toolbar.vue'
 import { shortid } from '../utils/string'
 import ClippathEditor from './clippath-maker/ClippathEditor'
 import SceneList from './SceneList.vue'
+import SceneElementList from './left/SceneElementList.vue'
 
 import Vue from 'vue'
 
@@ -74,11 +79,14 @@ import {
   TabPane, 
   Upload, 
   Cascader,
-  Pagination
+  Pagination,
+  Drawer
 } from 'element-ui'
 
 Vue.use(Input)
 Vue.use(Button)
+Vue.use(Drawer)
+Vue.use(Popover)
 Vue.use(Pagination)
 
 export default {
@@ -88,6 +96,7 @@ export default {
     ClippathEditor,
     Toolbar,
     SceneContainer,
+    SceneElementList,
     LeftAside
   },
   mixins: [ sceneMixin, workMixin, redoMixins],
@@ -95,6 +104,7 @@ export default {
   },
   data () {
     return {
+      showElementList: false,
       viewPortRect: {
         left: 0,
         top: 0,
@@ -117,6 +127,15 @@ export default {
     this.onMounted()
   },
   methods: {
+
+    navLeftShowElements () {
+      this.showElementList = true
+    },
+    
+    navLeftHideElements () {
+      this.showElementList = false
+    },
+
     drawElement (element) {
       this.insert('element', element)
     },
