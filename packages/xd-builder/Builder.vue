@@ -1,20 +1,15 @@
 <template>
   <div id="xd">
-    <left-aside :scene="currentScene" @insert="insert" @replace="replace" />
+    <left-aside @insert="insert" @replace="replace" />
     <section v-if="work" class="right-section">
       <toolbar
-        v-if="currentScene"
         :work="work"
         :scene="currentScene"
-        :paste="paste"
-        @show-elements="navLeftShowElements"
+        @show-elements="showElementList"
         @show-animations="showAnimationDrawer"
-        @toggle-paste="togglePaste"
       />
       <scene-container
-        v-if="currentScene"
         ref="sceneContainer"
-        :animation="currentAnimation"
         :scene="currentScene"
         :work="work"
         @toggle-scenes="showSceneList = true"
@@ -25,7 +20,7 @@
       <clippath-editor v-if="pen" :view-port-rect="viewPortRect" :scene="currentScene" :view-box="work.viewBox" :work="work" @close="pen = ''" @input="pathConfirmed" />
       <scene-list v-show="showSceneList" :work="work" :current="currentScene" @close="showSceneList = false" @choose-scene="chooseScene" />
     </section>
-    <el-drawer title="元素列表" :visible.sync="showElementList" direction="ltr" :modal="false" size="428px" :wrapper-closable="false">
+    <el-drawer title="元素列表" :visible.sync="elementsDrawer" direction="ltr" :modal="false" size="428px" :wrapper-closable="false">
       <scene-element-list :scene="currentScene" />
     </el-drawer>
     <el-drawer title="动画设置" :visible.sync="animationDrawer" direction="ltr" :modal="false" size="428px" :wrapper-closable="false">
@@ -95,7 +90,7 @@ export default {
   },
   data () {
     return {
-      showElementList: false,
+      elementsDrawer: false,
       animationDrawer: false,
       viewPortRect: {
         left: 0,
@@ -105,7 +100,6 @@ export default {
       },
       pen: '',
       work: null,
-      currentAnimation: null,
       showSceneList: false,
       scale: 1,
       paste: null
@@ -119,17 +113,12 @@ export default {
     this.onMounted()
   },
   methods: {
-
-    navLeftShowElements () {
-      this.showElementList = true
+    showElementList () {
+      this.elementsDrawer = true
     },
 
     showAnimationDrawer () {
       this.animationDrawer = true
-    },
-    
-    navLeftHideElements () {
-      this.showElementList = false
     },
 
     drawElement (element) {
@@ -153,16 +142,13 @@ export default {
           if (object == null) {
             this.addScene()
           }
-          break;
-        case 'animation':
-          this.currentAnimation = object
-          break;
+          break
         case 'tick':
           this.applyTicksToWork(object)
-          break;
+          break
         case 'element':
           this.$refs.sceneContainer.createSingleElement(object, 100, 100)
-          // this.currentScene.elements.push(Object.assign(node, object))
+          break
         default:
       }
     },

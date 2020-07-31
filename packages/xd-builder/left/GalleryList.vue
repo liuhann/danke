@@ -30,7 +30,7 @@ import RenderScene from '../render/RenderScene'
 import { fitRectIntoBounds } from '../mixins/rectUtils'
 
 export default {
-  name: 'LeftBlockList',
+  name: 'GalleryList',
   components: {
     RenderScene,
     [Input.name]: Input,

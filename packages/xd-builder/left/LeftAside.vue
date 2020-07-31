@@ -1,9 +1,9 @@
 <template>
   <aside class="insert-container">
     <div class="category-side">
-      <div class="category" :class="current === 'block'? 'current': ''" @click="toggleTo('block')">
-        <i class="el-icon-office-building" />
-        <span>图库</span>
+      <div class="category" :class="current === 'gallery'? 'current': ''" @click="toggleTo('gallery')">
+        <i class="el-icon-school" />
+        <span>素材库</span>
       </div>
       <div class="category" :class="current === 'html'? 'current': ''" @click="toggleTo('html')">
         <i class="el-icon-news" />
@@ -38,7 +38,7 @@
       </transition>
       <transition name="fade">
         <keep-alive>
-          <left-block-list v-if="current === 'block'" />
+          <gallery-list v-if="current === 'gallery'" />
         </keep-alive>
       </transition>
       <transition name="fade">
@@ -53,7 +53,7 @@
       </transition>
       <transition name="fade">
         <keep-alive>
-          <left-filter-list v-if="current === 'filter'" :preview="focusedUrl" @insert="insertFilter" />
+          <left-filter-list v-if="current === 'filter'" @insert="insertFilter" />
         </keep-alive>
       </transition>
       <transition name="fade">
@@ -71,29 +71,26 @@ import RestDAO from '../../utils/restdao.js'
 import ImageList from './ImageList.vue'
 import LeftShapeList from './ShapeList.vue'
 import TextList from './TextList'
-import LeftBlockList from './LeftBlockList.vue'
+import GalleryList from './GalleryList.vue'
 import LeftFilterList from './LeftFilterList.vue'
 import TickList from './TickList.vue'
 import HtmlElementList from './HtmlElementList.vue'
 import FrameListConfig from './FrameListConfig.vue'
-import workplaceMixin from '../mixins/workplaceMixins'
 
 export default {
   components: {
-    LeftBlockList,
+    GalleryList,
     TextList,
     ImageList,
     LeftFilterList,
     HtmlElementList,
-    FrameListConfig,
     TickList
   },
-  mixins: [ workplaceMixin ],
   props: {
   },
   data () {
     return {
-      current: 'scene'
+      current: 'gallery'
     }
   },
   created () {
