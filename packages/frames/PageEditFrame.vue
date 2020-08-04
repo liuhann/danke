@@ -62,15 +62,8 @@
                 </div>
               </el-form-item>
               <el-form-item label="">
-                <el-button size="mini" type="primary" @click="save">
-                  保存
-                </el-button>
-                <el-button size="mini" @click="cloneCreate">
-                  复制新增
-                </el-button>
-                <el-button size="mini" @click="play">
-                  预览
-                </el-button>
+                <el-button size="mini" type="primary" @click="save">保存</el-button>
+                <el-button size="mini" @click="play">预览</el-button>
               </el-form-item>
             </el-form>
           </el-col>

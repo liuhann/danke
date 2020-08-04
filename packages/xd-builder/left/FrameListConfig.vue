@@ -1,7 +1,7 @@
 <template>
   <div id="left-frames-config">
     <div v-if="element" class="animation-config">
-      <el-tabs v-model="animationType" type="card">
+      <el-tabs v-model="animationType" type="card" size="mini">
         <el-tab-pane label="进入" name="enter" />
         <el-tab-pane label="离开" name="exist" />
       </el-tabs>
@@ -189,6 +189,8 @@ export default {
     z-index: 99;
     .action {
       padding: 1rem;
+      text-align: right;
+      border-bottom: 1px solid #efefef;
     }
     .hor-tabs {
       display: flex;

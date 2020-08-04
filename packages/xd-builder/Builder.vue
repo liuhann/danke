@@ -13,9 +13,8 @@
         :scene="currentScene"
         :work="work"
         @toggle-scenes="showSceneList = true"
-        @save-work="saveWork"
         @scale-fit="scaleChange"
-        @clean-paste="cleanPaste"
+        @focus-change="focusChange"
       />
       <clippath-editor v-if="pen" :view-port-rect="viewPortRect" :scene="currentScene" :view-box="work.viewBox" :work="work" @close="pen = ''" @input="pathConfirmed" />
       <scene-list v-show="showSceneList" :work="work" :current="currentScene" @close="showSceneList = false" @choose-scene="chooseScene" />
@@ -43,6 +42,7 @@ import SceneList from './SceneList.vue'
 import SceneElementList from './left/SceneElementList.vue'
 import FrameListConfig from './left/FrameListConfig.vue'
 import 'element-ui/packages/theme-chalk/lib/icon.css'
+import Mousetrap from 'mousetrap'
 import Vue from 'vue'
 
 import { 
@@ -117,6 +117,14 @@ export default {
       this.elementsDrawer = true
     },
 
+    focusChange (element) {
+      if (element == null) {
+        // close drawer on click empty
+        this.elementsDrawer = false
+        this.animationDrawer = false
+      }
+    },
+
     showAnimationDrawer () {
       this.animationDrawer = true
     },
@@ -134,6 +142,12 @@ export default {
         this.currentScene = this.work.scenes[0]
       }
       this.ctx.styleRegistry.loadAllFrames()
+
+      Mousetrap.bind('ctrl+s', ev => {
+        ev.stopPropagation()
+        ev.preventDefault()
+        this.saveWork()
+      })
     },
 
     insert (type, object) {
@@ -206,9 +220,6 @@ export default {
     },
     togglePaste (paste) {
       this.paste = paste
-    },
-    cleanPaste () {
-      this.paste = null
     }
   }
 }

@@ -129,7 +129,9 @@ export default {
     async groupChange () {
       this.filteredFrames = (await this.framedao.list({
         group: this.group
-      })).list
+      })).list.sort( function (a, b) {
+        return a.direction > b.direction
+      })
       if (this.filteredFrames.length) {
         this.handleCurrentChange(this.filteredFrames[0])
       }
@@ -216,7 +218,7 @@ export default {
     margin-top: 40px;
     display: flex;
     .table-frame-list {
-      width: 430px;
+      width: 530px;
     }
   }
   .body {

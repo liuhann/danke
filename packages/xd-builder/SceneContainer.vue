@@ -61,6 +61,7 @@ import interactMixins from './mixins/interactMixins.js'
 import mouseMixins from './mixins/mousetrap.js'
 import { fitRectIntoBounds, getRectPositionStyle, isPointInRect, intersectRect } from './mixins/rectUtils.js'
 import textMesure from '../utils/textMesure'
+
 const WORKSPACE_PADDING = 20
 export default {
   name: 'SceneContainer',
@@ -356,36 +357,15 @@ export default {
       }
       let targetElement = this.getEventToElement(ev)
       // 剪贴模式
-      if (this.animation) {
-        if (targetElement && !targetElement.locked) {
-          this.$set(targetElement.animation, this.animation.stage, [{
-            // css类名称
-            name: this.animation.name,
-            // 过渡函数，
-            timing: this.animation.timing,
-            // 时间区间 [0]为延迟，[1]为持续时间
-            range: [parseInt(this.animation.delay), parseInt(this.animation.duration)]
-          }])
-        }
-        this.animation.delay += this.animation.inc
-      } else if (this.paste) {
-        if (targetElement && !targetElement.locked) {
-          this.pasteStyleToTargetElement(targetElement)
-        } else {
-          this.$emit('clean-paste')
-          this.setElementSelected(null)
-        }
-      } else {
-        if (ev.ctrlKey) {
+      if (ev.ctrlKey) {
           this.appendElementSelected(targetElement)
-        } else {
-          if (this.selectedElements.length && this.selectedElements.indexOf(targetElement) > -1) {
-            return
-          }
-          this.setElementSelected(targetElement)
+      } else {
+        if (this.selectedElements.length && this.selectedElements.indexOf(targetElement) > -1) {
+          return
         }
+        this.setElementSelected(targetElement)
       }
-      console.log('target element', targetElement)
+      this.$emit('focus-change', targetElement)
     },
 
     sceneMouseWheel (event) {

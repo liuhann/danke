@@ -108,10 +108,6 @@ export default {
       }
     })
 
-    Mousetrap.bind('ctrl+s', () => {
-      this.$emit('save-work')
-    })
-
     Mousetrap.bind('ctrl+v', () => {
       if (this.pasteBoard) {
         const elements = JSON.parse(this.pasteBoard)
