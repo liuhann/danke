@@ -20,6 +20,25 @@ export default [{
     type: 'gradient'
   }]
 }, {
+  name: '圆环',
+  style: {
+    borderRadius: '50%',
+    background: 'transparent',
+    borderWidth: 'var(--bw)',
+    borderColor: 'var(--bc)',
+    borderStyle: 'solid',
+    boxSizing: 'border-box'
+  },
+  variables: [{
+    name: 'bw',
+    value: 12,
+    type: 'px'
+  }, {
+    name: 'bc',
+    value: '#980',
+    type: 'color'
+  }]
+}, {
   name: '圆角矩形',
   style: {
     background: 'var(--bg)',
