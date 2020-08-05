@@ -6,18 +6,17 @@
         :work="work"
         :scene="currentScene"
         @show-elements="showElementList"
+        @show-scenes="showSceneList"
         @show-animations="showAnimationDrawer"
       />
       <scene-container
         ref="sceneContainer"
         :scene="currentScene"
         :work="work"
-        @toggle-scenes="showSceneList = true"
         @scale-fit="scaleChange"
         @focus-change="focusChange"
       />
       <clippath-editor v-if="pen" :view-port-rect="viewPortRect" :scene="currentScene" :view-box="work.viewBox" :work="work" @close="pen = ''" @input="pathConfirmed" />
-      <scene-list v-show="showSceneList" :work="work" :current="currentScene" @close="showSceneList = false" @choose-scene="chooseScene" />
     </section>
     <el-drawer title="元素列表" :visible.sync="elementsDrawer" direction="ltr" :modal="false" size="428px" :wrapper-closable="false">
       <scene-element-list :scene="currentScene" />
@@ -25,6 +24,9 @@
     <el-drawer title="动画设置" :visible.sync="animationDrawer" direction="ltr" :modal="false" size="428px" :wrapper-closable="false">
       <frame-list-config :work="work" :scene="currentScene" />
     </el-drawer> 
+    <el-drawer title="场景列表" :visible.sync="sceneDrawer" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
+      <scene-list :work="work" :current="currentScene" @choose-scene="chooseScene" />
+    </el-drawer>
     <div id="textMesure" />
   </div>
 </template>
@@ -38,20 +40,20 @@ import LeftAside from './left/LeftAside.vue'
 import Toolbar from './toolbar/Toolbar.vue'
 import { shortid } from '../utils/string'
 import ClippathEditor from './clippath-maker/ClippathEditor'
-import SceneList from './SceneList.vue'
+import SceneList from './left/SceneList.vue'
 import SceneElementList from './left/SceneElementList.vue'
 import FrameListConfig from './left/FrameListConfig.vue'
 import 'element-ui/packages/theme-chalk/lib/icon.css'
 import Mousetrap from 'mousetrap'
 import Vue from 'vue'
 
-import { 
-  Input, 
-  Popover, 
-  Tooltip, 
-  Form, 
-  FormItem, 
-  InputNumber, 
+import {
+  Input,
+  Popover,
+  Tooltip,
+  Form,
+  FormItem,
+  InputNumber,
   Checkbox, 
   Slider, 
   Button, 
@@ -60,9 +62,9 @@ import {
   OptionGroup, 
   Option, 
   ColorPicker, 
-  Tabs, 
+  Tabs,
   TabPane, 
-  Upload, 
+  Upload,
   Cascader,
   Pagination,
   Drawer
@@ -73,6 +75,18 @@ Vue.use(Button)
 Vue.use(Drawer)
 Vue.use(Popover)
 Vue.use(Pagination)
+Vue.use(Form)
+Vue.use(FormItem)
+Vue.use(InputNumber)
+Vue.use(ButtonGroup)
+Vue.use(Select)
+Vue.use(OptionGroup)
+Vue.use(Option)
+Vue.use(ColorPicker)
+Vue.use(Tabs)
+Vue.use(TabPane)
+Vue.use(Tooltip)
+Vue.use(Checkbox)
 
 export default {
   name: 'Builder',
@@ -92,6 +106,7 @@ export default {
     return {
       elementsDrawer: false,
       animationDrawer: false,
+      sceneDrawer: false,
       viewPortRect: {
         left: 0,
         top: 0,
@@ -100,7 +115,6 @@ export default {
       },
       pen: '',
       work: null,
-      showSceneList: false,
       scale: 1,
       paste: null
     }
@@ -116,12 +130,18 @@ export default {
     showElementList () {
       this.elementsDrawer = true
     },
+    showSceneList () {
+      this.elementsDrawer = false
+      this.animationDrawer = false
+      this.sceneDrawer = true
+    },
 
     focusChange (element) {
       if (element == null) {
         // close drawer on click empty
         this.elementsDrawer = false
         this.animationDrawer = false
+        this.sceneDrawer = false
       }
     },
 

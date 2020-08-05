@@ -43,8 +43,7 @@
           {{ scaleDisplay }}
         </el-button>
         <el-button size="mini" icon="el-icon-plus" @click="scaleUp" />
-        <el-button size="mini" icon="el-icon-full-screen" @click="fitToCenter" />
-        <el-button size="mini" icon="el-icon-s-grid" round @click="$emit('toggle-scenes')" />
+        <el-button size="mini" icon="el-icon-full-screen" round @click="fitToCenter" />
       </el-button-group>
     </div>
   </div>

@@ -1,5 +1,8 @@
 <template>
   <div id="tool-bar">
+    <el-tooltip class="item" effect="dark" content="场景列表" placement="bottom">
+      <a class="action" @click="toggleShowSceneList"><i class="el-icon-s-grid" /></a>
+    </el-tooltip>
     <el-tooltip class="item" effect="dark" content="元素列表" placement="bottom">
       <a class="action" @click="toggleShowElementList"><i class="el-icon-more-outline rotate-90" /></a>
     </el-tooltip>
@@ -32,7 +35,7 @@
     <!-- <pop-image-mask v-show="elementMasktable" :element="focusedElement" /> -->
     <!-- <pop-set-filter v-show="focusedElement" :element="focusedElement" /> -->
     <!--元素变换、旋转、拉伸等-->
-    <pop-transform v-if="focusedElement" :element="focusedElement" />
+    <!-- <pop-transform v-if="focusedElement" :element="focusedElement" /> -->
     <!-- <pop-set-animation v-if="focusedElement" :element="focusedElement" :scene="scene" /> -->
     <align-element v-if="selectedElements.length > 1" :elements="selectedElements" />
     <pop-more-action v-if="focusedElement" :element="focusedElement" :scene="scene" @reset="setElementLocked" />
@@ -101,8 +104,7 @@ export default {
     TextAlign,
     PopTransform,
     PopMoreAction,
-    SettingPanel,
-    IconPen
+    SettingPanel
   },
   mixins: [ interactMixins, workMixin, toolbarPopMixin ],
   props: {
@@ -407,6 +409,9 @@ export default {
     },
     toggleShowElementList () {
       this.$emit('show-elements')
+    },
+    toggleShowSceneList () {
+      this.$emit('show-scenes')
     },
 
     playScene () {

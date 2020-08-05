@@ -10,6 +10,9 @@
       <el-form-item label="坐标">
         <el-input-number v-model="element.x" :precision="2" controls-position="right" size="mini" />-<el-input-number v-model="element.y" :precision="2" controls-position="right" size="mini" />
       </el-form-item>
+      <el-form-item label="旋转">
+        <el-input-number v-model="element.rotate" controls-position="right" size="mini" />
+      </el-form-item>
       <el-form-item label="适应">
         <el-select v-model="element.fit">
           <el-option label="适应" value="cover" />
@@ -19,14 +22,6 @@
       </el-form-item>
       <el-form-item label="视角高度">
         <el-input-number v-model="element.style.perspective" controls-position="right" size="mini" />
-      </el-form-item>
-      <el-form-item label="次序">
-        <el-button-group size="mini">
-          <el-button @click="moveElementTop">顶层</el-button>
-          <el-button @click="moveElementUp">上一层</el-button>
-          <el-button @click="moveElementDown">下一层</el-button>
-          <el-button @click="moveElementBottom">底层</el-button>
-        </el-button-group>
       </el-form-item>
     </el-form>
   </pop-wrapper>

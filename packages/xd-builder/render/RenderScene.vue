@@ -1,8 +1,8 @@
 <template>
-<div class="scene" :style="sceneStyle" :class="sceneClass">
-  <render-element v-for="element of scene.elements" :view-port="viewPort"  :key="element.id" :element="element" :view-box="viewBox" :stage="stage">
-  </render-element>
-</div>
+  <div class="scene" :style="sceneStyle" :class="sceneClass" @click="$emit('click')">
+    <render-element v-for="element of scene.elements" :key="element.id" :view-port="viewPort" :element="element" :view-box="viewBox" :stage="stage">
+    </render-element>
+  </div>
 </template>
 
 <script>

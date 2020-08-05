@@ -146,9 +146,15 @@ export default {
       // this.appendTextTransform(style)
       // 对于正在编辑的元素不设置transform
       if (this.element.editing) {
-        assignVariables(style, {
+        Object.assign(style, {
           transform: ''
         })
+      } else {
+        if (this.element.rotate) {
+          Object.assign(style, {
+            transform: `rotate(${this.element.rotate}deg)`
+          })
+        }
       }
       // 按大小指定视角
       style.perspective = (this.element.style.perspective || this.element.width) + 'px'
