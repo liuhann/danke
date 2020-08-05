@@ -102,7 +102,6 @@ export default {
     FontWeight,
     FontFamily,
     TextAlign,
-    PopTransform,
     PopMoreAction,
     SettingPanel
   },

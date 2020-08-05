@@ -7,6 +7,9 @@
     </div>
 
     <div class="list">
+      <div class="filter-item clear-filter" @click="chooseFilter(null)">
+        清除滤镜
+      </div>
       <div v-for="(style, index) in styles" :key="index" class="filter-item" @click="chooseFilter(style)">
         <div class="style-container">
           <div class="element" :class="style.name">
@@ -89,6 +92,13 @@ export default {
     display: flex;
     flex-wrap: wrap;
     .filter-item {
+      &.clear-filter {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #eee;
+        height: 80px;
+      }
       margin: 5px;
       width: 100px;
       height: 100px;
