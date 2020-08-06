@@ -20,7 +20,7 @@ export default [{
     type: 'gradient'
   }]
 }, {
-  name: '圆环',
+  name: '空心圆',
   style: {
     borderRadius: '50%',
     background: 'transparent',
@@ -31,7 +31,7 @@ export default [{
   },
   variables: [{
     name: 'bw',
-    value: 12,
+    value: 3,
     type: 'px'
   }, {
     name: 'bc',
@@ -53,6 +53,59 @@ export default [{
     name: 'br',
     label: '',
     value: 5,
+    type: 'px'
+  }]
+}, {
+  name: '空心矩形',
+  style: {
+    background: 'transparent',
+    border: 'var(--bw) solid var(--bc)'
+  },
+  variables: [{
+    name: 'bc',
+    label: '颜色',
+    value: 'rgba(148,187,233,1)',
+    type: 'color'
+  }, {
+    name: 'bw',
+    label: '',
+    value: 3,
+    type: 'px'
+  }]
+}, {
+  name: '对称线',
+  style: {
+    background: 'transparent',
+    borderTop: 'var(--bw) solid var(--bc)',
+    borderBottom: 'var(--bw) solid var(--bc)'
+  },
+  variables: [{
+    name: 'bc',
+    label: '颜色',
+    value: 'rgba(148,187,233,1)',
+    type: 'color'
+  }, {
+    name: 'bw',
+    label: '',
+    value: 3,
+    type: 'px'
+  }]
+}, {
+  name: '折线',
+  style: {
+    background: 'transparent',
+    borderTop: 'var(--bw) solid var(--bc)',
+    borderLeft: 'var(--bw) solid var(--bc)'
+  },
+  variables: [{
+    name: 'bc',
+    label: '颜色',
+    value: 'rgba(148,187,233,1)',
+    type: 'color'
+  }, {
+    name: 'bw',
+    label: '',
+    value: 3,
     type: 'px'
   }]
 }, {
