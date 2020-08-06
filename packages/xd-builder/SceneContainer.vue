@@ -54,7 +54,6 @@ import { Button, ButtonGroup, Popover, Slider } from 'element-ui'
 import workplaceMixins from './mixins/workplaceMixins'
 import interact from 'interactjs'
 import RenderElement from './render/RenderElement.vue'
-import { shortid } from '../utils/string'
 import { getSVGViewBox } from '../vectors/utils'
 import interactMixins from './mixins/interactMixins.js'
 import mouseMixins from './mixins/mousetrap.js'
@@ -121,15 +120,6 @@ export default {
   },
 
   computed: {
-    viewBox () {
-      return this.work.viewBox
-    },
-    viewPort () {
-      return {
-        width: this.work.viewBox.width * this.scale,
-        height: this.work.viewBox.height * this.scale
-      }
-    },
     scaleDisplay () {
       return Math.floor(this.scale * 100) + '%'
     },
@@ -195,19 +185,10 @@ export default {
         perspective: this.work.viewBox.width + 'px'
       }
       return styles
-    },
-    /**
-     * 选择的可活动元素
-     **/
-    selectedElements () {
-      return this.scene.elements.filter(el => el.selected && !el.locked)
     }
   },
 
   watch: {
-    scale () {
-
-    },
     // 场景更新操作，需要更新交互及其他页面元素
     scene () {
       console.log('scene change triggered')
@@ -433,12 +414,18 @@ export default {
     },
 
     createNewElementFromTemplate (element, x, y) {
+      let node = null
       if (element.elements) {
         // 从模板创建  自动成为一个block
-        this.createBlockFromTemplate(element, x, y)
+        node = this.createBlockFromTemplate(element, x, y)
       } else {
         // 单节点创建
-        this.createSingleElement(element, x, y)
+        node = this.createSingleElement(element, x, y)
+      }
+      if (node) {
+        this.$nextTick( ()=> {
+          this.initElementDragResize(node)
+        })
       }
     },
 
@@ -451,67 +438,6 @@ export default {
         }
         this.focusedElement.url = element.url
       }
-    },
-
-    createSingleElement (element, x, y) {
-      const id = shortid()
-      // 此处设置节点的基本属性
-      const node = {
-        id,
-        name: element.name || ('节点' + this.scene.elements.length + 1),
-        width: 100,
-        height: 100,
-        // 样式信息
-        style: {},
-        variables: [],
-        // 动效信息
-        animation: {},
-        // 其他属性，交互时使用
-        locked: false,
-        elementAnimationStyle: [],
-        selected: false
-      }
-      Object.assign(node, element)
-      // 设置文字的自适应大小
-      if (element.text) {
-        node.name = '文本'
-        Object.assign(node, textMesure(element.text, element.variables.filter(variable => variable.type === 'fontSize')[0].value))
-      }
-      // image has mask attr
-      if (element.url) {
-        if (element.url.endsWith('.svg')) {
-          element.fit = 'fill'
-        } else {
-          element.fit = 'cover'
-          element.mask = ''
-        }
-      }
-      if (element.ratio) {
-        node.ratio = element.ratio
-      }
-      if (element.content && element._id) {
-        node.svg = element._id
-        node.content = element.content
-      }
-      // 获取元素自适应到整个画面的高度和宽度 避免扩大超出
-      Object.assign(node, fitRectIntoBounds(node, this.viewBox))
-
-      if (x && y) {
-        // 拖拽处理
-        node.x = x - node.width / 2
-        node.y = y - node.height / 2
-      }
-      // 自动适应到屏幕内部 避免溢出
-      node.x = (node.x < 0) ? 0 : node.x
-      node.y = (node.y < 0) ? 0 : node.y
-
-      this.scene.elements.push(node)
-      this.setElementSelected(node)
-      this.$emit('change')
-      console.log('element dropped', node)
-      this.$nextTick(() => {
-        this.initElementDragResize(node)
-      })
     },
 
     createBlockFromTemplate(element, x, y) {
@@ -533,10 +459,7 @@ export default {
         height: element.viewBox.height
       }
       this.scene.elements.push(block)
-
-      this.$nextTick( ()=> {
-        this.initElementDragResize(block)
-      })
+      return block
     },
 
     /**
@@ -550,36 +473,6 @@ export default {
     },
 
     /**
-     * 设置单个元素为选中状态, 取消其他元素选中
-     */
-    setElementSelected (element) {
-      for (let e of this.scene.elements) {
-        e.selected = false
-        // 编辑状态时，如果被编辑元素被选中，则不改变编辑状态
-        if (element !== e && e.editing) {
-          e.editing = false
-        }
-      }
-      if (element) {
-        element.selected = true
-      }
-    },
-
-    /**
-     * append element selecting
-     **/
-    appendElementSelected (element) {
-      for (let e of this.scene.elements) {
-        if (e.editing) {
-          e.editing = false
-        }
-      }
-      if (element) {
-        element.selected = true
-      }
-    },
-
-    /**
      * 获取遮罩的样式，对于未选中的设置为display: none
      */
     getMaskStyle (element) {
@@ -589,12 +482,6 @@ export default {
         displayStyle.zIndex = -1
       }
       return Object.assign(displayStyle, getRectPositionStyle(element, this.viewBox, this.viewPort))
-    },
-
-    applyFilter (filter) {
-      if (this.focusedElement) {
-        this.$set(this.focusedElement, 'filter', filter)
-      }
     },
 
     getMaskClass (element) {

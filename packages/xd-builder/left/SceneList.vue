@@ -23,11 +23,7 @@
       </el-form-item>
     </el-form>
     <draggable v-show="!showSetting" v-model="work.scenes" class="list-wrapper">
-      <div v-for="(scene, index) in work.scenes" :key="scene._id" class="list-item" :class="(scene === current || scene.checked)? 'current': ''" :style="{
-        width: viewPort.width + 'px',
-        height: viewPort.height + 'px'
-      }"
-      >
+      <div v-for="(scene, index) in work.scenes" :key="scene._id" class="list-item" :class="(scene === current || scene.checked)? 'current': ''">
         <div :style="{
                background: work.color
              }"
@@ -51,6 +47,7 @@ import sceneMixins from '../mixins/sceneMixins'
 import workMixin from '../work/workMixin'
 import RenderScene from '../render/RenderScene.vue'
 import { shortid } from '../../utils/string'
+import { fitRectIntoBounds } from '../mixins/rectUtils'
 import ImageDAO from '../../utils/imagedao'
 export default {
   name: 'SceneList',
@@ -69,100 +66,23 @@ export default {
   },
   data () {
     return {
-      showSetting: false,
-      markStart: 0,
-      markEnd: 0,
-      audioStartPoint: 0,
-      audioDragging: false,
-      audioEndPoint: 0,
-      audioPlaying: false,
-      audioTotalSeconds: 0,
-      audioCurrentSeconds: 0
+      showSetting: false
     }
   },
   computed :{
-    isNewAudio () {
-      if (this.work.audioUrl && this.work.audioUrl.startsWith('blob:')) {
-        return true
-      } else {
-        return false
-      }
-    },
-    marks () {
-      if (this.isNewAudio) {
-        return {
-          [this.markStart]: '',
-          [this.markEnd]: '',
-        }
-      } else {
-        return {}
-      }
-    },
     viewPort () {
-      let vp = {
-        height: 190 * this.work.viewBox.height / this.work.viewBox.width,
-        width: 190
-      }
-      if (vp.height > 300) {
-
-      }
-      return vp
+      return fitRectIntoBounds(this.work.viewBox, {
+        width: 186,
+        height: 186
+      })
     },
     checkedScenes () {
       return this.work.scenes.filter(scene => scene.checked)
     }
   },
-
-  mounted () {
-    if (this.work.audioUrl) {
-      this.loadAudio(this.work.audioUrl)
-    }
-  },
-  created () {
-    this.mediadao = new ImageDAO(this.ctx)
-  },
+  created () {},
+  mounted () {},
   methods: {
-    async removeAudio () {
-      this.audioInstance.pause()
-      await this.mediadao.removeBlob(new URL(this.work.audioUrl).pathname)
-      this.audioFile = null
-      this.work.audioUrl = null
-      this.work.audioName = null
-      this.audioInstance = null
-      this.audioPlaying = false
-      this.markStart = 0
-      this.markEnd = 0
-      await this.saveWork()
-    },
-
-    async cutAndUseAudio () {
-      const result = await this.mediadao.uploadAndCutMp3(this.audioFile, '15011245191/audios/' + shortid(10) + '.' + this.fileExtension(this.audioFile.name), this.markStart, this.markEnd)
-      this.audioInstance.pause()
-      this.audioFile = null
-      this.work.audioUrl = result.url
-      await this.saveWork()
-      // this.audioInstance = new Audio(result.name)
-    },
-    setSceneTurn () {
-
-    },
-    setClipStart () {
-      this.markStart = this.audioCurrentSeconds
-
-      if (this.markStart > this.markEnd) {
-        this.markEnd = this.audioTotalSeconds
-      }
-    },
-    setClipEnd () {
-      this.markEnd = this.audioCurrentSeconds
-      if (this.markStart > this.markEnd) {
-        this.markStart = 0
-      }
-    },
-    audioCurrentChange (time) {
-      this.audioInstance.currentTime = time
-      this.audioCurrentSeconds = time
-    },
     deleteScene (index) {
       if (this.work.scenes.length === this.checkedScenes.length) {
         MessageBox.prompt('不能将所有场景删除，请至少保留一个场景')
@@ -180,62 +100,8 @@ export default {
     editScene () {
       this.showSetting = true
     },
-
-    moveSceneNext (index) {
-      const current = this.work.scenes[index]
-      this.$set(this.work.scenes, index, this.work.scenes[index + 1])
-      this.$set(this.work.scenes, index + 1, current)
-    },
-    moveScenePrev (index) {
-      const current = this.work.scenes[index]
-      this.$set(this.work.scenes, index, this.work.scenes[index - 1])
-      this.$set(this.work.scenes, index - 1 , current)
-    },
-
-    loadAudio (url) {
-      this.audioInstance = new Audio(url)
-      this.audioInstance.onloadedmetadata = () => {
-        this.audioTotalSeconds = this.audioInstance.duration
-        this.markEnd = this.audioTotalSeconds
-      }
-      this.audioInstance.ontimeupdate = () => {
-        if (this.$refs.slider && !this.$refs.slider.dragging) {
-          this.audioCurrentSeconds = this.audioInstance.currentTime
-        }
-      }
-      this.audioInstance.onended = () => {
-        this.audioPlaying = false
-      }
-      this.audioInstance.load()
-    },
-
-    audioFileChoosed (file) {
-      if (this.audioFile) {
-        this.audioFile.pause()
-      }
-      this.audioFile = file.raw
-      this.$set(this.work, 'audioUrl', URL.createObjectURL(this.audioFile))
-      this.work.audioName = this.audioFile.name
-      this.loadAudio(this.work.audioUrl)
-    },
-
-    audioPlay () {
-      this.audioInstance.play()
-      this.audioPlaying = true
-    },
-
-    audioPause () {
-      this.audioInstance.pause()
-      this.audioPlaying = false
-    },
-
-    formatAudioSecond (second) {
-      return new Date(second * 1000).toISOString().replace(/.*(\d{2}:\d{2}.\d{2}).*/, "$1");
-    },
-
     chooseScene (scene) {
       this.$emit('choose-scene', scene)
-      this.$emit('close')
     },
     close () {
       if (this.work.scenes.filter(scene => scene === this.current).length === 0) {
@@ -251,10 +117,12 @@ export default {
 #scene-list {
   background-color: rgba(255, 255, 255, 1);
   height: 100vh;
+  width: 100%;
   .actions {
     padding: 10px 20px;
     background: #fff;
     display: flex;
+    border-bottom: 1px solid #dadce0;
     .music-control {
       flex: 1;
       display: flex;
@@ -278,26 +146,24 @@ export default {
   }
   .list-wrapper {
     padding: 10px;
-    height: calc(100% - 40px);
+    max-height: calc(100% - 40px);
     box-sizing: border-box;
     overflow: auto;
+    display: flex;
+    flex-wrap: wrap;
   }
 
   .list-item {
     margin: 5px;
+    width: 186px;
+    height: 186px;
+    border: 1px solid #eee;
     display: inline-block;
-    .config {
-      height: 40px;
-      line-height: 40px;
-      display: flex;
-      padding: 0 5px;
-      .scene-name {
-        flex: 1;
-      }
-    }
-
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
     .scene-wrapper {
-      position: relative;
       overflow: hidden;
       border-radius: 5px;
       .hovers {

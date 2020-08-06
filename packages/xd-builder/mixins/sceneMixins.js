@@ -100,39 +100,6 @@ export default {
         this.currentScene = this.work.scenes[sceneIndex - 1] || this.work.scenes[0]
       })
     },
-    /**
-     * 编辑场景切换节拍
-     * @returns {Promise<void>}
-     */
-    async editTicking () {
-      const that = this
-      if (this.ticksEditing) {
-        this.ticksEditing = false
-        if (this.audio) {
-          that.audio.pause()
-        }
-      } else {
-        MessageBox.alert('播放音乐时手动点击”下一页“切换场景，当前播放时间点会自动附着到场景切换之上。再次点击中止音乐播放', '编辑节拍', {
-          confirmButtonText: '确定',
-          callback: async action => {
-            this.chooseScene(this.work.scenes[0])
-            that.ticksEditing = true
-            that.work.audioTicks = []
-            if (that.work.audioUrl) {
-              that.audio = new Audio('http://image.danke.fun/' + that.work.audioUrl)
-              const playPromise = that.audio.play()
-              if (playPromise !== undefined) {
-                await playPromise
-              }
-              this.audio.onended = async function () {
-                that.ticksEditing = false
-                that.applyWorkTicksToScenes()
-              }
-            }
-          }
-        })
-      }
-    },
     applyWorkTicksToScenes () {
       let last = 0
       if (this.work.audioTicks) {

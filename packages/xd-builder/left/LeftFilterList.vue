@@ -79,7 +79,11 @@ export default {
     },
 
     chooseFilter (style) {
-      this.$emit('insert', style)
+      if (style) {
+        this.$emit('insert', style)
+      } else {
+        this.$emit('clean')
+      }
     }
   }
 }
@@ -96,12 +100,14 @@ export default {
         display: flex;
         justify-content: center;
         align-items: center;
+        background: rgba(0,0,0, .1);
         color: #eee;
         height: 80px;
       }
       margin: 5px;
       width: 100px;
       height: 100px;
+      cursor: pointer;
       .desc {
         color: #ddd;
         text-align: center;

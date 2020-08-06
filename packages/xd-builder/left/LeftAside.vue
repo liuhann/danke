@@ -53,7 +53,7 @@
       </transition>
       <transition name="fade">
         <keep-alive>
-          <left-filter-list v-if="current === 'filter'" @insert="insertFilter" />
+          <left-filter-list v-if="current === 'filter'" @insert="applyFilter" @clean="cleanFilter" />
         </keep-alive>
       </transition>
       <transition name="fade">
@@ -76,6 +76,7 @@ import LeftFilterList from './LeftFilterList.vue'
 import TickList from './TickList.vue'
 import HtmlElementList from './HtmlElementList.vue'
 import FrameListConfig from './FrameListConfig.vue'
+import workplaceMixin from '../mixins/workplaceMixins'
 
 export default {
   components: {
@@ -86,8 +87,8 @@ export default {
     HtmlElementList,
     TickList
   },
-  props: {
-  },
+  mixins: [ workplaceMixin ],
+  props: {},
   data () {
     return {
       current: 'gallery'
@@ -130,6 +131,9 @@ export default {
     },
 
     insertFilter (filter) {
+      if (filter) {
+
+      }
       this.$emit('replace', filter)
     },
 

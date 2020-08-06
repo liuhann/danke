@@ -1,6 +1,6 @@
 <template>
   <div id="xd">
-    <left-aside @insert="insert" @replace="replace" />
+    <left-aside :work="work" :scene="currentScene" @insert="insert" @replace="replace" @clean="clean" />
     <section v-if="work" class="right-section">
       <toolbar
         :work="work"
@@ -193,6 +193,10 @@ export default {
       } else if (element.cssContent) {
         this.$refs.sceneContainer.applyFilter(element)
       }
+    },
+
+    clean (name) {
+
     },
 
     pathConfirmed (object) {
