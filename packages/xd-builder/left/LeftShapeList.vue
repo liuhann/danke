@@ -38,7 +38,7 @@ import RestDAO from '../../utils/restdao.js'
 import shapes from './shapes'
 
 export default {
-  name: 'HtmlElementList',
+  name: 'LeftShapeList',
   components: {
     [Input.name]: Input,
     [Pagination.name]: Pagination,

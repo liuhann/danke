@@ -1,5 +1,6 @@
 import { getImageUrl } from './imageUtils'
 import { shortid } from '../../utils/string'
+import { getSVGViewBox } from '../../vectors/utils'
 import { fitRectIntoBounds, getRectPositionStyle, isPointInRect, intersectRect } from '../mixins/rectUtils.js'
 export default {
   props: {
@@ -95,6 +96,10 @@ export default {
       if (element.content && element._id) {
         node.svg = element._id
         node.content = element.content
+        const size = getSVGViewBox(node.content)
+        if (size) {
+          Object.assign(node, size)
+        }
       }
       // 获取元素自适应到整个画面的高度和宽度 避免扩大超出
       Object.assign(node, fitRectIntoBounds(node, this.viewBox))

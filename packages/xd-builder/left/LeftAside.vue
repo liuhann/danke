@@ -58,7 +58,7 @@
       </transition>
       <transition name="fade">
         <keep-alive>
-          <html-element-list v-if="current === 'html'" />
+          <left-shape-list v-if="current === 'html'" />
         </keep-alive>
       </transition>
     </div>
@@ -69,12 +69,11 @@
 import ImageDAO from '../../utils/imagedao'
 import RestDAO from '../../utils/restdao.js'
 import ImageList from './ImageList.vue'
-import LeftShapeList from './ShapeList.vue'
 import TextList from './TextList'
 import GalleryList from './GalleryList.vue'
 import LeftFilterList from './LeftFilterList.vue'
 import TickList from './TickList.vue'
-import HtmlElementList from './HtmlElementList.vue'
+import LeftShapeList from './LeftShapeList.vue'
 import FrameListConfig from './FrameListConfig.vue'
 import workplaceMixin from '../mixins/workplaceMixins'
 
@@ -84,7 +83,7 @@ export default {
     TextList,
     ImageList,
     LeftFilterList,
-    HtmlElementList,
+    LeftShapeList,
     TickList
   },
   mixins: [ workplaceMixin ],

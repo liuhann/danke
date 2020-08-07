@@ -157,7 +157,8 @@ export default {
     margin: 5px;
     width: 186px;
     height: 186px;
-    border: 1px solid #eee;
+    // border: 1px solid #eee;
+    background: rgba(0,0,0, .05);
     display: inline-block;
     display: flex;
     justify-content: center;
@@ -165,7 +166,7 @@ export default {
     position: relative;
     .scene-wrapper {
       overflow: hidden;
-      border-radius: 5px;
+      border: 1px solid #efefef;
       .hovers {
         position: absolute;
         right: 10px;
