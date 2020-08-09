@@ -405,8 +405,9 @@ export default {
       const data = ev.dataTransfer.getData('Text')
       const element = JSON.parse(data)
       if (targetElement) {
+        console.log('target element', targetElement)
         // targetElement.hover = false
-        this.createNewElementFromTemplate(element, ev.offsetX + targetElement.x, ev.offsetY + targetElement.y)
+        this.createNewElementFromTemplate(element, ev.offsetX / this.scale + targetElement.x, (ev.offsetY / this.scale + targetElement.y))
       } else {
         this.createNewElementFromTemplate(element, ev.offsetX / this.scale, ev.offsetY / this.scale)
       }

@@ -58,7 +58,7 @@
       </transition>
       <transition name="fade">
         <keep-alive>
-          <left-shape-list v-if="current === 'html'" />
+          <left-shape-list v-if="current === 'html'" @svg="tryApplySVGMask" />
         </keep-alive>
       </transition>
     </div>
@@ -120,7 +120,12 @@ export default {
     insertElement (element) {
       this.$emit('insert', 'element', element)
     },
-
+    tryApplySVGMask (svg) {
+      const imageUrl = `url('data:image/svg+xml;utf8,${svg.content}')`
+      if (this.focusedElement) {
+        this.focusedElement.maskImage = imageUrl
+      }
+    },
     insertTick (tick) {
       this.$emit('insert', 'tick', tick)
     },

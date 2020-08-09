@@ -19,7 +19,7 @@
         <div
           v-for="(svg, index) in svgs"
           :key="index"
-          class="object-item" draggable @dragstart="dragStart(svg, $event)"
+          class="object-item" draggable @click="svgClicked(svg)" @dragstart="dragStart(svg, $event)"
         >
           <div class="svg-container" :style="variableValues(svg)">
             <div class="styled-box" v-html="svg.content">
@@ -67,6 +67,10 @@ export default {
     async loadSvgs() {
       const result = await this.svgdao.distinct('album')
       this.albums = result
+    },
+
+    svgClicked (svg) {
+      this.$emit('svg', svg)
     },
 
     async albumChange () {
