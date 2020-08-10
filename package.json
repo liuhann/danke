@@ -26,6 +26,7 @@
     "jszip": "^3.5.0",
     "ky": "^0.8.0",
     "merge": "^1.2.1",
+    "mini-svg-data-uri": "^1.2.3",
     "mousetrap": "^1.6.5",
     "moveable": "^0.17.10",
     "pauseable": "^0.3.2",

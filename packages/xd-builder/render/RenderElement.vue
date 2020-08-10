@@ -139,10 +139,7 @@ export default {
       if (this.element.text != null) {
         Object.assign(style, this.element.style)
       }
-
-      if (this.element.maskImage) {
-        style.maskImage = this.element.maskImage
-      }
+      
       // this.appendTextTransform(style)
       // 对于正在编辑的元素不设置transform
       if (this.element.editing) {
@@ -166,7 +163,9 @@ export default {
       if (this.element.fit) {
         style.objectFit = this.element.fit
       }
-      
+      if (this.element.maskImage) {
+        style.maskImage = this.element.maskImage
+      }
       return Object.assign({}, this.element.style, style, this.elementAnimationStyle)
     },
 

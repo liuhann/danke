@@ -76,6 +76,7 @@ import TickList from './TickList.vue'
 import LeftShapeList from './LeftShapeList.vue'
 import FrameListConfig from './FrameListConfig.vue'
 import workplaceMixin from '../mixins/workplaceMixins'
+import svgToMiniDataURI from 'mini-svg-data-uri'
 
 export default {
   components: {
@@ -121,7 +122,8 @@ export default {
       this.$emit('insert', 'element', element)
     },
     tryApplySVGMask (svg) {
-      const imageUrl = `url('data:image/svg+xml;utf8,${svg.content}')`
+      const imageUrl = `url("${svgToMiniDataURI(svg.content)}")`
+      console.log(imageUrl)
       if (this.focusedElement) {
         this.focusedElement.maskImage = imageUrl
       }
