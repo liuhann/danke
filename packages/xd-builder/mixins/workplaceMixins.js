@@ -2,6 +2,7 @@ import { getImageUrl } from './imageUtils'
 import { shortid } from '../../utils/string'
 import { getSVGViewBox } from '../../vectors/utils'
 import { fitRectIntoBounds, getRectPositionStyle, isPointInRect, intersectRect } from '../mixins/rectUtils.js'
+import textMesure from '../../utils/textMesure'
 export default {
   props: {
     work: {

@@ -17,6 +17,21 @@
   .el-drawer__body {
     padding: 0;
   }
+
+  .pop-title {
+    border-bottom: 1px solid #dadce0;
+    padding: 1rem;
+    font-size: 1.8rem;
+    display: flex;
+    .text {
+      flex: 1;
+    }
+    .btn-close {
+      cursor: pointer;
+      color: #666;
+      font-size: 2rem;
+    }
+  }
 }
 
 img.svg-icon {

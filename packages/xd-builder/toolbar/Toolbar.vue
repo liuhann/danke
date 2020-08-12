@@ -4,67 +4,47 @@
       <a class="action" @click="toggleShowSceneList"><i class="el-icon-s-grid" /></a>
     </el-tooltip>
     <el-tooltip class="item" effect="dark" content="元素列表" placement="bottom">
-      <a class="action" @click="toggleShowElementList"><i class="el-icon-more-outline rotate-90" /></a>
+      <a class="action" @click="toggleShowElementList"><i class="el-icon-notebook-2" /></a>
     </el-tooltip>
     <el-tooltip v-show="focusedElement" class="item" effect="dark" content="动态效果" placement="bottom">
       <a class="action" @click="openAnimationEdit"><i class="el-icon-data-line" /></a>
     </el-tooltip>
-    <!--  样式变量的修改-->
-    <template v-for="(variable, index) in elementStyleVariables">
-      <!-- 颜色-->
-      <el-color-picker v-if="variable.type==='color'" :key="index" v-model="variable.value" show-alpha :predefine="workColors" />
-      <!-- 渐变颜色的处理-->
-      <pop-set-gradient v-if="variable.type==='gradient'" :key="index" :variable="variable" />
-      <!-- 数字-->
-      <el-tooltip v-if="variable.type==='px' || variable.type==='number' || variable.type==='percent'" :key="index" content="数值">
-        <el-input-number v-model="variable.value" controls-position="right" size="mini" />
-      </el-tooltip>
-      <!--边框样式-->
-      <border-style v-if="variable.type==='border'" :key="index" :variable="variable" />
-      <!--字体大小-->
-      <font-size v-if="variable.type==='fontSize'" :key="index" :variable="variable" />
-
-      <font-family v-if="variable.type === 'fontFamily'" :key="index" :variable="variable" />
-      <!-- 字体对齐-->
-      <text-align v-if="variable.type==='textAlign'" :key="index" v-model="variable.value" />
-      <!-- 字体粗细-->
-      <font-weight v-if="variable.type==='fontWeight'" :key="index" v-model="variable.value" />
-    </template>
-
-    <!-- 图片遮罩-->
-    <!-- <pop-image-mask v-show="elementMasktable" :element="focusedElement" /> -->
-    <!-- <pop-set-filter v-show="focusedElement" :element="focusedElement" /> -->
-    <!--元素变换、旋转、拉伸等-->
-    <!-- <pop-transform v-if="focusedElement" :element="focusedElement" /> -->
-    <!-- <pop-set-animation v-if="focusedElement" :element="focusedElement" :scene="scene" /> -->
-    <align-element v-if="selectedElements.length > 1" :elements="selectedElements" />
-    <pop-more-action v-if="focusedElement" :element="focusedElement" :scene="scene" @reset="setElementLocked" />
-
     <!-- 右侧操作功能按钮-->
     <div class="pull-right">
+      <pop-more-action v-if="focusedElement" :element="focusedElement" :scene="scene" @reset="setElementLocked" />
+      <align-element v-if="selectedElements.length > 1" :elements="selectedElements" />
+      <!--  样式变量的修改-->
+      <template v-for="(variable, index) in elementStyleVariables">
+        <!-- 颜色-->
+        <el-color-picker v-if="variable.type==='color'" :key="index" v-model="variable.value" show-alpha :predefine="workColors" />
+        <!-- 渐变颜色的处理-->
+        <pop-set-gradient v-if="variable.type==='gradient'" :key="index" :variable="variable" />
+        <!-- 数字-->
+        <el-tooltip v-if="variable.type==='px' || variable.type==='number' || variable.type==='percent'" :key="index" content="数值">
+          <el-input-number v-model="variable.value" controls-position="right" size="mini" />
+        </el-tooltip>
+        <!--边框样式-->
+        <border-style v-if="variable.type==='border'" :key="index" :variable="variable" />
+        <!--字体大小-->
+        <font-size v-if="variable.type==='fontSize'" :key="index" :variable="variable" />
+
+        <font-family v-if="variable.type === 'fontFamily'" :key="index" :variable="variable" />
+        <!-- 字体对齐-->
+        <text-align v-if="variable.type==='textAlign'" :key="index" v-model="variable.value" />
+        <!-- 字体粗细-->
+        <font-weight v-if="variable.type==='fontWeight'" :key="index" v-model="variable.value" />
+      </template>
       <el-tooltip v-if="selectedElements.length > 1" class="item" effect="dark" content="建组" placement="bottom">
         <a class="action" @click="groupSelectedElement"><i class="el-icon-folder-checked" /></a>
       </el-tooltip>
       <el-tooltip v-if="focusedElement && focusedElement.elements && focusedElement.elements.length" class="item" effect="dark" content="取消建组" placement="bottom">
         <a class="action on" @click="unGroupBlock"><i class="el-icon-folder-delete" /></a>
       </el-tooltip>
-      <el-tooltip v-if="selectedElements.length" class="item" effect="dark" content="删除" placement="bottom">
-        <a class="action" @click="removeSelectedElement"><i class="el-icon-delete" /></a>
-      </el-tooltip>
-      <el-tooltip v-if="selectedElements.length" class="item" effect="dark" content="锁定" placement="bottom">
-        <a class="action" @click="lockSelectedElement"><i class="el-icon-lock" /></a>
-      </el-tooltip>
-      <el-tooltip v-if="selectedLockedElements.length" class="item" effect="dark" content="解锁" placement="bottom">
-        <a class="action" @click="unLockSelectedElement"><i class="el-icon-unlock" /></a>
-      </el-tooltip>
       <el-tooltip v-if="noFocusedElement" class="item" effect="dark" content="播放" placement="bottom">
         <a class="action" @click="playScene"><i class="el-icon-refresh-right" /></a>
       </el-tooltip>
       <el-tooltip v-if="noFocusedElement" class="item" effect="dark" content="预览" placement="bottom">
         <a class="action" @click="slidePreview"><i class="el-icon-video-play" /></a>
-      </el-tooltip>
-      <el-tooltip class="item" effect="dark" content="保存作品" placement="bottom">
-        <a class="action" title="保存" @click="saveWork"><i class="el-icon-upload2" /></a>
       </el-tooltip>
       <setting-panel :work="work" :scene="scene" />
     </div>
@@ -299,33 +279,6 @@ export default {
     },
     setElementClipPath (clippath) {
       this.focusedElement.style.clipPath = clippath
-    },
-    removeSelectedElement () {
-      for (let element of this.selectedElements) {
-        element.selected = false
-        this.scene.elements.splice(this.scene.elements.indexOf(element), 1)
-      }
-      this.$emit('change')
-    },
-
-    /**
-     * 元素锁定的规则：
-     * 可以选中，但是不能调整大小、移动 不能被多选
-     */
-    lockSelectedElement () {
-      for (let element of this.selectedElements) {
-        this.setElementLocked(element, true)
-        this.$set(element, 'locked', true)
-      }
-      this.$emit('change')
-    },
-
-    unLockSelectedElement () {
-      for (let element of this.selectedLockedElements) {
-        this.setElementLocked(element, false)
-        this.$set(element, 'locked', false)
-      }
-      this.$emit('change')
     },
     /**
      * Group selected element to one block, remove element from scene.elements

@@ -1,5 +1,9 @@
 <template>
   <div id="scene-element-list">
+    <div class="pop-title">
+      <span class="text">元素列表</span>
+      <a class="btn-close"><i class="el-icon-close" /></a>
+    </div>
     <draggable v-model="scene.elements" class="list-content">
       <div v-for="element of scene.elements" :key="element.id" class="element-item" :class="element.selected? 'checked': ''" @click="checkElement(element, $event)">
         <div class="element-icon">
@@ -11,6 +15,9 @@
           {{ element.name }}
         </div>
         <div class="actions">
+          <a class="btn" @click="removeElement(element)"><i class="el-icon-delete" /></a>
+          <a v-if="!element.locked" class="btn" @click="lockElement(element)"><i class="el-icon-lock" /></a>
+          <a v-if="element.locked" class="btn" @click="unlockElement(element)"><i class="el-icon-unlock" /></a>
         </div>
       </div>
     </draggable>
@@ -43,6 +50,21 @@ export default {
       }
     },
 
+    removeElement (element) {
+      this.scene.elements.splice(this.scene.elements.indexOf(element), 1)
+    },
+    /**
+     * 元素锁定的规则：
+     * 可以选中，但是不能调整大小、移动 不能被多选
+     */
+    lockElement (element) {
+      this.$set(element, 'locked', true)
+    },
+
+    unlockElement (element) {
+      this.$set(element, 'locked', false)
+    },
+
     getImageUrl,
     checkElement (element, event) {
       if (!event.ctrlKey) {
@@ -64,8 +86,9 @@ export default {
     width: 100%;
     .element-item {
       padding: 1rem;
-      line-height: 3rem;
+      line-height: 2.5rem;
       position: relative;
+      border-bottom: 1px solid #eee;
       &:hover {
         background: #fefefe;
         cursor: pointer;
@@ -75,8 +98,8 @@ export default {
         color: rgb(90, 90, 90);
       }
       .element-icon {
-        width: 3rem;
-        height: 3rem;
+        width: 2.5rem;
+        height: 2.5rem;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -100,7 +123,9 @@ export default {
         white-space: nowrap;
       }
       .actions {
-        position: absolute;
+        .btn {
+          padding: 0 5px;
+        }
       }
       display: flex;
     }

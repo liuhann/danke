@@ -1,7 +1,7 @@
 <template>
   <div id="xd">
     <left-aside :work="work" :scene="currentScene" @insert="insert" @replace="replace" @clean="clean" />
-    <section v-if="work" class="right-section">
+    <section v-if="work && currentScene" class="right-section">
       <toolbar
         :work="work"
         :scene="currentScene"
@@ -18,10 +18,10 @@
       />
       <clippath-editor v-if="pen" :view-port-rect="viewPortRect" :scene="currentScene" :view-box="work.viewBox" :work="work" @close="pen = ''" @input="pathConfirmed" />
     </section>
-    <el-drawer title="元素列表" :visible.sync="elementsDrawer" direction="ltr" :modal="false" size="428px" :wrapper-closable="false">
+    <el-drawer title="元素列表" :visible.sync="elementsDrawer" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
       <scene-element-list :scene="currentScene" />
     </el-drawer>
-    <el-drawer title="动画设置" :visible.sync="animationDrawer" direction="ltr" :modal="false" size="428px" :wrapper-closable="false">
+    <el-drawer title="动画设置" :visible.sync="animationDrawer" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
       <frame-list-config :work="work" :scene="currentScene" />
     </el-drawer> 
     <el-drawer title="场景列表" :visible.sync="sceneDrawer" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
@@ -163,6 +163,7 @@ export default {
       }
       this.ctx.styleRegistry.loadAllFrames()
 
+      // 设置保存 ctrl+s 处理
       Mousetrap.bind('ctrl+s', ev => {
         ev.stopPropagation()
         ev.preventDefault()
