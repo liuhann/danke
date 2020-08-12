@@ -123,9 +123,12 @@ export default {
     },
     tryApplySVGMask (svg) {
       const imageUrl = `url("${svgToMiniDataURI(svg.content)}")`
-      console.log(imageUrl)
       if (this.focusedElement) {
-        this.focusedElement.maskImage = imageUrl
+        if (this.focusedElement.maskImage === imageUrl) {
+          this.$set(this.focusedElement, 'maskImage', null)
+        } else {
+          this.$set(this.focusedElement, 'maskImage', imageUrl)
+        }
       }
     },
     insertTick (tick) {

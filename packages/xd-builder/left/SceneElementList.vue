@@ -125,6 +125,8 @@ export default {
       .actions {
         .btn {
           padding: 0 5px;
+          font-size: 1.5rem;
+          color: #666;
         }
       }
       display: flex;

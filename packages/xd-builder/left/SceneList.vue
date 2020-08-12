@@ -1,5 +1,9 @@
 <template>
   <div id="scene-list">
+    <div class="pop-title">
+      <span class="text">场景列表</span>
+      <a class="btn-close"><i class="el-icon-close" /></a>
+    </div>
     <div v-show="!showSetting" class="actions">
       <el-button size="mini" type="success" @click="addScene">新增场景</el-button>
     </div>
