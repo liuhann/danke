@@ -9,31 +9,32 @@
     <el-tooltip v-show="focusedElement" class="item" effect="dark" content="动态效果" placement="bottom">
       <a class="action" @click="openAnimationEdit"><i class="el-icon-data-line" /></a>
     </el-tooltip>
+    <pop-more-action v-if="focusedElement" :element="focusedElement" :scene="scene" @reset="setElementLocked" />
+    <span class="separator" />
+    <!--  样式变量的修改-->
+    <template v-for="(variable, index) in elementStyleVariables">
+      <!-- 颜色-->
+      <el-color-picker v-if="variable.type==='color'" :key="index" v-model="variable.value" show-alpha :predefine="workColors" />
+      <!-- 渐变颜色的处理-->
+      <pop-set-gradient v-if="variable.type==='gradient'" :key="index" :variable="variable" />
+      <!-- 数字-->
+      <el-tooltip v-if="variable.type==='px' || variable.type==='number' || variable.type==='percent'" :key="index" content="数值">
+        <el-input-number v-model="variable.value" controls-position="right" size="mini" />
+      </el-tooltip>
+      <!--边框样式-->
+      <border-style v-if="variable.type==='border'" :key="index" :variable="variable" />
+      <!--字体大小-->
+      <font-size v-if="variable.type==='fontSize'" :key="index" :variable="variable" />
+
+      <font-family v-if="variable.type === 'fontFamily'" :key="index" :variable="variable" />
+      <!-- 字体对齐-->
+      <text-align v-if="variable.type==='textAlign'" :key="index" v-model="variable.value" />
+      <!-- 字体粗细-->
+      <font-weight v-if="variable.type==='fontWeight'" :key="index" v-model="variable.value" />
+    </template>
     <!-- 右侧操作功能按钮-->
     <div class="pull-right">
-      <pop-more-action v-if="focusedElement" :element="focusedElement" :scene="scene" @reset="setElementLocked" />
       <align-element v-if="selectedElements.length > 1" :elements="selectedElements" />
-      <!--  样式变量的修改-->
-      <template v-for="(variable, index) in elementStyleVariables">
-        <!-- 颜色-->
-        <el-color-picker v-if="variable.type==='color'" :key="index" v-model="variable.value" show-alpha :predefine="workColors" />
-        <!-- 渐变颜色的处理-->
-        <pop-set-gradient v-if="variable.type==='gradient'" :key="index" :variable="variable" />
-        <!-- 数字-->
-        <el-tooltip v-if="variable.type==='px' || variable.type==='number' || variable.type==='percent'" :key="index" content="数值">
-          <el-input-number v-model="variable.value" controls-position="right" size="mini" />
-        </el-tooltip>
-        <!--边框样式-->
-        <border-style v-if="variable.type==='border'" :key="index" :variable="variable" />
-        <!--字体大小-->
-        <font-size v-if="variable.type==='fontSize'" :key="index" :variable="variable" />
-
-        <font-family v-if="variable.type === 'fontFamily'" :key="index" :variable="variable" />
-        <!-- 字体对齐-->
-        <text-align v-if="variable.type==='textAlign'" :key="index" v-model="variable.value" />
-        <!-- 字体粗细-->
-        <font-weight v-if="variable.type==='fontWeight'" :key="index" v-model="variable.value" />
-      </template>
       <el-tooltip v-if="selectedElements.length > 1" class="item" effect="dark" content="建组" placement="bottom">
         <a class="action" @click="groupSelectedElement"><i class="el-icon-folder-checked" /></a>
       </el-tooltip>
@@ -414,6 +415,11 @@ export default {
     width: 28px;
     margin: 0 6px;
   }
+
+  .separator {
+    border-left: 1px solid #eee;
+    padding-left: 10px;
+  }
   i.action {
     width: 28px;
     height: 28px;
@@ -466,18 +472,6 @@ export default {
     display: inline-block;
     background-repeat: no-repeat;
     background-position: center center;
-  }
-  .icon-border {
-    background-image: url("data:image/svg+xml,%3Csvg class='icon' viewBox='0 0 1024 1024' xmlns='http://www.w3.org/2000/svg' width='128' height='128'%3E%3Cpath d='M288 288v48h-48v-80a16 16 0 0 1 16-16h80v48h-48zm0 448h48v48h-80a16 16 0 0 1-16-16v-80h48v48zm448-448h-48v-48h80a16 16 0 0 1 16 16v80h-48v-48zm0 448v-48h48v80a16 16 0 0 1-16 16h-80v-48h48zM160 128h704a32 32 0 0 1 32 32v704a32 32 0 0 1-32 32H160a32 32 0 0 1-32-32V160a32 32 0 0 1 32-32zm32 64v640h640V192H192z' fill='rgba(0,%200,%200,%200.7)'/%3E%3C/svg%3E");
-  }
-  .icon-enter {
-    background-image: url("data:image/svg+xml,%3Csvg class='icon' viewBox='0 0 1024 1024' xmlns='http://www.w3.org/2000/svg' width='128' height='128'%3E%3Cpath d='M570.496 723.2L364.16 829.995l39.424-226.176-166.955-160.214 230.699-33.024L570.496 204.8l103.21 205.781 230.7 33.024L737.45 603.82l39.424 226.176L570.496 723.2zm-329.13-518.4H460.8v43.221H241.365V204.8zm-43.82 107.99h219.307v43.22H197.547v-43.263zM153.6 636.8h175.53v43.179H153.6V636.8zm0 107.99h175.53v43.22H153.6v-43.22z' fill='rgba(0,%200,%200,%200.7)'/%3E%3C/svg%3E");
-  }
-  .icon-crop {
-    background-image: url("data:image/svg+xml,%3Csvg class='icon' viewBox='0 0 1024 1024' xmlns='http://www.w3.org/2000/svg' width='128' height='128'%3E%3Cpath d='M284 128c-15.4 0-28 12.6-28 28v40c0 15.4 12.6 28 28 28s28-12.6 28-28v-40c0-15.4-12.6-28-28-28zm28 556V380c0-15.4-12.6-28-28-28s-28 12.6-28 28v332c0 31 25 56 56 56h332c15.4 0 28-12.6 28-28s-12.6-28-28-28H340c-15.4 0-28-12.6-28-28zm556 28h-40c-15.4 0-28 12.6-28 28s12.6 28 28 28h40c15.4 0 28-12.6 28-28s-12.6-28-28-28z' fill='%230e1318'/%3E%3Cpath d='M128 284c0 15.4 12.6 28 28 28h528c15.4 0 28 12.6 28 28v528c0 15.4 12.6 28 28 28s28-12.6 28-28V312c0-31-25-56-56-56H156c-15.4 0-28 12.6-28 28z' fill='rgba(0,%200,%200,%200.7)'/%3E%3C/svg%3E");
-  }
-  .icon-leave {
-    background-image: url("data:image/svg+xml,%3Csvg class='icon' viewBox='0 0 1024 1024' xmlns='http://www.w3.org/2000/svg' width='128' height='128'%3E%3Cpath d='M298.923 196.096l83.84 140.8-140.8-83.84 56.96-56.96zm-126.55 473.173l-20.906-77.909 163.84-2.176-142.976 80zm599.894-473.216l56.96 56.96-140.8 83.798 83.84-140.8zm107.05 470.016l-142.976-80 163.84 2.176-20.906 77.824zM495.02 887.467l32.853-132.011 32.939 132.01h-65.792z' fill='%230e1318'/%3E%3Cpath d='M525.483 677.035l188.501 98.773-36.01-209.237L830.42 418.389l-210.688-30.506L525.44 197.46l-94.25 190.422-210.646 30.506 152.448 148.182-36.01 209.237 188.5-98.773zm0 31.317L300.117 826.453l43.051-250.197-182.357-177.237 251.989-36.48 112.64-227.584 112.683 227.584 252.032 36.48-182.4 177.237 43.093 250.197-225.365-118.101z' fill='%230e1318'/%3E%3Cpath d='M507.264 570.752h9.472l66.688 33.152-13.653-75.136 57.045-52.608-78.89-10.837L512 396.373l-35.925 68.907-78.891 10.837 57.003 52.608-13.611 75.136 66.688-33.152zm-95.232 71.21l19.115-105.471-81.707-75.264 112.768-15.488L512 350.25l49.75 95.445 112.767 15.488-81.664 75.307 19.115 105.472L512 592.213l-99.968 49.75z' fill='rgba(0,%200,%200,%200.7)' opacity='.4'/%3E%3C/svg%3E");
   }
   .pull-right {
     float: right;

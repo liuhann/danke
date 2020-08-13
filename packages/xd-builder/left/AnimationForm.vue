@@ -6,6 +6,9 @@
     <el-form-item>
       <el-input-number v-model="animation.range[1]" size="mini" controls-position="right" :step="0.1" />
     </el-form-item>
+    <el-form-item label="反向播放">
+      <el-checkbox v-model="animation.reverse" />
+    </el-form-item>
     <el-form-item label="循环">
       <el-checkbox v-model="animation.infinite" />
     </el-form-item>

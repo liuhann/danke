@@ -72,7 +72,7 @@ export default {
           element.selected = false
         })
       }
-      element.selected = true
+      element.selected = !element.selected
     }
   }
 }

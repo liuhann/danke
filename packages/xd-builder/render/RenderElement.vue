@@ -206,7 +206,7 @@ export default {
             // 非内部动画 
             if (!animation.inner) {
               assignVariables(style, animation.variables)
-              style.animation = `${animation.name} ${animation.range[1]}s ${animation.timing} ${animation.range[0]}s ${animation.infinite? 'infinite': animation.iteration} both`
+              style.animation = `${animation.name} ${animation.range[1]}s ${animation.timing} ${animation.range[0]}s ${animation.infinite? 'infinite': animation.iteration} ${animation.reverse? 'reverse': 'normal'} both`
             }
           } else {
             const animationsOrdered = []
