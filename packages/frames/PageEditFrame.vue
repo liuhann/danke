@@ -324,7 +324,7 @@ export default {
     }
   }
   .preview-text {
-    font-size: 2rem;
+    font-size: 4rem;
   }
   .toolbar {
     top: 0;
