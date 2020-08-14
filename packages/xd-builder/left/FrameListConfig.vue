@@ -85,16 +85,19 @@ export default {
        this.groupChange()
     },
    
-   selectFrame (frame) {
-     this.currentFrame = frame
-     this.$set(this.element, 'previewAnimation', [this.getFrameStep(frame)])
-     // this.element.previewAnimations = [this.getFrameStep(frame)]
-   },
+    selectFrame (frame) {
+      this.currentFrame = frame
+      this.$set(this.element, 'previewAnimation', [this.getFrameStep(frame)])
+      // clear preview
+      setTimeout(() => {
+        this.$set(this.element, 'previewAnimation', [])
+      }, parseInt(frame.duration) + 200)
+    },
 
-   addFrame () {
-     this.currentStep = null
-     this.showChoose = true
-   },
+    addFrame () {
+      this.currentStep = null
+      this.showChoose = true
+    },
 
    replaceFrame (step) {
      this.currentStep = step
@@ -108,11 +111,13 @@ export default {
   previewFrames () {
     const currentFrame = JSON.parse(JSON.stringify(this.element.animation[this.animationType]))
     this.$set(this.element, 'previewAnimation', [])
-    this.element.animation[this.animationType] = []
+    // this.element.animation[this.animationType] = []
+    console.log('preview', currentFrame)
     setTimeout(() => {
       this.$set(this.element, 'previewAnimation', currentFrame)
-      this.element.animation[this.animationType] = currentFrame
-    }, 500)
+      // this.element.animation[this.animationType] = currentFrame
+    }, 100)
+
   },
 
   confirmFrame () {

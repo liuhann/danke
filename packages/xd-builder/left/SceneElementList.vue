@@ -15,6 +15,7 @@
           {{ element.name }}
         </div>
         <div class="actions">
+          {{element.locked}}
           <a class="btn" @click="removeElement(element)"><i class="el-icon-delete" /></a>
           <a v-if="!element.locked" class="btn" @click="lockElement(element)"><i class="el-icon-lock" /></a>
           <a v-if="element.locked" class="btn" @click="unlockElement(element)"><i class="el-icon-unlock" /></a>

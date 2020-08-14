@@ -31,6 +31,7 @@ export default {
      * 销毁元素的interaction
      */
     destroyInteract (node) {
+      console.log('destoryed inreact', node)
       const el = document.getElementById('mask-' + node.id)
       if (el) {
         interact(el).unset()
@@ -91,6 +92,7 @@ export default {
      * 初始化元素interact拖拽功能
      */
     initElementDragResize (node) {
+      console.log('init drag resize', node)
       const el = document.getElementById('mask-' + node.id)
       if (el) {
         const interactee = interact(el)
@@ -139,7 +141,6 @@ export default {
               }
             },
             onmove: event => {
-              console.log('onmove triggered', this.selectedElements.length)
               for (let element of this.selectedElements) {
                 element.x += event.dx / this.scale
                 element.y += event.dy / this.scale
