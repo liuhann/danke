@@ -182,6 +182,7 @@ export default {
           }
         }
       }
+      Object.assign(style, this.elementAnimationStyle)
       return style
     },
 
