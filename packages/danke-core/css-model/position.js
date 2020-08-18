@@ -1,4 +1,4 @@
-import { getLength } from '../utils/common'
+import { getLength } from '../../utils/common'
 export default {
   horizontal: 'center',
   vertical: 'center',

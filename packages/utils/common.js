@@ -1,4 +1,4 @@
-import { trim as animationTrim } from '../css-model/animation'
+import { trim as animationTrim } from '../danke-core/css-model/animation'
 
 const REG_LEN = /([+-]?[.0-9#]+)(%|px|pt|em|rem|in|cm|mm|ex|ch|pc|vw|vh|vmin|vmax|deg|rad|turn)?$/
 /**

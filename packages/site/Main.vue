@@ -1,35 +1,37 @@
 <template>
-<div id="site">
-  <nav-bar></nav-bar>
-  <div class="main-full loading" v-if="loading">
-    <ol class="shots-grid container-fluid">
-      <li class="work-loading" v-for="n in 24" :key="n" :style="{
-        height: '240px'
-      }"></li>
-    </ol>
-  </div>
-  <div class="main-full">
-    <ol class="shots-grid container-fluid">
-      <li v-for="work in works" :key="work._id">
-        <div class="scene-wrapper" :style="{
+  <div id="site">
+    <nav-bar></nav-bar>
+    <div v-if="loading" class="main-full loading">
+      <ol class="shots-grid container-fluid">
+        <li v-for="n in 24" :key="n" class="work-loading" :style="{
+          height: '240px'
+        }"
+        ></li>
+      </ol>
+    </div>
+    <div class="main-full">
+      <ol class="shots-grid container-fluid">
+        <li v-for="work in works" :key="work._id">
+          <div class="scene-wrapper" :style="{
             width: workViewPort.width + 'px',
             height: workViewPort.height + 'px',
             background: work.color
-        }" @click="openWork(work)">
-          <render-scene :view-box="work.viewBox || work.screen" :scene="work.scenes[0]" :view-port="work.viewport" :stage="work.stage"/>
-        </div>
-        <div class="author-likes">
-          <img class="avatar" v-if="work.avatar" :src="getImageUrl(work.avatar, 24, 24)">
-          <div class="author">
-            {{work.author}}
+          }" @click="openWork(work)"
+          >
+            <render-scene :view-box="work.viewBox || work.screen" :scene="work.scenes[0]" :view-port="work.viewport" :stage="work.stage" />
           </div>
-        </div>
-      </li>
-    </ol>
-  </div>
+          <div class="author-likes">
+            <img v-if="work.avatar" class="avatar" :src="getImageUrl(work.avatar, 24, 24)">
+            <div class="author">
+              {{ work.author }}
+            </div>
+          </div>
+        </li>
+      </ol>
+    </div>
 
-  <nav-footer />
-</div>
+    <nav-footer />
+  </div>
 </template>
 <script>
 import NavBar from './components/NavBar'
@@ -40,8 +42,8 @@ import { getImageUrl } from '../xd-builder/mixins/imageUtils'
 
 export default {
   name: 'Main',
-  mixins: [ workListMixins ],
   components: { RenderScene, NavFooter, NavBar },
+  mixins: [ workListMixins ],
   data () {
     return {
       workViewPort: {

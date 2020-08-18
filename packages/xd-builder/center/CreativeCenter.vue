@@ -1,57 +1,57 @@
 <template>
-<div class="creative-center">
-  <div class="main">
-    <div class="nav">
-      <div class="me">
-        <div class="avatar">
-          <el-upload
-            :auto-upload="false" action="https://jsonplaceholder.typicode.com/posts/"
-            :show-file-list="false"
-            ref="imageUpload"
-            class="upload-container"
-            :on-change="avatarChosen">
-            <img :src="avatar">
-          </el-upload>
-        </div>
-        <div class="user">
-          <div class="user-name">
-            {{user.nick || user.id}}
+  <div class="creative-center">
+    <div class="main">
+      <div class="nav">
+        <div class="me">
+          <div class="avatar">
+            <el-upload
+              ref="imageUpload" :auto-upload="false"
+              action="https://jsonplaceholder.typicode.com/posts/"
+              :show-file-list="false"
+              class="upload-container"
+              :on-change="avatarChosen"
+            >
+              <img :src="avatar">
+            </el-upload>
           </div>
-          <div class="location">
-            {{user.location ||　'火星'}}
+          <div class="user">
+            <div class="user-name">
+              {{ user.nick || user.id }}
+            </div>
+            <div class="location">
+              {{ user.location ||　'火星' }}
+            </div>
+          </div>
+        </div>
+        <button slot="reference" class="button" @click="navTo('new')">创建新的作品</button>
+        <div class="menu">
+          <div class="node" :class="nav==='my'? 'selected': ''" @click="navTo('my')">
+            <span>我的作品</span>
+          </div>
+          <div class="node" :class="nav==='blocks'? 'selected': ''" @click="navTo('blocks')">
+            <span>我的图块</span>
+          </div>
+          <div class="node" :class="nav==='images'? 'selected': ''" @click="navTo('blocks')">
+            <span>图片模板</span>
+          </div>
+          <div class="node" :class="nav==='vectors'? 'selected': ''" @click="navTo('vectors')">
+            <span>我的SVG图库</span>
+          </div>
+          <div class="node tree-node" :class="nav==='profile'? 'selected': ''" @click="navTo('profile')">
+            <span>设置</span>
           </div>
         </div>
       </div>
-      <button class="button" slot="reference" @click="navTo('new')">创建新的作品</button>
-      <div class="menu">
-        <div class="node" :class="nav==='my'? 'selected': ''" @click="navTo('my')">
-          <span>我的作品</span>
-        </div>
-        <div class="node" :class="nav==='blocks'? 'selected': ''" @click="navTo('blocks')">
-          <span>我的图块</span>
-        </div>
-        <div class="node" :class="nav==='images'? 'selected': ''" @click="navTo('blocks')">
-          <span>图片模板</span>
-        </div>
-        <div class="node" :class="nav==='vectors'? 'selected': ''" @click="navTo('vectors')">
-          <span>我的SVG图库</span>
-        </div>
-        <div class="node tree-node" :class="nav==='profile'? 'selected': ''" @click="navTo('profile')">
-          <span>设置</span>
-        </div>
+      <div class="content">
+        <router-view />
       </div>
-    </div>
-    <div class="content">
-      <router-view />
     </div>
   </div>
-</div>
 </template>
 
 <script>
 import StyleRegistry from '../utils/StyleRegistry'
 import { Popover, Upload } from 'element-ui'
-import workType from './workType'
 import ImageDAO from '../../utils/imagedao'
 import { getImageUrl } from '../mixins/imageUtils'
 export default {
@@ -64,7 +64,6 @@ export default {
   data () {
     return {
       user: this.ctx.user,
-      workType,
       lines: []
     }
   },

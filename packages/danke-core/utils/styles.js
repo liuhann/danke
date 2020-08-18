@@ -1,4 +1,4 @@
-import { getLenSplits, getLength, wait } from './common'
+import { getLenSplits, getLength, wait } from '../../utils/common'
 
 import { getBoxShadowStyle, getTextShadowStyle } from '../css-model/shadow'
 import { getFontStyle } from '../css-model/font'

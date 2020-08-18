@@ -120,7 +120,6 @@
 import RestDAO from '../../utils/restdao.js'
 import { getImageUrl } from '../mixins/imageUtils.js'
 import ImageDAO from '../../utils/imagedao'
-import ky from 'ky'
 import { Upload, Button, Pagination, Checkbox, Input, Popconfirm, Message } from 'element-ui'
 export default {
   components: {
@@ -298,7 +297,7 @@ export default {
         let result = await this.imagedao.uploadBlob(file.raw, `images`)
         imageObject.url = result.name
         try {
-          const imageInfo = await ky.get(this.IMG_SERVER + '/' + result.name + '?x-oss-process=image/info').json()
+          const imageInfo = await this.ctx.get(this.IMG_SERVER + '/' + result.name + '?x-oss-process=image/info').json()
           Object.assign(imageObject, {
             height: parseInt(imageInfo.ImageHeight.value),
             width: parseInt(imageInfo.ImageWidth.value)
