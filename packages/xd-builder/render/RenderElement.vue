@@ -1,41 +1,40 @@
 <template>
-<div :id="'element-' + element.id"
-     @click="elementClicked"
-     class="element" :class="elementClass" :style="elementWrapperStyle">
-  <!--图片渲染-->
-  <img v-if="element.url" :id="'img-' + (element.name || element.id)" :src="getImageUrl(element.url, viewPort.width * 2, viewPort.height * 2)" :style="elementStyle">
-  <div v-else-if="element.content" class="svg-content" v-html="element.content" :style="elementStyle"/>
-  <div v-else-if="element.elements" class="block-elements" :style="elementStyle">
-    <render-element v-for="(el, i) in element.elements" :key="el.id" :view-box="viewBox" :view-port="viewPort" :element="el" :index="i" />
-  </div>
-  <svg v-else-if="element.path" :style="elementStyle" :viewBox="'0 0 ' + element.path.w + ' ' + element.path.h ">
-    <path :d="generatePath" fill="var(--fill)" stroke-width="var(--stokeWidth)" stroke="var(--stroke)"/>
-  </svg>
-  <div v-else-if="!element.text" class="shape" :style="elementStyle">
-  </div>
-  <!--文本渲染情况下 文本内容-->
-  <div v-for="(text, index) in elementTextLines" :style="textTransformStyle" class="text" :key="index">{{text}}</div>
-  <textarea ref="textarea" v-if="element.text != null && element.editing" :style="textEditStyle" v-model="element.text" @change="updateTextArea"/>
+  <div :id="'element-' + element.id"
+       class="element"
+       :class="elementClass" :style="elementWrapperStyle" @click="elementClicked"
+  >
+    <!--图片渲染-->
+    <img v-if="element.url" :id="'img-' + (element.name || element.id)" :src="getImageUrl(element.url, viewPort.width * 2, viewPort.height * 2)" :style="elementStyle">
+    <div v-else-if="element.content" class="svg-content" :style="elementStyle" v-html="element.content" />
+    <div v-else-if="element.elements" class="block-elements" :style="elementStyle">
+      <render-element v-for="(el, i) in element.elements" :key="el.id" :view-box="viewBox" :view-port="viewPort" :element="el" :index="i" />
+    </div>
+    <svg v-else-if="element.path" :style="elementStyle" :viewBox="'0 0 ' + element.path.w + ' ' + element.path.h ">
+      <path :d="generatePath" fill="var(--fill)" stroke-width="var(--stokeWidth)" stroke="var(--stroke)" />
+    </svg>
+    <div v-else-if="!element.text" class="shape" :style="elementStyle">
+    </div>
+    <!--文本渲染情况下 文本内容-->
+    <div v-for="(text, index) in elementTextLines" :key="index" :style="textTransformStyle" class="text">{{ text }}</div>
+    <textarea v-if="element.text != null && element.editing" ref="textarea" v-model="element.text" :style="textEditStyle" @change="updateTextArea" />
 
-  <div style="display:none;" v-if="filterSVG">
-    <svg v-html="filterSVG">
+    <div v-if="filterSVG" style="display:none;">
+      <svg v-html="filterSVG">
       </svg>
+    </div>
   </div>
-</div>
 </template>
 
 <script>
 import { getImageUrl } from '../mixins/imageUtils.js'
 import { getRectPositionStyle } from '../mixins/rectUtils.js'
 import { assignVariables } from '../mixins/renderUtils'
-import TextList from '../left/TextList'
 import textMesure from '../../utils/textMesure'
 import { svg2url } from '../../utils/svg2url'
 
 export default {
   name: 'RenderElement',
   components: {
-    TextList,
     RenderElement: () => import('./RenderElement.vue')
   },
   props: {
@@ -62,8 +61,8 @@ export default {
       type: Boolean
     }
   },
-  mounted () {
-    if (this.element.url && this.element.url.endsWith('.svg')) {
+  data () {
+    return {
     }
   },
   computed: {
@@ -330,8 +329,8 @@ export default {
       return d
     },
   },
-  data () {
-    return {
+  mounted () {
+    if (this.element.url && this.element.url.endsWith('.svg')) {
     }
   },
   methods: {
