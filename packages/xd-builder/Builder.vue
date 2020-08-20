@@ -67,6 +67,7 @@ import {
   Upload,
   Cascader,
   Pagination,
+  Dialog,
   Drawer
 } from 'element-ui'
 
@@ -86,6 +87,7 @@ Vue.use(ColorPicker)
 Vue.use(Tabs)
 Vue.use(TabPane)
 Vue.use(Tooltip)
+Vue.use(Dialog)
 Vue.use(Checkbox)
 
 export default {

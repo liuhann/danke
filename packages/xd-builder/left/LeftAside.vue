@@ -204,15 +204,6 @@ aside.insert-container {
     position: relative;
   }
 
-  input {
-    background: rgba(255, 255, 255,.1);
-    border: none;
-    color: #ddd;
-    &:hover {
-      box-shadow: none;
-    }
-  }
-
   ::-webkit-scrollbar-track
   {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);

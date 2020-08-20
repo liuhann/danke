@@ -6,6 +6,18 @@
   right: 0;
   overflow: auto;
   padding: 1rem;
+
+  .search-box {
+    input {
+      background: rgba(255, 255, 255,.1);
+      border: none;
+      color: #ddd;
+      &:hover {
+        box-shadow: none;
+      }
+    }
+  }
+
   .el-tabs__item {
     color:rgba(153, 169, 191, 0.6);
     padding: 0 10px;
@@ -13,28 +25,10 @@
       color: #eee;
     }
   }
-
   .el-input {
-    background: transparent;
-    border: none;
-
     .el-input-group__append {
       background: #545961;
       border: none;
-    }
-  }
-  .el-form-item__label {
-    color: #aaa;
-  }
-  .el-input-number {
-    .el-input-number__decrease {
-      background: transparent;
-      border-left: 1px solid #545454;
-    }
-    .el-input-number__increase  {
-      background: transparent;
-      border-left: 1px solid #545454;
-      border-bottom: 1px solid #545454;
     }
   }
 }

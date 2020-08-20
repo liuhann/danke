@@ -71,9 +71,6 @@
           <el-input v-model="currentAlbum.name" size="mini" />
         </div>
         <div class="field">
-          <el-checkbox v-model="currentAlbum.mask">
-            遮罩
-          </el-checkbox>
           <el-checkbox v-model="currentAlbum.shared">
             分享
           </el-checkbox>
@@ -104,15 +101,40 @@
         <div
           v-for="(image, index) in albumImages" :key="index"
           class="item image" draggable @dragstart="dragStart(image, $event)"
+          @dblclick="imageDblClicked(image)"
           @click="imageClicked(image)"
         >
-          <img :src="getImageUrl(image.url)">
+          <img :src="getImageUrl(image.url)" :style="imageSizeStye(image)">
           <span v-if="image.width" class="image-size">{{ image.width }}X{{ image.height }}</span>
           <i class="el-icon-delete" @click="removeImage(image)" />
         </div>
       </div>
       <el-pagination background :total="total" :page-size="pageSize" :current-page.sync="page" layout="prev, pager, next" @current-change="loadAlbumImages" />
     </div>
+    <el-dialog
+      title="图片编辑"
+      :visible.sync="dialogVisible"
+      width="30%">
+      <el-form size="mini">
+        <el-form-item label="宽度">
+          <el-input-number v-model="currentImage.width" size="mini" controls-position="right" />
+        </el-form-item>
+        <el-form-item label="高度">
+          <el-input-number v-model="currentImage.height" size="mini" controls-position="right" />
+        </el-form-item>
+        <el-form-item label="标签">
+          <el-select
+            v-model="currentImage.tags"
+            multiple
+            filterable
+            allow-create />
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="confirmImageEdit">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -121,6 +143,7 @@ import RestDAO from '../../utils/restdao.js'
 import { getImageUrl } from '../mixins/imageUtils.js'
 import ImageDAO from '../../utils/imagedao'
 import { Upload, Button, Pagination, Checkbox, Input, Popconfirm, Message } from 'element-ui'
+import { fitRectIntoBounds } from '../mixins/rectUtils.js'
 export default {
   components: {
     [Button.name]: Button,
@@ -133,9 +156,11 @@ export default {
   data () {
     return {
       draggingImage: false,
+      dialogVisible: false,
       albums: [],
       IMG_SERVER: this.ctx.IMG_SERVER,
       showNewAlbumName: false,
+      currentImage: {},
       newAlbumName: '',
       currentAlbum: null,
       albumImages: [],
@@ -367,7 +392,9 @@ export default {
     },
 
     async removeImage (image) {
+      // 删除阿里云存储的图片
       await this.imagedao.removeBlob(image.url)
+      // 删除rest记录
       await this.restdao.delete(image)
       this.updateAlbumCover(this.currentAlbum)
       this.loadAlbumImages()
@@ -379,8 +406,38 @@ export default {
       this.draggingImage = true
     },
 
+    imageDblClicked (image) {
+      this.dialogVisible = true
+      this.currentImage = image
+    },
+
     imageClicked (image) {
       this.$emit('choose', image)
+    },
+
+    imageSizeStye (image) {
+      if (image.width && image.height) {
+        const fitted = fitRectIntoBounds(image, {
+          width: 70,
+          height: 70
+        })
+        return {
+          width: fitted.width + 'px',
+          height: fitted.height + 'px'
+        }
+      } else {
+        return {}
+      }
+    },
+
+    async confirmImageEdit () {
+      // write file info
+      await this.restdao.patch(this.currentImage._id, {
+        width: this.currentImage.width,
+        height: this.currentImage.height,
+        tags: this.currentImage.tags
+      })
+      this.dialogVisible = false
     },
 
     dragEnd () {
@@ -392,7 +449,6 @@ export default {
 
 <style lang="scss">
 #my-uploaded-images {
-
   .album {
     .album-title {
       padding: 10px 0;
@@ -471,13 +527,13 @@ export default {
         border-radius: 5px;
         overflow: hidden;
         position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         img {
-          position: absolute;
-          left: 0;
-          top: 0;
           width: 70px;
           height: 70px;
-          object-fit: contain;
+          object-fit: fill;
           cursor: pointer;
         }
         .el-icon-delete {
