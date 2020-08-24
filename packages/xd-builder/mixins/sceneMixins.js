@@ -1,11 +1,13 @@
 import { shortid } from '../../utils/string'
 import { MessageBox } from 'element-ui'
 export default {
-  data () {
-    return {
-      currentScene: null,
-      lastScene: null,
+  props: {
+    scene: {
+      type: Object
     }
+  },
+  data () {
+    return {}
   },
   methods: {
     /**
@@ -81,35 +83,5 @@ export default {
       }
       return maxExistsMill
     },
-
-    /**
-     * 删除当前场景
-     */
-    deleteCurrentScene () {
-      if (this.scenes.length === 1) {
-        MessageBox.prompt('无法删除: 请至少保留一个场景')
-        return
-      }
-      MessageBox.confirm('删除场景后不可恢复，是否确认？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        const sceneIndex = this.work.scenes.indexOf(this.currentScene)
-        this.work.scenes.splice(sceneIndex, 1)
-        this.currentScene = this.work.scenes[sceneIndex - 1] || this.work.scenes[0]
-      })
-    },
-    applyWorkTicksToScenes () {
-      let last = 0
-      if (this.work.audioTicks) {
-        for (let i = 0; i < this.work.audioTicks.length; i++) {
-          if (this.work.scenes[i]) {
-            this.work.scenes[i].leave = Math.floor(this.work.audioTicks[i] * 1000) - last
-            last = Math.floor(this.work.audioTicks[i] * 1000)
-          }
-        }
-      }
-    }
   }
 }

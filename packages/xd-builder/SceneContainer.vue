@@ -45,6 +45,9 @@
         <el-button size="mini" icon="el-icon-plus" @click="scaleUp" />
         <el-button size="mini" icon="el-icon-full-screen" round @click="fitToCenter" />
       </el-button-group>
+      <div class="btn-scene-nav next-scene">
+        
+      </div>
     </div>
   </div>
 </template>

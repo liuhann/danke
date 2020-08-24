@@ -9,7 +9,9 @@
     <el-tooltip v-show="focusedElement" class="item" effect="dark" content="动态效果" placement="bottom">
       <a class="action" @click="openAnimationEdit"><i class="el-icon-data-line" /></a>
     </el-tooltip>
-    <pop-more-action v-if="focusedElement" :element="focusedElement" :scene="scene" @reset="setElementLocked" />
+    <el-tooltip v-show="focusedElement" class="item" effect="dark" content="动态效果" placement="bottom">
+      <a class="action" @click="openElementProperties"><i class="el-icon-data-line" /></a>
+    </el-tooltip>
     <span class="separator" />
     <!--  样式变量的修改-->
     <template v-for="(variable, index) in elementStyleVariables">
@@ -58,8 +60,6 @@ import interactMixins from '../mixins/interactMixins.js'
 import toolbarPopMixin from './toolbarPopMixin'
 import SettingPanel from './SettingPanel'
 import workMixin from '../work/workMixin'
-import PopSetAnimation from './PopSetAnimation'
-import PopMoreAction from './PopMoreAction.vue'
 import IconPen from './res/pen.svg'
 import TextAlign from './TextAlign'
 import FontWeight from './FontWeight'
@@ -68,7 +68,6 @@ import AlignElement from './AlignElement.vue'
 import FontFamily from './FontFamily.vue'
 import PopSetGradient from './PopSetGradient'
 import BorderStyle from './BorderStyle'
-import PopElementList from './PopElementList'
 import PopImageMask from './PopImageMask'
 import PopNewElement from './PopNewElement'
 import PopSetFilter from './PopSetFilter'
@@ -82,7 +81,6 @@ export default {
     FontWeight,
     FontFamily,
     TextAlign,
-    PopMoreAction,
     SettingPanel
   },
   mixins: [ interactMixins, workMixin, toolbarPopMixin ],
@@ -364,6 +362,10 @@ export default {
     },
     toggleShowSceneList () {
       this.$emit('show-scenes')
+    },
+
+    openElementProperties () {
+      this.$emit('show-element-prop')
     },
 
     playScene () {

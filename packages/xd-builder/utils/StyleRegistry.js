@@ -220,65 +220,6 @@ export default class StyleRegistry {
     return colors
   }
 
-  assignSceneResource (scene, frames, svgs, fonts) {
-    for (let element of scene.elements) {
-      // element.animation.enters = [{name: 'fade-in'}]
-      // element.animation.exists = [{name: 'fade-out'}]
-      for (let stage in element.animation) {
-        for (let animation of element.animation[stage]) {
-          frames[animation.name] = this.keyframes[animation.name]
-        }
-      }
-
-      // when use svg as element content image
-      if (element.svg) {
-        svgs[element.svg] = element.content
-        delete element.content
-      }
-
-      // when use svg as element mask image
-      if (element.mask) {
-        svgs[element.mask] = element.maskImage
-        delete element.masksvg
-      }
-
-      if (element.variables && element.variables.length) {
-        element.variables.forEach(variable => {
-          if (variable.type === 'fontFamily') {
-            fonts.add(variable.value)
-          }
-        })
-      }
-      // assign resource in blocks
-      if (element.elements) {
-        this.assignSceneResource(element, frames, svgs, fonts)
-      }
-    }
-  }
-
-  /**
-   * 抽取作品里所有元素的样式资源，包括动画、SVG图片及字体
-   * @param {*} work
-   */
-  getStyleResource (work) {
-    const frames = {} // css 帧资源
-    const styles = {} // css 样式资源
-    const svgs = {}
-    const fonts = new Set()
-    for (let scene of work.scenes) {
-      if (!scene.animation) {
-        scene.animation = {}
-      }
-      this.assignSceneResource(scene, frames, svgs, fonts)
-    }
-    return {
-      frames,
-      styles,
-      svgs,
-      fonts: Array.from(fonts)
-    }
-  }
-
   /**
    * 获取、初始化作品里所有元素的样式资源
    */

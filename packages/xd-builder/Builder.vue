@@ -18,14 +18,17 @@
       />
       <clippath-editor v-if="pen" :view-port-rect="viewPortRect" :scene="currentScene" :view-box="work.viewBox" :work="work" @close="pen = ''" @input="pathConfirmed" />
     </section>
-    <el-drawer title="元素列表" :visible.sync="elementsDrawer" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
+    <el-drawer title="元素列表" destroy-on-close :visible.sync="elementsDrawer" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
       <scene-element-list :scene="currentScene" />
     </el-drawer>
-    <el-drawer title="动画设置" :visible.sync="animationDrawer" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
+    <el-drawer title="动画设置" destroy-on-close :visible.sync="animationDrawer" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
       <frame-list-config :work="work" :scene="currentScene" />
     </el-drawer> 
-    <el-drawer title="场景列表" :visible.sync="sceneDrawer" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
-      <scene-list :work="work" :current="currentScene" @choose-scene="chooseScene" />
+    <el-drawer title="场景列表" destroy-on-close :visible.sync="sceneDrawer" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
+      <scene-list v-if="sceneDrawer" :work="work" :current="currentScene" @choose-scene="chooseScene" />
+    </el-drawer>
+    <el-drawer title="元素配置" destroy-on-close :visible.sync="elementPropDrawer" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
+      <element-prop-config :scene="currentScene" />
     </el-drawer>
     <div id="textMesure" />
   </div>
@@ -43,6 +46,7 @@ import ClippathEditor from './clippath-maker/ClippathEditor'
 import SceneList from './left/SceneList.vue'
 import SceneElementList from './left/SceneElementList.vue'
 import FrameListConfig from './left/FrameListConfig.vue'
+import ElementPropConfig from './left/ElementPropConfig.vue'
 import 'element-ui/packages/theme-chalk/lib/icon.css'
 import Mousetrap from 'mousetrap'
 import Vue from 'vue'
@@ -93,6 +97,7 @@ Vue.use(Checkbox)
 export default {
   name: 'Builder',
   components: {
+    ElementPropConfig,
     SceneList,
     ClippathEditor,
     Toolbar,

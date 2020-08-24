@@ -1,18 +1,23 @@
 /**
- * 保存、加载作品通用方法
+ * 有work属性的组件通用相关方法
  */
 import { shortid } from '../../utils/string'
 import { Loading, Message } from 'element-ui'
 import RestDAO from '../../utils/restdao.js'
 
 export default {
-  data () {
-    return {
-      blockPageNum: 1
+  props: {
+    work: {
+      type: Object
+    },
+    viewBox: {
+      type: Object
     }
   },
+  data () {},
   created () {
     this.workdao = new RestDAO(this.ctx, 'danke/work')
+    this.styleRegistry = this.ctx.styleRegistry
   },
   methods: {
     slidePreview () {
@@ -22,26 +27,30 @@ export default {
      * 新增作品
      */
     newWork () {
-      this.work = {
+      return {
         id: shortid(10),
         title: '未命名的作品',
         isBlock: 'no',
-        viewBox: {
-          width: parseInt(this.$route.query.width) || 414,
-          height: parseInt(this.$route.query.height) || 896
+        viewBox: this.viewBox || {
+          width: 1080,
+          height: 1920
         },
-        color: '#fff',  // 得掉
+        color: '#fff',
         audioUrl: '',
         audioName: '',
         audioSeconds: 0,
         frames: {}, // 动画信息
-        svgs: {},   // svg图片信息
-        fonts: {},  // 字体列表
-        style: {},  // 样式列表
-        scenes: []  // 场景s
+        svgs: {}, // svg图片信息
+        fonts: {},// 字体列表
+        scenes: [] // 场景
       }
     },
 
+
+    /**
+     * 应用音乐节拍到作品的每个页面
+     * @param {Object} tick 
+     */
     applyTicksToWork (tick) {
       this.work.audioUrl = tick.url
       this.work.audioName = tick.name
@@ -80,6 +89,93 @@ export default {
       this.work = work
       loadingInstance1.close()
     },
+
+    /**
+     * 获取、初始化作品里所有元素的样式资源
+     */
+    initWorkStyleResource (work) {
+      const styleRegistry = this.ctx.styleRegistry
+      for (let name in work.frames) {
+        styleRegistry.addFrame({
+          name,
+          cssFrame: work.frames[name]
+        })
+      }
+      for (let name in work.styles) {
+        styleRegistry.addStyle({
+          name,
+          cssContent: work.styles[name]
+        })
+      }
+      if (work.fonts && work.fonts.length) {
+        for (let font of work.fonts) {
+          styleRegistry.addFontFace(font)
+        }
+      }
+      // init element svg content from work.svgs
+      for (let scene of work.scenes) {
+        this.initSceneSVG(scene.elements, work.svgs)
+      }
+    },
+
+    /**
+    * 抽取作品里所有元素的样式资源，包括动画、SVG图片及字体
+    * @param {*} work
+    */
+    getCommonResource() {
+      const frames = {} // css 帧资源
+      const styles = {} // css 样式资源
+      const svgs = {}
+      const fonts = new Set()
+      for (let scene of work.scenes) {
+        if (!scene.animation) {
+          scene.animation = {}
+        }
+        this.assignSceneResource(scene, frames, svgs, fonts)
+      }
+      return {
+        frames,
+        styles,
+        svgs,
+        fonts: Array.from(fonts)
+      }
+    },
+
+    assignSceneResource (scene, frames, svgs, fonts) {
+      for (let element of scene.elements) {
+        for (let stage in element.animation) {
+          for (let animation of element.animation[stage]) {
+            frames[animation.name] = this.keyframes[animation.name]
+          }
+        }
+
+        // when use svg as element content image
+        if (element.svg) {
+          svgs[element.svg] = element.content
+          delete element.content
+        }
+
+        // when use svg as element mask image
+        if (element.mask) {
+          svgs[element.mask] = element.maskImage
+          delete element.masksvg
+        }
+
+        if (element.variables && element.variables.length) {
+          element.variables.forEach(variable => {
+            if (variable.type === 'fontFamily') {
+              fonts.add(variable.value)
+            }
+          })
+        }
+        // assign resource in blocks
+        if (element.elements) {
+          this.assignSceneResource(element, frames, svgs, fonts)
+        }
+      }
+    }
+
+
 
     /**
      * 保存作品内容
