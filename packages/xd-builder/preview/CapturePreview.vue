@@ -25,7 +25,7 @@
 <script>
 import StyleRegistry from '../utils/StyleRegistry.js'
 import { fitRectIntoBounds } from '../mixins/rectUtils.js'
-import workMixin from '../work/workMixin.js'
+import workMixin from '../mixins/workMixin.js'
 import sceneMixin from '../mixins/sceneMixins.js'
 import RenderScene from '../render/RenderScene'
 import RestDAO from '../../utils/restdao.js'

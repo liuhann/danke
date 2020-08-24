@@ -79,7 +79,7 @@
 </template>
 
 <script>
-import workMixin from '../work/workMixin'
+import workMixin from '../mixins/workMixin'
 import toolbarPopMixin from './toolbarPopMixin'
 import RestDAO from '../../utils/restdao.js'
 
@@ -150,7 +150,6 @@ export default {
     },
 
     removeAudio () {
-      debugger
       this.work.audioUrl = null
       this.work.audioName = null
     },

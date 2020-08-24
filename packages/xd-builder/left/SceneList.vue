@@ -48,7 +48,7 @@
 <script>
 import draggable from 'vuedraggable'
 import sceneMixins from '../mixins/sceneMixins'
-import workMixin from '../work/workMixin'
+import workMixin from '../mixins/workMixin'
 import RenderScene from '../render/RenderScene.vue'
 import { shortid } from '../../utils/string'
 import { fitRectIntoBounds } from '../mixins/rectUtils'

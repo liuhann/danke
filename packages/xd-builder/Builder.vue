@@ -36,7 +36,7 @@
 
 <script>
 import StyleRegistry from './utils/StyleRegistry.js'
-import workMixin from './work/workMixin.js'
+import workMixin from './mixins/workMixin.js'
 import sceneMixin from './mixins/sceneMixins.js'
 import SceneContainer from './SceneContainer.vue'
 import LeftAside from './left/LeftAside.vue'
