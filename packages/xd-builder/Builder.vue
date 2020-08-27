@@ -5,30 +5,30 @@
       <toolbar
         :work="work"
         :scene="currentScene"
-        @show-elements="showElementList"
-        @show-scenes="showSceneList"
-        @show-animations="showAnimationDrawer"
+        @toggle-show="toggleShowDrawer"
       />
       <scene-container
         ref="sceneContainer"
-        :scene="currentScene"
         :work="work"
+        :scene="currentScene"
         @scale-fit="scaleChange"
         @focus-change="focusChange"
       />
-      <clippath-editor v-if="pen" :view-port-rect="viewPortRect" :scene="currentScene" :view-box="work.viewBox" :work="work" @close="pen = ''" @input="pathConfirmed" />
     </section>
-    <el-drawer title="元素列表" destroy-on-close :visible.sync="elementsDrawer" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
-      <scene-element-list :scene="currentScene" />
+    <el-drawer title="元素列表" destroy-on-close :visible.sync="drawer.elementList" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
+      <scene-element-list :scene="currentScene" @close="toggleShowDrawer" />
     </el-drawer>
-    <el-drawer title="动画设置" destroy-on-close :visible.sync="animationDrawer" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
-      <frame-list-config :work="work" :scene="currentScene" />
+    <el-drawer title="动画设置" destroy-on-close :visible.sync="drawer.animation" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
+      <frame-list-config :work="work" :scene="currentScene" @close="toggleShowDrawer" />
     </el-drawer> 
-    <el-drawer title="场景列表" destroy-on-close :visible.sync="sceneDrawer" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
-      <scene-list v-if="sceneDrawer" :work="work" :current="currentScene" @choose-scene="chooseScene" />
+    <el-drawer title="场景列表" destroy-on-close :visible.sync="drawer.sceneList" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
+      <scene-list :work="work" :current="currentScene" @choose-scene="chooseScene" @close="toggleShowDrawer" />
     </el-drawer>
-    <el-drawer title="元素配置" destroy-on-close :visible.sync="elementPropDrawer" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
-      <element-prop-config :scene="currentScene" />
+    <el-drawer title="元素配置" destroy-on-close :visible.sync="drawer.elementProp" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
+      <element-prop-config v-if="drawer.elementProp" :element="focusedElement" @close="toggleShowDrawer" />
+    </el-drawer>
+    <el-drawer title="作品配置" destroy-on-close :visible.sync="drawer.workProp" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
+      <element-prop-config :scene="currentScene" @close="toggleShowDrawer" />
     </el-drawer>
     <div id="textMesure" />
   </div>
@@ -42,7 +42,6 @@ import SceneContainer from './SceneContainer.vue'
 import LeftAside from './left/LeftAside.vue'
 import Toolbar from './toolbar/Toolbar.vue'
 import { shortid } from '../utils/string'
-import ClippathEditor from './clippath-maker/ClippathEditor'
 import SceneList from './left/SceneList.vue'
 import SceneElementList from './left/SceneElementList.vue'
 import FrameListConfig from './left/FrameListConfig.vue'
@@ -99,7 +98,6 @@ export default {
   components: {
     ElementPropConfig,
     SceneList,
-    ClippathEditor,
     Toolbar,
     SceneContainer,
     SceneElementList,
@@ -111,9 +109,13 @@ export default {
   },
   data () {
     return {
-      elementsDrawer: false,
-      animationDrawer: false,
-      sceneDrawer: false,
+      drawer: {
+        animation: false,
+        elementProp: false,
+        elementList: false,
+        sceneList: false,
+        workProp: false
+      },
       viewPortRect: {
         left: 0,
         top: 0,
@@ -122,6 +124,7 @@ export default {
       },
       pen: '',
       work: null,
+      currentScene: null,
       scale: 1,
       paste: null
     }
@@ -133,32 +136,30 @@ export default {
     this.ctx.styleRegistry = new StyleRegistry(this.ctx)
     this.onMounted()
   },
-  methods: {
-    showElementList () {
-      this.elementsDrawer = true
-    },
-    showSceneList () {
-      this.elementsDrawer = false
-      this.animationDrawer = false
-      this.sceneDrawer = true
-    },
 
-    focusChange (element) {
-      if (element == null) {
-        // close drawer on click empty
-        this.elementsDrawer = false
-        this.animationDrawer = false
-        this.sceneDrawer = false
+
+  methods: {
+    toggleShowDrawer (drawerName) {
+      this.drawer.animation = false
+      this.drawer.elementProp = false
+      this.drawer.elementList = false
+      this.drawer.sceneList = false
+      this.drawer.workProp = false
+      if (drawerName) {
+        this.drawer[drawerName] = true
       }
     },
-
-    showAnimationDrawer () {
-      this.animationDrawer = true
+   
+    focusChange (element) {
+      if (element == null) {
+        this.toggleShowDrawer()
+      }
     },
 
     drawElement (element) {
       this.insert('element', element)
     },
+
     async onMounted () {
       let workId = this.$route.query.work
       if (!workId) {
@@ -205,34 +206,6 @@ export default {
 
     clean (name) {
 
-    },
-
-    pathConfirmed (object) {
-      this.$refs.sceneContainer.createSingleElement({
-        variables: [{
-          name: 'fill',
-          value: object.color,
-          type: 'color'
-        }, {
-          name: 'stokeWidth',
-          value: object.strokeWidth,
-          type: 'px'
-        }, {
-          name: 'stroke',
-          value: object.strokeColor,
-          type: 'color'
-        }],
-        path: {
-          w: object.w,
-          h: object.h,
-          points: object.points
-        },
-        x: object.x / this.scale,
-        y: object.y / this.scale,
-        width: object.w / this.scale,
-        height: object.h / this.scale
-      })
-      this.pen = ''
     },
 
     resizeWorkViewBox () {

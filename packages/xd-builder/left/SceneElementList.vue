@@ -2,7 +2,7 @@
   <div id="scene-element-list">
     <div class="pop-title">
       <span class="text">元素列表</span>
-      <a class="btn-close"><i class="el-icon-close" /></a>
+      <a class="btn-close" @click="$emit('close')"><i class="el-icon-circle-close" /></a>
     </div>
     <draggable v-model="scene.elements" class="list-content">
       <div v-for="element of scene.elements" :key="element.id" class="element-item" :class="element.selected? 'checked': ''" @click="checkElement(element, $event)">

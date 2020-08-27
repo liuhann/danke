@@ -7,9 +7,6 @@ import RestDAO from '../../utils/restdao.js'
 
 export default {
   props: {
-    work: {
-      type: Object
-    },
     viewBox: {
       type: Object
     }

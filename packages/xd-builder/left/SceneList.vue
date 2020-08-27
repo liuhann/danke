@@ -1,15 +1,15 @@
 <template>
   <div id="scene-list">
     <div class="pop-title">
-      <span class="text">场景列表</span>
-      <a class="btn-close"><i class="el-icon-close" /></a>
+      <span v-show="!showSetting" class="text">
+        <el-button size="mini" type="success" @click="addScene">新增场景</el-button>
+      </span>
+      <div v-show="showSetting" class="text">
+        <el-button size="mini" type="success" @click="showSetting=false">关闭</el-button>
+      </div>
+      <a class="btn-close" @click="$emit('close')"><i class="el-icon-circle-close" /></a>
     </div>
-    <div v-show="!showSetting" class="actions">
-      <el-button size="mini" type="success" @click="addScene">新增场景</el-button>
-    </div>
-    <div v-show="showSetting" class="actions">
-      <el-button size="mini" type="success" @click="showSetting=false">关闭</el-button>
-    </div>
+    
     <el-form v-show="showSetting" size="mini" label-width="80px">
       <el-form-item label="持续时间">
         <el-input-number v-model="current.duration" controls-position="right" size="mini" />  秒
@@ -122,32 +122,6 @@ export default {
   background-color: rgba(255, 255, 255, 1);
   height: 100vh;
   width: 100%;
-  .actions {
-    padding: 10px 20px;
-    background: #fff;
-    display: flex;
-    border-bottom: 1px solid #dadce0;
-    .music-control {
-      flex: 1;
-      display: flex;
-      margin-right: 20px;
-      .el-button--text {
-        font-size: 18px;
-        padding: 10px 0;
-        &:hover {
-          color: #00c7ae;
-        }
-      }
-      .slider {
-        flex: 1;
-      }
-      .seconds {
-        padding-left: 10px;
-        line-height: 40px;
-        width: 130px;
-      }
-    }
-  }
   .list-wrapper {
     padding: 10px;
     max-height: calc(100% - 40px);

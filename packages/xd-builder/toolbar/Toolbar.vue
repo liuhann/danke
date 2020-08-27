@@ -1,16 +1,16 @@
 <template>
   <div id="tool-bar">
     <el-tooltip class="item" effect="dark" content="场景列表" placement="bottom">
-      <a class="action" @click="toggleShowSceneList"><i class="el-icon-s-grid" /></a>
+      <a class="action" @click="$emit('toggle-show', 'sceneList')"><i class="el-icon-s-grid" /></a>
     </el-tooltip>
     <el-tooltip class="item" effect="dark" content="元素列表" placement="bottom">
-      <a class="action" @click="toggleShowElementList"><i class="el-icon-notebook-2" /></a>
+      <a class="action" @click="$emit('toggle-show', 'elementList')"><i class="el-icon-notebook-2" /></a>
     </el-tooltip>
     <el-tooltip v-show="focusedElement" class="item" effect="dark" content="动态效果" placement="bottom">
-      <a class="action" @click="openAnimationEdit"><i class="el-icon-data-line" /></a>
+      <a class="action" @click="$emit('toggle-show', 'animation')"><i class="el-icon-data-line" /></a>
     </el-tooltip>
     <el-tooltip v-show="focusedElement" class="item" effect="dark" content="动态效果" placement="bottom">
-      <a class="action" @click="openElementProperties"><i class="el-icon-data-line" /></a>
+      <a class="action" @click="$emit('toggle-show', 'elementProp')"><i class="el-icon-s-operation" /></a>
     </el-tooltip>
     <span class="separator" />
     <!--  样式变量的修改-->

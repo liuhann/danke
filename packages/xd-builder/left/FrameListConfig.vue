@@ -1,5 +1,9 @@
 <template>
-  <div id="left-frames-config">
+  <div>
+    <div class="pop-title">
+      <span class="text">动态效果</span>
+      <a class="btn-close" @click="$emit('close')"><i class="el-icon-circle-close" /></a>
+    </div>
     <div v-if="element" class="animation-config">
       <el-tabs v-model="animationType" type="card" size="mini">
         <el-tab-pane label="进入" name="enter" />
@@ -42,23 +46,18 @@
 import RestDAO from '../../utils/restdao.js'
 import { assignVariables } from '../mixins/renderUtils'
 import AnimationForm from './AnimationForm.vue'
-import workplaceMixins from '../mixins/workplaceMixins'
 import { Pagination, Input, Button, Loading, Checkbox, Tabs, TabPane, Collapse, CollapseItem } from 'element-ui'
 
 export default {
   name: 'FrameListConfig',
   components: {
-    [Input.name]: Input,
-    [Pagination.name]: Pagination,
-    [Checkbox.name]: Checkbox,
-    [Tabs.name]: Tabs,
-    [TabPane.name]: TabPane,
-    [Button.name]: Button,
-    [Collapse.name]: Collapse,
-    [CollapseItem.name]: CollapseItem,
     AnimationForm
   },
-  mixins: [ workplaceMixins ],
+  props: {
+    element: {
+      type: Object
+    }
+  },
   data () {
     return {
       animationType: 'enter',
@@ -171,10 +170,6 @@ export default {
 
 <style lang="scss">
 #left-frames-config {
-  padding: 8px;
-  overflow: hidden;
-  width: 100%;
-  position: relative;
   .no-element {
     height: 100%;
     width: 100%;
