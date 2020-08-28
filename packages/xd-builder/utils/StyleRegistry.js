@@ -219,45 +219,4 @@ export default class StyleRegistry {
     }
     return colors
   }
-
-  /**
-   * 获取、初始化作品里所有元素的样式资源
-   */
-  initWorkStyleResource (work) {
-    // for (let name in work.frames) {
-    //   this.addFrame({
-    //     name,
-    //     cssFrame: work.frames[name]
-    //   })
-    // }
-    for (let name in work.styles) {
-      this.addStyle({
-        name,
-        cssContent: work.styles[name]
-      })
-    }
-    if (work.fonts && work.fonts.length) {
-      for (let font of work.fonts) {
-        this.addFontFace(font)
-      }
-    }
-    // init element svg content from work.svgs
-    for (let scene of work.scenes) {
-      this.initSceneSVG(scene.elements, work.svgs)
-    }
-  }
-
-  initSceneSVG (elements, svgs) {
-    for (let element of elements) {
-      if (element.svg) {
-        element.content = svgs[element.svg]
-      }
-      if (element.mask) {
-        element.maskImage = svgs[element.svg]
-      }
-      if (element.elements) {
-        this.initSceneSVG(element.elements, svgs)
-      }
-    }
-  }
 }

@@ -144,6 +144,7 @@ import { getImageUrl } from '../mixins/imageUtils.js'
 import ImageDAO from '../../utils/imagedao'
 import { Upload, Button, Pagination, Checkbox, Input, Popconfirm, Message } from 'element-ui'
 import { fitRectIntoBounds } from '../mixins/rectUtils.js'
+import getImageSize from '../../utils/imageSize.js'
 export default {
   components: {
     [Button.name]: Button,
@@ -321,13 +322,7 @@ export default {
       } else {
         let result = await this.imagedao.uploadBlob(file.raw, `images`)
         imageObject.url = result.name
-        try {
-          const imageInfo = await this.ctx.get(this.IMG_SERVER + '/' + result.name + '?x-oss-process=image/info').json()
-          Object.assign(imageObject, {
-            height: parseInt(imageInfo.ImageHeight.value),
-            width: parseInt(imageInfo.ImageWidth.value)
-          })
-        } catch (e) {}
+        Object.assign(imageObject, await getImageSize(file.raw))
       }
 
       // write file info

@@ -49,7 +49,7 @@
       <el-tooltip v-if="noFocusedElement" class="item" effect="dark" content="预览" placement="bottom">
         <a class="action" @click="slidePreview"><i class="el-icon-video-play" /></a>
       </el-tooltip>
-      <setting-panel :work="work" :scene="scene" />
+      <a class="action" @click="$emit('toggle-show', 'workProp')"><i class="el-icon-setting" /></a>
     </div>
   </div>
 </template>
@@ -80,8 +80,7 @@ export default {
     FontSize,
     FontWeight,
     FontFamily,
-    TextAlign,
-    SettingPanel
+    TextAlign
   },
   mixins: [ interactMixins, workMixin, toolbarPopMixin ],
   props: {

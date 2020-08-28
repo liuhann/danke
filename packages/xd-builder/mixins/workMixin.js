@@ -76,8 +76,7 @@ export default {
         work.viewBox = work.screen
         delete work.screen
       }
-      this.ctx.styleRegistry.initWorkStyleResource(work)
-      this.ctx.palette = this.ctx.styleRegistry.getWorkColors(work)
+      this.initWorkStyleResource(work)
 
       for (let scene of work.scenes) {
         scene.visible = false
@@ -115,6 +114,20 @@ export default {
       }
     },
 
+    initSceneSVG (elements, svgs) {
+      for (let element of elements) {
+        if (element.svg) {
+          element.content = svgs[element.svg]
+        }
+        if (element.mask) {
+          element.maskImage = svgs[element.mask]
+        }
+        if (element.elements) {
+          this.initSceneSVG(element.elements, svgs)
+        }
+      }
+    },
+
     /**
     * 抽取作品里所有元素的样式资源，包括动画、SVG图片及字体
     * @param {*} work
@@ -124,7 +137,7 @@ export default {
       const styles = {} // css 样式资源
       const svgs = {}
       const fonts = new Set()
-      for (let scene of work.scenes) {
+      for (let scene of this.work.scenes) {
         if (!scene.animation) {
           scene.animation = {}
         }
@@ -139,10 +152,11 @@ export default {
     },
 
     assignSceneResource (scene, frames, svgs, fonts) {
+      const styleRegistry = this.ctx.styleRegistry
       for (let element of scene.elements) {
         for (let stage in element.animation) {
           for (let animation of element.animation[stage]) {
-            frames[animation.name] = this.keyframes[animation.name]
+            frames[animation.name] = styleRegistry.keyframes[animation.name]
           }
         }
 
@@ -182,8 +196,7 @@ export default {
       let loadingInstance = Loading.service({ fullscreen: true, text: '保存作品中' });
       const work = JSON.parse(JSON.stringify(this.work))
       // 抽取所有使用的frame style到work上，以便压缩使用空间
-      Object.assign(work, this.ctx.styleRegistry.getStyleResource(work))
-      work.colors = this.getWorkColors(work)
+      Object.assign(work, this.getCommonResource())
       work.author = this.ctx.user.nick
       work.avatar = this.ctx.user.avatar
       this.savingWork = true

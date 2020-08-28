@@ -27,12 +27,8 @@
       </el-form-item>
     </el-form>
     <draggable v-show="!showSetting" v-model="work.scenes" class="list-wrapper">
-      <div v-for="(scene, index) in work.scenes" :key="scene._id" class="list-item" :class="(scene === current || scene.checked)? 'current': ''">
-        <div :style="{
-               background: work.color
-             }"
-             class="scene-wrapper"
-        >
+      <div v-for="(scene, index) in work.scenes" :key="scene._id" class="list-item" :style="sceneItemStyle" :class="(scene === current || scene.checked)? 'current': ''">
+        <div class="scene-wrapper">
           <render-scene :scene="scene" :view-box="work.viewBox" :view-port="viewPort" @click="chooseScene(scene)" />
           <div class="hovers">
             <el-button size="mini" circle type="info" icon="el-icon-edit" @click="editScene(index)" />
@@ -75,10 +71,23 @@ export default {
   },
   computed :{
     viewPort () {
-      return fitRectIntoBounds(this.work.viewBox, {
-        width: 186,
-        height: 186
-      })
+      // 分为横屏、纵屏2种情况，具体可以指定一个特定比例。 横屏为一行2个，纵屏为一行3个，高度按比例确认
+      let width = 125
+      if (this.work.viewBox.width > this.work.viewBox.height) {
+        // 横屏 一行2个
+        width = 194
+      } 
+      return {
+        width: width,
+        height: (width / this.work.viewBox.width * this.work.viewBox.height)
+      }
+    },
+    
+    sceneItemStyle () {
+      return {
+        width: this.viewPort.width + 'px',
+        height: this.viewPort.height + 'px'
+      }
     },
     checkedScenes () {
       return this.work.scenes.filter(scene => scene.checked)
@@ -133,8 +142,6 @@ export default {
 
   .list-item {
     margin: 5px;
-    width: 186px;
-    height: 186px;
     // border: 1px solid #eee;
     background: rgba(0,0,0, .05);
     display: inline-block;

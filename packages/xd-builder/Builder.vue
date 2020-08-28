@@ -28,7 +28,7 @@
       <element-prop-config v-if="drawer.elementProp" :element="focusedElement" @close="toggleShowDrawer" />
     </el-drawer>
     <el-drawer title="作品配置" destroy-on-close :visible.sync="drawer.workProp" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
-      <element-prop-config :scene="currentScene" @close="toggleShowDrawer" />
+      <work-config :work="work" @close="toggleShowDrawer" />
     </el-drawer>
     <div id="textMesure" />
   </div>
@@ -46,6 +46,7 @@ import SceneList from './left/SceneList.vue'
 import SceneElementList from './left/SceneElementList.vue'
 import FrameListConfig from './left/FrameListConfig.vue'
 import ElementPropConfig from './left/ElementPropConfig.vue'
+import WorkConfig from './left/WorkConfig.vue'
 import 'element-ui/packages/theme-chalk/lib/icon.css'
 import Mousetrap from 'mousetrap'
 import Vue from 'vue'
@@ -102,7 +103,8 @@ export default {
     SceneContainer,
     SceneElementList,
     FrameListConfig,
-    LeftAside
+    LeftAside,
+    WorkConfig
   },
   mixins: [ sceneMixin, workMixin ],
   props: {
