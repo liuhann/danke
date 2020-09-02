@@ -17,6 +17,10 @@
       <el-form-item label="旋转">
         <el-input-number v-model="element.rotate" controls-position="right" size="mini" />度
       </el-form-item>
+      <el-form-item label="翻转">
+        <el-checkbox v-model="element.rotateY">横向</el-checkbox>
+        <el-checkbox v-model="element.rotateX">纵向</el-checkbox>
+      </el-form-item>
       <el-form-item v-if="element.url" label="图片适应">
         <el-select v-model="element.fit">
           <el-option label="适应" value="cover" />

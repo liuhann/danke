@@ -10,7 +10,7 @@
           <el-input v-model="work.title" size="mini" />
         </el-form-item>
         <el-form-item label="标签">
-          <el-select v-model="tags" size="mini" multiple filterable allow-create>
+          <el-select v-model="work.tags" size="mini" multiple filterable allow-create>
             <el-option v-for="tag of work.tags" :key="tag" :label="tag" :value="tag" />
           </el-select>
         </el-form-item>
@@ -51,6 +51,9 @@ export default {
   },
   computed: { },
   methods: {
+    removeAudio () {
+
+    },
     async commitSaveWork () {
       await this.saveWork()
       Notification.success({

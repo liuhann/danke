@@ -1,11 +1,11 @@
 <template>
-  <div>
+  <div id="left-frames-config" class="drawer_content">
     <div class="pop-title">
       <span class="text">动态效果</span>
       <a class="btn-close" @click="$emit('close')"><i class="el-icon-circle-close" /></a>
     </div>
     <div v-if="element" class="animation-config">
-      <el-tabs v-model="animationType" type="card" size="mini">
+      <el-tabs v-model="animationType" size="mini">
         <el-tab-pane label="进入" name="enter" />
         <el-tab-pane label="离开" name="exist" />
       </el-tabs>
@@ -221,6 +221,7 @@ export default {
   }
   .animation-config {
     overflow-y: auto;
+    margin: 10px;
     .animation-entry {
       .summary {
         display: flex;

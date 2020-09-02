@@ -85,6 +85,7 @@ export default {
     
     sceneItemStyle () {
       return {
+        background: this.work.color,
         width: this.viewPort.width + 'px',
         height: this.viewPort.height + 'px'
       }
@@ -149,6 +150,10 @@ export default {
     justify-content: center;
     align-items: center;
     position: relative;
+    &:hover, &.current {
+      cursor: pointer;
+      box-shadow: 0 0 0 2px #67C23A;
+    }
     .scene-wrapper {
       overflow: hidden;
       border: 1px solid #efefef;
@@ -164,9 +169,7 @@ export default {
           display: initial;
         }
       }
-      &:hover, &.current {
-        cursor: pointer;
-      }
+     
       .element {
         position: absolute;
       }
