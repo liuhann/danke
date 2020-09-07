@@ -11,16 +11,14 @@
     </div>
     
     <el-form v-show="showSetting" size="mini" label-width="80px">
-      <el-form-item label="持续时间">
-        <el-input-number v-model="current.duration" controls-position="right" size="mini" />  秒
+      <el-form-item label="延迟">
+        <el-input-number v-model="current.delay" controls-position="right" size="mini" />  秒进入
       </el-form-item>
-      <el-form-item label="离开时间">
+      <el-form-item label="持续">
+        <el-input-number v-model="current.duration" controls-position="right" size="mini" /> 秒
+      </el-form-item>
+      <el-form-item label="离场持续">
         <el-input-number v-model="current.exit" controls-position="right" size="mini" />  秒
-      </el-form-item>
-      <el-form-item label="离开动画">
-        <el-checkbox v-model="current.renderExit">
-          渲染
-        </el-checkbox>
       </el-form-item>
       <el-form-item label="堆叠视角">
         <el-input-number v-model="current.z" controls-position="right" size="mini" />

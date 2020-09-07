@@ -45,9 +45,9 @@
         <el-button size="mini" icon="el-icon-plus" @click="scaleUp" />
         <el-button size="mini" icon="el-icon-full-screen" round @click="fitToCenter" />
       </el-button-group>
-      <div class="btn-scene-nav next-scene">
-        
-      </div>
+      <div class="scene-index">{{ (currentSceneIndex + 1) + '/' + work.scenes.length }}</div>
+      <el-button v-if="scenePrevious" class="scene-btn-prev" type="info" icon="el-icon-arrow-left" circle @click="$emit('choose-scene', scenePrevious)"></el-button>
+      <el-button v-if="sceneNext" class="scene-btn-next" type="info" icon="el-icon-arrow-right" circle @click="$emit('choose-scene', sceneNext)"></el-button>
     </div>
   </div>
 </template>
@@ -572,9 +572,28 @@ export default {
   .screen-actions {
     z-index: 1001;
     position: absolute;
-    right: 20px;
-    bottom: 20px;
+    right: 5px;
+    bottom: 5px;
     font-size: 16px;
+  }
+  .scene-btn-prev {
+    z-index: 1001;
+    position: absolute;
+    left: 5px;
+    bottom: 50%;
+    font-size: 16px;
+  }
+  .scene-btn-next {
+    z-index: 1001;
+    position: absolute;
+    right: 5px;
+    bottom: 50%;
+    font-size: 16px;
+  }
+  .scene-index {
+    position: absolute;
+    left: 5px;
+    bottom: 5px;
   }
 }
 #workspace {

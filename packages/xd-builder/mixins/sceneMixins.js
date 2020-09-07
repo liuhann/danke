@@ -30,8 +30,8 @@ export default {
         elements: [],
         animation: {},
         z: 100,
+        delay: 0,
         duration: 3,
-        renderExit: true,
         exit: 1
       }
       this.insertScene(scene)

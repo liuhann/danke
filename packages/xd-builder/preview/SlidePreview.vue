@@ -144,10 +144,10 @@ export default {
     play () {
       this.currentSeconds = 0
       const startMinuts = new Date().getTime()
-
       this.updInterval = setInterval(() => {
         this.currentSeconds = new Date().getTime() - startMinuts
       }, 20)
+      
       this.currentSceneIndex = 0
       this.enterScene(0)
       this.playing = true
@@ -160,14 +160,19 @@ export default {
     async enterScene (index) {
       this.work.scenes[index].visible = true
       this.work.scenes[index].stage = 'enter'
-      console.log(this.currentSecondsFormated)
       if (this.currentAutoPlay) {
         this.nextInteval = setTimeout(() => {
           // 继续进入下一幕
           if (this.currentSceneIndex < this.work.scenes.length - 1) {
             this.currentSceneIndex ++
-            this.enterScene(this.currentSceneIndex)
             this.leaveScene(this.currentSceneIndex - 1)
+            if (this.work.scenes[this.currentSceneIndex].delay) {
+              setTimeout(() => {
+                 this.enterScene(this.currentSceneIndex)
+              }, this.work.scenes[this.currentSceneIndex].delay * 1000)
+            } else {
+              this.enterScene(this.currentSceneIndex)
+            }
           } else {
             // 最后一幕
             if (this.audioInstance) {

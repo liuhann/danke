@@ -2,12 +2,13 @@
   <div id="header" class="nav-wrapper" role="navigation" aria-label="main navigation">
     <div class="container">
       <div id="logo" class="nav-logo">
-        <a class="navbar-item" href="/">
-           danke.fun
-        </a>
+        <a class="navbar-item" href="/">danke.fun</a>
+      </div>
+      <div class="navbar-menu">
+        <a class="navbar-item" href="/">首页</a>
       </div>
       <div class="navbar-end">
-        <div class="navbar-item" v-if="!logon">
+        <div v-if="!logon" class="navbar-item">
           <router-link class="button is-light" to="/login">登录</router-link>
           <router-link class="button form-sub" to="/register">注册</router-link>
         </div>
@@ -25,19 +26,12 @@ import { getImageUrl } from '../../xd-builder/mixins/imageUtils'
 
 export default {
   name: 'NavBar',
-  props: {
-
-  },
+  props: {},
   data () {
     return {
       user: this.ctx.user,
       isMobileOpened: false
     }
-  },
-  created () {
-    this.ctx.on && this.ctx.on('user-updated', (user) => {
-      this.user = user
-    })
   },
   computed: {
     burgerOpen () {
@@ -54,7 +48,12 @@ export default {
       }
     },
   },
-
+  created () {
+    this.ctx.on && this.ctx.on('user-updated', (user) => {
+      this.user = user
+    })
+  },
+  
   mounted () {
     this.$router.beforeEach((to, from, next) => {
       this.isMobileOpened = false
@@ -74,7 +73,6 @@ export default {
       this.isMobileOpened = !this.isMobileOpened
     },
     getStarted () {
-      // location.href = 'https://github.com/login/oauth/authorize?scope=user:email&client_id=9b1eec30dbf5235a78b3'
       this.$router.push('/user')
     },
     goUserHome () {
@@ -87,8 +85,8 @@ export default {
 <style lang="scss">
 @media (min-width: 768px) {
   .nav-wrapper {
-    height: 64px;
-    line-height: 64px;
+    height: 56px;
+    line-height: 56px;
     will-change: initial;
     .container {
       display: flex;
@@ -104,13 +102,13 @@ export default {
   position: fixed;
   will-change: transform;
   top: 0;
-  height: 64px;
+  height: 56px;
   #logo {
     a {
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 64px;
+      height: 56px;
       color: #333;
       font-size: 20px;
       font-family: 'Audiowide', cursive;
@@ -152,7 +150,7 @@ export default {
         }
       }
       .navbar-item {
-        margin: 18px 20px;
+        margin: 8px 20px;
         line-height: 32px;
         display: flex;
         justify-content: center;

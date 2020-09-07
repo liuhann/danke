@@ -31,6 +31,36 @@ export default {
       }
     },
 
+    // 横向的视图
+    horizontalViewPort (work) {
+      return {
+        height: 200,
+        width: 200 / work.viewBox.height * work.viewBox.width
+      }
+    },
+    // 横向的视图
+    horizontalViewPortStyle (work) {
+      return {
+        height: '200px',
+        width: 200 /work.viewBox.height * work.viewBox.width + 'px'
+      }
+    },
+
+    // 横向的视图
+    verticalViewPort (work) {
+      return {
+        height: 360,
+        width: 360 / work.viewBox.height * work.viewBox.width
+      }
+    },
+    // 横向的视图
+    verticalViewPortStyle (work) {
+      return {
+        height: '360px',
+        width: 360 /work.viewBox.height * work.viewBox.width + 'px'
+      }
+    },
+
     async loadWorks () {
       const result = await this.workdao.list(Object.assign({
         projection: 'scenes.1,updated,created,creator,name,id,frames,viewBox,title,author,avatar,color',

@@ -54,6 +54,27 @@ export default {
         return this.scene.elements.filter(el => el.selected && el.locked)
       }
       return []
+    },
+
+    currentSceneIndex () {
+      return this.work.scenes.indexOf(this.scene)
+    },
+
+    scenePrevious () {
+      const index = this.currentSceneIndex
+      if (index > 0) {
+        return this.work.scenes[index - 1]
+      } else {
+        return null
+      }
+    },
+    sceneNext () {
+      const index = this.currentSceneIndex
+      if (index < this.work.scenes.length - 1) {
+        return this.work.scenes[index + 1]
+      } else {
+        return null
+      }
     }
   },
   methods: {

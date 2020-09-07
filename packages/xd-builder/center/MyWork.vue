@@ -2,17 +2,32 @@
   <div class="my-works body">
     <div class="content-title">我的作品</div>
     <div ref="myWorkList" class="my-work-list">
-      <div v-for="work in works" :key="work.id" class="work">
-        <div class="work-container" :style="{
+      <div v-for="work in verticalWorks" :key="work.id" class="work">
+        <div class="work-container" :style="Object.assign({
           background: work.color
-        }" @click="previewWork(work)"
+        }, verticalViewPortStyle(work))" @click="previewWork(work)"
         >
-          <div class="work-viewport" :style="{
-            width: work.viewport.width + 'px',
-            height: work.viewport.height + 'px',
-          }"
-          >
-            <render-scene :view-box="work.viewBox || work.screen" :scene="work.scenes[0]" :view-port="work.viewport" :stage="work.stage" />
+          <div class="work-viewport" :style="verticalViewPortStyle(work)">
+            <render-scene :view-box="work.viewBox || work.screen" :scene="work.scenes[0]" :view-port="verticalViewPort(work)" :stage="work.stage" />
+          </div>
+        </div>
+        <div class="actions">
+          <div class="btns">
+            <i class="el-icon-video-camera" @click="replayWork(work)" />
+            <i class="el-icon-delete" @click="removeWork(work)" />
+            <i class="el-icon-edit" @click="editWork(work)" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div ref="myWorkList" class="my-work-list">
+      <div v-for="work in horizontalWorks" :key="work.id" class="work">
+        <div class="work-container" :style="Object.assign({
+          background: work.color
+        }, horizontalViewPortStyle(work))" @click="previewWork(work)"
+        >
+          <div class="work-viewport" :style="horizontalViewPortStyle(work)">
+            <render-scene :view-box="work.viewBox || work.screen" :scene="work.scenes[0]" :view-port="horizontalViewPort(work)" :stage="work.stage" />
           </div>
         </div>
         <div class="actions">
@@ -36,7 +51,7 @@
 </template>
 
 <script>
-import RenderScene from '../render/RenderScene'
+import RenderScene from '../render/RenderScene.vue'
 import workListMixins from '../mixins/workListMixins'
 
 export default {
@@ -45,6 +60,15 @@ export default {
   mixins: [ workListMixins ],
   data () {
     return {}
+  },
+  computed: {
+    horizontalWorks () {
+      return this.works.filter(work => work.viewBox && work.viewBox.width >= work.viewBox.height)
+    },
+
+    verticalWorks() {
+      return this.works.filter(work => work.viewBox && work.viewBox.height > work.viewBox.width)
+    }
   },
   created () { },
   mounted () {
@@ -93,11 +117,10 @@ export default {
     display: flex;
     flex-wrap: wrap;
     .work {
-      height: 246px;
-      margin: 20px 16px;
+      margin: 5px;
       cursor: pointer;
+      position: relative;
       .work-container {
-        width: 200px;
         height: 200px;
         display: flex;
         justify-content: center;
@@ -126,6 +149,11 @@ export default {
       }
 
       .actions {
+        position: absolute;
+        width: 100%;
+        background: rgba(0,0,0, .4);
+        bottom: 0;
+        z-index: 9999;
         display: none;
         padding: 10px 0;
         justify-content: center;
@@ -137,7 +165,7 @@ export default {
           i {
             font-size: 16px;
             cursor: pointer;
-            color: var(--mainColor);
+            color: #fff;
             margin: 0 10px;
           }
         }

@@ -11,6 +11,7 @@
         ref="sceneContainer"
         :work="work"
         :scene="currentScene"
+        @choose-scene="chooseScene"
         @scale-fit="scaleChange"
         @focus-change="focusChange"
       />
@@ -20,7 +21,7 @@
     </el-drawer>
     <el-drawer title="动画设置" destroy-on-close :visible.sync="drawer.animation" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
       <frame-list-config :element="focusedElement" @close="toggleShowDrawer" />
-    </el-drawer> 
+    </el-drawer>
     <el-drawer title="场景列表" destroy-on-close :visible.sync="drawer.sceneList" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
       <scene-list :work="work" :current="currentScene" @choose-scene="chooseScene" @close="toggleShowDrawer" />
     </el-drawer>
