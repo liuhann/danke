@@ -187,10 +187,9 @@ export default {
 
     async leaveScene (index) {
       if (this.work.scenes[index].renderExit) {
-        this.work.scenes[index].stage = 'exist'
+        this.work.scenes[index].stage = 'exit'
       }
       setTimeout(() => {
-        console.log('hide scene' , index)
         this.work.scenes[index].visible = false
 
       }, this.work.scenes[index].exit * 1000)

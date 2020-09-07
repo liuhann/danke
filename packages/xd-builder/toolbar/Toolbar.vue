@@ -46,6 +46,9 @@
       <el-tooltip v-if="noFocusedElement" class="item" effect="dark" content="播放" placement="bottom">
         <a class="action" @click="playScene"><i class="el-icon-refresh-right" /></a>
       </el-tooltip>
+      <el-tooltip v-if="noFocusedElement" class="item" effect="dark" content="离开" placement="bottom">
+        <a class="action" @click="exitScene"><i class="el-icon-right" /></a>
+      </el-tooltip>
       <el-tooltip v-if="noFocusedElement" class="item" effect="dark" content="预览" placement="bottom">
         <a class="action" @click="slidePreview"><i class="el-icon-video-play" /></a>
       </el-tooltip>
@@ -367,16 +370,44 @@ export default {
       this.$emit('show-element-prop')
     },
 
+    exitScene () {
+      for (let element of this.scene.elements) {
+          element.stage = 'exit'
+      }
+      setTimeout(() => {
+        this.scenes.visible = false
+      }, this.scene.exit * 1000)
+
+      setTimeout(() => {
+        this.scenes.visible = true
+        for (let element of this.scene.elements) {
+          element.stage = ''
+        }
+      }, (this.scene.exit + 1) * 1000)
+    },
+
     playScene () {
       const elements = this.scene.elements
       for (let element of this.scene.elements) {
-          this.$set(element, 'stage', '')
-        }
-      this.scene.elements = []
+          element.stage = ''
+          // this.$set(element, 'stage', '')
+          // this.destroyInteract(element)
+      }
+      // this.scene.elements = []
 
-      this.$nextTick(() => {
-        this.scene.elements = elements
+      setTimeout(() => {
         for (let element of this.scene.elements) {
+          element.stage = 'enter'
+          // this.initElementDragResize(element)
+          // this.$set(element, 'stage', 'enter')
+        }
+      }, 400)
+      return
+      this.$nextTick(() => {
+        // this.scene.elements = elements
+        for (let element of this.scene.elements) {
+          // element.stage = 'enter'
+          // this.initElementDragResize(element)
           this.$set(element, 'stage', 'enter')
         }
       })

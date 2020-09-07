@@ -70,7 +70,7 @@ export default {
   computed :{
     viewPort () {
       // 分为横屏、纵屏2种情况，具体可以指定一个特定比例。 横屏为一行2个，纵屏为一行3个，高度按比例确认
-      let width = 125
+      let width = 122
       if (this.work.viewBox.width > this.work.viewBox.height) {
         // 横屏 一行2个
         width = 194

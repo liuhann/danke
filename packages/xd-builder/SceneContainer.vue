@@ -192,7 +192,6 @@ export default {
   watch: {
     // 场景更新操作，需要更新交互及其他页面元素
     scene () {
-      console.log('scene change triggered')
       for (let element of this.scene.elements) {
         this.destroyInteract(element)
       }
@@ -572,28 +571,28 @@ export default {
   .screen-actions {
     z-index: 1001;
     position: absolute;
-    right: 5px;
-    bottom: 5px;
+    right: 10px;
+    bottom: 10px;
     font-size: 16px;
   }
   .scene-btn-prev {
     z-index: 1001;
     position: absolute;
-    left: 5px;
+    left: 10px;
     bottom: 50%;
     font-size: 16px;
   }
   .scene-btn-next {
     z-index: 1001;
     position: absolute;
-    right: 5px;
+    right: 10px;
     bottom: 50%;
     font-size: 16px;
   }
   .scene-index {
     position: absolute;
-    left: 5px;
-    bottom: 5px;
+    left: 10px;
+    bottom: 10px;
   }
 }
 #workspace {

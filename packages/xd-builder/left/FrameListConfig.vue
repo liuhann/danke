@@ -7,7 +7,7 @@
     <div v-if="element" class="animation-config">
       <el-tabs v-model="animationType" size="mini">
         <el-tab-pane label="进入" name="enter" />
-        <el-tab-pane label="离开" name="exist" />
+        <el-tab-pane label="离开" name="exit" />
       </el-tabs>
       <div v-for="(step, index) in element.animation[animationType]" :key="index" class="animation-entry">
         <div class="summary">

@@ -91,10 +91,12 @@ export default {
         style: {},
         variables: [],
         // 动效信息
-        animation: {},
+        animation: {
+          enter: [],
+          exit: []
+        },
         // 其他属性，交互时使用
         locked: false,
-        elementAnimationStyle: [],
         selected: false
       }
       Object.assign(node, element)
