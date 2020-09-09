@@ -1,14 +1,15 @@
 <template>
   <div id="left-frames-config" class="drawer_content">
     <div class="pop-title">
-      <span class="text">动态效果</span>
+      <div class="frame-tab">
+        <div>动画效果：</div>
+        <div @click="animationType = 'enter'" :class="animationType === 'enter'? 'selected': ''" class="tab">进入</div>
+        <div @click="animationType = 'exit'" :class="animationType === 'exit'? 'selected': ''" class="tab">离开</div>
+      </div>
       <a class="btn-close" @click="$emit('close')"><i class="el-icon-circle-close" /></a>
     </div>
     <div v-if="element" class="animation-config">
-      <el-tabs v-model="animationType" size="mini">
-        <el-tab-pane label="进入" name="enter" />
-        <el-tab-pane label="离开" name="exit" />
-      </el-tabs>
+      <div class="empty" v-if="element.animation[animationType] == null || element.animation[animationType].length === 0">未设置动画</div>
       <div v-for="(step, index) in element.animation[animationType]" :key="index" class="animation-entry">
         <div class="summary">
           <div class="title">
@@ -83,7 +84,7 @@ export default {
        this.group = this.groups[0]
        this.groupChange()
     },
-   
+
     selectFrame (frame) {
       this.currentFrame = frame
       this.$set(this.element, 'previewAnimation', [this.getFrameStep(frame)])
@@ -170,6 +171,19 @@ export default {
 
 <style lang="scss">
 #left-frames-config {
+  .frame-tab {
+    flex: 1;
+    display: flex;
+    .tab {
+      cursor: pointer;
+      margin: 0 20px;
+      padding-bottom: 5px;
+      &.selected {
+        border-bottom: 2px solid #00bf72;
+        color: #00bf72;
+      }
+    }
+  }
   .no-element {
     height: 100%;
     width: 100%;
@@ -239,8 +253,8 @@ export default {
           }
         }
       }
-    } 
+    }
   }
-  
+
 }
 </style>

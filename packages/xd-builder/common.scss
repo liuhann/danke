@@ -23,9 +23,11 @@
 
   .pop-title {
     border-bottom: 1px solid #dadce0;
-    padding: 1rem;
-    font-size: 1.8rem;
+    font-size: 1.6rem;
+    height: 40px;
+    line-height: 40px;
     display: flex;
+    padding: 0 10px;
     .text {
       flex: 1;
     }
