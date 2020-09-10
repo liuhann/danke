@@ -38,15 +38,13 @@ export default {
         audioSeconds: 0,
         frames: {}, // 动画信息
         svgs: {}, // svg图片信息
-        fonts: {},// 字体列表
+        fonts: {}, // 字体列表
         scenes: [] // 场景
       }
     },
-
-
     /**
      * 应用音乐节拍到作品的每个页面
-     * @param {Object} tick 
+     * @param {Object} tick
      */
     applyTicksToWork (tick) {
       this.work.audioUrl = tick.url
@@ -78,7 +76,7 @@ export default {
       }
       this.initWorkStyleResource(work)
 
-      for (let scene of work.scenes) {
+      for (const scene of work.scenes) {
         scene.visible = false
         scene.stage = ''
       }
@@ -91,31 +89,36 @@ export default {
      */
     initWorkStyleResource (work) {
       const styleRegistry = this.ctx.styleRegistry
-      for (let name in work.frames) {
-        styleRegistry.addFrame({
-          name,
-          cssFrame: work.frames[name]
-        })
-      }
-      for (let name in work.styles) {
+      for (const name in work.styles) {
         styleRegistry.addStyle({
           name,
           cssContent: work.styles[name]
         })
       }
       if (work.fonts && work.fonts.length) {
-        for (let font of work.fonts) {
+        for (const font of work.fonts) {
           styleRegistry.addFontFace(font)
         }
       }
       // init element svg content from work.svgs
-      for (let scene of work.scenes) {
+      for (const scene of work.scenes) {
         this.initSceneSVG(scene.elements, work.svgs)
+
+        for (const element of scene.elements) {
+          // 脏数据处理
+          element.animation.preview = []
+          if (!element.animation.enter) {
+            element.animation.enter = []
+          }
+          if (!element.animation.exit) {
+            element.animation.exit = []
+          }
+        }
       }
     },
 
     initSceneSVG (elements, svgs) {
-      for (let element of elements) {
+      for (const element of elements) {
         if (element.svg) {
           element.content = svgs[element.svg]
         }
@@ -132,12 +135,12 @@ export default {
     * 抽取作品里所有元素的样式资源，包括动画、SVG图片及字体
     * @param {*} work
     */
-    getCommonResource() {
+    getCommonResource () {
       const frames = {} // css 帧资源
       const styles = {} // css 样式资源
       const svgs = {}
       const fonts = new Set()
-      for (let scene of this.work.scenes) {
+      for (const scene of this.work.scenes) {
         if (!scene.animation) {
           scene.animation = {}
         }
@@ -152,13 +155,8 @@ export default {
     },
 
     assignSceneResource (scene, frames, svgs, fonts) {
-      const styleRegistry = this.ctx.styleRegistry
-      for (let element of scene.elements) {
-        for (let stage in element.animation) {
-          for (let animation of element.animation[stage]) {
-            frames[animation.name] = styleRegistry.keyframes[animation.name]
-          }
-        }
+      for (const element of scene.elements) {
+        element.animation.preview = []
 
         // when use svg as element content image
         if (element.svg) {

@@ -93,8 +93,12 @@ export default {
         // 动效信息
         animation: {
           enter: [],
-          exit: []
+          exit: [],
+          preview: []
         },
+        rotate: 0,
+        rotateX: false,
+        rotateY: false,
         // 其他属性，交互时使用
         locked: false,
         selected: false

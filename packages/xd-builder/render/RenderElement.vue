@@ -31,6 +31,7 @@ import { getRectPositionStyle } from '../mixins/rectUtils.js'
 import { assignVariables } from '../mixins/renderUtils'
 import textMesure from '../../utils/textMesure'
 import { svg2url } from '../../utils/svg2url'
+import cubicBerziers from '../../frames/model/cubic-beziers.js'
 
 export default {
   name: 'RenderElement',
@@ -102,8 +103,6 @@ export default {
       }
     },
 
-
-
     textEditStyle () {
       const style = {}
       Object.assign(style, this.element.style)
@@ -138,7 +137,7 @@ export default {
       if (this.element.text != null) {
         Object.assign(style, this.element.style)
       }
-      
+
       // this.appendTextTransform(style)
       // 对于正在编辑的元素不设置transform
       if (this.element.editing) {
@@ -203,8 +202,8 @@ export default {
       const style = {}
       let animations = [];
 
-      if (element.previewAnimation && element.previewAnimation.length) {
-        animations = element.previewAnimation
+      if (element.animation.preview && element.animation.preview.length) {
+        animations = element.animation.preview
       } else if (element.animation) {
         animations = element.animation[this.stage]
       }
@@ -213,20 +212,18 @@ export default {
           // 单个动画
           if (animations.length === 1) {
             const animation = animations[0]
-            // 非内部动画 
-            if (!animation.inner) {
-              assignVariables(style, animation.variables)
-              style.animation = `${animation.name} ${animation.range[1]}s ${animation.timing} ${animation.range[0]}s ${animation.infinite? 'infinite': animation.iteration} ${animation.reverse? 'reverse': 'normal'} both`
-            }
+            // 非内部动画
+            assignVariables(style, animation.variables)
+            style.animation = `${animation.name} ${animation.duration}s ${cubicBerziers[animation.easing]} ${animation.delay}s ${animation.iterationCount} ${animation.direction} ${animation.fillMode}`
           } else {
             const animationsOrdered = []
             // 多个动画次序或者重叠播放
             for (let i = 0; i < animations.length; i++) {
               const animation = animations[i]
-              // // 非内部动画 
+              // // 非内部动画
               if (!animation.inner) {
                 assignVariables(style, animation.variables)
-                animationsOrdered.push(`${animation.name} ${animation.range[1]}s ${animation.timing} ${animation.range[0]}s ${animation.infinite? 'infinite': animation.iteration} ${i===0? 'backwards': ''}`)
+                animationsOrdered.push(`${animation.name} ${animation.duration}s ${cubicBerziers[animation.easing]} ${animation.delay}s ${animation.iterationCount} ${animation.direction} ${i===0? 'backwards': ''}`)
               }
             }
             if (animationsOrdered.length) {
@@ -235,45 +232,8 @@ export default {
           }
         }
       }
-      
-      console.log('reset animation style', style)
-      return style
-    },
 
-    /**
-     * 取 element.animations 计算元素的动画样式
-     */
-    elementInnerAnimationStyle () {
-      const element = this.element
-      const style = {}
-      if (element.animation) {
-        const animations = element.animation[this.stage]
-        if (animations && animations.length) {
-          // 单个动画
-          if (animations.length === 1) {
-            const animation = animations[0]
-            // 非内部动画 
-            if (animation.inner) {
-              assignVariables(style, animation.variables)
-              style.animation = `${animation.name} ${animation.range[1]}s ${animation.timing} ${animation.range[0]}s ${animation.infinite? 'infinite': animation.iteration} both`
-            }
-          } else {
-            const animationsOrdered = []
-            // 多个动画次序或者重叠播放
-            for (let i = 0; i < animations.length; i++) {
-              const animation = animations[i]
-              // // 非内部动画 
-              if (animation.inner) {
-                assignVariables(style, animation.variables)
-                animationsOrdered.push(`${animation.name} ${animation.range[1]}s ${animation.timing} ${animation.range[0]}s ${animation.infinite? 'infinite': animation.iteration} both`)
-              }
-            }
-            if (animationsOrdered.length) {
-              style.animation = animationsOrdered.join(',')
-            }
-          }
-        }
-      }
+      console.log('->', style.animation)
       return style
     },
 

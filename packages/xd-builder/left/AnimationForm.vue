@@ -1,24 +1,21 @@
 <template>
   <el-form size="mini" class="animation-form" inline>
-    <el-form-item>
-      <el-input-number v-model="animation.range[0]" size="mini" controls-position="right" :step="0.1" /> 
-    </el-form-item>
-    <el-form-item>
-      <el-input-number v-model="animation.range[1]" size="mini" controls-position="right" :step="0.1" />
-    </el-form-item>
-    <el-form-item label="反向播放">
-      <el-checkbox v-model="animation.reverse" />
-    </el-form-item>
-    <el-form-item label="循环">
-      <el-checkbox v-model="animation.infinite" />
-    </el-form-item>
-    <el-form-item label="次数">
-      <el-input-number v-model="animation.iteration" :disabled="animation.infinite" size="mini" controls-position="right" />
+    <el-form-item label="持续">
+      <el-input-number v-model="animation.duration" size="mini" controls-position="right" :step="0.1" /> 秒
     </el-form-item>
     <el-form-item label="过渡">
-      <el-select v-model="animation.timing">
-        <el-option v-for="(value, key) in cubicBerziers" :key="key" :label="key" :value="value" />
+      <el-select v-model="animation.easing" style="width: 140px;">
+        <el-option v-for="(value, key) in cubicBerziers" :key="key" :label="key" :value="key" />
       </el-select>
+    </el-form-item>
+    <el-form-item label="次数">
+      <el-input v-model="animation.iterationCount" :disabled="animation.iterationCount === 'infinite'" size="mini" style="width: 80px;" />
+    </el-form-item>
+    <el-form-item label="循环">
+      <el-checkbox v-model="infinite" />
+    </el-form-item>
+    <el-form-item label="延迟">
+      <el-input-number v-model="animation.delay" size="mini" controls-position="right" :step="0.1" /> 秒
     </el-form-item>
     <el-form-item v-for="variable in animation.variables" :key="variable.name" :label="variable.label || variable.name">
       <el-input v-model="variable.value" style="width: 80px;" />
@@ -43,6 +40,18 @@ export default {
     }
   },
   computed: {
+    infinite: {
+      get () {
+        return this.iterationCount === 'infinite'
+      },
+      set (val) {
+        if (val) {
+          this.animation.iterationCount = 'infinite'
+        } else {
+          this.animation.iterationCount = '1'
+        }
+      }
+    },
     animations () {
       return this.element.animation[this.type] || []
     }
