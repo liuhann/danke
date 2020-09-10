@@ -192,7 +192,7 @@ export default {
       setTimeout(() => {
         this.work.scenes[index].visible = false
 
-      }, this.work.scenes[index].exit * 1000)
+      }, (this.work.scenes[index].exit || 1) * 1000)
     },
 
     refreshWork () {
