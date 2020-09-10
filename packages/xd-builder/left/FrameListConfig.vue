@@ -129,7 +129,7 @@ export default {
 
     confirmFrame () {
       if (this.currentStep) {
-        this.currentStep = Object.assign({}, this.currentFrame)
+        Object.assign(this.currentStep, this.currentFrame)
       } else {
         this.element.animation[this.animationType].push(Object.assign({}, this.currentFrame))
       }

@@ -221,6 +221,7 @@ export default {
 </script>
 
 <style lang="scss">
+@import "../../animista/animista.css";
 
 .page-slide-preview {
   height: 100%;
