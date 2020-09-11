@@ -188,6 +188,7 @@ export default {
           } else {
             style.fontSize = zoomedSize + 'px'
           }
+          style.lineHeight = (zoomedSize * 1.2) + 'px'
         }
       }
       Object.assign(style, this.elementAnimationStyle)
@@ -389,7 +390,6 @@ export default {
   }
   .text {
     width: 100%;
-    height: 100%;
   }
   textarea {
     text-align: left;
