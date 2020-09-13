@@ -21,7 +21,8 @@
         <animation-form :animation="step" />
       </div>
       <el-button size="mini" type="success" @click="addFrame">增加</el-button>
-      <el-button size="mini" type="warn" @click="previewFrames">预览</el-button>
+      <el-button size="mini" type="warn" @click="copyFrames">复制</el-button>
+      <el-button size="mini" type="warn" @click="pasteFrames">粘贴</el-button>
     </div>
 
     <div v-show="showChoose && element" class="animation-choose">
@@ -112,6 +113,18 @@ export default {
     addFrame () {
       this.currentStep = null
       this.showChoose = true
+    },
+
+
+    copyFrames () {
+      this.ctx.copiedFrames = JSON.stringify(this.element.animation)
+    },
+
+    pasteFrames() {
+      if (this.ctx.copiedFrames) {
+        this.element.animation = JSON.parse(this.ctx.copiedFrames)
+        this.element.animation.preview = []
+      }
     },
 
     replaceFrame (step) {

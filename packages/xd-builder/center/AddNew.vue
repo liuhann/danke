@@ -1,8 +1,8 @@
 <template>
   <div id="add-new-work">
-    <div class="content-title">选择作品的默认尺寸</div>
+    <div class="content-title">选择作品类型</div>
     <div class="group">
-      <div class="group-title">演示 & PPT</div>
+      <div class="group-title">竖屏展示</div>
       <div class="new-types">
         <div v-for="work of slideShow" :key="work.name" class="work-type" :style="workSizeStyle(work)">
           <div class="name">
@@ -19,7 +19,24 @@
     </div>
 
     <div class="group">
-      <div class="group-title">视频</div>
+      <div class="group-title">竖屏展示</div>
+      <div class="new-types">
+        <div v-for="work of video" :key="work.name" class="work-type" :style="workSizeStyle(work)">
+          <div class="name">
+            {{ work.name }}
+          </div>
+          <div class="ratios">
+            {{ work.width }} X {{ work.height }}
+          </div>
+          <div class="action">
+            <button @click="newWork(work.width, work.height)">创建</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="group-title">自由设计</div>
       <div class="new-types">
         <div v-for="work of video" :key="work.name" class="work-type" :style="workSizeStyle(work)">
           <div class="name">
