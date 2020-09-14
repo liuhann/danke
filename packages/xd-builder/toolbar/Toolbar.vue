@@ -61,9 +61,7 @@
 import { shortid } from '../../utils/string'
 import interactMixins from '../mixins/interactMixins.js'
 import toolbarPopMixin from './toolbarPopMixin'
-import SettingPanel from './SettingPanel'
 import workMixin from '../mixins/workMixin'
-import IconPen from './res/pen.svg'
 import TextAlign from './TextAlign'
 import FontWeight from './FontWeight'
 import FontSize from './FontSize'
@@ -71,9 +69,6 @@ import AlignElement from './AlignElement.vue'
 import FontFamily from './FontFamily.vue'
 import PopSetGradient from './PopSetGradient'
 import BorderStyle from './BorderStyle'
-import PopImageMask from './PopImageMask'
-import PopNewElement from './PopNewElement'
-import PopSetFilter from './PopSetFilter'
 export default {
   name: 'Toolbar',
   components: {
@@ -390,27 +385,19 @@ export default {
       const elements = this.scene.elements
       for (let element of this.scene.elements) {
           element.stage = ''
-          // this.$set(element, 'stage', '')
-          // this.destroyInteract(element)
       }
-      // this.scene.elements = []
 
       setTimeout(() => {
         for (let element of this.scene.elements) {
           element.stage = 'enter'
-          // this.initElementDragResize(element)
-          // this.$set(element, 'stage', 'enter')
         }
       }, 400)
-      return
-      this.$nextTick(() => {
-        // this.scene.elements = elements
+
+      setTimeout(() => {
         for (let element of this.scene.elements) {
-          // element.stage = 'enter'
-          // this.initElementDragResize(element)
-          this.$set(element, 'stage', 'enter')
+          element.stage = ''
         }
-      })
+      }, 400)
     },
 
     log () {
