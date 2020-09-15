@@ -51,34 +51,6 @@ export default {
       this.currentScene = scene
     },
 
-    // 切换到下一场景
-    nextScene () {
-      if (this.ticksEditing) {
-        this.work.audioTicks.push(this.audio.currentTime)
-      }
-      if (this.currentScene) {
-        const currrentSceneIndex = this.work.scenes.indexOf(this.currentScene)
-        if (currrentSceneIndex < this.work.scenes.length - 1) {
-          let duration = this.getSceneExistDuration()
-          this.lastScene = this.currentScene
-          setTimeout(() => {
-            this.lastScene = null
-          }, duration)
-          this.currentScene = this.work.scenes[currrentSceneIndex + 1]
-        }
-      }
-    },
-
-    // 切换到上一场景
-    previousScene () {
-      if (this.currentScene) {
-        const currrentSceneIndex = this.work.scenes.indexOf(this.currentScene)
-        if (currrentSceneIndex > 0) {
-          this.currentScene = this.work.scenes[currrentSceneIndex - 1]
-        }
-      }
-    },
-
     getSceneExistDuration () {
       let maxExistsMill = 1
       for (let element of this.currentScene.elements) {

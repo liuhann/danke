@@ -4,6 +4,8 @@
       <!-- 当前屏幕内容 -->
       <div class="screen" :style="styleScreen">
         <div class="screen-title" />
+        <div v-if="scene" class="reference-lines">
+        </div>
         <div v-if="scene" class="scene" :style="sceneStyle">
           <render-element
             v-for="(element, index) of scene.elements"
@@ -469,6 +471,7 @@ export default {
     setElementsInteract () {
       for (let element of this.scene.elements) {
         element.selected = false
+        element.stage = 'enter'
         this.initElementDragResize(element)
       }
     },
@@ -511,53 +514,6 @@ export default {
     },
     scaleUp () {
       this.scale += 0.05
-    },
-
-    /**
-     * do actural paste work
-     * @param element
-     */
-    pasteStyleToTargetElement (element) {
-      if (this.paste) {
-        this.$emit('change')
-        element.width = this.paste.width
-        element.height = this.paste.height
-
-        element.animation = JSON.parse(JSON.stringify(this.paste.animation))
-        for (let key in this.paste.style) {
-          if (element.style[key] != null) {
-            if (typeof element.style[key] === 'object') {
-              this.copyVariableValue(this.paste.style[key].variables, element.style[key].variables)
-            } else {
-              element.style[key] = this.paste.style[key]
-            }
-          }
-        }
-        element.variables = JSON.parse(JSON.stringify(this.paste.variables))
-      }
-    },
-
-    setElementAnimation (element, animation) {
-      const info = {
-        // css类名称
-        name: animation.name,
-        // 过渡函数，
-        timing: animation.timing,
-        // 时间区间 [0]为延迟，[1]为持续时间
-        range: [parseInt(animation.delay), parseInt(animation.duration)]
-      }
-      this.$set(element.animation, animation.type, [info])
-    },
-
-
-    copyVariableValue (source, target) {
-      if (source.length === target.length) {
-        for (let i = 0; i < source.length; i++) {
-          if ((target[i].name === source[i].name) && (target[i].type === source[i].type)) {
-            target[i].value = source[i].value
-          }
-        }
-      }
     }
   }
 }

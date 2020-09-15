@@ -83,11 +83,43 @@ export const fontFamilies = [{
 }, {
   id: 'HYLeMiaoTiJ',
   name: '汉仪乐喵体简',
-  url: 'https://font-public.canva.cn/YAC1IZZZHQU/0/HYLeMiaoTiJ.woff'
+  url: './fonts/HYLeMiaoTiJ.woff'
 }, {
   id: 'HYZiYanHuanLeSongW',
   name: '汉仪字研欢乐宋',
-  url: 'https://font-public.canva.cn/YAC1EHq8QNU/0/HYZiYanHuanLeSongW.woff'
+  url: './fonts/HYZiYanHuanLeSongW.woff'
+}, {
+  id: 'ChenYanXingKai',
+  name: '字由点字晨颜行楷',
+  url: './fonts/HelloFont_ID_ChenYanXingKai.woff'
+}, {
+  id: 'ChunYiTi',
+  name: '字由点字春意体',
+  url: './fonts/ChunYiTi.woff'
+}, {
+  id: 'WenQuanYi',
+  name: '文泉仪黑体',
+  url: './fonts/wqy-microhei.woff'
+}, {
+  id: 'HanyiTianZhen',
+  name: '汉仪天真体',
+  url: './fonts/HYTianZhenTi.woff'
+}, {
+  id: 'HanyiZhangnairen',
+  name: '汉仪张乃仁行书',
+  url: './fonts/HYZhangNaiRenXingShuJ.woff'
+}, {
+  id: 'SentyCreamPuff',
+  name: '汉仪新蒂泡芙体',
+  url: './fonts/SentyCreamPuff.woff'
+}, {
+  id: 'HanyiSentyGarden',
+  name: '汉仪新蒂花园体',
+  url: './fonts/HanyiSentyGarden.woff'
+}, {
+  id: 'HYRunYuan-65J',
+  name: '汉仪润圆简',
+  url: './fonts/HYRunYuan-65J.woff'
 }]
 
 export default class StyleRegistry {
