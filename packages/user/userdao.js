@@ -4,7 +4,7 @@ class UserDAO {
   }
   async getCurrentUser () {
     const response = await this.ctx.get(`user/current`)
-    return response.data
+    return response.data.data
   }
 
   register (username, password, nickname, captcha) {
@@ -23,24 +23,24 @@ class UserDAO {
       password,
       captcha
     })
-    return response.data
+    return response.data.data
   }
 
   async logout() {
     const response = await this.ctx.post(`user/logout`)
-    return response.data
+    return response.data.data
   }
 
   async getCaptcha () {
     const response = await this.ctx.get(`captcha`)
-    return response.data
+    return response.data.data
   }
 
   async setAvatar (url) {
     const response = await this.ctx.post(`user/avatar`, {
       url
     })
-    return response.data
+    return response.data.data
   }
 
   async setUserProfile ({email, location, nick}) {
@@ -49,7 +49,7 @@ class UserDAO {
         email,
         location
     })
-    return response.data
+    return response.data.data
   }
 
   async sendSmsCode (phone) {
