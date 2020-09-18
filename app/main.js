@@ -21,8 +21,8 @@ const boot = new AsyncBoot({
   VueRouter,
   App,
   mode: 'history',
-  // appServer: 'http://www.danke.fun',
-  appServer: 'http://localhost',
+  appServer: 'http://www.danke.fun',
+  // appServer: 'http://localhost',
   cdn: 'http://cdn.danke.fun',
   IMG_SERVER: 'http://image.danke.fun',
   mount: '#app',
@@ -42,7 +42,7 @@ const boot = new AsyncBoot({
 })
 
 // attach some global ctx services
-initClient(boot.ctx, 'http://localhost/api/')
+initClient(boot.ctx, 'http://www.danke.fun/api/')
 initEventEmitter(boot.ctx)
 
 boot.startUp()
