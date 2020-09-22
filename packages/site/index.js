@@ -1,3 +1,4 @@
+// Web首页 主站
 export default {
   routes: [{
     path: '/',

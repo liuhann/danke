@@ -1,10 +1,11 @@
 <template>
-<div class="user-form">
+  <div class="user-form">
     <div class="auth-sidebar" :style="{
       background: workBackground
-    }">
-      <render-scene v-if="showWork" :scene="showWork.scenes[0]" :view-box="showWork.viewBox" :view-port="showWork.viewport" stage="enter"/>
-      <div class="by" v-if="showWork">Art by {{showWork.author}}</div>
+    }"
+    >
+      <render-scene v-if="showWork" :scene="showWork.scenes[0]" :view-box="showWork.viewBox" :view-port="showWork.viewport" stage="enter" />
+      <div v-if="showWork" class="by">Art by {{ showWork.author }}</div>
     </div>
     <section class="content">
       <nav class="auth-nav">
@@ -20,21 +21,22 @@
           <h2>登录</h2>
           <hr class="divider">
           <div class="auth-form sign-in-form">
-            <form accept-charset="UTF-8" method="post" action="/" @submit.prevent="login"><input name="utf8" type="hidden" value="✓">
+            <form accept-charset="UTF-8" method="post" action="/" @submit.prevent="login">
+              <input name="utf8" type="hidden" value="✓">
               <div class="form-fields">
                 <fieldset>
                   <label for="login">用户名 （手机号码）</label>
-                  <input type="text" name="login" id="login" v-model="username" class="text-input" autocorrect="off" autocapitalize="off">
+                  <input id="login" v-model="username" type="text" name="login" class="text-input" autocorrect="off" autocapitalize="off">
                 </fieldset>
                 <fieldset>
                   <label class="password">密码 <a href="/password_resets/new">忘记密码?</a></label>
-                  <input type="password" name="password" v-model="password" class="text-input">
-                  <span v-if="error.username" class="error">{{error.username}}</span>
+                  <input v-model="password" type="password" name="password" class="text-input">
+                  <span v-if="error.username" class="error">{{ error.username }}</span>
                 </fieldset>
                 <fieldset>
                   <label>验证码<span @click="refreshCaptcha" v-html="svg"></span></label>
-                  <input type="text" v-model="captcha" class="text-input">
-                  <span v-if="error.captcha" class="error">{{error.captcha}}</span>
+                  <input v-model="captcha" type="text" class="text-input">
+                  <span v-if="error.captcha" class="error">{{ error.captcha }}</span>
                 </fieldset>
               </div>
               <input class="button form-sub" type="submit" value="登录" tabindex="3">
@@ -128,7 +130,7 @@ export default {
     async login () {
       this.isLoading = true
       let result = await this.ctx.userdao.login(this.username, this.password, this.captcha)
-      if (result.code === 400) {
+      if (result.code === '100400') {
         this.error.captcha = '验证码不正确'
         this.refreshCaptcha()
         this.isLoading = false

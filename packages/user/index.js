@@ -13,7 +13,7 @@ export default {
     component: () => import(/* webpackChunkName: "user" */'./Register.vue')
   }],
   async onload (ctx) {
-    ctx.token = getToken()
+
     ctx.userdao = new UserDAO(ctx)
     const mi = new Date().getTime()
     ctx.user = await ctx.userdao.getCurrentUser()

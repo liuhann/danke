@@ -8,14 +8,13 @@ class UserDAO {
   }
 
   register (username, password, nickname, captcha) {
-    return this.ctx.post(`user/register`, {
-      json: {
+    const response = this.ctx.post(`user/register`, {
         name: username,
         password: password,
         nickname,
         captcha
-      }
-    }).json()
+    })
+    return response.data.data
   }
   async login (name, password, captcha) {
     const response = await this.ctx.post(`user/login`, {
@@ -23,7 +22,7 @@ class UserDAO {
       password,
       captcha
     })
-    return response.data.data
+    return response.data
   }
 
   async logout() {

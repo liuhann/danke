@@ -1,3 +1,4 @@
+// 轻量应用 已弃用
 const beforeEnter = (to, from, next) => {
   if (!to.meta.ctx.user.id) {
     to.meta.ctx.toPath = to.path

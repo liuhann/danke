@@ -13,6 +13,7 @@ import initClient from '../packages/common/utils/initClient'
 import initEventEmitter from '../packages/common/utils/initEventEmitter'
 
 import dankePackages from './danke'
+import { getToken } from '../packages/user/token'
 
 Vue.use(VueRouter)
 window.Vue = Vue
@@ -41,6 +42,7 @@ const boot = new AsyncBoot({
   }
 })
 
+boot.ctx.token = getToken()
 // attach some global ctx services
 initClient(boot.ctx, 'http://www.danke.fun/api/')
 initEventEmitter(boot.ctx)

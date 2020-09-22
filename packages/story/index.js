@@ -1,3 +1,4 @@
+// 元宝故事 已经弃用
 import StoryDAO from './libs/storydao.js'
 export default {
   routes: [{
