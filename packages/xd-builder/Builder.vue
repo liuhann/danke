@@ -59,23 +59,25 @@ import {
   Form,
   FormItem,
   InputNumber,
-  Checkbox, 
-  Slider, 
-  Button, 
-  ButtonGroup, 
-  Select, 
-  OptionGroup, 
-  Option, 
-  ColorPicker, 
+  Checkbox,
+  Slider,
+  Button,
+  ButtonGroup,
+  Select,
+  OptionGroup,
+  Option,
+  ColorPicker,
   Tabs,
-  TabPane, 
+  TabPane,
   Upload,
   Cascader,
   Pagination,
   Dialog,
-  Drawer
+  Drawer,
+  InfiniteScroll
 } from 'element-ui'
 
+Vue.use(InfiniteScroll)
 Vue.use(Input)
 Vue.use(Button)
 Vue.use(Drawer)
@@ -152,7 +154,7 @@ export default {
         this.drawer[drawerName] = true
       }
     },
-   
+
     focusChange (element) {
       if (element == null) {
         this.toggleShowDrawer()
@@ -172,7 +174,6 @@ export default {
         await this.loadWork(workId)
         this.currentScene = this.work.scenes[0]
       }
-      this.ctx.styleRegistry.loadAllFrames()
 
       // 设置保存 ctrl+s 处理
       Mousetrap.bind('ctrl+s', ev => {

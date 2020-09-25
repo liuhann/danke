@@ -233,8 +233,6 @@ export default {
           }
         }
       }
-
-      console.log('->', style.animation)
       return style
     },
 

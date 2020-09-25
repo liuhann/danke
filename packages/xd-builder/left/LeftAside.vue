@@ -3,11 +3,11 @@
     <div class="category-side">
       <div class="category" :class="current === 'gallery'? 'current': ''" @click="toggleTo('gallery')">
         <i class="el-icon-school" />
-        <span>素材库</span>
+        <span>图库</span>
       </div>
-      <div class="category" :class="current === 'html'? 'current': ''" @click="toggleTo('html')">
+      <div class="category" :class="current === 'vector'? 'current': ''" @click="toggleTo('vector')">
         <i class="el-icon-news" />
-        <span>形状</span>
+        <span>素材</span>
       </div>
       <div class="category" :class="current === 'text'? 'current': ''" @click="toggleTo('text')">
         <i class="el-icon-tickets" />
@@ -43,6 +43,11 @@
       </transition>
       <transition name="fade">
         <keep-alive>
+          <vector-list v-if="current === 'vector'" />
+        </keep-alive>
+      </transition>
+      <transition name="fade">
+        <keep-alive>
           <text-list v-if="current==='text'" />
         </keep-alive>
       </transition>
@@ -71,6 +76,7 @@ import RestDAO from '../../utils/restdao.js'
 import ImageList from './ImageList.vue'
 import TextList from './TextList'
 import GalleryList from './GalleryList.vue'
+import VectorList from './VectorList.vue'
 import LeftFilterList from './LeftFilterList.vue'
 import TickList from './TickList.vue'
 import LeftShapeList from './LeftShapeList.vue'
@@ -85,6 +91,7 @@ export default {
     ImageList,
     LeftFilterList,
     LeftShapeList,
+    VectorList,
     TickList
   },
   mixins: [ workplaceMixin ],

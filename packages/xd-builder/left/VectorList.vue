@@ -5,14 +5,14 @@
         <el-button slot="append" icon="el-icon-search"></el-button>
       </el-input>
     </div>
-    <div class="scroll-container" @scroll="containerScroll">
+    <div ref="scrollContainer" class="scroll-container" @scroll="containerScroll">
       <ul ref="imageList" class="image-list">
         <li
           v-for="(image, index) in images"
           :key="index"
           class="image-container" draggable @dragstart="dragStart(image, $event)"
         >
-          <img :src="getImageUrl(image.url, 160, 160)">
+          <img :src="getImageUrl(image.url, 100, 100)">
         </li>
       </ul>
     </div>
@@ -25,7 +25,7 @@ import { InfiniteScroll } from 'element-ui'
 import { getImageUrl} from '../mixins/imageUtils'
 
 export default {
-  name: 'GalleryList',
+  name: 'VectorList',
   directives: {
     [InfiniteScroll.name]: InfiniteScroll
   },
@@ -41,16 +41,26 @@ export default {
     }
   },
   created () {
-    this.restdao = new RestDAO(this.ctx, 'danke/public/image')
+    this.restdao = new RestDAO(this.ctx, 'danke/public/vector')
   },
   mounted () {
-    this.fetchMoreImages()
+    this.onMounted()
   },
   methods: {
     getImageUrl,
     dragStart (img, ev) {
+      img.width = img.w
+      img.height = img.h
       ev.dataTransfer.setData('Text', JSON.stringify(img))
     },
+
+    async onMounted () {
+      await this.fetchMoreImages()
+      while (this.$refs.imageList.offsetHeight < this.$refs.scrollContainer.offsetHeight) {
+        await this.fetchMoreImages()
+      }
+    },
+
     async fetchMoreImages () {
       if (this.images.length === this.total) {
         return
@@ -88,13 +98,15 @@ export default {
   display: flex;
   flex-wrap: wrap;
   .image-container {
-    margin: 3px;
-    width: 160px;
-    height: 160px;
+    margin: 4px;
+    width: 100px;
+    height: 100px;
     background: rgba(0,0,0, .8);
     img {
-      width: 160px;
-      height: 160px;
+      margin-top: 10px;
+      margin-left: 10px;
+      width: 80px;
+      height: 80px;
       object-fit: contain;
     }
   }
