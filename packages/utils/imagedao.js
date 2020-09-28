@@ -1,6 +1,7 @@
 export default class ImageDAO {
-  constructor (ctx) {
+  constructor (ctx, bucket) {
     this.ctx = ctx
+    this.bucket = bucket || 'dankev3'
   }
 
   async uploadAndCutMp3 (blob, path, start, end) {
@@ -20,7 +21,7 @@ export default class ImageDAO {
    * @return {Promise<void>}
    */
   async removeBlob (path) {
-    const response = await this.ctx.post(`image/remove`, {
+    const response = await this.ctx.post(`${this.bucket}/image/remove`, {
       fileId: path
     })
     return response.data
@@ -41,6 +42,12 @@ export default class ImageDAO {
     formData.append('file', blob, blob.filename)
     const response = await this.ctx.post(`image/upload?path=${path}`, formData)
     return response.data
+  }
+
+
+  // 同时删除图片及阿里云位置
+  async removeImage (img) {
+
   }
 
   async uploadImage (file) {

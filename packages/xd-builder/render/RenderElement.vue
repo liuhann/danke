@@ -12,12 +12,26 @@
     <svg v-else-if="element.path" :style="elementStyle" :viewBox="'0 0 ' + element.path.w + ' ' + element.path.h ">
       <path :d="generatePath" fill="var(--fill)" stroke-width="var(--stokeWidth)" stroke="var(--stroke)" />
     </svg>
+    <svg v-else-if="element.svg" :viewBox="'0 0 ' + element.svg.vp[2] + ' ' + element.svg.vp[3]" :style="elementStyle">
+      <path v-for="(path, index) in element.svg.ps" :key="index" :d="path.p" :fill="path.f || '#76D9FC'" />
+    </svg>
     <div v-else-if="!element.text" class="shape" :style="elementStyle">
     </div>
     <!--文本渲染情况下 文本内容-->
     <div v-for="(text, index) in elementTextLines" :key="index" :style="textTransformStyle" class="text">{{ text }}</div>
     <textarea v-if="element.text != null && element.editing" ref="textarea" v-model="element.text" :style="textEditStyle" @change="updateTextArea" />
 
+    <svg v-if="element.mask && element.mask.svg" :viewBox="'0 0 ' + element.mask.svg.vp[2] + ' ' + element.mask.svg.vp[3]">
+      <defs>
+        <clipPath :id="element.mask.uid" :style="{
+          transform: `scaleX(${element.width/element.mask.svg.vp[2]}) scaleY(${element.height/element.mask.svg.vp[3]})`
+        }"
+        >
+          <path v-for="(path, index) in element.mask.svg.ps.filter(p => !p.f)" :key="index" :d="path.p" />
+        </clipPath>
+      </defs>
+      <path v-for="(path, index) in element.mask.svg.ps.filter(p => p.f)" :key="index" :d="path.p" :fill="path.f" />
+    </svg>
     <div v-if="filterSVG" style="display:none;">
       <svg v-html="filterSVG">
       </svg>
@@ -173,6 +187,9 @@ export default {
       }
       if (this.element.maskImage) {
         style.maskImage = this.element.maskImage
+      }
+      if (this.element.mask && this.element.mask.uid) {
+        style.clipPath = `url("#${this.element.mask.uid}")`;
       }
       return Object.assign({}, this.element.style, style, this.elementAnimationStyle)
     },

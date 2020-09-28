@@ -34,6 +34,9 @@
       <!-- 字体粗细-->
       <font-weight v-if="variable.type==='fontWeight'" :key="index" v-model="variable.value" />
     </template>
+
+    <el-color-picker v-for="(path, index) in elementSVGPathColors" :key="index" v-model="path.f" show-alpha>
+    </el-color-picker>
     <!-- 右侧操作功能按钮-->
     <div class="pull-right">
       <align-element v-if="selectedElements.length > 1" :elements="selectedElements" />
@@ -109,6 +112,16 @@ export default {
   computed: {
     scenes () {
       return this.work.scenes
+    },
+    elementSVGPathColors () {
+      if (this.focusedElement) {
+        const svg = this.focusedElement.svg || (this.focusedElement.mask && this.focusedElement.mask.svg)
+        if (!svg) {
+          return []
+        }
+        return svg.ps.filter(path => path.f)
+      }
+      return []
     },
     workColors () {
       const colors = []

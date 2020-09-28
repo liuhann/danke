@@ -4,7 +4,7 @@
     <div class="group">
       <div class="group-title">竖屏展示</div>
       <div class="new-types">
-        <div v-for="work of slideShow" :key="work.name" class="work-type" :style="workSizeStyle(work)">
+        <div v-for="work of appType" :key="work.name" class="work-type" :style="workSizeStyle(work)">
           <div class="name">
             {{ work.name }}
           </div>
@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import { slideShow, video } from './workType'
+import { slideShow, video, appType } from './workType'
 import { InputNumber } from 'element-ui'
 export default {
   name: 'AddNew',
@@ -64,6 +64,7 @@ export default {
   },
   data () {
     return {
+      appType,
       slideShow,
       video,
       columnHeight: 200,

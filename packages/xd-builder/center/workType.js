@@ -24,6 +24,13 @@ const slideShow = [{
   desc: '可以在任何设备打开，但四周会空置'
 }]
 
+const appType = [{
+  name: '头像和挂件',
+  width: 960,
+  height: 960,
+  img: '/res/9x16.jpg',
+}]
+
 const video = [ {
   name: '手机全面屏',
   width: 1080,
@@ -43,6 +50,7 @@ const video = [ {
 }]
 
 export {
+  appType,
   slideShow,
   video
 }

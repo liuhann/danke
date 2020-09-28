@@ -115,12 +115,10 @@ export default {
           node.fit = 'fill'
         } else {
           node.fit = 'cover'
-          node.mask = ''
+          node.mask = null
         }
       }
-      if (element.ratio) {
-        node.ratio = element.ratio
-      }
+
       if (element.content && element._id) {
         node.svg = element._id
         node.content = element.content

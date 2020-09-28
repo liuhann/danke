@@ -23,12 +23,12 @@ export default {
     /**
      * 新增作品
      */
-    newWork () {
+    newWork (size) {
       return {
         id: shortid(10),
         title: '未命名的作品',
         isBlock: 'no',
-        viewBox: this.viewBox || {
+        viewBox: size || {
           width: 1080,
           height: 1920
         },

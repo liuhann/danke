@@ -443,6 +443,7 @@ export default {
       }
     },
 
+
     createBlockFromTemplate(element, x, y) {
       for (let frame in element.frames) {
         this.ctx.styleRegistry.addFrame({

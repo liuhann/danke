@@ -74,10 +74,9 @@ import {
   Pagination,
   Dialog,
   Drawer,
-  InfiniteScroll
+  Tag
 } from 'element-ui'
 
-Vue.use(InfiniteScroll)
 Vue.use(Input)
 Vue.use(Button)
 Vue.use(Drawer)
@@ -96,6 +95,7 @@ Vue.use(TabPane)
 Vue.use(Tooltip)
 Vue.use(Dialog)
 Vue.use(Checkbox)
+Vue.use(Tag)
 
 export default {
   name: 'Builder',
@@ -168,7 +168,10 @@ export default {
     async onMounted () {
       let workId = this.$route.query.work
       if (!workId) {
-        this.newWork()
+        this.work = this.newWork({
+          width: this.$route.query.width,
+          height: this.$route.query.height
+        })
         this.addScene()
       } else {
         await this.loadWork(workId)
@@ -205,6 +208,7 @@ export default {
         this.$refs.sceneContainer.replaceElement(element)
       } else if (element.cssContent) {
         this.$refs.sceneContainer.applyFilter(element)
+      } else if (element.svg) {
       }
     },
 

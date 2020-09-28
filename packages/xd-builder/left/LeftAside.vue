@@ -17,10 +17,6 @@
         <i class="el-icon-sunrise" />
         <span>滤镜</span>
       </div>
-      <div class="category" :class="current === 'addon'? 'current': ''" @click="toggleTo('addon')">
-        <i class="el-icon-files" />
-        <span>修饰</span>
-      </div>
       <div class="category" :class="current === 'image'? 'current': ''" @click="toggleTo('image')">
         <i class="el-icon-picture-outline" />
         <span>我的</span>
@@ -33,17 +29,17 @@
     <div class="element-container">
       <transition name="fade">
         <keep-alive>
+          <public-image-gallery v-if="current === 'gallery'" />
+        </keep-alive>
+      </transition>
+      <transition name="fade">
+        <keep-alive>
+          <public-vector-gallery v-if="current === 'vector'" @choose="tryApplySVGMask" />
+        </keep-alive>
+      </transition>
+      <transition name="fade">
+        <keep-alive>
           <image-list v-if="current === 'image'" @choose="imageClicked" />
-        </keep-alive>
-      </transition>
-      <transition name="fade">
-        <keep-alive>
-          <gallery-list v-if="current === 'gallery'" />
-        </keep-alive>
-      </transition>
-      <transition name="fade">
-        <keep-alive>
-          <vector-list v-if="current === 'vector'" />
         </keep-alive>
       </transition>
       <transition name="fade">
@@ -75,8 +71,8 @@ import ImageDAO from '../../utils/imagedao'
 import RestDAO from '../../utils/restdao.js'
 import ImageList from './ImageList.vue'
 import TextList from './TextList'
-import GalleryList from './GalleryList.vue'
-import VectorList from './VectorList.vue'
+import PublicImageGallery from './PublicImageGallery.vue'
+import PublicVectorGallery from './PublicVectorGallery.vue'
 import LeftFilterList from './LeftFilterList.vue'
 import TickList from './TickList.vue'
 import LeftShapeList from './LeftShapeList.vue'
@@ -86,12 +82,12 @@ import svgToMiniDataURI from 'mini-svg-data-uri'
 
 export default {
   components: {
-    GalleryList,
+    PublicImageGallery,
+    PublicVectorGallery,
     TextList,
     ImageList,
     LeftFilterList,
     LeftShapeList,
-    VectorList,
     TickList
   },
   mixins: [ workplaceMixin ],
@@ -128,13 +124,11 @@ export default {
     insertElement (element) {
       this.$emit('insert', 'element', element)
     },
-    tryApplySVGMask (svg) {
-      const imageUrl = `url("${svgToMiniDataURI(svg.content)}")`
-      if (this.focusedElement) {
-        if (this.focusedElement.maskImage === imageUrl) {
-          this.$set(this.focusedElement, 'maskImage', null)
-        } else {
-          this.$set(this.focusedElement, 'maskImage', imageUrl)
+    tryApplySVGMask (element) {
+      if (element.svg && this.focusedElement && this.focusedElement.hasOwnProperty('mask')) {
+        this.focusedElement.mask = {
+          uid: element.uid,
+          svg: element.svg
         }
       }
     },
