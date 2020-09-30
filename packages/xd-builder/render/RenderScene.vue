@@ -44,7 +44,8 @@ export default {
       const styles = {
         width: this.viewPort.width + 'px',
         height: this.viewPort.height + 'px',
-        zIndex: this.scene.z
+        zIndex: this.scene.z,
+        backgroundColor: this.scene.color
       }
       for (let key in this.scene.style) {
         if (this.scene.style[key] && !this.scene.style[key].name) {

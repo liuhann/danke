@@ -29,6 +29,7 @@ export default {
         id: shortid(),
         elements: [],
         animation: {},
+        color: '',
         z: 100,
         delay: 0,
         duration: 3,

@@ -185,7 +185,8 @@ export default {
         '--vh': this.viewBox.height + 'px',
         width: this.work.viewBox.width + 'px',
         height: this.work.viewBox.height + 'px',
-        perspective: this.work.viewBox.width + 'px'
+        perspective: this.work.viewBox.width + 'px',
+        backgroundColor: this.scene.color
       }
       return styles
     }

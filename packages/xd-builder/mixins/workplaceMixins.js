@@ -111,11 +111,13 @@ export default {
       }
       // image has mask attr
       if (element.url) {
-        if (element.url.endsWith('.svg')) {
-          node.fit = 'fill'
-        } else {
-          node.fit = 'cover'
-          node.mask = null
+        if (!element.fit) {
+          if (element.url.endsWith('.svg')) {
+            node.fit = 'fill'
+          } else {
+            node.fit = 'cover'
+            node.mask = null
+          }
         }
       }
 

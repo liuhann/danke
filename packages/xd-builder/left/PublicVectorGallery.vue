@@ -11,13 +11,14 @@
           v-for="(vector, index) in vectors"
           :key="index"
           class="vector-container" draggable @dragstart="dragStart(vector, $event)"
-          @click="$emit('choose', vector)"
-          @dblclick="remove(vector)"
+          @click="remove(vector)"
         >
+          <!--          @click="$emit('choose', vector)"-->
           <img v-if="vector.url" :src="getImageUrl(vector.url, 100, 100)">
           <svg v-else-if="vector.svg" :viewBox="'0 0 ' + vector.svg.vp[2] + ' ' + vector.svg.vp[3]" width="90" height="90">
             <path v-for="(path, index) in vector.svg.ps" :key="index" :d="path.p" :fill="path.f || '#76D9FC'" />
           </svg>
+          <div v-if="vector.svg || (vector.url && vector.url.endsWith('svg'))" class="is-svg">svg</div>
         </li>
       </ul>
     </div>
@@ -62,6 +63,7 @@ export default {
     dragStart (img, ev) {
       img.width = img.w
       img.height = img.h
+      img.fit = 'contain'
       ev.dataTransfer.setData('Text', JSON.stringify(img))
     },
     async onMounted () {
@@ -153,6 +155,15 @@ export default {
     width: 100px;
     height: 100px;
     background: rgba(0,0,0, .8);
+    position: relative;
+    .is-svg {
+      position: absolute;
+      left: 10px;
+      bottom: 10px;
+      color: #fff;
+      background: rgba(10, 10, 10, 0.7);
+
+    }
     img, svg {
       margin-top: 10px;
       margin-left: 10px;
