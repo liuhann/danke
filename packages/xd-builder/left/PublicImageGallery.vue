@@ -1,7 +1,7 @@
 <template>
   <div class="left-aside-content">
     <div class="search-box">
-      <el-input v-model="searchValue" placeholder="搜索素材库" class="input-with-select" clearable>
+      <el-input v-model="searchValue" class="input-with-select" clearable>
         <el-button slot="append" icon="el-icon-search"></el-button>
       </el-input>
     </div>
@@ -12,13 +12,15 @@
           :key="index"
           class="image-container"
           draggable
-          @dblclick="showImageInfo(image)" @dragstart="dragStart(image, $event)"
+          @click="remove(image)"
+          @dragstart="dragStart(image, $event)"
         >
+          <!--          @dblclick="showImageInfo(image)" -->
           <img :src="getImageUrl(image.url, 160, 160)">
         </li>
       </ul>
     </div>
-    <dialog-public-image ref="dialog" resturl="danke/public/image" :image="currentImage"></dialog-public-image>
+    <dialog-public-image ref="dialog" resturl="danke/public/image" :image="currentImage" @delete="confirmDeleteImage"></dialog-public-image>
   </div>
 </template>
 
@@ -27,6 +29,7 @@ import RestDAO from '../../utils/restdao.js'
 import { InfiniteScroll } from 'element-ui'
 import { getImageUrl} from '../mixins/imageUtils'
 import DialogPublicImage from './DialogPublicImage'
+import ImageDAO from '../../utils/imagedao'
 export default {
   name: 'PublicImageGallery',
   directives: {
@@ -48,13 +51,16 @@ export default {
     }
   },
   created () {
+    this.imagedao = new ImageDAO(this.ctx)
     this.restdao = new RestDAO(this.ctx, 'danke/public/image')
+    this.deleteddao = new RestDAO(this.ctx, 'danke/public/deleted')
     this.vectordao = new RestDAO(this.ctx, 'danke/public/vector')
   },
   mounted () {
     this.fetchMoreImages()
   },
   methods: {
+    async doWork () {},
     getImageUrl,
     showImageInfo (img) {
       this.currentImage = img
@@ -97,7 +103,24 @@ export default {
       if (d.target.offsetHeight + d.target.scrollTop + 100 > this.$refs.imageList.offsetHeight) {
         this.fetchMoreImages()
       }
+    },
+
+    async remove (image) {
+      this.images.splice(this.images.indexOf(image), 1)
+      if (image.url) {
+        await this.imagedao.removeBlob(image.url)
+      }
+      await this.deleteddao.create({
+        uid: image.uid,
+        url: image.url
+      })
+      await this.restdao.delete(image)
+    },
+
+    confirmDeleteImage (img) {
+      this.images.splice(this.images.indexOf(img), 1)
     }
+
   }
 }
 </script>

@@ -4,7 +4,7 @@
        :class="elementClass" :style="elementWrapperStyle" @click="elementClicked"
   >
     <!--图片渲染-->
-    <img v-if="element.url" :id="'img-' + (element.name || element.id)" :src="getImageUrl(element.url, viewPort.width * 2, viewPort.height * 2)" :style="elementStyle">
+    <img v-if="element.url && (!element.fill)" :id="'img-' + (element.name || element.id)" :src="getImageUrl(element.url, viewPort.width * 2, viewPort.height * 2)" :style="elementStyle">
     <div v-else-if="element.content" class="svg-content" :style="elementStyle" v-html="element.content" />
     <div v-else-if="element.elements" class="block-elements" :style="elementStyle">
       <render-element v-for="(el, i) in element.elements" :key="el.id" :view-box="viewBox" :view-port="viewPort" :element="el" :index="i" />
@@ -141,7 +141,13 @@ export default {
       // 设置元素的长、宽到默认变量--width 、 --height
       const style = {
         '--width': this.element.width + 'px',
-        '--height': this.element.height + 'px'
+        '--height': this.element.height + 'px',
+        backgroundColor: this.element.fill
+      }
+
+      if (this.element.type === 'vct' && this.element.fill) {
+        style.maskImage = `url(${this.getImageUrl(this.element.url, this.viewPort.width * 2, this.viewPort.height * 2)})`
+        style.maskSize = this.element.fit
       }
       // 变量配置信息
       assignVariables(style, this.element.variables)

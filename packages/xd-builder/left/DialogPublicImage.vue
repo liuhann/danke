@@ -8,6 +8,9 @@
       <el-form-item label="标题">
         <div class="bold-title"> {{ image.title }}</div>
       </el-form-item>
+      <el-form-item label="尺寸">
+        <div class="bold-title"> {{ image.w }} x {{ image.h }}</div>
+      </el-form-item>
       <el-form-item label="标签">
         <el-tag v-for="tag in image.tags" :key="tag" type="success" @click="filterByTag(tag)">{{ tag }}</el-tag>
       </el-form-item>
@@ -62,6 +65,7 @@
         })
         await this.restdao.delete(this.image)
         this.dialogVisible = false
+        this.$emit('delete', this.image)
       },
       closeDialog () {
         this.dialogVisible = false

@@ -38,6 +38,7 @@
     <el-color-picker v-for="(path, index) in elementSVGPathColors" :key="index" v-model="path.f" show-alpha>
     </el-color-picker>
     <el-color-picker v-if="noFocusedElement" v-model="scene.color" show-alpha />
+    <el-color-picker v-if="focusedElement && focusedElement.hasOwnProperty('fill')" v-model="focusedElement.fill" show-alpha />
     <!-- 右侧操作功能按钮-->
     <div class="pull-right">
       <align-element v-if="selectedElements.length > 1" :elements="selectedElements" />

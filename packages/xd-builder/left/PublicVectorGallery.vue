@@ -13,6 +13,7 @@
           class="vector-container" draggable @dragstart="dragStart(vector, $event)"
           @click="remove(vector)"
         >
+          {{ index }}
           <!--          @click="$emit('choose', vector)"-->
           <img v-if="vector.url" :src="getImageUrl(vector.url, 100, 100)">
           <svg v-else-if="vector.svg" :viewBox="'0 0 ' + vector.svg.vp[2] + ' ' + vector.svg.vp[3]" width="90" height="90">
@@ -64,6 +65,7 @@ export default {
       img.width = img.w
       img.height = img.h
       img.fit = 'contain'
+      img.fill = ''
       ev.dataTransfer.setData('Text', JSON.stringify(img))
     },
     async onMounted () {
@@ -154,7 +156,7 @@ export default {
     margin: 4px;
     width: 100px;
     height: 100px;
-    background: rgba(0,0,0, .8);
+    background: #1b1b1b;
     position: relative;
     .is-svg {
       position: absolute;
@@ -162,7 +164,6 @@ export default {
       bottom: 10px;
       color: #fff;
       background: rgba(10, 10, 10, 0.7);
-
     }
     img, svg {
       margin-top: 10px;
