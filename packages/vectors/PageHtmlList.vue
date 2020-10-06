@@ -4,18 +4,15 @@
       <div class="tool-bar">
         <el-button size="mini" type="primary" @click="newStyle">新建</el-button>
       </div>
-      <el-tabs v-model="currentAlbum" @tab-click="albumChange">
-        <el-tab-pane v-for="album in albums" :key="album" :name="album" :label="album" /> 
-      </el-tabs>
       <div class="svg-list">
-        <div v-for="(svg, index) in svgs" :key="index" class="svg-item">
-          <div class="svg-container" :style="variableValues(svg)">
-            <div class="styled-box" v-html="svg.content">
+        <div v-for="(html, index) in list" :key="index" class="html-item">
+          <div class="svg-container" :style="variableValues(html)">
+            <div class="styled-box" v-html="html.html">
             </div>
           </div>
           <div class="item-btns">
-            <el-button circle icon="el-icon-delete" @click="remove(svg)" />
-            <el-button circle icon="el-icon-edit" @click="edit(svg)" />
+            <el-button circle icon="el-icon-delete" @click="remove(html)" />
+            <el-button circle icon="el-icon-edit" @click="edit(html)" />
           </div>
         </div>
       </div>
@@ -29,7 +26,7 @@ import RestDAO from '../utils/restdao.js'
 import NavBar from '../site/components/NavBar.vue'
 import { Pagination, Button, Tabs, TabPane } from 'element-ui'
 export default {
-  name: 'PageStyleList',
+  name: 'PageHtmlList',
   components: {
     [Pagination.name]: Pagination,
     [Tabs.name]: Tabs,
@@ -38,46 +35,33 @@ export default {
   },
   data () {
     return {
-      currentAlbum: '',
-      svgs: [],
-      albums: [],
+      list: [],
       page: 0,
       pageSize: 20,
       total: 0
     }
   },
   created () {
-    this.svgdao = new RestDAO(this.ctx, 'danke/svg')
+    this.dao = new RestDAO(this.ctx, 'danke/h5')
   },
   mounted () {
-    this.loadSVGs()
-    this.loadSvgAlbums()
+    this.load()
   },
   methods: {
-    async albumChange () {
-      const result = await this.svgdao.list({
-        album: this.currentAlbum
-      })
-      this.svgs = result.list
-    },
     newStyle () {
-      window.open('/vector/edit')
+      window.open('/h5/edit')
     },
-    async loadSvgAlbums () {
-      const result = await this.svgdao.distinct('album')
-      this.albums = result
-    },
-    async loadSVGs () {
-      const result = await this.svgdao.list({
+    async load () {
+      const result = await this.dao.list({
         page: this.page,
         count: this.pageSize
       })
       this.total = result.total
-      this.svgs = result.list
+      this.list = result.list
     },
     // 新窗口编辑
-    edit (svg) {
-      window.open('/vector/edit?id=' + svg._id)
+    edit (html) {
+      window.open('/h5/edit?id=' + html._id)
     },
 
     variableValues (svg) {
@@ -129,14 +113,14 @@ export default {
 .svg-list {
   display: flex;
   flex-wrap: wrap;
-  .svg-item {
+  .html-item {
     width: calc(12.5% - 16px);
     box-sizing: border-box;
     position: relative;
     border: #e6e6e6 solid 1px;
     margin: 0 16px 16px 0;
-    border-radius: 20px;
-    padding: 30px 10px;
+    border-radius: 5px;
+    padding: 10px;
     .title {
       position: absolute;
       color: #444;
@@ -158,14 +142,14 @@ export default {
       left: 20px;
       bottom: 20px;
       display: none;
+      z-index: 999;
     }
     .svg-container {
       display: flex;
       align-items: center;
       justify-content: center;
       .styled-box {
-        width: 80%;
-        height: 120px;
+        height: 100%;
         z-index: 10;
         position: relative;
         svg {

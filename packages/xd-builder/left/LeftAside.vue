@@ -9,6 +9,10 @@
         <i class="el-icon-news" />
         <span>素材</span>
       </div>
+      <div class="category" :class="current === 'h5'? 'current': ''" @click="toggleTo('h5')">
+        <i class="el-icon-news" />
+        <span>H5</span>
+      </div>
       <div class="category" :class="current === 'text'? 'current': ''" @click="toggleTo('text')">
         <i class="el-icon-tickets" />
         <span>文字</span>
@@ -37,6 +41,12 @@
           <public-vector-gallery v-if="current === 'vector'" @choose="tryApplySVGMask" />
         </keep-alive>
       </transition>
+      <transition name="fade">
+        <keep-alive>
+          <public-html-list v-if="current === 'h5'" @choose="tryApplySVGMask" />
+        </keep-alive>
+      </transition>
+
       <transition name="fade">
         <keep-alive>
           <image-list v-if="current === 'image'" @choose="imageClicked" />
@@ -73,6 +83,7 @@ import ImageList from './ImageList.vue'
 import TextList from './TextList'
 import PublicImageGallery from './PublicImageGallery.vue'
 import PublicVectorGallery from './PublicVectorGallery.vue'
+import PublicHtmlList from './PublicHTMLList'
 import LeftFilterList from './LeftFilterList.vue'
 import TickList from './TickList.vue'
 import LeftShapeList from './LeftShapeList.vue'
@@ -84,6 +95,7 @@ export default {
   components: {
     PublicImageGallery,
     PublicVectorGallery,
+    PublicHtmlList,
     TextList,
     ImageList,
     LeftFilterList,
