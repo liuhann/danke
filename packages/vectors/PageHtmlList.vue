@@ -16,7 +16,7 @@
           </div>
         </div>
       </div>
-      <el-pagination background :total="total" :page-size="pageSize" :current-page.sync="page" layout="prev, pager, next" @current-change="loadSVGs" />
+      <el-pagination background :total="total" :page-size="pageSize" :current-page.sync="page" layout="prev, pager, next" @current-change="load" />
     </div>
   </div>
 </template>
@@ -77,8 +77,8 @@ export default {
     // 目前暂无提示 直接删除
     async remove (style) {
       if (confirm('确认删除样式')) {
-        await this.svgdao.delete(style)
-        this.albumChange()
+        await this.dao.delete(style)
+        this.load()
       }
     }
   }
@@ -163,7 +163,7 @@ export default {
         display: initial;
       }
     }
-    
+
   }
   .btns {
     padding: 0 20px;

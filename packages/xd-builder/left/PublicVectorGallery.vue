@@ -5,15 +5,14 @@
         <el-button slot="append" icon="el-icon-search" @click="filterWith(searchValue)"></el-button>
       </el-input>
     </div>
-    <div ref="scrollContainer" class="scroll-container" @scroll="containerScroll">
-      <ul ref="imageList" class="vector-list">
+    <div ref="scrollContainer" class="list-wrapper" @scroll="containerScroll">
+      <ul ref="imageList" class="list-container">
         <li
           v-for="(vector, index) in vectors"
           :key="index"
           class="vector-container" draggable @dragstart="dragStart(vector, $event)"
           @click="remove(vector)"
         >
-          {{ index }}
           <!--          @click="$emit('choose', vector)"-->
           <img v-if="vector.url" :src="getImageUrl(vector.url, 100, 100)">
           <svg v-else-if="vector.svg" :viewBox="'0 0 ' + vector.svg.vp[2] + ' ' + vector.svg.vp[3]" width="90" height="90">
@@ -144,34 +143,25 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.scroll-container {
-  margin: 15px 2px 0 10px;
-  overflow-y: auto;
-  height: calc(100vh - 75px);
-}
-.vector-list {
-  display: flex;
-  flex-wrap: wrap;
-  .vector-container {
-    margin: 4px;
-    width: 100px;
-    height: 100px;
-    background: #1b1b1b;
-    position: relative;
-    .is-svg {
-      position: absolute;
-      left: 10px;
-      bottom: 10px;
-      color: #fff;
-      background: rgba(10, 10, 10, 0.7);
-    }
-    img, svg {
-      margin-top: 10px;
-      margin-left: 10px;
-      width: 80px;
-      height: 80px;
-      object-fit: contain;
-    }
+.vector-container {
+  margin: 4px;
+  width: 104px;
+  height: 104px;
+  background: #1b1b1b;
+  position: relative;
+  .is-svg {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    color: #fff;
+    background: rgba(10, 10, 10, 0.7);
+  }
+  img, svg {
+    margin-top: 10px;
+    margin-left: 10px;
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
   }
 }
 </style>

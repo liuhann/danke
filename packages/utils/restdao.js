@@ -28,6 +28,14 @@ export default class RestDAO {
     return result.data.data
   }
 
+  async update (o) {
+    if (o._id) {
+      await this.delete(o)
+    }
+    delete o._id
+    return this.create(o)
+  }
+
   /**
   * 创建或者更新对象
   */

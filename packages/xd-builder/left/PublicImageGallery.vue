@@ -5,8 +5,8 @@
         <el-button slot="append" icon="el-icon-search"></el-button>
       </el-input>
     </div>
-    <div class="scroll-container" @scroll="containerScroll">
-      <ul ref="imageList" class="image-list">
+    <div class="list-wrapper" @scroll="containerScroll">
+      <ul ref="imageList" class="list-container">
         <li
           v-for="(image, index) in images"
           :key="index"
@@ -15,8 +15,10 @@
           @click="remove(image)"
           @dragstart="dragStart(image, $event)"
         >
-          <!--          @dblclick="showImageInfo(image)" -->
-          <img :src="getImageUrl(image.url, 160, 160)">
+          <div style="color: #fff; position: absolute; left: 0px; top:5px;">
+            {{ image.w }} x {{ image.h }}
+          </div>
+          <img :src="getImageUrl(image.url, 160, 160)" />
         </li>
       </ul>
     </div>
@@ -126,24 +128,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.scroll-container {
-  margin: 15px 2px 0 10px;
-  overflow-y: auto;
-  height: calc(100vh - 75px);
-}
-.image-list {
-  display: flex;
-  flex-wrap: wrap;
-  .image-container {
-    margin: 3px;
+.image-container {
+  position: relative;
+  margin: 3px;
+  width: 160px;
+  height: 160px;
+  background: rgba(0,0,0, .8);
+  img {
     width: 160px;
     height: 160px;
-    background: rgba(0,0,0, .8);
-    img {
-      width: 160px;
-      height: 160px;
-      object-fit: contain;
-    }
+    object-fit: contain;
   }
 }
 </style>

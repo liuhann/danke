@@ -80,6 +80,7 @@ export default {
   methods: {
     getImageUrl,
     createSingleElement (element, x, y) {
+      debugger
       const id = shortid()
       // 此处设置节点的基本属性
       const node = {

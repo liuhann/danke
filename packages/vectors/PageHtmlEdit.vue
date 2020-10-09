@@ -5,8 +5,12 @@
         <div id="editor">
         </div>
       </el-form-item>
+      <el-form-item label="默认尺寸">
+        <el-input-number v-model="html.width" /> x <el-input-number v-model="html.height" />
+      </el-form-item>
       <el-form-item label="类型">
         <el-select v-model="html.tags" size="mini" allow-create filterable multiple>
+          <el-option v-for="key in presets" :key="key" :value="key" />
         </el-select>
       </el-form-item>
       <el-form-item label="变量信息">
@@ -49,12 +53,15 @@
 import ace from 'brace'
 import 'brace/mode/html'
 import 'brace/theme/monokai'
-import { Message, Form, FormItem, Input, Select, Option, Button } from 'element-ui'
+import { Message, Form, FormItem, Input, Select, Option, Button, InputNumber } from 'element-ui'
 import RestDAO from '../utils/restdao.js'
+import { getSVGViewBox, presets } from './utils'
+
 export default {
   name: 'PageHtmlEdit',
   components: {
     [Form.name]: Form,
+    [InputNumber.name]: InputNumber,
     [Input.name]: Input,
     [FormItem.name]: FormItem,
     [Button.name]: Button,
@@ -66,6 +73,8 @@ export default {
       albums: [],
       html: {
         title: '',
+        width: 100,
+        height: 100,
         html: '', //  正文
         styles: '',
         tags: ['SVG', '动画'],
@@ -79,6 +88,9 @@ export default {
     }
   },
   computed: {
+    presets () {
+      return presets
+    },
     variableStyle () {
       const styles = {}
       for (let variable of this.html.variables) {
@@ -119,10 +131,13 @@ export default {
     },
     async preview () {
       this.html.html = this.editor.getValue()
+      Object.assign(this.html, getSVGViewBox(this.html.html))
     },
     async save () {
-      this.html.content = this.editor.getValue()
-      const result = await this.dao.createOrPatch(this.html)
+      this.html.html = this.editor.getValue()
+      delete this.html.content
+      debugger
+      const result = await this.dao.update(this.html)
       Message.success('保存成功')
     }
   }
