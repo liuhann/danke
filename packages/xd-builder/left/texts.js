@@ -4,7 +4,8 @@ const fontStyles = {
   color: 'var(--color)',
   textAlign: 'var(--textAlign)',
   fontFamily: 'var(--fontFamily)',
-  fontWeight: 'var(--fontWeight)'
+  fontWeight: 'var(--fontWeight)',
+  letterSpacing: 'var(--letterSpacing)'
 }
 export const fontTemplates = [{
   text: '添加标题',
@@ -29,6 +30,10 @@ export const fontTemplates = [{
     name: 'fontWeight',
     value: 800,
     type: 'fontWeight'
+  }, {
+    name: 'letterSpacing',
+    value: 10,
+    type: 'px'
   }]
 }, {
   text: '添加子标题',
@@ -53,6 +58,10 @@ export const fontTemplates = [{
     name: 'fontWeight',
     value: 400,
     type: 'fontWeight'
+  }, {
+    name: 'letterSpacing',
+    value: 10,
+    type: 'px'
   }]
 }, {
   text: '添加正文',
@@ -77,6 +86,10 @@ export const fontTemplates = [{
     name: 'fontWeight',
     value: 200,
     type: 'fontWeight'
+  }, {
+    name: 'letterSpacing',
+    value: 10,
+    type: 'px'
   }]
 }, {
   text: 'Neon文字效果',
@@ -107,5 +120,9 @@ export const fontTemplates = [{
     name: 'fontWeight',
     value: 200,
     type: 'fontWeight'
+  }, {
+    name: 'letterSpacing',
+    value: 10,
+    type: 'px'
   }]
 }]

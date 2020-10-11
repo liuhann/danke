@@ -33,6 +33,7 @@
           <el-select v-model="variable.type">
             <el-option value="color" />
             <el-option value="number" />
+            <el-option value="px" />
           </el-select>
         </div>
       </el-form-item>

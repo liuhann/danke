@@ -115,6 +115,7 @@ export default {
     },
 
     async remove (image) {
+      this.vectors.splice(this.vectors.indexOf(image), 1)
       if (image.url) {
         await this.imagedao.removeBlob(image.url)
       }
@@ -123,7 +124,6 @@ export default {
         url: image.url
       })
       await this.restdao.delete(image)
-      this.vectors.splice(this.vectors.indexOf(image), 1)
     },
 
     // 处理滚动到底部的处理
@@ -145,8 +145,8 @@ export default {
 <style lang="scss" scoped>
 .vector-container {
   margin: 4px;
-  width: 104px;
-  height: 104px;
+  width: 102px;
+  height: 102px;
   background: #1b1b1b;
   position: relative;
   .is-svg {

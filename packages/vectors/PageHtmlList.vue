@@ -149,7 +149,6 @@ export default {
       align-items: center;
       justify-content: center;
       .styled-box {
-        height: 100%;
         z-index: 10;
         position: relative;
         svg {

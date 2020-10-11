@@ -86,9 +86,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  div {
-    width: 80px;
-    height: 80px;
+  .shape {
     display: flex;
     justify-content: center;
     align-items: center;

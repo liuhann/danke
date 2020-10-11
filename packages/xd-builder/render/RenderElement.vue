@@ -9,13 +9,10 @@
     <div v-else-if="element.elements" class="block-elements" :style="elementStyle">
       <render-element v-for="(el, i) in element.elements" :key="el.id" :view-box="viewBox" :view-port="viewPort" :element="el" :index="i" />
     </div>
-    <svg v-else-if="element.path" :style="elementStyle" :viewBox="'0 0 ' + element.path.w + ' ' + element.path.h ">
-      <path :d="generatePath" fill="var(--fill)" stroke-width="var(--stokeWidth)" stroke="var(--stroke)" />
-    </svg>
     <svg v-else-if="element.svg" :viewBox="'0 0 ' + element.svg.vp[2] + ' ' + element.svg.vp[3]" :style="elementStyle">
       <path v-for="(path, index) in element.svg.ps" :key="index" :d="path.p" :fill="path.f || '#76D9FC'" />
     </svg>
-    <div v-else-if="element.html" :style="elementStyle" v-html="element.html" />
+    <div v-else-if="element.html" class="html" :style="elementStyle" v-html="element.html" />
     <div v-else-if="!element.text" class="shape" :style="elementStyle">
     </div>
     <!--文本渲染情况下 文本内容-->
@@ -406,6 +403,11 @@ export default {
   img {
     mask-size: 100% 100%;
   }
+  html {
+    width: 100%;
+    height: 100%;
+  }
+
   svg {
     width: 100%;
     height: 100%;
