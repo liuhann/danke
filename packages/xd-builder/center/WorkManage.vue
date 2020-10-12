@@ -1,36 +1,77 @@
 <template>
-  <div class="work-manage body">
+  <div class="work- body">
     <div class="content-title">作品管理</div>
     <div class="work-list">
-      <div class="work" v-for="work in works" :key="work.id">
-        <div class="work-item">
-          <div class="title">{{work.title}}</div>
-          <div class="creator">{{work.creator}}</div>
-          <div class="creator">{{work.viewBox}}</div>
-          <div class="is-home">{{(work.system && work.system.site)}}</div>
-          <div class="action">
-            <el-button size="mini" type="text" @click="openWork(work)">打开</el-button>
-            <el-button size="mini" type="text" @click="setPageRecommand(work)">首页推荐</el-button>
-          </div>
-        </div>
-      </div>
+      <el-table :data="works" size="mini" stripe
+                style="width: 100%"
+      >
+        <el-table-column prop="title" label="标题"></el-table-column>
+        <el-table-column prop="creator" width="120px" label="作者"></el-table-column>
+        <el-table-column prop="viewBox" width="70px" label="宽度">
+          <template slot-scope="scope">
+            {{ scope.row.system }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="viewBox" width="70px" label="高度"></el-table-column>
+        <el-table-column>
+          <template slot-scope="scope">
+            <el-button type="text" size="small" @click="openWork(scope.row)">打开</el-button>
+            <el-button type="text" size="small" @click="editWorkProp(scope.row)">编辑属性</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
     </div>
-    <el-pagination :current-page.sync="page" :page-size="size" :total="total" @current-change="pageChange"/>
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="30%"
+    >
+      <el-form label-width="80px">
+        <el-form-item label="名称">
+          <el-input v-model="currentWork.title" readonly></el-input>
+        </el-form-item>
+        <el-form-item v-if="currentWork.system" label="首页展示">
+          <el-checkbox v-model="currentWork.system.site">是</el-checkbox>
+        </el-form-item>
+        <el-form-item v-if="currentWork.system" label="作为模板">
+          <el-checkbox v-model="currentWork.system.template">是</el-checkbox>
+        </el-form-item>
+        <el-form-item v-if="currentWork.system" label="应用场景">
+          <el-input v-model="currentWork.system.app" />
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="danger" @click="trashWork">刪除</el-button>
+        <el-button type="primary" @click="confirmWork">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <el-pagination :current-page.sync="page" :page-size="size" :total="total" @current-change="pageChange" />
   </div>
 </template>
 
 <script>
-import { Pagination, Button } from 'element-ui'
+import { Pagination, Button, Table, TableColumn, Dialog, Form, FormItem, Input, Checkbox } from 'element-ui'
 import RestDAO from '../../utils/restdao.js'
 
 export default {
-  name: 'WorkManage',
+  name: 'Work',
   components: {
     [Pagination.name]: Pagination,
+    [Dialog.name]: Dialog,
+    [Form.name]: Form,
+    [FormItem.name]: FormItem,
+    [Input.name]: Input,
+    [Table.name]: Table,
+    [Checkbox.name]: Checkbox,
+    [TableColumn.name]: TableColumn,
     [Button.name]: Button
   },
   data () {
     return {
+      currentWork: { } ,
+      dialogVisible: false,
       works: [],
       page: 1,
       size: 20,
@@ -39,22 +80,40 @@ export default {
   },
   created () {
     this.workdao = new RestDAO(this.ctx, 'danke/work')
+    this.trashdao = new RestDAO(this.ctx, 'trash/work')
   },
   mounted () {
     this.fetchWorks()
   },
   methods: {
-    setPageRecommand (work) {
-      this.workdao.patch(work._id, {
-        system: {
-          site: 'on'
-        }
+    confirmWork () {
+      this.workdao.patch(this.currentWork._id, {
+        system: this.currentWork.system
       })
     },
+
+    async trashWork () {
+      const fullWork = await this.workdao.getOne(this.currentWork.id)
+      const id = fullWork._id
+      delete fullWork._id
+      await this.trashdao.create(fullWork)
+      await this.workdao.delete(id)
+    },
+
+    editWorkProp (work) {
+      this.$set(work, 'system', {
+        site: false,
+        template: false,
+        app: ''
+      })
+      this.currentWork = work
+      this.dialogVisible = true
+    },
+
     async fetchWorks () {
       if (this.ctx.user && this.ctx.user.id === '15011245191') {
         const result = await this.workdao.list({
-          projection: 'updated,created,ratio,creator,name,id,viewBox,likes,comments,name,title,system',
+          projection: 'updated,created,creator,name,id,viewBox,likes,comments,name,title,system',
           page: this.page,
           count: this.size
         })

@@ -64,8 +64,13 @@ export default class RestDAO {
   }
 
   async delete (o) {
-    const response = await this.ctx.delete(`${this.path}/${o._id}`)
-    return response.data.data
+    if (typeof o === 'string') {
+      const response = await this.ctx.delete(`${this.path}/${o}`)
+      return response.data.data
+    } else {
+      const response = await this.ctx.delete(`${this.path}/${o._id}`)
+      return response.data.data
+    }
   }
   async distinct (field, json) {
     const response = await this.ctx.post(`${this.path}/distinct/${field}`, json)
