@@ -2,6 +2,6 @@
 export default {
   routes: [{
     path: '/avatar',
-    component: () => import(/* webpackChunkName: "avatar" */'./Avatar.vue')
+    component: () => import(/* webpackChunkName: "avatar" */'./AvatarHome.vue')
   }]
 }

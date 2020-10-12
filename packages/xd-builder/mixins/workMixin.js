@@ -89,12 +89,6 @@ export default {
      */
     initWorkStyleResource (work) {
       const styleRegistry = this.ctx.styleRegistry
-      for (const name in work.styles) {
-        styleRegistry.addStyle({
-          name,
-          cssContent: work.styles[name]
-        })
-      }
       if (work.fonts && work.fonts.length) {
         for (const font of work.fonts) {
           styleRegistry.addFontFace(font)
@@ -102,7 +96,7 @@ export default {
       }
       // init element svg content from work.svgs
       for (const scene of work.scenes) {
-        this.initSceneSVG(scene.elements, work.svgs)
+        // this.initSceneSVG(scene.elements, work.svgs)
 
         for (const element of scene.elements) {
           // 脏数据处理

@@ -16,12 +16,15 @@ export default {
 
   computed: {
     viewBox () {
-      return this.work.viewBox
+      return this.work.viewBox || {
+        width: 640,
+        height: 640
+      }
     },
     viewPort () {
       return {
-        width: this.work.viewBox.width * this.scale,
-        height: this.work.viewBox.height * this.scale
+        width: this.viewBox.width * this.scale,
+        height: this.viewBox.height * this.scale
       }
     },
     element () {
@@ -80,14 +83,13 @@ export default {
   methods: {
     getImageUrl,
     createSingleElement (element, x, y) {
-      debugger
       const id = shortid()
       // 此处设置节点的基本属性
       const node = {
         id,
-        name: element.name || ('节点' + this.scene.elements.length + 1),
-        width: 100,
-        height: 100,
+        name: element.name || element.title || ('节点' + this.scene.elements.length + 1),
+        width: element.width || 200,
+        height: element.height || 200,
         // 样式信息
         style: {},
         variables: [],
@@ -100,11 +102,11 @@ export default {
         rotate: 0,
         rotateX: false,
         rotateY: false,
+        template: false,
         // 其他属性，交互时使用
         locked: false,
         selected: false
       }
-      Object.assign(node, element)
       // 设置文字的自适应大小
       if (element.text) {
         node.name = '文本'
@@ -112,6 +114,7 @@ export default {
       }
       // image has mask attr
       if (element.url) {
+        node.url = element.url
         if (!element.fit) {
           if (element.url.endsWith('.svg')) {
             node.fit = 'fill'

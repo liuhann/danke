@@ -7,12 +7,6 @@
       >
         <el-table-column prop="title" label="标题"></el-table-column>
         <el-table-column prop="creator" width="120px" label="作者"></el-table-column>
-        <el-table-column prop="viewBox" width="70px" label="宽度">
-          <template slot-scope="scope">
-            {{ scope.row.system }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="viewBox" width="70px" label="高度"></el-table-column>
         <el-table-column>
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="openWork(scope.row)">打开</el-button>
@@ -98,6 +92,8 @@ export default {
       delete fullWork._id
       await this.trashdao.create(fullWork)
       await this.workdao.delete(id)
+      this.dialogVisible = false
+      this.fetchWorks()
     },
 
     editWorkProp (work) {

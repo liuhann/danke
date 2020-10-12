@@ -183,9 +183,9 @@ export default {
       const styles = {
         '--vw': this.viewBox.width + 'px',
         '--vh': this.viewBox.height + 'px',
-        width: this.work.viewBox.width + 'px',
-        height: this.work.viewBox.height + 'px',
-        perspective: this.work.viewBox.width + 'px',
+        width: this.viewBox.width + 'px',
+        height: this.viewBox.height + 'px',
+        perspective: this.viewBox.width + 'px',
         backgroundColor: this.scene.color
       }
       return styles
@@ -338,7 +338,10 @@ export default {
       if (ev.target.closest('.screen-actions')) {
         return
       }
-      let targetElement = this.getEventToElement(ev)
+      if (ev.target.className.indexOf('resize') > -1) {
+        return
+      }
+      const targetElement = this.getEventToElement(ev)
       // 剪贴模式
       if (ev.ctrlKey) {
           this.appendElementSelected(targetElement)
@@ -389,15 +392,6 @@ export default {
 
     // Drag over and set as allow drop
     sceneDragOver (ev) {
-      // let targetElement = this.getEventToElement(ev)
-      // if (targetElement && !targetElement.locked) {
-      //   this.$set(targetElement, 'hover', true)
-      // }
-      // for (let element of this.scene.elements) {
-      //   if (element !== targetElement && element.hover) {
-      //     this.$set(element, 'hover', false)
-      //   }
-      // }
       ev.preventDefault()
     },
     /**
@@ -583,6 +577,7 @@ export default {
     // cursor: url("data:image/svg+xml,%3Csvg class='icon' viewBox='0 0 1024 1024' xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath fill='%23515151' d='M746.667 341.333v85.334A42.667 42.667 0 0 1 704 469.333H149.333a42.667 42.667 0 0 1-42.666-42.666v-256A42.667 42.667 0 0 1 149.333 128H704a42.667 42.667 0 0 1 42.667 42.667V256H896a21.333 21.333 0 0 1 21.333 21.333v322.603a21.333 21.333 0 0 1-18.56 21.163l-472.106 61.568V896a21.333 21.333 0 0 1-21.334 21.333h-42.666A21.333 21.333 0 0 1 341.333 896V630.485a21.333 21.333 0 0 1 18.56-21.162L832 547.755V341.333h-85.333zM192 213.333V384h469.333V213.333H192z'/%3E%3C/svg%3E"), auto;
     &.not-selected {
       border: 1px solid transparent;
+      z-index: -1;
       >div {
         opacity: 0;
       }

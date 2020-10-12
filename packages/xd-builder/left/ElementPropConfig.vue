@@ -28,6 +28,9 @@
           <el-option label="拉伸" value="fill" />
         </el-select>
       </el-form-item>
+      <el-form-item label="作为模板">
+        <el-checkbox v-model="element.template">是</el-checkbox>
+      </el-form-item>
       <el-form-item label="视角高度">
         <el-input-number v-model="element.style.perspective" controls-position="right" size="mini" />
       </el-form-item>
