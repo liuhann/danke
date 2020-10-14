@@ -97,11 +97,13 @@ export default {
     },
 
     editWorkProp (work) {
-      this.$set(work, 'system', {
-        site: false,
-        template: false,
-        app: ''
-      })
+      if (!work.system || !work.system.app) {
+        this.$set(work, 'system', {
+          site: false,
+          template: false,
+          app: ''
+        })
+      }
       this.currentWork = work
       this.dialogVisible = true
     },

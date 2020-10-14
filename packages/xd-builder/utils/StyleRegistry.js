@@ -129,7 +129,6 @@ export const fontFamilies = [{
 export default class StyleRegistry {
   constructor (ctx) {
     this.sheet = createSheet('style-registry')
-    this.framedao = new RestDAO(ctx, 'danke/animation')
     this.styles = {}
     this.svgfilters = []
     this.keyframes = {}
@@ -149,17 +148,6 @@ export default class StyleRegistry {
     this.svgs = {}
     this.fonts = {}
   }
-
-  async loadAllFrames () {
-    const result = await this.framedao.list({
-      count: 1000
-    })
-
-    for (let frame of result.list) {
-      this.addFrame(frame)
-    }
-  }
-
   /**
    * 统一增加SVG内容，避免SVG图片反复使用存储位置过多的问题。 一些SVG图片也有近100K大小
    * @param {*} vector
@@ -179,6 +167,7 @@ export default class StyleRegistry {
     }
     if (!this.fonts[font.id]) {
       addFontFace(this.sheet, font.url, font.id)
+      this.fonts[font.id] = font.url
     }
   }
 

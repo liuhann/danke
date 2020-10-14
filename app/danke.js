@@ -3,4 +3,5 @@ import frames from '../packages/frames'
 import vectors from '../packages/vectors'
 import styles from '../packages/styles'
 import ticks from '../packages/music-ticker'
-export default [xd, frames, vectors, ticks, styles]
+import avatar from '../packages/avatar-decorator'
+export default [xd, frames, vectors, ticks, styles, avatar]
