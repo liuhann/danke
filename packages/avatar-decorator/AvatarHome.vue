@@ -36,9 +36,10 @@
         <ul class="work-list-wrapper">
           <li v-for="work in recents" :key="work._id">
             <div class="scene-wrapper" :style="{
-              width: viewport.width + 'px',
-              height: viewport.height + 'px'
-            }"
+                   width: viewport.width + 'px',
+                   height: viewport.height + 'px'
+                 }"
+                 @click="applyDecorator(work)"
             >
               <render-scene :view-box="work.viewBox" :scene="work.scenes[0]" :view-port="work.viewport" :stage="work.stage" />
             </div>
@@ -71,9 +72,10 @@ export default {
     return {
       logo,
       user: this.ctx.user,
+      currentWork: {},
       viewport: {
-        width: 200,
-        height: 200
+        width: 240,
+        height: 240
       },
       recents: []
     }
@@ -95,12 +97,28 @@ export default {
 
   mounted () {
     this.loadWorks()
-    this.viewport.width = (window.screen.width - 40 ) / 3 - 20
-    this.viewport.height = (window.screen.width - 40 ) / 3 - 20
+    if (window.screen.width < 720) {
+      this.viewport.width = (window.screen.width - 40 ) / 3 - 10
+      this.viewport.height = (window.screen.width - 40 ) / 3 - 10
+    }
   },
 
   methods: {
     getImageUrl,
+
+    applyDecorator (work) {
+      this.currentWork = JSON.parse(JSON.stringify(work))
+      this.setWorkVariable()
+    },
+
+    setWorkAvatar (work) {
+      for (let element of work.scenes[0].elements) {
+        if (element.name === 'avatar') {
+          element.url = this.user.avatar
+        }
+      }
+    },
+
     async loadWorks () {
       const result = await this.workdao.list(Object.assign({
         'system.app': 'avatar',
@@ -115,6 +133,7 @@ export default {
           }
         }
         work.viewport = this.viewport
+        this.setWorkAvatar(work)
         this.recents.push(work)
       }
     },
