@@ -119,11 +119,11 @@ export const fontFamilies = [{
 }, {
   id: 'HYRunYuan-65J',
   name: '汉仪润圆简',
-  url: './fonts/HYRunYuan-65J.woff'
+  url: '/fonts/HYRunYuan-65J.woff'
 }, {
   id: 'HelloFont_WenYiHei',
   name: '字由文艺黑',
-  url: './fonts/HelloFont_WenYiHei.woff'
+  url: '/fonts/HelloFont_WenYiHei.woff'
 }]
 
 export default class StyleRegistry {

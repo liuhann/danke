@@ -107,8 +107,8 @@ export default {
     getImageUrl,
 
     applyDecorator (work) {
+      window.open(`/capture/image/${work.id}`)
       this.currentWork = JSON.parse(JSON.stringify(work))
-      this.setWorkVariable()
     },
 
     setWorkAvatar (work) {

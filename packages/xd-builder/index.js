@@ -50,6 +50,9 @@ export default {
     path: '/capture/:work',
     component: () => import(/* webpackChunkName: "preview" */'./preview/CapturePreview.vue')
   }, {
+    path: '/capture/image/:work',
+    component: () => import(/* webpackChunkName: "preview" */'./preview/ScenePreview.vue')
+  }, {
     path: '/work/manage',
     component: () => import(/* webpackChunkName: "manage" */'./center/WorkManage.vue')
   }, {
