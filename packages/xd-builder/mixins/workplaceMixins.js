@@ -91,10 +91,10 @@ export default {
         width: element.width || 200,
         height: element.height || 200,
         // 样式信息
-        style: {},
-        variables: [],
+        style: element.style || {},
+        variables: element.variables || [],
         // 动效信息
-        animation: {
+        animation: element.animation || {
           enter: [],
           exit: [],
           preview: []
@@ -107,10 +107,15 @@ export default {
         locked: false,
         selected: false
       }
+      node.variables = element.variables
       // 设置文字的自适应大小
       if (element.text) {
         node.name = '文本'
+        node.text = element.text
         Object.assign(node, textMesure(element.text, element.variables.filter(variable => variable.type === 'fontSize')[0].value))
+      }
+      if (element.html) {
+        node.html = element.html
       }
       // image has mask attr
       if (element.url) {

@@ -4,7 +4,7 @@
        :class="elementClass" :style="elementWrapperStyle" @click="elementClicked"
   >
     <!--图片渲染-->
-    <img v-if="element.url && (!element.fill)" :id="'img-' + (element.name || element.id)" :src="getImageUrl(element.url, viewPort.width, viewPort.height)" :style="elementStyle">
+    <img v-if="elementUrl" :id="'img-' + (element.name || element.id)" :src="elementUrl" :style="elementStyle">
     <div v-else-if="element.content" class="svg-content" :style="elementStyle" v-html="element.content" />
     <div v-else-if="element.elements" class="block-elements" :style="elementStyle">
       <render-element v-for="(el, i) in element.elements" :key="el.id" :view-box="viewBox" :view-port="viewPort" :element="el" :index="i" />
@@ -67,6 +67,9 @@ export default {
     element: { // 元素定义
       type: Object
     },
+    variables: {
+      type: Array
+    },
     index: { // 索引，多个元素时决定显示次序
       type: Number
     },
@@ -79,6 +82,16 @@ export default {
     }
   },
   computed: {
+    elementUrl () {
+      const filterSet = (this.variables || []).filter(variable => variable.type === 'image')
+      if (filterSet.length === 1) {
+        return filterSet[0].value
+      } else if (this.element.url) {
+        return this.getImageUrl(this.element.url, this.viewPort.width, this.viewPort.height)
+      } else {
+        return null
+      }
+    },
     inlineStyle () {
       let stageVariables = this.element.variables.filter(variable => variable[this.stage] != null)
       if (stageVariables.length) {
@@ -403,7 +416,7 @@ export default {
   img {
     mask-size: 100% 100%;
   }
-  html {
+  .html {
     width: 100%;
     height: 100%;
   }
@@ -428,7 +441,6 @@ export default {
   /*-webkit-background-clip: text;*/
   /*-webkit-text-fill-color: transparent;*/
   img {
-    position: absolute;
     z-index: 10;
     width: 100%;
     height: 100%;

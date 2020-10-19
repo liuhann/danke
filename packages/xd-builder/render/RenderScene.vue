@@ -1,6 +1,6 @@
 <template>
   <div class="scene" :style="sceneStyle" :class="sceneClass" @click="$emit('click')">
-    <render-element v-for="element of scene.elements" :key="element.id" :view-port="viewPort" :element="element" :view-box="viewBox" :stage="stage">
+    <render-element v-for="element of scene.elements" :key="element.id" :variables="getElementVariable(element)" :view-port="viewPort" :element="element" :view-box="viewBox" :stage="stage">
     </render-element>
   </div>
 </template>
@@ -14,6 +14,16 @@ export default {
   name: 'RenderScene',
   components: { RenderElement },
   props: {
+    scale: {
+      type: Number,
+      default: 1
+    },
+    variables: {
+      type: Array,
+      dafault: function () {
+        return []
+      }
+    },
     // 渲染阶段 可以为进入、离开2个
     stage: {
       type: String
@@ -45,6 +55,7 @@ export default {
         width: this.viewPort.width + 'px',
         height: this.viewPort.height + 'px',
         zIndex: this.scene.z,
+        transform: 'scale(' + this.scale + ')',
         backgroundColor: this.scene.color
       }
       for (let key in this.scene.style) {
@@ -56,6 +67,15 @@ export default {
       }
       return styles
     },
+  },
+  methods: {
+    getElementVariable (element) {
+      if (this.variables) {
+        return this.variables.filter(variable => variable.element === element.id)
+      } else {
+        return []
+      }
+    }
   }
 }
 </script>
@@ -63,5 +83,6 @@ export default {
 <style lang="scss" scoped>
 .scene {
   position: relative;
+  transform-origin: top left;
 }
 </style>
