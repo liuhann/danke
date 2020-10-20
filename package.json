@@ -21,6 +21,7 @@
     "events": "^3.2.0",
     "file-saver": "^2.0.2",
     "howler": "^2.2.0",
+    "html-to-image": "^0.1.1",
     "image-preloader": "^1.1.1",
     "imagesloaded": "^4.1.4",
     "interactjs": "^1.9.22",

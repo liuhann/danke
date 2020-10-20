@@ -92,6 +92,18 @@ export default {
         return null
       }
     },
+
+    elementText () {
+      const filterSet = (this.variables || []).filter(variable => variable.type === 'text')
+      if (filterSet.length === 1) {
+        return filterSet[0].value
+      } else if (this.element.text && !this.element.editing) {
+        return this.element.text
+      } else {
+        return null
+      }
+    },
+
     inlineStyle () {
       let stageVariables = this.element.variables.filter(variable => variable[this.stage] != null)
       if (stageVariables.length) {
@@ -162,6 +174,9 @@ export default {
       }
       // 变量配置信息
       assignVariables(style, this.element.variables)
+      // 合并外围配置变量信息
+      assignVariables(style, this.variables.filter(variable => variable.variable))
+
       // 位置信息
       Object.assign(style, getRectPositionStyle(this.element, this.viewBox, this.viewPort))
       // Object.assign(style, this.elementAnimationStyle)
@@ -271,8 +286,8 @@ export default {
     },
 
     elementTextLines () {
-      if (this.element.text != null && !this.element.editing) {
-        return this.element.text.split('\n')
+      if (this.elementText) {
+        return this.elementText.split('\n')
       } else {
         return []
       }

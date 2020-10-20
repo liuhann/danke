@@ -1,8 +1,8 @@
 <template>
   <div class="page-scene-preview">
-    <div v-if="work" class="preview-container">
+    <div v-if="work" ref="container" class="preview-container">
       <div class="device" :style="deviceStyle">
-        <render-scene :scene="work.scenes[sceneIndex]" :view-port="viewPort" :view-box="work.viewBox" />
+        <render-scene :variables="variables" :scene="work.scenes[sceneIndex]" :view-port="viewPort" :view-box="work.viewBox" />
       </div>
     </div>
   </div>
@@ -13,6 +13,7 @@ import StyleRegistry from '../utils/StyleRegistry.js'
 import workMixin from '../mixins/workMixin.js'
 import sceneMixin from '../mixins/sceneMixins.js'
 import RenderScene from '../render/RenderScene'
+import RestDAO from '../../utils/restdao'
 export default {
   name: 'Preview',
   components: {
@@ -22,6 +23,7 @@ export default {
   data () {
     return {
       sceneIndex: 0,
+      variables: [],
       viewPort: {
         width: 100,
         height: 100,
@@ -38,17 +40,34 @@ export default {
     }
   },
   created () {
+    this.followdao = new RestDAO(this.ctx, 'danke/follow')
     this.ctx.styleRegistry = new StyleRegistry(this.ctx)
   },
   mounted () {
-    this.loadAndInitDevice(this.$route.params.work)
+    this.loadAndInitDevice(this.$route.params.id)
   },
   methods: {
-    async loadAndInitDevice (workId) {
+    async loadAndInitDevice (id) {
+      const follow = await this.followdao.getOne(id)
+      this.variables = follow.variables
       // 加载作品
-      await this.loadWork(workId)
+      await this.loadWork(follow.work)
       // 设置显示屏幕大小
       this.viewPort = this.work.viewBox
+
+      this.$nextTick(() => {
+        const allImgs = document.querySelectorAll('img')
+        let total = allImgs.length
+        let loaded = 0
+        for (let img of allImgs) {
+          img.onload = function () {
+            loaded ++
+            if (loaded === total) {
+              window.avatarReady && window.avatarReady()
+            }
+          }
+        }
+      })
     }
   }
 }

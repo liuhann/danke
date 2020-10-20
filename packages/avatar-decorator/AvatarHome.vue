@@ -3,7 +3,7 @@
     <div class="container">
       <div class="logo-wrapper">
         <img :src="logo" />
-        <p class="share">由 <a href="http://danke.fun">蛋壳分享</a>提供</p>
+        <p class="share">由 <a href="http://danke.fun">蛋壳分享</a> 提供</p>
       </div>
       <div class="raw-avatar">
         <div>
@@ -14,8 +14,8 @@
             class="upload-container"
             :on-change="avatarChosen"
           >
-            <img class="raw" :src="userAvatar" />
           </el-upload>
+          <img class="raw" :src="userAvatar" @click="requestDownload" />
         </div>
         <div class="raw-preview-container">
           <div class="preview size-rect">
@@ -23,15 +23,15 @@
             <img v-else class="raw" :src="userAvatar" />
           </div>
           <div class="preview size-circle">
-            <render-scene v-if="currentWork" :view-box="currentWork.viewBox" :scale="64/960" :scene="currentWork.scenes[0]" :view-port="currentWork.viewBox" :stage="currentWork.stage" />
+            <render-scene v-if="currentWork" :variables="variables" :view-box="currentWork.viewBox" :scale="64/960" :scene="currentWork.scenes[0]" :view-port="currentWork.viewBox" :stage="currentWork.stage" />
             <img v-else class="raw" :src="userAvatar" />
           </div>
           <div class="preview size-radius-20">
-            <render-scene v-if="currentWork" :view-box="currentWork.viewBox" :scale="64/960" :scene="currentWork.scenes[0]" :view-port="currentWork.viewBox" :stage="currentWork.stage" />
+            <render-scene v-if="currentWork" :variables="variables" :view-box="currentWork.viewBox" :scale="64/960" :scene="currentWork.scenes[0]" :view-port="currentWork.viewBox" :stage="currentWork.stage" />
             <img v-else class="raw" :src="userAvatar" />
           </div>
           <div class="preview size-radius-40">
-            <render-scene v-if="currentWork" :view-box="currentWork.viewBox" :scale="64/960" :scene="currentWork.scenes[0]" :view-port="currentWork.viewBox" :stage="currentWork.stage" />
+            <render-scene v-if="currentWork" :variables="variables" :view-box="currentWork.viewBox" :scale="64/960" :scene="currentWork.scenes[0]" :view-port="currentWork.viewBox" :stage="currentWork.stage" />
             <img v-else class="raw" :src="userAvatar" />
           </div>
         </div>
@@ -39,9 +39,10 @@
           <div v-for="(variable, index) in variables" :key="index" class="variable">
             <div v-if="variable.type==='color'" class="color-input">
               <input v-model="variable.value" />
-              <v-swatches v-model="variable.value" :row-length="width > 400? 6: 5" popover-y="bottom"
-                          shapes="circles"
-              ></v-swatches>
+              <v-swatches v-model="variable.value" :row-length="width > 400? 6: 5" popover-y="bottom" :trigger-style="{
+                width: '32px', height: '32px'
+              }" shapes="circles"
+              />
             </div>
             <div v-if="variable.type==='text'" class="text-input">
               <input v-model="variable.value" />
@@ -61,7 +62,7 @@
                  }"
                  @click="applyDecorator(work)"
             >
-              <render-scene :view-box="work.viewBox" :scale="120/960" :scene="work.scenes[0]" :view-port="work.viewBox" :stage="work.stage" />
+              <render-scene :view-box="work.viewBox" :scale="viewport.width/960" :scene="work.scenes[0]" :view-port="work.viewBox" :stage="work.stage" />
             </div>
           </li>
         </ul>
@@ -108,7 +109,7 @@ export default {
   computed: {
     userAvatar () {
       if (this.user && this.user.avatar) {
-        return this.getImageUrl(this.user.avatar, 240, 240)
+        return this.getImageUrl(this.user.avatar, 960, 960)
       } else {
         return ''
       }
@@ -116,6 +117,7 @@ export default {
   },
   created () {
     this.workdao = new RestDAO(this.ctx, 'danke/work')
+    this.followdao = new RestDAO(this.ctx, 'danke/follow')
     this.imagedao = new ImageDAO(this.ctx)
     this.styleRegistry = new StyleRegistry(this.ctx)
   },
@@ -123,17 +125,31 @@ export default {
   mounted () {
     this.loadWorks()
     this.width = window.screen.availWidth
+    this.viewport = {
+      width: (this.width - 40) / 3 - 10,
+      height: (this.width - 40) / 3 - 10
+    }
   },
 
   methods: {
     getImageUrl,
+
+    async requestDownload () {
+      await this.followdao.create({
+        id: this.ctx.user.id,
+        work: this.currentWork.id,
+        variables: this.variables
+      })
+      const response = await this.ctx.get('danke/avatar/download?id=' + this.ctx.user.id)
+      console.log(response)
+      window.open(this.getImageUrl(response.data.data.url, 640, 640))
+    },
     applyDecorator (work) {
-      // window.open(`/capture/image/${work.id}`)
       this.currentWork = JSON.parse(JSON.stringify(work))
       this.variables = [];
       for (let element of this.currentWork.scenes[0].elements) {
         if (element.template) {
-          if (element.type === 'img') {
+          if (element.url) {
             this.variables.push({
               element: element.id,
               type: 'image',
@@ -150,6 +166,7 @@ export default {
               this.variables.push({
                 variable: true,
                 element: element.id,
+                name: variable.name,
                 type: variable.type,
                 value: variable.value
               })
@@ -157,7 +174,8 @@ export default {
           }
         }
       }
-      console.log(this.variables)
+      console.log('variables', this.variables)
+      // window.open(`/capture/image/${work.id}`)
     },
     setWorkAvatar (work) {
       for (let element of work.scenes[0].elements) {
@@ -226,6 +244,7 @@ export default {
 
   .raw-avatar {
     margin: var(--padding);
+    margin-bottom: 5px;
     border: 2px dashed #eee;
     border-radius: 1rem;
     text-align: center;
@@ -243,7 +262,6 @@ export default {
         width: 64px;
         height: 64px;
         margin: 0px 3px;
-        border: 1px solid #eee;
         overflow: hidden;
         >img {
           width: 64px;
@@ -272,23 +290,30 @@ export default {
           box-sizing: border-box;
           appearance: none;
           font-size: 1.8rem;
+          background: transparent;
+          -webkit-tap-highlight-color: rgba(0,0,0,0);
+          outline: none;
           height: 4.5rem;
           color:rgb(66,66,66);
           padding-left: 1rem;
           padding-right: 1rem;
-          border-radius: 0.5rem;
           border-color: transparent;
-          background-color: #f5f5f5;
           border-width: 0.125rem;
           box-shadow: none;
           font-weight: 700;
-          width: 80%;
         }
 
+        .text-input {
+          background-color: #f9f9f9;
+          border-radius: 0.5rem;
+        }
         .color-input {
+          background-color: #f9f9f9;
+          border-radius: 0.5rem;
           .vue-swatches {
             position: absolute;
-            right: 20px;
+            top: 1.1rem;
+            right: 2rem;
             .vue-swatches__container {
               z-index: 1001;
             }
@@ -297,11 +322,19 @@ export default {
       }
     }
   }
+  .title {
+    font-size: 1.8rem;
+    letter-spacing: .3rem;
+    line-height: 4.5rem;
+    margin: 0 2rem;
+  }
   .work-list-wrapper {
-    margin: 20px;
+    margin: 0 2rem;
     display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
     li {
-      margin: 5px;
+      margin: 5px 0;
     }
   }
 }
