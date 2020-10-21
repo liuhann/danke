@@ -40,8 +40,8 @@ export default class ImageDAO {
       blob.lastModifiedDate = new Date()
     }
     formData.append('file', blob, blob.filename)
-    const response = await this.ctx.post(`image/upload?path=${path}`, formData)
-    return response.data
+    const response = await this.ctx.post(`${this.bucket}/image/upload?path=${path}`, formData)
+    return response.data.data
   }
 
 

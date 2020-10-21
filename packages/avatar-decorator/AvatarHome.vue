@@ -6,23 +6,12 @@
         <p class="share">由 <a href="http://danke.fun">蛋壳分享</a> 提供</p>
       </div>
       <div class="raw-avatar">
-        <div>
-          <el-upload
-            ref="imageUpload" :auto-upload="false"
-            action="http://danke.fun"
-            :show-file-list="false"
-            class="upload-container"
-            :on-change="avatarChosen"
-          >
-          </el-upload>
+        <div class="preview-original">
+          <render-scene v-if="currentWork" :variables="variables" :view-box="currentWork.viewBox" :scale="96/960" :scene="currentWork.scenes[0]" :view-port="currentWork.viewBox" :stage="currentWork.stage" />
           <img class="raw" :src="userAvatar" @click="requestDownload" />
         </div>
         <div class="raw-preview-container">
-          <div class="preview size-rect">
-            <render-scene v-if="currentWork" :variables="variables" :view-box="currentWork.viewBox" :scale="64/960" :scene="currentWork.scenes[0]" :view-port="currentWork.viewBox" :stage="currentWork.stage" />
-            <img v-else class="raw" :src="userAvatar" />
-          </div>
-          <div class="preview size-circle">
+          <div class="preview size-radius-10">
             <render-scene v-if="currentWork" :variables="variables" :view-box="currentWork.viewBox" :scale="64/960" :scene="currentWork.scenes[0]" :view-port="currentWork.viewBox" :stage="currentWork.stage" />
             <img v-else class="raw" :src="userAvatar" />
           </div>
@@ -30,7 +19,11 @@
             <render-scene v-if="currentWork" :variables="variables" :view-box="currentWork.viewBox" :scale="64/960" :scene="currentWork.scenes[0]" :view-port="currentWork.viewBox" :stage="currentWork.stage" />
             <img v-else class="raw" :src="userAvatar" />
           </div>
-          <div class="preview size-radius-40">
+          <div class="preview size-radius-30">
+            <render-scene v-if="currentWork" :variables="variables" :view-box="currentWork.viewBox" :scale="64/960" :scene="currentWork.scenes[0]" :view-port="currentWork.viewBox" :stage="currentWork.stage" />
+            <img v-else class="raw" :src="userAvatar" />
+          </div>
+          <div class="preview size-circle">
             <render-scene v-if="currentWork" :variables="variables" :view-box="currentWork.viewBox" :scale="64/960" :scene="currentWork.scenes[0]" :view-port="currentWork.viewBox" :stage="currentWork.stage" />
             <img v-else class="raw" :src="userAvatar" />
           </div>
@@ -48,6 +41,13 @@
               <input v-model="variable.value" />
             </div>
           </div>
+        </div>
+        <div class="action">
+          <el-button @click="$refs.file.click()">
+            更换
+            <input ref="file" type="file" accept="image/*" @change="uploadImage($event)">
+          </el-button>
+          <el-button @click="requestDownload">下载</el-button>
         </div>
       </div>
       <div class="template-recents">
@@ -70,6 +70,32 @@
       <div class="template-category">
       </div>
     </div>
+    <div v-show="image" class="avatar-crop-container">
+      <div class="avatar-crop">
+        <cropper
+          ref="cropper"
+          class="upload-example-cropper"
+          :stencil-props="{
+            handlers: {},
+            movable: false,
+            scalable: false,
+            aspectRatio: 1,
+          }"
+          image-restriction="stencil"
+          :default-boundaries="() => ({
+            width,
+            height: width
+          })"
+          :src="image"
+        />
+      </div>
+      <div class="action">
+        <el-button @click="uploadTempAvatar">
+          确定
+        </el-button>
+        <el-button @click="image = null">取消</el-button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -80,6 +106,7 @@ import logo from './D.png'
 import { getImageUrl } from '../xd-builder/mixins/imageUtils'
 import RenderScene from '../xd-builder/render/RenderScene'
 import ImageDAO from '../utils/imagedao'
+import { Cropper } from 'vue-advanced-cropper'
 import { fitRectIntoBounds } from '../xd-builder/mixins/rectUtils'
 import VSwatches from 'vue-swatches'
 import 'vue-swatches/dist/vue-swatches.css'
@@ -90,10 +117,12 @@ export default {
     [Upload.name]: Upload,
     [Button.name]: Button,
     VSwatches,
+    Cropper,
     RenderScene
   },
   data () {
     return {
+      image: null,
       logo,
       user: this.ctx.user,
       width: 414,
@@ -133,6 +162,38 @@ export default {
 
   methods: {
     getImageUrl,
+    uploadImage(event) {
+      // Reference to the DOM input element
+      const input = event.target;
+      // Ensure that you have a file before attempting to read it
+      if (input.files && input.files[0]) {
+        // create a new FileReader to read this image and convert to base64 format
+        const reader = new FileReader();
+        // Define a callback function to run, when FileReader finishes its job
+        reader.onload = (e) => {
+          // Note: arrow function used here, so that "this.imageData" refers to the imageData of Vue component
+          // Read image as base64 and set to imageData
+          this.image = e.target.result;
+        };
+        // Start the reader job - read file as a data url (base64 format)
+        reader.readAsDataURL(input.files[0]);
+      }
+    },
+
+    uploadTempAvatar () {
+      const { canvas } = this.$refs.cropper.getResult();
+      if (canvas) {
+        const form = new FormData();
+        canvas.toBlob(async blob => {
+          const result = await this.imagedao.uploadBlob(blob, `profile`)
+          await this.ctx.userdao.setAvatar(result.name)
+          const user = await this.ctx.userdao.getCurrentUser()
+          this.ctx.user = user
+          this.user = user
+          this.image = null
+        })
+      }
+    },
 
     async requestDownload () {
       await this.followdao.create({
@@ -141,9 +202,16 @@ export default {
         variables: this.variables
       })
       const response = await this.ctx.get('danke/avatar/download?id=' + this.ctx.user.id)
-      console.log(response)
-      window.open(this.getImageUrl(response.data.data.url, 640, 640))
+      this.downloadFile(this.getImageUrl(response.data.data.url, 640, 640))
     },
+
+    downloadFile(filePath) {
+      var link=document.createElement('a');
+      link.href = filePath;
+      link.download = true
+      link.click();
+    },
+
     applyDecorator (work) {
       this.currentWork = JSON.parse(JSON.stringify(work))
       this.variables = [];
@@ -174,8 +242,6 @@ export default {
           }
         }
       }
-      console.log('variables', this.variables)
-      // window.open(`/capture/image/${work.id}`)
     },
     setWorkAvatar (work) {
       for (let element of work.scenes[0].elements) {
@@ -248,14 +314,25 @@ export default {
     border: 2px dashed #eee;
     border-radius: 1rem;
     text-align: center;
-    padding: 3rem 0;
+    padding: 2rem 0;
+
+    .preview-original {
+      margin: 0 auto;
+      width: 96px;
+      height: 96px;
+      overflow: hidden;
+      >img {
+        width: 96px;
+        height: 96px;
+      }
+    }
     img.raw {
       height: 10rem;
       width: 10rem;
     }
 
     .raw-preview-container {
-      margin: 3rem 0;
+      margin: 2rem 0 1rem;
       display: flex;
       justify-content: center;
       .preview {
@@ -271,11 +348,14 @@ export default {
       .size-circle {
         border-radius: 50%;
       }
-      .size-radius-40 {
-        border-radius: 40%;
+      .size-radius-30 {
+        border-radius: 30%;
       }
       .size-radius-20 {
         border-radius: 20%;
+      }
+      .size-radius-10 {
+        border-radius: 10%;
       }
     }
 
@@ -322,6 +402,13 @@ export default {
       }
     }
   }
+
+  .action {
+    input[type="file"] {
+      display: none;
+    }
+  }
+
   .title {
     font-size: 1.8rem;
     letter-spacing: .3rem;
@@ -335,6 +422,23 @@ export default {
     justify-content: space-between;
     li {
       margin: 5px 0;
+    }
+  }
+  .avatar-crop-container {
+    position: absolute;
+    z-index: 10001;
+    height: 100vh;
+    width: 100vw;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background: #ffffffe0;
+    .avatar-crop {
+      width: 100vw;
+      height: 100vw;
     }
   }
 }

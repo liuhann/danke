@@ -137,7 +137,6 @@ export default {
     async save () {
       this.html.html = this.editor.getValue()
       delete this.html.content
-      debugger
       const result = await this.dao.update(this.html)
       Message.success('保存成功')
     }

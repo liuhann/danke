@@ -12,7 +12,7 @@
           :key="index"
           class="image-container"
           draggable
-          @click="remove(image)"
+          @click="showImageInfo(image)"
           @dragstart="dragStart(image, $event)"
         >
           <div style="color: #fff; position: absolute; left: 0px; top:5px;">
@@ -32,6 +32,7 @@ import { InfiniteScroll } from 'element-ui'
 import { getImageUrl} from '../mixins/imageUtils'
 import DialogPublicImage from './DialogPublicImage'
 import ImageDAO from '../../utils/imagedao'
+import getImageSize from '../../utils/imageSize'
 export default {
   name: 'PublicImageGallery',
   directives: {
@@ -79,6 +80,7 @@ export default {
       img.height = img.h
       ev.dataTransfer.setData('Text', JSON.stringify(img))
     },
+
     async fetchMoreImages () {
       if (this.images.length === this.total) {
         return

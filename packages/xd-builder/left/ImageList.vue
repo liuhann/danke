@@ -114,7 +114,8 @@
     <el-dialog
       title="图片编辑"
       :visible.sync="dialogVisible"
-      width="30%">
+      width="30%"
+    >
       <el-form size="mini">
         <el-form-item label="宽度">
           <el-input-number v-model="currentImage.width" size="mini" controls-position="right" />
@@ -127,7 +128,8 @@
             v-model="currentImage.tags"
             multiple
             filterable
-            allow-create />
+            allow-create
+          />
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -334,8 +336,6 @@ export default {
         this.loadAlbumImages()
       }
     },
-
-
     /**
      * 获取及替换颜色操作
      */
