@@ -81,7 +81,7 @@ export default {
   },
   methods: {
     confirmWork () {
-      this.workdao.patch(this.currentWork._id, {
+      this.workdao.patch(this.currentWork.id, {
         system: this.currentWork.system
       })
     },

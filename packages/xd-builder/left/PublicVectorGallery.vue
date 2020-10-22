@@ -5,7 +5,7 @@
         <el-button slot="append" icon="el-icon-search" @click="filterWith(searchValue)"></el-button>
       </el-input>
     </div>
-    <div ref="scrollContainer" class="list-wrapper" @scroll="containerScroll">
+    <div ref="scrollContainer" class="list-wrapper" @scroll="containerScroll" @dblclick="showVectorInfo({})">
       <ul ref="imageList" class="list-container">
         <li
           v-for="(vector, index) in vectors"

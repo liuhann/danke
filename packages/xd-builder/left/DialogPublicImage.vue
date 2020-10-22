@@ -25,16 +25,18 @@
       <el-form-item v-if="isEdit" label="操作">
         <el-button type="danger" size="mini" @click="remove">删除</el-button>
         <el-button type="success" size="mini" @click="update">更新</el-button>
-        <el-upload
-          :auto-upload="false"
-          action="none"
-          accept="image/*"
-          :show-file-list="false"
-          class="upload-container"
-          :on-change="(file, uploadFiles) => fileChoosed(file, uploadFiles, album)"
-        >
-          <el-button size="small" type="primary">点击上传</el-button>
-        </el-upload>
+        <span>
+          <el-upload
+            :auto-upload="false"
+            action="none"
+            accept="image/*"
+            :show-file-list="false"
+            class="upload-container"
+            :on-change="(file, uploadFiles) => fileChoosed(file, uploadFiles)"
+          >
+            <el-button size="small" type="primary">点击上传</el-button>
+          </el-upload>
+        </span>
       </el-form-item>
     </el-form>
   </el-dialog>
@@ -99,16 +101,19 @@
       },
       // may be choose multiple files, should do auto upload on choose
       // each file would trigger fileChoosed event
-      async fileChoosed (file, uploadFiles, album) {
+      async fileChoosed (file, uploadFiles) {
         const imageObject = {
           name: file.name,
           size: file.size,
         }
-        let result = await this.imagedao.uploadBlob(file.raw, `public/images`)
+        let result = await this.imagedao.uploadBlob(file.raw, `public/images`, true)
         imageObject.url = result.name
-        Object.assign(imageObject, await getImageSize(file.raw))
+        const size = await getImageSize(file.raw)
+        imageObject.w = size.width
+        imageObject.h = size.height
         // write file info
         await this.restdao.create(imageObject)
+        this.closeDialog()
       },
     }
   }
@@ -125,7 +130,6 @@
   width: 100%;
 }
 .bold-title {
-  font-weight: bold;
   font-size: 1.3rem;
 }
 

@@ -197,7 +197,7 @@ export default {
         this.work._id = result.object._id
         this.$router.replace('/xd?work=' + this.work.id)
       } else {
-        await this.workdao.patch(work._id, work)
+        await this.workdao.patch(work.id, work)
       }
       this.savingWork = false
       loadingInstance.close()

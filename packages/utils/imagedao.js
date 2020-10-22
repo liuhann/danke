@@ -33,14 +33,14 @@ export default class ImageDAO {
    * @param path 位于个人空间的目录位置
    * @return {Promise<*|JSONValue>}
    */
-  async uploadBlob (blob, path) {
+  async uploadBlob (blob, path, isPublic) {
     // check file size
     const formData = new window.FormData()
     if (!blob.lastModifiedDate) {
       blob.lastModifiedDate = new Date()
     }
     formData.append('file', blob, blob.filename)
-    const response = await this.ctx.post(`${this.bucket}/image/upload?path=${path}`, formData)
+    const response = await this.ctx.post(`${this.bucket}/image/upload?path=${path}${isPublic?'&public=true':''}`, formData)
     return response.data.data
   }
 

@@ -174,8 +174,11 @@ export default {
       }
       // 变量配置信息
       assignVariables(style, this.element.variables)
+
       // 合并外围配置变量信息
-      assignVariables(style, this.variables.filter(variable => variable.variable))
+      if (this.variables) {
+        assignVariables(style, this.variables.filter(variable => variable.variable))
+      }
 
       // 位置信息
       Object.assign(style, getRectPositionStyle(this.element, this.viewBox, this.viewPort))
