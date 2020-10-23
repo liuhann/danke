@@ -28,7 +28,6 @@
 
 <script>
 import RestDAO from '../../utils/restdao.js'
-import { InfiniteScroll } from 'element-ui'
 import DialogPublicImage from './DialogPublicImage'
 import { getImageUrl} from '../mixins/imageUtils'
 import ImageDAO from '../../utils/imagedao'
