@@ -28,14 +28,11 @@
           <div class="node" :class="nav==='my'? 'selected': ''" @click="navTo('my')">
             <span>我的作品</span>
           </div>
-          <div class="node" :class="nav==='blocks'? 'selected': ''" @click="navTo('blocks')">
-            <span>我的图块</span>
+          <div class="node sub" :class="nav==='my'? 'selected': ''" @click="navTo('my')">
+            <span>相框</span>
           </div>
-          <div class="node" :class="nav==='images'? 'selected': ''" @click="navTo('blocks')">
-            <span>图片模板</span>
-          </div>
-          <div class="node" :class="nav==='vectors'? 'selected': ''" @click="navTo('vectors')">
-            <span>我的SVG图库</span>
+          <div class="node sub" :class="nav==='my'? 'selected': ''" @click="navTo('my')">
+            <span>头像</span>
           </div>
           <div class="node tree-node" :class="nav==='profile'? 'selected': ''" @click="navTo('profile')">
             <span>设置</span>
@@ -174,14 +171,16 @@ export default {
   }
   .main {
     display: flex;
-    padding: 0 2rem;
+    height: 100%;
     flex: 1;
     .nav {
       color: var(--textMainColor);
       width: 200px;
       height: calc(100% - 4rem);
-      margin: 2rem 0;
+      background-color: #fefefe;
       box-sizing: content-box;
+      border-right: 1px solid #efefef;
+      padding: 2rem 0;
       .me {
         padding: 8px 12px;
         display: flex;
@@ -214,7 +213,6 @@ export default {
           font-size: 1.5rem;
           padding: 8px 12px;
           cursor: pointer;
-          border-radius: 4px;
           width: 100%;
           height: 40px;
           display: flex;
@@ -240,6 +238,7 @@ export default {
     flex: 1;
     overflow-x: hidden;
     overflow-y: auto;
+    padding: 0 2rem;
     .body {
       .my-work-list {
         .line {

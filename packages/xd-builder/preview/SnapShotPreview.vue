@@ -1,8 +1,8 @@
 <template>
-  <div class="page-scene-preview">
+  <div class="page-snap-preview">
     <div v-if="work" ref="container" class="preview-container">
       <div class="device" :style="deviceStyle">
-        <render-scene :variables="variables" :scene="work.scenes[sceneIndex]" :view-port="viewPort" :view-box="work.viewBox" />
+        <render-scene :variables="work.variables" :scene="work.scenes[sceneIndex]" :view-port="work.viewBox" :view-box="work.viewBox" />
       </div>
     </div>
   </div>
@@ -15,7 +15,7 @@ import sceneMixin from '../mixins/sceneMixins.js'
 import RenderScene from '../render/RenderScene'
 import RestDAO from '../../utils/restdao'
 export default {
-  name: 'Preview',
+  name: 'SnapShotPreview',
   components: {
     RenderScene,
   },
@@ -24,23 +24,19 @@ export default {
     return {
       sceneIndex: 0,
       variables: [],
-      viewPort: {
-        width: 100,
-        height: 100,
-      },
       work: null
     }
   },
   computed: {
     deviceStyle () {
       return {
-        width: this.viewPort.width + 'px',
-        height: this.viewPort.height + 'px'
+        width: this.work.viewBox.width + 'px',
+        height: this.work.viewBox.height + 'px'
       }
     }
   },
   created () {
-    this.followdao = new RestDAO(this.ctx, 'danke/follow')
+    this.workdao = new RestDAO(this.ctx, 'danke/work')
     this.ctx.styleRegistry = new StyleRegistry(this.ctx)
   },
   mounted () {
@@ -48,10 +44,8 @@ export default {
   },
   methods: {
     async loadAndInitDevice (id) {
-      const follow = await this.followdao.getOne(id)
-      this.variables = follow.variables
-      // 加载作品
-      await this.loadWork(follow.work)
+      this.work = await this.workdao.getOne(id)
+      this.variables = this.work.variables
       // 设置显示屏幕大小
       this.viewPort = this.work.viewBox
 
@@ -74,7 +68,7 @@ export default {
 </script>
 
 <style lang="scss">
-.page-scene-preview {
+.page-snap-preview {
   .device {
     overflow: hidden;
   }

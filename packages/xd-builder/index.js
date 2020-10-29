@@ -20,22 +20,7 @@ export default {
     }, {
       path: 'new',
       component: () => import(/* webpackChunkName: "xd-creative" */'./center/AddNew.vue'),
-    }, {
-      path: 'vectors',
-      component: () => import(/* webpackChunkName: "xd-creative" */'./center/MyVectorPacks.vue'),
-    }, {
-      path: 'blocks',
-      component: () => import(/* webpackChunkName: "xd-creative" */'./center/MyBlocks.vue'),
-    }, {
-      path: 'images',
-      component: () => import(/* webpackChunkName: "xd-creative" */'./center/MyImagePacks.vue'),
-    }, {
-      path: 'pack/:id',
-      component: () => import(/* webpackChunkName: "xd-creative" */'./center/PackDetail.vue'),
-    }, {
-      path: 'svg/edit',
-      component: () => import(/* webpackChunkName: "res-edit" */'./center/PageSVGEdit.vue'),
-    }, {
+    },  {
       path: 'profile',
       component: () => import(/* webpackChunkName: "xd-creative" */'../user/UserProfile.vue'),
     }]
@@ -47,8 +32,8 @@ export default {
     path: '/slide/:work',
     component: () => import(/* webpackChunkName: "preview" */'./preview/SlidePreview.vue')
   }, {
-    path: '/work/follow/:id',
-    component: () => import(/* webpackChunkName: "preview" */'./preview/FollowPreview.vue')
+    path: '/work/snapshot/:id',
+    component: () => import(/* webpackChunkName: "preview" */'./preview/SnapShotPreview.vue')
   }, {
     path: '/work/manage',
     component: () => import(/* webpackChunkName: "manage" */'./center/WorkManage.vue')

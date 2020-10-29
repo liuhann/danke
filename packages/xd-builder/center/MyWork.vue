@@ -2,32 +2,13 @@
   <div class="my-works body">
     <div class="content-title">我的作品</div>
     <div ref="myWorkList" class="my-work-list">
-      <div v-for="work in verticalWorks" :key="work.id" class="work">
+      <div v-for="work in works" :key="work.id" class="work">
         <div class="work-container" :style="Object.assign({
           background: work.color
         }, verticalViewPortStyle(work))" @click="previewWork(work)"
         >
           <div class="work-viewport" :style="verticalViewPortStyle(work)">
             <render-scene :view-box="work.viewBox || work.screen" :scene="work.scenes[0]" :view-port="verticalViewPort(work)" :stage="work.stage" />
-          </div>
-        </div>
-        <div class="actions">
-          <div class="btns">
-            <i class="el-icon-video-camera" @click="replayWork(work)" />
-            <i class="el-icon-delete" @click="removeWork(work)" />
-            <i class="el-icon-edit" @click="editWork(work)" />
-          </div>
-        </div>
-      </div>
-    </div>
-    <div ref="myWorkList" class="my-work-list">
-      <div v-for="work in horizontalWorks" :key="work.id" class="work">
-        <div class="work-container" :style="Object.assign({
-          background: work.color
-        }, horizontalViewPortStyle(work))" @click="previewWork(work)"
-        >
-          <div class="work-viewport" :style="horizontalViewPortStyle(work)">
-            <render-scene :view-box="work.viewBox || work.screen" :scene="work.scenes[0]" :view-port="horizontalViewPort(work)" :stage="work.stage" />
           </div>
         </div>
         <div class="actions">

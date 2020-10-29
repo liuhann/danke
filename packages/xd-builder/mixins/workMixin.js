@@ -14,6 +14,7 @@ export default {
   data () {},
   created () {
     this.workdao = new RestDAO(this.ctx, 'danke/work')
+    this.previewdao = new RestDAO(this.ctx, 'danke/preview')
     this.styleRegistry = this.ctx.styleRegistry
   },
   methods: {
@@ -185,13 +186,14 @@ export default {
       if (this.savingWork) {
         return
       }
+      this.savingWork = true
       let loadingInstance = Loading.service({ fullscreen: true, text: '保存作品中' });
       const work = JSON.parse(JSON.stringify(this.work))
       // 抽取所有使用的frame style到work上，以便压缩使用空间
       Object.assign(work, this.getCommonResource())
       work.author = this.ctx.user.nick
       work.avatar = this.ctx.user.avatar
-      this.savingWork = true
+
       if (!this.work._id) {
         const result = await this.workdao.create(work)
         this.work._id = result.object._id
@@ -199,8 +201,20 @@ export default {
       } else {
         await this.workdao.patch(work.id, work)
       }
+
+      if (work.preview) {
+        await this.previewdao.delete(work.preview)
+      }
+
+      const previewResponse = this.previewdao.create({
+        work: this.work._id
+      })
+
       this.savingWork = false
       loadingInstance.close()
+
+      // 处理作品的预览
+
       Message.success({
         message: '作品已经保存',
         duration: 800
