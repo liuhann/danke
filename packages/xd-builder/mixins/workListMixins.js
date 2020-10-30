@@ -63,32 +63,10 @@ export default {
 
     async loadWorks () {
       const result = await this.workdao.list(Object.assign({
-        projection: 'scenes.1,updated,created,creator,name,id,frames,viewBox,title,author,avatar,color',
+        projection: 'updated,created,creator,name,id,frames,viewBox,title,author,avatar,color,snapshot',
         page: this.page,
         count: this.count
       }, this.listQuery()))
-
-      const svgs = []
-      for (let work of result.list) {
-        work.scenes[0].elements.forEach( element=> {
-          if (element.svg) {
-            svgs.push(element.svg)
-          }
-        })
-        work.stage = 'enter'
-        if (work.frames) {
-          this.ctx.styleRegistry.addFrames(work.frames)
-        }
-        work.viewport = fitRectIntoBounds(work.viewBox || work.screen || {
-          width: 200,
-          height: 150
-        }, this.viewport())
-      }
-      // const svgRes = await this.h5dao.multiGet(svgs)
-      // for (let res of svgRes.list) {
-      //   this.ctx.styleRegistry.addVector(res)
-      // }
-
       this.works = result.list
       this.total = result.total
       this.loading = false

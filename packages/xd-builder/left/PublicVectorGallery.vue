@@ -4,25 +4,33 @@
       <el-input v-model="searchValue" placeholder="搜索素材库" class="input-with-select" clearable @clear="filterWith('')">
         <el-button slot="append" icon="el-icon-search" @click="filterWith(searchValue)"></el-button>
       </el-input>
+      <span v-if="userId === '15011245191'">
+        <el-upload
+          :auto-upload="false"
+          action="none"
+          accept="image/*"
+          :show-file-list="false"
+          class="upload-container"
+          :on-change="(file, uploadFiles) => fileChoosed(file, uploadFiles)"
+        >
+          <el-button size="small" type="info" icon="el-icon-upload"></el-button>
+        </el-upload>
+      </span>
     </div>
-    <div ref="scrollContainer" class="list-wrapper" @scroll="containerScroll" @dblclick="showVectorInfo({})">
+    <div ref="scrollContainer" class="list-wrapper" @scroll="containerScroll">
       <ul ref="imageList" class="list-container">
         <li
           v-for="(vector, index) in vectors"
           :key="index"
-          class="vector-container" draggable @dragstart="dragStart(vector, $event)"
-          @click="remove(vector)"
+          class="vector-container"
+          draggable @dblclick="showVectorInfo(vector)" @dragstart="dragStart(vector, $event)"
         >
-          <!--          @click="$emit('choose', vector)"-->
-          <img v-if="vector.url" :src="getImageUrl(vector.url, 100, 100)">
-          <svg v-else-if="vector.svg" :viewBox="'0 0 ' + vector.svg.vp[2] + ' ' + vector.svg.vp[3]" width="90" height="90">
-            <path v-for="(path, index) in vector.svg.ps" :key="index" :d="path.p" :fill="path.f || '#76D9FC'" />
-          </svg>
-          <div v-if="vector.svg || (vector.url && vector.url.endsWith('svg'))" class="is-svg">svg</div>
+          <!--  @click="$emit('choose', vector)"-->
+          <img v-if="vector.url" :src="getImageUrl(vector.url)">
         </li>
       </ul>
     </div>
-    <dialog-public-image ref="dialog" path="danke/public/vector" :image="currentVector" @filter="filterWith"></dialog-public-image>
+    <dialog-public-image ref="dialog" path="danke/public/vector" :image="currentVector" @hide="filterWith" @filter="filterWith"></dialog-public-image>
   </div>
 </template>
 
@@ -31,6 +39,7 @@ import RestDAO from '../../utils/restdao.js'
 import DialogPublicImage from './DialogPublicImage'
 import { getImageUrl} from '../mixins/imageUtils'
 import ImageDAO from '../../utils/imagedao'
+import getImageSize from '../../utils/imageSize'
 
 export default {
   name: 'PublicVectorGallery',
@@ -47,6 +56,15 @@ export default {
       pageCount: 20,
       fetching: false,
       vectors: []
+    }
+  },
+  computed: {
+    userId()  {
+      if (this.ctx.user) {
+        return this.ctx.user.id
+      } else {
+        return ''
+      }
     }
   },
   created () {
@@ -125,6 +143,24 @@ export default {
       await this.restdao.delete(image)
     },
 
+    // may be choose multiple files, should do auto upload on choose
+    // each file would trigger fileChoosed event
+    async fileChoosed (file, uploadFiles) {
+      const imageObject = {
+        name: file.name,
+        size: file.size,
+      }
+      let result = await this.imagedao.uploadBlob(file.raw, `public/images/${file.name}`, true)
+      imageObject.url = result.name
+      const size = await getImageSize(file.raw)
+      imageObject.w = size.width
+      imageObject.h = size.height
+      // write file info
+      await this.restdao.create(imageObject)
+
+      this.filterWith()
+    },
+
     // 处理滚动到底部的处理
     containerScroll (d) {
       if (d.target.offsetHeight + d.target.scrollTop + 100 > this.$refs.imageList.offsetHeight) {
@@ -142,6 +178,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.search-box {
+  display: flex;
+}
 .vector-container {
   margin: 4px;
   width: 102px;

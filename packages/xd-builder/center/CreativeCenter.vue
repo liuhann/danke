@@ -28,12 +28,6 @@
           <div class="node" :class="nav==='my'? 'selected': ''" @click="navTo('my')">
             <span>我的作品</span>
           </div>
-          <div class="node sub" :class="nav==='my'? 'selected': ''" @click="navTo('my')">
-            <span>相框</span>
-          </div>
-          <div class="node sub" :class="nav==='my'? 'selected': ''" @click="navTo('my')">
-            <span>头像</span>
-          </div>
           <div class="node tree-node" :class="nav==='profile'? 'selected': ''" @click="navTo('profile')">
             <span>设置</span>
           </div>
@@ -238,16 +232,7 @@ export default {
     flex: 1;
     overflow-x: hidden;
     overflow-y: auto;
-    padding: 0 2rem;
-    .body {
-      .my-work-list {
-        .line {
-          display: flex;
-          justify-content: space-between;
-          margin: 2rem 0;
-        }
-      }
-    }
+    background-color: #fafafa;
     .content-title {
       font-size: 2.4rem;
       padding: 1.6rem;

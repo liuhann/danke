@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     async loadAndInitDevice (id) {
-      this.work = await this.workdao.getOne(id)
+      await this.loadWork(id)
       this.variables = this.work.variables
       // 设置显示屏幕大小
       this.viewPort = this.work.viewBox
@@ -52,12 +52,16 @@ export default {
       this.$nextTick(() => {
         const allImgs = document.querySelectorAll('img')
         let total = allImgs.length
-        let loaded = 0
-        for (let img of allImgs) {
-          img.onload = function () {
-            loaded ++
-            if (loaded === total) {
-              window.avatarReady && window.avatarReady()
+        if (total === 0) {
+          window.avatarReady && window.avatarReady()
+        } else {
+          let loaded = 0
+          for (let img of allImgs) {
+            img.onload = function () {
+              loaded ++
+              if (loaded === total) {
+                window.avatarReady && window.avatarReady()
+              }
             }
           }
         }

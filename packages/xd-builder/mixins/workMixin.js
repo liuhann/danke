@@ -75,7 +75,7 @@ export default {
         work.viewBox = work.screen
         delete work.screen
       }
-      this.initWorkStyleResource(work)
+      await this.initWorkStyleResource(work)
 
       for (const scene of work.scenes) {
         scene.visible = false
@@ -88,11 +88,11 @@ export default {
     /**
      * 获取、初始化作品里所有元素的样式资源
      */
-    initWorkStyleResource (work) {
+    async initWorkStyleResource (work) {
       const styleRegistry = this.ctx.styleRegistry
       if (work.fonts && work.fonts.length) {
         for (const font of work.fonts) {
-          styleRegistry.addFontFace(font)
+          await styleRegistry.addFontFace(font)
         }
       }
       // init element svg content from work.svgs
@@ -194,6 +194,7 @@ export default {
       work.author = this.ctx.user.nick
       work.avatar = this.ctx.user.avatar
 
+      work.snapshot = ''
       if (!this.work._id) {
         const result = await this.workdao.create(work)
         this.work._id = result.object._id
@@ -201,15 +202,6 @@ export default {
       } else {
         await this.workdao.patch(work.id, work)
       }
-
-      if (work.preview) {
-        await this.previewdao.delete(work.preview)
-      }
-
-      const previewResponse = this.previewdao.create({
-        work: this.work._id
-      })
-
       this.savingWork = false
       loadingInstance.close()
 
@@ -219,6 +211,8 @@ export default {
         message: '作品已经保存',
         duration: 800
       })
+
+      this.ctx.get('/danke/preview/download?id=' + work.id)
     },
 
     async runWork () {

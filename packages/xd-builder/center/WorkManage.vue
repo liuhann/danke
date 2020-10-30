@@ -20,9 +20,14 @@
       :visible.sync="dialogVisible"
       width="30%"
     >
-      <el-form label-width="80px">
+      <el-form v-if="currentWork" label-width="80px">
         <el-form-item label="名称">
-          <el-input v-model="currentWork.title" readonly></el-input>
+          <el-input v-model="currentWork.title"></el-input>
+        </el-form-item>
+        <el-form-item label="标签">
+          <el-select v-model="currentWork.tags" size="mini" multiple filterable allow-create>
+            <el-option v-for="tag of currentWork.tags" :key="tag" :label="tag" :value="tag" />
+          </el-select>
         </el-form-item>
         <el-form-item v-if="currentWork.system" label="首页展示">
           <el-checkbox v-model="currentWork.system.site">是</el-checkbox>
@@ -46,7 +51,7 @@
 </template>
 
 <script>
-import { Pagination, Button, Table, TableColumn, Dialog, Form, FormItem, Input, Checkbox } from 'element-ui'
+import { Pagination, Button, Table, TableColumn, Dialog, Form, FormItem, Input, Checkbox, Select, Option } from 'element-ui'
 import RestDAO from '../../utils/restdao.js'
 
 export default {
@@ -57,6 +62,8 @@ export default {
     [Form.name]: Form,
     [FormItem.name]: FormItem,
     [Input.name]: Input,
+    [Select.name]: Select,
+    [Option.name]: Option,
     [Table.name]: Table,
     [Checkbox.name]: Checkbox,
     [TableColumn.name]: TableColumn,
@@ -111,7 +118,7 @@ export default {
     async fetchWorks () {
       if (this.ctx.user && this.ctx.user.id === '15011245191') {
         const result = await this.workdao.list({
-          projection: 'updated,created,creator,name,id,viewBox,likes,comments,name,title,system',
+          projection: 'updated,created,creator,name,id,viewBox,likes,comments,name,title,system,tags',
           page: this.page,
           count: this.size
         })

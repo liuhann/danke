@@ -69,12 +69,19 @@ function addAnimation (sheet, animation) {
   sheet.insertRule(rule, pos)
 }
 
-function addFontFace (sheet, url, id) {
-  let pos = sheet.length
-  sheet.insertRule(`@font-face {
-    font-family: ${id};
-    src: url('${url}');
-  }`, pos)
+async function addFontFace (sheet, url, id) {
+  // let pos = sheet.length
+
+  const ff = new FontFace(id, `url('${url}')`)
+
+  await ff.load()
+
+  document.fonts.add(ff)
+  //
+  // sheet.insertRule(`@font-face {
+  //   font-family: ${id};
+  //   src: url('${url}');
+  // }`, pos)
 }
 
 export const fontFamilies = [{
@@ -83,39 +90,39 @@ export const fontFamilies = [{
 }, {
   id: 'HYLeMiaoTiJ',
   name: '汉仪乐喵体简',
-  url: './fonts/HYLeMiaoTiJ.woff'
+  url: '/fonts/HYLeMiaoTiJ.woff'
 }, {
   id: 'HYZiYanHuanLeSongW',
   name: '汉仪字研欢乐宋',
-  url: './fonts/HYZiYanHuanLeSongW.woff'
+  url: '/fonts/HYZiYanHuanLeSongW.woff'
 }, {
   id: 'ChenYanXingKai',
   name: '字由点字晨颜行楷',
-  url: './fonts/HelloFont_ID_ChenYanXingKai.woff'
+  url: '/fonts/HelloFont_ID_ChenYanXingKai.woff'
 }, {
   id: 'ChunYiTi',
   name: '字由点字春意体',
-  url: './fonts/ChunYiTi.woff'
+  url: '/fonts/ChunYiTi.woff'
 }, {
   id: 'WenQuanYi',
   name: '文泉仪黑体',
-  url: './fonts/wqy-microhei.woff'
+  url: '/fonts/wqy-microhei.woff'
 }, {
   id: 'HanyiTianZhen',
   name: '汉仪天真体',
-  url: './fonts/HYTianZhenTi.woff'
+  url: '/fonts/HYTianZhenTi.woff'
 }, {
   id: 'HanyiZhangnairen',
   name: '汉仪张乃仁行书',
-  url: './fonts/HYZhangNaiRenXingShuJ.woff'
+  url: '/fonts/HYZhangNaiRenXingShuJ.woff'
 }, {
   id: 'SentyCreamPuff',
   name: '汉仪新蒂泡芙体',
-  url: './fonts/SentyCreamPuff.woff'
+  url: '/fonts/SentyCreamPuff.woff'
 }, {
   id: 'HanyiSentyGarden',
   name: '汉仪新蒂花园体',
-  url: './fonts/HanyiSentyGarden.woff'
+  url: '/fonts/HanyiSentyGarden.woff'
 }, {
   id: 'HYRunYuan-65J',
   name: '汉仪润圆简',
@@ -164,13 +171,13 @@ export default class StyleRegistry {
     return this.svgs[id]
   }
 
-  addFontFace (fontface) {
+  async addFontFace (fontface) {
     let font = fontface
     if (typeof font === 'string') {
       font = fontFamilies.filter(f => f.id === fontface)[0]
     }
     if (!this.fonts[font.id]) {
-      addFontFace(this.sheet, font.url, font.id)
+      await addFontFace(this.sheet, font.url, font.id)
       this.fonts[font.id] = font.url
     }
   }

@@ -71,7 +71,7 @@ export default {
       this.total = result.total
       this.htmls = this.htmls.concat(result.list)
       this.fetching = false
-    },
+    }
   }
 }
 </script>
@@ -79,8 +79,8 @@ export default {
 <style lang="scss">
 .html-container {
   margin: 4px;
-  width: 104px;
-  height: 104px;
+  width: 102px;
+  height: 102px;
   background: #1b1b1b;
   position: relative;
   display: flex;
