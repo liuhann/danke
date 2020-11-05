@@ -4,7 +4,7 @@
        :class="elementClass" :style="elementWrapperStyle" @click="elementClicked"
   >
     <!--图片渲染-->
-    <img v-if="elementUrl" :id="'img-' + (element.name || element.id)" :src="elementUrl" :style="elementStyle">
+    <img v-if="elementUrl && !element.fill" :id="'img-' + (element.name || element.id)" :src="elementUrl" :style="elementStyle">
     <div v-else-if="element.content" class="svg-content" :style="elementStyle" v-html="element.content" />
     <div v-else-if="element.elements" class="block-elements" :style="elementStyle">
       <render-element v-for="(el, i) in element.elements" :key="el.id" :view-box="viewBox" :view-port="viewPort" :element="el" :index="i" />
@@ -168,9 +168,11 @@ export default {
         backgroundColor: this.element.fill
       }
 
-      if (this.element.type === 'vct' && this.element.fill) {
+      // 填充色情况下，图片显示为遮罩
+      if (this.element.fill) {
         style.maskImage = `url(${this.getImageUrl(this.element.url, this.viewPort.width * 2, this.viewPort.height * 2)})`
-        style.maskSize = this.element.fit
+        style.maskSize = this.element.fit || 'contain'
+        style.maskPosition = 'center center'
       }
       // 变量配置信息
       assignVariables(style, this.element.variables)

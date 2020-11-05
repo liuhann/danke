@@ -130,6 +130,10 @@ export default {
         }
       }
 
+      if (element.hasOwnProperty('fill')) {
+        node.fill = element.fill
+      }
+
       if (element.content && element._id) {
         node.svg = element._id
         node.content = element.content
