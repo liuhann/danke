@@ -211,7 +211,7 @@ export default {
         message: '作品已经保存',
         duration: 800
       })
-
+      // 发出请求获取最新的work-preview
       this.ctx.get('/danke/preview/download?id=' + work.id)
     },
 

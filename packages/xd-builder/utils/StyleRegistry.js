@@ -176,7 +176,7 @@ export default class StyleRegistry {
     if (typeof font === 'string') {
       font = fontFamilies.filter(f => f.id === fontface)[0]
     }
-    if (!this.fonts[font.id]) {
+    if (font && font.url && !this.fonts[font.id]) {
       await addFontFace(this.sheet, font.url, font.id)
       this.fonts[font.id] = font.url
     }
