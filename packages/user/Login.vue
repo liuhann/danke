@@ -1,11 +1,6 @@
 <template>
   <div class="user-form">
-    <div class="auth-sidebar" :style="{
-      background: workBackground
-    }"
-    >
-      <render-scene v-if="showWork" :scene="showWork.scenes[0]" :view-box="showWork.viewBox" :view-port="showWork.viewport" stage="enter" />
-      <div v-if="showWork" class="by">Art by {{ showWork.author }}</div>
+    <div class="auth-sidebar">
     </div>
     <section class="content">
       <nav class="auth-nav">
@@ -49,12 +44,10 @@
 </template>
 
 <script>
-import workListMixins from '../xd-builder/mixins/workListMixins'
-import RenderScene from '../xd-builder/render/RenderScene'
 export default {
   name: 'Login',
-  components: { RenderScene },
-  mixins: [ workListMixins ],
+  components: {  },
+  mixins: [ ],
   data () {
     return {
       error: {
@@ -96,28 +89,9 @@ export default {
 
   mounted () {
     this.refreshCaptcha()
-    this.initViewPort()
-    this.loadWorks()
   },
 
   methods: {
-    initViewPort () {
-      const siderRect = document.querySelector('.auth-sidebar').getBoundingClientRect()
-      this.workViewPort = {
-        width: siderRect.width,
-        height: siderRect.height
-      }
-    },
-    viewport () {
-      return this.workViewPort
-    },
-    listQuery () {
-      return {
-        'count': 1,
-        'page': 2,
-        'system.site': 'on',
-      }
-    },
     async refreshCaptcha () {
       const result = await this.ctx.userdao.getCaptcha()
       this.svg = result.svg
