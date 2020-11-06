@@ -7,8 +7,8 @@
       </div>
       <div class="body">
         <div class="raw-avatar">
-          <div class="preview-original">
-            <img class="raw" :src="userAvatar" @click="requestDownload" />
+          <div class="preview-original" @click="dialogConfig">
+            <img class="raw" :src="userAvatar" />
             <img v-if="currentWork" :src="getImageUrl(currentWork.snapshot, 240, 240)" />
           </div>
           <div class="raw-preview-container">
@@ -156,6 +156,9 @@ export default {
 
   methods: {
     getImageUrl,
+    dialogConfig () {
+      
+    },
     uploadImage(event) {
       // Reference to the DOM input element
       const input = event.target;
