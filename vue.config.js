@@ -1,6 +1,6 @@
 module.exports = {
   productionSourceMap: false,
-  transpileDependencies: ['async-boot', 'ky'],
+  transpileDependencies: ['async-boot'],
   devServer: {
     host: 'localhost',
     contentBase: './public',
@@ -12,8 +12,8 @@ module.exports = {
     : '/',
 
   outputDir: process.env.NODE_ENV === 'production'
-    ? '../shopen/public' // '../pwa-ybstory/cordova-story-v3/www'
-    : '../shopen/public',
+    ? '../fetcha/public' // '../pwa-ybstory/cordova-story-v3/www'
+    : '../fetcha/public',
 
   pages: {
     index: {

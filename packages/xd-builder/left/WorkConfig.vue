@@ -1,7 +1,7 @@
 <template>
   <div class="drawer_content">
     <div class="pop-title">
-      <span class="text">元素属性设置</span>
+      <span class="text">作品设置</span>
       <a class="btn-close" @click="$emit('close')"><i class="el-icon-circle-close" /></a>
     </div>
     <el-form label-width="90px" size="mini" class="more-action-form">
@@ -9,9 +9,9 @@
         <el-form-item label="作品名称">
           <el-input v-model="work.title" size="mini" />
         </el-form-item>
-        <el-form-item label="标签">
-          <el-select v-model="work.tags" size="mini" multiple filterable allow-create>
-            <el-option v-for="tag of work.tags" :key="tag" :label="tag" :value="tag" />
+        <el-form-item label="频道">
+          <el-select v-model="work.channels" size="mini" multiple>
+            <el-option v-for="channel of channels" :key="channel.value" :label="channel.label" :value="channel.value" />
           </el-select>
         </el-form-item>
         <el-form-item label="宽-高">
@@ -22,7 +22,7 @@
           <el-color-picker v-model="work.color" />
         </el-form-item>
         <el-form-item label="背景音乐">
-          {{work.audioName || '无'}} 
+          {{ work.audioName || '无' }} 
           <el-button type="text" @click="removeAudio">删除</el-button>
         </el-form-item>
         <el-form-item align="right" class="actions">
@@ -37,6 +37,7 @@
 
 <script>
 import workMixin from '../mixins/workMixin.js'
+import channels from '../../site/channels'
 export default {
   name: 'WorkConfig',
   mixins: [ workMixin ],
@@ -47,6 +48,7 @@ export default {
   },
   data () {
     return {
+      channels
     }
   },
   computed: { },

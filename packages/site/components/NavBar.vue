@@ -1,34 +1,47 @@
 <template>
-  <div id="header" class="nav-wrapper" role="navigation" aria-label="main navigation">
-    <div class="container">
-      <div id="logo" class="nav-logo">
-        <a class="navbar-item" href="/">danke.fun</a>
-      </div>
-      <div class="navbar-menu">
-        <a class="navbar-item" href="/">首页</a>
-      </div>
+  <nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="http://www.danke.fun">
+        <img :src="logo" />
+      </a>
+      <a class="navbar-item">蛋壳分享</a>
+      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" @click="toggleMenuShow">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+    <div class="navbar-menu" :class="menuShow? 'is-active': ''">
       <div class="navbar-end">
-        <div v-if="!logon" class="navbar-item">
-          <router-link class="button is-light" to="/login">登录</router-link>
-          <router-link class="button form-sub" to="/register">注册</router-link>
+        <a v-if="logon" class="navbar-item" href="https://bulma.io">
+          <img class="avatar is-rounded" :src="avatar">
+        </a>
+        <div v-else class="navbar-item">
+          <div class="buttons">
+            <router-link class="button is-primary" to="/login">
+              <strong>注册</strong>
+            </router-link>
+            <a class="button is-light">
+              登录
+            </a>
+          </div>
         </div>
-        <router-link v-if="logon" class="navbar-item" tag="div" to="/creative/my">
-          <img class="avatar" :src="avatar">
-        </router-link>
       </div>
     </div>
-  </div>
+  </nav>
 </template>
 
 <script>
 import { resetToken } from '../../user/token'
 import { getImageUrl } from '../../xd-builder/mixins/imageUtils'
-
+import logo from '../D.png'
 export default {
   name: 'NavBar',
   props: {},
   data () {
     return {
+      menuShow: false,
+      logo,
       user: this.ctx.user,
       isMobileOpened: false
     }
@@ -63,6 +76,10 @@ export default {
 
   methods: {
     getImageUrl,
+
+    toggleMenuShow () {
+      this.menuShow = !this.menuShow
+    },
     logout () {
       this.ctx.token = resetToken()
       this.ctx.user = null
@@ -83,90 +100,5 @@ export default {
 </script>
 
 <style lang="scss">
-@media (min-width: 768px) {
-  .nav-wrapper {
-    height: 56px;
-    line-height: 56px;
-    will-change: initial;
-    .container {
-      display: flex;
-      padding: 0 30px;
-    }
-  }
-}
-.nav-wrapper {
-  width: 100%;
-  background: #fff;
-  z-index: 9996;
-  color: #6e6d7a;
-  position: fixed;
-  will-change: transform;
-  top: 0;
-  height: 56px;
-  #logo {
-    a {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 56px;
-      color: #333;
-      font-size: 20px;
-      font-family: 'Audiowide', cursive;
-    }
-  }
-  .container {
-    margin: 0 auto;
-    background-color: #fff;
-    -webkit-box-shadow: inset 0px -1px 0px #f3f3f4;
-    box-shadow: inset 0px -1px 0px #f3f3f4;
-    display: flex;
-    .navbar-end {
-      display: flex;
-      justify-content: flex-end;
-      margin-right: auto;
-      flex: 1;
-      .button.form-sub {
-        color: #fff;
-        display: inline-block;
-        cursor: pointer;
-        border: none;
-        padding: 0 16px;
-        text-decoration: none;
-        background: var(--mainColor);
-        -webkit-transition: all 200ms ease;
-        transition: all 200ms ease;
-        border-radius: 4px;
-        font-weight: 500;
-        height: 32px;
-        box-sizing: border-box;
-        text-align: center;
-        margin: 0 20px;
-        &:hover {
-          background: var(--mainColorHover);
-          color: #fff;
-        }
-        &:disabled {
-          background: #ccc;
-        }
-      }
-      .navbar-item {
-        margin: 8px 20px;
-        line-height: 32px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 14px;
-      }
-    }
-  }
-  .navbar-item img.avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-  }
-}
 
-.section.first {
-  margin-top: 80px;
-}
 </style>

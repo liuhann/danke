@@ -27,8 +27,7 @@ export default {
     newWork (size) {
       return {
         id: shortid(10),
-        title: '未命名的作品',
-        isBlock: 'no',
+        title: '我的作品',
         viewBox: size || {
           width: 1080,
           height: 1920
@@ -37,9 +36,6 @@ export default {
         audioUrl: '',
         audioName: '',
         audioSeconds: 0,
-        frames: {}, // 动画信息
-        svgs: {}, // svg图片信息
-        fonts: {}, // 字体列表
         scenes: [] // 场景
       }
     },
@@ -189,8 +185,6 @@ export default {
       this.savingWork = true
       let loadingInstance = Loading.service({ fullscreen: true, text: '保存作品中' });
       const work = JSON.parse(JSON.stringify(this.work))
-      // 抽取所有使用的frame style到work上，以便压缩使用空间
-      Object.assign(work, this.getCommonResource())
       work.author = this.ctx.user.nick
       work.avatar = this.ctx.user.avatar
 
@@ -204,13 +198,11 @@ export default {
       }
       this.savingWork = false
       loadingInstance.close()
-
-      // 处理作品的预览
-
       Message.success({
         message: '作品已经保存',
         duration: 800
       })
+      // 处理作品的预览
       // 发出请求获取最新的work-preview
       this.ctx.get('/danke/preview/download?id=' + work.id)
     },

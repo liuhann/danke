@@ -5,7 +5,6 @@ import AsyncBoot from 'async-boot'
 import App from './app.vue'
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-
 import site from '../packages/site'
 import user from '../packages/user'
 import restclient from '../packages/rest-client'
