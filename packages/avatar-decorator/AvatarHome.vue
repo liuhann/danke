@@ -1,73 +1,77 @@
 <template>
   <div id="avatar-home">
-    <div class="container">
-      <div class="logo-wrapper">
-        <img :src="logo" />
-        <p class="share">由 <a href="http://danke.fun">蛋壳分享</a> 提供</p>
-      </div>
-      <div class="body">
-        <div class="raw-avatar">
-          <div class="preview-original" @click="dialogConfig">
+    <div class="logo-wrapper">
+      <img :src="logo" />
+      <p class="share">由 <a href="http://danke.fun">蛋壳分享</a> 提供</p>
+    </div>
+    <div class="body">
+      <div class="raw-avatar">
+        <div class="preview-original" @click="dialogConfig">
+          <img class="raw" :src="userAvatar" />
+          <img v-if="currentWork" :src="getImageUrl(currentWork.snapshot, 240, 240)" />
+        </div>
+        <div class="raw-preview-container">
+          <div class="preview size-radius-10">
             <img class="raw" :src="userAvatar" />
             <img v-if="currentWork" :src="getImageUrl(currentWork.snapshot, 240, 240)" />
           </div>
-          <div class="raw-preview-container">
-            <div class="preview size-radius-10">
-              <img class="raw" :src="userAvatar" />
-              <img v-if="currentWork" :src="getImageUrl(currentWork.snapshot, 240, 240)" />
-            </div>
-            <div class="preview size-radius-20">
-              <img class="raw" :src="userAvatar" />
-              <img v-if="currentWork" :src="getImageUrl(currentWork.snapshot, 240, 240)" />
-            </div>
-            <div class="preview size-radius-30">
-              <img class="raw" :src="userAvatar" />
-              <img v-if="currentWork" :src="getImageUrl(currentWork.snapshot, 240, 240)" />
-            </div>
-            <div class="preview size-circle">
-              <img class="raw" :src="userAvatar" />
-              <img v-if="currentWork" :src="getImageUrl(currentWork.snapshot, 240, 240)" />
-            </div>
+          <div class="preview size-radius-20">
+            <img class="raw" :src="userAvatar" />
+            <img v-if="currentWork" :src="getImageUrl(currentWork.snapshot, 240, 240)" />
           </div>
-          <div class="variables" style="display: none;">
-            <div v-for="(variable, index) in variables" :key="index" class="variable">
-              <div v-if="variable.type==='color'" class="color-input">
-                <input v-model="variable.value" />
-                <v-swatches v-model="variable.value" :row-length="width > 400? 6: 5" popover-y="bottom" :trigger-style="{
-                  width: '32px', height: '32px'
-                }" shapes="circles"
-                />
-              </div>
-              <div v-if="variable.type==='text'" class="text-input">
-                <input v-model="variable.value" />
-              </div>
-            </div>
+          <div class="preview size-radius-30">
+            <img class="raw" :src="userAvatar" />
+            <img v-if="currentWork" :src="getImageUrl(currentWork.snapshot, 240, 240)" />
           </div>
-          <div class="action">
-            <el-button @click="$refs.file.click()">
-              更换
-              <input ref="file" type="file" accept="image/*" @change="uploadImage($event)">
-            </el-button>
-            <el-button @click="requestDownload">下载</el-button>
+          <div class="preview size-circle">
+            <img class="raw" :src="userAvatar" />
+            <img v-if="currentWork" :src="getImageUrl(currentWork.snapshot, 240, 240)" />
           </div>
         </div>
-        <div class="template-recents">
-          <div class="title">
-            最新
+        <div class="variables" style="display: none;">
+          <div v-for="(variable, index) in variables" :key="index" class="variable">
+            <div v-if="variable.type==='color'" class="color-input">
+              <input v-model="variable.value" />
+              <v-swatches v-model="variable.value" :row-length="width > 400? 6: 5" popover-y="bottom" :trigger-style="{
+                width: '32px', height: '32px'
+              }" shapes="circles"
+              />
+            </div>
+            <div v-if="variable.type==='text'" class="text-input">
+              <input v-model="variable.value" />
+            </div>
           </div>
-          <ul class="work-list-wrapper">
-            <li v-for="work in recents" :key="work._id">
-              <div class="work-wrapper" @click="applyDecorator(work)">
-                <img :src="getImageUrl(work.snapshot, 240, 240)" />
-              </div>
-            </li>
-          </ul>
         </div>
-        <div class="template-category">
+        <div class="action">
+          <el-button @click="$refs.file.click()">
+            更换
+            <input ref="file" type="file" accept="image/*" @change="uploadImage($event)">
+          </el-button>
+          <el-button @click="requestDownload">下载</el-button>
         </div>
+      </div>
+      <div class="template-recents">
+        <div class="title">
+          最新
+        </div>
+        <ul class="work-list-wrapper">
+          <li v-for="work in recents" :key="work._id">
+            <div class="work-wrapper" @click="applyDecorator(work)">
+              <img :src="getImageUrl(work.snapshot, 240, 240)" />
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="template-category">
       </div>
     </div>
     <div v-show="image" class="avatar-crop-container">
+      <div class="action">
+        <el-button @click="uploadTempAvatar">
+          确定
+        </el-button>
+        <el-button @click="image = null">取消</el-button>
+      </div>
       <div class="avatar-crop">
         <cropper
           ref="cropper"
@@ -85,12 +89,6 @@
           })"
           :src="image"
         />
-      </div>
-      <div class="action">
-        <el-button @click="uploadTempAvatar">
-          确定
-        </el-button>
-        <el-button @click="image = null">取消</el-button>
       </div>
     </div>
   </div>

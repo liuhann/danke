@@ -7,9 +7,9 @@
           <li v-for="channel in channels" :key="channel.value" :class="currentChannel === channel.value? 'is-active' : ''" @click="switchChanel(channel.value)"><a>{{ channel.label }}</a></li>
         </ul>
       </div>
-      <div class="columns is-mobile is-multiline">
-        <div v-for="work in currentChannelWorks" :key="work.id" class="column is-half-mobile">
-          <figure class="image is-1by1">
+      <div class="columns is-mobile is-multiline work-list">
+        <div v-for="work in currentChannelWorks" :key="work.id" class="column work-container" :class="channelColumnSize">
+          <figure class="image is-1by1" :class="currentChannel"> 
             <img :src="getImageUrl(work.snapshot)">
           </figure>
         </div>
@@ -21,7 +21,7 @@
   </div>
 </template>
 <script>
-import NavBar from './components/NavBar'
+import NavBar from './components/NavBar.vue'
 import NavFooter from './components/NavFooter'
 import channels from './channels'
 import RestDAO from '../utils/restdao.js'
@@ -35,6 +35,15 @@ export default {
       currentChannel: null,
       currentChannelWorks: [],
       channels
+    }
+  },
+  computed: {
+    channelColumnSize () {
+      if (this.currentChannel === 'avatar') {
+        return 'is-1-fullhd is-2-widescreen is-2-desktop is-3-tablet is-one-third-mobile'
+      } else {
+        return 'is-1-widescreen is-2-desktop is-3-tablet is-one-third-mobile'
+      }
     }
   },
   created () {
@@ -84,6 +93,11 @@ export default {
 </script>
 
 <style lang="scss">
+
+.avatar {
+  border: 1px solid #eee;
+}
+
 .shots-grid {
   margin-top: 108px;
   display: grid;

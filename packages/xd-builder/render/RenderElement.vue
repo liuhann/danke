@@ -81,6 +81,12 @@ export default {
     return {
     }
   },
+  mounted () {
+    if (this.element.variables && this.element.variables.filter(variable=> variable.type === 'fontFamily').length) {
+      debugger
+      this.ctx.styleRegistry.addFontFace(this.element.variables.filter(variable=> variable.type === 'fontFamily')[0].value)
+    }
+  },
   computed: {
     elementUrl () {
       const filterSet = (this.variables || []).filter(variable => variable.type === 'image')
@@ -351,10 +357,6 @@ export default {
       if (this.closePath) d += "Z"
       return d
     },
-  },
-  mounted () {
-    if (this.element.url && this.element.url.endsWith('.svg')) {
-    }
   },
   methods: {
     getImageUrl,

@@ -1,4 +1,3 @@
-import RestDAO from '../../utils/restdao.js'
 /**
  * 创建样式标签
  * @param {*} id

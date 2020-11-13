@@ -482,8 +482,7 @@ export default {
      display: none;
     }
     i {
-      vertical-align: text-bottom;
-      font-size: 1.8rem;
+      font-size: 1.3rem;
     }
     img, svg {
       width: 18px;

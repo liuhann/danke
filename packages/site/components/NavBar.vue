@@ -1,10 +1,10 @@
 <template>
-  <nav class="navbar" role="navigation" aria-label="main navigation">
+  <nav class="navbar has-shadow" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <a class="navbar-item" href="http://www.danke.fun">
         <img :src="logo" />
       </a>
-      <a class="navbar-item">蛋壳分享</a>
+      <a class="navbar-item">Share</a>
       <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" @click="toggleMenuShow">
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
@@ -13,17 +13,17 @@
     </div>
     <div class="navbar-menu" :class="menuShow? 'is-active': ''">
       <div class="navbar-end">
-        <a v-if="logon" class="navbar-item" href="https://bulma.io">
+        <a v-if="logon" class="navbar-item" href="/creative/my">
           <img class="avatar is-rounded" :src="avatar">
         </a>
         <div v-else class="navbar-item">
           <div class="buttons">
-            <router-link class="button is-primary" to="/login">
+            <router-link class="button is-link" to="/register">
               <strong>注册</strong>
             </router-link>
-            <a class="button is-light">
+            <router-link class="button is-light" to="/login">
               登录
-            </a>
+            </router-link>
           </div>
         </div>
       </div>

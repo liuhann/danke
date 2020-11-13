@@ -7,14 +7,14 @@ class UserDAO {
     return response.data.data
   }
 
-  register (username, password, nickname, captcha) {
-    const response = this.ctx.post(`user/register`, {
+  async register (username, password, nickname, captcha) {
+    const response = await this.ctx.post(`user/register`, {
         name: username,
         password: password,
         nickname,
         captcha
     })
-    return response.data.data
+    return response.data
   }
   async login (name, password, captcha) {
     const response = await this.ctx.post(`user/login`, {
