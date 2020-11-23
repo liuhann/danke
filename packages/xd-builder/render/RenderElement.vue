@@ -81,12 +81,6 @@ export default {
     return {
     }
   },
-  mounted () {
-    if (this.element.variables && this.element.variables.filter(variable=> variable.type === 'fontFamily').length) {
-      debugger
-      this.ctx.styleRegistry.addFontFace(this.element.variables.filter(variable=> variable.type === 'fontFamily')[0].value)
-    }
-  },
   computed: {
     elementUrl () {
       const filterSet = (this.variables || []).filter(variable => variable.type === 'image')
@@ -358,6 +352,11 @@ export default {
       return d
     },
   },
+  mounted () {
+    if (this.element.variables && this.element.variables.filter(variable=> variable.type === 'fontFamily').length) {
+      this.ctx.styleRegistry.addFontFace(this.element.variables.filter(variable=> variable.type === 'fontFamily')[0].value)
+    }
+  },
   methods: {
     getImageUrl,
     updateTextArea () {
@@ -418,7 +417,6 @@ export default {
 .element {
   box-sizing: border-box;
   text-overflow: initial;
-  white-space: nowrap;
   position: absolute;
   mask-repeat: no-repeat;
   &::before {

@@ -25,7 +25,7 @@ import sceneMixin from '../mixins/sceneMixins.js'
 import RenderScene from '../render/RenderScene'
 import RestDAO from '../../utils/restdao.js'
 export default {
-  name: 'Preview',
+  name: 'SlidePreview',
   components: {
     RenderScene,
   },
@@ -120,7 +120,6 @@ export default {
   },
   methods: {
     async loadAndInitDevice (workId) {
-      await this.ctx.styleRegistry.loadAllFrames()
       // 加载作品
       await this.loadWork(workId)
       // 设置显示屏幕大小

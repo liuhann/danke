@@ -3,16 +3,8 @@
     <div class="main">
       <div class="nav">
         <div class="me">
-          <div class="avatar">
-            <el-upload
-              ref="imageUpload" :auto-upload="false"
-              action="https://jsonplaceholder.typicode.com/posts/"
-              :show-file-list="false"
-              class="upload-container"
-              :on-change="avatarChosen"
-            >
-              <img :src="avatar">
-            </el-upload>
+          <div class="avatar" @click="gotoAvatarHome">
+            <img :src="avatar">
           </div>
           <div class="user">
             <div class="user-name">
@@ -23,7 +15,7 @@
             </div>
           </div>
         </div>
-        <button slot="reference" class="button" @click="navTo('new')">创建新的作品</button>
+        <button slot="reference" class="button is-primary is-small ml-10" @click="navTo('new')">创建新的作品</button>
         <div class="menu">
           <div class="node" :class="nav==='my'? 'selected': ''" @click="navTo('my')">
             <span>我的作品</span>
@@ -81,6 +73,10 @@ export default {
   methods: {
     getImageUrl,
 
+    gotoAvatarHome () {
+      this.$router.replace('/avatar')
+    },
+
     navTo (nav) {
       this.$router.replace('/creative/' + nav)
     },
@@ -126,38 +122,6 @@ export default {
   height: 100%;
   display: flex;
   flex-direction: column;
-  button {
-    font-size: 1.5rem;
-    color: #fff;
-    margin: 10px;
-    height: 40px;
-    letter-spacing: .2rem;
-    line-height: 1.4;
-    transition: background-color .1s linear,border-color .1s linear,color .1s linear;
-    vertical-align: middle;
-    align-items: center;
-    background-color: var(--mainColor);
-    border: 2px solid transparent;
-    border-radius: 4px;
-    cursor: pointer;
-    text-align: center;
-    padding: 0 10px;
-    &.small {
-      line-height: 1.2;
-      margin: 0 10px;
-      height: 30px;
-    }
-    &:hover {
-      background-color: var(--mainColorHover);
-    }
-    &.danger {
-      background-color: #EA4335;
-    }
-    &.plain {
-      color: var(--mainColor);
-      background-color: transparent;
-    }
-  }
   .top-header {
     height: 5rem;
     box-shadow: 0 0 3px #ccc;
@@ -204,7 +168,7 @@ export default {
         display: flex;
         flex-direction: column;
         .node {
-          font-size: 1.5rem;
+          font-size: 1.125rem;
           padding: 8px 12px;
           cursor: pointer;
           width: 100%;
@@ -234,7 +198,7 @@ export default {
     overflow-y: auto;
     background-color: #fafafa;
     .content-title {
-      font-size: 2.4rem;
+      font-size: 1.5rem;
       padding: 1.6rem;
       padding-bottom: .4rem;
       span.tab {

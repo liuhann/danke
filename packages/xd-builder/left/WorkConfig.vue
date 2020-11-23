@@ -26,7 +26,7 @@
           <el-button type="text" @click="removeAudio">删除</el-button>
         </el-form-item>
         <el-form-item align="right" class="actions">
-          <el-button type="success" size="small" @click="commitSaveWork">
+          <el-button type="success" size="small" @click="saveWork">
             保存作品
           </el-button>
         </el-form-item>
@@ -58,10 +58,6 @@ export default {
     },
     async commitSaveWork () {
       await this.saveWork()
-      Notification.success({
-        message: '保存作品信息成功'
-      })
-      this.visible = false
     },
    }
 }

@@ -10,7 +10,7 @@
       <div class="columns is-mobile is-multiline work-list">
         <div v-for="work in currentChannelWorks" :key="work.id" class="column work-container" :class="channelColumnSize">
           <figure class="image is-1by1" :class="currentChannel"> 
-            <img :src="getImageUrl(work.snapshot)">
+            <img :src="getImageUrl(work.snapshot, 240, 240)">
           </figure>
         </div>
       </div>
@@ -40,7 +40,7 @@ export default {
   computed: {
     channelColumnSize () {
       if (this.currentChannel === 'avatar') {
-        return 'is-1-fullhd is-2-widescreen is-2-desktop is-3-tablet is-one-third-mobile'
+        return 'is-1-fullhd is-1-widescreen is-1-desktop is-2-tablet is-one-third-mobile'
       } else {
         return 'is-1-widescreen is-2-desktop is-3-tablet is-one-third-mobile'
       }

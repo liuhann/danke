@@ -4,7 +4,7 @@
       <a class="navbar-item" href="http://www.danke.fun">
         <img :src="logo" />
       </a>
-      <a class="navbar-item">Share</a>
+      <a class="navbar-item">DANKE.FUN</a>
       <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" @click="toggleMenuShow">
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>

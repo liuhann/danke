@@ -88,8 +88,7 @@ export default {
 
     listQuery () {
       return {
-        creator: this.ctx.user.id,
-        isBlock: 'no'
+        creator: this.ctx.user.id
       }
     },
     previewWork (work) {
@@ -147,7 +146,6 @@ export default {
           background-size: 20px 20px;
           background-position: 0 0, 10px 10px;
         }
-
       }
       .details {
         padding: 10px 20px;

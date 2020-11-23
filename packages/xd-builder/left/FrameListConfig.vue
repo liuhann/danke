@@ -223,8 +223,8 @@ export default {
       overflow-y: auto;
       .frame {
         padding: 10px 5px;
-        font-size: 1.5rem;
-        color: #999;
+        font-size: 1rem;
+        color: #333;
         cursor: pointer;
         &:hover {
           color: #409EFF;

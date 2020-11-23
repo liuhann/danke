@@ -185,11 +185,12 @@ export default {
       this.savingWork = true
       let loadingInstance = Loading.service({ fullscreen: true, text: '保存作品中' });
       const work = JSON.parse(JSON.stringify(this.work))
-      work.author = this.ctx.user.nick
+      work.creator = this.ctx.user.id
       work.avatar = this.ctx.user.avatar
 
       work.snapshot = ''
       if (!this.work._id) {
+        work.creator = this.ctx.user.id
         const result = await this.workdao.create(work)
         this.work._id = result.object._id
         this.$router.replace('/xd?work=' + this.work.id)

@@ -1,67 +1,72 @@
 <template>
   <div id="avatar-home">
-    <div class="logo-wrapper">
-      <img :src="logo" />
-      <p class="share">由 <a href="http://danke.fun">蛋壳分享</a> 提供</p>
-    </div>
+    <nav-bar></nav-bar>
+    <section class="section">
+      <div class="columns is-mobile is-multiline work-list">
+        <div class="column is-3-desktop is-full-mobile">
+          <div class="raw-avatar">
+            <div class="preview-original" @click="dialogConfig">
+              <img class="raw" :src="userAvatar" />
+              <img v-if="currentWork" :src="getImageUrl(currentWork.snapshot, 240, 240)" />
+            </div>
+            <div class="raw-preview-container">
+              <div class="preview size-radius-10">
+                <img class="raw" :src="userAvatar" />
+                <img v-if="currentWork" :src="getImageUrl(currentWork.snapshot, 240, 240)" />
+              </div>
+              <div class="preview size-radius-20">
+                <img class="raw" :src="userAvatar" />
+                <img v-if="currentWork" :src="getImageUrl(currentWork.snapshot, 240, 240)" />
+              </div>
+              <div class="preview size-radius-30">
+                <img class="raw" :src="userAvatar" />
+                <img v-if="currentWork" :src="getImageUrl(currentWork.snapshot, 240, 240)" />
+              </div>
+              <div class="preview size-circle">
+                <img class="raw" :src="userAvatar" />
+                <img v-if="currentWork" :src="getImageUrl(currentWork.snapshot, 240, 240)" />
+              </div>
+            </div>
+            <div class="variables" style="display: none;">
+              <div v-for="(variable, index) in variables" :key="index" class="variable">
+                <div v-if="variable.type==='color'" class="color-input">
+                  <input v-model="variable.value" />
+                  <v-swatches v-model="variable.value" :row-length="width > 400? 6: 5" popover-y="bottom" :trigger-style="{
+                    width: '32px', height: '32px'
+                  }" shapes="circles"
+                  />
+                </div>
+                <div v-if="variable.type==='text'" class="text-input">
+                  <input v-model="variable.value" />
+                </div>
+              </div>
+            </div>
+            <div class="action">
+              <el-button @click="$refs.file.click()">
+                更换
+                <input ref="file" type="file" accept="image/*" @change="uploadImage($event)">
+              </el-button>
+              <el-button @click="requestDownload">下载</el-button>
+            </div>
+          </div>
+        </div>
+        <div class="column is-9-desktop is-full-mobile">
+          <div class="template-recents">
+            <div class="title">
+              最新
+            </div>
+            <ul class="work-list-wrapper">
+              <li v-for="work in recents" :key="work._id">
+                <div class="work-wrapper" @click="applyDecorator(work)">
+                  <img :src="getImageUrl(work.snapshot, 240, 240)" />
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
     <div class="body">
-      <div class="raw-avatar">
-        <div class="preview-original" @click="dialogConfig">
-          <img class="raw" :src="userAvatar" />
-          <img v-if="currentWork" :src="getImageUrl(currentWork.snapshot, 240, 240)" />
-        </div>
-        <div class="raw-preview-container">
-          <div class="preview size-radius-10">
-            <img class="raw" :src="userAvatar" />
-            <img v-if="currentWork" :src="getImageUrl(currentWork.snapshot, 240, 240)" />
-          </div>
-          <div class="preview size-radius-20">
-            <img class="raw" :src="userAvatar" />
-            <img v-if="currentWork" :src="getImageUrl(currentWork.snapshot, 240, 240)" />
-          </div>
-          <div class="preview size-radius-30">
-            <img class="raw" :src="userAvatar" />
-            <img v-if="currentWork" :src="getImageUrl(currentWork.snapshot, 240, 240)" />
-          </div>
-          <div class="preview size-circle">
-            <img class="raw" :src="userAvatar" />
-            <img v-if="currentWork" :src="getImageUrl(currentWork.snapshot, 240, 240)" />
-          </div>
-        </div>
-        <div class="variables" style="display: none;">
-          <div v-for="(variable, index) in variables" :key="index" class="variable">
-            <div v-if="variable.type==='color'" class="color-input">
-              <input v-model="variable.value" />
-              <v-swatches v-model="variable.value" :row-length="width > 400? 6: 5" popover-y="bottom" :trigger-style="{
-                width: '32px', height: '32px'
-              }" shapes="circles"
-              />
-            </div>
-            <div v-if="variable.type==='text'" class="text-input">
-              <input v-model="variable.value" />
-            </div>
-          </div>
-        </div>
-        <div class="action">
-          <el-button @click="$refs.file.click()">
-            更换
-            <input ref="file" type="file" accept="image/*" @change="uploadImage($event)">
-          </el-button>
-          <el-button @click="requestDownload">下载</el-button>
-        </div>
-      </div>
-      <div class="template-recents">
-        <div class="title">
-          最新
-        </div>
-        <ul class="work-list-wrapper">
-          <li v-for="work in recents" :key="work._id">
-            <div class="work-wrapper" @click="applyDecorator(work)">
-              <img :src="getImageUrl(work.snapshot, 240, 240)" />
-            </div>
-          </li>
-        </ul>
-      </div>
       <div class="template-category">
       </div>
     </div>
@@ -100,6 +105,7 @@ import { Upload, Button } from 'element-ui'
 import logo from './D.png'
 import { getImageUrl } from '../xd-builder/mixins/imageUtils'
 import ImageDAO from '../utils/imagedao'
+import NavBar from '../site/components/NavBar'
 import { Cropper } from 'vue-advanced-cropper'
 import { fitRectIntoBounds } from '../xd-builder/mixins/rectUtils'
 import VSwatches from 'vue-swatches'
@@ -111,6 +117,7 @@ export default {
     [Upload.name]: Upload,
     [Button.name]: Button,
     VSwatches,
+    NavBar,
     Cropper,
   },
   data () {
@@ -259,7 +266,105 @@ export default {
   --padding: 2rem;
 }
 
+.raw-avatar {
+  padding: 2rem 0;
+  border: 2px dashed #eee;
+  border-radius: 1rem;
+  text-align: center;
+  .preview-original {
+    margin: 0 auto;
+    width: 96px;
+    height: 96px;
+    overflow: hidden;
+    position: relative;
+    >img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 96px;
+      height: 96px;
+    }
+  }
+  img.raw {
+    height: 10rem;
+    width: 10rem;
+  }
 
+  .raw-preview-container {
+    margin: 2rem 0 1rem;
+    display: flex;
+    justify-content: center;
+    .preview {
+      width: 64px;
+      height: 64px;
+      margin: 0px 3px;
+      overflow: hidden;
+      position: relative;
+      >img {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 64px;
+        height: 64px;
+      }
+    }
+    .size-circle {
+      border-radius: 50%;
+    }
+    .size-radius-30 {
+      border-radius: 30%;
+    }
+    .size-radius-20 {
+      border-radius: 20%;
+    }
+    .size-radius-10 {
+      border-radius: 10%;
+    }
+  }
+
+  .variables {
+    .variable {
+      box-sizing: border-box;
+      padding: 5px 10px;
+      width: 100%;
+      position: relative;
+      text-align: left;
+      input {
+        box-sizing: border-box;
+        appearance: none;
+        font-size: 1.8rem;
+        background: transparent;
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+        outline: none;
+        height: 4.5rem;
+        color:rgb(66,66,66);
+        padding-left: 1rem;
+        padding-right: 1rem;
+        border-color: transparent;
+        border-width: 0.125rem;
+        box-shadow: none;
+        font-weight: 700;
+      }
+
+      .text-input {
+        background-color: #f9f9f9;
+        border-radius: 0.5rem;
+      }
+      .color-input {
+        background-color: #f9f9f9;
+        border-radius: 0.5rem;
+        .vue-swatches {
+          position: absolute;
+          top: 1.1rem;
+          right: 2rem;
+          .vue-swatches__container {
+            z-index: 1001;
+          }
+        }
+      }
+    }
+  }
+}
 
 #avatar-home {
   .scene-wrapper {
@@ -282,108 +387,7 @@ export default {
     }
   }
 
-  .raw-avatar {
-    margin: var(--padding);
-    margin-bottom: 5px;
-    border: 2px dashed #eee;
-    border-radius: 1rem;
-    text-align: center;
-    padding: 2rem 0;
 
-    .preview-original {
-      margin: 0 auto;
-      width: 96px;
-      height: 96px;
-      overflow: hidden;
-      position: relative;
-      >img {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 96px;
-        height: 96px;
-      }
-    }
-    img.raw {
-      height: 10rem;
-      width: 10rem;
-    }
-
-    .raw-preview-container {
-      margin: 2rem 0 1rem;
-      display: flex;
-      justify-content: center;
-      .preview {
-        width: 64px;
-        height: 64px;
-        margin: 0px 3px;
-        overflow: hidden;
-        position: relative;
-        >img {
-          position: absolute;
-          left: 0;
-          top: 0;
-          width: 64px;
-          height: 64px;
-        }
-      }
-      .size-circle {
-        border-radius: 50%;
-      }
-      .size-radius-30 {
-        border-radius: 30%;
-      }
-      .size-radius-20 {
-        border-radius: 20%;
-      }
-      .size-radius-10 {
-        border-radius: 10%;
-      }
-    }
-
-    .variables {
-      .variable {
-        box-sizing: border-box;
-        padding: 5px 10px;
-        width: 100%;
-        position: relative;
-        text-align: left;
-        input {
-          box-sizing: border-box;
-          appearance: none;
-          font-size: 1.8rem;
-          background: transparent;
-          -webkit-tap-highlight-color: rgba(0,0,0,0);
-          outline: none;
-          height: 4.5rem;
-          color:rgb(66,66,66);
-          padding-left: 1rem;
-          padding-right: 1rem;
-          border-color: transparent;
-          border-width: 0.125rem;
-          box-shadow: none;
-          font-weight: 700;
-        }
-
-        .text-input {
-          background-color: #f9f9f9;
-          border-radius: 0.5rem;
-        }
-        .color-input {
-          background-color: #f9f9f9;
-          border-radius: 0.5rem;
-          .vue-swatches {
-            position: absolute;
-            top: 1.1rem;
-            right: 2rem;
-            .vue-swatches__container {
-              z-index: 1001;
-            }
-          }
-        }
-      }
-    }
-  }
 
   .action {
     input[type="file"] {
@@ -443,17 +447,10 @@ export default {
       --padding: 5rem;
     }
     .raw-avatar {
-      margin: 20px;
-      margin-bottom: 5px;
       border: 2px dashed #eee;
       border-radius: 1rem;
       text-align: center;
       padding: 2rem 0;
-      width: 360px;
-      img.raw {
-        height: 20rem;
-        width: 20rem;
-      }
     }
 
     .work-list-wrapper {
