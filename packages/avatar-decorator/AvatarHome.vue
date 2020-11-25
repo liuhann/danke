@@ -5,7 +5,7 @@
       <div class="columns is-mobile is-multiline work-list">
         <div class="column is-3-desktop is-full-mobile">
           <div class="raw-avatar">
-            <div class="preview-original" @click="dialogConfig">
+            <div id="preview-original" class="preview-original" @click="dialogConfig">
               <img class="raw" :src="userAvatar" />
               <img v-if="currentWork" :src="getImageUrl(currentWork.snapshot, 240, 240)" />
             </div>
@@ -41,43 +41,37 @@
                 </div>
               </div>
             </div>
-            <div class="action">
-              <el-button @click="$refs.file.click()">
-                更换
+            <div class="action buttons is-centered">
+              <button class="button is-primary" @click="$refs.file.click()">
+                更换图片
                 <input ref="file" type="file" accept="image/*" @change="uploadImage($event)">
-              </el-button>
-              <el-button @click="requestDownload">下载</el-button>
+              </button>
+              <button class="button" @click="requestDownload">保存</button>
             </div>
           </div>
         </div>
         <div class="column is-9-desktop is-full-mobile">
-          <div class="template-recents">
-            <div class="title">
-              最新
+          <h2 class="subtitle mb-3">
+            最新
+          </h2>
+          <div class="columns is-mobile is-multiline is-1 is-variable">
+            <div v-for="work in recents" :key="work._id" class="column is-one-quarter-mobile">
+              <div class="work-wrapper" @click="applyDecorator(work)">
+                <img :src="getImageUrl(work.snapshot, 240, 240)" />
+              </div>
             </div>
-            <ul class="work-list-wrapper">
-              <li v-for="work in recents" :key="work._id">
-                <div class="work-wrapper" @click="applyDecorator(work)">
-                  <img :src="getImageUrl(work.snapshot, 240, 240)" />
-                </div>
-              </li>
-            </ul>
           </div>
+          <ul class="work-list-wrapper">
+          </ul>
         </div>
       </div>
     </section>
-    <div class="body">
-      <div class="template-category">
-      </div>
-    </div>
     <div v-show="image" class="avatar-crop-container">
-      <div class="action">
-        <el-button @click="uploadTempAvatar">
-          确定
-        </el-button>
-        <el-button @click="image = null">取消</el-button>
-      </div>
-      <div class="avatar-crop">
+      <div class="avatar-crop" :style="{
+        width: width + 'px',
+        height: width + 'px'
+      }"
+      >
         <cropper
           ref="cropper"
           class="upload-example-cropper"
@@ -95,6 +89,10 @@
           :src="image"
         />
       </div>
+      <div class="buttons mt-6">
+        <button class="button is-primary is-large" :class="cropping? 'is-loading': ''" @click="uploadTempAvatar">确定</button>
+        <button class="button is-light is-large" @click="image = null">取消</button>
+      </div>
     </div>
   </div>
 </template>
@@ -107,7 +105,7 @@ import { getImageUrl } from '../xd-builder/mixins/imageUtils'
 import ImageDAO from '../utils/imagedao'
 import NavBar from '../site/components/NavBar'
 import { Cropper } from 'vue-advanced-cropper'
-import { fitRectIntoBounds } from '../xd-builder/mixins/rectUtils'
+import html2canvas from 'html2canvas'
 import VSwatches from 'vue-swatches'
 import 'vue-swatches/dist/vue-swatches.css'
 import StyleRegistry from '../xd-builder/utils/StyleRegistry'
@@ -127,6 +125,7 @@ export default {
       user: this.ctx.user,
       width: 414,
       currentWork: null,
+      cropping: false,
       variables: [],
       viewport: {
         width: 120,
@@ -153,6 +152,9 @@ export default {
   mounted () {
     this.loadWorks()
     this.width = window.screen.availWidth
+    if (this.width > 480) {
+      this.width = 480
+    }
     this.viewport = {
       width: (this.width - 40) / 3 - 10,
       height: (this.width - 40) / 3 - 10
@@ -187,18 +189,43 @@ export default {
       if (canvas) {
         const form = new FormData();
         canvas.toBlob(async blob => {
+          this.cropping = true
           const result = await this.imagedao.uploadBlob(blob, `profile`)
           await this.ctx.userdao.setAvatar(result.name)
           const user = await this.ctx.userdao.getCurrentUser()
           this.ctx.user = user
           this.user = user
           this.image = null
+          this.cropping = false
         })
       }
     },
 
     async requestDownload () {
-      window.open(`http://www.danke.fun/api/danke/image/merge?top=${this.getImageUrl(this.currentWork.snapshot, 480, 480)}&bottom=${this.getImageUrl(this.user.avatar, 480, 480)}&width=480&height=480`)
+      html2canvas(document.querySelector('#preview-original')).then(canvas => {
+        console.log(canvas)
+        document.body.appendChild(canvas)
+        this.saveAs(canvas.toDataURL(), 'avatar.png');
+      });
+
+      // window.open(`http://www.danke.fun/api/danke/image/merge?top=${this.getImageUrl(this.currentWork.snapshot, 480, 480)}&bottom=${this.getImageUrl(this.user.avatar, 480, 480)}&width=480&height=480`)
+    },
+
+    saveAs(uri, filename) {
+      const link = document.createElement('a');
+
+      if (typeof link.download === 'string') {
+        link.href = uri;
+        link.download = filename;
+        //Firefox requires the link to be in the body
+        document.body.appendChild(link);
+        //simulate click
+        link.click();
+        //remove the link when done
+        document.body.removeChild(link);
+      } else {
+        window.open(uri);
+      }
     },
 
     downloadFile(filePath) {
@@ -242,7 +269,7 @@ export default {
 
     async loadWorks () {
       const result = await this.workdao.list(Object.assign({
-        'system.app': 'avatar',
+        channels: 'avatar',
         page: this.page,
         count: this.count
       }))
@@ -261,133 +288,115 @@ export default {
 </script>
 
 <style lang="scss">
-.container {
-  width: 100%;
-  --padding: 2rem;
-}
+// 预览区
 
-.raw-avatar {
-  padding: 2rem 0;
-  border: 2px dashed #eee;
-  border-radius: 1rem;
-  text-align: center;
-  .preview-original {
-    margin: 0 auto;
-    width: 96px;
-    height: 96px;
-    overflow: hidden;
-    position: relative;
-    >img {
-      position: absolute;
-      left: 0;
-      top: 0;
+#avatar-home {
+  .raw-avatar {
+    padding: 2rem 0;
+    border: 2px dashed #eee;
+    border-radius: 1rem;
+    text-align: center;
+    .preview-original {
+      margin: 0 auto;
       width: 96px;
       height: 96px;
-    }
-  }
-  img.raw {
-    height: 10rem;
-    width: 10rem;
-  }
-
-  .raw-preview-container {
-    margin: 2rem 0 1rem;
-    display: flex;
-    justify-content: center;
-    .preview {
-      width: 64px;
-      height: 64px;
-      margin: 0px 3px;
       overflow: hidden;
       position: relative;
       >img {
         position: absolute;
         left: 0;
         top: 0;
+        width: 96px;
+        height: 96px;
+      }
+    }
+    .raw-preview-container {
+      margin: 2rem 0 1rem;
+      display: flex;
+      justify-content: center;
+      .preview {
         width: 64px;
         height: 64px;
-      }
-    }
-    .size-circle {
-      border-radius: 50%;
-    }
-    .size-radius-30 {
-      border-radius: 30%;
-    }
-    .size-radius-20 {
-      border-radius: 20%;
-    }
-    .size-radius-10 {
-      border-radius: 10%;
-    }
-  }
-
-  .variables {
-    .variable {
-      box-sizing: border-box;
-      padding: 5px 10px;
-      width: 100%;
-      position: relative;
-      text-align: left;
-      input {
-        box-sizing: border-box;
-        appearance: none;
-        font-size: 1.8rem;
-        background: transparent;
-        -webkit-tap-highlight-color: rgba(0,0,0,0);
-        outline: none;
-        height: 4.5rem;
-        color:rgb(66,66,66);
-        padding-left: 1rem;
-        padding-right: 1rem;
-        border-color: transparent;
-        border-width: 0.125rem;
-        box-shadow: none;
-        font-weight: 700;
-      }
-
-      .text-input {
-        background-color: #f9f9f9;
-        border-radius: 0.5rem;
-      }
-      .color-input {
-        background-color: #f9f9f9;
-        border-radius: 0.5rem;
-        .vue-swatches {
+        margin: 0px 3px;
+        overflow: hidden;
+        position: relative;
+        >img {
           position: absolute;
-          top: 1.1rem;
-          right: 2rem;
-          .vue-swatches__container {
-            z-index: 1001;
+          left: 0;
+          top: 0;
+          width: 64px;
+          height: 64px;
+        }
+      }
+      .size-circle {
+        border-radius: 50%;
+      }
+      .size-radius-30 {
+        border-radius: 30%;
+      }
+      .size-radius-20 {
+        border-radius: 20%;
+      }
+      .size-radius-10 {
+        border-radius: 10%;
+      }
+    }
+
+    .variables {
+      .variable {
+        box-sizing: border-box;
+        padding: 5px 10px;
+        width: 100%;
+        position: relative;
+        text-align: left;
+        input {
+          box-sizing: border-box;
+          appearance: none;
+          font-size: 1.8rem;
+          background: transparent;
+          -webkit-tap-highlight-color: rgba(0,0,0,0);
+          outline: none;
+          height: 4.5rem;
+          color:rgb(66,66,66);
+          padding-left: 1rem;
+          padding-right: 1rem;
+          border-color: transparent;
+          border-width: 0.125rem;
+          box-shadow: none;
+          font-weight: 700;
+        }
+
+        .text-input {
+          background-color: #f9f9f9;
+          border-radius: 0.5rem;
+        }
+        .color-input {
+          background-color: #f9f9f9;
+          border-radius: 0.5rem;
+          .vue-swatches {
+            position: absolute;
+            top: 1.1rem;
+            right: 2rem;
+            .vue-swatches__container {
+              z-index: 1001;
+            }
           }
         }
       }
     }
   }
-}
 
-#avatar-home {
-  .scene-wrapper {
-    overflow: hidden;
+  .work-wrapper {
+    background-color: #fff;
+    background-image: linear-gradient(45deg, #efefef 25%, transparent 25%, transparent 75%, #efefef 75%, #efefef),
+    linear-gradient(45deg, #efefef 25%, transparent 25%, transparent 75%, #efefef 75%, #efefef);
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 10px;
+    width: 64px;
+    height: 64px;
+    border: 1px solid #eee;
+    border-radius: 2px;
   }
-  .logo-wrapper {
-    padding-left: var(--padding);
-    padding-right: var(--padding);
-    padding-top: var(--padding);
-    display: flex;
-    .share {
-      font-size: 1.8rem;
-      letter-spacing: .3rem;
-      line-height: 4.5rem;
-      margin: 0 2rem;
-    }
-    img {
-      height: 4.5rem;
-      width: 4.5rem;
-    }
-  }
-
-
 
   .action {
     input[type="file"] {
@@ -395,33 +404,6 @@ export default {
     }
   }
 
-  .title {
-    font-size: 1.8rem;
-    letter-spacing: .3rem;
-    line-height: 4.5rem;
-    margin: 0 2rem;
-  }
-  .work-list-wrapper {
-    margin: 0 5vw;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    li {
-      width: 32%;
-      margin-bottom: 1rem;
-      .work-wrapper {
-        background-color: #fff;
-        background-image: linear-gradient(45deg, #efefef 25%, transparent 25%, transparent 75%, #efefef 75%, #efefef),
-        linear-gradient(45deg, #efefef 25%, transparent 25%, transparent 75%, #efefef 75%, #efefef);
-        background-size: 20px 20px;
-        background-position: 0 0, 10px 10px;
-        width: 100%;
-        img {
-          width: 100%;
-        }
-      }
-    }
-  }
   .avatar-crop-container {
     position: absolute;
     z-index: 10001;
@@ -434,17 +416,14 @@ export default {
     align-items: center;
     flex-direction: column;
     background: #ffffffe0;
-    .avatar-crop {
-      width: 100vw;
-      height: 100vw;
-    }
   }
+}
 
-
-  @media screen and (min-width: 720px) {
-    .container {
-      width: 100%;
-      --padding: 5rem;
+@media screen and (min-width: 720px) {
+  #avatar-home {
+    .work-wrapper {
+      width: 140px;
+      height: 140px;
     }
     .raw-avatar {
       border: 2px dashed #eee;
@@ -452,36 +431,9 @@ export default {
       text-align: center;
       padding: 2rem 0;
     }
-
-    .work-list-wrapper {
-      flex: 1;
-      margin: 0 20px;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      li {
-        width: 120px;
-        margin: 5px;
-        margin-bottom: 1rem;
-        .work-wrapper {
-          background-color: #fff;
-          background-image: linear-gradient(45deg, #efefef 25%, transparent 25%, transparent 75%, #efefef 75%, #efefef),
-          linear-gradient(45deg, #efefef 25%, transparent 25%, transparent 75%, #efefef 75%, #efefef);
-          background-size: 20px 20px;
-          background-position: 0 0, 10px 10px;
-          width: 100%;
-          img {
-            width: 100%;
-          }
-        }
-      }
-    }
-    .body {
-      display: flex;
-    }
   }
-}
 
+}
 
 
 </style>

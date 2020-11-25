@@ -150,7 +150,7 @@ export default {
         name: file.name,
         size: file.size,
       }
-      let result = await this.imagedao.uploadBlob(file.raw, `public/images/${file.name}`, true)
+      let result = await this.imagedao.uploadBlob(file.raw, `public/vector/${file.name}`, true)
       imageObject.url = result.name
       const size = await getImageSize(file.raw)
       imageObject.w = size.width

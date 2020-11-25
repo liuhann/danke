@@ -11,9 +11,6 @@
       <i v-if="(currentSceneIndex < work.scenes.length - 1) && !currentAutoPlay" class="el-icon-back prev-scene" @click="enterScene(currentSceneIndex - 1)" />
       <i class="el-icon-video-play play" @click="play" />
     </div>
-    <div class="seconds">
-      {{ currentSecondsFormated }}
-    </div>
   </div>
 </template>
 
@@ -146,7 +143,11 @@ export default {
       this.updInterval = setInterval(() => {
         this.currentSeconds = new Date().getTime() - startMinuts
       }, 20)
-      
+
+      for (let scene of this.work.scenes) {
+        scene.visible = false
+        scene.stage = ''
+      }
       this.currentSceneIndex = 0
       this.enterScene(0)
       this.playing = true

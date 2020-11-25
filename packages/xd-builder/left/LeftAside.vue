@@ -25,6 +25,10 @@
         <i class="el-icon-picture-outline" />
         <span>我的</span>
       </div>
+      <div class="category" :class="current === '3rd'? 'current': ''" @click="toggleTo('3rd')">
+        <i class="el-icon-picture-outline" />
+        <span>更多</span>
+      </div>
       <div class="category" :class="current === 'tick'? 'current': ''" @click="toggleTo('tick')">
         <i class="el-icon-service" />
         <span>音乐</span>
@@ -72,6 +76,11 @@
           <left-shape-list v-if="current === 'html'" @svg="tryApplySVGMask" />
         </keep-alive>
       </transition>
+      <transition name="fade">
+        <keep-alive>
+          <resource-more v-if="current === '3rd'" />
+        </keep-alive>
+      </transition>
     </div>
   </aside>
 </template>
@@ -86,6 +95,7 @@ import PublicVectorGallery from './PublicVectorGallery.vue'
 import PublicHtmlList from './PublicHTMLList'
 import LeftFilterList from './LeftFilterList.vue'
 import TickList from './TickList.vue'
+import ResourceMore from './ResourceMore.vue'
 import LeftShapeList from './LeftShapeList.vue'
 import FrameListConfig from './FrameListConfig.vue'
 import workplaceMixin from '../mixins/workplaceMixins'
@@ -100,6 +110,7 @@ export default {
     ImageList,
     LeftFilterList,
     LeftShapeList,
+    ResourceMore,
     TickList
   },
   mixins: [ workplaceMixin ],

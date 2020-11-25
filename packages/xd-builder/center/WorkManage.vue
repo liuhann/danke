@@ -10,7 +10,9 @@
             <i v-if="scope.row.system && scope.row.system.site" class="el-icon-s-home" />
           </template>
         </el-table-column>
-        <el-table-column label="app" prop="channels" />
+        <el-table-column label="app" prop="channels
+"
+        />
         <el-table-column>
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="openWork(scope.row)">打开</el-button>
