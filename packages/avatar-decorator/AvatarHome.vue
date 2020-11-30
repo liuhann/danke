@@ -6,8 +6,8 @@
         <div class="column is-3-desktop is-full-mobile">
           <div class="raw-avatar">
             <div id="preview-original" class="preview-original" @click="dialogConfig">
-              <img class="raw" :src="userAvatar" />
-              <img v-if="currentWork" :src="getImageUrl(currentWork.snapshot, 240, 240)" />
+              <img class="raw" :src="userAvatar" crossOrigin="anonymous" />
+              <img v-if="currentWork" :src="getImageUrl(currentWork.snapshot, 480, 480)" crossOrigin="anonymous" />
             </div>
             <div class="raw-preview-container">
               <div class="preview size-radius-10">
@@ -66,6 +66,10 @@
         </div>
       </div>
     </section>
+    <div v-show="showCanvas" id="canvas-area">
+      <img class="raw" :src="userAvatar" crossOrigin="anonymous" />
+      <img v-if="currentWork" :src="getImageUrl(currentWork.snapshot, 480, 480)" crossOrigin="anonymous" />
+    </div>
     <div v-show="image" class="avatar-crop-container">
       <div class="avatar-crop" :style="{
         width: width + 'px',
@@ -90,8 +94,8 @@
         />
       </div>
       <div class="buttons mt-6">
-        <button class="button is-primary is-large" :class="cropping? 'is-loading': ''" @click="uploadTempAvatar">确定</button>
-        <button class="button is-light is-large" @click="image = null">取消</button>
+        <button class="button is-primary" :class="cropping? 'is-loading': ''" @click="uploadTempAvatar">确定</button>
+        <button class="button is-light" @click="image = null">取消</button>
       </div>
     </div>
   </div>
@@ -127,6 +131,7 @@ export default {
       currentWork: null,
       cropping: false,
       variables: [],
+      showCanvas: false,
       viewport: {
         width: 120,
         height: 120
@@ -137,7 +142,7 @@ export default {
   computed: {
     userAvatar () {
       if (this.user && this.user.avatar) {
-        return this.getImageUrl(this.user.avatar, 960, 960)
+        return this.getImageUrl(this.user.avatar, 480, 480)
       } else {
         return ''
       }
@@ -202,13 +207,19 @@ export default {
     },
 
     async requestDownload () {
-      html2canvas(document.querySelector('#preview-original')).then(canvas => {
-        console.log(canvas)
-        document.body.appendChild(canvas)
-        this.saveAs(canvas.toDataURL(), 'avatar.png');
-      });
-
-      // window.open(`http://www.danke.fun/api/danke/image/merge?top=${this.getImageUrl(this.currentWork.snapshot, 480, 480)}&bottom=${this.getImageUrl(this.user.avatar, 480, 480)}&width=480&height=480`)
+      /*
+      this.showCanvas = true
+      this.$nextTick(() => {
+        html2canvas(document.querySelector('#canvas-area'), {
+          useCORS: true,
+          scale: 1
+        }).then(canvas => {
+          this.showCanvas = false
+          this.saveAs(canvas.toDataURL(), 'avatar.png');
+        });
+      })
+       */
+      window.open(`http://www.danke.fun/api/danke/image/merge?top=${this.getImageUrl(this.currentWork.snapshot, 480, 480)}&bottom=${this.getImageUrl(this.user.avatar, 480, 480)}&width=480&height=480`, '_blank')
     },
 
     saveAs(uri, filename) {
@@ -229,7 +240,7 @@ export default {
     },
 
     downloadFile(filePath) {
-      var link=document.createElement('a');
+      var link = document.createElement('a');
       link.href = filePath;
       link.download = true
       link.click();
@@ -289,7 +300,18 @@ export default {
 
 <style lang="scss">
 // 预览区
-
+#canvas-area {
+  position: relative;
+  width: 480px;
+  height: 480px;
+  >img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 480px;
+    height: 480px;
+  }
+}
 #avatar-home {
   .raw-avatar {
     padding: 2rem 0;

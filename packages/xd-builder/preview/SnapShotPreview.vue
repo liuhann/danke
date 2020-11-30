@@ -1,7 +1,7 @@
 <template>
   <div class="page-snap-preview">
     <div v-if="work" ref="container" class="preview-container">
-      <div class="device" :style="deviceStyle">
+      <div id="preview-container" class="device" :style="deviceStyle">
         <render-scene :variables="work.variables" :scene="work.scenes[sceneIndex]" :view-port="work.viewBox" :view-box="work.viewBox" />
       </div>
     </div>
@@ -14,6 +14,7 @@ import workMixin from '../mixins/workMixin.js'
 import sceneMixin from '../mixins/sceneMixins.js'
 import RenderScene from '../render/RenderScene'
 import RestDAO from '../../utils/restdao'
+import html2canvas from 'html2canvas'
 export default {
   name: 'SnapShotPreview',
   components: {
@@ -66,6 +67,22 @@ export default {
           }
         }
       })
+    },
+    saveAs(uri, filename) {
+      const link = document.createElement('a');
+
+      if (typeof link.download === 'string') {
+        link.href = uri;
+        link.download = filename;
+        //Firefox requires the link to be in the body
+        document.body.appendChild(link);
+        //simulate click
+        link.click();
+        //remove the link when done
+        document.body.removeChild(link);
+      } else {
+        window.open(uri);
+      }
     }
   }
 }

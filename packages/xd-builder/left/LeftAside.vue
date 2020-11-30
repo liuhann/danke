@@ -98,7 +98,7 @@ import TickList from './TickList.vue'
 import ResourceMore from './ResourceMore.vue'
 import LeftShapeList from './LeftShapeList.vue'
 import FrameListConfig from './FrameListConfig.vue'
-import workplaceMixin from '../mixins/workplaceMixins'
+import workplaceMixin from '../mixins/sceneEditContainer'
 import svgToMiniDataURI from 'mini-svg-data-uri'
 
 export default {

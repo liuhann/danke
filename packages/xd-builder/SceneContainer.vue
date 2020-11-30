@@ -3,9 +3,6 @@
     <div id="workspace" ref="sceneContainer" :style="styleWorkSpace" @mousedown="sceneMouseDown" @wheel.prevent="sceneMouseWheel">
       <!-- 当前屏幕内容 -->
       <div class="screen" :style="styleScreen">
-        <div class="screen-title" />
-        <div v-if="scene" class="reference-lines">
-        </div>
         <div v-if="scene" class="scene" :style="sceneStyle">
           <render-element
             v-for="(element, index) of scene.elements"
@@ -56,7 +53,7 @@
 
 <script>
 import { Button, ButtonGroup, Popover, Slider } from 'element-ui'
-import workplaceMixins from './mixins/workplaceMixins'
+import workplaceMixins from './mixins/sceneEditContainer'
 import interact from 'interactjs'
 import RenderElement from './render/RenderElement.vue'
 import interactMixins from './mixins/interactMixins.js'
@@ -89,8 +86,6 @@ export default {
   },
   data: function () {
     return {
-      // 屏幕区域缩放比例
-      scale: 0.2,
       // 屏幕在工作区横向位置
       translateX: 0,
       // 屏幕区在工作区纵向位置

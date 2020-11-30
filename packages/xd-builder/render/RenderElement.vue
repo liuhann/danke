@@ -4,14 +4,11 @@
        :class="elementClass" :style="elementWrapperStyle" @click="elementClicked"
   >
     <!--图片渲染-->
-    <img v-if="elementUrl && !element.fill" :id="'img-' + (element.name || element.id)" :src="elementUrl" :style="elementStyle">
+    <img v-if="elementUrl && !element.fill" :id="'img-' + (element.name || element.id)" :src="elementUrl" :style="elementStyle" crossOrigin="anonymous">
     <div v-else-if="element.content" class="svg-content" :style="elementStyle" v-html="element.content" />
     <div v-else-if="element.elements" class="block-elements" :style="elementStyle">
       <render-element v-for="(el, i) in element.elements" :key="el.id" :view-box="viewBox" :view-port="viewPort" :element="el" :index="i" />
     </div>
-    <svg v-else-if="element.svg" :viewBox="'0 0 ' + element.svg.vp[2] + ' ' + element.svg.vp[3]" :style="elementStyle">
-      <path v-for="(path, index) in element.svg.ps" :key="index" :d="path.p" :fill="path.f || '#76D9FC'" />
-    </svg>
     <div v-else-if="element.html" class="html" :style="elementStyle" v-html="element.html" />
     <div v-else-if="!element.text" class="shape" :style="elementStyle">
     </div>
@@ -19,17 +16,6 @@
     <div v-for="(text, index) in elementTextLines" :key="index" :style="textTransformStyle" class="text">{{ text }}</div>
     <textarea v-if="element.text != null && element.editing" ref="textarea" v-model="element.text" :style="textEditStyle" @change="updateTextArea" />
 
-    <svg v-if="element.mask && element.mask.svg" :viewBox="'0 0 ' + element.mask.svg.vp[2] + ' ' + element.mask.svg.vp[3]">
-      <defs>
-        <clipPath :id="element.mask.uid" :style="{
-          transform: `scaleX(${element.width/element.mask.svg.vp[2]}) scaleY(${element.height/element.mask.svg.vp[3]})`
-        }"
-        >
-          <path v-for="(path, index) in element.mask.svg.ps.filter(p => !p.f)" :key="index" :d="path.p" />
-        </clipPath>
-      </defs>
-      <path v-for="(path, index) in element.mask.svg.ps.filter(p => p.f)" :key="index" :d="path.p" :fill="path.f" />
-    </svg>
     <div v-if="filterSVG" style="display:none;">
       <svg v-html="filterSVG">
       </svg>

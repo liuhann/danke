@@ -1,14 +1,16 @@
 <template>
-<div class="work-cover" style="background-color: #fff" :style="scene.style"
-     @click="coverClicked"
-     @mouseenter="mouseOn = true" @mouseout="mouseOn = false">
-  <render-element
-    v-for="(element) in scene.elements"
-    stage="in"
-    :element="element"
-    :key="element.id"/>
-  <el-button v-if="showPlay" icon="el-icon-video-camera" type="primary" size="mini" circle class="btn-play" @click="play"/>
-</div>
+  <div class="work-cover" style="background-color: #fff" :style="scene.style"
+       @click="coverClicked"
+       @mouseenter="mouseOn = true" @mouseout="mouseOn = false"
+  >
+    <render-element
+      v-for="(element) in scene.elements"
+      :key="element.id"
+      stage="in"
+      :element="element"
+    />
+    <el-button v-if="showPlay" icon="el-icon-video-camera" type="primary" size="mini" circle class="btn-play" @click="play" />
+  </div>
 </template>
 
 <script>
@@ -16,13 +18,18 @@ import { TypeEnum } from '../../danke-core/elements'
 import mixinDevice from '../../xd-player/mixinDevice'
 import sceneMixins from '../mixins/sceneMixins'
 import { getElementStyle, getImageWebUrl, getSceneStyle } from '../../danke-core/utils/styles'
-import RenderElement from '../render/RenderElement'
+import ment from '../render/RenderElement'
 import { Button } from 'element-ui'
 export default {
   name: 'WorkCover',
   components: {
     RenderElement,
     [Button.name]: Button
+  },
+  filters: {
+    newline (v) {
+      return v.replace(/\n/g, '<br>')
+    }
   },
   mixins: [ mixinDevice, sceneMixins ],
   props: {
@@ -46,15 +53,21 @@ export default {
       default: 2
     }
   },
-  filters: {
-    newline (v) {
-      return v.replace(/\n/g, '<br>')
-    }
-  },
   data () {
     return {
       mouseOn: false,
       TypeEnum
+    }
+  },
+  computed: {
+    scene () {
+      if (this.work.cover) {
+        return this.work.cover
+      } else if (this.index) {
+        return this.work.scenes[this.index]
+      } else {
+        return []
+      }
     }
   },
   watch: {
@@ -70,17 +83,6 @@ export default {
             this.scene.style = getSceneStyle(this.scene, this.device, 'in')
           }
         }, 200)
-      }
-    }
-  },
-  computed: {
-    scene () {
-      if (this.work.cover) {
-        return this.work.cover
-      } else if (this.index) {
-        return this.work.scenes[this.index]
-      } else {
-        return []
       }
     }
   },

@@ -4,6 +4,7 @@
 import { shortid } from '../../utils/string'
 import { Loading, Message } from 'element-ui'
 import RestDAO from '../../utils/restdao.js'
+import html2canvas from 'html2canvas'
 
 export default {
   props: {
@@ -32,7 +33,7 @@ export default {
           width: 1080,
           height: 1920
         },
-        color: '#fff',
+        color: 'transparent',
         audioUrl: '',
         audioName: '',
         audioSeconds: 0,
@@ -193,7 +194,7 @@ export default {
         work.creator = this.ctx.user.id
         const result = await this.workdao.create(work)
         this.work._id = result.object._id
-        this.$router.replace('/xd?work=' + this.work.id)
+        this.$router.replace(location.pathname + '?work=' + this.work.id)
       } else {
         await this.workdao.patch(work.id, work)
       }
@@ -211,6 +212,50 @@ export default {
     async runWork () {
       await this.saveWork()
       window.open('/play/fit/' + this.work._id)
+    },
+
+    addScene () {
+      const scene = {
+        name: '场景',
+        id: shortid(),
+        elements: [],
+        animation: {},
+        color: '',
+        z: 100,
+        delay: 0,
+        duration: 3,
+        exit: 1
+      }
+      this.insertScene(scene)
+    },
+
+    insertScene(scene) {
+      if (this.currentScene) {
+        const currentSceneIndex = this.work.scenes.indexOf(this.currentScene)
+        this.work.scenes.splice(currentSceneIndex + 1, 0, scene)
+      } else {
+        this.work.scenes.push(scene)
+      }
+      this.scene = scene
+    },
+
+    chooseScene (scene) {
+      this.scene = scene
+    },
+
+    getSceneExistDuration () {
+      let maxExistsMill = 1
+      for (let element of this.currentScene.elements) {
+        if (element.style.exists) {
+          for (let exist of element.style.exists) {
+            const existMill = exist.delay + exist.dura
+            if (existMill > maxExistsMill) {
+              maxExistsMill = existMill
+            }
+          }
+        }
+      }
+      return maxExistsMill
     }
   }
 }
