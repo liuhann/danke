@@ -1,5 +1,5 @@
 <template>
-  <el-select v-model="variable.value" size="mini" @change="loadFontFace">
+  <el-select v-model="variable.value" @change="loadFontFace">
     <el-option v-for="fontface in fontFamilies" :key="fontface.id" :value="fontface.id" :label="fontface.name" :style="fontStyle(fontface)" />
   </el-select>
 </template>

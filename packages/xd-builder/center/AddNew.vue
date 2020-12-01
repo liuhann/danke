@@ -1,69 +1,38 @@
 <template>
   <div id="add-new-work">
-    <div class="content-title">选择作品类型</div>
-    <div class="group">
-      <div class="group-title">竖屏展示</div>
-      <div class="new-types">
-        <div v-for="work of appType" :key="work.name" class="work-type" :style="workSizeStyle(work)">
-          <div class="name">
-            {{ work.name }}
-          </div>
-          <div class="ratios">
-            {{ work.width }} X {{ work.height }}
-          </div>
-          <div class="action">
-            <button @click="newWork(work.width, work.height)">创建</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="group">
-      <div class="group-title">竖屏展示</div>
-      <div class="new-types">
-        <div v-for="work of video" :key="work.name" class="work-type" :style="workSizeStyle(work)">
-          <div class="name">
-            {{ work.name }}
-          </div>
-          <div class="ratios">
-            {{ work.width }} X {{ work.height }}
-          </div>
-          <div class="action">
-            <button @click="newWork(work.width, work.height)">创建</button>
+    <nav-bar />
+    <section class="section">
+      <button class="button is-plain" @click="back">返回</button>
+    </section>
+    <section class="section">
+      <div class="columns is-mobile is-multiline channel-list is-1">
+        <div v-for="(channel, index) in channels" :key="index" class="column channel-container is-6-mobile is-3-tablet is-2-desktop is-1-fullhd">
+          <div class="box">
+            <p class="title is-4">{{ channel.label }}</p>
+            <figure class="image is-1by1">
+            </figure>
+            <button class="button is-success is-light" @click="newWork(channel.size)">创建</button>
           </div>
         </div>
       </div>
-    </div>
-
-    <div class="group">
-      <div class="group-title">自由设计</div>
-      <div class="new-types">
-        <div v-for="work of video" :key="work.name" class="work-type" :style="workSizeStyle(work)">
-          <div class="name">
-            {{ work.name }}
-          </div>
-          <div class="ratios">
-            {{ work.width }} X {{ work.height }}
-          </div>
-          <div class="action">
-            <button @click="newWork(work.width, work.height)">创建</button>
-          </div>
-        </div>
-      </div>
-    </div>
+    </section>
   </div>
 </template>
 
 <script>
 import { slideShow, video, appType } from './workType'
+import channels from '../../site/channels'
 import { InputNumber } from 'element-ui'
+import NavBar from '../../site/components/NavBar'
 export default {
   name: 'AddNew',
   components: {
+    NavBar,
     [InputNumber.name]: InputNumber
   },
   data () {
     return {
+      channels,
       appType,
       slideShow,
       video,
@@ -79,8 +48,11 @@ export default {
         width: this.columnHeight / work.height * work.width + 'px'
       }
     },
-    newWork (width, height) {
-      window.open(`/xd?width=${width}&height=${height}`)
+    back () {
+      this.$router.back()
+    },
+    newWork (size) {
+      this.$router.push(`/xd-lite?width=${size.w}&height=${size.h}`)
     }
   }
 }
@@ -89,10 +61,6 @@ export default {
 <style lang="scss">
 
 #add-new-work {
-  .column {
-    width: 100%;
-    overflow: hidden;
-  }
 
   .group {
     margin-top: 20px;

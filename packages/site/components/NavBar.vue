@@ -4,8 +4,8 @@
       <a class="navbar-item" href="http://www.danke.fun">
         <img :src="logo" />
       </a>
-      <a class="navbar-item">DANKE.FUN</a>
-      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" @click="toggleMenuShow">
+      <a class="navbar-item">{{ title }}</a>
+      <a role="button" class="navbar-burger" :class="menuShow? 'is-active': ''" aria-label="menu" aria-expanded="false" @click="toggleMenuShow">
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
@@ -13,10 +13,22 @@
     </div>
     <div class="navbar-menu" :class="menuShow? 'is-active': ''">
       <div class="navbar-end">
-        <a v-if="logon" class="navbar-item" href="/creative/my">
-          <img class="avatar is-rounded" :src="avatar">
-        </a>
-        <div v-else class="navbar-item">
+        <div v-if="logon" class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link is-arrowless">
+            <img class="avatar is-rounded" :src="avatar">
+          </a>
+          <div class="navbar-dropdown is-right">
+            <router-link v-if="logon" class="navbar-item" to="/creative/my">
+              创作中心首页
+            </router-link>
+            <hr class="navbar-divider">
+            <router-link v-if="logon" class="navbar-item" to="/creative/profile">
+              账号设置
+            </router-link>
+          </div>
+        </div>
+
+        <div v-if="!logon" class="navbar-item">
           <div class="buttons">
             <router-link class="button is-link" to="/register">
               <strong>注册</strong>
@@ -37,7 +49,12 @@ import { getImageUrl } from '../../xd-builder/mixins/imageUtils'
 import logo from '../D.png'
 export default {
   name: 'NavBar',
-  props: {},
+  props: {
+    title: {
+      type: String,
+      default: '蛋壳分享'
+    }
+  },
   data () {
     return {
       menuShow: false,

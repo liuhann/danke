@@ -1,51 +1,64 @@
 <template>
-  <div class="creative-center">
-    <div class="main">
-      <div class="nav">
-        <div class="me">
-          <div class="avatar" @click="gotoAvatarHome">
-            <img :src="avatar">
-          </div>
-          <div class="user">
-            <div class="user-name">
-              {{ user.nick || user.id }}
-            </div>
-            <div class="location">
-              {{ user.location ||　'火星' }}
-            </div>
-          </div>
+  <div id="creative-center" class="creative-center">
+    <nav-bar title="我的作品"></nav-bar>
+    <section class="section">
+      <div class="columns is-mobile">
+        <div class="column is-narrow">
+          <button class="button is-primary" @click="navTo('new')">创建作品</button>
         </div>
-        <button slot="reference" class="button is-primary is-small ml-10" @click="navTo('new')">创建新的作品</button>
-        <div class="menu">
-          <div class="node" :class="nav==='my'? 'selected': ''" @click="navTo('my')">
-            <span>我的作品</span>
-          </div>
-          <div class="node tree-node" :class="nav==='profile'? 'selected': ''" @click="navTo('profile')">
-            <span>设置</span>
+        <div class="column has-text-right">
+          <div class="select">
+            <select v-model="currentChannel" @change="channelChange">
+              <option value="all">全部</option>
+              <option v-for="channel in channels" :key="channel.value" :value="channel.value">{{ channel.label }}</option>
+            </select>
           </div>
         </div>
       </div>
-      <div class="content">
-        <router-view />
+    </section>
+    <section class="section">
+      <div class="columns is-mobile is-multiline work-list is-1">
+        <div v-for="work in works" :key="work.id" class="column work-container is-full-mobile is-4-tablet is-3-desktop is-3-fullhd">
+          <div class="box">
+            <div class="columns is-mobile">
+              <div class="column preview is-narrow">
+                <div class="work-image-container">
+                  <img v-if="work.snapshot" :src="getImageUrl(work.snapshot, 120, 120, 'lfit')">
+                </div>
+                <span v-if="!work.snapshot" class="no-snapshot">正在生成预览</span>
+              </div>
+              <div class="column">
+                <p class="title is-3 is-size-5">{{ work.title }}</p>
+                <p class="has-text-grey">{{ work.updated }}</p>
+                <div class="buttons mt-2">
+                  <button class="button is-success is-light" @click="editWork(work)">编辑</button>
+                  <button class="button is-info is-light">预览</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
   </div>
 </template>
 
 <script>
-import StyleRegistry from '../utils/StyleRegistry'
-import { Popover, Upload } from 'element-ui'
-import ImageDAO from '../../utils/imagedao'
+import workListMixins from '../mixins/workListMixins'
+import NavBar from '../../site/components/NavBar'
+import channels from '../../site/channels'
 import { getImageUrl } from '../mixins/imageUtils'
+import { fitRectIntoBounds } from '../mixins/rectUtils'
 export default {
   name: 'CreativeCenter',
   components: {
-    [Popover.name]: Popover,
-    [Upload.name]: Upload
+    NavBar
   },
-  filters: { },
+  mixins: [ workListMixins ],
   data () {
     return {
+      channels,
+      currentChannel: 'all',
       user: this.ctx.user,
       lines: []
     }
@@ -53,7 +66,7 @@ export default {
   computed: {
     avatar () {
       if (this.user && this.user.avatar) {
-        return this.getImageUrl(this.user.avatar, 96, 96)
+        return this.getImageUrl(this.user.avatar, 120, 120)
       } else {
         return 'http://cdn.danke.fun/res/head.svg'
       }
@@ -65,20 +78,45 @@ export default {
     }
   },
   created () {
-    this.imagedao = new ImageDAO(this.ctx)
   },
   mounted () {
-    this.ctx.styleRegistry = new StyleRegistry()
+    this.loadWorks()
   },
   methods: {
     getImageUrl,
+    containerFitSize (work) {
+      const fit = fitRectIntoBounds(work.viewBox, {
+        width: 120,
+        height: 120
+      })
 
+      return {
+        width: fit.width + 'px',
+        height: fit.height + 'px'
+      }
+    },
+    channelChange () {
+      debugger
+      this.loadWorks()
+    },
+    editWork (work) {
+      this.$router.replace('/xd-lite?work=' + work.id)
+    },
+    listQuery () {
+      const query = {
+        creator: this.ctx.user.id
+      }
+      if (this.currentChannel !== 'all') {
+        query.channels = this.currentChannel
+      }
+      return query
+    },
     gotoAvatarHome () {
       this.$router.replace('/avatar')
     },
 
     navTo (nav) {
-      this.$router.replace('/creative/' + nav)
+      this.$router.push('/creative/' + nav)
     },
 
     xd ({ width, height }) {
@@ -114,6 +152,29 @@ export default {
 </script>
 
 <style lang="scss">
+
+.work-list {
+  .preview {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .no-snapshot {
+      position: absolute;
+      color: #aaacad;
+    }
+    .work-image-container {
+      width: 120px;
+      height: 120px;
+      border:1px solid #e7e7e7;
+      border-radius: 6px;
+      background-color: #fff;
+      background-image: linear-gradient(45deg, #efefef 25%, transparent 25%, transparent 75%, #efefef 75%, #efefef),
+      linear-gradient(45deg, #efefef 25%, transparent 25%, transparent 75%, #efefef 75%, #efefef);
+      background-size: 20px 20px;
+      background-position: 0 0, 10px 10px;
+    }
+  }
+}
 .creative-center {
   --mainColor: rgba(0, 196, 204);
   --mainColorHover: rgba(0, 196, 204, 0.61);

@@ -11,19 +11,24 @@ const beforeEnter = (to, from, next) => {
 }
 export default {
   routes: [{
-    path: '/creative',
+    path: '/creative/my',
     beforeEnter,
-    component: () => import(/* webpackChunkName: "xd-creative" */'./center/CreativeCenter.vue'),
+    component: () => import(/* webpackChunkName: "xd-center" */'./center/CreativeCenter.vue'),
     children: [{
       path: 'my',
       component: () => import(/* webpackChunkName: "xd-creative" */'./center/MyWork.vue'),
     }, {
-      path: 'new',
-      component: () => import(/* webpackChunkName: "xd-creative" */'./center/AddNew.vue'),
-    },  {
       path: 'profile',
       component: () => import(/* webpackChunkName: "xd-creative" */'../user/UserProfile.vue'),
     }]
+  }, {
+    path: '/user/profile',
+    beforeEnter,
+    component: () => import(/* webpackChunkName: "xd-center" */'../user/UserProfile.vue')
+  }, {
+    path: '/creative/new',
+    beforeEnter,
+    component: () => import(/* webpackChunkName: "xd-center" */'./center/AddNew.vue')
   }, {
     path: '/xd',
     beforeEnter,
@@ -37,6 +42,9 @@ export default {
   }, {
     path: '/work/manage',
     component: () => import(/* webpackChunkName: "manage" */'./center/WorkManage.vue')
+  }, {
+    path: '/vector/manage',
+    component: () => import(/* webpackChunkName: "manage" */'./center/VectorPackManage.vue')
   }, {
     path: '/svg-path/maker',
     component: () => import(/* webpackChunkName: "manage" */'./clippath-maker/Container.vue')

@@ -38,18 +38,18 @@
       height="90%"
       width="95%"
     >
-      <DIV slot="title">
+      <div slot="title">
         <el-button type="text" icon="el-icon-unlock"></el-button>
         <el-button type="text" plain icon="el-icon-delete"></el-button>
-      </DIV>
+      </div>
       <el-form v-if="element" label-width="80px">
-        <el-form-item v-for="(variable, index) in element.variables || []" :key="index" :label="getVariableLabel(variable)">
+        <el-form-item v-for="(variable, index) in element.variables || []" :key="index" :label="getVariableLabel(variable)" class="pr-3">
           <el-color-picker v-if="variable.type==='color'" v-model="variable.value" />
           <font-family v-if="variable.type === 'fontFamily'" :key="index" :variable="variable" />
           <text-align v-if="variable.type==='textAlign'" :key="index" v-model="variable.value" />
           <font-weight v-if="variable.type==='fontWeight'" :key="index" v-model="variable.value" />
           <font-size v-if="variable.type==='fontSize'" :key="index" :variable="variable" />
-          <el-input-number v-if="variable.type==='px' || variable.type==='number' || variable.type==='percent'" v-model="variable.value" />
+          <el-input-number v-if="variable.type==='px' || variable.type==='number' || variable.type==='percent'" v-model="variable.value" style="width: 140px;" size="small" />
         </el-form-item>
         <el-form-item v-if="element.hasOwnProperty('fill')" label="填充色">
           <el-color-picker v-model="element.fill" show-alpha />
@@ -72,6 +72,15 @@ import FontSize from '../xd-builder/toolbar/FontSize'
 import interactMixins from '../xd-builder/mixins/interactMixins'
 import RenderElement from '../xd-builder/render/RenderElement.vue'
 import { shortid } from '../utils/string'
+
+const fontLabels = {
+  'fontFamily': '字体',
+  'textAlign': '对齐方式',
+  'fontWeight': '粗细',
+  'fontSize': '字号',
+  'letterSpacing': '字间距',
+  'color': '颜色'
+}
 
 export default {
   name: 'SceneEditContainer',
@@ -180,16 +189,7 @@ export default {
       if (variable.label) {
         return variable.label
       }
-      if (variable.type === 'color') {
-        return '颜色'
-      }
-      if (variable.type === 'number') {
-        return '设置长度'
-      }
-      if (variable.type === 'fontFamily') {
-        return '字体'
-      }
-      return variable.type
+      return fontLabels[variable.name] || variable.type
     },
 
     /**
@@ -396,23 +396,24 @@ export default {
 <style lang="scss">
 #scene-edit-container {
   height: 100%;
-
+  .el-button--text {
+    font-size: 1rem;
+  }
   .el-form-item {
     margin-bottom: 5px;
     border-bottom: 1px solid #e0e0e0;
-    height: 44px;
-    line-height: 44px;
-
+    height: 48px;
+    line-height: 48px;
     .action {
-      line-height: 44px;
+      line-height: 48px;
       margin: 0 5px;
       color: #0e1318;
       font-weight: 400;
       padding: 0 6px;
 
       svg {
-        width: 18px;
-        height: 28px;
+        width: 26px;
+        height: 26px;
         display: inline-block;
         vertical-align: text-bottom;
       }
