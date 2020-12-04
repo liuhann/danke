@@ -35,19 +35,41 @@
     </div>
     <el-dialog
       :visible.sync="dialogVisible"
-      height="90%"
-      width="95%"
+      :show-close="false"
+      fullscreen
     >
-      <div slot="title">
-        <el-button type="text" icon="el-icon-unlock"></el-button>
-        <el-button type="text" plain icon="el-icon-delete"></el-button>
+      <div v-if="element" slot="title">
+        <el-button-group>
+        </el-button-group>
+        <el-button type="text" class="is-pulled-right" plain icon="el-icon-close" @click="dialogVisible = false"></el-button>
       </div>
       <el-form v-if="element" label-width="80px">
+        <el-form-item v-if="element.text" label="内容">
+          <el-input
+            v-model="element.text"
+            autosize
+            type="textarea"
+            placeholder="请输入内容"
+          >
+          </el-input>
+        </el-form-item>
         <el-form-item v-for="(variable, index) in element.variables || []" :key="index" :label="getVariableLabel(variable)" class="pr-3">
           <el-color-picker v-if="variable.type==='color'" v-model="variable.value" />
           <font-family v-if="variable.type === 'fontFamily'" :key="index" :variable="variable" />
-          <text-align v-if="variable.type==='textAlign'" :key="index" v-model="variable.value" />
-          <font-weight v-if="variable.type==='fontWeight'" :key="index" v-model="variable.value" />
+
+          <el-radio-group v-if="variable.type==='textAlign'" v-model="variable.value">
+            <el-radio-button label="left">靠左</el-radio-button>
+            <el-radio-button label="center">居中</el-radio-button>
+            <el-radio-button label="right">靠右</el-radio-button>
+          </el-radio-group>
+
+          <el-radio-group v-if="variable.type==='fontWeight'" v-model="variable.value">
+            <el-radio-button label="lighter"><span style="font-weight: lighter">细</span></el-radio-button>
+            <el-radio-button label="normal"><span style="font-weight: normal">正常</span></el-radio-button>
+            <el-radio-button label="bold"><span style="font-weight: bold">粗</span></el-radio-button>
+            <el-radio-button label="bolder"><span style="font-weight: bolder">加粗</span></el-radio-button>
+          </el-radio-group>
+
           <font-size v-if="variable.type==='fontSize'" :key="index" :variable="variable" />
           <el-input-number v-if="variable.type==='px' || variable.type==='number' || variable.type==='percent'" v-model="variable.value" style="width: 140px;" size="small" />
         </el-form-item>
@@ -55,7 +77,24 @@
           <el-color-picker v-model="element.fill" show-alpha />
         </el-form-item>
         <el-form-item label="旋转">
-          <el-slider v-model="element.rotate" :max="360" :show-tooltip="false"></el-slider>
+          <el-slider v-model="element.rotate" class="ml-3 mr-3" :max="360" :show-tooltip="false"></el-slider>
+        </el-form-item>
+        <el-form-item label-width="3">
+          <el-button-group>
+            <el-button @click="moveTop(element)">最上</el-button>
+            <el-button @click="moveUp(element)">上移</el-button>
+            <el-button @click="moveDown(element)">下移</el-button>
+            <el-button @click="moveBottom(element)">最下</el-button>
+          </el-button-group>
+        </el-form-item>
+        <el-form-item label="动态效果">
+          <el-button>进入效果</el-button>
+          <el-button>离开效果</el-button>
+        </el-form-item>
+        <el-form-item label="操作">
+          <el-button v-if="!element.locked" round type="primary" plain icon="el-icon-unlock" @click="lockElement(element)">锁定</el-button>
+          <el-button v-if="element.locked" round type="primary" plain icon="el-icon-lock" @click="unlockElement(element)">解锁</el-button>
+          <el-button round icon="el-icon-delete" type="danger" plain @click="removeElement(element)">删除</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -66,30 +105,20 @@
 import interact from 'interactjs'
 import sceneEditContainer from '../xd-builder/mixins/sceneEditContainer'
 import FontFamily from '../xd-builder/toolbar/FontFamily'
-import FontWeight from '../xd-builder/toolbar/FontWeight'
-import TextAlign from '../xd-builder/toolbar/TextAlign'
 import FontSize from '../xd-builder/toolbar/FontSize'
 import interactMixins from '../xd-builder/mixins/interactMixins'
 import RenderElement from '../xd-builder/render/RenderElement.vue'
 import { shortid } from '../utils/string'
+import { lockElement, unlockElement, moveUp, moveBottom, moveDown, moveTop } from '../xd-builder/utils/sceneActions'
 
-const fontLabels = {
-  'fontFamily': '字体',
-  'textAlign': '对齐方式',
-  'fontWeight': '粗细',
-  'fontSize': '字号',
-  'letterSpacing': '字间距',
-  'color': '颜色'
-}
+
 
 export default {
   name: 'SceneEditContainer',
   components: {
     RenderElement,
-    FontWeight,
     FontSize,
-    FontFamily,
-    TextAlign
+    FontFamily
   },
   mixins: [ sceneEditContainer, interactMixins ],
   props: {
@@ -184,7 +213,7 @@ export default {
      * 暂无
      */
     initGlobalInteract () {},
-
+    lockElement,unlockElement,moveUp, moveBottom, moveDown, moveTop,
     getVariableLabel(variable) {
       if (variable.label) {
         return variable.label
@@ -210,77 +239,6 @@ export default {
         element = this.scene.elements.filter(e => e.id === ev.target.dataset.id) [0]
       }
       return element
-    },
-
-    // Drag over and set as allow drop
-    sceneDragOver (ev) {
-      ev.preventDefault()
-    },
-    /**
-     * 放置元素到页面
-     */
-    elementDropped (ev) {
-      ev.preventDefault()
-      const targetElement = this.getEventToElement(ev)
-      const data = ev.dataTransfer.getData('Text')
-      const element = JSON.parse(data)
-      if (targetElement) {
-        console.log('target element', targetElement)
-        // targetElement.hover = false
-        this.createNewElementFromTemplate(element, ev.offsetX / this.scale + targetElement.x, (ev.offsetY / this.scale + targetElement.y))
-      } else {
-        this.createNewElementFromTemplate(element, ev.offsetX / this.scale, ev.offsetY / this.scale)
-      }
-    },
-
-    createNewElementFromTemplate (element, x, y) {
-      let node = null
-      if (element.elements) {
-        // 从模板创建  自动成为一个block
-        node = this.createBlockFromTemplate(element, x, y)
-      } else {
-        // 单节点创建
-        node = this.createSingleElement(element, x, y)
-      }
-      if (node) {
-        this.$nextTick( ()=> {
-          this.initElementDragResize(node)
-        })
-      }
-    },
-
-    replaceElement (element) {
-      if (element.url && this.focusedElement && this.focusedElement.url) {
-        for (let el of this.scene.elements) {
-          if (el.url === this.focusedElement.url) {
-            el.url = element.url
-          }
-        }
-        this.focusedElement.url = element.url
-      }
-    },
-
-
-    createBlockFromTemplate(element, x, y) {
-      for (let frame in element.frames) {
-        this.ctx.styleRegistry.addFrame({
-          name: frame,
-          cssFrame: element.frames[frame]
-        })
-      }
-      const block = {
-        id: shortid(),
-        elements: element.elements,
-        name: element.name,
-        animation: {},
-        selected: true,
-        x: x,
-        y: y,
-        width: element.viewBox.width,
-        height: element.viewBox.height
-      }
-      this.scene.elements.push(block)
-      return block
     },
 
     /**
@@ -342,9 +300,10 @@ export default {
           })
         }
         interactee.on('hold', event => {
-          this.element = node
-          this.dialogVisible = true
-          console.log('hold', node)
+          this.$emit('hold', node)
+        })
+        interactee.on('doubletap', event => {
+          this.$emit('hold', node)
         })
       }
     },
@@ -387,8 +346,13 @@ export default {
         classes.push('drag-hover')
       }
       return classes
-    }
+    },
 
+
+    removeElement (element) {
+      this.scene.elements.splice(this.scene.elements.indexOf(element), 1)
+      this.dialogVisible = false
+    }
   }
 }
 </script>
@@ -400,10 +364,6 @@ export default {
     font-size: 1rem;
   }
   .el-form-item {
-    margin-bottom: 5px;
-    border-bottom: 1px solid #e0e0e0;
-    height: 48px;
-    line-height: 48px;
     .action {
       line-height: 48px;
       margin: 0 5px;

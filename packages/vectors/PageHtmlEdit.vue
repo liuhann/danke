@@ -6,12 +6,7 @@
         </div>
       </el-form-item>
       <el-form-item label="默认尺寸">
-        <el-input-number v-model="html.width" /> x <el-input-number v-model="html.height" />
-      </el-form-item>
-      <el-form-item label="类型">
-        <el-select v-model="html.tags" size="mini" allow-create filterable multiple>
-          <el-option v-for="key in presets" :key="key" :value="key" />
-        </el-select>
+        <el-input-number v-model="html.w" /> x <el-input-number v-model="html.h" />
       </el-form-item>
       <el-form-item label="变量信息">
         <el-button size="mini" @click="addVariable">增加</el-button>
@@ -74,16 +69,14 @@ export default {
       albums: [],
       html: {
         title: '',
-        width: 100,
-        height: 100,
+        w: 100,
+        h: 100,
         html: '', //  正文
-        styles: '',
-        tags: ['SVG', '动画'],
         variables: [{
           name: 'color',
           type: 'color',
           value: '#FF6700',
-          label: ''
+          label: '颜色'
         }]
       }
     }
@@ -104,12 +97,15 @@ export default {
   },
   watch: {},
   created () {
-    this.dao = new RestDAO(this.ctx, 'danke/h5')
+    this.dao = new RestDAO(this.ctx, 'danke/public/vector')
   },
   mounted () {
     this.initEditor()
     if (this.$route.query.id) {
       this.load(this.$route.query.id)
+    }
+    if (this.$route.query.pack) {
+      this.html.pack = this.$route.query.pack
     }
   },
   methods: {
@@ -126,18 +122,20 @@ export default {
       this.html.variables.push({
         name: 'var',
         value: '#000',
-        label: '',
+        label: '颜色',
         type: 'color'
       })
     },
     async preview () {
       this.html.html = this.editor.getValue()
-      Object.assign(this.html, getSVGViewBox(this.html.html))
+      const viewbox = getSVGViewBox(this.html.html)
+      this.html.w = viewbox.width
+      this.html.h = viewbox.height
     },
     async save () {
       this.html.html = this.editor.getValue()
       delete this.html.content
-      const result = await this.dao.update(this.html)
+      const result = await this.dao.createOrPatch(this.html)
       Message.success('保存成功')
     }
   }

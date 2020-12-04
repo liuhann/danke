@@ -184,7 +184,6 @@ export default {
         return
       }
       this.savingWork = true
-      let loadingInstance = Loading.service({ fullscreen: true, text: '保存作品中' });
       const work = JSON.parse(JSON.stringify(this.work))
       work.creator = this.ctx.user.id
       work.avatar = this.ctx.user.avatar
@@ -199,11 +198,6 @@ export default {
         await this.workdao.patch(work.id, work)
       }
       this.savingWork = false
-      loadingInstance.close()
-      Message.success({
-        message: '作品已经保存',
-        duration: 800
-      })
       // 处理作品的预览
       // 发出请求获取最新的work-preview
       this.ctx.get('/danke/preview/download?id=' + work.id)

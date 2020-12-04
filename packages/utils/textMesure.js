@@ -14,7 +14,7 @@ export default function (text, fontSize, fontWeight) {
   test.style.fontWeight = fontWeight
   test.innerHTML = text
   return {
-    width: test.clientWidth + 10,
+    width: test.clientWidth + 100,
     height: test.clientHeight + 1
   }
 }

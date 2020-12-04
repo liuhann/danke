@@ -43,6 +43,7 @@ export default {
   },
   created () {
     this.dao = new RestDAO(this.ctx, 'danke/h5')
+    this.vectordao = new RestDAO(this.ctx, 'danke/public/vector')
   },
   mounted () {
     this.load()
