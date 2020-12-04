@@ -14,13 +14,9 @@
       :label="getVariableLabel(variable)"
     >
       <template #input>
-        <van-tabs v-if="variable.type==='fontWeight'" v-model="variable.value" type="card">
-          <van-tab title="细" name="lighter"></van-tab>
-          <van-tab title="正常" name="normal"></van-tab>
-          <van-tab title="粗" name="bold"></van-tab>
-          <van-tab title="加粗" name="bolder"></van-tab>
-        </van-tabs>
-        <van-stepper v-if="variable.type==='fontSize' || variable.type==='px' || variable.type==='number' || variable.type==='percent'" v-model="variable.value" min="8" theme="round" />
+        <van-slider v-if="variable.type==='fontWeight'" v-model="variable.value" :min="200" :step="100" :max="900" />
+        <color-picker v-if="variable.type === 'color'" v-model="variable.value" />
+        <van-stepper v-if="variable.type==='fontSize' || variable.type==='px' || variable.type==='number' || variable.type==='percent'" v-model="variable.value" />
       </template>
     </van-field>
 
@@ -34,16 +30,14 @@
     </van-field>
     <van-field label="堆放">
       <template #input>
-        <van-grid>
-          <van-grid-item icon="photo-o" text="最上" @click="() => moveTop(element, scene)" />
-          <van-grid-item icon="photo-o" text="上移" />
-          <van-grid-item icon="photo-o" text="文字" />
-          <van-grid-item icon="photo-o" text="文字" />
-        </van-grid>
+        <van-button size="small" plain @click="() => moveTop(element, scene)">最上</van-button>
+        <van-button size="small" plain @click="() => moveUp(element, scene)">上移</van-button>
+        <van-button size="small" plain @click="() => moveDown(element, scene)">下移</van-button>
+        <van-button size="small" plain @click="() => moveBottom(element, scene)">最下</van-button>
       </template>
     </van-field>
     <div style="margin: 16px;">
-      <van-button color="linear-gradient(to right, #ff6034, #ee0a24)" @click="() => deleteElement(element, scene)">刪除</van-button>
+      <van-button color="linear-gradient(to right, #ff6034, #ee0a24)" @click="onDelete">刪除</van-button>
       <van-button v-if="!element.locked" @click="lockElement">锁定</van-button>
       <van-button v-if="element.locked" @click="unlockElement">解锁</van-button>
     </div>
@@ -52,6 +46,7 @@
 
 <script>
 import { lockElement, unlockElement, moveUp, moveBottom, moveDown, moveTop, deleteElement } from '../../xd-builder/utils/sceneActions'
+import ColorPicker from './ColorPicker'
 
 const fontLabels = {
   'fontFamily': '字体',
@@ -64,6 +59,7 @@ const fontLabels = {
 
 export default {
   name: "ElementEdit",
+  components: { ColorPicker },
   props: {
     element: {
       type: Object
@@ -79,6 +75,11 @@ export default {
         return variable.label
       }
       return fontLabels[variable.name] || variable.type
+    },
+
+    onDelete () {
+      deleteElement(this.element, this.scene)
+      this.$emit('close')
     },
     rotateChange () {
 

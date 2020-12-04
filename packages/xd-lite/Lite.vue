@@ -36,7 +36,7 @@
           属性编辑
         </template>
       </van-nav-bar>
-      <element-edit v-if="element" :element="element" :scene="scene" />
+      <element-edit v-if="element" :element="element" :scene="scene" @close="editElementPopupShow = false" />
     </van-popup>
 
     <button id="add-button" class="button is-success is-medium" @click="openInsertDialog">
@@ -161,7 +161,6 @@ export default {
     insertNode(node) {
       this.insertPopupShow = false
       const created = createSingleElement(node, this.work.viewBox || { width: 320, height: 320})
-      debugger
       this.scene.elements.push(created)
 
       this.$nextTick(() => {

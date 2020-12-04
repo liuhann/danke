@@ -5,7 +5,6 @@ import { fitRectIntoBounds } from '../mixins/rectUtils'
 
 function createSingleElement (element, viewBox, x, y) {
   const id = shortid()
-  debugger
   // 此处设置节点的基本属性
   const node = {
     id,
@@ -29,9 +28,9 @@ function createSingleElement (element, viewBox, x, y) {
     locked: false,
     selected: false
   }
-  if (element.width < 200) {
-    element.height = element.height * 200 / element.width
-    element.width = 200
+  if (node.width < 200) {
+    node.height = node.height * 200 / node.width
+    node.width = 200
   }
   node.variables = element.variables
   // 设置文字的自适应大小
