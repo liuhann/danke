@@ -1,32 +1,31 @@
 <template>
   <van-form>
+    <!--设置文本的内容-->
     <van-field
-      v-if="element.text"
+      v-if="element.text != null"
       v-model="element.text"
       name="内容"
       label="内容"
       placeholder="插入文本内容"
     />
-
+    <!--设置元素变量-->
     <van-field
       v-for="(variable, index) in element.variables || []"
       :key="index"
+      class="pr-5"
       :label="getVariableLabel(variable)"
     >
       <template #input>
         <van-slider v-if="variable.type==='fontWeight'" v-model="variable.value" :min="200" :step="100" :max="900" />
         <color-picker v-if="variable.type === 'color'" v-model="variable.value" />
-        <van-stepper v-if="variable.type==='fontSize' || variable.type==='px' || variable.type==='number' || variable.type==='percent'" v-model="variable.value" />
+        <font-family v-if="variable.type === 'fontFamily'" v-model="variable.value" />
+
+        <van-stepper v-if="variable.type==='fontSize' || variable.type==='px' || variable.type==='number' || variable.type==='percent'" v-model="variable.value" class="mr-4" />
       </template>
     </van-field>
 
     <van-field v-if="element.hasOwnProperty('fill')" label="填充色">
       <el-color-picker v-model="element.fill" show-alpha />
-    </van-field>
-    <van-field label="旋转">
-      <template #input>
-        <van-slider v-model="element.rotate" :max="360" @change="rotateChange" />
-      </template>
     </van-field>
     <van-field label="堆放">
       <template #input>
@@ -47,6 +46,7 @@
 <script>
 import { lockElement, unlockElement, moveUp, moveBottom, moveDown, moveTop, deleteElement } from '../../xd-builder/utils/sceneActions'
 import ColorPicker from './ColorPicker'
+import FontFamily from './FontFamily.vue'
 
 const fontLabels = {
   'fontFamily': '字体',
@@ -59,7 +59,7 @@ const fontLabels = {
 
 export default {
   name: "ElementEdit",
-  components: { ColorPicker },
+  components: { FontFamily, ColorPicker },
   props: {
     element: {
       type: Object
@@ -67,6 +67,9 @@ export default {
     scene: {
       type: Object
     }
+  },
+  data () {
+    return {}
   },
   methods: {
     lockElement, unlockElement, moveUp, moveBottom, moveDown, moveTop,deleteElement,

@@ -14,6 +14,7 @@
             :view-port="viewPort"
             :index="index"
           />
+          <render-scene v-if="backGroundScene" :scene="backGroundScene" :view-box="viewBox" :view-port="viewPort" />
         </div>
       </div>
       <!-- 元素被选中、移动、调整大小时的选中层 -->
@@ -33,103 +34,30 @@
         </div>
       </div>
     </div>
-    <el-dialog
-      :visible.sync="dialogVisible"
-      :show-close="false"
-      fullscreen
-    >
-      <div v-if="element" slot="title">
-        <el-button-group>
-        </el-button-group>
-        <el-button type="text" class="is-pulled-right" plain icon="el-icon-close" @click="dialogVisible = false"></el-button>
-      </div>
-      <el-form v-if="element" label-width="80px">
-        <el-form-item v-if="element.text" label="内容">
-          <el-input
-            v-model="element.text"
-            autosize
-            type="textarea"
-            placeholder="请输入内容"
-          >
-          </el-input>
-        </el-form-item>
-        <el-form-item v-for="(variable, index) in element.variables || []" :key="index" :label="getVariableLabel(variable)" class="pr-3">
-          <el-color-picker v-if="variable.type==='color'" v-model="variable.value" />
-          <font-family v-if="variable.type === 'fontFamily'" :key="index" :variable="variable" />
-
-          <el-radio-group v-if="variable.type==='textAlign'" v-model="variable.value">
-            <el-radio-button label="left">靠左</el-radio-button>
-            <el-radio-button label="center">居中</el-radio-button>
-            <el-radio-button label="right">靠右</el-radio-button>
-          </el-radio-group>
-
-          <el-radio-group v-if="variable.type==='fontWeight'" v-model="variable.value">
-            <el-radio-button label="lighter"><span style="font-weight: lighter">细</span></el-radio-button>
-            <el-radio-button label="normal"><span style="font-weight: normal">正常</span></el-radio-button>
-            <el-radio-button label="bold"><span style="font-weight: bold">粗</span></el-radio-button>
-            <el-radio-button label="bolder"><span style="font-weight: bolder">加粗</span></el-radio-button>
-          </el-radio-group>
-
-          <font-size v-if="variable.type==='fontSize'" :key="index" :variable="variable" />
-          <el-input-number v-if="variable.type==='px' || variable.type==='number' || variable.type==='percent'" v-model="variable.value" style="width: 140px;" size="small" />
-        </el-form-item>
-        <el-form-item v-if="element.hasOwnProperty('fill')" label="填充色">
-          <el-color-picker v-model="element.fill" show-alpha />
-        </el-form-item>
-        <el-form-item label="旋转">
-          <el-slider v-model="element.rotate" class="ml-3 mr-3" :max="360" :show-tooltip="false"></el-slider>
-        </el-form-item>
-        <el-form-item label-width="3">
-          <el-button-group>
-            <el-button @click="moveTop(element)">最上</el-button>
-            <el-button @click="moveUp(element)">上移</el-button>
-            <el-button @click="moveDown(element)">下移</el-button>
-            <el-button @click="moveBottom(element)">最下</el-button>
-          </el-button-group>
-        </el-form-item>
-        <el-form-item label="动态效果">
-          <el-button>进入效果</el-button>
-          <el-button>离开效果</el-button>
-        </el-form-item>
-        <el-form-item label="操作">
-          <el-button v-if="!element.locked" round type="primary" plain icon="el-icon-unlock" @click="lockElement(element)">锁定</el-button>
-          <el-button v-if="element.locked" round type="primary" plain icon="el-icon-lock" @click="unlockElement(element)">解锁</el-button>
-          <el-button round icon="el-icon-delete" type="danger" plain @click="removeElement(element)">删除</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
   </div>
 </template>
 
 <script>
 import interact from 'interactjs'
 import sceneEditContainer from '../xd-builder/mixins/sceneEditContainer'
-import FontFamily from '../xd-builder/toolbar/FontFamily'
-import FontSize from '../xd-builder/toolbar/FontSize'
 import interactMixins from '../xd-builder/mixins/interactMixins'
 import RenderElement from '../xd-builder/render/RenderElement.vue'
 import { shortid } from '../utils/string'
 import { lockElement, unlockElement, moveUp, moveBottom, moveDown, moveTop } from '../xd-builder/utils/sceneActions'
-
-
+import { getBackGroundScene } from '../xd-builder/utils/workActions'
+import RenderScene from '../xd-builder/render/RenderScene'
 
 export default {
   name: 'SceneEditContainer',
   components: {
+    RenderScene,
     RenderElement,
-    FontSize,
-    FontFamily
   },
   mixins: [ sceneEditContainer, interactMixins ],
-  props: {
-    scene: {
-      type: Object
-    }
-  },
+  props: { },
   data: function () {
     return {
       dialogVisible: false,
-      element: null,
       // 屏幕在工作区横向位置
       translateX: 0,
       // 屏幕区在工作区纵向位置
@@ -147,6 +75,9 @@ export default {
   },
 
   computed: {
+    backGroundScene () {
+      return getBackGroundScene(this.work, this.scene)
+    },
     scaleDisplay () {
       return Math.floor(this.scale * 100) + '%'
     },
@@ -191,7 +122,7 @@ export default {
         width: this.viewBox.width + 'px',
         height: this.viewBox.height + 'px',
         perspective: this.viewBox.width + 'px',
-        backgroundColor: this.scene.color
+        backgroundColor: this.scene.color,
       }
       return styles
     }
@@ -285,6 +216,8 @@ export default {
             this.$emit('change')
           })
         }
+
+
         if (!interactee.draggable().enabled) {
           interactee.draggable({
             onstart: event => {},
@@ -299,12 +232,32 @@ export default {
             }
           })
         }
+
+        interactee.gesturable({
+          listeners: {
+            start : evt => {
+              node._start = {
+                width: node.width,
+                height: node.height,
+                angle: evt.angle
+              }
+            },
+            move: evt => {
+              // 处理角度
+              node.rotate += evt.da / 2
+              node.width += node._start.width * evt.ds / 2
+              node.height += node._start.height * evt.ds / 2
+            },
+            end (event) {
+              delete node._start
+            }
+          }
+        })
+
         interactee.on('hold', event => {
           this.$emit('hold', node)
         })
-        interactee.on('doubletap', event => {
-          this.$emit('hold', node)
-        })
+
       }
     },
 
@@ -330,7 +283,9 @@ export default {
       if (element.locked) {
         displayStyle.zIndex = -1
       }
-      return Object.assign(displayStyle, this.getRectPositionStyle(element, this.viewBox, this.viewPort))
+      return Object.assign(displayStyle, this.getRectPositionStyle(element, this.viewBox, this.viewPort), {
+        transform: `rotate(${element.rotate}deg)`
+      })
     },
 
     getMaskClass (element) {
@@ -360,117 +315,92 @@ export default {
 <style lang="scss">
 #scene-edit-container {
   height: 100%;
-  .el-button--text {
-    font-size: 1rem;
+  overflow: hidden;
+  position: relative;
+  .screen {
+    position: absolute;
+    box-shadow: 0 0 6px #ddd;
+    overflow: hidden;
+    background-image: linear-gradient(45deg, #efefef 25%, transparent 25%, transparent 75%, #efefef 75%, #efefef),
+    linear-gradient(45deg, #efefef 25%, transparent 25%, transparent 75%, #efefef 75%, #efefef);
+    background-size: 40px 40px;
+    background-position: 0 0, 20px 20px;
   }
-  .el-form-item {
-    .action {
-      line-height: 48px;
-      margin: 0 5px;
-      color: #0e1318;
-      font-weight: 400;
-      padding: 0 6px;
 
-      svg {
-        width: 26px;
-        height: 26px;
-        display: inline-block;
-        vertical-align: text-bottom;
+  .scene {
+    .element {
+      position: absolute;
+    }
+  }
+  .mask {
+    position: absolute;
+    z-index: 100;
+    box-shadow: 0 0 0 1px #fff;
+  }
+
+  .node-mask {
+    position: absolute;
+    &.not-selected {
+      border: 1px solid transparent;
+      >div {
+        opacity: 0;
       }
     }
-}
+    &.selected {
+      border: 1px solid #42A5F5;
+      >div {
+        opacity: 1;
+      }
+    }
+    &.drag-hover {
+      background-color: rgba(66, 165, 245, 0.4);
+    }
+    >div {
+      border: 1px solid #42A5F5;
+      border-radius: 20px;
+      width: 20px;
+      height: 20px;
+      background-color: #fff;
+      position: absolute;
+    }
+    .drag-handle {
+      left: -30px;
+      top: 5px;
+    }
+    .l {
+      left: -5px;
+      top: calc(50% - 4px);
+    }
+    .lt {
+      left: -10px;
+      top: -10px;
+    }
+    .lb {
+      left: -4px;
+      bottom: -4px;
+    }
+    .rt {
+      top: -4px;
+      right: -4px;
+    }
+    .rb {
+      right: -10px;
+      bottom: -10px;
+    }
+    .r {
+      right: -4px;
+      top: calc(50% - 4px);
+    }
+    .b {
+      bottom: -4px;
+      left: calc(50% - 4px);
+    }
+    .t {
+      top: -4px;
+      left: calc(50% - 4px);
+    }
 
-position: relative;
-.screen {
-position: absolute;
-box-shadow: 0 0 6px #ddd;
-overflow: hidden;
-background-image: linear-gradient(45deg, #efefef 25%, transparent 25%, transparent 75%, #efefef 75%, #efefef),
-linear-gradient(45deg, #efefef 25%, transparent 25%, transparent 75%, #efefef 75%, #efefef);
-background-size: 40px 40px;
-background-position: 0 0, 20px 20px;
-}
-
-.scene {
-.element {
-  position: absolute;
-}
-}
-.mask {
-position: absolute;
-z-index: 100;
-box-shadow: 0 0 0 1px #fff;
-}
-.dragging-rect {
-z-index: 901;
-position: absolute;
-border: 1px solid #42A5F5;
-background: #3366665e;
-}
-.node-mask {
-position: absolute;
-// cursor: url("data:image/svg+xml,%3Csvg class='icon' viewBox='0 0 1024 1024' xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath fill='%23515151' d='M746.667 341.333v85.334A42.667 42.667 0 0 1 704 469.333H149.333a42.667 42.667 0 0 1-42.666-42.666v-256A42.667 42.667 0 0 1 149.333 128H704a42.667 42.667 0 0 1 42.667 42.667V256H896a21.333 21.333 0 0 1 21.333 21.333v322.603a21.333 21.333 0 0 1-18.56 21.163l-472.106 61.568V896a21.333 21.333 0 0 1-21.334 21.333h-42.666A21.333 21.333 0 0 1 341.333 896V630.485a21.333 21.333 0 0 1 18.56-21.162L832 547.755V341.333h-85.333zM192 213.333V384h469.333V213.333H192z'/%3E%3C/svg%3E"), auto;
-&.not-selected {
-  border: 1px solid transparent;
-  >div {
-    opacity: 0;
-  }
-}
-&.selected {
-  border: 1px solid #42A5F5;
-  >div {
-    opacity: 1;
-  }
-}
-&.drag-hover {
-  background-color: rgba(66, 165, 245, 0.4);
-}
->div {
-  border: 1px solid #42A5F5;
-  border-radius: 20px;
-  width: 20px;
-  height: 20px;
-  background-color: #fff;
-  position: absolute;
-}
-.drag-handle {
-  left: -30px;
-  top: 5px;
-}
-.l {
-  left: -5px;
-  top: calc(50% - 4px);
-}
-.lt {
-  left: -10px;
-  top: -10px;
-}
-.lb {
-  left: -4px;
-  bottom: -4px;
-}
-.rt {
-  top: -4px;
-  right: -4px;
-}
-.rb {
-  right: -10px;
-  bottom: -10px;
-}
-.r {
-  right: -4px;
-  top: calc(50% - 4px);
-}
-.b {
-  bottom: -4px;
-  left: calc(50% - 4px);
-}
-.t {
-  top: -4px;
-  left: calc(50% - 4px);
-}
-
-}
+    }
 }
 
 </style>

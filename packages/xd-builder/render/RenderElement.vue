@@ -182,20 +182,14 @@ export default {
           transform: ''
         })
       } else {
-        const transforms = []
         if (this.element.rotate) {
+          const transforms = []
           transforms.push(`rotate(${this.element.rotate}deg)`)
-        }
-        if (this.element.rotateX) {
-          transforms.push(`rotateX(180deg)`)
-        }
-        if (this.element.rotateY) {
-          transforms.push(`rotateY(180deg)`)
-        }
-        if (transforms.length) {
-          Object.assign(style, {
-            transform: transforms.join(' ')
-          })
+          if (transforms.length) {
+            Object.assign(style, {
+              transform: transforms.join(' ')
+            })
+          }
         }
       }
       // 按大小指定视角

@@ -1,54 +1,38 @@
 <template>
   <div id="xd-lite">
-    <mobile-edit-container v-if="work && scene" ref="editContainer" :scene="scene" :work="work" @hold="editNode" />
-    <van-popup v-model="configPopupShow" round position="right" :style="{ width: '60%', height: '100%' }">
-      <van-cell-group title="配置">
-        <van-cell title="作品属性" icon="setting-o" />
-        <van-cell title="页面属性" icon="orders-o" />
-        <van-cell title="页面列表" icon="apps-o" />
-        <van-cell title="前一页" icon="arrow-up" />
-        <van-cell title="后一页" icon="arrow-down" />
-      </van-cell-group>
-      <van-cell-group title="保存与分享">
-        <van-cell title="保存" icon="save-o" @click="onSaveWork" />
-      </van-cell-group>
+    <mobile-edit-container v-if="work && scene" ref="editContainer" :scene="scene" :work="work" @hold="editNode" @focus-change="onElementFocused" />
+    <van-popup v-model="popupMainMenu" position="bottom" closeable close-icon="close" :style="{ height: '50%', paddingTop: '48px' }">
+      <main-menu :work="work" :scene="scene" @action="onMenuAction" />
     </van-popup>
 
     <!-- 插入元素弹出层（菜单）-->
-    <van-popup v-model="insertPopupShow" round position="bottom" :style="{ height: '100%' }">
+    <van-popup v-model="popupInsert" round position="bottom" :style="{ height: '50%' }">
       <van-nav-bar left-arrow @click-left="insertClickBack">
         <template #right>
-          <van-icon name="close" size="20" @click="insertPopupShow=false" />
+          <van-icon name="close" size="20" @click="popupInsert=false" />
         </template>
       </van-nav-bar>
       <insert-menu v-if="insertType==='menu'" @open="onMenuOpen" />
       <vector-album-list v-if="insertType==='vector-album'" @open="openPack" />
       <vector-list v-if="insertType === 'vectors'" :pack="currentPack" @insert="insertNode" />
+      <image-list v-if="insertType === 'image'"></image-list>
       <insert-text v-if="insertType === 'text'" :view-box="work.viewBox" @insert="insertNode" />
     </van-popup>
 
-    <van-popup v-model="editElementPopupShow" position="top" :style="{ height: '100%' }">
+    <van-popup v-model="popupEditForm" position="bottom" :style="{ height: '50%' }">
       <van-nav-bar>
         <template #right>
-          <van-icon name="close" size="20" @click="editElementPopupShow = false" />
+          <van-icon name="close" size="20" @click="popupEditForm = false" />
         </template>
         <template #left>
           属性编辑
         </template>
       </van-nav-bar>
-      <element-edit v-if="element" :element="element" :scene="scene" @close="editElementPopupShow = false" />
+      <element-edit v-if="element" :element="element" :scene="scene" @close="popupEditForm = false" />
+      <scene-edit v-if="scene && !element" :scene="scene" />
     </van-popup>
-
-    <button id="add-button" class="button is-success is-medium" @click="openInsertDialog">
-      <span class="icon">
-        <i class="el-icon-plus"></i>
-      </span>
-    </button>
-    <button id="menu-button" class="button is-medium" @click="configPopupShow = true">
-      <span class="icon">
-        <i class="el-icon-setting"></i>
-      </span>
-    </button>
+    <van-button id="add-button" round icon="plus" type="primary" @click="openInsertDialog"></van-button>
+    <van-button id="menu-button" round icon="setting-o" @click="onSettingClick"></van-button>
   </div>
 </template>
 
@@ -65,23 +49,28 @@ import Vue from 'vue'
 import Vant from 'vant';
 import { Toast, Notify } from 'vant';
 import 'vant/lib/index.css';
+import { addScene, prevScene, nextScene } from '../xd-builder/utils/workActions'
 import { lockElement, unlockElement, moveUp, moveBottom, moveDown, moveTop } from '../xd-builder/utils/sceneActions'
-
+import SceneList from './list/SceneList'
 import DialogInsertVector from './insert/InsertVector'
 import TextList from '../xd-builder/left/TextList'
 import ElementEdit from './form/ElementEdit'
 import InsertText from './insert/InsertText'
+import SceneEdit from './form/SceneEdit'
+import MainMenu from './list/MainMenu'
+import ImageList from './list/ImageList'
 
 Vue.use(Vant);
 export default {
   name: "Lite",
-  components: { InsertText, ElementEdit, InsertMenu, MobileEditContainer, VectorList, VectorAlbumList },
+  components: { ImageList, MainMenu, SceneEdit, InsertText, ElementEdit, InsertMenu, MobileEditContainer, VectorList, VectorAlbumList },
   mixins: [ workMixin ],
   data () {
     return {
-      configPopupShow: false,
-      insertPopupShow: false,
-      editElementPopupShow: false,
+      popupMainMenu: false,
+      popupInsert: false,
+      popupSceneList: false,
+      popupEditForm: false,
       insertType: 'menu',
       currentPack: null,
       scene: null,
@@ -96,6 +85,47 @@ export default {
   },
 
   methods: {
+    async onMenuAction (action) {
+      switch (action) {
+        case 'scene-setting':
+          this.popupEditForm = true
+          this.popupMainMenu = false
+          break
+        case 'add-scene':
+          this.scene = addScene(this.work, this.scene)
+          this.popupMainMenu = false
+          break
+        case 'scene-prev':
+          this.scene = prevScene(this.work, this.scene)
+          break
+        case 'scene-next':
+          this.scene = nextScene(this.work, this.scene)
+          break
+        case 'save-work':
+          Toast.loading('保存作品中')
+          await this.saveWork()
+          Toast.clear(true)
+          Notify({ type: 'primary', message: '保存成功' });
+          this.popupMainMenu = false
+          break
+        case 'go-home':
+          this.$router.replace('/creative/my')
+          break;
+        default:
+          break
+      }
+    },
+
+
+    onWorkSettingClick () {
+
+    },
+
+    onSceneSettingClick () {
+      this.popupMainMenu = false
+      this.popupEditForm = true
+    },
+
     insert (payload) {
       this.insertMenuShow = false
       switch (payload) {
@@ -121,21 +151,23 @@ export default {
       }
     },
 
-    async onSaveWork () {
-      this.configPopupShow = false
-      Toast.loading('保存作品中')
-      await this.saveWork()
-      Toast.clear(true)
-      Notify({ type: 'primary', message: '保存成功' });
-    },
-
     editNode (element) {
       this.element = element
-      this.editElementPopupShow = true
+      this.popupEditForm = true
     },
 
     onMenuOpen (type) {
       this.insertType = type
+    },
+    onElementFocused (element) {
+      this.element = element
+    },
+    onSettingClick () {
+      if (this.element) {
+        this.popupEditForm = true
+      } else {
+        this.popupMainMenu = true
+      }
     },
 
     setInsertType (type) {
@@ -159,7 +191,7 @@ export default {
     },
 
     insertNode(node) {
-      this.insertPopupShow = false
+      this.popupInsert = false
       const created = createSingleElement(node, this.work.viewBox || { width: 320, height: 320})
       this.scene.elements.push(created)
 
@@ -168,20 +200,11 @@ export default {
       })
     },
 
-    menuSelected (index) {
-      switch (index) {
-        case this.MENU_SAVE:
-          this.saveWork()
-          break;
-        default:
-          break;
-      }
-    },
 
     insertClickBack () {
       switch (this.insertType) {
         case 'menu':
-          this.insertPopupShow = false
+          this.popupInsert = false
           break
         case 'vector-album':
           this.insertType = 'menu'
@@ -195,7 +218,7 @@ export default {
     },
 
     openInsertDialog () {
-      this.insertPopupShow = true
+      this.popupInsert = true
       this.insertType = 'menu'
     }
   }
@@ -209,18 +232,19 @@ export default {
   -webkit-user-select: none;
 }
 
+.van-button--normal {
+  padding: 0 13px;
+}
 #menu-button {
   position: absolute;
-  right: 1rem;
-  top: 1rem;
-  border-radius: 20rem;
+  left: 1rem;
+  bottom: 1rem;
   z-index: 101;
 }
 #add-button {
   position: absolute;
   right: 1rem;
   bottom: 1rem;
-  border-radius: 20rem;
   z-index: 101;
 }
 </style>

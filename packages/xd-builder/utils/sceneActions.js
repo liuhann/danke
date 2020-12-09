@@ -20,10 +20,8 @@ function createSingleElement (element, viewBox, x, y) {
       exit: [],
       preview: []
     },
+    // 旋转
     rotate: 0,
-    rotateX: false,
-    rotateY: false,
-    template: false,
     // 其他属性，交互时使用
     locked: false,
     selected: false
