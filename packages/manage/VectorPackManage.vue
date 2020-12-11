@@ -30,8 +30,11 @@
           <div v-for="vector in packVectors" :key="vector._id" class="column is-1">
             <img v-if="vector.url" :src="getImageUrl(vector.url)" @dblclick="setAsPackCover(vector.url)">
             <div v-if="vector.html" class="svg-container" :style="variableValues(vector)">
-              <div class="styled-box" v-html="vector.html">
-              </div>
+              <div class="styled-box" :style="{
+                height: vector.h + 'px',
+                width: vector.w + 'px'
+              }" v-html="vector.html"
+              />
             </div>
             <div class="has-text-centered">
               <el-button v-if="vector.html" size="mini" type="text" @click="editVector(vector)">编辑</el-button>
@@ -39,7 +42,6 @@
             </div>
           </div>
         </div>
-        <div>Icons made by <a href="https://www.flaticon.com/authors/ddara" title="dDara">dDara</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
       </div>
       <div class="pack">
       </div>
@@ -47,6 +49,14 @@
         <el-form v-if="currentPack" label-width="80px">
           <el-form-item label="名称">
             <el-input v-model="currentPack.name"></el-input>
+          </el-form-item>
+          <el-form-item label="标签">
+            <el-select v-model="currentPack.tags" multiple allow-create>
+              <el-option v-for="channel in channels" :key="channel.value" :label="channel.value" :value="channel.value"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="版权">
+            <el-input v-model="currentPack.copywrite"></el-input>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
@@ -60,12 +70,12 @@
 
 <script>
 import { Pagination, Button, Table, TableColumn, Dialog, Form, FormItem, Input, Checkbox, Select, Option, Upload, Message } from 'element-ui'
-import RestDAO from '../../utils/restdao.js'
-import channels from '../../site/channels'
-import getImageSize from '../../utils/imageSize'
-import ImageDAO from '../../utils/imagedao'
-import { getImageUrl } from '../mixins/imageUtils'
-import { getVariableStyle } from '../mixins/renderUtils'
+import RestDAO from '../utils/restdao.js'
+import channels from '../site/channels'
+import getImageSize from '../utils/imageSize'
+import ImageDAO from '../utils/imagedao'
+import { getImageUrl } from '../xd-builder/mixins/imageUtils'
+import { getVariableStyle } from '../xd-builder/mixins/renderUtils'
 
 export default {
   name: 'Work',
@@ -85,6 +95,7 @@ export default {
   },
   data () {
     return {
+      channels,
       currentPack: null,
       dialogVisible: false,
       packVectors: [],
@@ -137,6 +148,8 @@ export default {
       this.currentPack = {
         name: '未命名',
         type: 'vector',
+        tags: [],
+        copywrite: '<div>作者 <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> 来自 <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>',
         previews: []
       }
       this.dialogVisible = true

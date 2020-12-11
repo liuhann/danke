@@ -5,4 +5,5 @@ import vectors from '../packages/vectors'
 import styles from '../packages/styles'
 import ticks from '../packages/music-ticker'
 import avatar from '../packages/avatar-decorator'
-export default [xd, frames, vectors, ticks, styles, avatar, xdLite]
+import manage from '../packages/manage'
+export default [xd, frames, vectors, ticks, styles, avatar, xdLite, manage]

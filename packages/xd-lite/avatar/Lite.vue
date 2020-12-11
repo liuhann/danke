@@ -19,8 +19,7 @@
     </van-popup>
 
     <!--插入菜单-->
-    <avatar-insert-menu ref="insertMenu" @open="onMenuOpen" />
-
+    <insert-menu ref="insertMenu" @open="onMenuOpen" />
     <!--插入图片-->
     <popup-image-list ref="popupImageList" @insert="insertNode" />
     <!--元素编辑弹出层-->
@@ -46,7 +45,6 @@
 <script>
 import MobileEditContainer from './MobileEditContainer'
 import InsertMenu from './insert/InsertMenu'
-import AvatarInsertMenu from './insert/AvatarInsertMenu'
 import VectorList from './insert/VectorList'
 import VectorAlbumList from './insert/VectorAlbumList'
 import workMixin from '../xd-builder/mixins/workMixin'
@@ -57,7 +55,6 @@ import Vant from 'vant';
 import { Toast, Notify } from 'vant';
 import 'vant/lib/index.css';
 import { addScene, prevScene, nextScene } from '../xd-builder/utils/workActions'
-import TextList from '../xd-builder/left/TextList'
 import PopElementEdit from './form/PopElementEdit'
 import InsertText from './insert/InsertText'
 import SceneEdit from './form/SceneEdit'
@@ -69,7 +66,7 @@ Vue.use(Lazyload);
 Vue.use(Vant);
 export default {
   name: "Lite",
-  components: { PopupImageList, PopMainMenu, SceneEdit, InsertText, PopElementEdit, MobileEditContainer, VectorList, VectorAlbumList, AvatarInsertMenu },
+  components: { PopupImageList, PopMainMenu, SceneEdit, InsertText, PopElementEdit, InsertMenu, MobileEditContainer, VectorList, VectorAlbumList },
   mixins: [ workMixin ],
   data () {
     return {
@@ -83,15 +80,6 @@ export default {
       work: null,
       element: null,
       insertVector: false
-    }
-  },
-  computed: {
-    channel () {
-      if (this.work) {
-        return this.work.channel
-      } else {
-        return ''
-      }
     }
   },
   mounted () {

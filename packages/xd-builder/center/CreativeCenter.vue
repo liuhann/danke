@@ -100,7 +100,7 @@ export default {
       this.loadWorks()
     },
     editWork (work) {
-      this.$router.replace('/xd-lite?work=' + work.id)
+      this.$router.replace(`/xd-lite?work=${work.id}`)
     },
     listQuery () {
       const query = {

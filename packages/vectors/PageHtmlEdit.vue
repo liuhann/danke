@@ -28,6 +28,7 @@
           <el-select v-model="variable.type">
             <el-option value="color" />
             <el-option value="number" />
+            <el-option value="deg" />
             <el-option value="px" />
           </el-select>
         </div>
@@ -51,6 +52,7 @@ import 'brace/mode/html'
 import 'brace/theme/monokai'
 import { Message, Form, FormItem, Input, Select, Option, Button, InputNumber } from 'element-ui'
 import RestDAO from '../utils/restdao.js'
+import { getVariableStyle } from '../xd-builder/mixins/renderUtils'
 import { getSVGViewBox, presets } from './utils'
 
 export default {
@@ -86,13 +88,7 @@ export default {
       return presets
     },
     variableStyle () {
-      const styles = {}
-      for (let variable of this.html.variables) {
-        Object.assign(styles, {
-          [`--${variable.name}`]: variable.value
-        })
-      }
-      return styles
+      return getVariableStyle(this.html.variables)
     }
   },
   watch: {},
