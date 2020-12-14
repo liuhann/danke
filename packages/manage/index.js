@@ -13,6 +13,9 @@ export default {
   routes: [{
     path: '/vector/manage',
     component: () => import(/* webpackChunkName: "manage" */'./VectorPackManage.vue')
+  }, {
+    path: '/h5/edit',
+    component: () => import(/* webpackChunkName: "manage" */'./PageHtmlEdit.vue')
   }],
   async onload (ctx) {
   }

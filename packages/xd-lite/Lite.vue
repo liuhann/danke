@@ -14,10 +14,11 @@
         </template>
       </van-nav-bar>
       <vector-album-list v-if="insertType==='vector-album'" @open="openPack" />
-      <vector-list v-if="insertType === 'vectors'" :pack="currentPack" @insert="insertNode" />
+
       <insert-text v-if="insertType === 'text'" :view-box="work.viewBox" @insert="insertNode" />
     </van-popup>
 
+    <vector-list ref="popVectorList" @insert="insertNode" />
     <!--插入菜单-->
     <avatar-insert-menu ref="insertMenu" @open="onMenuOpen" />
 
@@ -47,7 +48,7 @@
 import MobileEditContainer from './MobileEditContainer'
 import InsertMenu from './insert/InsertMenu'
 import AvatarInsertMenu from './insert/AvatarInsertMenu'
-import VectorList from './insert/VectorList'
+import VectorList from './insert/PopVectorList'
 import VectorAlbumList from './insert/VectorAlbumList'
 import workMixin from '../xd-builder/mixins/workMixin'
 import StyleRegistry from '../xd-builder/utils/StyleRegistry'
@@ -119,8 +120,8 @@ export default {
           Toast.loading('保存作品中')
           await this.saveWork()
           Toast.clear(true)
+          this.closePops()
           Notify({ type: 'primary', message: '保存成功' });
-          this.popupMainMenu = false
           break
         case 'go-home':
           this.$router.replace('/creative/my')
@@ -149,10 +150,10 @@ export default {
       this.popupEditForm = true
     },
 
-    onMenuOpen (type) {
-      this.insertType = type
-      if (this.insertType === 'image') {
-        this.$refs.popupImageList.open()
+    onMenuOpen (type, payload) {
+      // 打开矢量图库列表
+      if (type === 'vectors') {
+        this.$refs.popVectorList.open(payload)
       }
     },
     onElementFocused (element) {
@@ -173,13 +174,21 @@ export default {
     },
 
     insertNode(node) {
-      this.popupInsert = false
+      // 关闭所有其他pops
+      this.closePops()
+
       const created = createSingleElement(node, this.work.viewBox || { width: 320, height: 320})
       this.scene.elements.push(created)
 
       this.$nextTick(() => {
         this.$refs.editContainer.initElementDragResize(created)
       })
+    },
+
+    closePops () {
+      this.$refs.insertMenu.close()
+      this.$refs.popMainMenu.close()
+      this.$refs.popVectorList.close()
     },
 
 

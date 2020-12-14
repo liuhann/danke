@@ -27,6 +27,17 @@ const antColors = [["#fff1f0","#ffccc7","#ffa39e","#ff7875","#ff4d4f","#f5222d",
   ["#ffffff","#fafafa","#f5f5f5","#f0f0f0","#d9d9d9","#bfbfbf","#8c8c8c","#595959","#434343","#262626",
   "#1f1f1f","#141414","#000000"]]
 
+const opacities = [{
+  text: '1'
+}, {
+  text: '0.9'
+}, {
+  text: '0.8'
+}, {
+  text: '0.7'
+}, {
+  text: '0.6'
+}]
 
 export default {
   name: 'ColorPicker',
@@ -42,6 +53,19 @@ export default {
     }
   },
   methods: {
+    hexToRgba (hexValue) {
+      const rgx = /^#?([a-f\d])([a-f\d])([a-f\d])$/i
+      const hex = hexValue.replace(rgx, (m, r, g, b) => r + r + g + g + b + b)
+      const rgb = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+      const r = parseInt(rgb[1], 16)
+      const g = parseInt(rgb[2], 16)
+      const b = parseInt(rgb[3], 16)
+      return {
+        r,
+        g,
+        b
+      }
+    },
     getColumns () {
       const columns = []
       for (let colors of antColors) {
@@ -54,7 +78,8 @@ export default {
         for (let color of colors) {
           item.children.push({
             text: this.getColorBlock(color),
-            color
+            color,
+            children: opacities
           })
         }
         columns.push(item)
@@ -63,7 +88,9 @@ export default {
     },
 
     onConfirm (payload) {
-      this.$emit('input', payload[1].substr(15, 7))
+      const { r, g, b } = this.hexToRgba(payload[1].substr(15, 7))
+      const a = payload[2]
+      this.$emit('input', `rgba(${r}, ${g}, ${b}, ${a})`)
       this.show = false
     },
     getColorBlock (color) {

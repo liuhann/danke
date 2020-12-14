@@ -10,29 +10,31 @@
         <el-pagination :current-page.sync="page" :page-size="size" :total="total" @current-change="pageChange" />
       </div>
       <div v-if="currentPack" class="column">
-        <h2 class="title is-3">{{ currentPack.name }} <el-button @click="editPack">编辑</el-button></h2>
-        <el-upload
-          :auto-upload="false"
-          action="none"
-          multiple
-          drag
-          accept="image/*"
-          :show-file-list="false"
-          class="upload-container mt-2"
-          :on-change="(file, uploadFiles) => fileChoosed(file, uploadFiles)"
-        >
-          <i class="el-icon-upload"></i>
-          <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-        </el-upload>
-        <el-button @click="addHTMLVector">增加HTML</el-button>
+        <h2 class="title is-3">{{ currentPack.name }} </h2>
+        <div class="actions">
+          <el-button @click="editPack">编辑</el-button>
+          <el-button @click="addHTMLVector">增加HTML</el-button>
+          <el-button @click="excuteBulk">BulkL</el-button>
+          <el-upload
+            :auto-upload="false"
+            action="none"
+            multiple
+            accept="image/*"
+            :show-file-list="false"
+            class="upload-container mt-2"
+            :on-change="(file, uploadFiles) => fileChoosed(file, uploadFiles)"
+          >
+            <el-button>上传文件</el-button>
+          </el-upload>
+        </div>
 
-        <div class="columns mt-3 is-multiline">
-          <div v-for="vector in packVectors" :key="vector._id" class="column is-1">
+        <div class="columns mt-3 is-multiline vector-list-container">
+          <div v-for="vector in packVectors" :key="vector._id" class="column is-narrow">
             <img v-if="vector.url" :src="getImageUrl(vector.url)" @dblclick="setAsPackCover(vector.url)">
             <div v-if="vector.html" class="svg-container" :style="variableValues(vector)">
               <div class="styled-box" :style="{
-                height: vector.h + 'px',
-                width: vector.w + 'px'
+                // height: vector.h + 'px',
+                // width: vector.w + 'px'
               }" v-html="vector.html"
               />
             </div>
@@ -76,6 +78,9 @@ import getImageSize from '../utils/imageSize'
 import ImageDAO from '../utils/imagedao'
 import { getImageUrl } from '../xd-builder/mixins/imageUtils'
 import { getVariableStyle } from '../xd-builder/mixins/renderUtils'
+
+import lights from '../xd-builder/toolbar/color/lights'
+import darks from '../xd-builder/toolbar/color/darks'
 
 export default {
   name: 'Work',
@@ -199,20 +204,45 @@ export default {
         this.total = result.total
       }
     },
-    pageChange () {
-      this.fetchWorks()
-    },
-    openWork (work) {
-      window.open('/xd?work=' + work.id)
-    },
-    snapShotWork(work) {
-      window.open('/work/snapshot/' + work.id)
+
+    async excuteBulk () {
+      for (let colors of darks) {
+        if (colors.length >=2) {
+          const vector = {
+            "w":100,
+            "h":100,
+            "html": `<div style=\"background: linear-gradient(var(--a), var(--c1) 0%, var(--c2) 100%);width: 100%;height: 100%\"></div>`,
+            "variables":[
+                {"name":"c1","type":"color","value": colors[0],"label":"颜色1"},
+                {"name":"c2","value":colors[1],"label":"颜色2","type":"color"},
+                {"name":"a","value":"0","label":"角度","type":"deg"}
+            ],
+            "pack":"5fd6fa3a922370cef95fa39a"
+          }
+          await this.restdao.create(vector)
+        }
+      }
     }
+
   }
 }
 </script>
 
 <style lang="scss" scoped>
+.vector-list-container {
+  .column.is-narrow {
+    width: 140px;
+    height: 160px;
+    .svg-container {
+      width: 100%;
+      height: 100%;
+      .styled-box {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+}
 .work-item {
   height: 40px;
   line-height: 40px;

@@ -1,5 +1,5 @@
 <template>
-  <van-popup v-model="show" position="top" :style="{ height: '100%' }">
+  <van-popup v-model="show" position="top" :style="{ height: '50%' }">
     <van-nav-bar>
       <template #right>
         <van-icon name="close" size="20" @click="show = false" />
@@ -28,7 +28,7 @@
           <van-slider v-if="variable.type==='fontWeight'" v-model="variable.value" :min="200" :step="100" :max="900" />
           <color-picker v-if="variable.type === 'color'" v-model="variable.value" />
           <font-family v-if="variable.type === 'fontFamily'" v-model="variable.value" />
-
+          <van-slider v-if="variable.type=== 'deg'" v-model="variable.value" :min="0" :max="360" />
           <van-stepper v-if="variable.type==='fontSize' || variable.type==='px' || variable.type==='number' || variable.type==='percent'" v-model="variable.value" class="mr-4" />
         </template>
       </van-field>
@@ -97,7 +97,7 @@ export default {
 
     onDelete () {
       deleteElement(this.element, this.scene)
-      this.$emit('close')
+      this.show = false
     },
     rotateChange () {
 

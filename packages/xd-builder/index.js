@@ -43,9 +43,6 @@ export default {
     path: '/work/manage',
     component: () => import(/* webpackChunkName: "manage" */'./center/WorkManage.vue')
   }, {
-    path: '/vector/manage',
-    component: () => import(/* webpackChunkName: "manage" */'../manage/VectorPackManage.vue')
-  }, {
     path: '/svg-path/maker',
     component: () => import(/* webpackChunkName: "manage" */'./clippath-maker/Container.vue')
   }],

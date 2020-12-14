@@ -13,9 +13,6 @@ export default {
   }, {
     path: '/h5/list',
     component: () => import(/* webpackChunkName: "vector" */'./PageHtmlList.vue')
-  }, {
-    path: '/h5/edit',
-    component: () => import(/* webpackChunkName: "vector" */'./PageHtmlEdit.vue')
   }],
   async onload (ctx) {
   }

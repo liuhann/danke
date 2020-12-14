@@ -35,6 +35,7 @@
       </el-form-item>
       <el-form-item label="">
         <el-button size="mini" @click="preview">Preview</el-button>
+        <el-button size="mini" @click="perserve">Preseve</el-button>
         <el-button size="mini" type="primary" @click="save">保存</el-button>
       </el-form-item>
     </el-form>
@@ -53,7 +54,7 @@ import 'brace/theme/monokai'
 import { Message, Form, FormItem, Input, Select, Option, Button, InputNumber } from 'element-ui'
 import RestDAO from '../utils/restdao.js'
 import { getVariableStyle } from '../xd-builder/mixins/renderUtils'
-import { getSVGViewBox, presets } from './utils'
+import { getSVGViewBox, presets } from '../vectors/utils'
 
 export default {
   name: 'PageHtmlEdit',
@@ -74,12 +75,7 @@ export default {
         w: 100,
         h: 100,
         html: '', //  正文
-        variables: [{
-          name: 'color',
-          type: 'color',
-          value: '#FF6700',
-          label: '颜色'
-        }]
+        variables: []
       }
     }
   },
@@ -122,6 +118,36 @@ export default {
         type: 'color'
       })
     },
+
+    perserve () {
+      const svgValue = this.editor.getValue()
+      const t = document.createElement('div')
+      t.innerHTML = svgValue
+      t.firstElementChild.setAttribute('preserveAspectRatio', 'none')
+      t.firstElementChild.removeAttribute('width')
+      t.firstElementChild.removeAttribute('height')
+      t.firstElementChild.removeAttribute('width')
+
+      const paths = t.firstElementChild.querySelectorAll('path')
+
+      let inc = 1
+      for (let path of paths) {
+        const fill = path.getAttribute('fill')
+        if (fill) {
+          this.html.variables.push({
+            name: 'c' + inc,
+            value: fill,
+            label: '颜色',
+            type: 'color'
+          })
+          path.setAttribute('fill', `var(--c${inc})`)
+          inc ++
+        }
+      }
+
+      debugger
+      this.editor.setValue(t.innerHTML.replace(/<\!--.*?-->/g, ""))
+    },
     async preview () {
       this.html.html = this.editor.getValue()
       const viewbox = getSVGViewBox(this.html.html)
@@ -152,8 +178,8 @@ export default {
       border: 1px solid #eee;
       height: 100%;
       .preview {
-        width: 100%;
-        height: 100%;
+        width: 160px;
+        height: 160px;
         div {
           height: 100%;
         }
