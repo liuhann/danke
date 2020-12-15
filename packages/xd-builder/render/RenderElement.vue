@@ -28,9 +28,14 @@ import { getImageUrl } from '../mixins/imageUtils.js'
 import { getRectPositionStyle } from '../mixins/rectUtils.js'
 import { assignVariables } from '../mixins/renderUtils'
 import textMesure from '../../utils/textMesure'
-import { svg2url } from '../../utils/svg2url'
 import cubicBerziers from '../../frames/model/cubic-beziers.js'
 
+/**
+ * 元素特性组合有以下几种情况
+ * 1、mono vector：  fill color 、
+ *  实现： backgroundColor + mask
+ * 2、image or background vector: mask with mono vector
+ */
 export default {
   name: 'RenderElement',
   components: {
@@ -222,7 +227,7 @@ export default {
           } else {
             style.fontSize = zoomedSize + 'px'
           }
-          style.lineHeight = (zoomedSize * 1.2) + 'px'
+          // style.lineHeight = (zoomedSize * 1.2) + 'px'
         }
       }
       Object.assign(style, this.elementAnimationStyle)

@@ -13,7 +13,11 @@ function getVariableStyle (variables, valueFrom) {
   let key = valueFrom || 'value'
   if (variables && variables.length) {
     for (let variable of variables) {
-      if (variable.type === 'px' || variable.type === 'fontSize') {
+      if (variable.type === 'fontSize') {
+        Object.assign(style, {
+          ['--' + variable.name]: variable[key] + 'px'
+        })
+      } else if (variable.type === 'px') {
         Object.assign(style, {
           ['--' + variable.name]: variable[key] + 'px'
         })

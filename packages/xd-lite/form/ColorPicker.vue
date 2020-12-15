@@ -1,15 +1,12 @@
 <template>
-  <div class="color-picker">
-    <van-button :color="value" size="small" icon="arrow-down" square @click="show = true" />
-    <van-popup
-      v-model="show"
-      position="bottom"
-    >
-      <van-picker show-toolbar title="标题" :columns="columns" allow-html @confirm="onConfirm" />
-    </van-popup>
-  </div>
+  <van-popup
+    v-model="show"
+    class="color-picker"
+    position="bottom"
+  >
+    <van-picker show-toolbar title="标题" :columns="columns" allow-html @confirm="onConfirm" />
+  </van-popup>
 </template>
-
 <script>
 
 const antColors = [["#fff1f0","#ffccc7","#ffa39e","#ff7875","#ff4d4f","#f5222d","#cf1322","#a8071a","#820014","#5c0011"],
@@ -37,15 +34,23 @@ const opacities = [{
   text: '0.7'
 }, {
   text: '0.6'
+}, {
+  text: '0.5'
+},{
+  text: '0.4'
+},{
+  text: '0.3'
+},{
+  text: '0.2'
+},{
+  text: '0.1'
+},{
+  text: '0'
 }]
 
 export default {
   name: 'ColorPicker',
-  props: {
-    value: {
-      type: String
-    }
-  },
+  props: { },
   data () {
     return {
       columns: this.getColumns(),
@@ -53,6 +58,9 @@ export default {
     }
   },
   methods: {
+    open () {
+      this.show = true
+    },
     hexToRgba (hexValue) {
       const rgx = /^#?([a-f\d])([a-f\d])([a-f\d])$/i
       const hex = hexValue.replace(rgx, (m, r, g, b) => r + r + g + g + b + b)

@@ -1,12 +1,6 @@
 
-const fontStyles = {
-  fontSize: 'var(--fontSize)',
-  color: 'var(--color)',
-  textAlign: 'var(--textAlign)',
-  fontFamily: 'var(--fontFamily)',
-  fontWeight: 'var(--fontWeight)',
-  letterSpacing: 'var(--letterSpacing)'
-}
+import { fontStyles } from '../templates'
+
 export const fontTemplates = [{
   text: '添加标题',
   style: fontStyles,

@@ -1,6 +1,9 @@
 <template>
   <div id="page-html-edit">
     <el-form size="mini" label-width="90px">
+      <el-form-item label="Package">
+        <el-input v-model="html.pack" />
+      </el-form-item>
       <el-form-item label="HTML内容">
         <div id="editor">
         </div>
@@ -144,8 +147,6 @@ export default {
           inc ++
         }
       }
-
-      debugger
       this.editor.setValue(t.innerHTML.replace(/<\!--.*?-->/g, ""))
     },
     async preview () {

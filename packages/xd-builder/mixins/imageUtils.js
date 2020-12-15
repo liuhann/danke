@@ -15,6 +15,9 @@ export function getImageUrl (url, w, h, method = 'mfit') {
   if (!url) {
     return null
   }
+  if (url.startsWith('http')) {
+    return url
+  }
   if (url.endsWith('.svg') || !w || !h ) {
     return this.ctx.IMG_SERVER + '/' + url
   } else {

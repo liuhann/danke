@@ -1,7 +1,7 @@
 import { shortid } from '../../utils/string'
-import textMesure from '../../utils/textMesure'
 import { getSVGViewBox } from '../../vectors/utils'
 import { fitRectIntoBounds } from '../mixins/rectUtils'
+import textMesure from '../../utils/textMesure'
 
 function createSingleElement (element, viewBox, x, y) {
   const id = shortid()
@@ -35,7 +35,9 @@ function createSingleElement (element, viewBox, x, y) {
   if (element.text) {
     node.name = '文本'
     node.text = element.text
-    Object.assign(node, textMesure(element.text, element.variables.filter(variable => variable.type === 'fontSize')[0].value))
+    const sizeList = element.variables.filter(variable => variable.type === 'fontSize')
+    const fontSize = (sizeList && sizeList.length) ? sizeList[0].value: 40
+    Object.assign(node, textMesure(node.text, fontSize, 600))
   }
   if (element.html) {
     node.html = element.html

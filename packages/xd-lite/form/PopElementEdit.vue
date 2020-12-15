@@ -1,5 +1,5 @@
 <template>
-  <van-popup v-model="show" position="top" :style="{ height: '50%' }">
+  <van-popup v-model="show" position="top">
     <van-nav-bar>
       <template #right>
         <van-icon name="close" size="20" @click="show = false" />
@@ -18,43 +18,56 @@
         placeholder="插入文本内容"
       />
       <!--设置元素变量-->
-      <van-field
-        v-for="(variable, index) in element.variables || []"
-        :key="index"
-        class="pr-5"
-        :label="getVariableLabel(variable)"
-      >
-        <template #input>
-          <van-slider v-if="variable.type==='fontWeight'" v-model="variable.value" :min="200" :step="100" :max="900" />
-          <color-picker v-if="variable.type === 'color'" v-model="variable.value" />
-          <font-family v-if="variable.type === 'fontFamily'" v-model="variable.value" />
-          <van-slider v-if="variable.type=== 'deg'" v-model="variable.value" :min="0" :max="360" />
-          <van-stepper v-if="variable.type==='fontSize' || variable.type==='px' || variable.type==='number' || variable.type==='percent'" v-model="variable.value" class="mr-4" />
-        </template>
-      </van-field>
+      <template v-for="(variable, index) in element.variables || []">
+        <van-field v-if="variable.type==='fontWeight'" :key="index" label="文字粗细">
+          <template #input>
+            <van-slider v-model="variable.value" :min="200" :step="100" :max="900" />
+          </template>
+        </van-field>
+        <van-field v-if="variable.type==='color'" :key="index" v-model="variable.value" center :label="variable.label || '颜色'">
+          <template #button>
+            <van-button size="small" :color="variable.value" @click="onColorPickerClick(variable)">选择</van-button>
+          </template>
+        </van-field>
+        <van-field v-if="variable.type === 'fontFamily'" :key="index" center :label="variable.label || '字体'">
+          <template #input>
+            {{ variable.value }}
+          </template>
+          <template #button>
+            <van-button size="small" @click="onFontFamillyClick(variable)">选择</van-button>
+          </template>
+        </van-field>
+        <van-field v-if="variable.type === 'fontSize'" :key="index" :label="variable.label || '字号'">
+          <template #input>
+            <van-slider v-model="variable.value" :step="4" :min="12" :max="200" />
+          </template>
+          <template #button>
+            {{ variable.value }}
+          </template>
+        </van-field>
+        <van-field v-if="variable.type === 'letterSpacing'" :key="index" :label="variable.label || '字间距'">
+          <template #input>
+            <van-slider v-model="variable.value" :step="1" :min="1" :max="50" />
+          </template>
+        </van-field>
+      </template>
 
       <van-field v-if="element.hasOwnProperty('fill')" label="填充色">
         <el-color-picker v-model="element.fill" show-alpha />
       </van-field>
-      <van-field label="堆放">
-        <template #input>
-          <van-button size="small" plain @click="() => moveTop(element, scene)">最上</van-button>
-          <van-button size="small" plain @click="() => moveUp(element, scene)">上移</van-button>
-          <van-button size="small" plain @click="() => moveDown(element, scene)">下移</van-button>
-          <van-button size="small" plain @click="() => moveBottom(element, scene)">最下</van-button>
-        </template>
-      </van-field>
+
+      <font-family ref="fontFamilly" @input="updateVariableValue" />
+      <color-picker ref="colorPicker" @input="updateVariableValue" />
+
       <div style="margin: 16px;">
-        <van-button color="linear-gradient(to right, #ff6034, #ee0a24)" @click="onDelete">刪除</van-button>
-        <van-button v-if="!element.locked" @click="lockElement">锁定</van-button>
-        <van-button v-if="element.locked" @click="unlockElement">解锁</van-button>
+        <van-button v-if="isEdit" color="linear-gradient(to right, #ff6034, #ee0a24)" @click="onDelete">刪除</van-button>
+        <van-button v-if="!isEdit" type="primary" @click="onConfirm">增加</van-button>
       </div>
     </van-form>
   </van-popup>
 </template>
 
 <script>
-import { lockElement, unlockElement, moveUp, moveBottom, moveDown, moveTop, deleteElement } from '../../xd-builder/utils/sceneActions'
 import ColorPicker from './ColorPicker'
 import FontFamily from './FontFamily.vue'
 
@@ -70,24 +83,39 @@ const fontLabels = {
 export default {
   name: "PopElementEdit",
   components: { FontFamily, ColorPicker },
-  props: {
-    element: {
-      type: Object
-    },
-    scene: {
-      type: Object
-    }
-  },
+  props: { },
   data () {
     return {
+      element: {},
+      variable: null,
+      isEdit: true,
       show: false
     }
   },
   methods: {
-    open () {
-      this.show = true
+    updateVariableValue (val) {
+      if (this.variable) {
+        this.variable.value = val
+      }
     },
-    lockElement, unlockElement, moveUp, moveBottom, moveDown, moveTop,deleteElement,
+
+    onFontFamillyClick (variable) {
+      this.variable = variable
+      this.$refs.fontFamilly.open()
+    },
+
+    onColorPickerClick (variable) {
+      this.variable = variable
+      this.$refs.colorPicker.open()
+    },
+
+    open (element, isEdit) {
+      this.show = true
+      this.isEdit = isEdit
+      if (element) {
+        this.element = element
+      }
+    },
     getVariableLabel(variable) {
       if (variable.label) {
         return variable.label
@@ -96,12 +124,14 @@ export default {
     },
 
     onDelete () {
-      deleteElement(this.element, this.scene)
+      this.$emit('delete', this.element)
       this.show = false
     },
-    rotateChange () {
-
+    onConfirm () {
+      this.$emit('insert', JSON.parse(JSON.stringify(this.element)))
+      this.show = false
     }
+
   }
 }
 </script>

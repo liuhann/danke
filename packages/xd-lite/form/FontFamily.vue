@@ -1,13 +1,10 @@
 <template>
-  <div class="font-family">
-    <van-button size="small" square @click="show = true">{{ currentFont }}</van-button>
-    <van-popup
-      v-model="show"
-      position="bottom"
-    >
-      <van-picker show-toolbar title="标题" :columns="fonts" @confirm="onConfirm" />
-    </van-popup>
-  </div>
+  <van-popup
+    v-model="show"
+    position="bottom"
+  >
+    <van-picker show-toolbar title="标题" :columns="fonts" @confirm="onConfirm" />
+  </van-popup>
 </template>
 
 <script>
@@ -36,6 +33,9 @@ export default {
     }
   },
   methods: {
+    open () {
+      this.show = true
+    },
     async onConfirm (payload) {
       Toast.loading('正在加载选定的字体')
       const font = fontFamilies.filter(fontface => fontface.name === payload)[0]
@@ -55,7 +55,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-</style>

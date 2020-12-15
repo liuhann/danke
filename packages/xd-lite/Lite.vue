@@ -2,30 +2,20 @@
   <div id="xd-lite">
     <!--    拖拽、编辑区-->
     <mobile-edit-container v-if="work && scene" ref="editContainer" :scene="scene" :work="work" @focus-change="onElementFocused" />
-
     <!-- 上下文主菜单-->
     <pop-main-menu ref="popMainMenu" :work="work" :scene="scene" @action="onMenuAction" />
 
-    <!-- 插入元素弹出层（菜单）-->
-    <van-popup v-model="popupInsert" round position="bottom" :style="{ height: '50%' }">
-      <van-nav-bar left-arrow @click-left="insertClickBack">
-        <template #right>
-          <van-icon name="close" size="20" @click="popupInsert=false" />
-        </template>
-      </van-nav-bar>
-      <vector-album-list v-if="insertType==='vector-album'" @open="openPack" />
-
-      <insert-text v-if="insertType === 'text'" :view-box="work.viewBox" @insert="insertNode" />
-    </van-popup>
-
-    <vector-list ref="popVectorList" @insert="insertNode" />
     <!--插入菜单-->
-    <avatar-insert-menu ref="insertMenu" @open="onMenuOpen" />
+    <avatar-insert-menu ref="insertMenu" @open="onInsertMenuTab" />
 
+    <!--插入矢量图片弹框-->
+    <vector-list ref="popVectorList" @insert="insertNode" />
     <!--插入图片-->
     <popup-image-list ref="popupImageList" @insert="insertNode" />
+    <!--调用获取unSplash的图片-->
+    <pop-un-splash-photo-list ref="unsplashPhotoList" @insert="insertNode" />
     <!--元素编辑弹出层-->
-    <pop-element-edit ref="popElementEdit" :element="element" :scene="scene" />
+    <pop-element-edit ref="popElementEdit" @delete="deleteNode" @insert="insertNode" />
 
     <van-popup v-model="popupEditForm" position="top" :style="{ height: '50%' }">
       <van-nav-bar>
@@ -40,37 +30,39 @@
       <scene-edit v-if="scene && !element" :scene="scene" />
     </van-popup>
     <van-button id="add-button" round icon="plus" type="primary" @click="$refs.insertMenu.open()"></van-button>
-    <van-button id="menu-button" round icon="setting-o" @click="onSettingClick"></van-button>
+
+    <transition name="van-slide-up">
+      <van-button v-show="element" id="element-config" plain hairline type="primary" round icon="edit" @click="editNode"></van-button>
+    </transition>
+    <van-button id="menu-button" round icon="ellipsis" @click="onSettingClick"></van-button>
   </div>
 </template>
 
 <script>
 import MobileEditContainer from './MobileEditContainer'
-import InsertMenu from './insert/InsertMenu'
 import AvatarInsertMenu from './insert/AvatarInsertMenu'
 import VectorList from './insert/PopVectorList'
-import VectorAlbumList from './insert/VectorAlbumList'
 import workMixin from '../xd-builder/mixins/workMixin'
 import StyleRegistry from '../xd-builder/utils/StyleRegistry'
-import { createSingleElement } from '../xd-builder/utils/sceneActions'
-import Vue from 'vue'
-import Vant from 'vant';
-import { Toast, Notify } from 'vant';
-import 'vant/lib/index.css';
+import { createSingleElement, deleteElement } from '../xd-builder/utils/sceneActions'
 import { addScene, prevScene, nextScene } from '../xd-builder/utils/workActions'
-import TextList from '../xd-builder/left/TextList'
 import PopElementEdit from './form/PopElementEdit'
-import InsertText from './insert/InsertText'
 import SceneEdit from './form/SceneEdit'
 import PopMainMenu from './list/PopMainMenu'
 import PopupImageList from './list/PopupImageList'
+import PopUnSplashPhotoList from './insert/PopUnSplashPhotoList'
+import Vue from 'vue'
+import Vant from 'vant';
+import { Toast, Notify } from 'vant';
+import { text } from '../xd-builder/templates'
+import 'vant/lib/index.css';
 import { Lazyload } from 'vant';
 
 Vue.use(Lazyload);
 Vue.use(Vant);
 export default {
   name: "Lite",
-  components: { PopupImageList, PopMainMenu, SceneEdit, InsertText, PopElementEdit, MobileEditContainer, VectorList, VectorAlbumList, AvatarInsertMenu },
+  components: { PopupImageList, PopMainMenu, SceneEdit, PopElementEdit, MobileEditContainer, VectorList,AvatarInsertMenu, PopUnSplashPhotoList },
   mixins: [ workMixin ],
   data () {
     return {
@@ -101,6 +93,20 @@ export default {
   },
 
   methods: {
+    async onMounted () {
+      let workId = this.$route.query.work
+      if (!workId) {
+        this.work = this.newWork({
+          width: this.$route.query.width,
+          height: this.$route.query.height
+        })
+        this.addScene()
+      } else {
+        await this.loadWork(workId)
+        this.scene = this.work.scenes[0]
+      }
+    },
+
     async onMenuAction (action) {
       switch (action) {
         case 'scene-setting':
@@ -131,29 +137,23 @@ export default {
       }
     },
 
-    async onMounted () {
-      let workId = this.$route.query.work
-      if (!workId) {
-        this.work = this.newWork({
-          width: this.$route.query.width,
-          height: this.$route.query.height
-        })
-        this.addScene()
-      } else {
-        await this.loadWork(workId)
-        this.scene = this.work.scenes[0]
-      }
+    editNode () {
+      this.$refs.popElementEdit.open(this.element, true)
     },
 
-    editNode (element) {
-      this.element = element
-      this.popupEditForm = true
-    },
-
-    onMenuOpen (type, payload) {
+    onInsertMenuTab (type, payload) {
       // 打开矢量图库列表
       if (type === 'vectors') {
         this.$refs.popVectorList.open(payload)
+      }
+      if (type === 'unsplash') {
+        this.$refs.unsplashPhotoList.open(payload, payload)
+      }
+      if (type === 'text') {
+        this.$refs.popElementEdit.open(JSON.parse(JSON.stringify(text)), false)
+      }
+      if (type === 'uploads') {
+        this.$refs.popupImageList.open()
       }
     },
     onElementFocused (element) {
@@ -176,13 +176,15 @@ export default {
     insertNode(node) {
       // 关闭所有其他pops
       this.closePops()
-
       const created = createSingleElement(node, this.work.viewBox || { width: 320, height: 320})
       this.scene.elements.push(created)
-
       this.$nextTick(() => {
         this.$refs.editContainer.initElementDragResize(created)
       })
+    },
+
+    deleteNode(node) {
+      deleteElement(node, this.scene)
     },
 
     closePops () {
@@ -228,13 +230,19 @@ export default {
 }
 #menu-button {
   position: absolute;
-  left: 1rem;
-  bottom: 1rem;
+  right: 1rem;
+  top: 1rem;
   z-index: 101;
 }
 #add-button {
   position: absolute;
   right: 1rem;
+  bottom: 1rem;
+  z-index: 101;
+}
+#element-config {
+  position: absolute;
+  right: 5.5em;
   bottom: 1rem;
   z-index: 101;
 }
