@@ -42,11 +42,13 @@ export default {
   mounted () { },
   methods: {
     open (title, query) {
+      this.photos = []
       this.show = true
       this.title = title
       this.query = query
     },
     close () {
+      this.photos = []
       this.show = false
     },
     choose (url) {

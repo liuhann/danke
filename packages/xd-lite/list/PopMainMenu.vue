@@ -9,12 +9,24 @@
         <van-grid-item icon="arrow-down" text="下一页" @click="$emit('action', 'scene-next')" />
       </van-grid>
     </div>
+
+    <div class="page-elements">
+      <div class="block_title">页内元素</div>
+      <van-grid :column-num="4" square clickable>
+        <van-grid-item icon="points" text="元素次序" @click="$emit('action', 'element-list')" />
+        <van-grid-item />
+        <van-grid-item />
+        <van-grid-item />
+      </van-grid>
+    </div>
+
     <div>
       <div class="block_title">作品</div>
       <van-grid :column-num="4" square clickable>
         <van-grid-item icon="success" text="保存" @click="$emit('action', 'save-work')" />
         <van-grid-item icon="share-o" text="分享" @click="$emit('action', 'share-work')" />
         <van-grid-item icon="wap-home-o" text="返回" @click="$emit('action', 'go-home')" />
+        <van-grid-item />
       </van-grid>
     </div>
   </van-popup>

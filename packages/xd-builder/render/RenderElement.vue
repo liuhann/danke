@@ -29,6 +29,7 @@ import { getRectPositionStyle } from '../mixins/rectUtils.js'
 import { assignVariables } from '../mixins/renderUtils'
 import textMesure from '../../utils/textMesure'
 import cubicBerziers from '../../frames/model/cubic-beziers.js'
+import { ensureFont } from '../../utils/fontfaces'
 
 /**
  * 元素特性组合有以下几种情况
@@ -119,6 +120,9 @@ export default {
       }
       if (this.element.filter) {
         result.push(this.element.filter.name)
+      }
+      if (this.element.hasOwnProperty('text')) {
+        result.push('text')
       }
       return result
     },
@@ -338,11 +342,14 @@ export default {
     },
   },
   mounted () {
-    if (this.element.variables && this.element.variables.filter(variable=> variable.type === 'fontFamily').length) {
-      this.ctx.styleRegistry.addFontFace(this.element.variables.filter(variable=> variable.type === 'fontFamily')[0].value)
-    }
+    this.loadFont()
   },
   methods: {
+    async loadFont () {
+      if (this.element.variables && this.element.variables.filter(variable=> variable.type === 'fontFamily').length) {
+        await ensureFont(this.ctx, this.element.variables.filter(variable=> variable.type === 'fontFamily')[0].value)
+      }
+    },
     getImageUrl,
     updateTextArea () {
       const measured = textMesure(this.elementTextContent, this.elementTextFontSize, this.elementTextWeight)
@@ -413,6 +420,11 @@ export default {
     width: 100%;
     z-index: 11;
   }
+  &.text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
   .block-elements {
     .element {
       position: absolute;
@@ -432,6 +444,7 @@ export default {
   }
   .text {
     width: 100%;
+    text-align: center;
   }
   textarea {
     text-align: left;

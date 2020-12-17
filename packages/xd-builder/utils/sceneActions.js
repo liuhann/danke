@@ -41,6 +41,7 @@ function createSingleElement (element, viewBox, x, y) {
   }
   if (element.html) {
     node.html = element.html
+    node.maskImage = ''
   }
   // image has mask attr
   if (element.url) {
@@ -52,6 +53,11 @@ function createSingleElement (element, viewBox, x, y) {
         node.fit = 'cover'
         node.mask = null
       }
+    }
+    if (!element.url.endsWith('.svg')) {
+      node.maskImage = ''
+    } else {
+      node.fill = ''
     }
   }
 

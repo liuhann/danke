@@ -3,11 +3,9 @@
     <!--    拖拽、编辑区-->
     <mobile-edit-container v-if="work && scene" ref="editContainer" :scene="scene" :work="work" @focus-change="onElementFocused" />
     <!-- 上下文主菜单-->
-    <pop-main-menu ref="popMainMenu" :work="work" :scene="scene" @action="onMenuAction" />
-
+    <pop-main-menu ref="popMainMenu" :page-enabled="false" :work="work" :scene="scene" @action="onMenuAction" />
     <!--插入菜单-->
     <avatar-insert-menu ref="insertMenu" @open="onInsertMenuTab" />
-
     <!--插入矢量图片弹框-->
     <vector-list ref="popVectorList" @insert="insertNode" />
     <!--插入图片-->
@@ -16,6 +14,9 @@
     <pop-un-splash-photo-list ref="unsplashPhotoList" @insert="insertNode" />
     <!--元素编辑弹出层-->
     <pop-element-edit ref="popElementEdit" @delete="deleteNode" @insert="insertNode" />
+
+    <!--元素编辑弹出层-->
+    <pop-element-ordering v-if="work" ref="popElementOrdering" :scene="scene" :view-box="work.viewBox" />
 
     <van-popup v-model="popupEditForm" position="top" :style="{ height: '50%' }">
       <van-nav-bar>
@@ -29,8 +30,8 @@
       <element-edit v-if="element" :element="element" :scene="scene" @close="popupEditForm = false" />
       <scene-edit v-if="scene && !element" :scene="scene" />
     </van-popup>
-    <van-button id="add-button" round icon="plus" type="primary" @click="$refs.insertMenu.open()"></van-button>
 
+    <van-button id="add-button" round icon="plus" type="primary" @click="$refs.insertMenu.open()"></van-button>
     <transition name="van-slide-up">
       <van-button v-show="element" id="element-config" plain hairline type="primary" round icon="edit" @click="editNode"></van-button>
     </transition>
@@ -57,12 +58,13 @@ import { Toast, Notify } from 'vant';
 import { text } from '../xd-builder/templates'
 import 'vant/lib/index.css';
 import { Lazyload } from 'vant';
+import PopElementOrdering from './list/PopElementOrdering'
 
 Vue.use(Lazyload);
 Vue.use(Vant);
 export default {
   name: "Lite",
-  components: { PopupImageList, PopMainMenu, SceneEdit, PopElementEdit, MobileEditContainer, VectorList,AvatarInsertMenu, PopUnSplashPhotoList },
+  components: { PopElementOrdering, PopupImageList, PopMainMenu, SceneEdit, PopElementEdit, MobileEditContainer, VectorList,AvatarInsertMenu, PopUnSplashPhotoList },
   mixins: [ workMixin ],
   data () {
     return {
@@ -122,6 +124,10 @@ export default {
         case 'scene-next':
           this.scene = nextScene(this.work, this.scene)
           break
+        case 'element-list':
+          this.closePops()
+          this.$refs.popElementOrdering.open()
+          break
         case 'save-work':
           Toast.loading('保存作品中')
           await this.saveWork()
@@ -161,11 +167,7 @@ export default {
     },
 
     onSettingClick () {
-      if (this.element) {
-        this.$refs.popElementEdit.open()
-      } else {
-        this.$refs.popMainMenu.open()
-      }
+      this.$refs.popMainMenu.open()
     },
 
     openPack (pack) {
@@ -223,6 +225,9 @@ export default {
 #xd-lite {
   height: 100%;
   -webkit-user-select: none;
+}
+.work-loaded {
+  height: 100%;
 }
 
 .van-button--normal {

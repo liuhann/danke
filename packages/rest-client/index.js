@@ -9,8 +9,7 @@ window.ResizeObserver = undefined
 export default {
   routes: [{
     path: '/rest/list',
-    beforeEnter,
-    component: () => import(/* webpackChunkName: "rest-list" */'./RestList.vue')
+    component: () => import(/* webpackChunkName: "rest-ctrl" */'./RestList.vue')
   }],
   async onload (ctx) {
   }

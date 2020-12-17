@@ -1,5 +1,5 @@
 <template>
-  <van-popup v-model="show" title="Hi" position="bottom" :style="{ height: '100%'}">
+  <van-popup v-model="show" position="bottom" :style="{ height: '100%'}" @opened="openPack">
     <van-nav-bar>
       <template #right>
         <van-icon name="close" size="20" @click="show = false" />
@@ -9,8 +9,11 @@
       </template>
     </van-nav-bar>
     <van-skeleton v-if="fetching" title :row="6" />
-    <van-grid clickable square :icon-size="48" column-num="6">
-      <van-grid-item v-for="(vector, index) in vectors" :key="index" :icon="getImageUrl(vector.url)" @click="chooseVector(vector)">
+
+    <van-grid clickable square :icon-size="32" column-num="4" :gutter="5">
+      <van-grid-item v-for="(vector, index) in vectors" :key="index" @click="chooseVector(vector)">
+        <van-image v-if="vector.url" width="100%" height="100%" :src="getImageUrl(vector.url)">
+        </van-image>
         <div v-if="vector.html" class="svg-container" :style="getVariableStyle(vector.variables)">
           <div class="styled-box" v-html="vector.html">
           </div>
@@ -54,7 +57,8 @@ export default {
   methods: {
     open (pack) {
       this.show = true
-      this.openPack(pack)
+      this.vectors = []
+      this.pack = pack
     },
     close () {
       this.show = false
@@ -64,13 +68,13 @@ export default {
     chooseVector (vector) {
       this.$emit('insert', vector)
     },
-    async openPack (pack) {
+    async openPack () {
       this.fetching = true
       this.vectors = []
       const query = {
         page: 1,
         count: 500,
-        pack: pack
+        pack: this.pack
       }
       const result = await this.restdao.list(query)
       this.vectors = result.list
@@ -86,14 +90,19 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-
+<style lang="scss">
 .svg-container {
   width: 80%;
   height: 80%;
   .styled-box {
     width: 100%;
     height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    svg {
+      flex: 1;
+    }
   }
 }
 </style>

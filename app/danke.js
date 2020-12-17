@@ -5,4 +5,5 @@ import styles from '../packages/styles'
 import ticks from '../packages/music-ticker'
 import avatar from '../packages/avatar-decorator'
 import manage from '../packages/manage'
-export default [xd, frames, ticks, styles, avatar, xdLite, manage]
+import restctrl from '../packages/rest-client'
+export default [xd, frames, ticks, styles, avatar, xdLite, manage, restctrl]

@@ -11,7 +11,7 @@
     <div class="grid-title">基础素材</div>
     <van-grid :column-num="4" square :icon-size="40">
       <van-grid-item icon="photo-o" text="图片" @click="$emit('open', 'uploads')" />
-      <van-grid-item icon="photo-o" text="文字" @click="$emit('open', 'text')" />
+      <van-grid-item icon="notes-o" text="文字" @click="$emit('open', 'text')" />
       <van-grid-item icon="points" text="常用形状" @click="$emit('open', 'vectors', '5fc750e1922370cef95fa314')" />
       <van-grid-item icon="bag-o" text="常用图标" @click="$emit('open', 'vectors', '5fc7261c922370cef95fa26d')" />
       <van-grid-item icon="photo-o" text="浅色渐变背景" @click="$emit('open', 'vectors', '5fd33697922370cef95fa33f')" />

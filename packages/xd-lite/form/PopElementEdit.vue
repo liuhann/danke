@@ -17,6 +17,16 @@
         label="内容"
         placeholder="插入文本内容"
       />
+      <van-field
+        v-if="element.hasOwnProperty('maskImage')"
+        placeholder="插入文本内容"
+        label="遮罩层图片"
+      >
+        <template #button>
+          <van-button size="small" @click="chooseMaskImage">选择</van-button>
+        </template>
+      </van-field>
+
       <!--设置元素变量-->
       <template v-for="(variable, index) in element.variables || []">
         <van-field v-if="variable.type==='fontWeight'" :key="index" label="文字粗细">
@@ -92,11 +102,19 @@ export default {
       show: false
     }
   },
+  computed: {
+    masktable () {
+      return this.element && (this.element.hasOwnProperty('mask'))
+    }
+  },
   methods: {
     updateVariableValue (val) {
       if (this.variable) {
         this.variable.value = val
       }
+    },
+    chooseMaskImage () {
+
     },
 
     onFontFamillyClick (variable) {
