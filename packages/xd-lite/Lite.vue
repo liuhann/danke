@@ -42,7 +42,7 @@
 <script>
 import MobileEditContainer from './MobileEditContainer'
 import AvatarInsertMenu from './insert/AvatarInsertMenu'
-import VectorList from './insert/PopVectorList'
+import VectorList from './list/PopVectorList'
 import workMixin from '../xd-builder/mixins/workMixin'
 import StyleRegistry from '../xd-builder/utils/StyleRegistry'
 import { createSingleElement, deleteElement } from '../xd-builder/utils/sceneActions'

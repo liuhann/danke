@@ -62,8 +62,10 @@
         </van-field>
       </template>
 
-      <van-field v-if="element.hasOwnProperty('fill')" label="填充色">
-        <el-color-picker v-model="element.fill" show-alpha />
+      <van-field v-if="element.hasOwnProperty('fill')" v-model="element.fill" label="填充色" center>
+        <template #button>
+          <van-button size="small" :color="element.fill" @click="onColorPickerClick('fill')">选择</van-button>
+        </template>
       </van-field>
 
       <font-family ref="fontFamilly" @input="updateVariableValue" />
@@ -109,8 +111,11 @@ export default {
   },
   methods: {
     updateVariableValue (val) {
+      debugger
       if (this.variable) {
         this.variable.value = val
+      } else {
+        this.element.fill = val
       }
     },
     chooseMaskImage () {
@@ -123,7 +128,12 @@ export default {
     },
 
     onColorPickerClick (variable) {
-      this.variable = variable
+      if (typeof variable === 'string') {
+        this.colorField = variable
+        this.variable = null
+      } else {
+        this.variable = variable
+      }
       this.$refs.colorPicker.open()
     },
 

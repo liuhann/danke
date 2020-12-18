@@ -13,7 +13,7 @@
     <div class="page-elements">
       <div class="block_title">页内元素</div>
       <van-grid :column-num="4" square clickable>
-        <van-grid-item icon="points" text="元素次序" @click="$emit('action', 'element-list')" />
+        <van-grid-item icon="descending" text="排序" @click="$emit('action', 'element-list')" />
         <van-grid-item />
         <van-grid-item />
         <van-grid-item />

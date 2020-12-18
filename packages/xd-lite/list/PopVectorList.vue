@@ -5,7 +5,7 @@
         <van-icon name="close" size="20" @click="show = false" />
       </template>
       <template #left>
-        请点击添加元素
+        添加图片素材
       </template>
     </van-nav-bar>
     <van-skeleton v-if="fetching" title :row="6" />
@@ -25,7 +25,6 @@
 
 <script>
 import RestDAO from '../../utils/restdao'
-import ImageDAO from '../../utils/imagedao'
 import { getImageUrl } from '../../xd-builder/mixins/imageUtils'
 import { getVariableStyle } from '../../xd-builder/mixins/renderUtils'
 
