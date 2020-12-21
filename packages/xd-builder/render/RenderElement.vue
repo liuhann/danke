@@ -164,9 +164,9 @@ export default {
       }
 
       // 填充色情况下，图片显示为遮罩
-      if (this.element.fill) {
+      if (this.element.fill && this.element.url) {
         style.maskImage = `url(${this.getImageUrl(this.element.url, this.viewPort.width * 2, this.viewPort.height * 2)})`
-        style.maskSize = this.element.fit || 'contain'
+        style.maskSize = this.element.fit || 'cover'
         style.maskPosition = 'center center'
       }
       // 变量配置信息
@@ -212,12 +212,14 @@ export default {
         style.objectFit = this.element.fit
       }
       if (this.element.maskImage) {
-        style.maskImage = this.element.maskImage
+        style.maskImage = `url("${this.getImageUrl(this.element.maskImage)}")`
       }
       if (this.element.mask && this.element.mask.uid) {
-        style.clipPath = `url("#${this.element.mask.uid}")`;
+        style.clipPath = `url("#${this.element.mask.uid}")`
       }
-      return Object.assign({}, this.element.style, style, this.elementAnimationStyle)
+      const result = Object.assign({}, this.element.style, style, this.elementAnimationStyle)
+      console.log('element style', result)
+      return result
     },
 
     textTransformStyle () {

@@ -6,6 +6,13 @@ export default [{
     h: 480
   }
 }, {
+  label: '矢量裁切',
+  value: 'mask',
+  size: {
+    w: 480,
+    h: 480
+  }
+}, {
   label: '移动幻灯片',
   value: 'slide-mobile',
   size: {

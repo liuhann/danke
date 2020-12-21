@@ -2,10 +2,10 @@
   <van-popup v-model="show" position="bottom" :style="{ height: '100%'}" @opened="openPack">
     <van-nav-bar>
       <template #right>
-        <van-icon name="close" size="20" @click="show = false" />
+        <van-icon name="cross" size="22" @click="show = false" />
       </template>
       <template #left>
-        添加图片素材
+        {{ title }}
       </template>
     </van-nav-bar>
     <van-skeleton v-if="fetching" title :row="6" />
@@ -31,8 +31,9 @@ import { getVariableStyle } from '../../xd-builder/mixins/renderUtils'
 export default {
   name: "PopVectorList",
   props: {
-    pack: {
-      type: Object
+    title: {
+      type: String,
+      default: '添加图片素材'
     }
   },
   data () {
