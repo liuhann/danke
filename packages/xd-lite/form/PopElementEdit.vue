@@ -85,10 +85,15 @@
       <van-field
         v-if="element.hasOwnProperty('maskImage')"
         placeholder="插入文本内容"
-        label="遮罩层图片"
+        label="图片剪纸"
       >
+        <template #input>
+          <van-image :src="getImageUrl(element.maskImage)" width="28" height="28" />
+        </template>
         <template #button>
-          <van-button size="small" @click="chooseMaskImage">选择</van-button>
+          <van-button v-if="element.maskImage" size="small" @click="chooseMaskImage">更换</van-button>
+          <van-button v-if="!element.maskImage" size="small" @click="chooseMaskImage">选择</van-button>
+          <van-button v-if="element.maskImage" size="small" @click="deleteMaskImage">删除</van-button>
         </template>
       </van-field>
 
@@ -110,6 +115,7 @@ import ColorPicker from './ColorPicker'
 import FontFamily from './FontFamily.vue'
 import PopVectorAlbumList from '../list/PopVectorAlbumList'
 import PopVectorList from '../list/PopVectorList'
+import { getImageUrl } from '../../xd-builder/mixins/imageUtils'
 
 const fontLabels = {
   'fontFamily': '字体',
@@ -138,6 +144,7 @@ export default {
     }
   },
   methods: {
+    getImageUrl,
     updateVariableValue (val) {
       if (this.variable) {
         this.variable.value = val
@@ -151,7 +158,6 @@ export default {
     },
 
     chooseVector (vector) {
-      debugger
       this.$refs.vectorListPop.close()
       this.$refs.albumListPop.close()
       this.element.maskImage = vector.url
@@ -159,6 +165,10 @@ export default {
 
     chooseMaskImage () {
       this.$refs.albumListPop.open('mask')
+    },
+
+    deleteMaskImage () {
+      this.element.maskImage = ''
     },
 
     onFontFamillyClick (variable) {

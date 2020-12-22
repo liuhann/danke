@@ -105,7 +105,6 @@ export default {
         this.addScene()
       } else {
         await this.loadWork(workId)
-        this.scene = this.work.scenes[0]
       }
     },
 

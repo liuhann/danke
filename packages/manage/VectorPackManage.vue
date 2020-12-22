@@ -14,7 +14,7 @@
         <div class="actions">
           <el-button @click="editPack">编辑</el-button>
           <el-button @click="addHTMLVector">增加HTML</el-button>
-          <el-button @click="excuteBulk">BulkL</el-button>
+          <el-button @click="deleteAllInPack">全部删除</el-button>
           <el-upload
             :auto-upload="false"
             action="none"
@@ -71,16 +71,13 @@
 </template>
 
 <script>
-import { Pagination, Button, Table, TableColumn, Dialog, Form, FormItem, Input, Checkbox, Select, Option, Upload, Message } from 'element-ui'
+import { Pagination, Button, Table, TableColumn, Dialog, Form, FormItem, Input, Checkbox, Select, Option, Upload, Message, Loading } from 'element-ui'
 import RestDAO from '../utils/restdao.js'
 import channels from '../site/channels'
 import getImageSize from '../utils/imageSize'
 import ImageDAO from '../utils/imagedao'
 import { getImageUrl } from '../xd-builder/mixins/imageUtils'
 import { getVariableStyle } from '../xd-builder/mixins/renderUtils'
-
-import lights from '../xd-builder/toolbar/color/lights'
-import darks from '../xd-builder/toolbar/color/darks'
 
 export default {
   name: 'Work',
@@ -145,8 +142,7 @@ export default {
         await this.imagedao.removeBlob(vector.url)
       }
       await this.restdao.delete(vector)
-
-      Message.success('已经删除' + vector._id)
+      Message.success('已经删除' + vector.name)
     },
 
     newPack () {
@@ -158,6 +154,10 @@ export default {
         previews: []
       }
       this.dialogVisible = true
+    },
+
+    pageChange () {
+      this.fetchPacks()
     },
 
     editPack () {
@@ -183,6 +183,7 @@ export default {
       imageObject.h = size.height
       // write file info
       await this.restdao.create(imageObject)
+      Message.success('已经上传' + imageObject.name)
     },
 
     async fetchPackVectors () {
@@ -192,6 +193,16 @@ export default {
       })
 
       this.packVectors = result.list
+    },
+
+    async deleteAllInPack () {
+      let loadingInstance = Loading.service({
+        text: '正在删除中'
+      })
+      for (let vector of this.packVectors ) {
+        await this.deleteVector(vector)
+      }
+      loadingInstance.close()
     },
 
     async fetchPacks () {
@@ -233,6 +244,10 @@ export default {
   .column.is-narrow {
     width: 140px;
     height: 160px;
+    img {
+      width: 140px;
+      height: 120px;
+    }
     .svg-container {
       width: 100%;
       height: 100%;

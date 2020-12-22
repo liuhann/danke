@@ -79,6 +79,7 @@ export default {
         scene.stage = ''
       }
       this.work = work
+      this.scene = this.work.scenes[0]
       loadingInstance1.close()
     },
 
