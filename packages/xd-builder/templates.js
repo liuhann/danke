@@ -2,8 +2,9 @@ const fontStyles = {
   fontSize: 'var(--fontSize)',
   color: 'var(--color)',
   fontFamily: 'var(--fontFamily)',
-  fontWeight: 'var(--fontWeight)',
-  letterSpacing: 'var(--letterSpacing)'
+  fontWeight: 'var(--fw)',
+  lineHeight: 'var(--lh)',
+  letterSpacing: 'var(--ls)'
 }
 
 const text = {
@@ -22,13 +23,17 @@ const text = {
     value: '#444',
     type: 'color'
   }, {
-    name: 'fontWeight',
+    name: 'fw',
     value: 200,
     type: 'fontWeight'
   }, {
-    name: 'letterSpacing',
+    name: 'ls',
     value: 2,
-    type: 'px'
+    type: 'letterSpacing'
+  }, {
+    name: 'lh',
+    value: 32,
+    type: 'lineHeight'
   }]
 }
 

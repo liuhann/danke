@@ -20,6 +20,7 @@ function createSingleElement (element, viewBox, x, y) {
       exit: [],
       preview: []
     },
+    tags: element.tags,
     // 旋转
     rotate: 0,
     // 其他属性，交互时使用
@@ -56,8 +57,6 @@ function createSingleElement (element, viewBox, x, y) {
     }
     if (!element.url.endsWith('.svg')) {
       node.maskImage = ''
-    } else {
-      node.fill = ''
     }
   }
 

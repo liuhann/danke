@@ -2,24 +2,29 @@
   <van-popup v-model="show" position="bottom" :style="{ height: '100%' }">
     <van-nav-bar>
       <template #right>
-        <van-icon name="close" size="20" @click="show = false" />
+        <van-icon name="cross" size="22" @click="show = false" />
       </template>
       <template #left>
-        插入元素
+        <bold>插入元素 </bold>
       </template>
     </van-nav-bar>
     <div class="grid-title">基础素材</div>
     <van-grid :column-num="4" square :icon-size="40">
       <van-grid-item icon="photo-o" text="图片" @click="$emit('open', 'uploads')" />
       <van-grid-item icon="notes-o" text="文字" @click="$emit('open', 'text')" />
-      <van-grid-item icon="points" text="常用形状" @click="$emit('open', 'vectors', '5fc750e1922370cef95fa314')" />
-      <van-grid-item icon="bag-o" text="常用图标" @click="$emit('open', 'vectors', '5fc7261c922370cef95fa26d')" />
-      <van-grid-item icon="photo-o" text="浅色渐变背景" @click="$emit('open', 'vectors', '5fd33697922370cef95fa33f')" />
-      <van-grid-item icon="photo-o" text="深色渐变背景" @click="$emit('open', 'vectors', '5fd6fa3a922370cef95fa39a')" />
     </van-grid>
 
     <div class="vector-albums">
-      <div class="grid-title">卡通头像素材</div>
+      <div class="grid-title">矢量图片</div>
+      <van-grid clickable square :icon-size="48">
+        <van-grid-item v-for="(pack, index) in vectorBasicPacks" :key="index" :icon="getImageUrl(pack.previews[0]) || 'image-o'"
+                       :text="pack.name" @click="$emit('open','vectors', pack._id)"
+        />
+      </van-grid>
+    </div>
+
+    <div class="vector-albums">
+      <div class="grid-title">卡通素材</div>
       <van-grid clickable square :icon-size="48">
         <van-grid-item v-for="(pack, index) in vectorAvatarPacks" :key="index" :icon="getImageUrl(pack.previews[0]) || 'image-o'"
                        :text="pack.name" @click="$emit('open','vectors', pack._id)"
@@ -46,6 +51,7 @@ export default {
   data () {
     return {
       show: false,
+      vectorBasicPacks: [],
       vectorAvatarPacks: []
     }
   },
@@ -65,12 +71,17 @@ export default {
     },
 
     async onMouted () {
-      const result = await this.packdao.list({
+      this.vectorAvatarPacks = (await this.packdao.list({
         tags: 'avatar',
-        page: this.currentPage,
-        count: this.pageCount
-      })
-      this.vectorAvatarPacks = result.list
+        page: 1,
+        count: 8
+      })).list
+
+      this.vectorBasicPacks = (await this.packdao.list({
+        tags: 'basic',
+        page: 1,
+        count: 8
+      })).list
     }
   }
 }

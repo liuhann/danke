@@ -4,12 +4,12 @@
        :class="elementClass" :style="elementWrapperStyle" @click="elementClicked"
   >
     <!--图片渲染-->
-    <img v-if="elementUrl && !element.fill" :id="'img-' + (element.name || element.id)" :src="elementUrl" :style="elementStyle" crossOrigin="anonymous">
+    <div v-if="element.html" class="html" :style="elementStyle" v-html="element.html" />
+    <img v-else-if="elementUrl && !element.fill" :id="'img-' + (element.name || element.id)" :src="elementUrl" :style="elementStyle" crossOrigin="anonymous">
     <div v-else-if="element.content" class="svg-content" :style="elementStyle" v-html="element.content" />
     <div v-else-if="element.elements" class="block-elements" :style="elementStyle">
       <render-element v-for="(el, i) in element.elements" :key="el.id" :view-box="viewBox" :view-port="viewPort" :element="el" :index="i" />
     </div>
-    <div v-else-if="element.html" class="html" :style="elementStyle" v-html="element.html" />
     <div v-else-if="!element.text" class="shape" :style="elementStyle">
     </div>
     <!--文本渲染情况下 文本内容-->
@@ -26,6 +26,7 @@
 <script>
 import { getImageUrl } from '../mixins/imageUtils.js'
 import { getRectPositionStyle } from '../mixins/rectUtils.js'
+import { getColorVariables } from '../../utils/svg'
 import { assignVariables } from '../mixins/renderUtils'
 import textMesure from '../../utils/textMesure'
 import cubicBerziers from '../../frames/model/cubic-beziers.js'
@@ -344,12 +345,23 @@ export default {
     },
   },
   mounted () {
-    this.loadFont()
+    this.initElementResource()
   },
   methods: {
-    async loadFont () {
+    async initElementResource () {
+      // 加载必要的字体
       if (this.element.variables && this.element.variables.filter(variable=> variable.type === 'fontFamily').length) {
         await ensureFont(this.ctx, this.element.variables.filter(variable=> variable.type === 'fontFamily')[0].value)
+      }
+      // 对于svg图片的处理，
+      if (this.element.url && this.element.url.endsWith('.svg') && this.element.tags && this.element.tags.indexOf('colorable') > -1) {
+        const fetching = await fetch(getImageUrl(this.element.url))
+        const svgContent = await fetching.text()
+        let { svg, variables} = getColorVariables(svgContent)
+        if (!this.element.variables || this.element.variables.length === 0) {
+          this.element.variables = variables
+        }
+        this.element.html = svg
       }
     },
     getImageUrl,

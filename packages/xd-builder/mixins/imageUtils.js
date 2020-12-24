@@ -11,6 +11,8 @@
      fixed：固定宽高，强制缩放。
    * @returns {string|null}
  */
+
+const IMG_SERVER = 'http://image.danke.fun'
 export function getImageUrl (url, w, h, method = 'mfit') {
   if (!url) {
     return null
@@ -18,9 +20,13 @@ export function getImageUrl (url, w, h, method = 'mfit') {
   if (url.startsWith('http')) {
     return url
   }
+  let base = IMG_SERVER
+  if (this && this.ctx) {
+    base = this.ctx.IMG_SERVER
+  }
   if (url.endsWith('.svg') || !w || !h ) {
-    return this.ctx.IMG_SERVER + '/' + url
+    return base + '/' + url
   } else {
-    return this.ctx.IMG_SERVER + '/' + url + `?x-oss-process=image/format,png/quality,Q_80/resize,m_${method},h_${Math.floor(h) || 100},w_${Math.floor(w) || 100}`
+    return base+ '/' + url + `?x-oss-process=image/format,png/quality,Q_80/resize,m_${method},h_${Math.floor(h) || 100},w_${Math.floor(w) || 100}`
   }
 }

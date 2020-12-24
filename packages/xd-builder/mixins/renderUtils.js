@@ -17,7 +17,7 @@ function getVariableStyle (variables, valueFrom) {
         Object.assign(style, {
           ['--' + variable.name]: variable[key] + 'px'
         })
-      } else if (variable.type === 'px') {
+      } else if (variable.type === 'px' || variable.type === 'lineHeight' || variable.type === 'letterSpacing') {
         Object.assign(style, {
           ['--' + variable.name]: variable[key] + 'px'
         })

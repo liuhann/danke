@@ -50,6 +50,7 @@ export default {
   },
   created () {
     this.restdao = new RestDAO(this.ctx, 'danke/public/vector')
+    this.packdao = new RestDAO(this.ctx, 'danke/pack')
   },
   mounted () {
     this.onMounted()
@@ -76,7 +77,10 @@ export default {
         count: 500,
         pack: this.pack
       }
+      const pack = await this.packdao.getOne(this.pack)
       const result = await this.restdao.list(query)
+
+      result.list.forEach(vector => vector.tags = pack.tags)
       this.vectors = result.list
       this.fetching = false
     },

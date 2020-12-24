@@ -38,6 +38,7 @@
       </el-form-item>
       <el-form-item label="">
         <el-button size="mini" @click="preview">Preview</el-button>
+        <el-button size="mini" @click="replaceFillColorWithVariables">replaceFillColorWithVariables</el-button>
         <el-button size="mini" @click="perserve">Preseve</el-button>
         <el-button size="mini" type="primary" @click="save">保存</el-button>
       </el-form-item>
@@ -74,6 +75,7 @@ export default {
     return {
       albums: [],
       html: {
+        pack: '',
         title: '',
         w: 100,
         h: 100,
@@ -149,6 +151,46 @@ export default {
       }
       this.editor.setValue(t.innerHTML.replace(/<\!--.*?-->/g, ""))
     },
+
+    /**
+     * 替换指定Id 替换渐变定义 抽取颜色到变量之中
+     */
+    reFill () {
+      let svg = this.editor.getValue()
+      // replace color
+      let colorMatches = svg.match(/stop-color=".+"/g)
+      const color1 = colorMatches[0].substring(12, colorMatches[0].length - 1)
+      const color2 = colorMatches[1].substring(12, colorMatches[1].length - 1)
+      this.vector.variables[0].value = color1
+      this.vector.variables[1].value = color2
+      // replace id
+      let originalId = svg.match(/url\(.+\)/g)[0].replace(/url\(#/g, '').replace(/\)/g, '')
+      let replaced = svg.replace(new RegExp(originalId, 'gm'), this.vector.name).replace(color1, 'var(--gradientStart)').replace(color2, 'var(--gradientEnd)')
+      this.editor.setValue(replaced)
+    },
+
+    /**
+     * 获取及替换颜色操作
+     */
+    replaceFillColorWithVariables () {
+      let rgbRegex = /[rR][gG][Bb][Aa]?[\\(]((2[0-4][0-9]|25[0-5]|[01]?[0-9][0-9]?),){2}(2[0-4][0-9]|25[0-5]|[01]?[0-9][0-9]?),?(0\\.\\d{1,2}|1|0)?[\\)]{1}/g
+      let colorRegex = /#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})|rgb[a]?\([^)]+\)/g
+      let svg = this.editor.getValue()
+      const colorMatched = svg.match(colorRegex);
+      const colorList = Array.from(new Set(colorMatched))
+      this.html.variables = []
+      for (let i = 0; i < colorList.length; i++) {
+        this.html.variables.push({
+          'name': 'c' + i,
+          'value': colorList[i],
+          'label': '颜色',
+          'type': 'color'
+        })
+        svg = svg.replace(new RegExp(colorList[i].replace('(', '\\(').replace(')', '\\)'), 'gm'), `var(--c${i})`)
+      }
+      this.editor.setValue(svg)
+    },
+
     async preview () {
       this.html.html = this.editor.getValue()
       const viewbox = getSVGViewBox(this.html.html)

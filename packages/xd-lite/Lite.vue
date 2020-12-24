@@ -146,6 +146,11 @@ export default {
       this.$refs.popElementEdit.open(this.element, true)
     },
 
+    /**
+     * 插入元素主菜单上进一步选择
+     * @param type
+     * @param payload
+     */
     onInsertMenuTab (type, payload) {
       // 打开矢量图库列表
       if (type === 'vectors') {

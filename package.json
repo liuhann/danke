@@ -9,6 +9,7 @@
     "build-apk": "vue-cli-service build && cd ../pwa-ybstory/cordova-story-v3 && npm run build"
   },
   "dependencies": {
+    "@ant-design/colors": "^5.0.1",
     "ant-design-vue": "^1.6.5",
     "async-boot": "^1.1.16",
     "axios": "^0.20.0",

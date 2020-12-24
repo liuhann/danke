@@ -15,6 +15,7 @@
           <el-button @click="editPack">编辑</el-button>
           <el-button @click="addHTMLVector">增加HTML</el-button>
           <el-button @click="deleteAllInPack">全部删除</el-button>
+          <el-button @click="deletePack">删除包</el-button>
           <el-upload
             :auto-upload="false"
             action="none"
@@ -44,6 +45,7 @@
             </div>
           </div>
         </div>
+        <el-pagination :current-page.sync="vectorPage" :page-size="vectorPageSize" :total="vectorPageTotal" @current-change="fetchPackVectors" />
       </div>
       <div class="pack">
       </div>
@@ -54,7 +56,7 @@
           </el-form-item>
           <el-form-item label="标签">
             <el-select v-model="currentPack.tags" multiple allow-create>
-              <el-option v-for="channel in channels" :key="channel.value" :label="channel.value" :value="channel.value"></el-option>
+              <el-option v-for="tag in vectorTags" :key="tag" :label="tag" :value="tag"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="版权">
@@ -80,7 +82,7 @@ import { getImageUrl } from '../xd-builder/mixins/imageUtils'
 import { getVariableStyle } from '../xd-builder/mixins/renderUtils'
 
 export default {
-  name: 'Work',
+  name: 'VectorPackManage',
   components: {
     [Upload.name]: Upload,
     [Pagination.name]: Pagination,
@@ -98,12 +100,21 @@ export default {
   data () {
     return {
       channels,
+      vectorTags: [
+          'avatar', // 头像
+          'mask',   // 可作为遮罩
+          'basic',
+          'colorable' // 可以更改SVG中的颜色
+      ],
       currentPack: null,
       dialogVisible: false,
       packVectors: [],
       packs: [],
       page: 1,
       size: 20,
+      vectorPage: 1,
+      vectorPageSize: 20,
+      vectorPageTotal: 0,
       total: 0
     }
   },
@@ -189,8 +200,10 @@ export default {
     async fetchPackVectors () {
       const result = await this.restdao.list({
         pack: this.currentPack._id,
-        count: 10000
+        page: this.vectorPage,
+        count: this.vectorPageSize
       })
+      this.vectorPageTotal = result.total
 
       this.packVectors = result.list
     },
@@ -214,6 +227,18 @@ export default {
         this.packs = result.list
         this.total = result.total
       }
+    },
+
+    async deletePack () {
+      await this.fetchPackVectors()
+      if (this.packVectors.length) {
+        Message.success('pack 还有图片')
+        return
+      }
+      await this.packdao.delete(this.currentPack)
+
+      Message.success('已经删除pack')
+      this.fetchPacks()
     },
 
     async excuteBulk () {
@@ -242,11 +267,11 @@ export default {
 <style lang="scss" scoped>
 .vector-list-container {
   .column.is-narrow {
-    width: 140px;
-    height: 160px;
+    width: 100px;
+    height: 130px;
     img {
-      width: 140px;
-      height: 120px;
+      width: 100px;
+      height: 80px;
     }
     .svg-container {
       width: 100%;

@@ -2,13 +2,13 @@
   <van-popup v-model="show" position="top">
     <van-nav-bar>
       <template #right>
-        <van-icon name="close" size="20" @click="show = false" />
+        <van-icon name="cross" size="22" @click="show = false" />
       </template>
       <template #left>
         属性编辑
       </template>
     </van-nav-bar>
-    <van-form>
+    <van-form class="element-edit-form">
       <!--设置文本的内容-->
       <van-field
         v-if="element.text != null"
@@ -52,12 +52,23 @@
             <van-slider v-model="variable.value" :step="4" :min="12" :max="200" />
           </template>
           <template #button>
-            {{ variable.value }}
+            <van-button size="small" type="primary" plain hairline>{{ variable.value }}</van-button>
           </template>
         </van-field>
         <van-field v-if="variable.type === 'letterSpacing'" :key="index" :label="variable.label || '字间距'">
           <template #input>
             <van-slider v-model="variable.value" :step="1" :min="1" :max="50" />
+          </template>
+          <template #button>
+            <van-button size="small" type="primary" plain hairline>{{ variable.value }}</van-button>
+          </template>
+        </van-field>
+        <van-field v-if="variable.type === 'lineHeight'" :key="index" :label="variable.label || '行高'">
+          <template #input>
+            <van-slider v-model="variable.value" :step="4" :min="12" :max="200" />
+          </template>
+          <template #button>
+            <van-button size="small" type="primary" plain hairline>{{ variable.value }}</van-button>
           </template>
         </van-field>
       </template>
@@ -102,6 +113,15 @@
       <pop-vector-album-list ref="albumListPop" @input="choosePack" />
       <pop-vector-list ref="vectorListPop" title="选择裁切图案" @insert="chooseVector" />
 
+      <van-number-keyboard
+        :show="numKeyBoardShow"
+        :extra-key="['00', '.']"
+        close-button-text="完成"
+        @blur="numKeyBoardShow = false"
+        @input="onKeyInput"
+        @delete="onKeyDelete"
+      />
+
       <div style="margin: 16px;">
         <van-button v-if="isEdit" color="linear-gradient(to right, #ff6034, #ee0a24)" @click="onDelete">刪除</van-button>
         <van-button v-if="!isEdit" type="primary" @click="onConfirm">增加</van-button>
@@ -111,7 +131,7 @@
 </template>
 
 <script>
-import ColorPicker from './ColorPicker'
+import ColorPicker from './PopColorPicker'
 import FontFamily from './FontFamily.vue'
 import PopVectorAlbumList from '../list/PopVectorAlbumList'
 import PopVectorList from '../list/PopVectorList'
@@ -132,6 +152,7 @@ export default {
   props: { },
   data () {
     return {
+      numKeyBoardShow: false,
       element: {},
       variable: null,
       isEdit: true,
@@ -171,6 +192,11 @@ export default {
       this.element.maskImage = ''
     },
 
+    onFontSizeInput (variable) {
+      this.variable = variable
+      this.numKeyBoardShow = true
+    },
+
     onFontFamillyClick (variable) {
       this.variable = variable
       this.$refs.fontFamilly.open()
@@ -184,6 +210,14 @@ export default {
         this.variable = variable
       }
       this.$refs.colorPicker.open()
+    },
+
+    onKeyInput () {
+
+    },
+
+    onKeyDelete () {
+
     },
 
     open (element, isEdit) {
@@ -213,6 +247,14 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss">
+
+.element-edit-form {
+  .van-cell {
+    .van-button--small {
+      width: 42px;
+    }
+  }
+}
 
 </style>
