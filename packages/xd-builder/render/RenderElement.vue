@@ -5,7 +5,7 @@
   >
     <!--图片渲染-->
     <div v-if="element.html" class="html" :style="elementStyle" v-html="element.html" />
-    <img v-else-if="elementUrl && !element.fill" :id="'img-' + (element.name || element.id)" :src="elementUrl" :style="elementStyle" crossOrigin="anonymous">
+    <img v-else-if="elementUrl && !element.fill" :id="'img-' + (element.name || element.id)" :src="elementUrl" :style="elementStyle">
     <div v-else-if="element.content" class="svg-content" :style="elementStyle" v-html="element.content" />
     <div v-else-if="element.elements" class="block-elements" :style="elementStyle">
       <render-element v-for="(el, i) in element.elements" :key="el.id" :view-box="viewBox" :view-port="viewPort" :element="el" :index="i" />
@@ -219,7 +219,6 @@ export default {
         style.clipPath = `url("#${this.element.mask.uid}")`
       }
       const result = Object.assign({}, this.element.style, style, this.elementAnimationStyle)
-      console.log('element style', result)
       return result
     },
 

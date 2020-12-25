@@ -1,6 +1,6 @@
 <template>
   <div id="scene-edit-container">
-    <div id="workspace" ref="sceneContainer" :style="styleWorkContainer" @touchstart="sceneMouseDown" @mousedown="sceneMouseDown">
+    <div id="workspace" ref="sceneContainer" :style="styleWorkContainer" @touchend="sceneMouseDown" @click="sceneMouseDown">
       <!-- 当前屏幕内容 -->
       <div class="screen" :style="styleScreen">
         <div v-if="scene" class="scene" :style="sceneStyle">
@@ -217,10 +217,10 @@ export default {
           })
         }
 
-
         if (!interactee.draggable().enabled) {
           interactee.draggable({
-            onstart: event => {},
+            onstart: event => {
+            },
             onmove: event => {
               for (let element of this.selectedElements) {
                 element.x += event.dx / this.scale

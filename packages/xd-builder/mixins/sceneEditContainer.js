@@ -38,7 +38,6 @@ export default {
     },
     // 在当前工作区的大小（实际是附加了缩放信息）
     viewPort () {
-      console.log('update viewport', this.scale)
       return {
         width: this.viewBox.width * this.scale,
         height: this.viewBox.height * this.scale
@@ -134,7 +133,6 @@ export default {
       })
       // 自适应后，伸缩的比率
       this.scale = fitSize.width / this.viewBox.width
-      console.log('fit to center', this.containerSize, this.viewBox, this.scale)
       if (fitSize.fitTo === 'width') {
         this.translateX = this.deviceScreenPadding
         this.translateY = (this.containerSize.height - fitSize.height) / 2
