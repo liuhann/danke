@@ -38,25 +38,6 @@ export default {
     element: {
       type: Object,
     },
-    value: {
-      type: String,
-    },
-    step: {
-      type: Number,
-      default: 4
-    },
-    min: {
-      type: Number,
-      default: 12
-    },
-    max: {
-      type: Number,
-      default: 200
-    },
-    icon: {
-      type: String,
-      default: 'arrow-down'
-    },
     placement: {
       type: String,
       default: 'right-end'
