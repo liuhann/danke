@@ -32,7 +32,7 @@ import {
   red, volcano, orange, gold, yellow, lime, green, cyan, blue, geekblue, purple, magenta, grey, presetPrimaryColors, generate
 } from '@ant-design/colors'
 
-const antColors = [generate('#ccc'), red, volcano, orange, gold, yellow, lime, green, cyan, blue, geekblue, purple, magenta]
+const antColors = [generate('#ccc'), red, volcano, orange, gold, yellow, lime, green, cyan, blue, geekblue, purple, magenta, grey]
 
 const opacities = [{
   text: '1'

@@ -1,5 +1,6 @@
 import { shortid } from '../../utils/string'
 import { getSVGViewBox } from '../../vectors/utils'
+import { getImageUrl } from '../mixins/imageUtils'
 import { fitRectIntoBounds } from '../mixins/rectUtils'
 import textMesure from '../../utils/textMesure'
 
@@ -123,6 +124,30 @@ function deleteElement (element, scene) {
   scene.elements.splice(scene.elements.indexOf(element), 1)
 }
 
+function getElementMask (element) {
+  if (element) {
+    if (element.maskImage != null) {
+      return getImageUrl(element.maskImage) || 'http://image.danke.fun/public/vector/5fc750e1922370cef95fa314/%E5%9C%86%E5%BD%A2%E5%AE%9A%E4%BD%8D%E7%9B%B8%E6%A1%86.svg'
+    }
+  }
+  return null
+}
+
+function elementColorVariables(element) {
+  if (element && element.variables) {
+    return element.variables.filter(variable => variable.type === 'color')
+  } else {
+    return []
+  }
+}
+function elementPxVariables (element) {
+  if (element && element.variables) {
+    return element.variables.filter(variable => (variable.type === 'fontSize' || variable.type === 'letterSpacing' || variable.type === 'lineHeight'))
+  } else {
+    return []
+  }
+}
+
 function lockElement (element) {
   element.locked = true
 }
@@ -137,6 +162,9 @@ export {
   moveBottom,
   moveDown,
   createSingleElement,
+  elementColorVariables,
+  elementPxVariables,
+  getElementMask,
   lockElement,
   deleteElement,
   unlockElement

@@ -35,6 +35,17 @@
     <transition name="van-slide-up">
       <van-button v-show="element" id="element-config" plain hairline type="primary" round icon="edit" @click="editNode"></van-button>
     </transition>
+
+    <transition name="van-slide-left">
+      <div v-if="element" id="element-actions">
+        <!--删除按钮-->
+        <van-button id="delete-button" type="danger" round icon="delete" @click="onDelete" />
+        <!--元素遮罩  仅限图片有-->
+        <van-button v-show="elementMask" id="mask-button" icon="star-o" round @click="onMask"></van-button>
+        <btn-color-picker v-for="(variable, index) in elementColorVariables" :key="index" v-model="variable.value" round :default-colors="workColors" />
+        <btn-set-text v-if="element.text" :element="element" />
+      </div>
+    </transition>
     <van-button id="menu-button" round icon="ellipsis" @click="onSettingClick"></van-button>
   </div>
 </template>
@@ -45,8 +56,8 @@ import AvatarInsertMenu from './insert/AvatarInsertMenu'
 import VectorList from './list/PopVectorList'
 import workMixin from '../xd-builder/mixins/workMixin'
 import StyleRegistry from '../xd-builder/utils/StyleRegistry'
-import { createSingleElement, deleteElement } from '../xd-builder/utils/sceneActions'
-import { addScene, prevScene, nextScene } from '../xd-builder/utils/workActions'
+import { createSingleElement, deleteElement, getElementMask, elementColorVariables, elementPxVariables } from '../xd-builder/utils/sceneActions'
+import { addScene, prevScene, nextScene, getWorkColors } from '../xd-builder/utils/workActions'
 import PopElementEdit from './form/PopElementEdit'
 import SceneEdit from './form/SceneEdit'
 import PopMainMenu from './list/PopMainMenu'
@@ -54,17 +65,18 @@ import PopupImageList from './list/PopupImageList'
 import PopUnSplashPhotoList from './insert/PopUnSplashPhotoList'
 import Vue from 'vue'
 import Vant from 'vant';
-import { Toast, Notify } from 'vant';
+import { Toast, Notify } from 'vant'
 import { text } from '../xd-builder/templates'
 import 'vant/lib/index.css';
 import { Lazyload } from 'vant';
 import PopElementOrdering from './list/PopElementOrdering'
-
+import BtnColorPicker from './van-components/BtnColorPicker'
+import BtnSetText from './van-components/BtnSetText'
 Vue.use(Lazyload);
 Vue.use(Vant);
 export default {
   name: "Lite",
-  components: { PopElementOrdering, PopupImageList, PopMainMenu, SceneEdit, PopElementEdit, MobileEditContainer, VectorList,AvatarInsertMenu, PopUnSplashPhotoList },
+  components: { BtnSetText, BtnColorPicker, PopElementOrdering, PopupImageList, PopMainMenu, SceneEdit, PopElementEdit, MobileEditContainer, VectorList,AvatarInsertMenu, PopUnSplashPhotoList },
   mixins: [ workMixin ],
   data () {
     return {
@@ -81,6 +93,18 @@ export default {
     }
   },
   computed: {
+    workColors () {
+      return getWorkColors(this.work)
+    },
+    elementMask () {
+      return getElementMask(this.element)
+    },
+    elementColorVariables () {
+      return elementColorVariables(this.element)
+    },
+    elementPxVariables () {
+      return elementPxVariables(this.element)
+    },
     channel () {
       if (this.work) {
         return this.work.channel
@@ -173,6 +197,11 @@ export default {
     onSettingClick () {
       this.$refs.popMainMenu.open()
     },
+    onDelete () {
+      deleteElement(this.element, this.scene)
+      this.element = null
+    },
+
 
     openPack (pack) {
       this.insertType = 'vectors'
@@ -216,10 +245,17 @@ export default {
       }
     },
 
-    openInsertDialog () {
-      this.$refs.
-      this.insertType = 'menu'
-    }
+    onColorPick (variable) {
+      this.variable = variable
+      this.$refs.colorPicker.open()
+    },
+    updateVariableValue (val) {
+      if (this.variable) {
+        this.variable.value = val
+      } else {
+        this.element.fill = val
+      }
+    },
   }
 
 }
@@ -229,13 +265,13 @@ export default {
 #xd-lite {
   height: 100%;
   -webkit-user-select: none;
-}
-.work-loaded {
-  height: 100%;
+  .van-button--normal {
+    padding: 0 13px;
+  }
 }
 
-.van-button--normal {
-  padding: 0 13px;
+.work-loaded {
+  height: 100%;
 }
 #menu-button {
   position: absolute;
@@ -248,6 +284,25 @@ export default {
   right: 1rem;
   bottom: 1rem;
   z-index: 101;
+}
+
+#element-actions {
+  position: absolute;
+  left: 1rem;
+  bottom: 1rem;
+  height: 90vh;
+  display: flex;
+  flex-direction: column-reverse;
+  z-index: 101;
+  .van-button--normal {
+    margin-top: .5rem;
+  }
+}
+
+.inplace-action-btn {
+  border: 1px solid #ccc;
+  border-radius: 40px;
+  padding: 5px;
 }
 #element-config {
   position: absolute;

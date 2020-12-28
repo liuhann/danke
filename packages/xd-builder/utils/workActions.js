@@ -14,7 +14,6 @@ function addScene (work, currentScene) {
     duration: 3,
     exit: 1
   }
-
   if (work != null && currentScene != null) {
     const index = (typeof currentScene === 'number') ? currentScene : work.scenes.indexOf(currentScene)
     work.scenes.splice(index, 0, scene)
@@ -50,6 +49,26 @@ function getBackGroundScene (work, currentScene) {
   }
   return null
 }
+
+/**
+ * 收集所有的作品使用颜色
+ */
+function getWorkColors (work) {
+  if (work) {
+    let colors = []
+    for (let scene of work.scenes) {
+      for (let element of scene.elements) {
+        if (element.variables) {
+          colors = colors.concat(element.variables.filter(variable => variable.type === 'color').map(variable => variable.value))
+        }
+      }
+    }
+    return Array.from(new Set(colors))
+  } else {
+    return []
+  }
+}
+
 /**
  * 保存作品内容
  */
@@ -83,5 +102,6 @@ export {
   addScene,
   prevScene,
   nextScene,
+  getWorkColors,
   saveWork
 }
