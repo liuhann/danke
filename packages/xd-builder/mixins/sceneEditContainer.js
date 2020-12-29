@@ -115,7 +115,7 @@ export default {
     this.containerSize.height = this.$el.clientHeight
     this.fitToCenter()
     this.initGlobalInteract()
-    this.setElementsInteract()
+    // this.setElementsInteract()
   },
 
   methods: {

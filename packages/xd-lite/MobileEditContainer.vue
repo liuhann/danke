@@ -1,6 +1,6 @@
 <template>
   <div id="scene-edit-container">
-    <div id="workspace" ref="sceneContainer" :style="styleWorkContainer" @touchend="sceneMouseDown" @click="sceneMouseDown">
+    <div id="workspace" ref="sceneContainer" :style="styleWorkContainer">
       <!-- 当前屏幕内容 -->
       <div class="screen" :style="styleScreen">
         <div v-if="scene" class="scene" :style="sceneStyle">
@@ -39,11 +39,10 @@
 
 <script>
 import interact from 'interactjs'
+import Hammer from 'hammerjs'
 import sceneEditContainer from '../xd-builder/mixins/sceneEditContainer'
 import interactMixins from '../xd-builder/mixins/interactMixins'
 import RenderElement from '../xd-builder/render/RenderElement.vue'
-import { shortid } from '../utils/string'
-import { lockElement, unlockElement, moveUp, moveBottom, moveDown, moveTop } from '../xd-builder/utils/sceneActions'
 import { getBackGroundScene } from '../xd-builder/utils/workActions'
 import RenderScene from '../xd-builder/render/RenderScene'
 
@@ -131,10 +130,10 @@ export default {
   watch: {
     // 场景更新操作，需要更新交互及其他页面元素
     scene () {
-      this.unSetElementsInteract()
+      // this.unSetElementsInteract()
       this.$nextTick(() => {
-        this.unSetElementsInteract()
-        this.setElementsInteract()
+        // this.unSetElementsInteract()
+        // this.setElementsInteract()
       })
     }
   },
@@ -143,15 +142,67 @@ export default {
     /**
      * 暂无
      */
-    initGlobalInteract () {},
-    lockElement,unlockElement,moveUp, moveBottom, moveDown, moveTop,
-    getVariableLabel(variable) {
-      if (variable.label) {
-        return variable.label
-      }
-      return fontLabels[variable.name] || variable.type
+    initGlobalInteract () {
+      const mc = new Hammer.Manager(document.getElementById('scene-edit-container'))
+      const Tap = new Hammer.Tap()
+      mc.add(Tap);
+      mc.on('tap', this.sceneMouseDown)
+
+      // const Rotate = new Hammer.Rotate()
+      // const Pan = new Hammer.Pan()
+      // mc.add(Rotate);
+      // mc.add(Pan);
+      // mc.on('rotate', this.sceneRotate)
+      // mc.on('rotatemove', this.sceneRotateMove)
+      // mc.on('pinchstart', this.scenePinchStart)
+      // mc.on('pinchmove', this.scenePinchMove)
+      // mc.on('pan', this.moveSelectedElement)
+      // mc.on('panstart', this.panStart)
     },
 
+
+    sceneRotate (ev) {
+      // 记录起始旋转时的角度
+      if (this.focusedElement) {
+        this.rotateStart = this.focusedElement.rotate || 0
+      }
+    },
+
+    sceneRotateMove(ev) {
+      if (this.focusedElement) {
+        this.focusedElement.rotate = this.rotateStart + (ev.rotation / 2)
+      }
+    },
+
+    scenePinchStart (ev) {
+      // 记录缩放初始宽度、高度
+      if (this.focusedElement) {
+        this.pinchStartWidth = this.focusedElement.width
+        this.pinchStartHeight = this.focusedElement.height
+      }
+    },
+
+    scenePinchMove (ev) {
+      if (this.focusedElement) {
+        this.focusedElement.width = this.pinchStartWidth * ev.scale / 2
+        this.focusedElement.height = this.pinchStartHeight * ev.scale / 2
+      }
+    },
+
+    moveSelectedElement (ev) {
+      // 点击Resize点返回
+      if (ev.target.className.indexOf('resize') > -1) {
+        return
+      }
+      if (this.selectedElements.length === 0) {
+        return
+      }
+
+      for (let element of this.selectedElements) {
+        element.x += ev.deltaX / this.scale
+        element.y += ev.deltaY / this.scale
+      }
+    },
     /**
      * 进行鼠标点击位置检测，如果点击到元素则选中或保持多个的选择状态， 点到空白则取消所有元素选中
      */
@@ -160,7 +211,23 @@ export default {
         return
       }
       const targetElement = this.getEventToElement(ev)
+
+      // 当前元素正在被选中
+      if (targetElement && this.focusedElement && targetElement.id === this.focusedElement.id) {
+        return
+      }
+
+      // 设置选中
       this.setElementSelected(targetElement)
+
+      // 取消现有的交互
+      if (this.focusedElement) {
+        this.destroyInteract(this.focusedElement)
+      }
+
+      if (targetElement) {
+        this.initElementDragResize(targetElement)
+      }
       this.$emit('focus-change', targetElement)
     },
 
@@ -175,6 +242,7 @@ export default {
     /**
      * 初始化所有元素的interaction
      */
+    /*
     setElementsInteract () {
       if (this.scene && this.scene.elements) {
         for (let element of this.scene.elements) {
@@ -184,6 +252,7 @@ export default {
         }
       }
     },
+    */
 
     initElementDragResize (node) {
       const el = document.getElementById('mask-' + node.id)
@@ -216,7 +285,6 @@ export default {
             this.$emit('change')
           })
         }
-
         if (!interactee.draggable().enabled) {
           interactee.draggable({
             onstart: event => {
@@ -245,19 +313,14 @@ export default {
             move: evt => {
               // 处理角度
               node.rotate += evt.da / 2
-              node.width += node._start.width * evt.ds / 2
-              node.height += node._start.height * evt.ds / 2
+              node.width += (node._start.width * evt.ds / 2 > 10) ? 10 : (node._start.width * evt.ds)
+              node.height += (node._start.height * evt.ds / 2 > 10) ? 10: (node._start.height * evt.ds)
             },
             end (event) {
               delete node._start
             }
           }
         })
-
-        interactee.on('hold', event => {
-          this.$emit('hold', node)
-        })
-
       }
     },
 
@@ -283,6 +346,9 @@ export default {
       if (element.locked) {
         displayStyle.zIndex = -1
       }
+      // if (element.selected) {
+      //   displayStyle.zIndex = 110
+      // }
       return Object.assign(displayStyle, this.getRectPositionStyle(element, this.viewBox, this.viewPort), {
         transform: `rotate(${element.rotate}deg)`
       })
@@ -334,7 +400,7 @@ export default {
   }
   .mask {
     position: absolute;
-    z-index: 100;
+    z-index: 10;
     box-shadow: 0 0 0 1px #fff;
   }
 
@@ -343,7 +409,7 @@ export default {
     &.not-selected {
       border: 1px solid transparent;
       >div {
-        opacity: 0;
+         opacity: 0;
       }
     }
     &.selected {

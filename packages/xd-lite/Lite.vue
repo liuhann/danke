@@ -32,21 +32,26 @@
     </van-popup>
 
     <van-button id="add-button" round icon="plus" type="primary" @click="$refs.insertMenu.open()"></van-button>
-    <transition name="van-slide-up">
-      <van-button v-show="element" id="element-config" plain hairline type="primary" round icon="edit" @click="editNode"></van-button>
-    </transition>
+
+    <!--    <transition name="van-slide-up">-->
+    <!--      <van-button v-show="element" id="element-config" plain hairline type="primary" round icon="edit" @click="editNode"></van-button>-->
+    <!--    </transition>-->
 
     <transition name="van-slide-left">
       <div v-if="element" id="element-actions">
         <!--删除按钮-->
         <van-button id="delete-button" type="danger" round icon="delete" @click="onDelete" />
         <!--元素遮罩  仅限图片有-->
-        <van-button v-show="elementMask" id="mask-button" icon="star-o" round @click="onMask"></van-button>
+        <van-button v-show="elementMask" id="mask-button" icon="user-circle-o" round @click="onMask"></van-button>
         <btn-color-picker v-for="(variable, index) in elementColorVariables" :key="index" v-model="variable.value" round :default-colors="workColors" />
         <btn-set-text v-if="element.text" :element="element" />
+        <btn-edit-text v-if="element.text" v-model="element.text" />
       </div>
     </transition>
-    <van-button id="menu-button" round icon="ellipsis" @click="onSettingClick"></van-button>
+    <van-button id="menu-button" size="large" round icon="ellipsis" @click="onSettingClick"></van-button>
+    <font-family ref="fontFamilly" @input="updateVariableValue" />
+    <pop-vector-album-list ref="albumListPop" @input="choosePack" />
+    <pop-vector-list ref="vectorListPop" title="选择裁切图案" @insert="chooseVector" />
   </div>
 </template>
 
@@ -72,11 +77,32 @@ import { Lazyload } from 'vant';
 import PopElementOrdering from './list/PopElementOrdering'
 import BtnColorPicker from './van-components/BtnColorPicker'
 import BtnSetText from './van-components/BtnSetText'
+import BtnEditText from './van-components/BtnEditText'
+import FontFamily from './form/FontFamily.vue'
+import PopVectorAlbumList from './list/PopVectorAlbumList'
+import PopVectorList from './list/PopVectorList'
+
 Vue.use(Lazyload);
 Vue.use(Vant);
 export default {
   name: "Lite",
-  components: { BtnSetText, BtnColorPicker, PopElementOrdering, PopupImageList, PopMainMenu, SceneEdit, PopElementEdit, MobileEditContainer, VectorList,AvatarInsertMenu, PopUnSplashPhotoList },
+  components: {
+    BtnEditText,
+    BtnSetText,
+    BtnColorPicker,
+    PopElementOrdering,
+    PopupImageList,
+    PopMainMenu,
+    SceneEdit,
+    PopElementEdit,
+    MobileEditContainer,
+    VectorList,
+    AvatarInsertMenu,
+    PopUnSplashPhotoList,
+    FontFamily,
+    PopVectorAlbumList,
+    PopVectorList
+  },
   mixins: [ workMixin ],
   data () {
     return {
@@ -228,27 +254,17 @@ export default {
       this.$refs.popVectorList.close()
     },
 
+    chooseVector () {
 
-    insertClickBack () {
-      switch (this.insertType) {
-        case 'menu':
-          this.popupInsert = false
-          break
-        case 'vector-album':
-          this.insertType = 'menu'
-          break
-        case 'vectors':
-          this.insertType = 'vector-album'
-          break
-        default:
-          break
-      }
     },
 
-    onColorPick (variable) {
-      this.variable = variable
-      this.$refs.colorPicker.open()
+    onMask () {
+      this.$refs.albumListPop.open('mask')
     },
+    choosePack (pack) {
+      this.$refs.vectorListPop.open(pack._id)
+    },
+
     updateVariableValue (val) {
       if (this.variable) {
         this.variable.value = val
@@ -267,6 +283,8 @@ export default {
   -webkit-user-select: none;
   .van-button--normal {
     padding: 0 13px;
+    height: 50px;
+    font-size: 20px;
   }
 }
 
@@ -295,7 +313,7 @@ export default {
   flex-direction: column-reverse;
   z-index: 101;
   .van-button--normal {
-    margin-top: .5rem;
+    margin-top: .75rem;
   }
 }
 

@@ -1,5 +1,5 @@
 import RestDAO from './restdao'
-export const fontFamilies = [{
+export const fontFamilies = [/*{
   id: '系统字体',
   name: '系统字体'
 }, {
@@ -66,7 +66,7 @@ export const fontFamilies = [{
   id: 'HelloFont_ID_ShouXieTongZhenTi',
   name: '字由点字书写童真体',
   url: 'https://font-public.canva.cn/YAD88jfJsos/0/HelloFont_ID_ShouXieTongZhenTi.4cd0f3e5c.f0e0481de2533d3c68f1257eececb02f.woff'
-}]
+}*/]
 
 const loadedFonts = []
 
