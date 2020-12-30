@@ -20,10 +20,6 @@
 
     <van-button id="add-button" round icon="plus" type="primary" @click="$refs.insertMenu.open()"></van-button>
 
-    <!--    <transition name="van-slide-up">-->
-    <!--      <van-button v-show="element" id="element-config" plain hairline type="primary" round icon="edit" @click="editNode"></van-button>-->
-    <!--    </transition>-->
-
     <transition name="van-slide-left">
       <div v-if="element" id="element-actions">
         <!--删除按钮-->
@@ -31,8 +27,9 @@
         <!--元素遮罩  仅限图片有-->
         <van-button v-show="elementMask" id="mask-button" icon="user-circle-o" round @click="onMask"></van-button>
         <btn-color-picker v-for="(variable, index) in elementColorVariables" :key="index" v-model="variable.value" round :default-colors="workColors" />
-        <btn-set-text v-if="element.text" :element="element" />
-        <btn-edit-text v-if="element.text" v-model="element.text" />
+        <btn-set-text v-if="isTextElement" :element="element" />
+        <btn-edit-text v-if="isTextElement" v-model="element.text" />
+        <btn-set-fontfamilly v-if="isTextElement" v-model="element.text" />
       </div>
     </transition>
     <van-button id="menu-button" round icon="setting-o" @click="onSettingClick"></van-button>
@@ -107,6 +104,13 @@ export default {
     }
   },
   computed: {
+    isTextElement () {
+      if (this.element && this.element.text != null) {
+        return true
+      } else {
+        return false
+      }
+    },
     workColors () {
       return getWorkColors(this.work)
     },
@@ -198,6 +202,7 @@ export default {
         this.$refs.unsplashPhotoList.open(payload, payload)
       }
       if (type === 'text') {
+        this.closePops()
         const created = createSingleElement(JSON.parse(JSON.stringify(text)), this.work.viewBox || { width: 320, height: 320})
         this.scene.elements.push(created)
         this.element = created

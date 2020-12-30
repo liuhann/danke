@@ -8,7 +8,7 @@ const fontStyles = {
 }
 
 const text = {
-  text: '添加标题',
+  text: '添加文本',
   style: fontStyles,
   variables: [{
     name: 'fontFamily',

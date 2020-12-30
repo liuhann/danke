@@ -1,34 +1,31 @@
 <template>
-  <van-popover v-model="show" trigger="click" :placement="placement">
-    <van-form :label-width="32" label-align="right" :style="{width: '80vw'}">
-      <van-field label="字号">
-        <template #input>
-          <van-slider v-model="fontSizeVariable.value" :step="4" :min="12" :max="200" />
-        </template>
-      </van-field>
-      <van-field label="间距">
-        <template #input>
-          <van-slider v-model="fontletterSpacingVariable.value" :step="1" :min="0" :max="60" />
-        </template>
-      </van-field>
-      <van-field label="行高">
-        <template #input>
-          <van-slider v-model="fontlineHeight.value" :step="4" :min="12" :max="200" />
-        </template>
-      </van-field>
-      <van-field label="粗细">
-        <template #input>
-          <van-slider v-model="fontWeight.value" :step="200" :min="100" :max="900" />
-        </template>
-      </van-field>
-    </van-form>
-    <template #reference>
-      <slot>
-        <van-button round icon="font-o">
-        </van-button>
-      </slot>
-    </template>
-  </van-popover>
+  <div class="btn-set-text">
+    <van-button round icon="font-o" @click="show=true" />
+    <van-popup v-model="show" position="bottom" closeable :overlay="false">
+      <van-form :label-width="32" label-align="right" :style="{width: '80vw'}">
+        <van-field label="字号">
+          <template #input>
+            <van-slider v-model="fontSizeVariable.value" :step="4" :min="12" :max="200" />
+          </template>
+        </van-field>
+        <van-field label="间距">
+          <template #input>
+            <van-slider v-model="fontletterSpacingVariable.value" :step="1" :min="0" :max="60" />
+          </template>
+        </van-field>
+        <van-field label="行高">
+          <template #input>
+            <van-slider v-model="fontlineHeight.value" :step="4" :min="12" :max="200" />
+          </template>
+        </van-field>
+        <van-field label="粗细">
+          <template #input>
+            <van-slider v-model="fontWeight.value" :step="200" :min="100" :max="900" />
+          </template>
+        </van-field>
+      </van-form>
+    </van-popup>
+  </div>
 </template>
 
 <script>
