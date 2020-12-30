@@ -4,7 +4,6 @@
 import { shortid } from '../../utils/string'
 import { Loading, Message } from 'element-ui'
 import RestDAO from '../../utils/restdao.js'
-import html2canvas from 'html2canvas'
 
 export default {
   props: {

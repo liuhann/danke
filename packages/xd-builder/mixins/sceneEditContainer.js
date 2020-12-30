@@ -145,24 +145,9 @@ export default {
     createSingleElement (element, x, y) {
       const created = createSingleElement(element, this.viewBox, x, y)
       this.scene.elements.push(created)
-      this.setElementSelected(created)
+      this.setElementSelected(this.scene, created)
       this.$emit('change')
       return node
-    },
-    /**
-     * 设置单个元素为选中状态, 取消其他元素选中
-     */
-    setElementSelected (element) {
-      for (let e of this.scene.elements) {
-        e.selected = false
-        // 编辑状态时，如果被编辑元素被选中，则不改变编辑状态
-        if (element !== e && e.editing) {
-          e.editing = false
-        }
-      }
-      if (element) {
-        element.selected = true
-      }
     },
 
     applyFilter (filter) {

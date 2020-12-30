@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@ant-design/colors": "^5.0.1",
+    "@better-scroll/core": "^2.0.7",
     "ant-design-vue": "^1.7.2",
     "async-boot": "^1.1.16",
     "axios": "^0.20.0",

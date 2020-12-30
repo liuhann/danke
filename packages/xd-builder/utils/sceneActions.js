@@ -87,7 +87,6 @@ function createSingleElement (element, viewBox, x, y) {
     node.x = (viewBox.width - node.width) / 2
     node.y = (viewBox.height - node.height) / 2
   }
-
   return node
 }
 
@@ -148,6 +147,23 @@ function elementPxVariables (element) {
   }
 }
 
+
+/**
+ * 设置单个元素为选中状态, 取消其他元素选中
+ */
+function setElementSelected (scene, element) {
+  for (let e of scene.elements) {
+    e.selected = false
+    // 编辑状态时，如果被编辑元素被选中，则不改变编辑状态
+    if (element !== e && e.editing) {
+      e.editing = false
+    }
+  }
+  if (element) {
+    element.selected = true
+  }
+}
+
 function lockElement (element) {
   element.locked = true
 }
@@ -167,5 +183,6 @@ export {
   getElementMask,
   lockElement,
   deleteElement,
+  setElementSelected,
   unlockElement
 }

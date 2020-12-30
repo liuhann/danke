@@ -43,6 +43,7 @@ import Hammer from 'hammerjs'
 import sceneEditContainer from '../xd-builder/mixins/sceneEditContainer'
 import interactMixins from '../xd-builder/mixins/interactMixins'
 import RenderElement from '../xd-builder/render/RenderElement.vue'
+import { setElementSelected } from '../xd-builder/utils/sceneActions'
 import { getBackGroundScene } from '../xd-builder/utils/workActions'
 import RenderScene from '../xd-builder/render/RenderScene'
 
@@ -218,7 +219,7 @@ export default {
       }
 
       // 设置选中
-      this.setElementSelected(targetElement)
+      setElementSelected(this.scene, targetElement)
 
       // 取消现有的交互
       if (this.focusedElement) {
@@ -301,6 +302,7 @@ export default {
           })
         }
 
+        // 双指缩放、旋转
         interactee.gesturable({
           listeners: {
             start : evt => {

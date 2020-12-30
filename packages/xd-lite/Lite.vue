@@ -1,7 +1,7 @@
 <template>
   <div id="xd-lite">
     <!--    拖拽、编辑区-->
-    <mobile-edit-container v-if="work && scene" ref="editContainer" :scene="scene" :work="work" @focus-change="onElementFocused" />
+    <mobile-edit-container v-if="work && scene" ref="editContainer" :scene="scene" :work="work" :element="element" @focus-change="onElementFocused" />
     <!-- 上下文主菜单-->
     <pop-main-menu ref="popMainMenu" :page-enabled="false" :work="work" :scene="scene" @action="onMenuAction" />
     <!--插入菜单-->
@@ -17,19 +17,6 @@
 
     <!--元素编辑弹出层-->
     <pop-element-ordering v-if="work" ref="popElementOrdering" :scene="scene" :view-box="work.viewBox" />
-
-    <van-popup v-model="popupEditForm" position="top" :style="{ height: '50%' }">
-      <van-nav-bar>
-        <template #right>
-          <van-icon name="close" size="20" @click="popupEditForm = false" />
-        </template>
-        <template #left>
-          属性编辑
-        </template>
-      </van-nav-bar>
-      <element-edit v-if="element" :element="element" :scene="scene" @close="popupEditForm = false" />
-      <scene-edit v-if="scene && !element" :scene="scene" />
-    </van-popup>
 
     <van-button id="add-button" round icon="plus" type="primary" @click="$refs.insertMenu.open()"></van-button>
 
@@ -48,9 +35,10 @@
         <btn-edit-text v-if="element.text" v-model="element.text" />
       </div>
     </transition>
-    <van-button id="menu-button" size="large" round icon="ellipsis" @click="onSettingClick"></van-button>
+    <van-button id="menu-button" round icon="setting-o" @click="onSettingClick"></van-button>
     <font-family ref="fontFamilly" @input="updateVariableValue" />
     <pop-vector-album-list ref="albumListPop" @input="choosePack" />
+    <pop-album-vector ref="popAlbumVector" @input="chooseMask" />
     <pop-vector-list ref="vectorListPop" title="选择裁切图案" @insert="chooseVector" />
   </div>
 </template>
@@ -64,7 +52,6 @@ import StyleRegistry from '../xd-builder/utils/StyleRegistry'
 import { createSingleElement, deleteElement, getElementMask, elementColorVariables, elementPxVariables } from '../xd-builder/utils/sceneActions'
 import { addScene, prevScene, nextScene, getWorkColors } from '../xd-builder/utils/workActions'
 import PopElementEdit from './form/PopElementEdit'
-import SceneEdit from './form/SceneEdit'
 import PopMainMenu from './list/PopMainMenu'
 import PopupImageList from './list/PopupImageList'
 import PopUnSplashPhotoList from './insert/PopUnSplashPhotoList'
@@ -81,19 +68,20 @@ import BtnEditText from './van-components/BtnEditText'
 import FontFamily from './form/FontFamily.vue'
 import PopVectorAlbumList from './list/PopVectorAlbumList'
 import PopVectorList from './list/PopVectorList'
+import PopAlbumVector from './insert/PopAlbumVector'
 
 Vue.use(Lazyload);
 Vue.use(Vant);
 export default {
   name: "Lite",
   components: {
+    PopAlbumVector,
     BtnEditText,
     BtnSetText,
     BtnColorPicker,
     PopElementOrdering,
     PopupImageList,
     PopMainMenu,
-    SceneEdit,
     PopElementEdit,
     MobileEditContainer,
     VectorList,
@@ -149,8 +137,8 @@ export default {
       let workId = this.$route.query.work
       if (!workId) {
         this.work = this.newWork({
-          width: this.$route.query.width,
-          height: this.$route.query.height
+          width: parseInt(this.$route.query.width),
+          height: parseInt(this.$route.query.height)
         })
         this.addScene()
       } else {
@@ -210,7 +198,9 @@ export default {
         this.$refs.unsplashPhotoList.open(payload, payload)
       }
       if (type === 'text') {
-        this.$refs.popElementEdit.open(JSON.parse(JSON.stringify(text)), false)
+        const created = createSingleElement(JSON.parse(JSON.stringify(text)), this.work.viewBox || { width: 320, height: 320})
+        this.scene.elements.push(created)
+        this.element = created
       }
       if (type === 'uploads') {
         this.$refs.popupImageList.open()
@@ -223,11 +213,11 @@ export default {
     onSettingClick () {
       this.$refs.popMainMenu.open()
     },
+
     onDelete () {
       deleteElement(this.element, this.scene)
       this.element = null
     },
-
 
     openPack (pack) {
       this.insertType = 'vectors'
@@ -240,7 +230,7 @@ export default {
       const created = createSingleElement(node, this.work.viewBox || { width: 320, height: 320})
       this.scene.elements.push(created)
       this.$nextTick(() => {
-        this.$refs.editContainer.initElementDragResize(created)
+        // this.$refs.editContainer.initElementDragResize(created)
       })
     },
 
@@ -259,10 +249,14 @@ export default {
     },
 
     onMask () {
-      this.$refs.albumListPop.open('mask')
+      this.$refs.popAlbumVector.open('mask')
     },
     choosePack (pack) {
       this.$refs.vectorListPop.open(pack._id)
+    },
+
+    chooseMask (vector) {
+      this.element.maskImage = vector.url
     },
 
     updateVariableValue (val) {
@@ -295,7 +289,7 @@ export default {
   position: absolute;
   right: 1rem;
   top: 1rem;
-  z-index: 101;
+  z-index: 100;
 }
 #add-button {
   position: absolute;
@@ -328,4 +322,7 @@ export default {
   bottom: 1rem;
   z-index: 101;
 }
+
+
+
 </style>
