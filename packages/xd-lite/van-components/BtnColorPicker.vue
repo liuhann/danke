@@ -10,7 +10,7 @@
     </div>
     <template #reference>
       <slot>
-        <van-button round :color="value" icon="arrow-down" />
+        <van-button round :color="value" :style="{borderColor: '#eee'}" icon="arrow-down" />
       </slot>
     </template>
   </van-popover>

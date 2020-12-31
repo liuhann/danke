@@ -67,16 +67,12 @@ export default {
     async loadWork (workId) {
       let loadingInstance1 = Loading.service({ fullscreen: true, text: '加载作品中' })
       const work = await this.workdao.getOne(workId)
-      if (!work.viewBox) {
-        work.viewBox = work.screen
-        delete work.screen
-      }
-      await this.initWorkStyleResource(work)
+      // await this.initWorkStyleResource(work)
 
-      for (const scene of work.scenes) {
-        scene.visible = false
-        scene.stage = ''
-      }
+      // for (const scene of work.scenes) {
+      //   scene.visible = false
+      //   scene.stage = ''
+      // }
       this.work = work
       this.scene = this.work.scenes[0]
       loadingInstance1.close()
@@ -87,11 +83,7 @@ export default {
      */
     async initWorkStyleResource (work) {
       const styleRegistry = this.ctx.styleRegistry
-      if (work.fonts && work.fonts.length) {
-        for (const font of work.fonts) {
-          await styleRegistry.addFontFace(font)
-        }
-      }
+
       // init element svg content from work.svgs
       for (const scene of work.scenes) {
         // this.initSceneSVG(scene.elements, work.svgs)

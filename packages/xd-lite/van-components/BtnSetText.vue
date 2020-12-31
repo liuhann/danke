@@ -1,8 +1,8 @@
 <template>
   <div class="btn-set-text">
     <van-button round icon="font-o" @click="show=true" />
-    <van-popup v-model="show" position="bottom" closeable :overlay="false">
-      <van-form :label-width="32" label-align="right" :style="{width: '80vw'}">
+    <van-popup v-model="show" position="bottom" :overlay="false">
+      <van-form>
         <van-field label="字号">
           <template #input>
             <van-slider v-model="fontSizeVariable.value" :step="4" :min="12" :max="200" />
@@ -85,14 +85,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.colors {
-  width: 260px;
-  padding: 10px;
-  .picker-color {
-    border: 1px solid #eee;
-    margin: 2px;
-    width: 36px;
-    height:36px;
-  }
+.btn-set-text {
+
 }
 </style>

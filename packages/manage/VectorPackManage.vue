@@ -4,6 +4,10 @@
     <div class="columns">
       <div class="column is-narrow" style="width: 320px;">
         <el-button size="small" @click="newPack">增加包</el-button>
+        <el-select v-model="packType" size="small" @change="fetchPacks">
+          <el-option label="矢量" value="vector"></el-option>
+          <el-option label="照片" value="image"></el-option>
+        </el-select>
         <el-table :data="packs" size="mini" stripe style="width: 100%" @row-click="packClicked">
           <el-table-column prop="name" label="标题"></el-table-column>
         </el-table>
@@ -31,7 +35,7 @@
 
         <div class="columns mt-3 is-multiline vector-list-container">
           <div v-for="vector in packVectors" :key="vector._id" class="column is-narrow">
-            <img v-if="vector.url" :src="getImageUrl(vector.url)" @dblclick="setAsPackCover(vector.url)">
+            <img v-if="vector.url" :src="getImageUrl(vector.url, 100, 80)" @dblclick="setAsPackCover(vector.url)">
             <div v-if="vector.html" class="svg-container" :style="variableValues(vector)">
               <div class="styled-box" :style="{
                 // height: vector.h + 'px',
@@ -59,8 +63,17 @@
               <el-option v-for="tag in vectorTags" :key="tag" :label="tag" :value="tag"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="版权">
-            <el-input v-model="currentPack.copywrite"></el-input>
+          <el-form-item label="作者">
+            <el-input v-model="currentPack.author"></el-input>
+          </el-form-item>
+          <el-form-item label="作者">
+            <el-input v-model="currentPack.url"></el-input>
+          </el-form-item>
+          <el-form-item label="类型">
+            <el-select v-model="currentPack.type" size="small">
+              <el-option label="矢量" value="vector"></el-option>
+              <el-option label="照片" value="image"></el-option>
+            </el-select>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
@@ -100,6 +113,7 @@ export default {
   data () {
     return {
       channels,
+      packType: 'vector',
       vectorTags: [
           'avatar', // 头像
           'mask',   // 可作为遮罩
@@ -161,7 +175,8 @@ export default {
         name: '未命名',
         type: 'vector',
         tags: [],
-        copywrite: '<div>作者 <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> 来自 <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>',
+        author: '',
+        url: '',
         previews: []
       }
       this.dialogVisible = true
@@ -186,7 +201,7 @@ export default {
         name: file.name,
         size: file.size,
       }
-      let result = await this.imagedao.uploadBlob(file.raw, `public/vector/${this.currentPack._id}/${file.name}`, true)
+      let result = await this.imagedao.uploadBlob(file.raw, `public/${this.packType}/${this.currentPack._id}/${file.name}`, true)
       imageObject.url = result.name
       imageObject.pack = this.currentPack._id
       const size = await getImageSize(file.raw)
@@ -222,7 +237,8 @@ export default {
       if (this.ctx.user && this.ctx.user.id === '15011245191') {
         const result = await this.packdao.list({
           page: this.page,
-          count: this.size
+          count: this.size,
+          type: this.packType
         })
         this.packs = result.list
         this.total = result.total
@@ -272,6 +288,7 @@ export default {
     img {
       width: 100px;
       height: 80px;
+      object-fit: cover;
     }
     .svg-container {
       width: 100%;

@@ -1,7 +1,7 @@
 <template>
   <div class="btn-edit-text">
-    <van-button round icon="edit" @click="showFontFamilly"></van-button>
-    <font-family ref="fontFamilly" @input="updateVariableValue" />
+    <van-button round icon="notes-o" @click="showFontFamilly"></van-button>
+    <font-family ref="fontFamilly" @input="input" />
   </div>
 </template>
 
@@ -11,8 +11,8 @@ export default {
   name: "BtnSetFontFamilly",
   components: { FontFamily },
   props: {
-    value: {
-      type: String
+    element: {
+      type: Object
     }
   },
   data () {
@@ -24,8 +24,12 @@ export default {
     showFontFamilly () {
       this.$refs.fontFamilly.open()
     },
-    textChanged (val) {
-      this.$emit('input', val)
+    input (val) {
+      this.element.variables.forEach(variable => {
+        if (variable.type === 'fontFamily') {
+          variable.value = val
+        }
+      })
     }
   }
 }

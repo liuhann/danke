@@ -29,11 +29,10 @@
         <btn-color-picker v-for="(variable, index) in elementColorVariables" :key="index" v-model="variable.value" round :default-colors="workColors" />
         <btn-set-text v-if="isTextElement" :element="element" />
         <btn-edit-text v-if="isTextElement" v-model="element.text" />
-        <btn-set-fontfamilly v-if="isTextElement" v-model="element.text" />
+        <btn-set-font-familly v-if="isTextElement" :element="element" />
       </div>
     </transition>
     <van-button id="menu-button" round icon="setting-o" @click="onSettingClick"></van-button>
-    <font-family ref="fontFamilly" @input="updateVariableValue" />
     <pop-vector-album-list ref="albumListPop" @input="choosePack" />
     <pop-album-vector ref="popAlbumVector" @input="chooseMask" />
     <pop-vector-list ref="vectorListPop" title="选择裁切图案" @insert="chooseVector" />
@@ -62,7 +61,7 @@ import PopElementOrdering from './list/PopElementOrdering'
 import BtnColorPicker from './van-components/BtnColorPicker'
 import BtnSetText from './van-components/BtnSetText'
 import BtnEditText from './van-components/BtnEditText'
-import FontFamily from './form/FontFamily.vue'
+import BtnSetFontFamilly from './van-components/BtnSetFontFamilly'
 import PopVectorAlbumList from './list/PopVectorAlbumList'
 import PopVectorList from './list/PopVectorList'
 import PopAlbumVector from './insert/PopAlbumVector'
@@ -84,7 +83,7 @@ export default {
     VectorList,
     AvatarInsertMenu,
     PopUnSplashPhotoList,
-    FontFamily,
+    BtnSetFontFamilly,
     PopVectorAlbumList,
     PopVectorList
   },
@@ -312,7 +311,7 @@ export default {
   flex-direction: column-reverse;
   z-index: 101;
   .van-button--normal {
-    margin-top: .75rem;
+    margin-top: 1rem;
   }
 }
 

@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import { fontFamilies, addFontFace, loadFontFace } from '../../utils/fontfaces'
+import { fontFamilies, loadFontFace } from '../../utils/fontfaces'
 import { getImageUrl } from '../../xd-builder/mixins/imageUtils'
 import { Toast } from 'vant'
 import RestDAO from '../../utils/restdao'
