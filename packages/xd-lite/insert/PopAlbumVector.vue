@@ -1,36 +1,49 @@
 <template>
-  <van-popup v-model="show" position="bottom" :style="{ height: '360px'}" class="pop-album-vector" @opened="opened">
-    <slot></slot>
-    <div ref="packListWrapper" class="pack-list-wrapper">
-      <ul class="album-list-container">
-        <li v-for="pack in packs" :key="pack._id" class="pack" :class="currentPack===pack?'selected': ''" @click="openPack(pack)"><van-image width="36" height="36" :src="getImageUrl(pack.previews[0])" /></li>
-      </ul>
+  <van-popup v-model="show" position="bottom" class="pop-album-vector" :overlay="false" closeable close-icon="arrow-down" @opened="opened">
+    <van-tabs swipeable @change="onTabChange">
+      <van-tab v-for="tab in tabs" :key="tab.key" :title="tab.title" :name="tab.key"></van-tab>
+    </van-tabs>
+    <div v-if="contentType === 'pack'">
+      <div ref="packListWrapper" class="pack-list-wrapper">
+        <van-skeleton v-if="packs.length === 0" :row="1" />
+        <ul class="album-list-container">
+          <li v-for="pack in packs" :key="pack._id" class="pack" :class="currentPack===pack?'selected': ''" @click="openPack(pack)"><van-image width="30" height="30" :src="getImageUrl(pack.previews[0])" /></li>
+        </ul>
+      </div>
+      <div ref="vectorListWrapper" class="vector-list-wrapper">
+        <van-skeleton v-if="vectors.length === 0" title :row="3" />
+        <ul class="vector-list-container">
+          <li v-for="vector in vectors" :key="vector._id" class="vector">
+            <van-image width="50" height="50" :src="getImageUrl(vector.url)" @click="choose(vector)" />
+          </li>
+        </ul>
+      </div>
     </div>
-    <div ref="vectorListWrapper" class="vector-list-wrapper">
-      <ul class="vector-list-container">
-        <li v-for="vector in vectors" :key="vector._id" class="vector">
-          <van-image width="50" height="50" :src="getImageUrl(vector.url)" @click="chooseVector(vector)" />
-        </li>
-      </ul>
-    </div>
+    <my-uploads v-if="contentType === 'upload'" @insert="choose" />
   </van-popup>
 </template>
 
 <script>
 import RestDAO from '../../utils/restdao'
 import { getImageUrl } from '../../xd-builder/mixins/imageUtils'
+import MyUploads from '../list/MyUploads'
 export default {
   name: "PopAlbumVector",
+  components: { MyUploads },
   data() {
     return {
+      contentType: '',
+      tabs: [],
+      currentPack: {},
       vectorFetching: false,
       show: false,
       packs: [],
       vectors: [],
-      currentPack: null,
+      currentTab: null,
       currentPage: 1,
       pageCount: 10,
       deviceWidth: 0,
+      action: null,
       total: -1
     }
   },
@@ -40,16 +53,34 @@ export default {
   },
   methods: {
     getImageUrl,
-    open(tag) {
-      this.tag = tag
+    open(tabs, action) {
+      this.tabs = tabs
+      this.action = action
       this.show = true
     },
+    close () {
+      this.show = false
+    },
     async opened () {
-      this.deviceWidth = window.screen.availWidth
-      await this.fetchMorePacks()
-      if (this.packs.length) {
-        this.openPack(this.packs[0])
+      this.currentTab = this.tabs[0]
+      this.tabSwitched()
+    },
+
+    async tabSwitched() {
+      this.contentType = this.currentTab.type
+      this.packs = []
+      this.vectors = []
+      if (this.currentTab.type === 'pack') {
+        await this.fetchMorePacks(this.currentTab.key)
+        if (this.packs.length) {
+          this.openPack(this.packs[0])
+        }
       }
+    },
+
+    onTabChange (name) {
+      this.currentTab = this.tabs.filter(tab => tab.key === name)[0]
+      this.tabSwitched()
     },
 
     async openPack (pack) {
@@ -67,27 +98,49 @@ export default {
       this.vectorFetching = false
     },
 
-    chooseVector (vector) {
-      this.$emit('input', vector)
+    choose (vector) {
+      if (this.action) {
+        this.$emit(this.action, vector)
+        this.show = false
+      } else {
+        this.$emit('input', vector)
+      }
     },
 
-    async fetchMorePacks () {
-      const result = await this.packdao.list({
-        page: this.currentPage,
-        count: this.pageCount,
-        tags: this.tag
-      })
-      this.packs = result.list
-      this.total = result.total
+    async fetchMorePacks (tag) {
+      if (this.currentTab) {
+        this.contentType = this.currentTab.type
+        if (this.currentTab.type === 'pack') {
+          const result = await this.packdao.list({
+            page: this.currentPage,
+            count: this.pageCount,
+            tags: this.currentTab.key
+          })
+          this.packs = result.list
+          this.total = result.total
+        }
+      }
     },
   }
 }
 </script>
 
 <style lang="scss">
+.pop-album-vector {
+  .van-skeleton {
+   padding-top: 20px;
+  }
+  border-top: 1px solid #eee;
+  .van-tabs {
+    width: calc(100vw - 48px);
+  }
+  .van-popup__close-icon--top-right {
+    top: 12px;
+  }
+}
 .pack-list-wrapper {
   width: 100%;
-  height: 64px;
+  height: 54px;
   overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
@@ -96,10 +149,10 @@ export default {
     background: #F7F7F7;
     display: flex;
     li {
-      margin: 7px;
-      padding: 7px;
-      width: 50px;
-      height: 50px;
+      margin: 6px;
+      padding: 6px;
+      width: 42px;
+      height: 42px;
       &.selected {
         background: #ffffff;
         border-radius: 5px;
@@ -110,7 +163,7 @@ export default {
 
 .vector-list-wrapper {
   width: 100%;
-  height: 290px;
+  height: 200px;
   overflow-y: auto;
   background: #f9f9f9;
   overflow-x: hidden;

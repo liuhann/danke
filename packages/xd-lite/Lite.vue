@@ -18,7 +18,7 @@
     <!--元素编辑弹出层-->
     <pop-element-ordering v-if="work" ref="popElementOrdering" :scene="scene" :view-box="work.viewBox" />
 
-    <van-button id="add-button" round icon="plus" type="primary" @click="$refs.insertMenu.open()"></van-button>
+    <van-button id="add-button" round icon="plus" type="primary" @click="onInsertClick"></van-button>
 
     <transition name="van-slide-left">
       <div v-if="element" id="element-actions">
@@ -34,7 +34,7 @@
     </transition>
     <van-button id="menu-button" round icon="setting-o" @click="onSettingClick"></van-button>
     <pop-vector-album-list ref="albumListPop" @input="choosePack" />
-    <pop-album-vector ref="popAlbumVector" @input="chooseMask" />
+    <pop-album-vector ref="popAlbumVector" @insert="insertNode" @input="chooseMask" />
     <pop-vector-list ref="vectorListPop" title="选择裁切图案" @insert="chooseVector" />
   </div>
 </template>
@@ -253,7 +253,35 @@ export default {
     },
 
     onMask () {
-      this.$refs.popAlbumVector.open('mask')
+      this.$refs.popAlbumVector.open([{
+        key: 'mask',
+        type: 'pack',
+        title: '遮罩'
+      }])
+    },
+
+    onInsertClick () {
+      this.$refs.popAlbumVector.open([{
+        key: 'upload',
+        type: 'upload',
+        title: '图片'
+      }, {
+        key: 'text',
+        type: 'text',
+        title: '文字'
+      }, {
+        key: 'avatar',
+        type: 'pack',
+        title: '图标'
+      }, {
+        key: 'vector',
+        type: 'pack',
+        title: '设计'
+      }, {
+        key: 'image',
+        type: 'pack',
+        title: '图库'
+      }], 'insert')
     },
     choosePack (pack) {
       this.$refs.vectorListPop.open(pack._id)
