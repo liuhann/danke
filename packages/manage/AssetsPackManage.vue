@@ -95,7 +95,7 @@ import { getImageUrl } from '../xd-builder/mixins/imageUtils'
 import { getVariableStyle } from '../xd-builder/mixins/renderUtils'
 
 export default {
-  name: 'VectorPackManage',
+  name: 'AssetsPackManage',
   components: {
     [Upload.name]: Upload,
     [Pagination.name]: Pagination,
@@ -196,18 +196,8 @@ export default {
     // may be choose multiple files, should do auto upload on choose
     // each file would trigger fileChoosed event
     async fileChoosed (file, uploadFiles) {
-      console.log('file choosed', file, uploadFiles)
-      const imageObject = {
-        name: file.name,
-        size: file.size,
-      }
-      let result = await this.imagedao.uploadBlob(file.raw, `public/${this.packType}/${this.currentPack._id}/${file.name}`, true)
-      imageObject.url = result.name
+      const imageObject = await this.imagedao.fileChoosed(file, uploadFiles, `public/${this.packType}/${this.currentPack._id}/${file.name}`)
       imageObject.pack = this.currentPack._id
-      const size = await getImageSize(file.raw)
-      imageObject.w = size.width
-      imageObject.h = size.height
-      // write file info
       await this.restdao.create(imageObject)
       Message.success('已经上传' + imageObject.name)
     },

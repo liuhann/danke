@@ -4,6 +4,47 @@ export default class ImageDAO {
     this.bucket = bucket || 'dankev3'
   }
 
+  async getImageSize (blob) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = URL.createObjectURL(blob);
+      img.onload = function () {
+        resolve({
+          width: this.width,
+          height: this.height
+        })
+      }
+    })
+  }
+
+  /**
+   * 
+   * @param {*} file 上传文件
+   * @param {*} uploadFiles 已有文件列表
+   * @param {*} filePath 上传的路径
+   */
+  async fileChoosed (file, uploadFiles, filePath) {
+    console.log('file choosed', file, uploadFiles)
+    const imageObject = {
+      name: file.name,
+      size: file.size,
+    }
+    
+    let uploadPath = filePath || 'anomymous.file' 
+
+    if (typeof uploadPath === 'function') {
+      uploadPath = uploadPath(file)
+    }
+
+    let result = await this.uploadBlob(file.raw, uploadPath, true)
+    imageObject.url = result.name
+    const size = await this.getImageSize(file.raw)
+    imageObject.w = size.width
+    imageObject.h = size.height
+    return imageObject
+  }
+
+
   async uploadAndCutMp3 (blob, path, start, end) {
     // check file size
     const formData = new window.FormData()

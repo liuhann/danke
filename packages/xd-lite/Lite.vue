@@ -15,27 +15,27 @@
     <!--元素编辑弹出层-->
     <pop-element-edit ref="popElementEdit" @delete="deleteNode" @insert="insertNode" />
 
-    <!--元素编辑弹出层-->
+    <!--元素次序弹出层-->
     <pop-element-ordering v-if="work" ref="popElementOrdering" :scene="scene" :view-box="work.viewBox" />
 
-    <van-button id="add-button" round icon="plus" type="primary" @click="onInsertClick"></van-button>
+    <!--插入元素按钮 -->
+    <van-button id="add-button" round icon="plus" type="primary" @click="onInsertClick" />
 
     <transition name="van-slide-left">
       <div v-if="element" id="element-actions">
         <!--删除按钮-->
-        <van-button id="delete-button" type="danger" round icon="delete" @click="onDelete" />
+        <van-button id="delete-button" type="danger" round icon="delete" @click="onDeleteClick" />
         <!--元素遮罩  仅限图片有-->
-        <van-button v-show="elementMask" id="mask-button" icon="user-circle-o" round @click="onMask"></van-button>
+        <van-button v-show="elementMask" id="mask-button" icon="user-circle-o" round @click="onMaskClick" />
         <btn-color-picker v-for="(variable, index) in elementColorVariables" :key="index" v-model="variable.value" round :default-colors="workColors" />
         <btn-set-text v-if="isTextElement" :element="element" />
         <btn-edit-text v-if="isTextElement" v-model="element.text" />
         <btn-set-font-familly v-if="isTextElement" :element="element" />
       </div>
     </transition>
-    <van-button id="menu-button" round icon="setting-o" @click="onSettingClick"></van-button>
-    <pop-vector-album-list ref="albumListPop" @input="choosePack" />
+    <van-button id="menu-button" round icon="setting-o" @click="onSettingClick" />
+
     <pop-album-vector ref="popAlbumVector" @insert="insertNode" @input="chooseMask" />
-    <pop-vector-list ref="vectorListPop" title="选择裁切图案" @insert="chooseVector" />
   </div>
 </template>
 
@@ -60,11 +60,11 @@ import { Lazyload } from 'vant';
 import PopElementOrdering from './list/PopElementOrdering'
 import BtnColorPicker from './van-components/BtnColorPicker'
 import BtnSetText from './van-components/BtnSetText'
-import BtnEditText from './van-components/BtnEditText'
-import BtnSetFontFamilly from './van-components/BtnSetFontFamilly'
-import PopVectorAlbumList from './list/PopVectorAlbumList'
-import PopVectorList from './list/PopVectorList'
-import PopAlbumVector from './insert/PopAlbumVector'
+import BtnEditText from './van-components/BtnEditText.vue'
+import BtnSetFontFamilly from './van-components/BtnSetFontFamilly.vue'
+import PopVectorAlbumList from './list/PopVectorAlbumList.vue'
+import PopVectorList from './list/PopVectorList.vue'
+import PopAlbumVector from './insert/PopAlbumVector.vue'
 
 Vue.use(Lazyload);
 Vue.use(Vant);
@@ -83,9 +83,7 @@ export default {
     VectorList,
     AvatarInsertMenu,
     PopUnSplashPhotoList,
-    BtnSetFontFamilly,
-    PopVectorAlbumList,
-    PopVectorList
+    BtnSetFontFamilly
   },
   mixins: [ workMixin ],
   data () {
@@ -218,7 +216,7 @@ export default {
       this.$refs.popMainMenu.open()
     },
 
-    onDelete () {
+    onDeleteClick () {
       deleteElement(this.element, this.scene)
       this.element = null
     },
@@ -252,7 +250,7 @@ export default {
 
     },
 
-    onMask () {
+    onMaskClick () {
       this.$refs.popAlbumVector.open([{
         key: 'mask',
         type: 'pack',
@@ -262,13 +260,13 @@ export default {
 
     onInsertClick () {
       this.$refs.popAlbumVector.open([{
-        key: 'upload',
-        type: 'upload',
-        title: '图片'
+        type: 'basic',
+        key: 'basic',
+        title: '基础'
       }, {
-        key: 'text',
-        type: 'text',
-        title: '文字'
+        type: 'upload',
+        key: 'upload',
+        title: '图片'
       }, {
         key: 'avatar',
         type: 'pack',
@@ -299,7 +297,6 @@ export default {
       }
     },
   }
-
 }
 </script>
 

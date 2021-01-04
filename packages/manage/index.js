@@ -12,10 +12,10 @@ const beforeEnter = (to, from, next) => {
 export default {
   routes: [{
     path: '/vector/manage',
-    component: () => import(/* webpackChunkName: "manage" */'./VectorPackManage.vue')
+    component: () => import(/* webpackChunkName: "manage" */'./AssetsPackManage.vue')
   }, {
     path: '/h5/edit',
-    component: () => import(/* webpackChunkName: "manage" */'./PageHtmlEdit.vue')
+    component: () => import(/* webpackChunkName: "manage" */'./PageAssetsEdit.vue')
   }],
   async onload (ctx) {
   }

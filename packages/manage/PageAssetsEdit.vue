@@ -4,13 +4,37 @@
       <el-form-item label="Package">
         <el-input v-model="html.pack" />
       </el-form-item>
-      <el-form-item label="HTML内容">
-        <div id="editor">
-        </div>
+      <el-form-item label="类型">
+        <el-select v-model="html.type">
+          <el-option label="矢量图片" value="vector" />
+          <el-option label="照片" value="photo" />
+          <el-option label="文本" value="text" />
+          <el-option label="HTML" value="html" />
+          <el-option label="声音" value="audio" />
+        </el-select>
+      </el-form-item>
+      <el-form-item v-if="html.type === 'text'" label="内容">
+        <el-input v-model="html.text" />
+      </el-form-item>
+      <el-form-item v-show="html.type === 'html'" label="HTML内容">
+        <div id="editor" />
       </el-form-item>
       <el-form-item label="默认尺寸">
         <el-input-number v-model="html.w" /> x <el-input-number v-model="html.h" />
       </el-form-item>
+      <el-form-item label="预览">
+        <img v-if="html.s" :src="previewSnapshot" />
+        <el-upload
+          :auto-upload="false"
+          action="none"
+          accept="image/*"
+          :show-file-list="false"
+          :on-change="fileChoosed"
+        >
+          <el-button>上传文件</el-button>
+        </el-upload>
+      </el-form-item>
+      
       <el-form-item label="变量信息">
         <el-button size="mini" @click="addVariable">增加</el-button>
         <div v-for="(variable, index) in html.variables" :key="index" class="variables" style="display:flex;">
@@ -57,8 +81,10 @@ import 'brace/mode/html'
 import 'brace/theme/monokai'
 import { Message, Form, FormItem, Input, Select, Option, Button, InputNumber } from 'element-ui'
 import RestDAO from '../utils/restdao.js'
+import ImageDAO from '../utils/imagedao.js'
 import { getVariableStyle } from '../xd-builder/mixins/renderUtils'
 import { getSVGViewBox, presets } from '../vectors/utils'
+import { getImageUrl } from '../xd-builder/mixins/imageUtils.js'
 
 export default {
   name: 'PageHtmlEdit',
@@ -85,6 +111,13 @@ export default {
     }
   },
   computed: {
+    previewSnapshot () {
+      if (this.html.s) {
+        return getImageUrl(this.html.s)
+      } else {
+        return ''
+      }
+    },
     presets () {
       return presets
     },
@@ -95,6 +128,7 @@ export default {
   watch: {},
   created () {
     this.dao = new RestDAO(this.ctx, 'danke/public/vector')
+    this.imagedao = new ImageDAO(this.ctx)
   },
   mounted () {
     this.initEditor()
@@ -122,6 +156,15 @@ export default {
         label: '颜色',
         type: 'color'
       })
+    },
+
+    fileChoosed (file, files) {
+      if (!this.html._id) {
+         Message.error('请先保存')
+        return
+      }
+
+      this.imagedao.fileChoosed(file, files, `public/asset-preview/${this.html._id}.png`)
     },
 
     perserve () {
@@ -201,6 +244,7 @@ export default {
       this.html.html = this.editor.getValue()
       delete this.html.content
       const result = await this.dao.createOrPatch(this.html)
+      this.html._id = result._id
       Message.success('保存成功')
     }
   }
@@ -234,7 +278,7 @@ export default {
   }
 }
 #editor {
-  height: 400px;
+  height: 160px;
 }
 .styled-box {
   width: 120px;

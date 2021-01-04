@@ -6,7 +6,7 @@ export default [{
   variables: [{
     name: 'bg',
     value: 'rgba(148,187,233,1)',
-    type: 'gradient'
+    type: 'color'
   }]
 }, {
   name: '圆形',
@@ -17,7 +17,7 @@ export default [{
   variables: [{
     name: 'bg',
     value: 'rgba(148,187,233,1)',
-    type: 'gradient'
+    type: 'color'
   }]
 }, {
   name: '空心圆',

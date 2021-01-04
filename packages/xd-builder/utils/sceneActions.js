@@ -1,7 +1,8 @@
 import { shortid } from '../../utils/string'
 import { getSVGViewBox } from '../../vectors/utils'
 import { getImageUrl } from '../mixins/imageUtils'
-import { fitRectIntoBounds } from '../mixins/rectUtils'
+import { fitRectIntoBounds, getRectPositionStyle } from '../mixins/rectUtils'
+import { assignVariables } from '../mixins/renderUtils'
 import textMesure from '../../utils/textMesure'
 
 function createSingleElement (element, viewBox, x, y) {
@@ -164,6 +165,44 @@ function setElementSelected (scene, element) {
   }
 }
 
+
+function elementStyle (element, viewBox, viewPort) {
+    // 设置元素的长、宽到默认变量--width 、 --height
+    const style = {
+      '--width': element.width + 'px',
+      '--height': element.height + 'px'
+    }
+
+    Object.assign(style, element.style)
+
+    // 填充色情况下，图片显示为遮罩
+    if (element.fill && element.url) {
+      style.maskImage = `url(${getImageUrl(element.url)})`
+      style.maskSize =  element.fit || 'cover'
+      style.maskPosition = 'center center'
+    }
+    // 变量配置信息
+    assignVariables(style, element.variables)
+
+    if (viewBox && viewPort) {
+      // 位置信息
+      Object.assign(style, getRectPositionStyle(element, viewBox, viewPort))
+    }
+
+    if (element.rotate) {
+      const transforms = []
+      transforms.push(`rotate(${element.rotate}deg)`)
+      if (transforms.length) {
+        Object.assign(style, {
+          transform: transforms.join(' ')
+        })
+      }
+    }
+    // 按大小指定视角
+    style.perspective = (element.style.perspective || element.width) + 'px'
+    return style
+}
+
 function lockElement (element) {
   element.locked = true
 }
@@ -182,6 +221,7 @@ export {
   elementPxVariables,
   getElementMask,
   lockElement,
+  elementStyle,
   deleteElement,
   setElementSelected,
   unlockElement

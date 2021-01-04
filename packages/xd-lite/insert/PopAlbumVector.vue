@@ -20,16 +20,21 @@
       </div>
     </div>
     <my-uploads v-if="contentType === 'upload'" @insert="choose" />
+    <basic-element-list v-if="contentType === 'basic'" @insert="choose" />
   </van-popup>
 </template>
 
 <script>
 import RestDAO from '../../utils/restdao'
 import { getImageUrl } from '../../xd-builder/mixins/imageUtils'
+import BasicElementList from '../list/BasicElementList.vue'
 import MyUploads from '../list/MyUploads'
 export default {
   name: "PopAlbumVector",
-  components: { MyUploads },
+  components: { 
+    MyUploads, 
+    BasicElementList
+  },
   data() {
     return {
       contentType: '',
@@ -51,18 +56,20 @@ export default {
     this.packdao = new RestDAO(this.ctx, 'danke/pack')
     this.restdao = new RestDAO(this.ctx, 'danke/public/vector')
   },
+
   methods: {
     getImageUrl,
     open(tabs, action) {
       this.tabs = tabs
       this.action = action
+      this.currentTab = this.tabs[0]
+      this.contentType = this.currentTab.type
       this.show = true
     },
     close () {
       this.show = false
     },
     async opened () {
-      this.currentTab = this.tabs[0]
       this.tabSwitched()
     },
 
