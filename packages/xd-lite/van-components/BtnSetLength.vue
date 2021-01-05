@@ -1,11 +1,14 @@
 <template>
   <van-popover
     v-model="show"
-    placement="top-start"
+    trigger="click"
+    placement="right"
   >
-    <van-slider :value="value" @change="onChange" />
+    <div class="slider">
+      <van-slider :value="value" @input="onChange" />
+    </div>
     <template #reference>
-      <van-button round @click="show = true">{{ value }}</van-button>
+      <van-button round>{{ label }}</van-button>
     </template>
   </van-popover>
 </template>
@@ -16,6 +19,9 @@ export default {
   props: {
     value: {
       type: Number
+    },
+    label: {
+      type: String
     }
   },
   data () {
@@ -39,5 +45,12 @@ export default {
 </script>
 
 <style scoped>
-
+.slider {
+  width: 320px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 42px;
+  padding: 0 20px;
+}
 </style>

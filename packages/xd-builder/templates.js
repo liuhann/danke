@@ -104,6 +104,7 @@ const rect = {
   },
   variables: [{
     name: 'bg',
+    label: '颜色',
     value: 'rgba(148,187,233,1)',
     type: 'color'
   }]
@@ -117,6 +118,7 @@ const circle = {
   },
   variables: [{
     name: 'bg',
+    label: '颜色',
     value: 'rgba(148,187,233,1)',
     type: 'color'
   }]
@@ -132,12 +134,12 @@ const hollowCircle = {
   },
   variables: [{
     name: 'bc',
-    label: '颜色',
+    label: '边框颜色',
     value: 'rgba(148,187,233,1)',
     type: 'color'
   }, {
     name: 'bw',
-    label: '',
+    label: '边框宽度',
     value: 3,
     type: 'px'
   }]
@@ -150,12 +152,12 @@ const hollowRect = {
   },
   variables: [{
     name: 'bc',
-    label: '颜色',
+    label: '边框颜色',
     value: 'rgba(148,187,233,1)',
     type: 'color'
   }, {
     name: 'bw',
-    label: '',
+    label: '边框宽度',
     value: 3,
     type: 'px'
   }]
@@ -173,11 +175,13 @@ const radiusRect = {
     value: 'rgba(148,187,233,1)',
     type: 'color'
   }, {
+    label: '边框宽度',
     name: 'bw',
     value: 3,
     type: 'px'
   }, {
     name: 'br',
+    label: '圆角半径',
     value: 10,
     type: 'px'
   }]

@@ -142,7 +142,7 @@ function elementColorVariables(element) {
 }
 function elementPxVariables (element) {
   if (element && element.variables) {
-    return element.variables.filter(variable => (variable.type === 'fontSize' || variable.type === 'letterSpacing' || variable.type === 'lineHeight'))
+    return element.variables.filter(variable => variable.type === 'px')
   } else {
     return []
   }

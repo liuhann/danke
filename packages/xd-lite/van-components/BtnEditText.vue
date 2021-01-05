@@ -1,6 +1,6 @@
 <template>
   <div class="btn-edit-text">
-    <van-button round icon="edit" @click="show=true"></van-button>
+    <van-button round @click="show=true">内容編輯</van-button>
     <van-popup v-model="show" position="top">
       <van-search
         v-model="value"
@@ -31,7 +31,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-</style>

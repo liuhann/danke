@@ -27,6 +27,7 @@
         <van-button id="delete-button" type="danger" round icon="delete" @click="onDeleteClick" />
         <!--元素遮罩  仅限图片有-->
         <van-button v-show="elementMask" id="mask-button" icon="user-circle-o" round @click="onMaskClick" />
+        <btn-set-length v-for="(variable, index) in elementPxVariables" :key="index" v-model="variable.value" round :label="variable.label" />
         <btn-color-picker v-for="(variable, index) in elementColorVariables" :key="index" v-model="variable.value" round :default-colors="workColors" />
         <btn-set-text v-if="isTextElement" :element="element" />
         <btn-edit-text v-if="isTextElement" v-model="element.text" />
@@ -45,7 +46,7 @@ import AvatarInsertMenu from './insert/AvatarInsertMenu'
 import VectorList from './list/PopVectorList'
 import workMixin from '../xd-builder/mixins/workMixin'
 import StyleRegistry from '../xd-builder/utils/StyleRegistry'
-import { createSingleElement, deleteElement, getElementMask, elementColorVariables, elementPxVariables } from '../xd-builder/utils/sceneActions'
+import { createSingleElement, deleteElement, getElementMask, elementColorVariables, elementPxVariables } from '../xd-builder/utils/sceneActions.js'
 import { addScene, prevScene, nextScene, getWorkColors } from '../xd-builder/utils/workActions'
 import PopElementEdit from './form/PopElementEdit'
 import PopMainMenu from './list/PopMainMenu'
@@ -62,6 +63,7 @@ import BtnColorPicker from './van-components/BtnColorPicker'
 import BtnSetText from './van-components/BtnSetText'
 import BtnEditText from './van-components/BtnEditText.vue'
 import BtnSetFontFamilly from './van-components/BtnSetFontFamilly.vue'
+import BtnSetLength from './van-components/BtnSetLength.vue'
 import PopVectorAlbumList from './list/PopVectorAlbumList.vue'
 import PopVectorList from './list/PopVectorList.vue'
 import PopAlbumVector from './insert/PopAlbumVector.vue'
@@ -74,7 +76,6 @@ export default {
     PopAlbumVector,
     BtnEditText,
     BtnSetText,
-    BtnColorPicker,
     PopElementOrdering,
     PopupImageList,
     PopMainMenu,
@@ -83,7 +84,9 @@ export default {
     VectorList,
     AvatarInsertMenu,
     PopUnSplashPhotoList,
-    BtnSetFontFamilly
+    BtnSetFontFamilly,
+    BtnColorPicker,
+    BtnSetLength
   },
   mixins: [ workMixin ],
   data () {
@@ -246,10 +249,6 @@ export default {
       this.$refs.popVectorList.close()
     },
 
-    chooseVector () {
-
-    },
-
     onMaskClick () {
       this.$refs.popAlbumVector.open([{
         key: 'mask',
@@ -305,9 +304,10 @@ export default {
   height: 100%;
   -webkit-user-select: none;
   .van-button--normal {
-    padding: 0 13px;
+    padding: 4px;
     height: 50px;
-    font-size: 20px;
+    width: 50px;
+    font-size: 14px;
   }
 }
 
