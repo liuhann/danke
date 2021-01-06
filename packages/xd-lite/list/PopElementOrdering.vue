@@ -3,7 +3,7 @@
   <van-popup v-model="show" position="bottom" :style="{ height: '100%'}">
     <van-nav-bar>
       <template #right>
-        <van-icon name="close" size="20" @click="show = false" />
+        <van-icon name="cross" size="24" @click="show = false" />
       </template>
       <template #left>
         拖拽调整元素位置
@@ -25,7 +25,8 @@
           {{ element.text || element.name }}
         </div>
         <div class="actions">
-          <van-icon name="cross" size="20" color="#666" @click="deleteElement(element, scene)" />
+          <van-icon name="lock" class="mr-4" size="20" :color="element.locked ? '#7ed957':'#999'" @click="toggleElementLock(element)" />
+          <van-icon name="delete-o" size="20" color="#666" @click="deleteElement(element, scene)" />
         </div>
       </div>
     </draggable>
@@ -36,7 +37,7 @@
 import draggable from 'vuedraggable'
 import { getImageUrl } from '../../xd-builder/mixins/imageUtils'
 import { assignVariables } from '../../xd-builder/mixins/renderUtils'
-import { deleteElement } from '../../xd-builder/utils/sceneActions'
+import { deleteElement, toggleElementLock } from '../../xd-builder/utils/sceneActions'
 
 export default {
   name: "PopElementOrdering",
@@ -61,6 +62,7 @@ export default {
   },
   methods: {
     deleteElement,
+    toggleElementLock,
     getImageUrl,
     open () {
       this.show = true
@@ -102,7 +104,7 @@ export default {
     color: rgb(90, 90, 90);
   }
   .handle, .actions {
-    width: 3.5rem;
+    width: 6rem;
     height: 2.5rem;
     display: flex;
     justify-content: center;

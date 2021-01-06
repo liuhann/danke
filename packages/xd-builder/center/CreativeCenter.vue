@@ -28,11 +28,11 @@
                 <span v-if="!work.snapshot" class="no-snapshot">正在生成预览</span>
               </div>
               <div class="column">
-                <p class="title is-3 is-size-5">{{ work.title }}</p>
-                <p class="has-text-grey">{{ work.updated }}</p>
                 <div class="buttons mt-2">
                   <button class="button is-success is-light" @click="editWork(work)">编辑</button>
                   <button class="button is-info is-light">预览</button>
+                  <button class="button is-info is-light" @click="deleteWork(work)">删除</button>
+                  <button class="button is-info is-light">复制</button>
                 </div>
               </div>
             </div>

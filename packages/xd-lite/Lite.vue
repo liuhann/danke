@@ -14,12 +14,13 @@
     <pop-un-splash-photo-list ref="unsplashPhotoList" @insert="insertNode" />
     <!--元素编辑弹出层-->
     <pop-element-edit ref="popElementEdit" @delete="deleteNode" @insert="insertNode" />
-
     <!--元素次序弹出层-->
     <pop-element-ordering v-if="work" ref="popElementOrdering" :scene="scene" :view-box="work.viewBox" />
 
     <!--插入元素按钮 -->
     <van-button id="add-button" round icon="plus" type="primary" @click="onInsertClick" />
+    <!--元素列表/排序按钮 -->
+    <van-button id="order-button" round icon="descending" @click="onOrderingClick" />
 
     <transition name="van-slide-left">
       <div v-if="element" id="element-actions">
@@ -35,7 +36,6 @@
       </div>
     </transition>
     <van-button id="menu-button" round icon="setting-o" @click="onSettingClick" />
-
     <pop-album-vector ref="popAlbumVector" @insert="insertNode" @input="chooseMask" />
   </div>
 </template>
@@ -49,7 +49,7 @@ import StyleRegistry from '../xd-builder/utils/StyleRegistry'
 import { createSingleElement, deleteElement, getElementMask, elementColorVariables, elementPxVariables } from '../xd-builder/utils/sceneActions.js'
 import { addScene, prevScene, nextScene, getWorkColors } from '../xd-builder/utils/workActions'
 import PopElementEdit from './form/PopElementEdit'
-import PopMainMenu from './list/PopMainMenu'
+import PopMainMenu from './list/PopMainMenu.vue'
 import PopupImageList from './list/PopupImageList'
 import PopUnSplashPhotoList from './insert/PopUnSplashPhotoList'
 import Vue from 'vue'
@@ -58,7 +58,7 @@ import { Toast, Notify } from 'vant'
 import { text } from '../xd-builder/templates'
 import 'vant/lib/index.css';
 import { Lazyload } from 'vant';
-import PopElementOrdering from './list/PopElementOrdering'
+import PopElementOrdering from './list/PopElementOrdering.vue'
 import BtnColorPicker from './van-components/BtnColorPicker'
 import BtnSetText from './van-components/BtnSetText'
 import BtnEditText from './van-components/BtnEditText.vue'
@@ -184,6 +184,10 @@ export default {
       }
     },
 
+    onOrderingClick () {
+      this.$refs.popElementOrdering.open()
+    },
+
     editNode () {
       this.$refs.popElementEdit.open(this.element, true)
     },
@@ -269,14 +273,14 @@ export default {
       }, {
         key: 'avatar',
         type: 'pack',
-        title: '图标'
+        title: '卡通头像'
       }, {
-        key: 'vector',
         type: 'pack',
+        key: 'art',
         title: '设计'
       }, {
-        key: 'image',
         type: 'pack',
+        key: 'scenery',
         title: '图库'
       }], 'insert')
     },
@@ -322,11 +326,19 @@ export default {
 }
 #add-button {
   position: absolute;
+  font-size: 24px;
   right: 1rem;
   bottom: 1rem;
   z-index: 101;
 }
 
+#order-button {
+  font-size: 24px;
+  position: absolute;
+  right: 1rem;
+  bottom: 5.5rem;
+  z-index: 101;
+}
 #element-actions {
   position: absolute;
   left: 1rem;

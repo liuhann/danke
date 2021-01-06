@@ -3,7 +3,7 @@
     <div class="content-title">包列表</div>
     <div class="columns">
       <div class="column is-narrow" style="width: 320px;">
-        <el-button size="small" @click="newPack">增加包</el-button>
+        <el-button size="small" @click="newPack" type="primary">增加包</el-button>
         <el-select v-model="packType" size="small" @change="fetchPacks">
           <el-option label="矢量" value="vector"></el-option>
           <el-option label="照片" value="image"></el-option>
@@ -14,23 +14,24 @@
         <el-pagination :current-page.sync="page" :page-size="size" :total="total" @current-change="pageChange" />
       </div>
       <div v-if="currentPack" class="column">
-        <h2 class="title is-3">{{ currentPack.name }} </h2>
+        <h2 class="title is-3">{{ currentPack.name }}  {{ currentPack.tags }}</h2>
         <div class="actions">
           <el-button @click="editPack">编辑</el-button>
-          <el-button @click="addHTMLVector">增加HTML</el-button>
           <el-button @click="deleteAllInPack">全部删除</el-button>
           <el-button @click="deletePack">删除包</el-button>
-          <el-upload
-            :auto-upload="false"
-            action="none"
-            multiple
-            accept="image/*"
-            :show-file-list="false"
-            class="upload-container mt-2"
-            :on-change="(file, uploadFiles) => fileChoosed(file, uploadFiles)"
-          >
-            <el-button>上传文件</el-button>
-          </el-upload>
+          <div style="display: inline-block;" class="ml-2">
+            <el-upload
+              :auto-upload="false"
+              action="none"
+              multiple
+              accept="image/*"
+              :show-file-list="false"
+              class="upload-container mt-2"
+              :on-change="(file, uploadFiles) => fileChoosed(file, uploadFiles)"
+            >
+              <el-button type="primary">上传文件</el-button>
+            </el-upload>
+          </div>
         </div>
 
         <div class="columns mt-3 is-multiline vector-list-container">
@@ -60,7 +61,7 @@
           </el-form-item>
           <el-form-item label="标签">
             <el-select v-model="currentPack.tags" multiple allow-create>
-              <el-option v-for="tag in vectorTags" :key="tag" :label="tag" :value="tag"></el-option>
+              <el-option v-for="tag in assetsTags" :key="tag.value" :label="tag.label" :value="tag.value" />
             </el-select>
           </el-form-item>
           <el-form-item label="作者">
@@ -86,13 +87,13 @@
 </template>
 
 <script>
-import { Pagination, Button, Table, TableColumn, Dialog, Form, FormItem, Input, Checkbox, Select, Option, Upload, Message, Loading } from 'element-ui'
+import { Pagination, Button, Table, TableColumn, Dialog, Form, FormItem, Input, Checkbox, Select, Option, Upload, Message, Loading, MessageBox } from 'element-ui'
 import RestDAO from '../utils/restdao.js'
-import channels from '../site/channels'
 import getImageSize from '../utils/imageSize'
 import ImageDAO from '../utils/imagedao'
 import { getImageUrl } from '../xd-builder/mixins/imageUtils'
 import { getVariableStyle } from '../xd-builder/mixins/renderUtils'
+import assetsTags from './assets-tags.js'
 
 export default {
   name: 'AssetsPackManage',
@@ -112,14 +113,8 @@ export default {
   },
   data () {
     return {
-      channels,
       packType: 'vector',
-      vectorTags: [
-          'avatar', // 头像
-          'mask',   // 可作为遮罩
-          'basic',
-          'colorable' // 可以更改SVG中的颜色
-      ],
+      assetsTags,
       currentPack: null,
       dialogVisible: false,
       packVectors: [],
@@ -236,15 +231,32 @@ export default {
     },
 
     async deletePack () {
-      await this.fetchPackVectors()
-      if (this.packVectors.length) {
-        Message.success('pack 还有图片')
-        return
-      }
-      await this.packdao.delete(this.currentPack)
+      const result = await this.restdao.list({
+        pack: this.currentPack._id,
+        page: 1,
+        count: 1000
+      })
+      const vectors = result.list
 
-      Message.success('已经删除pack')
-      this.fetchPacks()
+      if (vectors.length) {
+        await MessageBox.confirm('此操作将永久删除, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+
+        let loadingInstance = Loading.service({
+          text: '正在删除中'
+        })
+        for (let vector of this.packVectors ) {
+          await this.deleteVector(vector)
+        }
+        await this.packdao.delete(this.currentPack)
+        loadingInstance.close()
+        Message.success('已经删除pack')
+        this.currentPack = null
+        this.packVectors = []
+      }
     },
 
     async excuteBulk () {

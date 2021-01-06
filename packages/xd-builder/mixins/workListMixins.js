@@ -1,6 +1,8 @@
 import RestDAO from '../../utils/restdao.js'
 import StyleRegistry from '../utils/StyleRegistry'
 import { fitRectIntoBounds } from './rectUtils'
+import { Dialog } from 'vant'
+import 'vant/lib/index.css';
 
 export default {
   data () {
@@ -22,6 +24,17 @@ export default {
       return {
         creator: this.ctx.user.id
       }
+    },
+
+    deleteWork (work) {
+      console.log(Dialog)
+      Dialog.confirm({
+        title: '标题',
+        message: '确认删除',
+      }).then(async () => {
+        await this.workdao.delete(work)
+        this.loadWorks()
+      })
     },
 
     viewport () {

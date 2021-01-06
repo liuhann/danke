@@ -203,6 +203,11 @@ function elementStyle (element, viewBox, viewPort) {
     return style
 }
 
+function toggleElementLock (element) {
+  debugger
+  element.locked = !element.locked
+}
+
 function lockElement (element) {
   element.locked = true
 }
@@ -224,5 +229,6 @@ export {
   elementStyle,
   deleteElement,
   setElementSelected,
+  toggleElementLock,
   unlockElement
 }

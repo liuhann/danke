@@ -346,7 +346,7 @@ export default {
       }
       // 锁定的元素 放置到最底层  操作最后
       if (element.locked) {
-        displayStyle.zIndex = -1
+        displayStyle.display = 'none'
       }
       // if (element.selected) {
       //   displayStyle.zIndex = 110
