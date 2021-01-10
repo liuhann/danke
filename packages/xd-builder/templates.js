@@ -124,7 +124,6 @@ const circle = {
   }]
 }
 
-
 const hollowCircle = {
   name: '空心圆',
   style: {
@@ -187,6 +186,67 @@ const radiusRect = {
   }]
 }
 
+const mongo = {
+  name: '芒果形',
+  style: {
+    borderTopLeftRadius: '50%',
+    borderBottomRightRadius: '50%',
+    background: 'var(--bg)'
+  },
+  variables: [{
+    label: '背景颜色',
+    name: 'bg',
+    value: 'rgba(148,187,233,1)',
+    type: 'color'
+  }]
+}
+
+const halfCircle = {
+  name: '半圆',
+  style: {
+    clipPath: 'ellipse(100% 50% at 100% 50%)',
+    background: 'var(--bgColor)'
+  },
+  variables: [{
+    label: '背景颜色',
+    name: 'bgColor',
+    value: 'rgba(148,187,233,1)',
+    type: 'color'
+  }]
+}
+
+const triangle = {
+  name: '三角形',
+  style: {
+    clipPath: 'polygon(0 0, 0% 100%, 100% 100%)',
+    background: 'var(--bgColor)'
+  },
+  variables: [{
+    label: '背景颜色',
+    name: 'bgColor',
+    value: 'rgba(148,187,233,1)',
+    type: 'color'
+  }]
+}
+
+const parall = {
+  name: '平行四边形',
+  style: {
+    clipPath: 'polygon(var(--position) 0%, 100% 0%, calc(100% - var(--position)) 100%, 0% 100%)',
+    background: 'var(--bgColor)'
+  },
+  variables: [{
+    name: 'position',
+    value: 25,
+    type: 'percent'
+  }, {
+    label: '背景颜色',
+    name: 'bgColor',
+    value: 'rgba(148,187,233,1)',
+    type: 'color'
+  }]
+}
+
 export {
   text,
   title,
@@ -195,5 +255,9 @@ export {
   circle,
   hollowCircle,
   hollowRect,
-  radiusRect
+  radiusRect,
+  mongo,
+  halfCircle,
+  triangle,
+  parall
 }
