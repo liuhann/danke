@@ -38,7 +38,7 @@ export default {
   },
   methods: {
     onElementClick (element) {
-      this.$emit('insert', element)
+      this.$emit('insert', JSON.parse(JSON.stringify(element)))
     },
     elementStyle (element) {
       const style = elementStyle(element)
