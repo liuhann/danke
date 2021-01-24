@@ -65,14 +65,8 @@ export default {
      * @param {string} workId 作品Id
      */
     async loadWork (workId) {
-      let loadingInstance1 = Loading.service({ fullscreen: true, text: '加载作品中' })
+      const loadingInstance1 = Loading.service({ fullscreen: true, text: '加载作品中' })
       const work = await this.workdao.getOne(workId)
-      // await this.initWorkStyleResource(work)
-
-      // for (const scene of work.scenes) {
-      //   scene.visible = false
-      //   scene.stage = ''
-      // }
       this.work = work
       this.scene = this.work.scenes[0]
       loadingInstance1.close()
