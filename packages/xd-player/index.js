@@ -5,7 +5,10 @@ export default {
   }, {
     path: '/play/full/:id',
     component: () => import(/* webpackChunkName: "xd-player" */'./FullPagePlay.vue')
-  }],
+  }, {
+    path: '/page/:id',
+    component: () => import(/* webpackChunkName: "xd-page-view" */'./OnePagePlay.vue')
+  },],
   async onload (ctx) {
   }
 }
