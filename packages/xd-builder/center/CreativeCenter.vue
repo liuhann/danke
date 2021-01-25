@@ -1,22 +1,12 @@
 <template>
   <div id="creative-center" class="creative-center">
     <nav-bar title="我的作品"></nav-bar>
-    <section class="section">
-      <div class="columns is-mobile">
-        <div class="column is-narrow">
-          <button class="button is-primary" @click="navTo('new')">创建作品</button>
-        </div>
-        <div class="column has-text-right">
-          <div class="select">
-            <select v-model="currentChannel" @change="channelChange">
-              <option value="all">全部</option>
-              <option v-for="channel in channels" :key="channel.value" :value="channel.value">{{ channel.label }}</option>
-            </select>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section class="section">
+    <van-button id="btn-new" type="primary" @click="navTo('new')" icon="plus">创建作品</van-button>
+    <div class="container">
+      <van-tabs v-model="isPublic">
+        <van-tab title="私有作品"></van-tab>
+        <van-tab title="公开作品"></van-tab>
+      </van-tabs>
       <div class="columns is-mobile is-multiline work-list is-1">
         <div v-for="work in works" :key="work.id" class="column work-container is-full-mobile is-4-tablet is-3-desktop is-3-fullhd">
           <div class="box">
@@ -28,7 +18,14 @@
                 <span v-if="!work.snapshot" class="no-snapshot">正在生成预览</span>
               </div>
               <div class="column">
+                <div class="work-title">{{ work.title }}</div>
                 <div class="buttons mt-2">
+                  <van-button type="primary" @click="playWork(work)">预览</van-button>
+                  <van-popover trigger="click" :actions="actions">
+                    <template #reference>
+                      <van-button type="primary">深色风格</van-button>
+                    </template>
+                  </van-popover>
                   <button class="button is-success is-light" @click="editWork(work)">编辑</button>
                   <button class="button is-info is-light">预览</button>
                   <button class="button is-info is-light" @click="deleteWork(work)">删除</button>
@@ -39,7 +36,7 @@
           </div>
         </div>
       </div>
-    </section>
+    </div>
   </div>
 </template>
 
@@ -49,6 +46,10 @@ import NavBar from '../../site/components/NavBar'
 import channels from '../../site/channels'
 import { getImageUrl } from '../mixins/imageUtils'
 import { fitRectIntoBounds } from '../mixins/rectUtils'
+import Vue from 'vue'
+import Vant from 'vant';
+import 'vant/lib/index.css';
+Vue.use(Vant);
 export default {
   name: 'CreativeCenter',
   components: {
@@ -57,8 +58,18 @@ export default {
   mixins: [ workListMixins ],
   data () {
     return {
-      channels,
+      isPublic: 0,
+      publicOptions: [ 
+        { text: '公开作品', value: 1 },
+        { text: '私有作品', value: 0 }
+      ],
       currentChannel: 'all',
+      channelOptions: channels.map(channel => ({
+        text: channel.label,
+        value: channel.value
+      })),
+      channels,
+      actions: [{ text: '编辑' }, { text: '复制' }, { text: '删除' }],
       user: this.ctx.user,
       lines: []
     }
@@ -99,7 +110,7 @@ export default {
       this.loadWorks()
     },
     editWork (work) {
-      this.$router.replace(`/xd-lite?work=${work.id}`)
+      this.$router.push(`/xd-lite?work=${work.id}`)
     },
     listQuery () {
       const query = {
@@ -111,7 +122,7 @@ export default {
       return query
     },
     gotoAvatarHome () {
-      this.$router.replace('/avatar')
+      this.$router.push('/avatar')
     },
 
     navTo (nav) {
@@ -175,117 +186,11 @@ export default {
   }
 }
 .creative-center {
-  --mainColor: rgba(0, 196, 204);
-  --mainColorHover: rgba(0, 196, 204, 0.61);
-  --textMainColor: #0e1318;
-  --textMinorColor: rgba(14,19,24,.3);
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  .top-header {
-    height: 5rem;
-    box-shadow: 0 0 3px #ccc;
-    padding: 0 2rem;
-  }
-  .main {
-    display: flex;
-    height: 100%;
-    flex: 1;
-    .nav {
-      color: var(--textMainColor);
-      width: 200px;
-      height: calc(100% - 4rem);
-      background-color: #fefefe;
-      box-sizing: content-box;
-      border-right: 1px solid #efefef;
-      padding: 2rem 0;
-      .me {
-        padding: 8px 12px;
-        display: flex;
-        .avatar {
-          width: 48px;
-          height: 48px;
-          border-radius: 50%;
-          img {
-            width: 48px;
-            height: 48px;
-            border-radius: 100%;
-          }
-        }
-        .user {
-          padding-left: 10px;
-          line-height: 26px;
-          font-size: 14px;
-          .location {
-            line-height: 16px;
-            color: var(--textMinorColor);
-            cursor: pointer;
-          }
-        }
-      }
-      .menu {
-        margin: 1rem 0;
-        display: flex;
-        flex-direction: column;
-        .node {
-          font-size: 1.125rem;
-          padding: 8px 12px;
-          cursor: pointer;
-          width: 100%;
-          height: 40px;
-          display: flex;
-          align-items: center;
-          position: relative;
-          box-sizing: border-box;
-          white-space: nowrap;
-          transition: background-color .15s ease-in-out,opacity .15s ease-in-out;
-          color: unset;
-          text-decoration: unset;
-          &:hover {
-            background-color: rgba(14,19,24,.07);
-          }
-          &.selected {
-            font-weight: bold;
-            border-left: 4px solid #00c4cc
-          }
-        }
-      }
-    }
-  }
-  .content {
-    flex: 1;
-    overflow-x: hidden;
-    overflow-y: auto;
-    background-color: #fafafa;
-    .content-title {
-      font-size: 1.5rem;
-      padding: 1.6rem;
-      padding-bottom: .4rem;
-      span.tab {
-        margin-right: 2rem;
-        font-size: 1.8rem;
-        cursor: pointer;
-        transition: font-size .2s ease-in;
-        &:hover {
-          color: var(--mainColorHover);
-        }
-        &.on {
-          font-size: 2.4rem;
-          color: var(--mainColor);
-        }
-      }
-    }
-    .empty {
-      font-size: 2rem;
-      color: #333;
-      padding: 10rem;
-      text-align: center;
-      .desc {
-        color: #999;
-        line-height: 4rem;
-        font-size: 1.6rem;
-      }
-    }
+  #btn-new {
+    position: fixed;
+    right: 2rem;
+    bottom: 2rem;
+    z-index: 1001;
   }
 }
 </style>

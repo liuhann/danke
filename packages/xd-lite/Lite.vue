@@ -1,9 +1,9 @@
 <template>
   <div id="xd-lite">
-    <!--    拖拽、编辑区-->
+    <!-- 拖拽、编辑区-->
     <mobile-edit-container v-if="work && scene" ref="editContainer" :scene="scene" :work="work" :element="element" @focus-change="onElementFocused" />
     <!-- 上下文主菜单-->
-    <pop-main-menu ref="popMainMenu" :page-enabled="false" :work="work" :scene="scene" @action="onMenuAction" />
+    <pop-main-menu v-if="work" :work="work" :scene="scene" @action="onMenuAction" />
     <!--插入菜单-->
     <avatar-insert-menu ref="insertMenu" @open="onInsertMenuTab" />
     <!--插入矢量图片弹框-->
@@ -16,7 +16,6 @@
     <pop-element-edit ref="popElementEdit" @delete="deleteNode" @insert="insertNode" />
     <!--元素次序弹出层-->
     <pop-element-ordering v-if="work" ref="popElementOrdering" :scene="scene" :view-box="work.viewBox" />
-
     <!--插入元素按钮 -->
     <van-button id="add-button" round icon="plus" type="primary" @click="onInsertClick" />
     <!--元素列表/排序按钮 -->
@@ -35,7 +34,6 @@
         <btn-set-font-familly v-if="isTextElement" :element="element" />
       </div>
     </transition>
-    <van-button id="menu-button" round icon="setting-o" @click="onSettingClick" />
     <pop-album-vector ref="popAlbumVector" @insert="insertNode" @input="chooseMask" />
   </div>
 </template>
@@ -54,10 +52,9 @@ import PopupImageList from './list/PopupImageList'
 import PopUnSplashPhotoList from './insert/PopUnSplashPhotoList'
 import Vue from 'vue'
 import Vant from 'vant';
-import { Toast, Notify } from 'vant'
+import { Toast, Notify, Lazyload } from 'vant';
 import { text } from '../xd-builder/templates'
 import 'vant/lib/index.css';
-import { Lazyload } from 'vant';
 import PopElementOrdering from './list/PopElementOrdering.vue'
 import BtnColorPicker from './van-components/BtnColorPicker'
 import BtnSetText from './van-components/BtnSetText'
@@ -91,6 +88,7 @@ export default {
   mixins: [ workMixin ],
   data () {
     return {
+      mainShow: false,
       image: null,
       popupInsert: false,
       popupSceneList: false,
@@ -219,10 +217,6 @@ export default {
       this.element = element
     },
 
-    onSettingClick () {
-      this.$refs.popMainMenu.open()
-    },
-
     onDeleteClick () {
       deleteElement(this.element, this.scene)
       this.element = null
@@ -306,6 +300,7 @@ export default {
 <style lang="scss">
 #xd-lite {
   height: 100%;
+  position: relative;
   -webkit-user-select: none;
   .van-button--normal {
     padding: 4px;
@@ -318,12 +313,7 @@ export default {
 .work-loaded {
   height: 100%;
 }
-#menu-button {
-  position: absolute;
-  right: 1rem;
-  top: 1rem;
-  z-index: 100;
-}
+
 #add-button {
   position: absolute;
   font-size: 24px;

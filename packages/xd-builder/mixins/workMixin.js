@@ -32,10 +32,8 @@ export default {
           width: 1080,
           height: 1920
         },
-        color: 'transparent',
-        audioUrl: '',
-        audioName: '',
-        audioSeconds: 0,
+        channels: [],
+        colors: [],
         scenes: [] // 场景
       }
     },

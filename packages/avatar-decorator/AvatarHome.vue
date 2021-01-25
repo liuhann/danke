@@ -109,7 +109,6 @@ import { getImageUrl } from '../xd-builder/mixins/imageUtils'
 import ImageDAO from '../utils/imagedao'
 import NavBar from '../site/components/NavBar'
 import { Cropper } from 'vue-advanced-cropper'
-import html2canvas from 'html2canvas'
 import VSwatches from 'vue-swatches'
 import 'vue-swatches/dist/vue-swatches.css'
 import StyleRegistry from '../xd-builder/utils/StyleRegistry'
@@ -363,49 +362,6 @@ export default {
         border-radius: 10%;
       }
     }
-
-    .variables {
-      .variable {
-        box-sizing: border-box;
-        padding: 5px 10px;
-        width: 100%;
-        position: relative;
-        text-align: left;
-        input {
-          box-sizing: border-box;
-          appearance: none;
-          font-size: 1.8rem;
-          background: transparent;
-          -webkit-tap-highlight-color: rgba(0,0,0,0);
-          outline: none;
-          height: 4.5rem;
-          color:rgb(66,66,66);
-          padding-left: 1rem;
-          padding-right: 1rem;
-          border-color: transparent;
-          border-width: 0.125rem;
-          box-shadow: none;
-          font-weight: 700;
-        }
-
-        .text-input {
-          background-color: #f9f9f9;
-          border-radius: 0.5rem;
-        }
-        .color-input {
-          background-color: #f9f9f9;
-          border-radius: 0.5rem;
-          .vue-swatches {
-            position: absolute;
-            top: 1.1rem;
-            right: 2rem;
-            .vue-swatches__container {
-              z-index: 1001;
-            }
-          }
-        }
-      }
-    }
   }
 
   .work-wrapper {
@@ -414,10 +370,11 @@ export default {
     linear-gradient(45deg, #efefef 25%, transparent 25%, transparent 75%, #efefef 75%, #efefef);
     background-size: 20px 20px;
     background-position: 0 0, 10px 10px;
-    width: 64px;
-    height: 64px;
-    border: 1px solid #eee;
-    border-radius: 2px;
+    width: 100%;
+    padding-bottom: 100%;
+    height: 0;
+    border-radius: 5px;
+    overflow: hidden;
   }
 
   .action {

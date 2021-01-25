@@ -10,9 +10,7 @@
             <i v-if="scope.row.system && scope.row.system.site" class="el-icon-s-home" />
           </template>
         </el-table-column>
-        <el-table-column label="app" prop="channels
-"
-        />
+        <el-table-column label="app" prop="channels"/>
         <el-table-column>
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="openWork(scope.row)">打开</el-button>
@@ -24,6 +22,7 @@
     </div>
     <el-dialog title="提示" :visible.sync="dialogVisible" width="30%">
       <el-form v-if="currentWork" label-width="80px">
+        {{currentWork}}
         <el-form-item label="名称">
           <el-input v-model="currentWork.title"></el-input>
         </el-form-item>

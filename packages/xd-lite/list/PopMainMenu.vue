@@ -1,24 +1,31 @@
 <template>
-  <van-popup v-model="show" position="bottom" :style="{ height: '50%', padding: '8px', background: '#f7f8fa' }">
-    <div v-if="pageEnabled" class="main-menu">
-      <div class="block_title">页面功能 ({{ currentPage }}/{{ totalPages }}页)</div>
-      <van-grid :column-num="4" square clickable>
-        <van-grid-item icon="orders-o" text="页面属性" @click="$emit('action', 'scene-setting')" />
-        <van-grid-item icon="plus" text="增加页面" @click="$emit('action', 'add-scene')" />
-        <van-grid-item icon="arrow-up" text="上一页" @click="$emit('action', 'scene-prev')" />
-        <van-grid-item icon="arrow-down" text="下一页" @click="$emit('action', 'scene-next')" />
-      </van-grid>
-    </div>
-    <div>
-      <div class="block_title">作品</div>
-      <van-grid :column-num="4" square clickable>
-        <van-grid-item icon="success" text="保存" @click="$emit('action', 'save-work')" />
-        <van-grid-item icon="share-o" text="分享" @click="$emit('action', 'share-work')" />
-        <van-grid-item icon="wap-home-o" text="返回" @click="$emit('action', 'go-home')" />
-        <van-grid-item />
-      </van-grid>
-    </div>
-  </van-popup>
+  <div class="menu-button">
+    <van-popover v-model="show" class="pop-main-menu" trigger="click" placement="bottom-end">
+      <div class="w-300">
+        <div class="paging-actions">
+          <div class="block_title">页面功能 ({{ currentPage }}/{{ totalPages }}页)</div>
+          <van-grid :column-num="4" square clickable>
+            <van-grid-item icon="orders-o" text="页面属性" @click="$emit('action', 'scene-setting')" />
+            <van-grid-item icon="plus" text="增加页面" @click="$emit('action', 'add-scene')" />
+            <van-grid-item icon="arrow-up" text="上一页" @click="$emit('action', 'scene-prev')" />
+            <van-grid-item icon="arrow-down" text="下一页" @click="$emit('action', 'scene-next')" />
+          </van-grid>
+        </div>
+        <div class="main-menu w-80">
+          <div class="block_title">作品</div>
+          <van-grid :column-num="4" square clickable>
+            <van-grid-item icon="success" text="保存" @click="$emit('action', 'save-work')" />
+            <van-grid-item icon="share-o" text="分享" @click="$emit('action', 'share-work')" />
+            <van-grid-item icon="wap-home-o" text="返回首页" @click="$emit('action', 'go-home')" />
+            <van-grid-item />
+          </van-grid>
+        </div>
+      </div>
+      <template #reference>
+        <van-button round icon="setting-o" />
+      </template>
+    </van-popover>
+  </div>
 </template>
 
 <script>
@@ -61,7 +68,14 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss">
+.menu-button {
+  position: absolute;
+  z-index: 1001;
+  right: 20px;
+  top: 20px;
+}
+
 .block_title {
   background: #f7f8fa;
   margin: 0;
