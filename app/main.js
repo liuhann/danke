@@ -1,6 +1,4 @@
-// styles
 import './common.scss'
-// import '../packages/common/karla/font.css'
 import AsyncBoot from 'async-boot'
 import App from './app.vue'
 import Vue from 'vue'
@@ -9,7 +7,6 @@ import site from '../packages/site'
 import user from '../packages/user'
 import restclient from '../packages/rest-client'
 import initClient from '../packages/common/utils/initClient'
-import initEventEmitter from '../packages/common/utils/initEventEmitter'
 
 import dankePackages from './danke'
 import { getToken } from '../packages/user/token'
@@ -22,7 +19,6 @@ const boot = new AsyncBoot({
   App,
   mode: 'history',
   appServer: 'http://www.danke.fun',
-  // appServer: 'http://localhost',
   cdn: 'http://cdn.danke.fun',
   IMG_SERVER: 'http://image.danke.fun',
   mount: '#app',
@@ -42,8 +38,6 @@ const boot = new AsyncBoot({
 })
 
 boot.ctx.token = getToken()
-// attach some global ctx services
 initClient(boot.ctx, 'http://www.danke.fun/api/')
-initEventEmitter(boot.ctx)
 
 boot.startUp()

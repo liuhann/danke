@@ -9,6 +9,5 @@ export default {
     path: '/page/:id',
     component: () => import(/* webpackChunkName: "xd-page-view" */'./OnePagePlay.vue')
   },],
-  async onload (ctx) {
-  }
+  async onload (ctx) { }
 }

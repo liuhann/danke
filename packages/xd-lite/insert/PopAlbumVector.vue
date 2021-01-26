@@ -31,12 +31,13 @@ import BasicElementList from '../list/BasicElementList.vue'
 import MyUploads from '../list/MyUploads'
 export default {
   name: "PopAlbumVector",
-  components: { 
-    MyUploads, 
+  components: {
+    MyUploads,
     BasicElementList
   },
   data() {
     return {
+      isMobile: true,
       contentType: '',
       tabs: [],
       currentPack: {},
@@ -55,6 +56,9 @@ export default {
   created () {
     this.packdao = new RestDAO(this.ctx, 'danke/pack')
     this.restdao = new RestDAO(this.ctx, 'danke/public/vector')
+  },
+
+  mounted () {
   },
 
   methods: {
