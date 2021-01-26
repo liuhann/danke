@@ -1,7 +1,7 @@
 <template>
   <div class="menu-button">
     <van-popover v-model="show" class="pop-main-menu" trigger="click" placement="bottom-end">
-      <div class="w-300">
+      <div class="pop-content">
         <div class="paging-actions">
           <div class="block_title">页面功能 ({{ currentPage }}/{{ totalPages }}页)</div>
           <van-grid :column-num="4" square clickable>
@@ -69,6 +69,10 @@ export default {
 </script>
 
 <style lang="scss">
+.pop-content {
+  width: 300px;
+}
+
 .menu-button {
   position: absolute;
   z-index: 1001;

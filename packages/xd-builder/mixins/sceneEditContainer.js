@@ -3,7 +3,6 @@ import { shortid } from '../../utils/string'
 import { getSVGViewBox } from '../../vectors/utils'
 import { createSingleElement } from '../utils/sceneActions'
 import { fitRectIntoBounds, getRectPositionStyle, isPointInRect, intersectRect } from '../mixins/rectUtils.js'
-import textMesure from '../../utils/textMesure'
 export default {
   props: {
     work: {
@@ -133,13 +132,8 @@ export default {
       })
       // 自适应后，伸缩的比率
       this.scale = fitSize.width / this.viewBox.width
-      if (fitSize.fitTo === 'width') {
-        this.translateX = this.deviceScreenPadding
-        this.translateY = (this.containerSize.height - fitSize.height) / 2
-      } else {
-        this.translateX = (this.containerSize.width - fitSize.width) / 2
-        this.translateY = this.deviceScreenPadding
-      }
+      this.translateX = (this.containerSize.width - fitSize.width) / 2
+      this.translateY = (this.containerSize.height - fitSize.height) / 2
     },
 
     createSingleElement (element, x, y) {

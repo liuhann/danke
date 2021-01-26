@@ -16,8 +16,6 @@
     <pop-element-edit ref="popElementEdit" @delete="deleteNode" @insert="insertNode" />
     <!--元素次序弹出层-->
     <pop-element-ordering v-if="work" ref="popElementOrdering" :scene="scene" :view-box="work.viewBox" />
-    <!--插入元素按钮 -->
-    <van-button id="add-button" round icon="plus" type="primary" @click="onInsertClick" />
     <!--元素列表/排序按钮 -->
     <van-button id="order-button" round icon="descending" @click="onOrderingClick" />
 
@@ -34,6 +32,7 @@
         <btn-set-font-familly v-if="isTextElement" :element="element" />
       </div>
     </transition>
+    <insert-button />
     <pop-album-vector ref="popAlbumVector" @insert="insertNode" @input="chooseMask" />
   </div>
 </template>
@@ -64,12 +63,14 @@ import BtnSetLength from './van-components/BtnSetLength.vue'
 import PopVectorAlbumList from './list/PopVectorAlbumList.vue'
 import PopVectorList from './list/PopVectorList.vue'
 import PopAlbumVector from './insert/PopAlbumVector.vue'
+import InsertButton from './insert/InsertButton.vue'
 
 Vue.use(Lazyload);
 Vue.use(Vant);
 export default {
   name: "Lite",
   components: {
+    InsertButton,
     PopAlbumVector,
     BtnEditText,
     BtnSetText,
@@ -255,29 +256,6 @@ export default {
       }])
     },
 
-    onInsertClick () {
-      this.$refs.popAlbumVector.open([{
-        type: 'basic',
-        key: 'basic',
-        title: '基础'
-      }, {
-        type: 'upload',
-        key: 'upload',
-        title: '图片'
-      }, {
-        key: 'avatar',
-        type: 'pack',
-        title: '卡通头像'
-      }, {
-        type: 'pack',
-        key: 'art',
-        title: '设计'
-      }, {
-        type: 'pack',
-        key: 'scenery',
-        title: '图库'
-      }], 'insert')
-    },
     choosePack (pack) {
       this.$refs.vectorListPop.open(pack._id)
     },

@@ -1,5 +1,5 @@
 <template>
-  <van-popup v-model="show" position="bottom" class="pop-album-vector" :overlay="false" closeable close-icon="arrow-down" @opened="opened">
+  <van-popup v-model="show" :position="position" :style="popoverStyle" class="pop-album-vector" :overlay="false" closeable close-icon="arrow-down" @opened="opened">
     <van-tabs swipeable @change="onTabChange">
       <van-tab v-for="tab in tabs" :key="tab.key" :title="tab.title" :name="tab.key"></van-tab>
     </van-tabs>
@@ -35,14 +35,22 @@ export default {
     MyUploads,
     BasicElementList
   },
+  props: {
+    show: {
+      type: Boolean,
+      default: false
+    },
+    tabs: {
+      type: Array,
+      default: function () {return []}
+    }
+  },
   data() {
     return {
       isMobile: true,
       contentType: '',
-      tabs: [],
       currentPack: {},
       vectorFetching: false,
-      show: false,
       packs: [],
       vectors: [],
       currentTab: null,
@@ -53,12 +61,37 @@ export default {
       total: -1
     }
   },
+
+  computed: {
+    position () {
+      if (this.isMobile) {
+        return "bottom"
+      } else {
+        return 'right'
+      }
+    },
+    popoverStyle () {
+      if (this.isMobile) {
+        return {
+          height: '50%'
+        }
+      } else {
+        return {
+          height: '100%',
+          width: '480px'
+        }
+      }
+    }
+  },
   created () {
     this.packdao = new RestDAO(this.ctx, 'danke/pack')
     this.restdao = new RestDAO(this.ctx, 'danke/public/vector')
   },
 
   mounted () {
+    if (window.innerWidth > 960) {
+      this.isMobile = false
+    }
   },
 
   methods: {
@@ -66,14 +99,15 @@ export default {
     open(tabs, action) {
       this.tabs = tabs
       this.action = action
-      this.currentTab = this.tabs[0]
-      this.contentType = this.currentTab.type
+
       this.show = true
     },
     close () {
       this.show = false
     },
     async opened () {
+      this.currentTab = this.tabs[0]
+      this.contentType = this.currentTab.type
       this.tabSwitched()
     },
 
