@@ -1,37 +1,35 @@
 <template>
   <div id="creative-center" class="creative-center">
-    <nav-bar title="我的作品"></nav-bar>
-    <van-button id="btn-new" type="primary" @click="navTo('new')" icon="plus">创建作品</van-button>
-    <div class="container">
+    <nav-layer />
+    <div class="actions">
+      <van-button id="btn-new" type="primary" icon="plus" @click="navTo('new')">创建作品</van-button>
+    </div>
+    <div class="works-nav-wrapper">
       <van-tabs v-model="isPublic">
-        <van-tab title="私有作品"></van-tab>
+        <van-tab v-for="channel in channels" :key="channel.value" :title="channel.label"></van-tab>
         <van-tab title="公开作品"></van-tab>
       </van-tabs>
-      <div class="columns is-mobile is-multiline work-list is-1">
-        <div v-for="work in works" :key="work.id" class="column work-container is-full-mobile is-4-tablet is-3-desktop is-3-fullhd">
-          <div class="box">
-            <div class="columns is-mobile">
-              <div class="column preview is-narrow">
-                <div class="work-image-container">
-                  <img v-if="work.snapshot" :src="getImageUrl(work.snapshot, 120, 120, 'lfit')">
-                </div>
-                <span v-if="!work.snapshot" class="no-snapshot">正在生成预览</span>
-              </div>
-              <div class="column">
-                <div class="work-title">{{ work.title }}</div>
-                <div class="buttons mt-2">
-                  <van-button type="primary" @click="playWork(work)">预览</van-button>
-                  <van-popover trigger="click" :actions="actions">
-                    <template #reference>
-                      <van-button type="primary">深色风格</van-button>
-                    </template>
-                  </van-popover>
-                  <button class="button is-success is-light" @click="editWork(work)">编辑</button>
-                  <button class="button is-info is-light">预览</button>
-                  <button class="button is-info is-light" @click="deleteWork(work)">删除</button>
-                  <button class="button is-info is-light">复制</button>
-                </div>
-              </div>
+      <div class="work-list-wrapper">
+        <div v-for="work in works" :key="work.id" class="work-wrapper">
+          <div class="preview">
+            <div class="work-image-container">
+              <img v-if="work.snapshot" :src="getImageUrl(work.snapshot, 120, 120, 'lfit')">
+            </div>
+            <span v-if="!work.snapshot" class="no-snapshot">正在生成预览</span>
+          </div>
+          <div class="actions">
+            <div class="work-title">{{ work.title }}</div>
+            <div class="buttons mt-2">
+              <van-button type="primary" @click="playWork(work)">预览</van-button>
+              <van-popover trigger="click" :actions="actions">
+                <template #reference>
+                  <van-button type="primary">深色风格</van-button>
+                </template>
+              </van-popover>
+              <button class="button is-success is-light" @click="editWork(work)">编辑</button>
+              <button class="button is-info is-light">预览</button>
+              <button class="button is-info is-light" @click="deleteWork(work)">删除</button>
+              <button class="button is-info is-light">复制</button>
             </div>
           </div>
         </div>
@@ -41,19 +39,19 @@
 </template>
 
 <script>
-import workListMixins from '../mixins/workListMixins'
-import NavBar from '../../site/components/NavBar'
-import channels from '../../site/channels'
-import { getImageUrl } from '../mixins/imageUtils'
-import { fitRectIntoBounds } from '../mixins/rectUtils'
+import workListMixins from '../xd-builder/mixins/workListMixins'
+import channels from '../site/channels'
+import { getImageUrl } from '../xd-builder/mixins/imageUtils'
+import { fitRectIntoBounds } from '../xd-builder/mixins/rectUtils'
 import Vue from 'vue'
 import Vant from 'vant';
 import 'vant/lib/index.css';
+import NavLayer from '../site/components/NavLayer'
 Vue.use(Vant);
 export default {
   name: 'CreativeCenter',
   components: {
-    NavBar
+    NavLayer
   },
   mixins: [ workListMixins ],
   data () {
@@ -163,7 +161,12 @@ export default {
 
 <style lang="scss">
 
-.work-list {
+.work-list-wrapper {
+  margin-top: 18px;
+  .work-wrapper {
+    display: flex;
+    margin-bottom: 15px;
+  }
   .preview {
     display: flex;
     justify-content: center;
@@ -186,11 +189,15 @@ export default {
   }
 }
 .creative-center {
-  #btn-new {
-    position: fixed;
-    right: 2rem;
-    bottom: 2rem;
-    z-index: 1001;
+  .actions {
+    margin: 20px
+  }
+  .works-nav-wrapper {
+    margin: 0 20px;
+
+    .van-tabs {
+      max-width: 540px;
+    }
   }
 }
 </style>

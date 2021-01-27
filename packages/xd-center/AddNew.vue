@@ -21,9 +21,9 @@
 
 <script>
 import { slideShow, video, appType } from './workType'
-import channels from '../../site/channels'
+import channels from '../site/channels'
 import { InputNumber } from 'element-ui'
-import NavBar from '../../site/components/NavBar'
+import NavBar from '../site/components/NavBar'
 export default {
   name: 'AddNew',
   components: {

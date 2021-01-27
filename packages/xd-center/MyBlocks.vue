@@ -1,43 +1,44 @@
 <template>
-<div id="my-blocks">
-  <div class="content-title">
-    我的图块
-  </div>
-  <div class="blocks-list-container">
-    <div class="list-item" v-for="block in works" :key="block._id">
-      <div class="work-container" :style="{
-         background: block.color
-      }">
-        <div class="work-viewport" :style="{
+  <div id="my-blocks">
+    <div class="content-title">
+      我的图块
+    </div>
+    <div class="blocks-list-container">
+      <div v-for="block in works" :key="block._id" class="list-item">
+        <div class="work-container" :style="{
+          background: block.color
+        }"
+        >
+          <div class="work-viewport" :style="{
             width: block.viewport.width + 'px',
             height: block.viewport.height + 'px',
-        }">
-          <render-scene :view-box="block.viewBox || block.screen" :scene="block.scenes[0]" :view-port="block.viewport" :stage="block.stage"/>
+          }"
+          >
+            <render-scene :view-box="block.viewBox || block.screen" :scene="block.scenes[0]" :view-port="block.viewport" :stage="block.stage" />
+          </div>
         </div>
+        <el-dropdown size="small" trigger="click" @command="(command) => handleCommand(command, block)">
+          <span class="el-dropdown-link">
+            <i class="el-icon-more"></i>
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item command="replay">重新播放</el-dropdown-item>
+            <el-dropdown-item command="delete">删除</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
       </div>
-      <el-dropdown size="small" trigger="click" @command="(command) => handleCommand(command, block)">
-        <span class="el-dropdown-link">
-          <i class="el-icon-more"></i>
-        </span>
-        <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item command="replay">重新播放</el-dropdown-item>
-          <el-dropdown-item command="delete">删除</el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
     </div>
   </div>
-</div>
 </template>
 
 <script>
 import { Dialog, Dropdown, DropdownMenu, DropdownItem } from 'element-ui'
-import { fitRectIntoBounds } from '../mixins/rectUtils'
-import workListMixins from '../mixins/workListMixins'
-import RenderScene from '../render/RenderScene'
-import sleep from '../../common/utils/sleep'
+import { fitRectIntoBounds } from '../xd-builder/mixins/rectUtils'
+import workListMixins from '../xd-builder/mixins/workListMixins'
+import RenderScene from '../xd-builder/render/RenderScene'
+import sleep from '../common/utils/sleep'
 export default {
   name: 'MyBlocks',
-  mixins: [ workListMixins ],
   components: {
     RenderScene,
     [Dialog.name]: Dialog,
@@ -45,6 +46,7 @@ export default {
     [DropdownMenu.name]: DropdownMenu,
     [DropdownItem.name]: DropdownItem
   },
+  mixins: [ workListMixins ],
   data () {
     return {
       currentPage: 1,
@@ -52,13 +54,13 @@ export default {
       blocks: []
     }
   },
-  created () { },
-  mounted () {
-    this.loadWorks()
-  },
   watch: {
     // call again the method if the route changes
     '$route': 'loadMyPacks'
+  },
+  created () { },
+  mounted () {
+    this.loadWorks()
   },
   methods: {
     listQuery () {

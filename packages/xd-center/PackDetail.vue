@@ -1,84 +1,86 @@
 <template>
-<div id="pack-detail">
-  <div class="content-title" v-if="!metaEditing">
-    <span>{{pack.name}}</span>
-    <button class="plain small" @click="editPackMeta" v-if="pack.creator === userId">编辑</button>
-    <button class="plain small" @click="sharePack" v-if="!pack.shared">分享</button>
-    <button class="plain small" v-if="pack.shared">已分享</button>
-    <div class="desc">{{pack.desc}}</div>
-  </div>
-  <div class="pack-meta" v-if="metaEditing">
-    <div class="title">
-      <input type="text" v-model="pack.name" />
+  <div id="pack-detail">
+    <div v-if="!metaEditing" class="content-title">
+      <span>{{ pack.name }}</span>
+      <button v-if="pack.creator === userId" class="plain small" @click="editPackMeta">编辑</button>
+      <button v-if="!pack.shared" class="plain small" @click="sharePack">分享</button>
+      <button v-if="pack.shared" class="plain small">已分享</button>
+      <div class="desc">{{ pack.desc }}</div>
     </div>
-    <div class="desc">
-      <input type="text" placeholder="填写图库描述信息"  class="small" v-model="pack.desc" /> <button class="small" @click="savePackMeta">保存</button> <button class="small is-danger" @click="removePack">删除</button>  <button class="plain small" @click="editPackMeta">取消</button>
+    <div v-if="metaEditing" class="pack-meta">
+      <div class="title">
+        <input v-model="pack.name" type="text" />
+      </div>
+      <div class="desc">
+        <input v-model="pack.desc" type="text" placeholder="填写图库描述信息" class="small" /> <button class="small" @click="savePackMeta">保存</button> <button class="small is-danger" @click="removePack">删除</button>  <button class="plain small" @click="editPackMeta">取消</button>
+      </div>
     </div>
-  </div>
-  <div class="pack-action" v-if="pack.creator === userId && selectedSvgs.length">
-    <button class="plain small" @click="deleteSelectedSVG" >刪除</button>
-  </div>
-  <div class="pack-sharing" v-if="pack.creator !== userId">
-    <button class="plain small" @click="editPackMeta">收藏</button>
-  </div>
-  <div class="element-list-container">
-    <div class="list vector-list" v-if="pack.type === 'vector'">
-      <el-upload
-        v-if="pack.creator === userId"
-        action="https://www.danke.fun/"
-        accept="image/svg+xml"
-        :auto-upload="false"
-        :show-file-list="false"
-        :on-change="uploadVector"
-        multiple>
-        <div class="add box">
-          <i class="el-icon-plus" />
-        </div>
-      </el-upload>
-      <div v-for="(svg, index) in svgs" :key="index" class="box" :class="svg.selected? 'selected': ''" @click="toggleSelected(svg)">
-        <div class="svg-container" :style="variableValues(svg)">
-          <div class="styled-box" v-html="svg.content">
+    <div v-if="pack.creator === userId && selectedSvgs.length" class="pack-action">
+      <button class="plain small" @click="deleteSelectedSVG">刪除</button>
+    </div>
+    <div v-if="pack.creator !== userId" class="pack-sharing">
+      <button class="plain small" @click="editPackMeta">收藏</button>
+    </div>
+    <div class="element-list-container">
+      <div v-if="pack.type === 'vector'" class="list vector-list">
+        <el-upload
+          v-if="pack.creator === userId"
+          action="https://www.danke.fun/"
+          accept="image/svg+xml"
+          :auto-upload="false"
+          :show-file-list="false"
+          :on-change="uploadVector"
+          multiple
+        >
+          <div class="add box">
+            <i class="el-icon-plus" />
+          </div>
+        </el-upload>
+        <div v-for="(svg, index) in svgs" :key="index" class="box" :class="svg.selected? 'selected': ''" @click="toggleSelected(svg)">
+          <div class="svg-container" :style="variableValues(svg)">
+            <div class="styled-box" v-html="svg.content">
+            </div>
+          </div>
+          <div class="variables">
+            <el-color-picker v-for="(variable, index) in svg.variables" :key="index" v-model="variable.value" size="mini" />
+          </div>
+          <div v-if="svg.creator === userId" class="item-btns">
+            <i class="el-icon-delete" @click="confirmDelete(svg)"></i>
+            <i class="el-icon-edit" @click="edit(svg)"></i>
           </div>
         </div>
-        <div class="variables">
-          <el-color-picker v-for="(variable, index) in svg.variables" :key="index" v-model="variable.value" size="mini"/>
-        </div>
-        <div class="item-btns" v-if="svg.creator === userId">
-          <i class="el-icon-delete" @click="confirmDelete(svg)"></i>
-          <i class="el-icon-edit" @click="edit(svg)"></i>
-        </div>
       </div>
-    </div>
 
-    <div class="list pictures" v-if="pack.type === 'images'">
-      <el-upload
-        v-if="pack.creator === userId"
-        action="https://www.danke.fun/"
-        accept="image/*"
-        :auto-upload="false"
-        :show-file-list="false"
-        :on-change="uploadPicture"
-        multiple>
-        <div class="add box">
-          <i class="el-icon-plus" />
-        </div>
-      </el-upload>
-      <div v-for="(image, index) in images" :key="index" class="box flex-centered">
-        <img :src="getImageUrl(image.url, 160)" />
-        <div class="item-btns" v-if="image.creator === userId">
-          <i class="el-icon-delete" @click="confirmDeleteImage(image)"></i>
+      <div v-if="pack.type === 'images'" class="list pictures">
+        <el-upload
+          v-if="pack.creator === userId"
+          action="https://www.danke.fun/"
+          accept="image/*"
+          :auto-upload="false"
+          :show-file-list="false"
+          :on-change="uploadPicture"
+          multiple
+        >
+          <div class="add box">
+            <i class="el-icon-plus" />
+          </div>
+        </el-upload>
+        <div v-for="(image, index) in images" :key="index" class="box flex-centered">
+          <img :src="getImageUrl(image.url, 160)" />
+          <div v-if="image.creator === userId" class="item-btns">
+            <i class="el-icon-delete" @click="confirmDeleteImage(image)"></i>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
-import RestDAO from '../../utils/restdao.js'
+import RestDAO from '../utils/restdao.js'
 import { Icon, ColorPicker, Upload, MessageBox, Loading } from 'element-ui'
-import { getImageUrl } from '../mixins/imageUtils'
-import ImageDAO from '../../utils/imagedao'
+import { getImageUrl } from '../xd-builder/mixins/imageUtils'
+import ImageDAO from '../utils/imagedao'
 
 export default {
   name: 'PackDetail',
@@ -94,15 +96,6 @@ export default {
       images: []
     }
   },
-  created () {
-    this.packdao = new RestDAO(this.ctx, 'danke/pack')
-    this.svgdao = new RestDAO(this.ctx, 'danke/svg')
-    this.imagerestdao = new RestDAO(this.ctx, 'danke/image')
-    this.imagedao = new ImageDAO(this.ctx)
-    this.choosedFiles = []
-    // fetch the data when the view is created and the data is
-    // already being observed
-  },
   computed: {
     selectedSvgs() {
       return this.svgs.filter(svg => svg.selected)
@@ -114,12 +107,21 @@ export default {
       return this.pack.creator === this.ctx.user.id
     }
   },
-  mounted () {
-    this.fetchData()
-  },
   watch: {
     // call again the method if the route changes
     '$route': 'fetchData'
+  },
+  created () {
+    this.packdao = new RestDAO(this.ctx, 'danke/pack')
+    this.svgdao = new RestDAO(this.ctx, 'danke/svg')
+    this.imagerestdao = new RestDAO(this.ctx, 'danke/image')
+    this.imagedao = new ImageDAO(this.ctx)
+    this.choosedFiles = []
+    // fetch the data when the view is created and the data is
+    // already being observed
+  },
+  mounted () {
+    this.fetchData()
   },
   methods: {
     getImageUrl,

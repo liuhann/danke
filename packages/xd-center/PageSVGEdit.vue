@@ -1,57 +1,61 @@
 <template>
-<div class="page-svg-edit">
-  <div class="content-title">
-    <span>编辑图片</span>
-  </div>
-  <div class="container" style="background: #fff;padding: 20px;box-shadow: 0 1px 5px 0 rgba(0,0,0,.1);">
-    <el-form size="mini" label-width="90px">
-      <el-form-item label="名称">
-        <el-input v-model="vector.name"/>
-      </el-form-item>
-      <el-form-item label="图库">
-        <el-select v-model="vector.pack">
-          <el-option v-for="pack in packs" :key="pack._id" :value="pack._id" :label="pack.name"/>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="SVG编辑">
-        <div id="editor">
-        </div>
-      </el-form-item>
-      <el-form-item label="预览">
-        <div class="styled-box" v-html="vector.content" :style="variableStyle">
-        </div>
-      </el-form-item>
-      <el-form-item label="变量信息">
-        <el-button class="small plain" @click="addVariable">增加</el-button>
-        <table class="variables">
-          <tr>
-            <th>标题</th>
-            <th>变量名</th>
-            <th>类型</th>
-            <th>默认值</th>
-          </tr>
-          <tbody>
-            <tr v-for="(variable, index) in vector.variables" :key="index">
-              <td><el-input v-model="variable.label"/></td>
-              <td><el-input v-model="variable.name"/></td>
-              <td><el-select v-model="variable.type">
-                <el-option value="color"/>
-                <el-option value="number"/>
-              </el-select></td>
-              <td><el-input v-if="variable.type==='number'" v-model.number="variable.value"/>
-                <el-input v-else v-model="variable.value"/></td>
+  <div class="page-svg-edit">
+    <div class="content-title">
+      <span>编辑图片</span>
+    </div>
+    <div class="container" style="background: #fff;padding: 20px;box-shadow: 0 1px 5px 0 rgba(0,0,0,.1);">
+      <el-form size="mini" label-width="90px">
+        <el-form-item label="名称">
+          <el-input v-model="vector.name" />
+        </el-form-item>
+        <el-form-item label="图库">
+          <el-select v-model="vector.pack">
+            <el-option v-for="pack in packs" :key="pack._id" :value="pack._id" :label="pack.name" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="SVG编辑">
+          <div id="editor">
+          </div>
+        </el-form-item>
+        <el-form-item label="预览">
+          <div class="styled-box" :style="variableStyle" v-html="vector.content">
+          </div>
+        </el-form-item>
+        <el-form-item label="变量信息">
+          <el-button class="small plain" @click="addVariable">增加</el-button>
+          <table class="variables">
+            <tr>
+              <th>标题</th>
+              <th>变量名</th>
+              <th>类型</th>
+              <th>默认值</th>
             </tr>
-          </tbody>
-        </table>
+            <tbody>
+              <tr v-for="(variable, index) in vector.variables" :key="index">
+                <td><el-input v-model="variable.label" /></td>
+                <td><el-input v-model="variable.name" /></td>
+                <td>
+                  <el-select v-model="variable.type">
+                    <el-option value="color" />
+                    <el-option value="number" />
+                  </el-select>
+                </td>
+                <td>
+                  <el-input v-if="variable.type==='number'" v-model.number="variable.value" />
+                  <el-input v-else v-model="variable.value" />
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </el-form-item>
         <el-form-item label="">
           <el-button class="small" @click="replaceFillColorWithVariables">替换颜色为变量</el-button>
           <el-button class="small" @click="save">保存</el-button>
           <el-button class="small plain" @click="cancel">取消</el-button>
         </el-form-item>
-    </el-form>
+      </el-form>
+    </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -59,7 +63,7 @@ import ace from 'brace'
 import 'brace/mode/svg'
 import 'brace/theme/monokai'
 import { Message, Form, FormItem, Input, Select, Option, Button } from 'element-ui'
-import RestDAO from '../../utils/restdao.js'
+import RestDAO from '../utils/restdao.js'
 export default {
   name: 'PageSVGEdit',
   components: {
@@ -93,13 +97,13 @@ export default {
     }
   },
   watch: {},
-  created () {
-    this.packdao = new RestDAO(this.ctx, 'danke/pack')
-    this.svgdao = new RestDAO(this.ctx, 'danke/svg')
-  },
   watch: {
     // call again the method if the route changes
     '$route': 'fetchData'
+  },
+  created () {
+    this.packdao = new RestDAO(this.ctx, 'danke/pack')
+    this.svgdao = new RestDAO(this.ctx, 'danke/svg')
   },
   mounted () {
     this.initEditor()

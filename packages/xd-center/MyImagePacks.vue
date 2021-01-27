@@ -1,28 +1,28 @@
 <template>
-<div id="my-image-packs">
-  <div class="content-title">
-    图片库
-  </div>
-  <div class="pack-container vector">
-    <div class="pack add">
-      <i class="el-icon-plus" @click="newPack"/>
+  <div id="my-image-packs">
+    <div class="content-title">
+      图片库
     </div>
-    <div class="pack" v-for="pack in packs" :key="pack._id" @click="openPack(pack._id)">
-      <icon-folder />
-      <div v-if="pack.shared" class="shared">已分享</div>
-      <div class="pack-meta">
-        <div class="name">
-          {{pack.name}}
+    <div class="pack-container vector">
+      <div class="pack add">
+        <i class="el-icon-plus" @click="newPack" />
+      </div>
+      <div v-for="pack in packs" :key="pack._id" class="pack" @click="openPack(pack._id)">
+        <icon-folder />
+        <div v-if="pack.shared" class="shared">已分享</div>
+        <div class="pack-meta">
+          <div class="name">
+            {{ pack.name }}
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
 import { Dialog } from 'element-ui'
-import RestDAO from '../../utils/restdao.js'
+import RestDAO from '../utils/restdao.js'
 import IconFolder from './photo.svg'
 export default {
   name: 'MyPacks',
@@ -36,15 +36,15 @@ export default {
       packs: []
     }
   },
+  watch: {
+    // call again the method if the route changes
+    '$route': 'loadMyPacks'
+  },
   created () {
     this.packdao = new RestDAO(this.ctx, 'danke/pack')
   },
   mounted () {
     this.loadMyPacks()
-  },
-  watch: {
-    // call again the method if the route changes
-    '$route': 'loadMyPacks'
   },
   methods: {
     async loadMyPacks() {

@@ -37,10 +37,10 @@
 </template>
 
 <script>
-import workListMixins from '../mixins/workListMixins'
+import workListMixins from '../xd-builder/mixins/workListMixins'
 import dayjs from 'dayjs'
-import { fitRectIntoBounds } from '../mixins/rectUtils'
-import { getImageUrl } from '../mixins/imageUtils'
+import { fitRectIntoBounds } from '../xd-builder/mixins/rectUtils'
+import { getImageUrl } from '../xd-builder/mixins/imageUtils'
 
 export default {
   name: 'MyWork',

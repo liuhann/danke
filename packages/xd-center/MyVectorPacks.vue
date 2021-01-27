@@ -1,35 +1,35 @@
 <template>
-<div id="my-packs">
-  <div class="content-title">
-    矢量图库
-  </div>
-  <div class="pack-container vector">
-    <div class="pack add">
-      <i class="el-icon-plus" @click="newPack"/>
+  <div id="my-packs">
+    <div class="content-title">
+      矢量图库
     </div>
-    <div class="pack" v-for="pack in packs" :key="pack._id" @click="openPack(pack._id)">
-      <div class="pack-svgs">
-        <div class="svg" v-for="svg in pack.children" :key="svg._id" :style="variableValues(svg)">
-          <div class="styled-box" v-html="svg.content">
+    <div class="pack-container vector">
+      <div class="pack add">
+        <i class="el-icon-plus" @click="newPack" />
+      </div>
+      <div v-for="pack in packs" :key="pack._id" class="pack" @click="openPack(pack._id)">
+        <div class="pack-svgs">
+          <div v-for="svg in pack.children" :key="svg._id" class="svg" :style="variableValues(svg)">
+            <div class="styled-box" v-html="svg.content">
+            </div>
+          </div>
+        </div>
+        <div class="pack-meta">
+          <div class="name">
+            {{ pack.name }}
+          </div>
+          <div class="desc">
+            {{ pack.desc }}
           </div>
         </div>
       </div>
-      <div class="pack-meta">
-        <div class="name">
-          {{pack.name}}
-        </div>
-        <div class="desc">
-          {{pack.desc}}
-        </div>
-      </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
 import { Dialog } from 'element-ui'
-import RestDAO from '../../utils/restdao.js'
+import RestDAO from '../utils/restdao.js'
 export default {
   name: 'MyVectorPacks',
   components: {
@@ -42,15 +42,15 @@ export default {
       dialogVisible: false
     }
   },
+  watch: {
+    // call again the method if the route changes
+    '$route': 'loadMyPacks'
+  },
   created () {
     this.packdao = new RestDAO(this.ctx, 'danke/pack')
   },
   mounted () {
     this.loadMyPacks()
-  },
-  watch: {
-    // call again the method if the route changes
-    '$route': 'loadMyPacks'
   },
   methods: {
     async loadMyPacks() {
