@@ -1,15 +1,18 @@
 <template>
   <div class="lite-my-uploads" :style="listStyle">
     <div v-show="!croppingImage" class="image-list">
-      <van-uploader :after-read="fileRead" :before-read="beforeRead" class="photo-uploader" :style="photoStyle">
-      </van-uploader>
-      <div v-for="(img, index) in images" :key="index" class="photo" :style="photoStyle" @click="chooseImg(img, index)">
-        <van-image lazy-load fit="cover" width="100%" height="100%" :src="getImageUrl(img.url, 100, 100, 'pad')" />
-      </div>
+      <van-grid :border="false" :column-num="4" square>
+        <van-grid-item>
+          <van-uploader :after-read="fileRead" :before-read="beforeRead" class="photo-uploader" />
+        </van-grid-item>
+        <van-grid-item v-for="(img, index) in images" :key="index" @click="chooseImg(img, index)">
+          <van-image lazy-load fit="cover" width="100%" height="100%" :src="getImageUrl(img.url, 100, 100, 'pad')" />
+        </van-grid-item>
+      </van-grid>
       <van-empty v-if="images.length === 0" description="无历史图片" />
     </div>
 
-    <van-popup v-model="showCropPopover" :style="{height: '100%'}" position="bottom">
+    <van-popup v-model="showCropPopover" :style="{height: '100%', width: '100%'}" position="bottom">
       <div v-show="croppingImage" ref="cropper" class="avatar-crop">
         <img id="crop-image" :src="croppingImage">
         <van-popover
@@ -53,14 +56,12 @@ export default {
   data () {
     return {
       showCropPopover: false,
-      gridWidth: 120,
       clipOptions: [{ text: '自由比例'}, { text: '1:1', ratio: 1 }, { text: '4:3', ratio: 1.333 }, { text: '3:4', ratio: 0.75 }, { text: '3:2', ratio: 1.5},  { text: '2:3', ratio: 0.667 }],
       ratio: '1:1',
       showPopover: false,
       images: [],
       deleteToggled: false,
       fetched: false,
-      show: false,
       croppingImage: null
     }
   },
@@ -93,7 +94,6 @@ export default {
     getImageUrl,
     cancel () {
       this.showCropPopover = false
-      // this.cropper.destroy()
       this.croppingImage = null
     },
 
@@ -135,13 +135,16 @@ export default {
         })).list
       }
     },
+
+    // 选择图片回调
     async chooseImg (img, index) {
+      // 切换后允许点击、删除
       if (this.deleteToggled) {
         this.restdao.delete(img)
         this.images.splice(index, 1)
       } else {
-        this.show = false
-        this.$emit('insert', img)
+        // 发出select事件
+        this.$emit('select', img)
       }
     },
 
@@ -189,23 +192,21 @@ export default {
 
 <style lang="scss">
 .lite-my-uploads {
-  .image-list {
-    height: 254px;
-    overflow-y: auto;
+  .van-grid-item__content {
+    padding: 2px;
   }
-  .photo, .photo-uploader {
-    float: left;
-    padding: 3px;
-  }
-
-  .van-uploader__wrapper {
-    height: 100%;
-    background: #f7f8fa;
-  }
-  .van-uploader__upload {
+  .van-uploader {
     width: 100%;
     height: 100%;
-    margin: 0;
+    .van-uploader__wrapper {
+      width: 100%;
+      height: 100%;
+      .van-uploader__upload {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+      }
+    }
   }
 }
 .avatar-crop {

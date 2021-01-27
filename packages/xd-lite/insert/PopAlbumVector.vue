@@ -1,5 +1,5 @@
 <template>
-  <van-popup v-model="show" :position="position" :style="popoverStyle" class="pop-album-vector" :overlay="false" closeable close-icon="arrow-down" @opened="opened">
+  <van-popup :value="show" :position="position" :style="popoverStyle" class="pop-album-vector" :overlay="true" closeable close-icon="arrow-down" @input="input" @opened="opened">
     <van-tabs swipeable @change="onTabChange">
       <van-tab v-for="tab in tabs" :key="tab.key" :title="tab.title" :name="tab.key"></van-tab>
     </van-tabs>
@@ -19,8 +19,8 @@
         </ul>
       </div>
     </div>
-    <my-uploads v-if="contentType === 'upload'" @insert="choose" />
-    <basic-element-list v-if="contentType === 'basic'" @insert="choose" />
+    <my-uploads v-if="contentType === 'upload'" @select="choose" />
+    <basic-element-list v-if="contentType === 'basic'" @select="choose" />
   </van-popup>
 </template>
 
@@ -37,8 +37,7 @@ export default {
   },
   props: {
     show: {
-      type: Boolean,
-      default: false
+      type: Boolean
     },
     tabs: {
       type: Array,
@@ -96,14 +95,8 @@ export default {
 
   methods: {
     getImageUrl,
-    open(tabs, action) {
-      this.tabs = tabs
-      this.action = action
-
-      this.show = true
-    },
-    close () {
-      this.show = false
+    input () {
+      this.$emit('close')
     },
     async opened () {
       this.currentTab = this.tabs[0]
@@ -146,7 +139,6 @@ export default {
     choose (vector) {
       if (this.action) {
         this.$emit(this.action, vector)
-        this.show = false
       } else {
         this.$emit('input', vector)
       }
@@ -177,7 +169,7 @@ export default {
   }
   border-top: 1px solid #eee;
   .van-tabs {
-    width: calc(100vw - 48px);
+    width: calc(100% - 48px);
   }
   .van-popup__close-icon--top-right {
     top: 12px;

@@ -4,14 +4,6 @@
     <mobile-edit-container v-if="work && scene" ref="editContainer" :scene="scene" :work="work" :element="element" @focus-change="onElementFocused" />
     <!-- 上下文主菜单-->
     <pop-main-menu v-if="work" :work="work" :scene="scene" @action="onMenuAction" />
-    <!--插入菜单-->
-    <avatar-insert-menu ref="insertMenu" @open="onInsertMenuTab" />
-    <!--插入矢量图片弹框-->
-    <vector-list ref="popVectorList" @insert="insertNode" />
-    <!--插入图片-->
-    <popup-image-list ref="popupImageList" @insert="insertNode" />
-    <!--调用获取unSplash的图片-->
-    <pop-un-splash-photo-list ref="unsplashPhotoList" @insert="insertNode" />
     <!--元素编辑弹出层-->
     <pop-element-edit ref="popElementEdit" @delete="deleteNode" @insert="insertNode" />
     <!--元素次序弹出层-->
@@ -39,16 +31,12 @@
 
 <script>
 import MobileEditContainer from './MobileEditContainer'
-import AvatarInsertMenu from './insert/AvatarInsertMenu'
-import VectorList from './list/PopVectorList'
 import workMixin from '../xd-builder/mixins/workMixin'
 import StyleRegistry from '../xd-builder/utils/StyleRegistry'
 import { createSingleElement, deleteElement, getElementMask, elementColorVariables, elementPxVariables } from '../xd-builder/utils/sceneActions.js'
 import { addScene, prevScene, nextScene, getWorkColors } from '../xd-builder/utils/workActions'
 import PopElementEdit from './form/PopElementEdit'
 import PopMainMenu from './list/PopMainMenu.vue'
-import PopupImageList from './list/PopupImageList'
-import PopUnSplashPhotoList from './insert/PopUnSplashPhotoList'
 import Vue from 'vue'
 import Vant from 'vant';
 import { Toast, Notify, Lazyload } from 'vant';
@@ -60,8 +48,6 @@ import BtnSetText from './van-components/BtnSetText'
 import BtnEditText from './van-components/BtnEditText.vue'
 import BtnSetFontFamilly from './van-components/BtnSetFontFamilly.vue'
 import BtnSetLength from './van-components/BtnSetLength.vue'
-import PopVectorAlbumList from './list/PopVectorAlbumList.vue'
-import PopVectorList from './list/PopVectorList.vue'
 import PopAlbumVector from './insert/PopAlbumVector.vue'
 import InsertButton from './insert/InsertButton.vue'
 
@@ -75,13 +61,9 @@ export default {
     BtnEditText,
     BtnSetText,
     PopElementOrdering,
-    PopupImageList,
     PopMainMenu,
     PopElementEdit,
     MobileEditContainer,
-    VectorList,
-    AvatarInsertMenu,
-    PopUnSplashPhotoList,
     BtnSetFontFamilly,
     BtnColorPicker,
     BtnSetLength
