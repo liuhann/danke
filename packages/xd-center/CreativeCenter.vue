@@ -152,6 +152,18 @@ export default {
 </script>
 
 <style lang="scss">
+@media only screen and (min-width: 640px) {
+  .work-list-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    .work-wrapper {
+      width: 30%;
+      margin: 0 1%;
+    }
+  }
+}
+
+
 .work-list-wrapper {
   margin-top: 18px;
   .work-wrapper {
@@ -162,7 +174,9 @@ export default {
     padding: 10px;
     .actions {
       .title {
-        font-size: 1.5rem;
+        font-size: 16px;
+        color: #3E326F;
+        font-weight: bold;
       }
       .buttons {
         margin-top: 16px;
