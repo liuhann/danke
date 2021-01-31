@@ -1,6 +1,5 @@
 <template>
   <div id="creative-center" class="creative-center">
-    <nav-layer />
     <div class="actions">
       <van-button id="btn-new" type="primary" icon="plus" @click="navTo('new')">创建作品</van-button>
     </div>
@@ -11,25 +10,17 @@
       </van-tabs>
       <div class="work-list-wrapper">
         <div v-for="work in works" :key="work.id" class="work-wrapper">
-          <div class="preview">
+          <div class="preview" @click="playWork(work)">
             <div class="work-image-container">
               <img v-if="work.snapshot" :src="getImageUrl(work.snapshot, 120, 120, 'lfit')">
             </div>
             <span v-if="!work.snapshot" class="no-snapshot">正在生成预览</span>
           </div>
           <div class="actions">
-            <div class="work-title">{{ work.title }}</div>
-            <div class="buttons mt-2">
-              <van-button type="primary" @click="playWork(work)">预览</van-button>
-              <van-popover trigger="click" :actions="actions">
-                <template #reference>
-                  <van-button type="primary">深色风格</van-button>
-                </template>
-              </van-popover>
-              <button class="button is-success is-light" @click="editWork(work)">编辑</button>
-              <button class="button is-info is-light">预览</button>
-              <button class="button is-info is-light" @click="deleteWork(work)">删除</button>
-              <button class="button is-info is-light">复制</button>
+            <div class="title">{{ work.title }}</div>
+            <div class="buttons">
+              <van-button icon="edit" round @click="editWork(work)"></van-button>
+              <van-button icon="delete" type="danger" round @click="deleteWork(work)" />
             </div>
           </div>
         </div>
@@ -51,13 +42,14 @@ Vue.use(Vant);
 export default {
   name: 'CreativeCenter',
   components: {
+    // eslint-disable-next-line vue/no-unused-components
     NavLayer
   },
   mixins: [ workListMixins ],
   data () {
     return {
       isPublic: 0,
-      publicOptions: [ 
+      publicOptions: [
         { text: '公开作品', value: 1 },
         { text: '私有作品', value: 0 }
       ],
@@ -160,12 +152,26 @@ export default {
 </script>
 
 <style lang="scss">
-
 .work-list-wrapper {
   margin-top: 18px;
   .work-wrapper {
+    background: #F6F5FB;
     display: flex;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
+    border-radius: 16px;
+    padding: 10px;
+    .actions {
+      .title {
+        font-size: 1.5rem;
+      }
+      .buttons {
+        margin-top: 16px;
+        .van-button {
+          margin-right: 16px;
+        }
+      }
+
+    }
   }
   .preview {
     display: flex;
@@ -193,7 +199,7 @@ export default {
     margin: 20px
   }
   .works-nav-wrapper {
-    margin: 0 20px;
+    margin: 0 10px;
 
     .van-tabs {
       max-width: 540px;
