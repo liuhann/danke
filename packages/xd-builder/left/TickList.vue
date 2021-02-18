@@ -4,7 +4,7 @@
       <div v-for="tick in ticks" :key="tick.id" class="tick-entry">
         <div class="info">
           <div>{{ tick.name }}</div>
-          <div class="sum">时长：{{ formatAudioSecondShow(tick.dura) }} 适用于: {{ tick.ticks.length }} 场景 </div>  
+          <div class="sum">时长：{{ formatAudioSecondShow(tick.dura) }} 适用于: {{ tick.ticks.length }} 场景 </div>
         </div>
         <div class="play" @click="applyTick(tick)"><i class="el-icon-video-play" /></div>
       </div>
@@ -16,10 +16,9 @@
 import RestDAO from '../../utils/restdao.js'
 import { formatAudioSecondShow } from '../../utils/string'
 import { assignVariables } from '../mixins/renderUtils'
-import { fontTemplates } from './texts'
 
 export default {
-  name: 'TextList',
+  name: 'TickList',
   data () {
     return {
       pagination: {
@@ -28,8 +27,7 @@ export default {
         total: 0
       },
       ticks: [],
-      dragging: false,
-      fontTemplates
+      dragging: false
     }
   },
   created () {
@@ -38,7 +36,7 @@ export default {
   mounted () {
     this.loadAudios()
   },
- 
+
   methods: {
     formatAudioSecondShow,
      async loadAudios () {

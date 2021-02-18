@@ -1,39 +1,6 @@
 <template>
   <aside class="insert-container">
-    <div class="category-side">
-      <div class="category" :class="current === 'gallery'? 'current': ''" @click="toggleTo('gallery')">
-        <i class="el-icon-school" />
-        <span>图库</span>
-      </div>
-      <div class="category" :class="current === 'vector'? 'current': ''" @click="toggleTo('vector')">
-        <i class="el-icon-news" />
-        <span>素材</span>
-      </div>
-      <div class="category" :class="current === 'h5'? 'current': ''" @click="toggleTo('h5')">
-        <i class="el-icon-news" />
-        <span>H5</span>
-      </div>
-      <div class="category" :class="current === 'text'? 'current': ''" @click="toggleTo('text')">
-        <i class="el-icon-tickets" />
-        <span>文字</span>
-      </div>
-      <div class="category" :class="current === 'filter'? 'current': ''" @click="toggleTo('filter')">
-        <i class="el-icon-sunrise" />
-        <span>滤镜</span>
-      </div>
-      <div class="category" :class="current === 'image'? 'current': ''" @click="toggleTo('image')">
-        <i class="el-icon-picture-outline" />
-        <span>我的</span>
-      </div>
-      <div class="category" :class="current === '3rd'? 'current': ''" @click="toggleTo('3rd')">
-        <i class="el-icon-picture-outline" />
-        <span>更多</span>
-      </div>
-      <div class="category" :class="current === 'tick'? 'current': ''" @click="toggleTo('tick')">
-        <i class="el-icon-service" />
-        <span>音乐</span>
-      </div>
-    </div>
+    <category-tab v-model="current" />
     <div class="element-container">
       <transition name="fade">
         <keep-alive>
@@ -50,15 +17,9 @@
           <public-html-list v-if="current === 'h5'" @choose="tryApplySVGMask" />
         </keep-alive>
       </transition>
-
       <transition name="fade">
         <keep-alive>
           <image-list v-if="current === 'image'" @choose="imageClicked" />
-        </keep-alive>
-      </transition>
-      <transition name="fade">
-        <keep-alive>
-          <text-list v-if="current==='text'" />
         </keep-alive>
       </transition>
       <transition name="fade">
@@ -89,7 +50,6 @@
 import ImageDAO from '../../utils/imagedao'
 import RestDAO from '../../utils/restdao.js'
 import ImageList from './ImageList.vue'
-import TextList from './TextList'
 import PublicImageGallery from './PublicImageGallery.vue'
 import PublicVectorGallery from './PublicVectorGallery.vue'
 import PublicHtmlList from './PublicHTMLList'
@@ -100,13 +60,14 @@ import LeftShapeList from './LeftShapeList.vue'
 import FrameListConfig from './FrameListConfig.vue'
 import workplaceMixin from '../mixins/sceneEditContainer'
 import svgToMiniDataURI from 'mini-svg-data-uri'
+import CategoryTab from '../components/CategoryTab'
 
 export default {
   components: {
+    CategoryTab,
     PublicImageGallery,
     PublicVectorGallery,
     PublicHtmlList,
-    TextList,
     ImageList,
     LeftFilterList,
     LeftShapeList,
@@ -189,35 +150,7 @@ aside.insert-container {
   flex-shrink: 0;
   position: relative;
   display: flex;
-  .category-side {
-    width: 76px;
-    background: #0e1318;
-    display: flex;
-    flex-direction: column;
-    .category {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      color: #aaacad;
-      padding: 12px 0;
-      &:hover {
-        cursor: pointer;
-        color: #ddd;
-      }
-      &.current {
-        background: #293039;
-      }
-      i {
-        margin: 2px 0 2px;
-        font-size: 24px;
-      }
-      span {
-        font-size: 14px;
-        display: block;
-      }
-    }
-  }
+
   .element-container {
     .hint {
       margin: 10px 0;
