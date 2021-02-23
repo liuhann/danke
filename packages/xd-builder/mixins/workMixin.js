@@ -21,22 +21,7 @@ export default {
     slidePreview () {
       window.open('/slide/' + this.work.id)
     },
-    /**
-     * 新增作品
-     */
-    newWork (size) {
-      return {
-        id: shortid(10),
-        title: '我的作品',
-        viewBox: size || {
-          width: 1080,
-          height: 1920
-        },
-        channels: [],
-        colors: [],
-        scenes: [] // 场景
-      }
-    },
+    
     /**
      * 应用音乐节拍到作品的每个页面
      * @param {Object} tick

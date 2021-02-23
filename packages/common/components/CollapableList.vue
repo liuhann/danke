@@ -1,7 +1,7 @@
 <template>
   <div class="collapse-list">
-    <div v-for="(item, index) in items" :key="index" :style="style" class="item-wrapper">
-      <div class="item-content">
+    <div v-for="(item, index) in items" :key="index" :style="style" class="item-wrapper" @click="itemClicked(item, index)">
+      <div class="item-content" :style="styleItemContent">
         <el-dropdown v-if="itemCommands && itemCommands.length" class="drop-down" @command="(cmd) => handleCommand(cmd, item)">
           <span class="el-dropdown-link">
             <i class="el-icon-arrow-down el-icon--right"></i>
@@ -56,6 +56,9 @@ export default {
     itemStyle: {
       type: Object
     },
+    styleItemContent: {
+      type: Object
+    },
     imageStyle: {
       type: Object
     },
@@ -81,6 +84,9 @@ export default {
   },
   methods: {
     getImageUrl,
+    itemClicked (item, index) {
+      this.$emit('item-clicked', item, index)
+    },
     handleCommand(command, item) {
       this.$emit('command', {
         cmd: command,

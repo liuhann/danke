@@ -45,7 +45,6 @@ import sceneMixin from './mixins/sceneMixins.js'
 import SceneContainer from './SceneContainer.vue'
 import LeftAside from './left/LeftAside.vue'
 import Toolbar from './toolbar/Toolbar.vue'
-import { shortid } from '../utils/string'
 import SceneList from './left/SceneList.vue'
 import SceneElementList from './left/SceneElementList.vue'
 import FrameListConfig from './left/FrameListConfig.vue'
@@ -54,6 +53,7 @@ import WorkConfig from './left/WorkConfig.vue'
 import 'element-ui/packages/theme-chalk/lib/icon.css'
 import Mousetrap from 'mousetrap'
 import Vue from 'vue'
+import { newWork } from './utils/workActions'
 
 import {
   Input,
@@ -174,7 +174,7 @@ export default {
     async onMounted () {
       let workId = this.$route.query.work
       if (!workId) {
-        this.work = this.newWork({
+        this.work = newWork({
           width: this.$route.query.width,
           height: this.$route.query.height
         })

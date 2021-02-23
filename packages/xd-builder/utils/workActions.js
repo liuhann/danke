@@ -2,6 +2,23 @@ import { shortid } from '../../utils/string'
 import RestDAO from '../../utils/restdao'
 
 
+/**
+ * 新增作品
+ */
+function newWork (size) {
+  return {
+    id: shortid(10),
+    title: '我的作品',
+    viewBox: size || {
+      width: 1080,
+      height: 1920
+    },
+    channels: [],
+    colors: [],
+    scenes: [] // 场景
+  }
+}
+
 function addScene (work, currentScene) {
   const scene = {
     name: '场景',
@@ -99,6 +116,7 @@ async function saveWork (work, ctx) {
 
 export {
   getBackGroundScene,
+  newWork,
   addScene,
   prevScene,
   nextScene,
