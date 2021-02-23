@@ -3,16 +3,16 @@
     <system-bar />
     <div id="xd" class="design-area">
       <left-aside />
-      <section v-if="work && currentScene" class="right-section">
+      <section v-if="work && scene" class="right-section">
         <toolbar
           :work="work"
-          :scene="currentScene"
+          :scene="scene"
           @toggle-show="toggleShowDrawer"
         />
         <scene-container
           ref="sceneContainer"
           :work="work"
-          :scene="currentScene"
+          :scene="scene"
           @choose-scene="chooseScene"
           @scale-fit="scaleChange"
           @focus-change="focusChange"
@@ -53,7 +53,7 @@ import WorkConfig from './left/WorkConfig.vue'
 import 'element-ui/packages/theme-chalk/lib/icon.css'
 import Mousetrap from 'mousetrap'
 import Vue from 'vue'
-import { newWork } from './utils/workActions'
+import { newWork, addScene } from './utils/workActions'
 
 import {
   Input,
@@ -135,7 +135,7 @@ export default {
       },
       pen: '',
       work: null,
-      currentScene: null,
+      scene: null,
       scale: 1,
       paste: null
     }
@@ -178,7 +178,7 @@ export default {
           width: this.$route.query.width,
           height: this.$route.query.height
         })
-        this.addScene()
+        this.scene = addScene(this.work)
       } else {
         await this.loadWork(workId)
         this.currentScene = this.work.scenes[0]
