@@ -2,7 +2,7 @@
   <div class="xd-builder">
     <system-bar />
     <div id="xd" class="design-area">
-      <left-aside :work="work" :scene="currentScene" @insert="insert" @replace="replace" @clean="clean" />
+      <left-aside />
       <section v-if="work && currentScene" class="right-section">
         <toolbar
           :work="work"

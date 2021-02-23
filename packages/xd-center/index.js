@@ -28,7 +28,7 @@ export default {
   }, {
     path: '/creative/new',
     beforeEnter,
-    component: () => import(/* webpackChunkName: "xd-center" */'../xd-center/AddNew.vue')
+    component: () => import(/* webpackChunkName: "xd-center" */'./AddNew.vue')
   }],
   async onload (ctx) {
   }

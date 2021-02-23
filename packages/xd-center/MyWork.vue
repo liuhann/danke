@@ -40,7 +40,7 @@
 import workListMixins from '../xd-builder/mixins/workListMixins'
 import dayjs from 'dayjs'
 import { fitRectIntoBounds } from '../xd-builder/mixins/rectUtils'
-import { getImageUrl } from '../xd-builder/mixins/imageUtils'
+import { getImageUrl } from '../utils/getImageUrl'
 
 export default {
   name: 'MyWork',

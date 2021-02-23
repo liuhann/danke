@@ -1,6 +1,6 @@
 import { shortid } from '../../utils/string'
 import { getSVGViewBox } from '../../vectors/utils'
-import { getImageUrl } from '../mixins/imageUtils'
+import { getImageUrl } from '../../utils/getImageUrl'
 import { fitRectIntoBounds, getRectPositionStyle } from '../mixins/rectUtils'
 import { assignVariables } from '../mixins/renderUtils'
 import textMesure from '../../utils/textMesure'

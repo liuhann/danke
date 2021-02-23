@@ -53,7 +53,7 @@
 import toolbarPopMixin from './toolbarPopMixin'
 import RestDAO from '../../utils/restdao.js'
 import PopWrapper from './PopWrapper'
-import { getImageUrl} from '../mixins/imageUtils'
+import { getImageUrl} from '../../utils/getImageUrl'
 
 export default {
   name: 'PopImageMask',

@@ -79,7 +79,7 @@
 <script>
 import RestDAO from '../utils/restdao.js'
 import { Icon, ColorPicker, Upload, MessageBox, Loading } from 'element-ui'
-import { getImageUrl } from '../xd-builder/mixins/imageUtils'
+import { getImageUrl } from '../utils/getImageUrl'
 import ImageDAO from '../utils/imagedao'
 
 export default {

@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { getImageUrl } from '../mixins/imageUtils.js'
+import { getImageUrl } from '../../utils/getImageUrl.js'
 import { getRectPositionStyle } from '../mixins/rectUtils.js'
 import { getColorVariables } from '../../utils/svg'
 import { assignVariables } from '../mixins/renderUtils'

@@ -1,4 +1,7 @@
 export default [{
+  label: '基础',
+  value: 'basic'
+}, {
   label: '头像',
   value: 'avatar'
 }, {

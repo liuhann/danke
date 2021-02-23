@@ -26,7 +26,7 @@
 
 <script>
 import draggable from 'vuedraggable'
-import { getImageUrl } from '../mixins/imageUtils.js'
+import { getImageUrl } from '../../utils/getImageUrl.js'
 import { assignVariables } from '../mixins/renderUtils'
 export default {
   name: 'SceneElementList',

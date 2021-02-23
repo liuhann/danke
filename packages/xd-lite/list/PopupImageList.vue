@@ -57,7 +57,7 @@ import Cropper from 'cropperjs';
 import RestDAO from '../../utils/restdao'
 import ImageDAO from '../../utils/imagedao'
 import { Toast } from 'vant'
-import { getImageUrl } from '../../xd-builder/mixins/imageUtils'
+import { getImageUrl } from '../../utils/getImageUrl'
 
 export default {
   name: 'PopupImageList',

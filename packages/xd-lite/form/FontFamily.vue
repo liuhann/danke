@@ -9,7 +9,7 @@
 
 <script>
 import { fontFamilies, loadFontFace } from '../../utils/fontfaces'
-import { getImageUrl } from '../../xd-builder/mixins/imageUtils'
+import { getImageUrl } from '../../utils/getImageUrl'
 import { Toast } from 'vant'
 import RestDAO from '../../utils/restdao'
 export default {

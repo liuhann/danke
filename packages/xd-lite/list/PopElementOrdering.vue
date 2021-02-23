@@ -35,7 +35,7 @@
 
 <script>
 import draggable from 'vuedraggable'
-import { getImageUrl } from '../../xd-builder/mixins/imageUtils'
+import { getImageUrl } from '../../utils/getImageUrl'
 import { assignVariables } from '../../xd-builder/mixins/renderUtils'
 import { deleteElement, toggleElementLock } from '../../xd-builder/utils/sceneActions'
 

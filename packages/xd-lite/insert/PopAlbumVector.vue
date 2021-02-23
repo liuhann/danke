@@ -26,7 +26,7 @@
 
 <script>
 import RestDAO from '../../utils/restdao'
-import { getImageUrl } from '../../xd-builder/mixins/imageUtils'
+import { getImageUrl } from '../../utils/getImageUrl'
 import BasicElementList from '../list/BasicElementList.vue'
 import MyUploads from '../list/MyUploads'
 export default {

@@ -45,7 +45,7 @@
 
 <script>
 import { resetToken } from '../../user/token'
-import { getImageUrl } from '../../xd-builder/mixins/imageUtils'
+import { getImageUrl } from '../../utils/getImageUrl'
 import logo from '../D.png'
 export default {
   name: 'NavBar',

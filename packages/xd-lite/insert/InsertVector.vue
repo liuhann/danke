@@ -20,7 +20,7 @@
 <script>
 import RestDAO from '../../utils/restdao'
 import ImageDAO from '../../utils/imagedao'
-import { getImageUrl } from '../../xd-builder/mixins/imageUtils'
+import { getImageUrl } from '../../utils/getImageUrl'
 import { getVariableStyle } from '../../xd-builder/mixins/renderUtils'
 
 export default {

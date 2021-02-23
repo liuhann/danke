@@ -1,4 +1,4 @@
-import { getImageUrl } from './imageUtils'
+import { getImageUrl } from '../../utils/getImageUrl'
 import { shortid } from '../../utils/string'
 import { getSVGViewBox } from '../../vectors/utils'
 import { createSingleElement } from '../utils/sceneActions'

@@ -105,7 +105,7 @@
 import RestDAO from '../utils/restdao'
 import { Upload, Button } from 'element-ui'
 import logo from './D.png'
-import { getImageUrl } from '../xd-builder/mixins/imageUtils'
+import { getImageUrl } from '../utils/getImageUrl'
 import ImageDAO from '../utils/imagedao'
 import NavBar from '../site/components/NavBar'
 import { Cropper } from 'vue-advanced-cropper'

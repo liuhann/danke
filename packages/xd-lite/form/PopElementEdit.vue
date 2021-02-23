@@ -135,7 +135,7 @@ import ColorPicker from './PopColorPicker'
 import FontFamily from './FontFamily.vue'
 import PopVectorAlbumList from '../list/PopVectorAlbumList'
 import PopVectorList from '../list/PopVectorList'
-import { getImageUrl } from '../../xd-builder/mixins/imageUtils'
+import { getImageUrl } from '../../utils/getImageUrl'
 
 const fontLabels = {
   'fontFamily': '字体',

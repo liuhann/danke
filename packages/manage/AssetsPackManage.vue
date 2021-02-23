@@ -3,7 +3,7 @@
     <div class="content-title">包列表</div>
     <div class="columns">
       <div class="column is-narrow" style="width: 320px;">
-        <el-button size="small" @click="newPack" type="primary">增加包</el-button>
+        <el-button size="small" type="primary" @click="newPack">增加包</el-button>
         <el-select v-model="packType" size="small" @change="fetchPacks">
           <el-option label="矢量" value="vector"></el-option>
           <el-option label="照片" value="image"></el-option>
@@ -13,7 +13,7 @@
         </el-table>
         <el-pagination :current-page.sync="page" :page-size="size" :total="total" @current-change="pageChange" />
       </div>
-      <div v-if="currentPack" class="column">
+      <div v-if="currentPack" class="column" style="flex: 1;">
         <h2 class="title is-3">{{ currentPack.name }}  {{ currentPack.tags }}</h2>
         <div class="actions">
           <el-button @click="editPack">编辑</el-button>
@@ -33,26 +33,8 @@
             </el-upload>
           </div>
         </div>
-
-        <div class="columns mt-3 is-multiline vector-list-container">
-          <div v-for="vector in packVectors" :key="vector._id" class="column is-narrow">
-            <img v-if="vector.url" :src="getImageUrl(vector.url, 100, 80)" @dblclick="setAsPackCover(vector.url)">
-            <div v-if="vector.html" class="svg-container" :style="variableValues(vector)">
-              <div class="styled-box" :style="{
-                // height: vector.h + 'px',
-                // width: vector.w + 'px'
-              }" v-html="vector.html"
-              />
-            </div>
-            <div class="has-text-centered">
-              <el-button v-if="vector.html" size="mini" type="text" @click="editVector(vector)">编辑</el-button>
-              <el-button size="mini" type="text" @click="deleteVector(vector)">删除</el-button>
-            </div>
-          </div>
-        </div>
+        <collapable-list :column="10" :items="packVectors" :item-commands="itemCommands" @command="onItemCommand" />
         <el-pagination :current-page.sync="vectorPage" :page-size="vectorPageSize" :total="vectorPageTotal" @current-change="fetchPackVectors" />
-      </div>
-      <div class="pack">
       </div>
       <el-dialog title="提示" :visible.sync="dialogVisible" width="30%">
         <el-form v-if="currentPack" label-width="80px">
@@ -91,13 +73,15 @@ import { Pagination, Button, Table, TableColumn, Dialog, Form, FormItem, Input, 
 import RestDAO from '../utils/restdao.js'
 import getImageSize from '../utils/imageSize'
 import ImageDAO from '../utils/imagedao'
-import { getImageUrl } from '../xd-builder/mixins/imageUtils'
+import { getImageUrl } from '../utils/getImageUrl'
 import { getVariableStyle } from '../xd-builder/mixins/renderUtils'
 import assetsTags from './assets-tags.js'
+import CollapableList from '../common/components/CollapableList'
 
 export default {
   name: 'AssetsPackManage',
   components: {
+    CollapableList,
     [Upload.name]: Upload,
     [Pagination.name]: Pagination,
     [Dialog.name]: Dialog,
@@ -113,6 +97,13 @@ export default {
   },
   data () {
     return {
+      itemCommands: [{
+        label: '删除',
+        value: 'delete'
+      }, {
+        label: '设置为封面',
+        value: 'cover'
+      }],
       packType: 'vector',
       assetsTags,
       currentPack: null,
@@ -152,6 +143,12 @@ export default {
       window.open('/h5/edit?id=' + vector._id)
     },
 
+    onItemCommand (payload) {
+      alert(payload)
+      if (payload.cmd === 'cover') {
+        this.setAsPackCover(payload.item.url)
+      }
+    },
     savePack () {
       this.packdao.createOrPatch(this.currentPack)
       Message.success('保存完成')
@@ -185,7 +182,7 @@ export default {
       this.dialogVisible = true
     },
     setAsPackCover (url) {
-      this.currentPack.previews = [url]
+      this.currentPack.url = url
       this.savePack()
     },
     // may be choose multiple files, should do auto upload on choose
@@ -283,7 +280,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.vector-list-container {
+.vector-packs {
+  .columns {
+    display: flex;
+  }
   .column.is-narrow {
     width: 100px;
     height: 130px;

@@ -1,47 +1,8 @@
 <template>
   <aside class="insert-container">
-    <category-tab v-model="current" />
-    <div class="element-container">
-      <transition name="fade">
-        <keep-alive>
-          <public-image-gallery v-if="current === 'gallery'" />
-        </keep-alive>
-      </transition>
-      <transition name="fade">
-        <keep-alive>
-          <public-vector-gallery v-if="current === 'vector'" @choose="tryApplySVGMask" />
-        </keep-alive>
-      </transition>
-      <transition name="fade">
-        <keep-alive>
-          <public-html-list v-if="current === 'h5'" @choose="tryApplySVGMask" />
-        </keep-alive>
-      </transition>
-      <transition name="fade">
-        <keep-alive>
-          <image-list v-if="current === 'image'" @choose="imageClicked" />
-        </keep-alive>
-      </transition>
-      <transition name="fade">
-        <keep-alive>
-          <tick-list v-if="current === 'tick'" @insert="insertTick" />
-        </keep-alive>
-      </transition>
-      <transition name="fade">
-        <keep-alive>
-          <left-filter-list v-if="current === 'filter'" @insert="applyFilter" @clean="cleanFilter" />
-        </keep-alive>
-      </transition>
-      <transition name="fade">
-        <keep-alive>
-          <left-shape-list v-if="current === 'html'" @svg="tryApplySVGMask" />
-        </keep-alive>
-      </transition>
-      <transition name="fade">
-        <keep-alive>
-          <resource-more v-if="current === '3rd'" />
-        </keep-alive>
-      </transition>
+    <vertical-tab v-model="current" :tabs="tabs" />
+    <div class="tab-content-container">
+      <vector-album-list :album-tag="current" />
     </div>
   </aside>
 </template>
@@ -50,35 +11,44 @@
 import ImageDAO from '../../utils/imagedao'
 import RestDAO from '../../utils/restdao.js'
 import ImageList from './ImageList.vue'
-import PublicImageGallery from './PublicImageGallery.vue'
-import PublicVectorGallery from './PublicVectorGallery.vue'
-import PublicHtmlList from './PublicHTMLList'
-import LeftFilterList from './LeftFilterList.vue'
-import TickList from './TickList.vue'
-import ResourceMore from './ResourceMore.vue'
-import LeftShapeList from './LeftShapeList.vue'
-import FrameListConfig from './FrameListConfig.vue'
-import workplaceMixin from '../mixins/sceneEditContainer'
-import svgToMiniDataURI from 'mini-svg-data-uri'
-import CategoryTab from '../components/CategoryTab'
+import VerticalTab from '../components/VerticalTab.vue'
+import VectorAlbumList from './VectorAlbumList'
 
 export default {
   components: {
-    CategoryTab,
-    PublicImageGallery,
-    PublicVectorGallery,
-    PublicHtmlList,
-    ImageList,
-    LeftFilterList,
-    LeftShapeList,
-    ResourceMore,
-    TickList
+    VectorAlbumList,
+    VerticalTab,
+    ImageList
   },
-  mixins: [ workplaceMixin ],
   props: {},
   data () {
     return {
-      current: 'gallery'
+      current: 'basic',
+      tabs: [{
+        value: 'basic',
+        icon: 'el-icon-news',
+        label: '形状'
+      }, {
+        value: 'icon',
+        icon: 'el-icon-news',
+        label: '图标'
+      }, {
+        value: 'svg',
+        icon: 'el-icon-news',
+        label: '素材'
+      }, {
+        value: 'svg',
+        icon: 'el-icon-news',
+        label: '视频'
+      }, {
+        value: 'upload',
+        icon: 'el-icon-news',
+        label: '上传'
+      }, {
+        value: 'pictures',
+        icon: 'el-icon-news',
+        label: '图库'
+      }]
     }
   },
   created () {
@@ -151,7 +121,7 @@ aside.insert-container {
   position: relative;
   display: flex;
 
-  .element-container {
+  .tab-content-container {
     .hint {
       margin: 10px 0;
       color: hsla(0,0%,100%,.5);

@@ -1,15 +1,19 @@
 <template>
-  <div class="category-tab">
-    <div v-for="tab of tabs" :key="tab.value" class="tabs" :class="value === tab.value? 'current': ''" @click="tabChange(tab.value)">
-      <i :class="tab.icon" />
-      <span>{{ tab.label }}</span>
+  <div class="vertical-tab">
+    <div class="tabs">
+      <div v-for="tab of tabs" :key="tab.value" class="tab" :class="value === tab.value? 'current': ''" @click="tabChange(tab.value)">
+        <i :class="tab.icon" />
+        <span>{{ tab.label }}</span>
+      </div>
+    </div>
+    <div class="hover-focus">
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "CategoryTab",
+  name: "VerticalTab",
   props: {
     tabs: {
       type: Array
@@ -27,8 +31,8 @@ export default {
 </script>
 
 <style lang="scss">
-.category-tab {
-  width: 76px;
+.vertical-tab {
+  width: 64px;
   background: #0e1318;
   display: flex;
   flex-direction: column;
@@ -38,7 +42,7 @@ export default {
     justify-content: center;
     align-items: center;
     color: #aaacad;
-    padding: 12px 0;
+    padding: 10px 0;
     &:hover {
        cursor: pointer;
        color: #ddd;
@@ -51,7 +55,8 @@ export default {
       font-size: 24px;
     }
     span {
-      font-size: 14px;
+      font-size: 12px;
+      font-weight: bold;
       display: block;
     }
   }

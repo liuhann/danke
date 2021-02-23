@@ -142,7 +142,7 @@
 
 <script>
 import RestDAO from '../../utils/restdao.js'
-import { getImageUrl } from '../mixins/imageUtils.js'
+import { getImageUrl } from '../../utils/getImageUrl.js'
 import ImageDAO from '../../utils/imagedao'
 import { Upload, Button, Pagination, Checkbox, Input, Popconfirm, Message } from 'element-ui'
 import { fitRectIntoBounds } from '../mixins/rectUtils.js'

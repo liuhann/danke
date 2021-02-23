@@ -45,7 +45,7 @@
 
 <script>
 import RestDAO from '../../utils/restdao'
-import { getImageUrl } from '../../xd-builder/mixins/imageUtils'
+import { getImageUrl } from '../../utils/getImageUrl'
 export default {
   name: "AvatarInsertMenu",
   data () {

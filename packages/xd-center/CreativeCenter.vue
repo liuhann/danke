@@ -32,7 +32,7 @@
 <script>
 import workListMixins from '../xd-builder/mixins/workListMixins'
 import channels from '../site/channels'
-import { getImageUrl } from '../xd-builder/mixins/imageUtils'
+import { getImageUrl } from '../utils/getImageUrl'
 import { fitRectIntoBounds } from '../xd-builder/mixins/rectUtils'
 import Vue from 'vue'
 import Vant from 'vant';

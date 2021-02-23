@@ -84,7 +84,7 @@ import RestDAO from '../utils/restdao.js'
 import ImageDAO from '../utils/imagedao.js'
 import { getVariableStyle } from '../xd-builder/mixins/renderUtils'
 import { getSVGViewBox, presets } from '../vectors/utils'
-import { getImageUrl } from '../xd-builder/mixins/imageUtils.js'
+import { getImageUrl } from '../utils/getImageUrl.js'
 
 export default {
   name: 'PageHtmlEdit',

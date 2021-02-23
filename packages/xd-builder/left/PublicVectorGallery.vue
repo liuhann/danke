@@ -37,7 +37,7 @@
 <script>
 import RestDAO from '../../utils/restdao.js'
 import DialogPublicImage from './DialogPublicImage'
-import { getImageUrl} from '../mixins/imageUtils'
+import { getImageUrl} from '../../utils/getImageUrl'
 import ImageDAO from '../../utils/imagedao'
 import getImageSize from '../../utils/imageSize'
 
