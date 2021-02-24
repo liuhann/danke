@@ -393,7 +393,7 @@ export default {
     },
 
     elementClicked () {
-      console.log(this.element)
+
     },
 
     // 获取元素的动画特效

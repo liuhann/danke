@@ -1,6 +1,6 @@
 <template>
   <div id="scene-container">
-    <div id="workspace" ref="sceneContainer" :style="styleWorkSpace" @mousedown="sceneMouseDown" @wheel.prevent="sceneMouseWheel">
+    <div id="workspace" ref="sceneContainer" :style="styleWorkSpace" @wheel.prevent="sceneMouseWheel" @mousedown="sceneMouseDown">
       <!-- 当前屏幕内容 -->
       <div class="screen" :style="styleScreen">
         <div v-if="scene" class="scene" :style="sceneStyle">
@@ -59,6 +59,8 @@ import RenderElement from './render/RenderElement.vue'
 import interactMixins from './mixins/interactMixins.js'
 import mouseMixins from './mixins/mousetrap.js'
 import { fitRectIntoBounds, getRectPositionStyle, isPointInRect, intersectRect } from './mixins/rectUtils.js'
+import { fitToCenter } from './utils/canvasAction.js'
+import { setElementSelected, createSingleElement } from './utils/sceneActions.js'
 
 const WORKSPACE_PADDING = 20
 export default {
@@ -217,32 +219,14 @@ export default {
   mounted: function () {
     this.workSpace.width = this.$el.clientWidth
     this.workSpace.height = this.$el.clientHeight
-    this.fitToCenter()
+
+    Object.assign(this, fitToCenter(this.workSpace, this.work.viewBox, WORKSPACE_PADDING))
+
     this.initGlobalInteract()
     this.setElementsInteract()
   },
 
   methods: {
-    /**
-     * 将屏幕放置到设计区正中央，同时修改屏幕位置偏移量
-     */
-    fitToCenter () {
-      // 上下左右边距30px  自适应到容器大小
-      const fitSize = fitRectIntoBounds(this.viewBox, {
-        width: this.workSpace.width - WORKSPACE_PADDING * 2,
-        height: this.workSpace.height - WORKSPACE_PADDING * 2
-      })
-      // 自适应后，伸缩的比率
-      this.scale = fitSize.width / this.viewBox.width
-      if (fitSize.fitTo === 'width') {
-        this.translateX = WORKSPACE_PADDING
-        this.translateY = (this.workSpace.height - fitSize.height) / 2
-      } else {
-        this.translateX = (this.workSpace.width - fitSize.width) / 2
-        this.translateY = WORKSPACE_PADDING
-      }
-      this.$emit('scale-fit', this.scale)
-    },
     toggleActionMove () {
       this.actionMove = !this.actionMove
     },
@@ -344,9 +328,17 @@ export default {
         if (this.selectedElements.length && this.selectedElements.indexOf(targetElement) > -1) {
           return
         }
-        this.setElementSelected(targetElement)
+        setElementSelected(this.scene, targetElement)
       }
       this.$emit('focus-change', targetElement)
+    },
+
+    getEventToElement (ev) {
+      let element = null
+      if (ev.target && ev.target.dataset.id) {
+        element = this.scene.elements.filter(e => e.id === ev.target.dataset.id) [0]
+      }
+      return element
     },
 
     sceneMouseWheel (event) {
@@ -360,31 +352,6 @@ export default {
       console.log('wheel', event)
     },
 
-    getEventToElement (ev) {
-      // 鼠标得到所点的位置
-      const rootRect = this.$refs.sceneContainer.getBoundingClientRect()
-      const point = {
-        x: ev.clientX - rootRect.x,
-        y: ev.clientY - rootRect.y
-      }
-      // 获取选择的元素，重叠的获取z最高的
-      let targetElement = null
-      for (let element of this.scene.elements) {
-        if (isPointInRect(point, {
-          x: element.x * this.scale + this.translateX,
-          y: element.y * this.scale + this.translateY,
-          width: element.width * this.scale,
-          height: element.height * this.scale
-        }, 10)) {
-          // 获得最上层的未锁定的元素
-          if (!element.locked) {
-            targetElement = element
-          }
-        }
-      }
-      return targetElement
-    },
-
     // Drag over and set as allow drop
     sceneDragOver (ev) {
       ev.preventDefault()
@@ -394,68 +361,15 @@ export default {
      */
     elementDropped (ev) {
       ev.preventDefault()
-      const targetElement = this.getEventToElement(ev)
       const data = ev.dataTransfer.getData('Text')
       const element = JSON.parse(data)
-      if (targetElement) {
-        console.log('target element', targetElement)
-        // targetElement.hover = false
-        this.createNewElementFromTemplate(element, ev.offsetX / this.scale + targetElement.x, (ev.offsetY / this.scale + targetElement.y))
-      } else {
-        this.createNewElementFromTemplate(element, ev.offsetX / this.scale, ev.offsetY / this.scale)
-      }
+      const created = createSingleElement(element, this.work.viewBox, ev.offsetX / this.scale, ev.offsetY / this.scale)
+      this.scene.elements.push(created)
+      this.$nextTick(() => {
+        this.initElementDragResize(created)
+      })
+      // this.createNewElementFromTemplate(element, )
     },
-
-    createNewElementFromTemplate (element, x, y) {
-      let node = null
-      if (element.elements) {
-        // 从模板创建  自动成为一个block
-        node = this.createBlockFromTemplate(element, x, y)
-      } else {
-        // 单节点创建
-        node = this.createSingleElement(element, x, y)
-      }
-      if (node) {
-        this.$nextTick( ()=> {
-          this.initElementDragResize(node)
-        })
-      }
-    },
-
-    replaceElement (element) {
-      if (element.url && this.focusedElement && this.focusedElement.url) {
-        for (let el of this.scene.elements) {
-          if (el.url === this.focusedElement.url) {
-            el.url = element.url
-          }
-        }
-        this.focusedElement.url = element.url
-      }
-    },
-
-
-    createBlockFromTemplate(element, x, y) {
-      for (let frame in element.frames) {
-        this.ctx.styleRegistry.addFrame({
-          name: frame,
-          cssFrame: element.frames[frame]
-        })
-      }
-      const block = {
-        id: shortid(),
-        elements: element.elements,
-        name: element.name,
-        animation: {},
-        selected: true,
-        x: x,
-        y: y,
-        width: element.viewBox.width,
-        height: element.viewBox.height
-      }
-      this.scene.elements.push(block)
-      return block
-    },
-
     /**
      * 初始化所有元素的interaction
      */
