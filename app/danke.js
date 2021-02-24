@@ -1,11 +1,8 @@
 import xd from '../packages/xd-builder'
 import xdLite from '../packages/xd-lite'
-import xcCenter from '../packages/xd-center'
-// import frames from '../packages/frames'
-// import styles from '../packages/styles'
-// import ticks from '../packages/music-ticker'
+import xdCenter from '../packages/xd-center'
 
 import avatar from '../packages/avatar-decorator'
 import manage from '../packages/manage'
 // import restctrl from '../packages/rest-client'
-export default [xd, avatar, xdLite, manage, xcCenter ]
+export default [xd, avatar, xdLite, manage, xdCenter ]
