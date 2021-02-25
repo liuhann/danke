@@ -59,7 +59,7 @@ import RenderElement from './render/RenderElement.vue'
 import interactMixins from './mixins/interactMixins.js'
 import mouseMixins from './mixins/mousetrap.js'
 import { fitRectIntoBounds, getRectPositionStyle, isPointInRect, intersectRect } from './mixins/rectUtils.js'
-import { fitToCenter } from './utils/canvasAction.js'
+// import { fitToCenter } from './utils/canvasAction.js'
 import { setElementSelected, createSingleElement } from './utils/sceneActions.js'
 
 const WORKSPACE_PADDING = 20
