@@ -1,7 +1,12 @@
 <template>
   <div class="vector-album-list">
     <div class="album-list">
-      <collapable-list v-if="packs.length" :column="5" :items="packs" :current="currentPack" @item-clicked="setCurrentPack" />
+      <collapable-list v-if="packs.length" :column="5" :items="packs" :current="currentPack" :style-item-content="{
+        borderRadius: '10px',
+        backgroundColor: 'rgba(255, 255, 255, .05)',
+        boxShadow: '0 1px 6px 0 rgb(32 33 36 / 28%)'
+      }" @item-clicked="setCurrentPack"
+      />
     </div>
     <div class="vector-list">
       <collapable-list v-if="vectors.length" :column="3" :items="vectors" />

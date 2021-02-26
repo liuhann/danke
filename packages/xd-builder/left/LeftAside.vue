@@ -37,7 +37,7 @@ export default {
         icon: 'el-icon-news',
         label: '素材'
       }, {
-        value: 'svg',
+        value: 'video',
         icon: 'el-icon-news',
         label: '视频'
       }, {

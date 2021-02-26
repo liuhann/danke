@@ -1,7 +1,7 @@
 <template>
   <div class="vertical-tab">
-    <div class="tabs">
-      <div v-for="tab of tabs" :key="tab.value" class="tab" :class="value === tab.value? 'current': ''" @click="tabChange(tab.value)">
+    <div class="tabs-container">
+      <div v-for="tab of tabs" :key="tab.value" class="tab-item" :class="value === tab.value? 'current': ''" @click="tabChange(tab.value)">
         <i :class="tab.icon" />
         <span>{{ tab.label }}</span>
       </div>
@@ -36,7 +36,7 @@ export default {
   background: #0e1318;
   display: flex;
   flex-direction: column;
-  .tab {
+  .tab-item {
     display: flex;
     flex-direction: column;
     justify-content: center;

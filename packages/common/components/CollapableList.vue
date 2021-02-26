@@ -4,14 +4,14 @@
       <div class="item-content" :style="styleItemContent">
         <el-dropdown v-if="itemCommands && itemCommands.length" class="drop-down" @command="(cmd) => handleCommand(cmd, item)">
           <span class="el-dropdown-link">
-            <i class="el-icon-arrow-down el-icon--right"></i>
+            <i class="el-icon-more-outline el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item v-for="(command,index) in itemCommands" :key="index" :command="command.value">{{ command.label }}</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
 
-        <div class="preview-content" :style="{width: gridWidth/2 + 'px', height: gridWidth/2 + 'px'}">
+        <div class="preview-content" :style="styleContent">
           <img v-if="item.url" :style="imageStyle" :src="getImageUrl(item.url, 100, 80)">
           <div v-if="item.html" class="html-container" :style="variableValues(vector)">
             <div class="styled-box" :style="{
@@ -19,7 +19,7 @@
             />
           </div>
         </div>
-        <div class="title" :style="textStyle">
+        <div v-if="showName" class="title" :style="textStyle">
           {{ item.name }}
         </div>
       </div>
@@ -39,6 +39,9 @@ export default {
     [DropdownItem.name]: DropdownItem
   },
   props: {
+    width: {
+      type: Number,
+    },
     items: {
       type: Array
     },
@@ -53,9 +56,12 @@ export default {
       type: Number,
       default: 2
     },
-    itemStyle: {
-      type: Object
+
+    itemPadding: {
+      type: Number,
+      default: 5
     },
+
     styleItemContent: {
       type: Object
     },
@@ -64,6 +70,10 @@ export default {
     },
     textStyle: {
       type: Object
+    },
+    showName: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -74,13 +84,24 @@ export default {
     }
   },
 
+  computed : {
+    styleContent () {
+      return {
+        width: this.gridWidth/2 + 'px',
+        height: this.gridWidth/2 + 'px',
+        margin: this.showName ? '10% auto' : '20%'
+      }
+    }
+  },
+
   mounted () {
     const availWidth = this.width || this.$el.clientWidth
     if (this.column) {
-      this.gridWidth = parseInt( availWidth / this.column)
+      this.gridWidth = Math.floor( availWidth / this.column)
     }
     this.style.width = this.gridWidth + 'px'
     this.style.height = this.gridWidth + 'px'
+    this.style.padding = this.itemPadding + 'px'
   },
   methods: {
     getImageUrl,
@@ -103,18 +124,19 @@ export default {
 
 <style lang="scss">
 .collapse-list {
+  display: flex;
+  flex-wrap: wrap;
   .item-wrapper {
     box-sizing: border-box;
-    display: inline-block;
-    position: relative;
-    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     .item-content {
-      border: 1px solid #ccc;
-      border-radius: 10px;
+      position: relative;
       height: 100%;
+      width: 100%;
+
       .preview-content {
-        margin: 10% auto;
-        height: 70%;
         display: flex;
         justify-content: center;
         align-items: center;

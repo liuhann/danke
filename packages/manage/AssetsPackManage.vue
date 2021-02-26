@@ -33,7 +33,11 @@
             </el-upload>
           </div>
         </div>
-        <collapable-list :column="10" :items="packVectors" :item-commands="itemCommands" @command="onItemCommand" />
+        <collapable-list :column="10" :items="packVectors" :item-commands="itemCommands" :item-padding="10" :style-item-content="{
+          borderRadius: '10px',
+          boxShadow: '0 1px 6px 0 rgb(32 33 36 / 28%)'
+        }" @command="onItemCommand"
+        />
         <el-pagination :current-page.sync="vectorPage" :page-size="vectorPageSize" :total="vectorPageTotal" @current-change="fetchPackVectors" />
       </div>
       <el-dialog title="提示" :visible.sync="dialogVisible" width="30%">
@@ -103,6 +107,9 @@ export default {
       }, {
         label: '设置为封面',
         value: 'cover'
+      }, {
+        label: '设置内容',
+        value: 'content'
       }],
       packType: 'vector',
       assetsTags,
