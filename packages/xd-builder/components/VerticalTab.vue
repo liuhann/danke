@@ -2,7 +2,8 @@
   <div class="vertical-tab">
     <div class="tabs-container">
       <div v-for="tab of tabs" :key="tab.value" class="tab-item" :class="value === tab.value? 'current': ''" @click="tabChange(tab.value)">
-        <i :class="tab.icon" />
+        <i v-if="tab.icon.indexOf('http')===-1" :class="tab.icon" />
+        <img v-if="tab.icon.indexOf('http')>-1" :src="tab.icon">
         <span>{{ tab.label }}</span>
       </div>
     </div>
@@ -43,6 +44,7 @@ export default {
     align-items: center;
     color: #aaacad;
     padding: 10px 0;
+    height: 56px;
     &:hover {
        cursor: pointer;
        color: #ddd;
@@ -58,6 +60,10 @@ export default {
       font-size: 12px;
       font-weight: bold;
       display: block;
+    }
+    img {
+      width: 24px;
+      height: 24px;
     }
   }
 }

@@ -87,6 +87,6 @@ export default {
 .vector-album-list {
   width: 350px;
   height: 100%;
-  overflow-y: auto;
+  overflow-y: overlay;
 }
 </style>

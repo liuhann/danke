@@ -2,7 +2,12 @@
   <aside class="insert-container">
     <vertical-tab v-model="current" :tabs="tabs" />
     <div class="tab-content-container">
-      <vector-album-list :album-tag="current" />
+      <collapable-list v-if="vectors.length" :loading="vectorLoading" :column="3" :items="vectors" :style-item-content="{
+        borderRadius: '10px',
+        backgroundColor: 'rgba(255, 255, 255, .05)',
+        boxShadow: '0 1px 6px 0 rgb(32 33 36 / 28%)'
+      }"
+      />
     </div>
   </aside>
 </template>
@@ -13,96 +18,72 @@ import RestDAO from '../../utils/restdao.js'
 import ImageList from './ImageList.vue'
 import VerticalTab from '../components/VerticalTab.vue'
 import VectorAlbumList from './VectorAlbumList'
+import { getImageUrl } from '../../utils/getImageUrl'
+import CollapableList from '../../common/components/CollapableList'
 
 export default {
   components: {
     VectorAlbumList,
     VerticalTab,
+    CollapableList,
     ImageList
   },
   props: {},
   data () {
     return {
-      current: 'basic',
-      tabs: [{
-        value: 'basic',
-        icon: 'el-icon-news',
-        label: '形状'
-      }, {
-        value: 'icon',
-        icon: 'el-icon-news',
-        label: '图标'
-      }, {
-        value: 'svg',
-        icon: 'el-icon-news',
-        label: '素材'
-      }, {
-        value: 'video',
-        icon: 'el-icon-news',
-        label: '视频'
-      }, {
-        value: 'upload',
-        icon: 'el-icon-news',
-        label: '上传'
-      }, {
-        value: 'pictures',
-        icon: 'el-icon-news',
-        label: '图库'
-      }]
+      vectorLoading: false,
+      current: null,
+      vectors: [],
+      tabs: []
+    }
+  },
+
+  watch: {
+    current () {
+      this.fetchPackVectors ()
     }
   },
   created () {
     this.imagedao = new ImageDAO(this.ctx)
-    this.restdao = new RestDAO(this.ctx, 'danke/image')
+    this.packdao = new RestDAO(this.ctx, 'danke/pack')
+    this.restdao = new RestDAO(this.ctx, 'danke/public/vector')
+  },
+
+  mounted () {
+    this.fetchPacks()
   },
   methods: {
-    async fileChoosed (file) {
-      const result = await this.imagedao.uploadBlob(file.raw, `images`)
-      await this.restdao.create({
-        url: result.name,
-        name: file.name,
-        size: file.size
+
+    onMounted () {
+      this.fetchPacks()
+
+    },
+
+    async fetchPacks () {
+      const result = await this.packdao.list({
+        page: 1,
+        count: 40,
+        tags: 'basic'
       })
-      this.$refs.myImageList.refresh()
-    },
 
-    toggleTo (nav) {
-      this.current = nav
-    },
-
-    // 增加新的场景
-    insertNewScene (scene) {
-      this.$emit('insert', 'scene', scene)
-    },
-
-    insertElement (element) {
-      this.$emit('insert', 'element', element)
-    },
-    tryApplySVGMask (element) {
-      if (element.svg && this.focusedElement && this.focusedElement.hasOwnProperty('mask')) {
-        this.focusedElement.mask = {
-          uid: element.uid,
-          svg: element.svg
-        }
+      for (let pack of result.list) {
+        this.tabs.push({
+          value: pack._id,
+          icon: getImageUrl(pack.url)
+        })
       }
-    },
-    insertTick (tick) {
-      this.$emit('insert', 'tick', tick)
+      this.current = this.tabs[0].value
     },
 
-    insertAnimation (animation) {
-      this.$emit('insert', 'animation', animation)
-    },
-
-    insertFilter (filter) {
-      if (filter) {
-
-      }
-      this.$emit('replace', filter)
-    },
-
-    imageClicked (image) {
-      this.$emit('replace', image)
+    async fetchPackVectors () {
+      this.vectorLoading = true
+      this.vectors = []
+      const response = await this.restdao.list({
+        pack: this.current,
+        page: 1,
+        count: 100
+      })
+      this.vectors = response.list
     }
   }
 }
@@ -129,6 +110,7 @@ aside.insert-container {
     background: #293039;
     width: 352px;
     position: relative;
+    overflow: overlay;
   }
 
   ::-webkit-scrollbar-track

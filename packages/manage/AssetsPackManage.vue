@@ -155,6 +155,11 @@ export default {
       if (payload.cmd === 'cover') {
         this.setAsPackCover(payload.item.url)
       }
+      if (payload.cmd === 'content') {
+        if (payload.item.url.endsWith('.svg')) {
+
+        }
+      }
     },
     savePack () {
       this.packdao.createOrPatch(this.currentPack)
