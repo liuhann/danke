@@ -1,8 +1,9 @@
 import { getImageUrl } from '../../utils/getImageUrl'
-import { shortid } from '../../utils/string'
-import { getSVGViewBox } from '../../vectors/utils'
 import { createSingleElement } from '../utils/sceneActions'
-import { fitRectIntoBounds, getRectPositionStyle, isPointInRect, intersectRect } from '../mixins/rectUtils.js'
+import { getRectPositionStyle } from '../mixins/rectUtils.js'
+import { fitToCenter } from '../utils/canvasAction'
+
+const WORKSPACE_PADDING = 20
 export default {
   props: {
     work: {
@@ -16,6 +17,10 @@ export default {
 
   data () {
     return {
+      // 屏幕在工作区横向位置
+      translateX: 0,
+      // 屏幕区在工作区纵向位置
+      translateY: 0,
       deviceScreenPadding: 10,
       // 工作区大小， 屏幕、拖拽及选择遮罩都在工作区内部
       containerSize: {
@@ -23,7 +28,7 @@ export default {
         height: 360
       },
       // 屏幕区域缩放比例
-      scale: 0.2
+      scale: 0.1
     }
   },
 
@@ -110,30 +115,24 @@ export default {
   },
 
   mounted: function () {
-    this.containerSize.width = this.$el.clientWidth
-    this.containerSize.height = this.$el.clientHeight
-    this.fitToCenter()
-    this.initGlobalInteract()
-    // this.setElementsInteract()
+    this.onMounted()
   },
 
   methods: {
     getImageUrl,
     getRectPositionStyle,
 
-    /**
-     * 将屏幕放置到设计区正中央，同时修改屏幕位置偏移量
-     */
     fitToCenter () {
-      // 上下左右边距30px  自适应到容器大小
-      const fitSize = fitRectIntoBounds(this.viewBox, {
-        width: this.containerSize.width - this.deviceScreenPadding * 2,
-        height: this.containerSize.height - this.deviceScreenPadding * 2
-      })
-      // 自适应后，伸缩的比率
-      this.scale = fitSize.width / this.viewBox.width
-      this.translateX = (this.containerSize.width - fitSize.width) / 2
-      this.translateY = (this.containerSize.height - fitSize.height) / 2
+      Object.assign(this, fitToCenter(this.containerSize, this.work.viewBox, WORKSPACE_PADDING))
+    },
+
+    onMounted () {
+      this.containerSize.width = this.$el.clientWidth
+      this.containerSize.height = this.$el.clientHeight
+      this.fitToCenter()
+
+      this.initGlobalInteract()
+      this.setElementsInteract()
     },
 
     createSingleElement (element, x, y) {

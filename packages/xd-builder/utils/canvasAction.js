@@ -9,9 +9,10 @@ function fitToCenter (workSpace, viewBox, padding) {
   const result = {}
   // 自适应后，伸缩的比率
   result.scale = fitSize.width / viewBox.width
-  
-  if (!fitSize.fitTo == null) {
-    
+
+  if (fitSize.fitTo == null) {
+    result.translateX = ( workSpace.width - fitSize.width ) / 2
+    result.translateY = ( workSpace.height - fitSize.height ) / 2
   } else if (fitSize.fitTo === 'width') {
     result.translateX = padding
     result.translateY = (workSpace.height - fitSize.height) / 2

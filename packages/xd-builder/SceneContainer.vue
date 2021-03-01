@@ -1,6 +1,6 @@
 <template>
   <div id="scene-container">
-    <div id="workspace" ref="sceneContainer" :style="styleWorkSpace" @wheel.prevent="sceneMouseWheel" @mousedown="sceneMouseDown">
+    <div id="workspace" ref="sceneContainer" :style="styleWorkContainer" @wheel.prevent="sceneMouseWheel" @mousedown="sceneMouseDown">
       <!-- 当前屏幕内容 -->
       <div class="screen" :style="styleScreen">
         <div v-if="scene" class="scene" :style="sceneStyle">
@@ -46,15 +46,15 @@
         <el-button size="mini" icon="el-icon-full-screen" round @click="fitToCenter" />
       </el-button-group>
       <div class="scene-index">{{ (currentSceneIndex + 1) + '/' + work.scenes.length }}</div>
-      <el-button v-if="scenePrevious" class="scene-btn-prev" type="info" icon="el-icon-arrow-left" circle @click="$emit('choose-scene', scenePrevious)"></el-button>
-      <el-button v-if="sceneNext" class="scene-btn-next" type="info" icon="el-icon-arrow-right" circle @click="$emit('choose-scene', sceneNext)"></el-button>
+      <el-button class="scene-btn-prev" type="info" icon="el-icon-arrow-left" circle @click="$emit('choose-scene', scenePrevious)"></el-button>
+      <el-button class="scene-btn-next" type="info" icon="el-icon-arrow-right" circle @click="$emit('choose-scene', sceneNext)"></el-button>
     </div>
   </div>
 </template>
 
 <script>
 import { Button, ButtonGroup, Popover, Slider } from 'element-ui'
-import workplaceMixins from './mixins/sceneEditContainer'
+import sceneEditContainer from './mixins/sceneEditContainer'
 import interact from 'interactjs'
 import RenderElement from './render/RenderElement.vue'
 import interactMixins from './mixins/interactMixins.js'
@@ -63,7 +63,7 @@ import { fitRectIntoBounds, getRectPositionStyle, isPointInRect, intersectRect }
 import { fitToCenter } from './utils/canvasAction.js'
 import { setElementSelected, createSingleElement } from './utils/sceneActions.js'
 
-const WORKSPACE_PADDING = 20
+
 export default {
   name: 'SceneContainer',
   components: {
@@ -73,7 +73,7 @@ export default {
     [Popover.name]: Popover,
     [ButtonGroup.name]: ButtonGroup
   },
-  mixins: [ interactMixins, mouseMixins, workplaceMixins ],
+  mixins: [ interactMixins, mouseMixins, sceneEditContainer ],
   props: {
     // 格式刷模式
     paste: {
@@ -89,17 +89,9 @@ export default {
   },
   data: function () {
     return {
-      // 屏幕在工作区横向位置
-      translateX: 0,
-      // 屏幕区在工作区纵向位置
-      translateY: 0,
       // 拖拽移动模式
       actionMove: false,
-      // 工作区大小， 屏幕、拖拽及选择遮罩都在工作区内部
-      workSpace: {
-        width: 0,
-        height: 0
-      },
+
       // 屏幕区的位置
       screenRect: {
         x: 0,
@@ -124,20 +116,11 @@ export default {
     scaleDisplay () {
       return Math.floor(this.scale * 100) + '%'
     },
-    styleWorkSpace () {
-      const style = {
-        width: this.workSpace.width + 'px',
-        height: this.workSpace.height + 'px'
-      }
-      if (this.actionMove) {
-        style.cursor = 'move'
-      }
-      return style
-    },
+
     styleScreen () {
       const screenStyle = {
         transform: `translateX(${this.translateX}px) translateY(${this.translateY}px)`, //scale(${this.scale})
-        transformOrigin: 'top left',
+        transformOrigin: 'center',
         width: this.viewPort.width + 'px',
         height: this.viewPort.height + 'px',
         background: this.work.color,
@@ -215,16 +198,6 @@ export default {
         this.setElementSelected(null)
       }
     }
-  },
-
-  mounted: function () {
-    this.workSpace.width = this.$el.clientWidth
-    this.workSpace.height = this.$el.clientHeight
-
-    Object.assign(this, fitToCenter(this.workSpace, this.work.viewBox, WORKSPACE_PADDING))
-
-    this.initGlobalInteract()
-    this.setElementsInteract()
   },
 
   methods: {
