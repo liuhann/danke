@@ -38,17 +38,22 @@
 
       <!--缩放、平移操作区-->
       <el-button-group class="screen-actions">
-        <el-button size="mini" icon="el-icon-minus" round @click="scaleDown" />
-        <el-select v-model="scale" size="mini" style="width: 80px" allow-create filterable>
-          <div slot="prefix">2</div>
-          <el-option label="10%" :value="0.1"></el-option>
+        <el-select v-model="scaleSelected" size="mini" style="width: 100px" allow-create filterable>
+          <div slot="prefix">%</div>
+          <el-option-group>
+            <el-option label="300%" :value="300"></el-option>
+            <el-option label="200%" :value="200"></el-option>
+            <el-option label="125%" :value="125"></el-option>
+            <el-option label="100%" :value="100"></el-option>
+            <el-option label="75%" :value="75"></el-option>
+            <el-option label="50%" :value="50"></el-option>
+            <el-option label="25%" :value="25"></el-option>
+            <el-option label="10%" :value="10"></el-option>
+          </el-option-group>
         </el-select>
-        <el-button size="mini">
-          {{ scaleDisplay }}
-        </el-button>
-        <el-button size="mini" icon="el-icon-plus" @click="scaleUp" />
-        <el-button size="mini" icon="el-icon-full-screen" round @click="fitToCenter" />
+        <el-button size="mini" icon="el-icon-full-screen" @click="fitToCenter" />
       </el-button-group>
+
       <div class="scene-index">{{ (currentSceneIndex + 1) + '/' + work.scenes.length }}</div>
       <el-button class="scene-btn-prev" type="info" icon="el-icon-arrow-left" circle @click="$emit('choose-scene', scenePrevious)"></el-button>
       <el-button class="scene-btn-next" type="info" icon="el-icon-arrow-right" circle @click="$emit('choose-scene', sceneNext)"></el-button>
@@ -58,13 +63,12 @@
 
 <script>
 import { Button, ButtonGroup, Popover, Slider } from 'element-ui'
-import sceneEditContainer from './mixins/sceneEditContainer'
+import sceneEditContainer from './mixins/sceneEditContainer.js'
 import interact from 'interactjs'
 import RenderElement from './render/RenderElement.vue'
 import interactMixins from './mixins/interactMixins.js'
 import mouseMixins from './mixins/mousetrap.js'
 import { fitRectIntoBounds, getRectPositionStyle, isPointInRect, intersectRect } from './mixins/rectUtils.js'
-import { fitToCenter } from './utils/canvasAction.js'
 import { setElementSelected, createSingleElement } from './utils/sceneActions.js'
 
 
@@ -95,7 +99,7 @@ export default {
     return {
       // 拖拽移动模式
       actionMove: false,
-
+      scaleSelected: 100,
       // 屏幕区的位置
       screenRect: {
         x: 0,
@@ -117,6 +121,11 @@ export default {
   },
 
   computed: {
+
+    scale () {
+      return this.scaleSelected / 100
+    },
+
     scaleDisplay () {
       return Math.floor(this.scale * 100) + '%'
     },
@@ -178,6 +187,10 @@ export default {
   },
 
   watch: {
+    'scaleSelected': function () {
+      this.center()
+    },
+
     // 场景更新操作，需要更新交互及其他页面元素
     scene () {
       for (let element of this.scene.elements) {
@@ -413,8 +426,6 @@ export default {
     right: 10px;
     bottom: 10px;
     font-size: 16px;
-
-
     .el-input__suffix {
       display: none;
     }

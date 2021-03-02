@@ -26,9 +26,7 @@ export default {
       containerSize: {
         width: 360,
         height: 360
-      },
-      // 屏幕区域缩放比例
-      scale: 0.1
+      }
     }
   },
 
@@ -123,14 +121,21 @@ export default {
     getRectPositionStyle,
 
     fitToCenter () {
-      Object.assign(this, fitToCenter(this.containerSize, this.work.viewBox, WORKSPACE_PADDING))
+      const fit = fitToCenter(this.containerSize, this.work.viewBox, WORKSPACE_PADDING)
+      this.translateX = fit.translateX
+      this.translateY = fit.translateY
+      this.scaleSelected = fit.scale
+    },
+
+    center () {
+      this.translateX = (this.containerSize.width - this.viewBox.width * this.scale) / 2
+      this.translateY = (this.containerSize.height - this.viewBox.height * this.scale) / 2
     },
 
     onMounted () {
       this.containerSize.width = this.$el.clientWidth
       this.containerSize.height = this.$el.clientHeight
       this.fitToCenter()
-
       this.initGlobalInteract()
       this.setElementsInteract()
     },

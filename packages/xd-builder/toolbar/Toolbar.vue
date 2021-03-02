@@ -54,10 +54,17 @@
       <el-tooltip v-if="noFocusedElement" class="item" effect="dark" content="离开" placement="bottom">
         <a class="action" @click="exitScene"><i class="el-icon-right" /></a>
       </el-tooltip>
-      <el-tooltip v-if="noFocusedElement" class="item" effect="dark" content="预览" placement="bottom">
+      <el-tooltip class="item" effect="dark" content="预览" placement="bottom">
         <a class="action" @click="slidePreview"><i class="el-icon-video-play" /></a>
       </el-tooltip>
-      <a class="action" @click="$emit('toggle-show', 'workProp')"><i class="el-icon-setting" /></a>
+
+      <el-tooltip class="item" effect="dark" content="前一页" placement="bottom">
+        <a class="action" @click="exitScene"><i class="el-icon-right" /></a>
+      </el-tooltip>
+       <el-tooltip class="item" effect="dark" content="前一页" placement="bottom">
+        <a class="action" @click="exitScene"><i class="el-icon-back" /></a>
+      </el-tooltip>
+      <a class="action"><i class="el-icon-files" /><span class="text">1/2</span></a>
     </div>
   </div>
 </template>
@@ -433,6 +440,7 @@ export default {
   padding: 6px 12px;
   display: flex;
   box-shadow: rgba(0, 0, 0, 0.2) 0px 0 2px;
+  border-bottom: 1px solid #eee;
   .el-select {
     border: none;
     width: 64px;
@@ -470,10 +478,9 @@ export default {
     vertical-align: top;
     margin: 0 5px;
     color: #0e1318;
-    font-size: 1.4rem;
-    font-weight: 400;
-    padding: 0 6px;
-    display: inline-block;
+    font-size: 1.2rem;
+    font-weight: normal;
+    padding: 0 4px;
     &:hover, &.on {
       cursor: pointer;
       background-color: #f1f3f4;
@@ -483,6 +490,12 @@ export default {
     }
     i {
       font-size: 1.3rem;
+    }
+    .text {
+      font-size: 14px;
+      display: inline-block;
+      vertical-align: text-bottom;
+      margin-left: 5px;
     }
     img, svg {
       width: 18px;
@@ -508,8 +521,8 @@ export default {
   .pull-right {
     float: right;
     text-align: right;
+    display: flex;
     flex: 1;
-    line-height: 28px;
   }
   .el-button {
     padding: 0;
