@@ -39,6 +39,10 @@
       <!--缩放、平移操作区-->
       <el-button-group class="screen-actions">
         <el-button size="mini" icon="el-icon-minus" round @click="scaleDown" />
+        <el-select v-model="scale" size="mini" style="width: 80px" allow-create filterable>
+          <div slot="prefix">2</div>
+          <el-option label="10%" :value="0.1"></el-option>
+        </el-select>
         <el-button size="mini">
           {{ scaleDisplay }}
         </el-button>
@@ -409,6 +413,15 @@ export default {
     right: 10px;
     bottom: 10px;
     font-size: 16px;
+
+
+    .el-input__suffix {
+      display: none;
+    }
+    .el-input__prefix {
+      right: -40px;
+      top: 4px;
+    }
   }
   .scene-btn-prev {
     z-index: 1001;
