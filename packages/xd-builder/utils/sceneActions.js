@@ -18,9 +18,8 @@ function createSingleElement (element, viewBox, x, y) {
     variables: element.variables || [],
     // 动效信息
     animation: element.animation || {
-      enter: [],
-      exit: [],
-      preview: []
+      enter: {},
+      exit: {}
     },
     tags: element.tags,
     // 旋转

@@ -4,37 +4,29 @@
     <div id="xd" class="design-area">
       <left-aside />
       <section v-if="work && scene" class="right-section">
-        <toolbar
-          :work="work"
-          :scene="scene"
-          @toggle-show="toggleShowDrawer"
-        />
-        <scene-container
-          ref="sceneContainer"
-          :work="work"
-          :scene="scene"
-          @choose-scene="chooseScene"
-          @scale-fit="scaleChange"
-          @focus-change="focusChange"
-        />
+        <toolbar :work="work" :scene="scene" @command="onCommand" />
+        <scene-container :work="work" :scene="scene" />
       </section>
-      <el-drawer title="元素列表" destroy-on-close :visible.sync="drawer.elementList" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
-        <scene-element-list :scene="scene" @close="toggleShowDrawer" />
-      </el-drawer>
-      <el-drawer title="动画设置" destroy-on-close :visible.sync="drawer.animation" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
-        <frame-list-config :element="focusedElement" @close="toggleShowDrawer" />
-      </el-drawer>
-      <el-drawer title="场景列表" destroy-on-close :visible.sync="drawer.sceneList" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
-        <scene-list :work="work" :current="scene" @choose-scene="chooseScene" @close="toggleShowDrawer" />
-      </el-drawer>
-      <el-drawer title="元素配置" destroy-on-close :visible.sync="drawer.elementProp" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
-        <element-prop-config v-if="drawer.elementProp" :element="focusedElement" @close="toggleShowDrawer" />
-      </el-drawer>
-      <el-drawer title="作品配置" destroy-on-close :visible.sync="drawer.workProp" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
-        <work-config :work="work" @close="toggleShowDrawer" />
-      </el-drawer>
-      <div id="textMesure" />
     </div>
+
+    <div id="pop-editors">
+    </div>
+    <el-drawer title="元素列表" destroy-on-close :visible.sync="drawer.elementList" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
+      <scene-element-list :scene="scene" @close="toggleShowDrawer" />
+    </el-drawer>
+
+    <pop-element-anime :visible.sync="drawer.animation" :elements="selectedElements" />
+
+    <el-drawer title="场景列表" destroy-on-close :visible.sync="drawer.sceneList" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
+      <scene-list :work="work" :current="scene" @choose-scene="chooseScene" @close="toggleShowDrawer" />
+    </el-drawer>
+    <el-drawer title="元素配置" destroy-on-close :visible.sync="drawer.elementProp" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
+      <element-prop-config v-if="drawer.elementProp" :element="focusedElement" @close="toggleShowDrawer" />
+    </el-drawer>
+    <el-drawer title="作品配置" destroy-on-close :visible.sync="drawer.workProp" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
+      <work-config :work="work" @close="toggleShowDrawer" />
+    </el-drawer>
+    <div id="textMesure" />
   </div>
 </template>
 
@@ -50,61 +42,18 @@ import SceneElementList from './left/SceneElementList.vue'
 import FrameListConfig from './left/FrameListConfig.vue'
 import ElementPropConfig from './left/ElementPropConfig.vue'
 import WorkConfig from './left/WorkConfig.vue'
-import 'element-ui/packages/theme-chalk/lib/icon.css'
+import './import-element-ui.js'
 import Mousetrap from 'mousetrap'
-import Vue from 'vue'
-import { newWork, addScene } from './utils/workActions'
 
-import {
-  Input,
-  Popover,
-  Tooltip,
-  Form,
-  FormItem,
-  InputNumber,
-  Checkbox,
-  Slider,
-  Button,
-  ButtonGroup,
-  Select,
-  OptionGroup,
-  Option,
-  ColorPicker,
-  Tabs,
-  TabPane,
-  Upload,
-  Cascader,
-  Pagination,
-  Dialog,
-  Drawer,
-  Tag
-} from 'element-ui'
+import { newWork, addScene, nextScene, prevScene } from './utils/workActions'
+
 import SystemBar from './components/SystemBar'
-
-Vue.use(Input)
-Vue.use(Button)
-Vue.use(Drawer)
-Vue.use(Popover)
-Vue.use(Pagination)
-Vue.use(Form)
-Vue.use(FormItem)
-Vue.use(InputNumber)
-Vue.use(ButtonGroup)
-Vue.use(Select)
-Vue.use(OptionGroup)
-Vue.use(Option)
-Vue.use(ColorPicker)
-Vue.use(Tabs)
-Vue.use(Upload)
-Vue.use(TabPane)
-Vue.use(Tooltip)
-Vue.use(Dialog)
-Vue.use(Checkbox)
-Vue.use(Tag)
+import PopElementAnime from './components/PopElementAnime'
 
 export default {
   name: 'Builder',
   components: {
+    PopElementAnime,
     SystemBar,
     ElementPropConfig,
     SceneList,
@@ -150,6 +99,35 @@ export default {
 
 
   methods: {
+    onCommand (cmd, ...args) {
+      switch (cmd) {
+        case 'add-scene':
+          this.scene = addScene(this.work, this.scene)
+          break
+        case 'next-scene':
+          this.scene = nextScene(this.work, this.scene)
+          break
+        case 'prev-scene':
+          this.scene = prevScene(this.work, this.scene)
+          break
+        case 'anime':
+          this.editAnimation(...args)
+          break
+        default:
+          break;
+      }
+    },
+
+    editAnimation (components) {
+      this.drawer.animation = true
+
+      this.$nextTick(() => {
+
+      })
+    },
+    confirmAnime () {
+
+    },
     toggleShowDrawer (drawerName) {
       this.drawer.animation = false
       this.drawer.elementProp = false
@@ -179,6 +157,7 @@ export default {
           height: this.$route.query.height
         })
         this.scene = addScene(this.work)
+
       } else {
         await this.loadWork(workId)
         this.scene = this.work.scenes[0]
@@ -266,6 +245,10 @@ export default {
   display: flex;
   flex-wrap: nowrap;
   background-color: #f5f5f4;
+
+  #anime-editor {
+    height: 480px;
+  }
   .right-section {
     position: relative;
     width: calc(100% - 460px);

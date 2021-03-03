@@ -31,9 +31,13 @@ function addScene (work, currentScene) {
     duration: 3,
     exit: 1
   }
-  if (work != null && currentScene != null) {
-    const index = (typeof currentScene === 'number') ? currentScene : work.scenes.indexOf(currentScene)
-    work.scenes.splice(index, 0, scene)
+  if (work != null) {
+    if (currentScene == null) {
+      work.scenes.push(scene)
+    } else {
+      const index = (typeof currentScene === 'number') ? currentScene : work.scenes.indexOf(currentScene)
+      work.scenes.splice(index, 0, scene)
+    }
   }
   return scene
 }
