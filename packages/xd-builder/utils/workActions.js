@@ -1,7 +1,6 @@
 import { shortid } from '../../utils/string'
 import RestDAO from '../../utils/restdao'
 
-
 /**
  * 新增作品
  */
@@ -99,7 +98,7 @@ async function saveWork (work, ctx) {
   }
   const workdao = new RestDAO(ctx, 'danke/work')
 
-  const detached = JSON.parse(JSON.stringify(this.work))
+  const detached = JSON.parse(JSON.stringify(work))
   detached.creator = ctx.user.id
   detached.avatar = ctx.user.avatar
 
@@ -108,13 +107,9 @@ async function saveWork (work, ctx) {
     detached.creator = ctx.user.id
     const result = await workdao.create(detached)
     detached._id = result.object._id
-    this.$router.replace(location.pathname + '?work=' + this.work.id)
   } else {
     await workdao.patch(detached.id, detached)
   }
-  // 处理作品的预览
-  // 发出请求获取最新的work-preview
-  ctx.get('/danke/preview/download?id=' + detached.id)
   return detached
 }
 

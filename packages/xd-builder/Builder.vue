@@ -1,6 +1,6 @@
 <template>
   <div class="xd-builder">
-    <system-bar />
+    <system-bar @command="handleSystemBarCommand" />
     <div id="xd" class="design-area">
       <left-aside />
       <section v-if="work && scene" class="right-section">
@@ -45,7 +45,7 @@ import WorkConfig from './left/WorkConfig.vue'
 import './import-element-ui.js'
 import Mousetrap from 'mousetrap'
 
-import { newWork, addScene, nextScene, prevScene } from './utils/workActions'
+import { newWork, addScene, nextScene, prevScene, saveWork } from './utils/workActions'
 
 import SystemBar from './components/SystemBar'
 import PopElementAnime from './components/PopElementAnime'
@@ -99,6 +99,16 @@ export default {
 
 
   methods: {
+    async handleSystemBarCommand (cmd) {
+      switch (cmd) {
+        case 'save-work':
+          this.work = await saveWork(this.work, this.ctx)
+          this.$router.replace(location.pathname + '?work=' + this.work.id)
+          break;
+        default:
+          break;
+      }
+    },
     onCommand (cmd, ...args) {
       switch (cmd) {
         case 'add-scene':

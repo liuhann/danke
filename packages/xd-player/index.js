@@ -3,6 +3,9 @@ export default {
     path: '/play/fit/:id',
     component: () => import(/* webpackChunkName: "xd-player" */'./FitPagePlay.vue')
   }, {
+    path: '/play/anime/:id',
+    component: () => import(/* webpackChunkName: "xd-player" */'./AnimePlay.vue')
+  }, {
     path: '/play/full/:id',
     component: () => import(/* webpackChunkName: "xd-player" */'./FullPagePlay.vue')
   }, {

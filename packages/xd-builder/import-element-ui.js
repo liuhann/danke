@@ -7,7 +7,6 @@ import {
   FormItem,
   InputNumber,
   Checkbox,
-  Slider,
   Button,
   ButtonGroup,
   Select,
@@ -21,6 +20,9 @@ import {
   Pagination,
   Dialog,
   Drawer,
+  Dropdown,
+  DropdownMenu,
+  DropdownItem,
   Tag
 } from 'element-ui'
 import Vue from 'vue'
@@ -42,6 +44,10 @@ Vue.use(Tabs)
 Vue.use(Upload)
 Vue.use(TabPane)
 Vue.use(Tooltip)
+
+Vue.use(Dropdown)
+Vue.use(DropdownMenu)
+Vue.use(DropdownItem)
 Vue.use(Dialog)
 Vue.use(Checkbox)
 Vue.use(Tag)
