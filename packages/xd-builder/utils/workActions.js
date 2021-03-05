@@ -89,6 +89,18 @@ function getWorkColors (work) {
   }
 }
 
+function getWorkImages (work) {
+  const elementUrls = {}
+  for (let scene of work.scenes) {
+    for (let element of scene.elements) {
+      if (element.url) {
+        elementUrls[element.id] = element.url
+      }
+    }
+  }
+  return elementUrls
+}
+
 /**
  * 保存作品内容
  */
@@ -120,5 +132,6 @@ export {
   prevScene,
   nextScene,
   getWorkColors,
-  saveWork
+  saveWork,
+  getWorkImages
 }

@@ -1,6 +1,6 @@
 <template>
   <div class="scene" :style="sceneStyle" :class="sceneClass" @click="$emit('click')">
-    <render-element v-for="element of scene.elements" :key="element.id" :variables="getElementVariable(element)" :view-port="viewPort" :element="element" :view-box="viewBox" :stage="stage">
+    <render-element v-for="element of scene.elements" :key="element.id" autoplay :variables="getElementVariable(element)" :view-port="viewPort" :element="element" :view-box="viewBox" stage="enter">
     </render-element>
   </div>
 </template>

@@ -14,6 +14,9 @@ export default {
     path: '/xd',
     beforeEnter,
     component: () => import(/* webpackChunkName: "xd" */'./Builder.vue')
+  }, {
+    path: '/work/snapshot/:id',
+    component: () => import(/* webpackChunkName: "xd" */'./preview/SnapShotPreview.vue')
   }],
   async onload (ctx) {
   }

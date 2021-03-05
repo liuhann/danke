@@ -2,7 +2,7 @@
   <div class="page-snap-preview">
     <div v-if="work" ref="container" class="preview-container">
       <div id="preview-container" class="device" :style="deviceStyle">
-        <render-scene :variables="work.variables" :scene="work.scenes[sceneIndex]" :view-port="work.viewBox" :view-box="work.viewBox" />
+        <render-scene :variables="work.variables" :stage="enter" :scene="work.scenes[sceneIndex]" :view-port="work.viewBox" :view-box="work.viewBox" />
       </div>
     </div>
   </div>

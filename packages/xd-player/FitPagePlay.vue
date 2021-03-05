@@ -2,14 +2,15 @@
   <div id="player">
     <div v-if="!work" class="loading boxLoading">
     </div>
-    <player v-if="work" :work="work" :device-set="device"/>
+    <player v-if="work" :work="work" :device-set="device" />
   </div>
 </template>
 
 <script>
 import Player from './Player'
 import RestDAO from '../utils/restdao.js'
-import { fitBy } from '../danke-core/utils/common'
+import { fitBy } from '../utils/common'
+
 export default {
   name: 'PagePlayVue',
   components: { Player },

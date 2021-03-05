@@ -32,6 +32,8 @@ import textMesure from '../../utils/textMesure'
 import cubicBerziers from '../../frames/model/cubic-beziers.js'
 import { ensureFont } from '../../utils/fontfaces'
 
+import anime from 'animejs'
+
 /**
  * 元素特性组合有以下几种情况
  * 1、mono vector：  fill color 、
@@ -64,6 +66,13 @@ export default {
       type: Array
     },
     index: { // 索引，多个元素时决定显示次序
+      type: Number
+    },
+    autoplay: {
+      type: Boolean,
+      default: false
+    },
+    seekPlay: {
       type: Number
     },
     selected: { // 是否选中
@@ -218,7 +227,7 @@ export default {
       if (this.element.mask && this.element.mask.uid) {
         style.clipPath = `url("#${this.element.mask.uid}")`
       }
-      const result = Object.assign({}, this.element.style, style, this.elementAnimationStyle)
+      const result = Object.assign({}, this.element.style, style)
       return result
     },
 
@@ -343,10 +352,36 @@ export default {
       return d
     },
   },
+
+  watch: {
+    seekPlay () {
+      if (this.animation) {
+        this.animation.seek(this.seekPlay)
+      }
+    },
+    stage () {
+      this.initAnime()
+    }
+  },
   mounted () {
-    this.initElementResource()
+    this.onMounted()
   },
   methods: {
+    async onMounted () {
+      await this.initElementResource()
+      this.initAnime()
+    },
+
+    initAnime () {
+      this.animation = anime(Object.assign({
+        targets: this.$el,
+        autoplay: this.autoplay
+      }, this.element.animation[this.stage]))
+      if (this.seekPlay) {
+        this.animation.seek(this.seekPlay)
+      }
+    },
+
     async initElementResource () {
       // 加载必要的字体
       if (this.element.variables && this.element.variables.filter(variable=> variable.type === 'fontFamily').length) {
