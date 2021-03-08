@@ -378,6 +378,7 @@ export default {
         autoplay: this.autoplay
       }, this.element.animation[this.stage]))
       if (this.seekPlay) {
+        debugger
         this.animation.seek(this.seekPlay)
       }
     },
