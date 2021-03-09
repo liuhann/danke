@@ -9,12 +9,11 @@
 </template>
 
 <script>
-import StyleRegistry from '../utils/StyleRegistry.js'
-import workMixin from '../mixins/workMixin.js'
-import sceneMixin from '../mixins/sceneMixins.js'
-import RenderScene from '../render/RenderScene'
-import RestDAO from '../../utils/restdao'
-import html2canvas from 'html2canvas'
+import StyleRegistry from '../xd-builder/utils/StyleRegistry.js'
+import workMixin from '../xd-builder/mixins/workMixin.js'
+import sceneMixin from '../xd-builder/mixins/sceneMixins.js'
+import RenderScene from '../xd-builder/render/RenderScene'
+import RestDAO from '../utils/restdao'
 export default {
   name: 'SnapShotPreview',
   components: {

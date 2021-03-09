@@ -49,7 +49,7 @@
       <el-tooltip class="item" effect="dark" content="前一页" placement="bottom">
         <a class="action" @click="$emit('command', 'prev-scene')"><i class="el-icon-back" /></a>
       </el-tooltip>
-      <a class="action" @click="showAllScenesPop"><i class="el-icon-files" /><span class="text">{{ sceneIndex }}/{{ work.scenes.length }}页面</span></a>
+      <a class="action" @click="$emit('command', 'scene-list')"><i class="el-icon-files" /><span class="text">{{ sceneIndex }}/{{ work.scenes.length }}页面</span></a>
       <el-tooltip class="item" effect="dark" content="后一页" placement="bottom">
         <a class="action" @click="$emit('command', 'next-scene')"><i class="el-icon-right" /></a>
       </el-tooltip>
@@ -144,6 +144,7 @@ export default {
     },
 
     showAllScenesPop () {
+
       console.log(this.work)
     },
     togglePaste () {

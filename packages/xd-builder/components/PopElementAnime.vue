@@ -12,7 +12,7 @@
     </el-tabs>
 
     <span slot="footer" class="dialog-footer">
-      <el-button @click="drawer.animation = false">取 消</el-button>
+      <el-button @click="$emit('update:visible', false)">取 消</el-button>
       <el-button type="primary" @click="confirmAnime">确 定</el-button>
     </span>
   </el-dialog>

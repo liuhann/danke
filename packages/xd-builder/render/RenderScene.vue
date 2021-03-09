@@ -1,12 +1,13 @@
 <template>
   <div class="scene" :style="sceneStyle" :class="sceneClass" @click="$emit('click')">
     <render-element v-for="element of scene.elements" :key="element.id"
+                    :autoplay="autoPlay"
                     :variables="getElementVariable(element)"
                     :view-port="viewPort"
                     :element="element"
                     :view-box="viewBox"
-                    :seek-play="50"
-                    stage="enter"
+                    :seek-play="seek"
+                    :stage="scene.stage"
     />
   </div>
 </template>
@@ -29,6 +30,12 @@ export default {
       dafault: function () {
         return []
       }
+    },
+    seek: {
+      type: Number
+    },
+    autoPlay: {
+      type: Boolean
     },
     // 渲染阶段 可以为进入、离开2个
     stage: {

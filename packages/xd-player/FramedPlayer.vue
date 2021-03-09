@@ -1,21 +1,37 @@
+<!--逐帧播放器-->
 <template>
   <div class="framed-player">
     <div v-if="work" class="work-container">
       <div class="device" :style="deviceStyle">
-        <render-scene :scene="work.scenes[0]" stage="enter" :view-port="work.viewBox" :view-box="work.viewBox" />
-        <render-scene v-for="(scene, index) in work.scenes" v-show="scene.visible" :key="index" :scene="scene" :stage="scene.stage" :view-port="viewPort" :view-box="work.viewBox" />
+        <render-scene v-for="(scene, index) in work.scenes" v-show="scene.visible" :key="index"
+                      :auto-play="false"
+                      :scene="scene"
+                      :stage="scene.stage"
+                      :seek="scene.seek"
+                      :view-port="work.viewBox"
+                      :view-box="work.viewBox"
+        />
       </div>
     </div>
+    <div>{{ currentMill }}</div>
   </div>
 </template>
 
 <script>
 import RenderScene from '../xd-builder/render/RenderScene'
+import { seekToMill } from '../xd-builder/utils/workActions'
 import RestDAO from '../utils/restdao'
 export default {
   name: "FramedPlayer",
+  components: {
+    RenderScene
+  },
   data () {
     return {
+      sceneSeek: 0,
+      sceneIndex: 0,
+      currentMill: 0,
+      frameStep: 16, // 1000/60  60帧的配置
       work: null
     }
   },
@@ -36,8 +52,28 @@ export default {
   methods: {
     async onLoaded () {
       const work = await this.workdao.getOne(this.$route.params.id)
+
+      // 初始化处理， 每个场景都设置为 visible = false
+      for (let scene of work.scenes) {
+        scene.visible = false
+        scene.seek = 0
+        scene.stage = 'before'
+      }
       this.work = work
-      this.scene = this.work.scenes[0]
+      this.startPlay()
+    },
+
+    async startPlay () {
+      this.nextFrame()
+    },
+
+    async nextFrame () {
+      this.currentMill += this.frameStep
+      seekToMill(this.work, this.currentMill)
+
+      setTimeout(() => {
+        this.nextFrame()
+      }, this.frameStep)
     }
   }
 }
