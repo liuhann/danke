@@ -102,12 +102,24 @@ function getWorkImages (work) {
   return elementUrls
 }
 
+function getWorkDuration (work) {
+  let lastMill = 0
+
+  for (let scene of work.scenes) {
+    if (scene.fin && lastMill < scene.fin) {
+      lastMill = scene.fin
+    }
+  }
+  return lastMill
+}
+
 /**
- * 定位到某个frame， 仅用于自动播放的场景
+ * 定位到某个frame， 仅用于自动播放的场景,
  * @param work
  * @param mill
  */
 function seekToMill (work, cm) {
+
   // 根据当前时间计算每个场景的stage及seek
   //-----cm-------------cm-------------cm---------cm---
   //-----------enter -----------exit ----fin--------
@@ -129,6 +141,7 @@ function seekToMill (work, cm) {
       scene.seek = 0
     }
   }
+
 }
 
 /**
@@ -156,6 +169,7 @@ async function saveWork (work, ctx) {
 }
 
 export {
+  getWorkDuration,
   seekToMill,
   getBackGroundScene,
   newWork,

@@ -19,7 +19,7 @@
 
 <script>
 import RenderScene from '../xd-builder/render/RenderScene'
-import { seekToMill } from '../xd-builder/utils/workActions'
+import { seekToMill, getWorkDuration } from '../xd-builder/utils/workActions'
 import RestDAO from '../utils/restdao'
 export default {
   name: "FramedPlayer",
@@ -31,6 +31,7 @@ export default {
       sceneSeek: 0,
       sceneIndex: 0,
       currentMill: 0,
+      finMill: 0,
       frameStep: 16, // 1000/60  60帧的配置
       work: null
     }
@@ -48,6 +49,10 @@ export default {
   },
   mounted () {
     this.onLoaded()
+    const that = this
+    document.nextFrame = function () {
+      that.nextFrame()
+    }
   },
   methods: {
     async onLoaded () {
@@ -59,6 +64,8 @@ export default {
         scene.seek = 0
         scene.stage = 'before'
       }
+      this.finMill = getWorkDuration(work)
+
       this.work = work
       this.startPlay()
     },
@@ -71,14 +78,27 @@ export default {
       this.currentMill += this.frameStep
       seekToMill(this.work, this.currentMill)
 
-      setTimeout(() => {
-        this.nextFrame()
-      }, this.frameStep)
+      if (this.currentMill < this.finMill) {
+        if (window.frameReady) {
+          this.$nextTick(() => {
+            window.frameReady(this.currentMill)
+          })
+        } else {
+          setTimeout(() => {
+            this.nextFrame()
+          }, 16)
+        }
+
+      }
     }
   }
 }
 </script>
 
 <style lang="scss">
-
+.device {
+  .scene {
+    position: absolute;
+  }
+}
 </style>
