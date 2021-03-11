@@ -151,16 +151,16 @@ export default {
     },
 
     onItemCommand (payload) {
-      alert(payload)
       if (payload.cmd === 'cover') {
         this.setAsPackCover(payload.item.url)
       }
       if (payload.cmd === 'content') {
         if (payload.item.url.endsWith('.svg')) {
-
+          window.open('/vector/edit?id=' + payload.item._id)
         }
       }
     },
+
     savePack () {
       this.packdao.createOrPatch(this.currentPack)
       Message.success('保存完成')

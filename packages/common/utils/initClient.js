@@ -4,8 +4,9 @@ export default function initClient (ctx, prefixUrl) {
   const instance = axios.create({
     baseURL: prefixUrl,
     timeout: 100000,
-    headers: {token: ctx.token}
-  });
+    withCredentials: true,
+    headers: { token: ctx.token }
+  })
   ctx.ky = instance
   ctx.get = instance.get
   ctx.put = instance.put
