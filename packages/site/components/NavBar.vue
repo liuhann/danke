@@ -1,43 +1,328 @@
 <template>
-  <div id="header" class="nav-wrapper" role="navigation" aria-label="main navigation">
-    <div class="container">
-      <div id="logo" class="nav-logo">
-        <a class="navbar-item" href="/">
-           danke.fun
+  <nav class="navbar has-shadow" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="http://www.danke.fun">
+        <img :src="logo" />
+      </a>
+      <a class="navbar-item">{{ title }}</a>
+      <a role="button" class="navbar-burger" :class="menuShow? 'is-active': ''" aria-label="menu" aria-expanded="false" @click="toggleMenuShow">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+    <div class="navbar-menu" :class="menuShow? 'is-active': ''">
+      <div id="navbarStartOriginal" class="navbar-start bd-navbar-start bd-is-original">
+        <a class="
+      navbar-item bd-navbar-item bd-navbar-item-base bd-navbar-item-documentation
+
+      is-active
+    " href="https://bulma.io/documentation"
+        >
+          <span class="icon has-text-primary">
+            <i class="fas fa-book"></i>
+          </span>
+          <span class="is-hidden-tablet-only is-hidden-desktop-only">
+            Documentation
+          </span>
+          <span class="is-hidden-mobile is-hidden-widescreen">
+            Docs
+          </span>
         </a>
+
+
+
+
+
+        <a class="
+  navbar-item
+  bd-navbar-item
+  bd-navbar-item-videos
+  bd-navbar-item-base
+
+
+" href="https://bulma.io/videos/"
+        >
+          <span class="icon has-text-success">
+            <i class="fas fa-play-circle"></i>
+          </span>
+
+          <span>Videos</span>
+        </a>
+
+
+
+
+
+        <a class="
+  navbar-item
+  bd-navbar-item
+  bd-navbar-item-expo
+  bd-navbar-item-base
+
+
+" href="https://bulma.io/expo/"
+        >
+          <span class="icon has-text-expo">
+            <i class="fas fa-star"></i>
+          </span>
+
+          <span>Expo</span>
+        </a>
+
+
+
+
+
+        <a class="
+  navbar-item
+  bd-navbar-item
+  bd-navbar-item-love
+  bd-navbar-item-base
+
+
+" href="https://bulma.io/love/"
+        >
+          <span class="icon has-text-love">
+            <i class="fas fa-heart"></i>
+          </span>
+
+          <span>Love</span>
+        </a>
+
+
+
+
+
+        <a class="
+  navbar-item
+  bd-navbar-item
+  bd-navbar-item-backers
+  bd-navbar-item-base
+
+
+" href="https://bulma.io/backers/"
+        >
+          <span class="icon has-text-patreon">
+            <i class="fab fa-patreon"></i>
+          </span>
+
+          <span>Backers</span>
+        </a>
+
+
+
+
+
+
+
+        <a class="navbar-item bd-navbar-item bd-navbar-item-extensions bd-navbar-item-more bd-is-visible" href="https://bulma.io/extensions/">
+          <span class="icon has-text-extensions">
+            <i class="fas fa-plug"></i>
+          </span>
+
+          <span>Extensions</span>
+        </a>
+
+
+
+
+
+        <a class="navbar-item bd-navbar-item bd-navbar-item-bulma-book bd-navbar-item-more" href="https://bulma.io/the-official-bulma-book/">
+          <span class="icon has-text-bleeding">
+            <i class="fas fa-bookmark"></i>
+          </span>
+
+          <span>Book</span>
+        </a>
+
+
+
+
+
+        <a class="navbar-item bd-navbar-item bd-navbar-item-blog bd-navbar-item-more" href="https://bulma.io/blog/">
+          <span class="icon has-text-rss">
+            <i class="fas fa-rss"></i>
+          </span>
+          <span>头像装饰</span>
+        </a>
+        <a class="navbar-item bd-navbar-item bd-navbar-item-bulma-start bd-navbar-item-more" href="https://bulma.io/bulma-start/">
+          <span class="icon has-text-success">
+            <i class="fas fa-rocket"></i>
+          </span>
+          <span>创作中心</span>
+        </a>
+        <div class="navbar-item bd-navbar-item bd-navbar-item-base has-dropdown is-hoverable">
+          <a class="navbar-link bd-navbar-ellipsis" href="https://bulma.io/more">
+            <span class="icon">
+              <i class="fas fa-ellipsis-h"></i>
+            </span>
+          </a>
+
+          <div class="navbar-dropdown bd-navbar-dropdown is-boxed">
+            <a class="navbar-item bd-is-hidden" data-route="" href="https://bulma.io/extensions">
+              <div>
+                <div class="icon-text">
+                  <span class="icon has-text-extensions">
+                    <i class="fas fa-plug"></i>
+                  </span>
+                  <span>
+                    <strong>Bulma extensions</strong>
+                  </span>
+                </div>
+                Side projects to enhance Bulma
+              </div>
+
+            </a>
+
+            <hr class="navbar-divider ">
+
+
+
+
+            <a class="navbar-item" data-route="" href="https://bulma.io/the-official-bulma-book">
+              <div>
+                <div class="icon-text">
+                  <span class="icon has-text-bleeding">
+                    <i class="fas fa-bookmark"></i>
+                  </span>
+                  <span>
+                    <strong>The official Bulma book</strong>
+                  </span>
+                </div>
+                A step-by-step guide that teaches you how to build a web interface from scratch using Bulma
+              </div>
+
+            </a>
+
+            <hr class="navbar-divider ">
+
+
+
+
+            <a class="navbar-item" data-route="" href="https://bulma.io/blog">
+              <div>
+                <div class="icon-text">
+                  <span class="icon has-text-rss">
+                    <i class="fas fa-rss"></i>
+                  </span>
+                  <span>
+                    <strong>Blog</strong>
+                  </span>
+                </div>
+                Stay updated with new features
+              </div>
+
+            </a>
+
+            <hr class="navbar-divider ">
+
+
+
+
+            <a class="navbar-item" data-route="" href="https://bulma.io/bulma-start">
+              <div>
+                <div class="icon-text">
+                  <span class="icon has-text-success">
+                    <i class="fas fa-rocket"></i>
+                  </span>
+                  <span>
+                    <strong>Bulma start</strong>
+                  </span>
+                </div>
+                A tiny npm package to get started
+              </div>
+
+            </a>
+
+            <hr class="navbar-divider ">
+
+
+
+
+            <a class="navbar-item" data-route="" href="https://bulma.io/made-with-bulma">
+              <div>
+                <div class="icon-text">
+                  <span class="icon has-text-warning">
+                    <i class="fas fa-certificate"></i>
+                  </span>
+                  <span>
+                    <strong>Made with Bulma</strong>
+                  </span>
+                </div>
+                The official community badge
+              </div>
+
+            </a>
+
+            <hr class="navbar-divider ">
+            <a class="navbar-item" data-route="" href="https://bulma.io/alternative-to-bootstrap">
+              <div>
+                <div class="icon-text">
+                  <span class="icon has-text-bootstrap">
+                    <i class="fas fa-exchange-alt"></i>
+                  </span>
+                  <span>
+                    <strong>Coming from Bootstrap</strong>
+                  </span>
+                </div>
+                See how Bulma is an alternative to Bootstrap
+              </div>
+
+            </a>
+          </div>
+        </div>
       </div>
       <div class="navbar-end">
-        <div class="navbar-item" v-if="!logon">
-          <router-link class="button is-light" to="/login">登录</router-link>
-          <router-link class="button form-sub" to="/register">注册</router-link>
+        <div v-if="logon" class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link is-arrowless">
+            <img class="avatar is-rounded" :src="avatar">
+          </a>
+          <div class="navbar-dropdown is-right">
+            <router-link v-if="logon" class="navbar-item" to="/creative/my">
+              创作中心首页
+            </router-link>
+            <hr class="navbar-divider">
+            <router-link v-if="logon" class="navbar-item" to="/creative/profile">
+              账号设置
+            </router-link>
+          </div>
         </div>
-        <router-link v-if="logon" class="navbar-item" tag="div" to="/creative/my">
-          <img class="avatar" :src="avatar">
-        </router-link>
+
+        <div v-if="!logon" class="navbar-item">
+          <div class="buttons">
+            <router-link class="button is-link" to="/register">
+              <strong>注册</strong>
+            </router-link>
+            <router-link class="button is-light" to="/login">
+              登录
+            </router-link>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
+  </nav>
 </template>
 
 <script>
 import { resetToken } from '../../user/token'
-import { getImageUrl } from '../../xd-builder/mixins/imageUtils'
-
+import { getImageUrl } from '../../utils/getImageUrl'
+import logo from '../D.png'
 export default {
   name: 'NavBar',
   props: {
-
+    title: {
+      type: String,
+      default: '蛋壳分享'
+    }
   },
   data () {
     return {
+      menuShow: false,
+      logo,
       user: this.ctx.user,
       isMobileOpened: false
     }
-  },
-  created () {
-    this.ctx.on && this.ctx.on('user-updated', (user) => {
-      this.user = user
-    })
   },
   computed: {
     burgerOpen () {
@@ -54,6 +339,11 @@ export default {
       }
     },
   },
+  created () {
+    this.ctx.on && this.ctx.on('user-updated', (user) => {
+      this.user = user
+    })
+  },
 
   mounted () {
     this.$router.beforeEach((to, from, next) => {
@@ -64,6 +354,10 @@ export default {
 
   methods: {
     getImageUrl,
+
+    toggleMenuShow () {
+      this.menuShow = !this.menuShow
+    },
     logout () {
       this.ctx.token = resetToken()
       this.ctx.user = null
@@ -74,7 +368,6 @@ export default {
       this.isMobileOpened = !this.isMobileOpened
     },
     getStarted () {
-      // location.href = 'https://github.com/login/oauth/authorize?scope=user:email&client_id=9b1eec30dbf5235a78b3'
       this.$router.push('/user')
     },
     goUserHome () {
@@ -85,90 +378,5 @@ export default {
 </script>
 
 <style lang="scss">
-@media (min-width: 768px) {
-  .nav-wrapper {
-    height: 64px;
-    line-height: 64px;
-    will-change: initial;
-    .container {
-      display: flex;
-      padding: 0 30px;
-    }
-  }
-}
-.nav-wrapper {
-  width: 100%;
-  background: #fff;
-  z-index: 9996;
-  color: #6e6d7a;
-  position: fixed;
-  will-change: transform;
-  top: 0;
-  height: 64px;
-  #logo {
-    a {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 64px;
-      color: #333;
-      font-size: 20px;
-      font-family: 'Audiowide', cursive;
-    }
-  }
-  .container {
-    margin: 0 auto;
-    background-color: #fff;
-    -webkit-box-shadow: inset 0px -1px 0px #f3f3f4;
-    box-shadow: inset 0px -1px 0px #f3f3f4;
-    display: flex;
-    .navbar-end {
-      display: flex;
-      justify-content: flex-end;
-      margin-right: auto;
-      flex: 1;
-      .button.form-sub {
-        color: #fff;
-        display: inline-block;
-        cursor: pointer;
-        border: none;
-        padding: 0 16px;
-        text-decoration: none;
-        background: var(--mainColor);
-        -webkit-transition: all 200ms ease;
-        transition: all 200ms ease;
-        border-radius: 4px;
-        font-weight: 500;
-        height: 32px;
-        box-sizing: border-box;
-        text-align: center;
-        margin: 0 20px;
-        &:hover {
-          background: var(--mainColorHover);
-          color: #fff;
-        }
-        &:disabled {
-          background: #ccc;
-        }
-      }
-      .navbar-item {
-        margin: 18px 20px;
-        line-height: 32px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 14px;
-      }
-    }
-  }
-  .navbar-item img.avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-  }
-}
 
-.section.first {
-  margin-top: 80px;
-}
 </style>

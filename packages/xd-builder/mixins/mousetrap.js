@@ -92,7 +92,6 @@ export default {
       }
     })
 
-
     Mousetrap.bind('del', () => {
       if (this.selectedElements.length) {
         for (let element of this.selectedElements) {

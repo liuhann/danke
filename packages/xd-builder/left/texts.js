@@ -1,62 +1,10 @@
 
-const fontStyles = {
-  fontSize: 'var(--fontSize)',
-  color: 'var(--color)',
-  textAlign: 'var(--textAlign)',
-  fontFamily: 'var(--fontFamily)',
-  fontWeight: 'var(--fontWeight)'
-}
+import { fontStyles } from '../templates'
+
 export const fontTemplates = [{
   text: '添加标题',
   style: fontStyles,
-  variables: [{
-    name: 'fontFamily',
-    value: '微软雅黑',
-    type: 'fontFamily'
-  }, {
-    name: 'fontSize',
-    value: 48,
-    type: 'fontSize'
-  }, {
-    name: 'color',
-    value: '#444',
-    type: 'color'
-  }, {
-    name: 'textAlign',
-    value: 'center',
-    type: 'textAlign'
-  }, {
-    name: 'fontWeight',
-    value: 800,
-    type: 'fontWeight'
-  }]
-}, {
-  text: '添加子标题',
-  style: fontStyles,
-  variables: [{
-    name: 'fontFamily',
-    value: '微软雅黑',
-    type: 'fontFamily'
-  }, {
-    name: 'fontSize',
-    value: 36,
-    type: 'fontSize'
-  }, {
-    name: 'color',
-    value: '#333',
-    type: 'color'
-  }, {
-    name: 'textAlign',
-    value: 'center',
-    type: 'textAlign'
-  }, {
-    name: 'fontWeight',
-    value: 400,
-    type: 'fontWeight'
-  }]
-}, {
-  text: '添加正文',
-  style: fontStyles,
+  size: 0.1,
   variables: [{
     name: 'fontFamily',
     value: '微软雅黑',
@@ -67,16 +15,66 @@ export const fontTemplates = [{
     type: 'fontSize'
   }, {
     name: 'color',
+    value: '#444',
+    type: 'color'
+  }, {
+    name: 'fontWeight',
+    value: 'bold',
+    type: 'fontWeight'
+  }, {
+    name: 'letterSpacing',
+    value: 8,
+    type: 'px'
+  }]
+}, {
+  text: '添加子标题',
+  style: fontStyles,
+  size: 0.05,
+  variables: [{
+    name: 'fontFamily',
+    value: '微软雅黑',
+    type: 'fontFamily'
+  }, {
+    name: 'fontSize',
+    value: 20,
+    type: 'fontSize'
+  }, {
+    name: 'color',
     value: '#333',
     type: 'color'
   }, {
-    name: 'textAlign',
-    value: 'left',
-    type: 'textAlign'
+    name: 'fontWeight',
+    value: 'normal',
+    type: 'fontWeight'
+  }, {
+    name: 'letterSpacing',
+    value: 6,
+    type: 'px'
+  }]
+}, {
+  text: '添加正文',
+  style: fontStyles,
+  size: 0.03,
+  variables: [{
+    name: 'fontFamily',
+    value: '微软雅黑',
+    type: 'fontFamily'
+  }, {
+    name: 'fontSize',
+    value: 16,
+    type: 'fontSize'
+  }, {
+    name: 'color',
+    value: '#333',
+    type: 'color'
   }, {
     name: 'fontWeight',
-    value: 200,
+    value: 'normal',
     type: 'fontWeight'
+  }, {
+    name: 'letterSpacing',
+    value: 4,
+    type: 'px'
   }]
 }, {
   text: 'Neon文字效果',
@@ -107,5 +105,9 @@ export const fontTemplates = [{
     name: 'fontWeight',
     value: 200,
     type: 'fontWeight'
+  }, {
+    name: 'letterSpacing',
+    value: 10,
+    type: 'px'
   }]
 }]

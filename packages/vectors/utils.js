@@ -9,3 +9,6 @@ export function getSVGViewBox (svg) {
     return {}
   }
 }
+
+
+export const presets = ['SVG', '动画', '线条', '波浪', '气泡', '头像修饰']

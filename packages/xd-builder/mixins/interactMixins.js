@@ -31,7 +31,6 @@ export default {
      * 销毁元素的interaction
      */
     destroyInteract (node) {
-      console.log('destoryed inreact', node)
       const el = document.getElementById('mask-' + node.id)
       if (el) {
         interact(el).unset()

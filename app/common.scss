@@ -1,104 +1,30 @@
+@import "~bulma/css/bulma.min.css";
+html,
+body,
+p,
+ol,
+ul,
+li,
+dl,
+dt,
+dd,
+blockquote,
+figure,
+fieldset,
+legend,
+textarea,
+pre,
+span,
+a,
+div {
+  outline: none;
+  -webkit-user-select: none;
+  margin: 0;
+  padding: 0;
+}
+
 html, body {
-  overflow-y: auto;
-  font-family: 'Karla',Microsoft YaHei,tahoma,arial,Hiragino Sans GB,sans-serif;
-  height: 100%;
-  padding: 0;
-  font-size: 62.5%;
-  margin: 0;
-  --mainColor: #00c4cc;
-  --mainColorHover: rgba(0, 196, 204, 0.61);
-  --textMainColor: #0e1318;
-  --textMinorColor: rgba(14,19,24,.3);
-}
-
-html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, dd, dl, dt, li, ol, ul, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {
-  border: 0;
-  font-family: inherit;
-  font-style: inherit;
-  font-weight: inherit;
-  margin: 0;
-  padding: 0;
-  vertical-align: baseline;
-  outline: none;
-}
-
-button {
-  outline: none;
-}
-
-a {
-  color: var(--mainColor);
-  text-decoration: none;
-  :hover {
-    color: var(--mainColorHover);
-  }
-}
-.centering {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-textarea {
-  font-family: 'Karla',Microsoft YaHei,tahoma,arial,Hiragino Sans GB,sans-serif;
-  padding: 0;
-}
-
-.container {
-  margin: 0 auto;
-}
-
-section {
-  display: flex;
-  box-sizing: border-box;
-  padding: 2rem;
-}
-
-section.splash {
-  height: 26rem;
-}
-
-.el-scrollbar__wrap {
+  height:100%;
+  background-color: transparent;
   overflow: hidden;
 }
-.align-centered {
-  text-align: center;
-}
-
-.flex-centered {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.is-bordered {
-  border: 1px solid #c0c0c0;
-}
-.padding-0 {
-  padding: 0;
-}
-.margin-0 {
-  margin: 0;
-}
-
-input.small {
-  height: 30px;
-  padding: 5px 8px;
-}
-
-::-webkit-scrollbar-track
-{
-  background-color: #FEFEFE;
-}
-
-::-webkit-scrollbar
-{
-  width: 8px;
-  height: 8px;
-  background-color: #F5F5F5;
-}
-
-::-webkit-scrollbar-thumb
-{
-  background-color: #f1f1f1;
-}
-

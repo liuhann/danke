@@ -1,18 +1,12 @@
 <template>
   <div id="tool-bar">
-    <el-tooltip class="item" effect="dark" content="场景列表" placement="bottom">
-      <a class="action" @click="toggleShowSceneList"><i class="el-icon-s-grid" /></a>
-    </el-tooltip>
-    <el-tooltip class="item" effect="dark" content="元素列表" placement="bottom">
-      <a class="action" @click="toggleShowElementList"><i class="el-icon-notebook-2" /></a>
+    <el-tooltip v-show="focusedElement" class="item" effect="dark" content="动态效果" placement="bottom">
+      <a class="action" @click="$emit('command', 'anime', focusedElement)"><i class="el-icon-data-line" /></a>
     </el-tooltip>
     <el-tooltip v-show="focusedElement" class="item" effect="dark" content="动态效果" placement="bottom">
-      <a class="action" @click="openAnimationEdit"><i class="el-icon-data-line" /></a>
+      <a class="action" @click="$emit('toggle-show', 'elementProp')"><i class="el-icon-s-operation" /></a>
     </el-tooltip>
-    <el-tooltip v-show="focusedElement" class="item" effect="dark" content="动态效果" placement="bottom">
-      <a class="action" @click="openElementProperties"><i class="el-icon-data-line" /></a>
-    </el-tooltip>
-    <span class="separator" />
+
     <!--  样式变量的修改-->
     <template v-for="(variable, index) in elementStyleVariables">
       <!-- 颜色-->
@@ -34,6 +28,10 @@
       <!-- 字体粗细-->
       <font-weight v-if="variable.type==='fontWeight'" :key="index" v-model="variable.value" />
     </template>
+
+    <el-color-picker v-for="(path, index) in elementSVGPathColors" :key="index" v-model="path.f" show-alpha />
+
+    <el-color-picker v-if="focusedElement && focusedElement.hasOwnProperty('fill')" v-model="focusedElement.fill" show-alpha />
     <!-- 右侧操作功能按钮-->
     <div class="pull-right">
       <align-element v-if="selectedElements.length > 1" :elements="selectedElements" />
@@ -43,13 +41,19 @@
       <el-tooltip v-if="focusedElement && focusedElement.elements && focusedElement.elements.length" class="item" effect="dark" content="取消建组" placement="bottom">
         <a class="action on" @click="unGroupBlock"><i class="el-icon-folder-delete" /></a>
       </el-tooltip>
-      <el-tooltip v-if="noFocusedElement" class="item" effect="dark" content="播放" placement="bottom">
-        <a class="action" @click="playScene"><i class="el-icon-refresh-right" /></a>
+
+      <el-tooltip class="item" effect="dark" content="页面列表" placement="bottom">
+        <a class="action" @click="$emit('command', 'element-list')"><i class="el-icon-document-copy" /></a>
       </el-tooltip>
-      <el-tooltip v-if="noFocusedElement" class="item" effect="dark" content="预览" placement="bottom">
-        <a class="action" @click="slidePreview"><i class="el-icon-video-play" /></a>
+      <span class="separator" />
+      <el-tooltip class="item" effect="dark" content="前一页" placement="bottom">
+        <a class="action" @click="$emit('command', 'prev-scene')"><i class="el-icon-back" /></a>
       </el-tooltip>
-      <setting-panel :work="work" :scene="scene" />
+      <a class="action" @click="$emit('command', 'scene-list')"><i class="el-icon-files" /><span class="text">{{ sceneIndex }}/{{ work.scenes.length }}页面</span></a>
+      <el-tooltip class="item" effect="dark" content="后一页" placement="bottom">
+        <a class="action" @click="$emit('command', 'next-scene')"><i class="el-icon-right" /></a>
+      </el-tooltip>
+      <a class="action" @click="$emit('command', 'add-scene')"><i class="el-icon-plus" /></a>
     </div>
   </div>
 </template>
@@ -57,10 +61,7 @@
 <script>
 import { shortid } from '../../utils/string'
 import interactMixins from '../mixins/interactMixins.js'
-import toolbarPopMixin from './toolbarPopMixin'
-import SettingPanel from './SettingPanel'
-import workMixin from '../mixins/workMixin'
-import IconPen from './res/pen.svg'
+import sceneMixins from '../mixins/sceneMixins.js'
 import TextAlign from './TextAlign'
 import FontWeight from './FontWeight'
 import FontSize from './FontSize'
@@ -68,9 +69,6 @@ import AlignElement from './AlignElement.vue'
 import FontFamily from './FontFamily.vue'
 import PopSetGradient from './PopSetGradient'
 import BorderStyle from './BorderStyle'
-import PopImageMask from './PopImageMask'
-import PopNewElement from './PopNewElement'
-import PopSetFilter from './PopSetFilter'
 export default {
   name: 'Toolbar',
   components: {
@@ -80,10 +78,9 @@ export default {
     FontSize,
     FontWeight,
     FontFamily,
-    TextAlign,
-    SettingPanel
+    TextAlign
   },
-  mixins: [ interactMixins, workMixin, toolbarPopMixin ],
+  mixins: [ interactMixins, sceneMixins ],
   props: {
     scene: {
       type: Object
@@ -93,16 +90,6 @@ export default {
     },
     paste: {
       type: Object
-    },
-    scale: {
-      type: Number,
-      default: 1
-    },
-    undoable: {
-      type: Boolean
-    },
-    redoable: {
-      type: Boolean
     }
   },
   data () {
@@ -112,6 +99,16 @@ export default {
   computed: {
     scenes () {
       return this.work.scenes
+    },
+    elementSVGPathColors () {
+      if (this.focusedElement) {
+        const svg = this.focusedElement.svg || (this.focusedElement.mask && this.focusedElement.mask.svg)
+        if (!svg) {
+          return []
+        }
+        return svg.ps.filter(path => path.f)
+      }
+      return []
     },
     workColors () {
       const colors = []
@@ -129,46 +126,6 @@ export default {
       return Array.from(new Set(colors))
     },
 
-    checkedElements () {
-      if (this.scene && this.scene.elements) {
-        return this.scene.elements.filter(el => el.selected)
-      }
-      return []
-    },
-
-    noFocusedElement () {
-      if (this.scene && this.scene.elements) {
-        return this.scene.elements.filter(el => el.selected).length === 0
-      }
-      return false
-    },
-    // 当前唯一选中的元素
-    focusedElement () {
-      if (this.selectedElements.length === 1) {
-        return this.selectedElements[0]
-      } else {
-        return null
-      }
-    },
-
-    elementMasktable () {
-      if (this.focusedElement && !this.focusedFont) {
-        return true
-      } else {
-        return false
-      }
-    },
-    focusedFont () {
-      return this.focusedElement &&  this.focusedElement.text != null
-    },
-
-    cleanable () {
-      if (this.focusedElement) {
-        return Object.entries(this.focusedElement.animation).length || this.focusedElement.style.clipPath
-      } else {
-        return false
-      }
-    },
 
     elementStyleVariables () {
       let variables = []
@@ -178,84 +135,17 @@ export default {
         }
       }
       return variables
-    },
-
-    selectedElements () {
-      if (this.scene && this.scene.elements) {
-        return this.scene.elements.filter(el => el.selected && !el.locked)
-      }
-      return []
-    },
-
-    selectedLockedElements () {
-      if (this.scene && this.scene.elements) {
-        return this.scene.elements.filter(el => el.selected && el.locked)
-      }
-      return []
-    },
-
-    elementSelected () {
-      return this.selectedElements.length > 0
-    },
-
-    selectedImages () {
-      if (this.scene && this.scene.elements) {
-        return this.scene.elements.filter(el => el.selected && !el.locked && el.url)
-      }
-      return []
-    },
-    selectedTexts () {
-      if (this.scene && this.scene.elements) {
-        return this.scene.elements.filter(el => el.selected && el.text != null)
-      }
-      return []
-    },
-    /**
-     * 获取场景class列表
-     */
-    sceneClass () {
-      const classes = []
-      for (let key in this.scene.style) {
-        if (this.scene.style[key] && this.scene.style[key].name) {
-          classes.push(this.scene.style[key].name)
-        }
-      }
-      return classes
-    },
-
-    backgroundToolbarVisible () {
-      if (this.selectedElements.length) {
-        let visible = false
-        if (this.selectedElements[0].style.backgroundColor) {
-          return true
-        }
-        return false
-      } else {
-        return true
-      }
-    },
-    /**
-     *工具栏之上的按钮样式
-     */
-    styleSelectedBackgroundStyle () {
-      const style = {
-        width: '24px',
-        height: '24px',
-      }
-      for (let key in this.scene.style) {
-        if (this.scene.style[key] && !this.scene.style[key].name) {
-          Object.assign(style, {
-            [key]: this.scene.style[key]
-          })
-        }
-      }
-      return style
     }
   },
   methods: {
     async slidePreview () {
       await this.saveWork()
       window.open('/slide/' + this.work.id)
+    },
+
+    showAllScenesPop () {
+
+      console.log(this.work)
     },
     togglePaste () {
       if (this.paste) {
@@ -368,19 +258,39 @@ export default {
       this.$emit('show-element-prop')
     },
 
+    exitScene () {
+      for (let element of this.scene.elements) {
+          element.stage = 'exit'
+      }
+      setTimeout(() => {
+        this.scenes.visible = false
+      }, this.scene.exit * 1000)
+
+      setTimeout(() => {
+        this.scenes.visible = true
+        for (let element of this.scene.elements) {
+          element.stage = ''
+        }
+      }, (this.scene.exit + 1) * 1000)
+    },
+
     playScene () {
       const elements = this.scene.elements
       for (let element of this.scene.elements) {
-          this.$set(element, 'stage', '')
-        }
-      this.scene.elements = []
+          element.stage = ''
+      }
 
-      this.$nextTick(() => {
-        this.scene.elements = elements
+      setTimeout(() => {
         for (let element of this.scene.elements) {
-          this.$set(element, 'stage', 'enter')
+          element.stage = 'enter'
         }
-      })
+      }, 400)
+
+      setTimeout(() => {
+        for (let element of this.scene.elements) {
+          element.stage = ''
+        }
+      }, 400)
     },
 
     log () {
@@ -401,6 +311,7 @@ export default {
   padding: 6px 12px;
   display: flex;
   box-shadow: rgba(0, 0, 0, 0.2) 0px 0 2px;
+  border-bottom: 1px solid #eee;
   .el-select {
     border: none;
     width: 64px;
@@ -438,10 +349,9 @@ export default {
     vertical-align: top;
     margin: 0 5px;
     color: #0e1318;
-    font-size: 1.4rem;
-    font-weight: 400;
-    padding: 0 6px;
-    display: inline-block;
+    font-size: 20px;
+    font-weight: normal;
+    padding: 0 4px;
     &:hover, &.on {
       cursor: pointer;
       background-color: #f1f3f4;
@@ -449,9 +359,11 @@ export default {
     &.disabled {
      display: none;
     }
-    i {
+    .text {
+      font-size: 14px;
+      display: inline-block;
       vertical-align: text-bottom;
-      font-size: 1.8rem;
+      margin-left: 5px;
     }
     img, svg {
       width: 18px;
@@ -475,10 +387,8 @@ export default {
     background-position: center center;
   }
   .pull-right {
-    float: right;
     text-align: right;
     flex: 1;
-    line-height: 28px;
   }
   .el-button {
     padding: 0;

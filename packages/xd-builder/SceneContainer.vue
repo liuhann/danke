@@ -1,9 +1,8 @@
 <template>
   <div id="scene-container">
-    <div id="workspace" ref="sceneContainer" :style="styleWorkSpace" @mousedown="sceneMouseDown" @wheel.prevent="sceneMouseWheel">
+    <div id="workspace" ref="sceneContainer" :style="styleWorkContainer" @wheel.prevent="sceneMouseWheel" @mousedown="sceneMouseDown">
       <!-- 当前屏幕内容 -->
       <div class="screen" :style="styleScreen">
-        <div class="screen-title" />
         <div v-if="scene" class="scene" :style="sceneStyle">
           <render-element
             v-for="(element, index) of scene.elements"
@@ -23,6 +22,7 @@
           v-for="selectee in scene.elements"
           :id="'mask-' + selectee.id"
           :key="selectee.id"
+          :data-id="selectee.id"
           class="node-mask"
           :class="getMaskClass(selectee)"
           :style="getMaskStyle(selectee)"
@@ -38,30 +38,40 @@
 
       <!--缩放、平移操作区-->
       <el-button-group class="screen-actions">
-        <el-button size="mini" icon="el-icon-minus" round @click="scaleDown" />
-        <el-button size="mini">
-          {{ scaleDisplay }}
-        </el-button>
-        <el-button size="mini" icon="el-icon-plus" @click="scaleUp" />
-        <el-button size="mini" icon="el-icon-full-screen" round @click="fitToCenter" />
+        <el-select v-model="scaleSelected" size="mini" style="width: 100px" allow-create filterable>
+          <div slot="prefix">%</div>
+          <el-option-group>
+            <el-option label="300%" :value="300"></el-option>
+            <el-option label="200%" :value="200"></el-option>
+            <el-option label="125%" :value="125"></el-option>
+            <el-option label="100%" :value="100"></el-option>
+            <el-option label="75%" :value="75"></el-option>
+            <el-option label="50%" :value="50"></el-option>
+            <el-option label="25%" :value="25"></el-option>
+            <el-option label="10%" :value="10"></el-option>
+          </el-option-group>
+        </el-select>
+        <el-button size="mini" icon="el-icon-full-screen" @click="fitToCenter" />
       </el-button-group>
-      <div class="btn-scene-nav next-scene">
-        
-      </div>
+
+      <div class="scene-index">{{ (currentSceneIndex + 1) + '/' + work.scenes.length }}</div>
+      <el-button class="scene-btn-prev" type="info" icon="el-icon-arrow-left" circle @click="$emit('choose-scene', scenePrevious)"></el-button>
+      <el-button class="scene-btn-next" type="info" icon="el-icon-arrow-right" circle @click="$emit('choose-scene', sceneNext)"></el-button>
     </div>
   </div>
 </template>
 
 <script>
 import { Button, ButtonGroup, Popover, Slider } from 'element-ui'
-import workplaceMixins from './mixins/workplaceMixins'
+import sceneEditContainer from './mixins/sceneEditContainer.js'
 import interact from 'interactjs'
 import RenderElement from './render/RenderElement.vue'
 import interactMixins from './mixins/interactMixins.js'
 import mouseMixins from './mixins/mousetrap.js'
 import { fitRectIntoBounds, getRectPositionStyle, isPointInRect, intersectRect } from './mixins/rectUtils.js'
+import { setElementSelected, createSingleElement } from './utils/sceneActions.js'
 
-const WORKSPACE_PADDING = 20
+
 export default {
   name: 'SceneContainer',
   components: {
@@ -71,7 +81,7 @@ export default {
     [Popover.name]: Popover,
     [ButtonGroup.name]: ButtonGroup
   },
-  mixins: [ interactMixins, mouseMixins, workplaceMixins ],
+  mixins: [ interactMixins, mouseMixins, sceneEditContainer ],
   props: {
     // 格式刷模式
     paste: {
@@ -87,19 +97,9 @@ export default {
   },
   data: function () {
     return {
-      // 屏幕区域缩放比例
-      scale: 0.2,
-      // 屏幕在工作区横向位置
-      translateX: 0,
-      // 屏幕区在工作区纵向位置
-      translateY: 0,
       // 拖拽移动模式
       actionMove: false,
-      // 工作区大小， 屏幕、拖拽及选择遮罩都在工作区内部
-      workSpace: {
-        width: 0,
-        height: 0
-      },
+      scaleSelected: 100,
       // 屏幕区的位置
       screenRect: {
         x: 0,
@@ -121,23 +121,19 @@ export default {
   },
 
   computed: {
+
+    scale () {
+      return this.scaleSelected / 100
+    },
+
     scaleDisplay () {
       return Math.floor(this.scale * 100) + '%'
     },
-    styleWorkSpace () {
-      const style = {
-        width: this.workSpace.width + 'px',
-        height: this.workSpace.height + 'px'
-      }
-      if (this.actionMove) {
-        style.cursor = 'move'
-      }
-      return style
-    },
+
     styleScreen () {
       const screenStyle = {
         transform: `translateX(${this.translateX}px) translateY(${this.translateY}px)`, //scale(${this.scale})
-        transformOrigin: 'top left',
+        transformOrigin: 'center',
         width: this.viewPort.width + 'px',
         height: this.viewPort.height + 'px',
         background: this.work.color,
@@ -181,18 +177,22 @@ export default {
       const styles = {
         '--vw': this.viewBox.width + 'px',
         '--vh': this.viewBox.height + 'px',
-        width: this.work.viewBox.width + 'px',
-        height: this.work.viewBox.height + 'px',
-        perspective: this.work.viewBox.width + 'px'
+        width: this.viewBox.width + 'px',
+        height: this.viewBox.height + 'px',
+        perspective: this.viewBox.width + 'px',
+        backgroundColor: this.scene.color
       }
       return styles
     }
   },
 
   watch: {
+    'scaleSelected': function () {
+      this.center()
+    },
+
     // 场景更新操作，需要更新交互及其他页面元素
     scene () {
-      console.log('scene change triggered')
       for (let element of this.scene.elements) {
         this.destroyInteract(element)
       }
@@ -217,35 +217,7 @@ export default {
     }
   },
 
-  mounted: function () {
-    this.workSpace.width = this.$el.clientWidth
-    this.workSpace.height = this.$el.clientHeight
-    this.fitToCenter()
-    this.initGlobalInteract()
-    this.setElementsInteract()
-  },
-
   methods: {
-    /**
-     * 将屏幕放置到设计区正中央，同时修改屏幕位置偏移量
-     */
-    fitToCenter () {
-      // 上下左右边距30px  自适应到容器大小
-      const fitSize = fitRectIntoBounds(this.viewBox, {
-        width: this.workSpace.width - WORKSPACE_PADDING * 2,
-        height: this.workSpace.height - WORKSPACE_PADDING * 2
-      })
-      // 自适应后，伸缩的比率
-      this.scale = fitSize.width / this.viewBox.width
-      if (fitSize.fitTo === 'width') {
-        this.translateX = WORKSPACE_PADDING
-        this.translateY = (this.workSpace.height - fitSize.height) / 2
-      } else {
-        this.translateX = (this.workSpace.width - fitSize.width) / 2
-        this.translateY = WORKSPACE_PADDING
-      }
-      this.$emit('scale-fit', this.scale)
-    },
     toggleActionMove () {
       this.actionMove = !this.actionMove
     },
@@ -336,7 +308,10 @@ export default {
       if (ev.target.closest('.screen-actions')) {
         return
       }
-      let targetElement = this.getEventToElement(ev)
+      if (ev.target.className.indexOf('resize') > -1) {
+        return
+      }
+      const targetElement = this.getEventToElement(ev)
       // 剪贴模式
       if (ev.ctrlKey) {
           this.appendElementSelected(targetElement)
@@ -344,9 +319,17 @@ export default {
         if (this.selectedElements.length && this.selectedElements.indexOf(targetElement) > -1) {
           return
         }
-        this.setElementSelected(targetElement)
+        setElementSelected(this.scene, targetElement)
       }
       this.$emit('focus-change', targetElement)
+    },
+
+    getEventToElement (ev) {
+      let element = null
+      if (ev.target && ev.target.dataset.id) {
+        element = this.scene.elements.filter(e => e.id === ev.target.dataset.id) [0]
+      }
+      return element
     },
 
     sceneMouseWheel (event) {
@@ -360,42 +343,8 @@ export default {
       console.log('wheel', event)
     },
 
-    getEventToElement (ev) {
-      // 鼠标得到所点的位置
-      const rootRect = this.$refs.sceneContainer.getBoundingClientRect()
-      const point = {
-        x: ev.clientX - rootRect.x,
-        y: ev.clientY - rootRect.y
-      }
-      // 获取选择的元素，重叠的获取z最高的
-      let targetElement = null
-      for (let element of this.scene.elements) {
-        if (isPointInRect(point, {
-          x: element.x * this.scale + this.translateX,
-          y: element.y * this.scale + this.translateY,
-          width: element.width * this.scale,
-          height: element.height * this.scale
-        }, 10)) {
-          // 获得最上层的未锁定的元素
-          if (!element.locked) {
-            targetElement = element
-          }
-        }
-      }
-      return targetElement
-    },
-
     // Drag over and set as allow drop
     sceneDragOver (ev) {
-      // let targetElement = this.getEventToElement(ev)
-      // if (targetElement && !targetElement.locked) {
-      //   this.$set(targetElement, 'hover', true)
-      // }
-      // for (let element of this.scene.elements) {
-      //   if (element !== targetElement && element.hover) {
-      //     this.$set(element, 'hover', false)
-      //   }
-      // }
       ev.preventDefault()
     },
     /**
@@ -403,73 +352,22 @@ export default {
      */
     elementDropped (ev) {
       ev.preventDefault()
-      const targetElement = this.getEventToElement(ev)
       const data = ev.dataTransfer.getData('Text')
       const element = JSON.parse(data)
-      if (targetElement) {
-        console.log('target element', targetElement)
-        // targetElement.hover = false
-        this.createNewElementFromTemplate(element, ev.offsetX / this.scale + targetElement.x, (ev.offsetY / this.scale + targetElement.y))
-      } else {
-        this.createNewElementFromTemplate(element, ev.offsetX / this.scale, ev.offsetY / this.scale)
-      }
+      const created = createSingleElement(element, this.work.viewBox, ev.offsetX / this.scale, ev.offsetY / this.scale)
+      this.scene.elements.push(created)
+      this.$nextTick(() => {
+        this.initElementDragResize(created)
+      })
+      // this.createNewElementFromTemplate(element, )
     },
-
-    createNewElementFromTemplate (element, x, y) {
-      let node = null
-      if (element.elements) {
-        // 从模板创建  自动成为一个block
-        node = this.createBlockFromTemplate(element, x, y)
-      } else {
-        // 单节点创建
-        node = this.createSingleElement(element, x, y)
-      }
-      if (node) {
-        this.$nextTick( ()=> {
-          this.initElementDragResize(node)
-        })
-      }
-    },
-
-    replaceElement (element) {
-      if (element.url && this.focusedElement && this.focusedElement.url) {
-        for (let el of this.scene.elements) {
-          if (el.url === this.focusedElement.url) {
-            el.url = element.url
-          }
-        }
-        this.focusedElement.url = element.url
-      }
-    },
-
-    createBlockFromTemplate(element, x, y) {
-      for (let frame in element.frames) {
-        this.ctx.styleRegistry.addFrame({
-          name: frame,
-          cssFrame: element.frames[frame]
-        })
-      }
-      const block = {
-        id: shortid(),
-        elements: element.elements,
-        name: element.name,
-        animation: {},
-        selected: true,
-        x: x,
-        y: y,
-        width: element.viewBox.width,
-        height: element.viewBox.height
-      }
-      this.scene.elements.push(block)
-      return block
-    },
-
     /**
      * 初始化所有元素的interaction
      */
     setElementsInteract () {
       for (let element of this.scene.elements) {
         element.selected = false
+        element.stage = 'enter'
         this.initElementDragResize(element)
       }
     },
@@ -512,53 +410,6 @@ export default {
     },
     scaleUp () {
       this.scale += 0.05
-    },
-
-    /**
-     * do actural paste work
-     * @param element
-     */
-    pasteStyleToTargetElement (element) {
-      if (this.paste) {
-        this.$emit('change')
-        element.width = this.paste.width
-        element.height = this.paste.height
-
-        element.animation = JSON.parse(JSON.stringify(this.paste.animation))
-        for (let key in this.paste.style) {
-          if (element.style[key] != null) {
-            if (typeof element.style[key] === 'object') {
-              this.copyVariableValue(this.paste.style[key].variables, element.style[key].variables)
-            } else {
-              element.style[key] = this.paste.style[key]
-            }
-          }
-        }
-        element.variables = JSON.parse(JSON.stringify(this.paste.variables))
-      }
-    },
-
-    setElementAnimation (element, animation) {
-      const info = {
-        // css类名称
-        name: animation.name,
-        // 过渡函数，
-        timing: animation.timing,
-        // 时间区间 [0]为延迟，[1]为持续时间
-        range: [parseInt(animation.delay), parseInt(animation.duration)]
-      }
-      this.$set(element.animation, animation.type, [info])
-    },
-
-
-    copyVariableValue (source, target) {
-      if (source.length === target.length) {
-        for (let i = 0; i < source.length; i++) {
-          if ((target[i].name === source[i].name) && (target[i].type === source[i].type)) {
-            target[i].value = source[i].value
-          }
-        }
-      }
     }
   }
 }
@@ -572,9 +423,35 @@ export default {
   .screen-actions {
     z-index: 1001;
     position: absolute;
-    right: 20px;
-    bottom: 20px;
+    right: 10px;
+    bottom: 10px;
     font-size: 16px;
+    .el-input__suffix {
+      display: none;
+    }
+    .el-input__prefix {
+      right: -40px;
+      top: 4px;
+    }
+  }
+  .scene-btn-prev {
+    z-index: 1001;
+    position: absolute;
+    left: 10px;
+    bottom: 50%;
+    font-size: 16px;
+  }
+  .scene-btn-next {
+    z-index: 1001;
+    position: absolute;
+    right: 10px;
+    bottom: 50%;
+    font-size: 16px;
+  }
+  .scene-index {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
   }
 }
 #workspace {
@@ -607,6 +484,7 @@ export default {
     // cursor: url("data:image/svg+xml,%3Csvg class='icon' viewBox='0 0 1024 1024' xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath fill='%23515151' d='M746.667 341.333v85.334A42.667 42.667 0 0 1 704 469.333H149.333a42.667 42.667 0 0 1-42.666-42.666v-256A42.667 42.667 0 0 1 149.333 128H704a42.667 42.667 0 0 1 42.667 42.667V256H896a21.333 21.333 0 0 1 21.333 21.333v322.603a21.333 21.333 0 0 1-18.56 21.163l-472.106 61.568V896a21.333 21.333 0 0 1-21.334 21.333h-42.666A21.333 21.333 0 0 1 341.333 896V630.485a21.333 21.333 0 0 1 18.56-21.162L832 547.755V341.333h-85.333zM192 213.333V384h469.333V213.333H192z'/%3E%3C/svg%3E"), auto;
     &.not-selected {
       border: 1px solid transparent;
+      z-index: -1;
       >div {
         opacity: 0;
       }

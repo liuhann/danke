@@ -15,17 +15,25 @@ export default class RestDAO {
   }
   async getOne (id) {
     const result = await this.ctx.get(`${this.path}/${id}`)
-    return result.data
+    return result.data.data
   }
   async list (filter) {
     const result = await this.ctx.get(`${this.path}?${this.serialize(filter)}`)
-    return result.data
+    return result.data.data
   }
   async multiGet (ids) {
     const result = await this.ctx.post(`${this.path}/id`, {
       ids
     })
-    return result.data
+    return result.data.data
+  }
+
+  async update (o) {
+    if (o._id) {
+      await this.delete(o)
+    }
+    delete o._id
+    return this.create(o)
   }
 
   /**
@@ -42,25 +50,30 @@ export default class RestDAO {
 
   async create (o) {
     const response = await this.ctx.post(`${this.path}`, o)
-    return response.data
+    return response.data.data
   }
 
   async regex (prop, value, limit) {
     const result = await this.ctx.get(`${this.path}/regex/${prop}/${value}?limit=${limit || 1000}`)
-    return result.data
+    return result.data.data
   }
 
   async patch (id, json) {
     const result = await this.ctx.patch(`${this.path}/${id}`, json)
-    return result.data
+    return result.data.data
   }
 
   async delete (o) {
-    const response = await this.ctx.delete(`${this.path}/${o._id}`)
-    return response.data
+    if (typeof o === 'string') {
+      const response = await this.ctx.delete(`${this.path}/${o}`)
+      return response.data.data
+    } else {
+      const response = await this.ctx.delete(`${this.path}/${o._id}`)
+      return response.data.data
+    }
   }
   async distinct (field, json) {
     const response = await this.ctx.post(`${this.path}/distinct/${field}`, json)
-    return response.data
+    return response.data.data
   }
 }

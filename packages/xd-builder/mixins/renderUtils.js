@@ -4,11 +4,20 @@
  * @param variables 变量定义
  * @param valueFrom 获取变量的Key
  */
-export function assignVariables (style, variables, valueFrom) {
+function assignVariables (style, variables, valueFrom) {
+  Object.assign(style, getVariableStyle(variables, valueFrom))
+}
+
+function getVariableStyle (variables, valueFrom) {
+  const style = {}
   let key = valueFrom || 'value'
   if (variables && variables.length) {
     for (let variable of variables) {
-      if (variable.type === 'px' || variable.type === 'fontSize') {
+      if (variable.type === 'fontSize') {
+        Object.assign(style, {
+          ['--' + variable.name]: variable[key] + 'px'
+        })
+      } else if (variable.type === 'px' || variable.type === 'lineHeight' || variable.type === 'letterSpacing') {
         Object.assign(style, {
           ['--' + variable.name]: variable[key] + 'px'
         })
@@ -27,4 +36,10 @@ export function assignVariables (style, variables, valueFrom) {
       }
     }
   }
+  return style
+}
+
+export {
+  assignVariables,
+  getVariableStyle
 }

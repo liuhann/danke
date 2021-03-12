@@ -1,87 +1,72 @@
 import { shortid } from '../../utils/string'
-import { MessageBox } from 'element-ui'
 export default {
-  props: {
-    scene: {
-      type: Object
+  computed: {
+    // 当前唯一选中的元素
+    focusedElement () {
+      if (this.selectedElements.length === 1) {
+        return this.selectedElements[0]
+      } else {
+        return null
+      }
+    },
+    selectedElements () {
+      if (this.scene && this.scene.elements) {
+        return this.scene.elements.filter(el => el.selected && !el.locked)
+      }
+      return []
+    },
+    focusedFont () {
+      return this.focusedElement &&  this.focusedElement.text != null
+    },
+    selectedLockedElements () {
+      if (this.scene && this.scene.elements) {
+        return this.scene.elements.filter(el => el.selected && el.locked)
+      }
+      return []
+    },
+    sceneIndex () {
+      return this.work.scenes.indexOf(this.scene) + 1
+    },
+    selectedImages () {
+      if (this.scene && this.scene.elements) {
+        return this.scene.elements.filter(el => el.selected && !el.locked && el.url)
+      }
+      return []
+    },
+    /**
+     * 获取场景class列表
+     */
+    sceneClass () {
+      const classes = []
+      for (let key in this.scene.style) {
+        if (this.scene.style[key] && this.scene.style[key].name) {
+          classes.push(this.scene.style[key].name)
+        }
+      }
+      return classes
+    },
+    selectedTexts () {
+      if (this.scene && this.scene.elements) {
+        return this.scene.elements.filter(el => el.selected && el.text != null)
+      }
+      return []
+    },
+    noFocusedElement () {
+      if (this.scene && this.scene.elements) {
+        return this.scene.elements.filter(el => el.selected).length === 0
+      }
+      return false
+    },
+
+    elementMasktable () {
+      if (this.focusedElement && !this.focusedFont) {
+        return true
+      } else {
+        return false
+      }
     }
   },
   data () {
     return {}
-  },
-  methods: {
-    /**
-     * 增加新的场景
-     */
-    addScene () {
-      const scene = {
-        name: '场景',
-        id: shortid(),
-        elements: [],
-        animation: {},
-        z: 100,
-        duration: 3,
-        renderExit: true,
-        exit: 1
-      }
-      this.insertScene(scene)
-    },
-
-    insertScene(scene) {
-      if (this.currentScene) {
-        const currentSceneIndex = this.work.scenes.indexOf(this.currentScene)
-        this.work.scenes.splice(currentSceneIndex + 1, 0, scene)
-      } else {
-        this.work.scenes.push(scene)
-      }
-      this.currentScene = scene
-    },
-
-    chooseScene (scene) {
-      this.currentScene = scene
-    },
-
-    // 切换到下一场景
-    nextScene () {
-      if (this.ticksEditing) {
-        this.work.audioTicks.push(this.audio.currentTime)
-      }
-      if (this.currentScene) {
-        const currrentSceneIndex = this.work.scenes.indexOf(this.currentScene)
-        if (currrentSceneIndex < this.work.scenes.length - 1) {
-          let duration = this.getSceneExistDuration()
-          this.lastScene = this.currentScene
-          setTimeout(() => {
-            this.lastScene = null
-          }, duration)
-          this.currentScene = this.work.scenes[currrentSceneIndex + 1]
-        }
-      }
-    },
-
-    // 切换到上一场景
-    previousScene () {
-      if (this.currentScene) {
-        const currrentSceneIndex = this.work.scenes.indexOf(this.currentScene)
-        if (currrentSceneIndex > 0) {
-          this.currentScene = this.work.scenes[currrentSceneIndex - 1]
-        }
-      }
-    },
-
-    getSceneExistDuration () {
-      let maxExistsMill = 1
-      for (let element of this.currentScene.elements) {
-        if (element.style.exists) {
-          for (let exist of element.style.exists) {
-            const existMill = exist.delay + exist.dura
-            if (existMill > maxExistsMill) {
-              maxExistsMill = existMill
-            }
-          }
-        }
-      }
-      return maxExistsMill
-    },
   }
 }

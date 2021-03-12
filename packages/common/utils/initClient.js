@@ -1,7 +1,6 @@
 import axios from 'axios'
 
 export default function initClient (ctx, prefixUrl) {
-
   const instance = axios.create({
     baseURL: prefixUrl,
     timeout: 100000,

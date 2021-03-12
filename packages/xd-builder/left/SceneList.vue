@@ -1,41 +1,34 @@
 <template>
   <div id="scene-list">
     <div class="pop-title">
-      <span class="text">场景列表</span>
-      <a class="btn-close"><i class="el-icon-close" /></a>
+      <span v-if="!currentEditScene" class="text">
+        <el-button size="mini" type="success" @click="addScene">新增场景</el-button>
+      </span>
+      <div v-if="currentEditScene" class="text">
+        <el-button size="mini" type="success" @click="currentEditScene = null">关闭</el-button>
+      </div>
+      <a class="btn-close" @click="$emit('close')"><i class="el-icon-circle-close" /></a>
     </div>
-    <div v-show="!showSetting" class="actions">
-      <el-button size="mini" type="success" @click="addScene">新增场景</el-button>
-    </div>
-    <div v-show="showSetting" class="actions">
-      <el-button size="mini" type="success" @click="showSetting=false">关闭</el-button>
-    </div>
-    <el-form v-show="showSetting" size="mini" label-width="80px">
-      <el-form-item label="持续时间">
-        <el-input-number v-model="current.duration" controls-position="right" size="mini" />  秒
+    <el-form v-if="currentEditScene" size="mini" label-width="80px">
+      <el-form-item label="层次">
+        <el-input-number v-model="currentEditScene.z" controls-position="right" size="mini" />
       </el-form-item>
-      <el-form-item label="离开时间">
-        <el-input-number v-model="current.exit" controls-position="right" size="mini" />  秒
+      <el-form-item label="开始">
+        <el-input-number v-model="currentEditScene.enter" controls-position="right" size="mini" /> 毫秒
       </el-form-item>
-      <el-form-item label="离开动画">
-        <el-checkbox v-model="current.renderExit">
-          渲染
-        </el-checkbox>
+      <el-form-item label="结束">
+        <el-input-number v-model="currentEditScene.exit" controls-position="right" size="mini" />  毫秒
       </el-form-item>
-      <el-form-item label="堆叠视角">
-        <el-input-number v-model="current.z" controls-position="right" size="mini" />
+      <el-form-item label="完成">
+        <el-input-number v-model="currentEditScene.fin" controls-position="right" size="mini" /> 毫秒
       </el-form-item>
     </el-form>
-    <draggable v-show="!showSetting" v-model="work.scenes" class="list-wrapper">
-      <div v-for="(scene, index) in work.scenes" :key="scene._id" class="list-item" :class="(scene === current || scene.checked)? 'current': ''">
-        <div :style="{
-               background: work.color
-             }"
-             class="scene-wrapper"
-        >
+    <draggable v-show="!currentEditScene" v-model="work.scenes" class="list-wrapper">
+      <div v-for="(scene, index) in work.scenes" :key="scene._id" class="list-item" :style="sceneItemStyle">
+        <div class="scene-wrapper">
           <render-scene :scene="scene" :view-box="work.viewBox" :view-port="viewPort" @click="chooseScene(scene)" />
           <div class="hovers">
-            <el-button size="mini" circle type="info" icon="el-icon-edit" @click="editScene(index)" />
+            <el-button size="mini" circle type="info" icon="el-icon-edit" @click="editScene(scene)" />
             <el-button size="mini" circle type="info" icon="el-icon-document-copy" @click="copyScene(index)" />
             <el-button size="mini" circle type="danger" icon="el-icon-delete" @click="deleteScene(index)" />
           </div>
@@ -51,8 +44,6 @@ import sceneMixins from '../mixins/sceneMixins'
 import workMixin from '../mixins/workMixin'
 import RenderScene from '../render/RenderScene.vue'
 import { shortid } from '../../utils/string'
-import { fitRectIntoBounds } from '../mixins/rectUtils'
-import ImageDAO from '../../utils/imagedao'
 export default {
   name: 'SceneList',
   components: {
@@ -63,22 +54,34 @@ export default {
   props: {
     work: {
       type: Object
-    },
-    current: {
-      type: Object
     }
   },
   data () {
     return {
+      currentEditScene: null,
       showSetting: false
     }
   },
   computed :{
     viewPort () {
-      return fitRectIntoBounds(this.work.viewBox, {
-        width: 186,
-        height: 186
-      })
+      // 分为横屏、纵屏2种情况，具体可以指定一个特定比例。 横屏为一行2个，纵屏为一行3个，高度按比例确认
+      let width = 122
+      if (this.work.viewBox.width > this.work.viewBox.height) {
+        // 横屏 一行2个
+        width = 194
+      } 
+      return {
+        width: width,
+        height: (width / this.work.viewBox.width * this.work.viewBox.height)
+      }
+    },
+    
+    sceneItemStyle () {
+      return {
+        background: this.work.color,
+        width: this.viewPort.width + 'px',
+        height: this.viewPort.height + 'px'
+      }
     },
     checkedScenes () {
       return this.work.scenes.filter(scene => scene.checked)
@@ -101,12 +104,15 @@ export default {
       this.work.scenes.splice(index, 0, cloned)
     },
 
-    editScene () {
-      this.showSetting = true
+    editScene (scene) {
+      this.currentEditScene = scene
+      console.log('edit scene', this.currentEditScene)
     },
+
     chooseScene (scene) {
       this.$emit('choose-scene', scene)
     },
+
     close () {
       if (this.work.scenes.filter(scene => scene === this.current).length === 0) {
         this.$emit('choose-scene', this.work.scenes[0])
@@ -122,32 +128,6 @@ export default {
   background-color: rgba(255, 255, 255, 1);
   height: 100vh;
   width: 100%;
-  .actions {
-    padding: 10px 20px;
-    background: #fff;
-    display: flex;
-    border-bottom: 1px solid #dadce0;
-    .music-control {
-      flex: 1;
-      display: flex;
-      margin-right: 20px;
-      .el-button--text {
-        font-size: 18px;
-        padding: 10px 0;
-        &:hover {
-          color: #00c7ae;
-        }
-      }
-      .slider {
-        flex: 1;
-      }
-      .seconds {
-        padding-left: 10px;
-        line-height: 40px;
-        width: 130px;
-      }
-    }
-  }
   .list-wrapper {
     padding: 10px;
     max-height: calc(100% - 40px);
@@ -159,8 +139,6 @@ export default {
 
   .list-item {
     margin: 5px;
-    width: 186px;
-    height: 186px;
     // border: 1px solid #eee;
     background: rgba(0,0,0, .05);
     display: inline-block;
@@ -168,6 +146,10 @@ export default {
     justify-content: center;
     align-items: center;
     position: relative;
+    &:hover, &.current {
+      cursor: pointer;
+      box-shadow: 0 0 0 2px #67C23A;
+    }
     .scene-wrapper {
       overflow: hidden;
       border: 1px solid #efefef;
@@ -183,9 +165,7 @@ export default {
           display: initial;
         }
       }
-      &:hover, &.current {
-        cursor: pointer;
-      }
+     
       .element {
         position: absolute;
       }

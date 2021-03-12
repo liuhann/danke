@@ -7,9 +7,6 @@ import RestDAO from '../../utils/restdao.js'
 
 export default {
   props: {
-    work: {
-      type: Object
-    },
     viewBox: {
       type: Object
     }
@@ -17,39 +14,17 @@ export default {
   data () {},
   created () {
     this.workdao = new RestDAO(this.ctx, 'danke/work')
+    this.previewdao = new RestDAO(this.ctx, 'danke/preview')
     this.styleRegistry = this.ctx.styleRegistry
   },
   methods: {
     slidePreview () {
       window.open('/slide/' + this.work.id)
     },
-    /**
-     * 新增作品
-     */
-    newWork () {
-      return {
-        id: shortid(10),
-        title: '未命名的作品',
-        isBlock: 'no',
-        viewBox: this.viewBox || {
-          width: 1080,
-          height: 1920
-        },
-        color: '#fff',
-        audioUrl: '',
-        audioName: '',
-        audioSeconds: 0,
-        frames: {}, // 动画信息
-        svgs: {}, // svg图片信息
-        fonts: {},// 字体列表
-        scenes: [] // 场景
-      }
-    },
-
-
+    
     /**
      * 应用音乐节拍到作品的每个页面
-     * @param {Object} tick 
+     * @param {Object} tick
      */
     applyTicksToWork (tick) {
       this.work.audioUrl = tick.url
@@ -73,48 +48,47 @@ export default {
      * @param {string} workId 作品Id
      */
     async loadWork (workId) {
-      let loadingInstance1 = Loading.service({ fullscreen: true, text: '加载作品中' })
+      const loadingInstance1 = Loading.service({ fullscreen: true, text: '加载作品中' })
       const work = await this.workdao.getOne(workId)
-      if (!work.viewBox) {
-        work.viewBox = work.screen
-        delete work.screen
-      }
-      this.ctx.styleRegistry.initWorkStyleResource(work)
-      this.ctx.palette = this.ctx.styleRegistry.getWorkColors(work)
-
-      for (let scene of work.scenes) {
-        scene.visible = false
-        scene.stage = ''
-      }
       this.work = work
+      this.scene = this.work.scenes[0]
       loadingInstance1.close()
     },
 
     /**
      * 获取、初始化作品里所有元素的样式资源
      */
-    initWorkStyleResource (work) {
+    async initWorkStyleResource (work) {
       const styleRegistry = this.ctx.styleRegistry
-      for (let name in work.frames) {
-        styleRegistry.addFrame({
-          name,
-          cssFrame: work.frames[name]
-        })
-      }
-      for (let name in work.styles) {
-        styleRegistry.addStyle({
-          name,
-          cssContent: work.styles[name]
-        })
-      }
-      if (work.fonts && work.fonts.length) {
-        for (let font of work.fonts) {
-          styleRegistry.addFontFace(font)
+
+      // init element svg content from work.svgs
+      for (const scene of work.scenes) {
+        // this.initSceneSVG(scene.elements, work.svgs)
+
+        for (const element of scene.elements) {
+          // 脏数据处理
+          element.animation.preview = []
+          if (!element.animation.enter) {
+            element.animation.enter = []
+          }
+          if (!element.animation.exit) {
+            element.animation.exit = []
+          }
         }
       }
-      // init element svg content from work.svgs
-      for (let scene of work.scenes) {
-        this.initSceneSVG(scene.elements, work.svgs)
+    },
+
+    initSceneSVG (elements, svgs) {
+      for (const element of elements) {
+        if (element.svg) {
+          element.content = svgs[element.svg]
+        }
+        if (element.mask) {
+          element.maskImage = svgs[element.mask]
+        }
+        if (element.elements) {
+          this.initSceneSVG(element.elements, svgs)
+        }
       }
     },
 
@@ -122,12 +96,12 @@ export default {
     * 抽取作品里所有元素的样式资源，包括动画、SVG图片及字体
     * @param {*} work
     */
-    getCommonResource() {
+    getCommonResource () {
       const frames = {} // css 帧资源
       const styles = {} // css 样式资源
       const svgs = {}
       const fonts = new Set()
-      for (let scene of work.scenes) {
+      for (const scene of this.work.scenes) {
         if (!scene.animation) {
           scene.animation = {}
         }
@@ -142,12 +116,8 @@ export default {
     },
 
     assignSceneResource (scene, frames, svgs, fonts) {
-      for (let element of scene.elements) {
-        for (let stage in element.animation) {
-          for (let animation of element.animation[stage]) {
-            frames[animation.name] = this.keyframes[animation.name]
-          }
-        }
+      for (const element of scene.elements) {
+        element.animation.preview = []
 
         // when use svg as element content image
         if (element.svg) {
@@ -182,32 +152,73 @@ export default {
       if (this.savingWork) {
         return
       }
-      let loadingInstance = Loading.service({ fullscreen: true, text: '保存作品中' });
-      const work = JSON.parse(JSON.stringify(this.work))
-      // 抽取所有使用的frame style到work上，以便压缩使用空间
-      Object.assign(work, this.ctx.styleRegistry.getStyleResource(work))
-      work.colors = this.getWorkColors(work)
-      work.author = this.ctx.user.nick
-      work.avatar = this.ctx.user.avatar
       this.savingWork = true
+      const work = JSON.parse(JSON.stringify(this.work))
+      work.creator = this.ctx.user.id
+      work.avatar = this.ctx.user.avatar
+
+      work.snapshot = ''
       if (!this.work._id) {
+        work.creator = this.ctx.user.id
         const result = await this.workdao.create(work)
         this.work._id = result.object._id
-        this.$router.replace('/xd?work=' + this.work.id)
+        this.$router.replace(location.pathname + '?work=' + this.work.id)
       } else {
-        await this.workdao.patch(work._id, work)
+        await this.workdao.patch(work.id, work)
       }
       this.savingWork = false
-      loadingInstance.close()
-      Message.success({
-        message: '作品已经保存',
-        duration: 800
-      })
+      // 处理作品的预览
+      // 发出请求获取最新的work-preview
+      this.ctx.get('/danke/preview/download?id=' + work.id)
     },
 
     async runWork () {
       await this.saveWork()
       window.open('/play/fit/' + this.work._id)
+    },
+
+    addScene () {
+      const scene = {
+        name: '场景',
+        id: shortid(),
+        elements: [],
+        animation: {},
+        color: '',
+        z: 100,
+        delay: 0,
+        duration: 3,
+        exit: 1
+      }
+      this.insertScene(scene)
+    },
+
+    insertScene(scene) {
+      if (this.currentScene) {
+        const currentSceneIndex = this.work.scenes.indexOf(this.currentScene)
+        this.work.scenes.splice(currentSceneIndex + 1, 0, scene)
+      } else {
+        this.work.scenes.push(scene)
+      }
+      this.scene = scene
+    },
+
+    chooseScene (scene) {
+      this.scene = scene
+    },
+
+    getSceneExistDuration () {
+      let maxExistsMill = 1
+      for (let element of this.currentScene.elements) {
+        if (element.style.exists) {
+          for (let exist of element.style.exists) {
+            const existMill = exist.delay + exist.dura
+            if (existMill > maxExistsMill) {
+              maxExistsMill = existMill
+            }
+          }
+        }
+      }
+      return maxExistsMill
     }
   }
 }

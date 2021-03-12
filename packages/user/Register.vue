@@ -1,64 +1,67 @@
 <template>
-<div class="user-form">
-  <div class="auth-sidebar" :style="{
-      background: workBackground
-    }">
-    <render-scene v-if="showWork" :scene="showWork.scenes[0]" :view-box="showWork.viewBox" :view-port="showWork.viewport" stage="enter"/>
-    <div class="by" v-if="showWork">Art by {{showWork.author}}</div>
-  </div>
-  <section class="content">
-    <nav class="auth-nav">
-      <p class="auth-link">
-        已有账号?  <a href="/login">去登录</a>
-      </p>
-    </nav>
-    <main>
-      <div class="auth-content">
-        <h2>注册</h2>
-        <hr class="divider">
-        <div class="auth-form sign-in-form">
-          <form accept-charset="UTF-8" method="post" action="/" @submit.prevent="doRegister"><input name="utf8" type="hidden" value="✓">
-            <div class="form-fields">
-              <fieldset>
-                <label for="username">用户名 （手机号码）</label>
-                <input class="text-input" id="username" :class="error.username? 'is-danger': ''" v-model="username" type="text" placeholder="输入手机号码">
-                <span class="error" v-if="error.username">{{error.username}}</span>
-              </fieldset>
-              <fieldset>
-                <label class="password">密码</label>
-                <input class="text-input" :class="error.password? 'is-danger': ''" v-model="password" type="password" placeholder="输入密码">
-                <span class="error" v-if="error.password">密码不能为空</span>
-              </fieldset>
-              <fieldset>
-                <label>验证码<span @click="refreshCaptcha" v-html="svg"></span></label>
-                <input type="text" v-model="captcha" :class="error.captcha? 'is-danger': ''" class="text-input small">
-                <span class="error" v-if="error.captcha">{{error.captcha}}</span>
-              </fieldset>
-              <fieldset>
-                <input type="checkbox" v-model="checked"><span>同意<a href="#">使用条款</a></span>
-              </fieldset>
-              <fieldset>
-                <input class="button form-sub" :disabled="!checked" type="submit" value="创建新的账号" tabindex="3">
-              </fieldset>
-            </div>
-          </form>
+  <div id="user-register">
+    <nav-bar />
+    <section class="section">
+      <div class="columns is-mobile is-centered">
+        <div class="column is-one-quarter-desktop is-full-mobile is-full-touch">
+          <nav class="panel is-success">
+            <p class="panel-heading">
+              用户注册
+            </p>
+            <form style="margin: .75rem; padding-bottom: 2rem;" onsubmit="return false;">
+              <div class="field">
+                <label class="label">用户名（手机号码）</label>
+                <p class="control is-expanded">
+                  <input v-model="username" class="input is-fullwidth" type="text" :class="error.username?'is-danger': ''" placeholder="用户名（手机号码）">
+                </p>
+                <p v-show="error.username" class="help is-danger">{{ error.username }}</p>
+              </div>
+              <div class="field">
+                <label class="label">密码 </label>
+                <div class="control">
+                  <input v-model="password" type="password" class="input" :class="error.password?'is-danger': ''" placeholder="请输入密码">
+                </div>
+                <p v-show="error.password" class="help is-danger">{{ error.password }}</p>
+              </div>
+              <div class="field">
+                <label class="label">校验码</label>
+                <span class="captcha" @click="refreshCaptcha" v-html="svg"></span>
+                <div class="control">
+                  <input v-model="captcha" type="text" class="input" :class="error.captcha?'is-danger': ''" placeholder="输入上面的验证码">
+                </div>
+                <p v-show="error.captcha" class="help is-danger">{{ error.captcha }}</p>
+              </div>
+              <div class="field">
+                <label class="checkbox">
+                  <input v-model="checked" type="checkbox">
+                  我已阅读并同意 <a href="#">使用条款</a>
+                </label>
+              </div>
+
+              <div class="field is-grouped">
+                <div class="control">
+                  <button class="button is-success is-fullwidth" :disabled="!checked" :class="isLoading?'is-loading': ''" @click="doRegister">创建新的账号</button>
+                </div>
+              </div>
+            </form>
+          </nav>
         </div>
       </div>
-    </main>
-  </section>
-</div>
+    </section>
+  </div>
 </template>
 
 <script>
-import workListMixins from '../xd-builder/mixins/workListMixins'
-import RenderScene from '../xd-builder/render/RenderScene'
+import NavBar from '../site/components/NavBar.vue'
 export default {
   name: 'Register',
-  components: { RenderScene },
-  mixins: [ workListMixins ],
+  components: {
+    NavBar
+  },
   data () {
     return {
       username: '',
+      isLoading: false,
       checked: true,
       error: {
         username: '',
@@ -67,11 +70,7 @@ export default {
       },
       svg: '',
       captcha: '',
-      password: '',
-      workViewPort: {
-        width: 200,
-        height: 200
-      }
+      password: ''
     }
   },
 
@@ -129,29 +128,32 @@ export default {
       this.error.captcha = ''
       if (this.username === '') {
         this.error.username = '请输入用户名'
-        return
+        return false
       }
       if (this.password === '') {
         this.error.password = '请输入密码'
-        return
+        return false
       }
       if (this.captcha === '') {
         this.error.captcha = '请输入验证码'
-        return
+        return false
       }
 
+      this.isLoading = true
       const result = await this.ctx.userdao.register(this.username, this.password, this.nickname, this.captcha)
+      this.isLoading = false
+      this.refreshCaptcha()
       if (result.code === 400) {
         this.error.username = '手机号码格式不正确'
-        return
+        return false
       }
       if (result.code === 403) {
         this.error.captcha = '输入的验证码不正确'
-        return
+        return false
       }
       if (result.code === 409) {
         this.error.username = '手机号码已经注册过'
-        return
+        return false
       }
       if (result.token) {
         localStorage.setItem('token', result.token)

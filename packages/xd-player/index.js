@@ -1,11 +1,10 @@
 export default {
   routes: [{
-    path: '/play/fit/:id',
-    component: () => import(/* webpackChunkName: "xd-player" */'./FitPagePlay.vue')
+    path: '/work/frame/:id',
+    component: () => import(/* webpackChunkName: "xd-player" */'./FramedPlayer.vue')
   }, {
-    path: '/play/full/:id',
-    component: () => import(/* webpackChunkName: "xd-player" */'./FullPagePlay.vue')
+    path: '/work/snapshot/:id',
+    component: () => import(/* webpackChunkName: "xd-player" */'./SnapShotPreview.vue')
   }],
-  async onload (ctx) {
-  }
+  async onload (ctx) { }
 }

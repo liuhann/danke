@@ -1,66 +1,76 @@
 <template>
   <div id="site">
     <nav-bar></nav-bar>
-    <div v-if="loading" class="main-full loading">
-      <ol class="shots-grid container-fluid">
-        <li v-for="n in 24" :key="n" class="work-loading" :style="{
-          height: '240px'
-        }"
-        ></li>
-      </ol>
-    </div>
-    <div class="main-full">
-      <ol class="shots-grid container-fluid">
-        <li v-for="work in works" :key="work._id">
-          <div class="scene-wrapper" :style="{
-            width: workViewPort.width + 'px',
-            height: workViewPort.height + 'px',
-            background: work.color
-          }" @click="openWork(work)"
-          >
-            <render-scene :view-box="work.viewBox || work.screen" :scene="work.scenes[0]" :view-port="work.viewport" :stage="work.stage" />
-          </div>
-          <div class="author-likes">
-            <img v-if="work.avatar" class="avatar" :src="getImageUrl(work.avatar, 24, 24)">
-            <div class="author">
-              {{ work.author }}
-            </div>
-          </div>
-        </li>
-      </ol>
-    </div>
-
+    <section class="section">
+      <div class="tabs">
+        <ul>
+          <li v-for="channel in channels" :key="channel.value" :class="currentChannel === channel.value? 'is-active' : ''" @click="switchChanel(channel.value)"><a>{{ channel.label }}</a></li>
+        </ul>
+      </div>
+      <div class="columns is-mobile is-multiline work-list">
+        <div v-for="work in currentChannelWorks" :key="work.id" class="column work-container" :class="channelColumnSize">
+          <figure class="image is-1by1" :class="currentChannel"> 
+            <img :src="getImageUrl(work.snapshot, 240, 240)">
+          </figure>
+        </div>
+      </div>
+      <div class="columns">
+      </div>
+    </section>
     <nav-footer />
   </div>
 </template>
 <script>
-import NavBar from './components/NavBar'
+import NavBar from './components/NavBar.vue'
 import NavFooter from './components/NavFooter'
-import RenderScene from '../xd-builder/render/RenderScene'
-import workListMixins from '../xd-builder/mixins/workListMixins'
-import { getImageUrl } from '../xd-builder/mixins/imageUtils'
+import channels from './channels'
+import RestDAO from '../utils/restdao.js'
+import { getImageUrl } from '../utils/getImageUrl'
 
 export default {
   name: 'Main',
-  components: { RenderScene, NavFooter, NavBar },
-  mixins: [ workListMixins ],
+  components: { NavFooter, NavBar },
   data () {
     return {
-      workViewPort: {
-        width: 100,
-        height: 100
+      currentChannel: null,
+      currentChannelWorks: [],
+      channels
+    }
+  },
+  computed: {
+    channelColumnSize () {
+      if (this.currentChannel === 'avatar') {
+        return 'is-1-fullhd is-1-widescreen is-1-desktop is-2-tablet is-one-third-mobile'
+      } else {
+        return 'is-1-widescreen is-2-desktop is-3-tablet is-one-third-mobile'
       }
     }
   },
   created () {
+     this.workdao = new RestDAO(this.ctx, 'danke/work')
+     this.switchChanel(channels[0].value)
   },
   mounted () {
-    this.initWorkViewPort()
-    this.loadWorks()
   },
   methods: {
     viewport () {
       return this.workViewPort
+    },
+    switchChanel(channel) {
+      this.currentChannel = channel
+      this.loadChannelWorks()
+    },
+
+    async loadChannelWorks () {
+      const result = await this.workdao.list({
+        projection: 'updated,created,creator,name,id,frames,viewBox,title,author,avatar,color,snapshot',
+        channels: this.currentChannel,
+        page: this.page,
+        count: this.count
+      })
+      this.currentChannelWorks = result.list
+      this.total = result.total
+      this.loading = false
     },
     listQuery () {
       return {
@@ -78,18 +88,16 @@ export default {
     openWork (work) {
       window.open('/slide/' + work.id)
     },
-    initWorkViewPort () {
-      const loadingBlock = document.querySelector('.work-loading')
-      this.workViewPort = {
-        width: loadingBlock.getBoundingClientRect().width,
-        height: loadingBlock.getBoundingClientRect().width / 4 * 3
-      }
-    }
   }
 }
 </script>
 
 <style lang="scss">
+
+.avatar {
+  border: 1px solid #eee;
+}
+
 .shots-grid {
   margin-top: 108px;
   display: grid;

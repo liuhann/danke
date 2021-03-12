@@ -1,34 +1,34 @@
 <template>
-<div id="user-profile">
-  <form @submit.prevent="updateUserProfile">
-    <fieldset>
-      <label>用户账号</label>
-      <span>{{user.id}}</span>
-    </fieldset>
-    <fieldset>
-      <label>用户名</label>
-      <span><input type="text" v-model="user.nick"/></span>
-    </fieldset>
-    <fieldset>
-      <label>位置</label>
-      <span><input type="text" v-model="user.location"/></span>
-    </fieldset>
-    <fieldset>
-      <label>电子邮件</label>
-      <span><input type="text" v-model="user.email"/></span>
-    </fieldset>
-    <fieldset>
-      <button type="submit">保存</button>
-      <button type="button" class="danger" @click="logout">退出登录</button>
-    </fieldset>
-  </form>
-</div>
+  <div id="user-profile">
+    <form @submit.prevent="updateUserProfile">
+      <fieldset>
+        <label>用户账号</label>
+        <span>{{ user.id }}</span>
+      </fieldset>
+      <fieldset>
+        <label>用户名</label>
+        <span><input v-model="user.nick" type="text" /></span>
+      </fieldset>
+      <fieldset>
+        <label>位置</label>
+        <span><input v-model="user.location" type="text" /></span>
+      </fieldset>
+      <fieldset>
+        <label>电子邮件</label>
+        <span><input v-model="user.email" type="text" /></span>
+      </fieldset>
+      <fieldset>
+        <button type="submit">保存</button>
+        <button type="button" class="danger" @click="logout">退出登录</button>
+      </fieldset>
+    </form>
+  </div>
 </template>
 
 <script>
 import { Popover, Upload, Message } from 'element-ui'
 import ImageDAO from '../utils/imagedao'
-import { getImageUrl } from '../xd-builder/mixins/imageUtils'
+import { getImageUrl } from '../utils/getImageUrl'
 export default {
   name: 'UserHome',
   components: {

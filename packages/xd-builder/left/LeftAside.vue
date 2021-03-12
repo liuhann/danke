@@ -1,66 +1,13 @@
 <template>
   <aside class="insert-container">
-    <div class="category-side">
-      <div class="category" :class="current === 'gallery'? 'current': ''" @click="toggleTo('gallery')">
-        <i class="el-icon-school" />
-        <span>素材库</span>
-      </div>
-      <div class="category" :class="current === 'html'? 'current': ''" @click="toggleTo('html')">
-        <i class="el-icon-news" />
-        <span>形状</span>
-      </div>
-      <div class="category" :class="current === 'text'? 'current': ''" @click="toggleTo('text')">
-        <i class="el-icon-tickets" />
-        <span>文字</span>
-      </div>
-      <div class="category" :class="current === 'filter'? 'current': ''" @click="toggleTo('filter')">
-        <i class="el-icon-sunrise" />
-        <span>滤镜</span>
-      </div>
-      <div class="category" :class="current === 'addon'? 'current': ''" @click="toggleTo('addon')">
-        <i class="el-icon-files" />
-        <span>修饰</span>
-      </div>
-      <div class="category" :class="current === 'image'? 'current': ''" @click="toggleTo('image')">
-        <i class="el-icon-picture-outline" />
-        <span>我的</span>
-      </div>
-      <div class="category" :class="current === 'tick'? 'current': ''" @click="toggleTo('tick')">
-        <i class="el-icon-service" />
-        <span>音乐</span>
-      </div>
-    </div>
-    <div class="element-container">
-      <transition name="fade">
-        <keep-alive>
-          <image-list v-if="current === 'image'" @choose="imageClicked" />
-        </keep-alive>
-      </transition>
-      <transition name="fade">
-        <keep-alive>
-          <gallery-list v-if="current === 'gallery'" />
-        </keep-alive>
-      </transition>
-      <transition name="fade">
-        <keep-alive>
-          <text-list v-if="current==='text'" />
-        </keep-alive>
-      </transition>
-      <transition name="fade">
-        <keep-alive>
-          <tick-list v-if="current === 'tick'" @insert="insertTick" />
-        </keep-alive>
-      </transition>
-      <transition name="fade">
-        <keep-alive>
-          <left-filter-list v-if="current === 'filter'" @insert="applyFilter" @clean="cleanFilter" />
-        </keep-alive>
-      </transition>
-      <transition name="fade">
-        <keep-alive>
-          <left-shape-list v-if="current === 'html'" @svg="tryApplySVGMask" />
-        </keep-alive>
-      </transition>
+    <vertical-tab v-model="current" :tabs="tabs" />
+    <div class="tab-content-container">
+      <collapable-list v-if="vectors.length" :loading="vectorLoading" :column="3" :items="vectors" :style-item-content="{
+        borderRadius: '10px',
+        backgroundColor: 'rgba(255, 255, 255, .05)',
+        boxShadow: '0 1px 6px 0 rgb(32 33 36 / 28%)'
+      }"
+      />
     </div>
   </aside>
 </template>
@@ -69,85 +16,74 @@
 import ImageDAO from '../../utils/imagedao'
 import RestDAO from '../../utils/restdao.js'
 import ImageList from './ImageList.vue'
-import TextList from './TextList'
-import GalleryList from './GalleryList.vue'
-import LeftFilterList from './LeftFilterList.vue'
-import TickList from './TickList.vue'
-import LeftShapeList from './LeftShapeList.vue'
-import FrameListConfig from './FrameListConfig.vue'
-import workplaceMixin from '../mixins/workplaceMixins'
-import svgToMiniDataURI from 'mini-svg-data-uri'
+import VerticalTab from '../components/VerticalTab.vue'
+import VectorAlbumList from './VectorAlbumList'
+import { getImageUrl } from '../../utils/getImageUrl'
+import CollapableList from '../../common/components/CollapableList'
 
 export default {
   components: {
-    GalleryList,
-    TextList,
-    ImageList,
-    LeftFilterList,
-    LeftShapeList,
-    TickList
+    VectorAlbumList,
+    VerticalTab,
+    CollapableList,
+    ImageList
   },
-  mixins: [ workplaceMixin ],
   props: {},
   data () {
     return {
-      current: 'gallery'
+      vectorLoading: false,
+      current: null,
+      vectors: [],
+      tabs: []
+    }
+  },
+
+  watch: {
+    current () {
+      this.fetchPackVectors ()
     }
   },
   created () {
     this.imagedao = new ImageDAO(this.ctx)
-    this.restdao = new RestDAO(this.ctx, 'danke/image')
+    this.packdao = new RestDAO(this.ctx, 'danke/pack')
+    this.restdao = new RestDAO(this.ctx, 'danke/public/vector')
+  },
+
+  mounted () {
+    this.fetchPacks()
   },
   methods: {
-    async fileChoosed (file) {
-      const result = await this.imagedao.uploadBlob(file.raw, `images`)
-      await this.restdao.create({
-        url: result.name,
-        name: file.name,
-        size: file.size
+
+    onMounted () {
+      this.fetchPacks()
+
+    },
+
+    async fetchPacks () {
+      const result = await this.packdao.list({
+        page: 1,
+        count: 40,
+        tags: 'basic'
       })
-      this.$refs.myImageList.refresh()
-    },
 
-    toggleTo (nav) {
-      this.current = nav
-    },
-
-    // 增加新的场景
-    insertNewScene (scene) {
-      this.$emit('insert', 'scene', scene)
-    },
-
-    insertElement (element) {
-      this.$emit('insert', 'element', element)
-    },
-    tryApplySVGMask (svg) {
-      const imageUrl = `url("${svgToMiniDataURI(svg.content)}")`
-      if (this.focusedElement) {
-        if (this.focusedElement.maskImage === imageUrl) {
-          this.$set(this.focusedElement, 'maskImage', null)
-        } else {
-          this.$set(this.focusedElement, 'maskImage', imageUrl)
-        }
+      for (let pack of result.list) {
+        this.tabs.push({
+          value: pack._id,
+          icon: getImageUrl(pack.url)
+        })
       }
-    },
-    insertTick (tick) {
-      this.$emit('insert', 'tick', tick)
+      this.current = this.tabs[0].value
     },
 
-    insertAnimation (animation) {
-      this.$emit('insert', 'animation', animation)
-    },
-
-    insertFilter (filter) {
-      if (filter) {
-
-      }
-      this.$emit('replace', filter)
-    },
-
-    imageClicked (image) {
-      this.$emit('replace', image)
+    async fetchPackVectors () {
+      this.vectorLoading = true
+      this.vectors = []
+      const response = await this.restdao.list({
+        pack: this.current,
+        page: 1,
+        count: 100
+      })
+      this.vectors = response.list
     }
   }
 }
@@ -165,36 +101,8 @@ aside.insert-container {
   flex-shrink: 0;
   position: relative;
   display: flex;
-  .category-side {
-    width: 76px;
-    background: #0e1318;
-    display: flex;
-    flex-direction: column;
-    .category {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      color: #aaacad;
-      padding: 12px 0;
-      &:hover {
-        cursor: pointer;
-        color: #ddd;
-      }
-      &.current {
-        background: #293039;
-      }
-      i {
-        margin: 2px 0 2px;
-        font-size: 24px;
-      }
-      span {
-        font-size: 14px;
-        display: block;
-      }
-    }
-  }
-  .element-container {
+
+  .tab-content-container {
     .hint {
       margin: 10px 0;
       color: hsla(0,0%,100%,.5);
@@ -202,6 +110,7 @@ aside.insert-container {
     background: #293039;
     width: 352px;
     position: relative;
+    overflow: overlay;
   }
 
   ::-webkit-scrollbar-track

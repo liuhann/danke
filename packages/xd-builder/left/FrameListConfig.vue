@@ -1,14 +1,19 @@
 <template>
-  <div id="left-frames-config">
+  <div id="left-frames-config" class="drawer_content">
+    <div class="pop-title">
+      <div class="frame-tab">
+        <div>动画效果：</div>
+        <div :class="animationType === 'enter'? 'selected': ''" class="tab" @click="animationType = 'enter'">进入</div>
+        <div :class="animationType === 'exit'? 'selected': ''" class="tab" @click="animationType = 'exit'">离开</div>
+      </div>
+      <a class="btn-close" @click="$emit('close')"><i class="el-icon-circle-close" /></a>
+    </div>
     <div v-if="element" class="animation-config">
-      <el-tabs v-model="animationType" type="card" size="mini">
-        <el-tab-pane label="进入" name="enter" />
-        <el-tab-pane label="离开" name="exist" />
-      </el-tabs>
+      <div v-if="element.animation[animationType] == null || element.animation[animationType].length === 0" class="empty">未设置动画</div>
       <div v-for="(step, index) in element.animation[animationType]" :key="index" class="animation-entry">
         <div class="summary">
           <div class="title">
-            #{{ index + 1 }} {{ step.group }} - {{ step.direction }}
+            #{{ index + 1 }} {{ step.name }}
           </div>
           <i class="el-icon-edit-outline" @click="replaceFrame(step)">重新选择</i>
           <i class="el-icon-delete" @click="deleteFrame(index)" />
@@ -16,7 +21,8 @@
         <animation-form :animation="step" />
       </div>
       <el-button size="mini" type="success" @click="addFrame">增加</el-button>
-      <el-button size="mini" type="warn" @click="previewFrames">预览</el-button>
+      <el-button size="mini" type="warn" @click="copyFrames">复制</el-button>
+      <el-button size="mini" type="warn" @click="pasteFrames">粘贴</el-button>
     </div>
 
     <div v-show="showChoose && element" class="animation-choose">
@@ -25,12 +31,15 @@
         <el-button size="mini" @click="showChoose = false">取消</el-button>
       </div>
       <div class="hor-tabs">
+        <el-tabs v-model="root" tab-position="left" style="height: 100%;" @tab-click="rootChange">
+          <el-tab-pane v-for="g in roots" :key="g" :label="g" :name="g" />
+        </el-tabs>
         <el-tabs v-model="group" tab-position="left" style="height: 100%;" @tab-click="groupChange">
           <el-tab-pane v-for="g in groups" :key="g" :label="g" :name="g" />
         </el-tabs>
         <div class="frames-container">
-          <div v-for="(frame, index) in frames" :key="index" class="frame" :class="currentFrame.name === frame.name ? 'current': ''" @click="selectFrame(frame)">
-            {{ frame.direction }}
+          <div v-for="(frame, key) in frames" :key="key" class="frame" :class="currentFrame.name === key ? 'current': ''" @click="selectFrame(key)">
+            {{ key }}
           </div>
         </div>
       </div>
@@ -42,56 +51,63 @@
 import RestDAO from '../../utils/restdao.js'
 import { assignVariables } from '../mixins/renderUtils'
 import AnimationForm from './AnimationForm.vue'
-import workplaceMixins from '../mixins/workplaceMixins'
-import { Pagination, Input, Button, Loading, Checkbox, Tabs, TabPane, Collapse, CollapseItem } from 'element-ui'
+import { getRoots, getSubGroup, getGroupAnimations } from '../../animista/animistaFetched'
 
 export default {
   name: 'FrameListConfig',
   components: {
-    [Input.name]: Input,
-    [Pagination.name]: Pagination,
-    [Checkbox.name]: Checkbox,
-    [Tabs.name]: Tabs,
-    [TabPane.name]: TabPane,
-    [Button.name]: Button,
-    [Collapse.name]: Collapse,
-    [CollapseItem.name]: CollapseItem,
     AnimationForm
   },
-  mixins: [ workplaceMixins ],
+  props: {
+    element: {
+      type: Object
+    }
+  },
   data () {
     return {
       animationType: 'enter',
       showChoose: false,
       currentStep: null,
       group: '',
+      roots: getRoots(),
+      root: getRoots()[0],
       animation: {},
       currentFrame: {},
       groups: [],
-      frames: []
+      frames: {}
     }
   },
   created () {
     this.framedao = new RestDAO(this.ctx, 'danke/animation')
   },
   mounted () {
-    this.loadGroups ()
-    this.currentAlbum = '基础'
+    this.rootChange ()
+    // this.loadGroups ()
   },
   methods: {
+    rootChange () {
+      this.groups = getSubGroup(this.root)
+      this.group = this.groups[0]
+      this.frames = getGroupAnimations(this.root, this.group)
+    },
+    async groupChange () {
+      this.frames = getGroupAnimations(this.root, this.group)
+    },
     async loadGroups () {
        this.groups = await this.framedao.distinct('group')
        this.group = this.groups[0]
        this.groupChange()
     },
-   
-    selectFrame (frame) {
-      this.currentFrame = frame
-      this.$set(this.element, 'previewAnimation', [this.getFrameStep(frame)])
+
+    selectFrame (key) {
+      this.currentFrame = Object.assign({}, this.frames[key], {
+        name: key
+      })
+      this.element.animation.preview = [Object.assign({}, this.currentFrame)]
       // clear preview
       setTimeout(() => {
-        this.$set(this.element, 'previewAnimation', [])
-      }, parseInt(frame.duration) + 200)
+        this.element.animation.preview = null
+      }, (parseInt(this.currentFrame.duration) * 1000) + 2000)
     },
 
     addFrame () {
@@ -99,68 +115,54 @@ export default {
       this.showChoose = true
     },
 
-   replaceFrame (step) {
-     this.currentStep = step
-     this.showChoose = true
-   },
 
-   deleteFrame (index) {
-    this.element.animation[this.animationType].splice(index, 1)
-   },
+    copyFrames () {
+      this.ctx.copiedFrames = JSON.stringify(this.element.animation)
+    },
 
-  previewFrames () {
-    const currentFrame = JSON.parse(JSON.stringify(this.element.animation[this.animationType]))
-    this.$set(this.element, 'previewAnimation', [])
-    // this.element.animation[this.animationType] = []
-    console.log('preview', currentFrame)
-    setTimeout(() => {
-      this.$set(this.element, 'previewAnimation', currentFrame)
-      // this.element.animation[this.animationType] = currentFrame
-    }, 100)
-
-  },
-
-  confirmFrame () {
-    if (this.currentStep) {
-      this.currentStep.name = this.currentFrame.name
-      this.currentStep.group = this.currentFrame.group
-      this.currentStep.direction = this.currentFrame.direction
-      this.currentStep.variables = JSON.parse(JSON.stringify(this.currentFrame.variables || []))
-    } else {
-      const step = this.getFrameStep(this.currentFrame)
-
-      if (!this.element.animation[this.animationType]) {
-        this.$set(this.element.animation, this.animationType, [])
-      }
-      this.element.animation[this.animationType].push(JSON.parse(JSON.stringify(step)))
-    }
-    this.showChoose = false
-  },
-
-  getFrameStep(frame) {
-    const step = {}
-    step.name = frame.name
-    step.group = frame.group
-    step.direction = frame.direction
-    step.timing = frame.timing
-    step.iteration = frame.iteration
-    step.infinite = frame.infinite
-    step.range = [0, parseInt(frame.duration) / 1000]
-    step.variables = frame.variables || []
-    return step
-  },
-
-  async groupChange () {
-      this.frames = (await this.framedao.list({
-        group: this.group
-      })).list
-      if (this.frames.length) {
-        this.handleCurrentChange(this.frames[0])
+    pasteFrames() {
+      if (this.ctx.copiedFrames) {
+        this.element.animation = JSON.parse(this.ctx.copiedFrames)
+        this.element.animation.preview = []
       }
     },
+
+    replaceFrame (step) {
+     this.currentStep = step
+     this.showChoose = true
+    },
+
+    deleteFrame (index) {
+      this.element.animation[this.animationType].splice(index, 1)
+    },
+
+    previewFrames () {
+      this.element.animation.preview = this.element.animation[this.animationType]
+    },
+
+    confirmFrame () {
+      if (this.currentStep) {
+        Object.assign(this.currentStep, this.currentFrame)
+      } else {
+        this.element.animation[this.animationType].push(Object.assign({}, this.currentFrame))
+      }
+      this.showChoose = false
+    },
+
+    getFrameStep(frame) {
+      const step = {}
+      step.name = frame.name
+      step.easing = frame.easing
+      step.easing = frame.easing
+      step.easing = frame.easing
+      step.iteration = frame.iterationCount
+      step.infinite = frame.iterationCount === 'infinite' ? true : false
+      step.range = [0, frame.duration]
+      return step
+    },
+
     handleCurrentChange (val) {
       if (val) {
-        this.ctx.styleRegistry.addFrame(val)
         this.animation = val
         this.animation.delay = 0
       }
@@ -171,10 +173,19 @@ export default {
 
 <style lang="scss">
 #left-frames-config {
-  padding: 8px;
-  overflow: hidden;
-  width: 100%;
-  position: relative;
+  .frame-tab {
+    flex: 1;
+    display: flex;
+    .tab {
+      cursor: pointer;
+      margin: 0 20px;
+      padding-bottom: 5px;
+      &.selected {
+        border-bottom: 2px solid #00bf72;
+        color: #00bf72;
+      }
+    }
+  }
   .no-element {
     height: 100%;
     width: 100%;
@@ -208,24 +219,25 @@ export default {
       }
       height: calc(100vh - 40px);
       flex: 1;
-      padding-left: 1rem;
+      background: #fff;
+      overflow-y: auto;
       .frame {
         padding: 10px 5px;
-        font-size: 1.5rem;
-        color: #999;
+        font-size: 1rem;
+        color: #333;
         cursor: pointer;
         &:hover {
-          background: rgba(153, 169, 191, .3);
+          color: #409EFF;
         }
         &.current {
-          background: #eee;
-          color: rgb(84, 103, 131);
+          color: #409EFF;
         }
       }
     }
   }
   .animation-config {
     overflow-y: auto;
+    margin: 10px;
     .animation-entry {
       .summary {
         display: flex;
@@ -243,8 +255,8 @@ export default {
           }
         }
       }
-    } 
+    }
   }
-  
+
 }
 </style>

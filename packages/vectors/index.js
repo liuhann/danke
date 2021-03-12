@@ -11,11 +11,8 @@ export default {
     path: '/path/list',
     component: () => import(/* webpackChunkName: "vector" */'./PageSVGPathList.vue')
   }, {
-    path: '/vector/list',
-    component: () => import(/* webpackChunkName: "vector" */'./PageVectorList.vue')
-  }, {
-    path: '/vector/edit',
-    component: () => import(/* webpackChunkName: "vector" */'./PageVectorEdit.vue')
+    path: '/h5/list',
+    component: () => import(/* webpackChunkName: "vector" */'./PageHtmlList.vue')
   }],
   async onload (ctx) {
   }

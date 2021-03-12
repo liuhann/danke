@@ -1,0 +1,6 @@
+@charset "UTF-8";
+
+ 
+.icon-ok:before { content: '\2713'; } /* '✓' */
+.icon-user:before { content: '👤'; } /* '\1f464' */
+.icon-lock:before { content: '🔒'; } /* '\1f512' */

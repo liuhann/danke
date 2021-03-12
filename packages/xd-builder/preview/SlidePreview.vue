@@ -11,9 +11,6 @@
       <i v-if="(currentSceneIndex < work.scenes.length - 1) && !currentAutoPlay" class="el-icon-back prev-scene" @click="enterScene(currentSceneIndex - 1)" />
       <i class="el-icon-video-play play" @click="play" />
     </div>
-    <div class="seconds">
-      {{ currentSecondsFormated }}
-    </div>
   </div>
 </template>
 
@@ -25,7 +22,7 @@ import sceneMixin from '../mixins/sceneMixins.js'
 import RenderScene from '../render/RenderScene'
 import RestDAO from '../../utils/restdao.js'
 export default {
-  name: 'Preview',
+  name: 'SlidePreview',
   components: {
     RenderScene,
   },
@@ -120,7 +117,6 @@ export default {
   },
   methods: {
     async loadAndInitDevice (workId) {
-      await this.ctx.styleRegistry.loadAllFrames()
       // 加载作品
       await this.loadWork(workId)
       // 设置显示屏幕大小
@@ -144,10 +140,14 @@ export default {
     play () {
       this.currentSeconds = 0
       const startMinuts = new Date().getTime()
-
       this.updInterval = setInterval(() => {
         this.currentSeconds = new Date().getTime() - startMinuts
       }, 20)
+
+      for (let scene of this.work.scenes) {
+        scene.visible = false
+        scene.stage = ''
+      }
       this.currentSceneIndex = 0
       this.enterScene(0)
       this.playing = true
@@ -160,14 +160,19 @@ export default {
     async enterScene (index) {
       this.work.scenes[index].visible = true
       this.work.scenes[index].stage = 'enter'
-      console.log(this.currentSecondsFormated)
       if (this.currentAutoPlay) {
         this.nextInteval = setTimeout(() => {
           // 继续进入下一幕
           if (this.currentSceneIndex < this.work.scenes.length - 1) {
             this.currentSceneIndex ++
-            this.enterScene(this.currentSceneIndex)
             this.leaveScene(this.currentSceneIndex - 1)
+            if (this.work.scenes[this.currentSceneIndex].delay) {
+              setTimeout(() => {
+                 this.enterScene(this.currentSceneIndex)
+              }, this.work.scenes[this.currentSceneIndex].delay * 1000)
+            } else {
+              this.enterScene(this.currentSceneIndex)
+            }
           } else {
             // 最后一幕
             if (this.audioInstance) {
@@ -182,13 +187,12 @@ export default {
 
     async leaveScene (index) {
       if (this.work.scenes[index].renderExit) {
-        this.work.scenes[index].stage = 'exist'
+        this.work.scenes[index].stage = 'exit'
       }
       setTimeout(() => {
-        console.log('hide scene' , index)
         this.work.scenes[index].visible = false
 
-      }, this.work.scenes[index].exit * 1000)
+      }, (this.work.scenes[index].exit || 1) * 1000)
     },
 
     refreshWork () {
@@ -217,6 +221,7 @@ export default {
 </script>
 
 <style lang="scss">
+@import "../../animista/animista.css";
 
 .page-slide-preview {
   height: 100%;

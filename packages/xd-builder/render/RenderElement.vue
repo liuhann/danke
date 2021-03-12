@@ -4,14 +4,12 @@
        :class="elementClass" :style="elementWrapperStyle" @click="elementClicked"
   >
     <!--图片渲染-->
-    <img v-if="element.url" :id="'img-' + (element.name || element.id)" :src="getImageUrl(element.url, viewPort.width * 2, viewPort.height * 2)" :style="elementStyle">
+    <div v-if="element.html" class="html" :style="elementStyle" v-html="element.html" />
+    <img v-else-if="elementUrl && !element.fill" :id="'img-' + (element.name || element.id)" :src="elementUrl" :style="elementStyle">
     <div v-else-if="element.content" class="svg-content" :style="elementStyle" v-html="element.content" />
     <div v-else-if="element.elements" class="block-elements" :style="elementStyle">
       <render-element v-for="(el, i) in element.elements" :key="el.id" :view-box="viewBox" :view-port="viewPort" :element="el" :index="i" />
     </div>
-    <svg v-else-if="element.path" :style="elementStyle" :viewBox="'0 0 ' + element.path.w + ' ' + element.path.h ">
-      <path :d="generatePath" fill="var(--fill)" stroke-width="var(--stokeWidth)" stroke="var(--stroke)" />
-    </svg>
     <div v-else-if="!element.text" class="shape" :style="elementStyle">
     </div>
     <!--文本渲染情况下 文本内容-->
@@ -26,12 +24,22 @@
 </template>
 
 <script>
-import { getImageUrl } from '../mixins/imageUtils.js'
+import { getImageUrl } from '../../utils/getImageUrl.js'
 import { getRectPositionStyle } from '../mixins/rectUtils.js'
+import { getColorVariables } from '../../utils/svg'
 import { assignVariables } from '../mixins/renderUtils'
 import textMesure from '../../utils/textMesure'
-import { svg2url } from '../../utils/svg2url'
+import cubicBerziers from '../../frames/model/cubic-beziers.js'
+import { ensureFont } from '../../utils/fontfaces'
 
+import anime from 'animejs'
+
+/**
+ * 元素特性组合有以下几种情况
+ * 1、mono vector：  fill color 、
+ *  实现： backgroundColor + mask
+ * 2、image or background vector: mask with mono vector
+ */
 export default {
   name: 'RenderElement',
   components: {
@@ -54,7 +62,17 @@ export default {
     element: { // 元素定义
       type: Object
     },
+    variables: {
+      type: Array
+    },
     index: { // 索引，多个元素时决定显示次序
+      type: Number
+    },
+    autoplay: {
+      type: Boolean,
+      default: false
+    },
+    seekPlay: {
       type: Number
     },
     selected: { // 是否选中
@@ -66,6 +84,28 @@ export default {
     }
   },
   computed: {
+    elementUrl () {
+      const filterSet = (this.variables || []).filter(variable => variable.type === 'image')
+      if (filterSet.length === 1) {
+        return filterSet[0].value
+      } else if (this.element.url) {
+        return this.getImageUrl(this.element.url, this.viewPort.width, this.viewPort.height)
+      } else {
+        return null
+      }
+    },
+
+    elementText () {
+      const filterSet = (this.variables || []).filter(variable => variable.type === 'text')
+      if (filterSet.length === 1) {
+        return filterSet[0].value
+      } else if (this.element.text && !this.element.editing) {
+        return this.element.text
+      } else {
+        return null
+      }
+    },
+
     inlineStyle () {
       let stageVariables = this.element.variables.filter(variable => variable[this.stage] != null)
       if (stageVariables.length) {
@@ -91,6 +131,9 @@ export default {
       if (this.element.filter) {
         result.push(this.element.filter.name)
       }
+      if (this.element.hasOwnProperty('text')) {
+        result.push('text')
+      }
       return result
     },
 
@@ -101,8 +144,6 @@ export default {
         return null
       }
     },
-
-
 
     textEditStyle () {
       const style = {}
@@ -128,17 +169,31 @@ export default {
       // 设置元素的长、宽到默认变量--width 、 --height
       const style = {
         '--width': this.element.width + 'px',
-        '--height': this.element.height + 'px'
+        '--height': this.element.height + 'px',
+        backgroundColor: this.element.fill
+      }
+
+      // 填充色情况下，图片显示为遮罩
+      if (this.element.fill && this.element.url) {
+        style.maskImage = `url(${this.getImageUrl(this.element.url, this.viewPort.width * 2, this.viewPort.height * 2)})`
+        style.maskSize = this.element.fit || 'cover'
+        style.maskPosition = 'center center'
       }
       // 变量配置信息
       assignVariables(style, this.element.variables)
+
+      // 合并外围配置变量信息
+      if (this.variables) {
+        assignVariables(style, this.variables.filter(variable => variable.variable))
+      }
+
       // 位置信息
       Object.assign(style, getRectPositionStyle(this.element, this.viewBox, this.viewPort))
       // Object.assign(style, this.elementAnimationStyle)
       if (this.element.text != null) {
         Object.assign(style, this.element.style)
       }
-      
+
       // this.appendTextTransform(style)
       // 对于正在编辑的元素不设置transform
       if (this.element.editing) {
@@ -147,9 +202,13 @@ export default {
         })
       } else {
         if (this.element.rotate) {
-          Object.assign(style, {
-            transform: `rotate(${this.element.rotate}deg)`
-          })
+          const transforms = []
+          transforms.push(`rotate(${this.element.rotate}deg)`)
+          if (transforms.length) {
+            Object.assign(style, {
+              transform: transforms.join(' ')
+            })
+          }
         }
       }
       // 按大小指定视角
@@ -163,9 +222,13 @@ export default {
         style.objectFit = this.element.fit
       }
       if (this.element.maskImage) {
-        style.maskImage = this.element.maskImage
+        style.maskImage = `url("${this.getImageUrl(this.element.maskImage)}")`
       }
-      return Object.assign({}, this.element.style, style, this.elementAnimationStyle)
+      if (this.element.mask && this.element.mask.uid) {
+        style.clipPath = `url("#${this.element.mask.uid}")`
+      }
+      const result = Object.assign({}, this.element.style, style)
+      return result
     },
 
     textTransformStyle () {
@@ -179,6 +242,7 @@ export default {
           } else {
             style.fontSize = zoomedSize + 'px'
           }
+          // style.lineHeight = (zoomedSize * 1.2) + 'px'
         }
       }
       Object.assign(style, this.elementAnimationStyle)
@@ -193,8 +257,8 @@ export default {
       const style = {}
       let animations = [];
 
-      if (element.previewAnimation && element.previewAnimation.length) {
-        animations = element.previewAnimation
+      if (element.animation.preview && element.animation.preview.length) {
+        animations = element.animation.preview
       } else if (element.animation) {
         animations = element.animation[this.stage]
       }
@@ -203,59 +267,18 @@ export default {
           // 单个动画
           if (animations.length === 1) {
             const animation = animations[0]
-            // 非内部动画 
-            if (!animation.inner) {
-              assignVariables(style, animation.variables)
-              style.animation = `${animation.name} ${animation.range[1]}s ${animation.timing} ${animation.range[0]}s ${animation.infinite? 'infinite': animation.iteration} ${animation.reverse? 'reverse': 'normal'} both`
-            }
+            // 非内部动画
+            assignVariables(style, animation.variables)
+            style.animation = `${animation.name} ${animation.duration}s ${cubicBerziers[animation.easing]} ${animation.delay}s ${animation.iterationCount} ${animation.direction} ${animation.fillMode}`
           } else {
             const animationsOrdered = []
             // 多个动画次序或者重叠播放
             for (let i = 0; i < animations.length; i++) {
               const animation = animations[i]
-              // // 非内部动画 
+              // // 非内部动画
               if (!animation.inner) {
                 assignVariables(style, animation.variables)
-                animationsOrdered.push(`${animation.name} ${animation.range[1]}s ${animation.timing} ${animation.range[0]}s ${animation.infinite? 'infinite': animation.iteration} ${i===0? 'backwards': ''}`)
-              }
-            }
-            if (animationsOrdered.length) {
-              style.animation = animationsOrdered.join(',')
-            }
-          }
-        }
-      }
-      
-      console.log('reset animation style', style)
-      return style
-    },
-
-    /**
-     * 取 element.animations 计算元素的动画样式
-     */
-    elementInnerAnimationStyle () {
-      const element = this.element
-      const style = {}
-      if (element.animation) {
-        const animations = element.animation[this.stage]
-        if (animations && animations.length) {
-          // 单个动画
-          if (animations.length === 1) {
-            const animation = animations[0]
-            // 非内部动画 
-            if (animation.inner) {
-              assignVariables(style, animation.variables)
-              style.animation = `${animation.name} ${animation.range[1]}s ${animation.timing} ${animation.range[0]}s ${animation.infinite? 'infinite': animation.iteration} both`
-            }
-          } else {
-            const animationsOrdered = []
-            // 多个动画次序或者重叠播放
-            for (let i = 0; i < animations.length; i++) {
-              const animation = animations[i]
-              // // 非内部动画 
-              if (animation.inner) {
-                assignVariables(style, animation.variables)
-                animationsOrdered.push(`${animation.name} ${animation.range[1]}s ${animation.timing} ${animation.range[0]}s ${animation.infinite? 'infinite': animation.iteration} both`)
+                animationsOrdered.push(`${animation.name} ${animation.duration}s ${cubicBerziers[animation.easing]} ${animation.delay}s ${animation.iterationCount} ${animation.direction} ${i===0? 'backwards': ''}`)
               }
             }
             if (animationsOrdered.length) {
@@ -268,8 +291,8 @@ export default {
     },
 
     elementTextLines () {
-      if (this.element.text != null && !this.element.editing) {
-        return this.element.text.split('\n')
+      if (this.elementText) {
+        return this.elementText.split('\n')
       } else {
         return []
       }
@@ -329,11 +352,52 @@ export default {
       return d
     },
   },
-  mounted () {
-    if (this.element.url && this.element.url.endsWith('.svg')) {
+
+  watch: {
+    seekPlay () {
+      if (this.animation) {
+        this.animation.seek(this.seekPlay)
+      }
+    },
+    stage () {
+      this.initAnime()
     }
   },
+  mounted () {
+    this.onMounted()
+  },
   methods: {
+    async onMounted () {
+      await this.initElementResource()
+      this.initAnime()
+    },
+
+    initAnime () {
+      this.animation = anime(Object.assign({
+        targets: this.$el,
+        autoplay: this.autoplay
+      }, this.element.animation[this.stage]))
+      if (this.seekPlay) {
+        this.animation.seek(this.seekPlay)
+      }
+    },
+
+    async initElementResource () {
+      // 加载必要的字体
+      if (this.element.variables && this.element.variables.filter(variable=> variable.type === 'fontFamily').length) {
+        await ensureFont(this.ctx, this.element.variables.filter(variable=> variable.type === 'fontFamily')[0].value)
+      }
+      // 对于svg图片的处理，
+      if (this.element.url && this.element.url.endsWith('.svg') && this.element.tags && this.element.tags.indexOf('colorable') > -1) {
+        const fetching = await fetch(getImageUrl(this.element.url))
+        const svgContent = await fetching.text()
+        let { svg, variables} = getColorVariables(svgContent)
+        if (!this.element.variables || this.element.variables.length === 0) {
+          this.element.variables = variables
+        }
+        this.element.html = svg
+      }
+    },
     getImageUrl,
     updateTextArea () {
       const measured = textMesure(this.elementTextContent, this.elementTextFontSize, this.elementTextWeight)
@@ -364,7 +428,7 @@ export default {
     },
 
     elementClicked () {
-      console.log(this.element)
+
     },
 
     // 获取元素的动画特效
@@ -393,7 +457,6 @@ export default {
 .element {
   box-sizing: border-box;
   text-overflow: initial;
-  white-space: nowrap;
   position: absolute;
   mask-repeat: no-repeat;
   &::before {
@@ -405,6 +468,11 @@ export default {
     width: 100%;
     z-index: 11;
   }
+  &.text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
   .block-elements {
     .element {
       position: absolute;
@@ -413,13 +481,18 @@ export default {
   img {
     mask-size: 100% 100%;
   }
+  .html {
+    width: 100%;
+    height: 100%;
+  }
+
   svg {
     width: 100%;
     height: 100%;
   }
   .text {
     width: 100%;
-    height: 100%;
+    text-align: center;
   }
   textarea {
     text-align: left;
@@ -434,7 +507,6 @@ export default {
   /*-webkit-background-clip: text;*/
   /*-webkit-text-fill-color: transparent;*/
   img {
-    position: absolute;
     z-index: 10;
     width: 100%;
     height: 100%;

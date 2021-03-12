@@ -1,7 +1,49 @@
 export default class ImageDAO {
-  constructor (ctx) {
+  constructor (ctx, bucket) {
     this.ctx = ctx
+    this.bucket = bucket || 'dankev3'
   }
+
+  async getImageSize (blob) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = URL.createObjectURL(blob);
+      img.onload = function () {
+        resolve({
+          width: this.width,
+          height: this.height
+        })
+      }
+    })
+  }
+
+  /**
+   * 
+   * @param {*} file 上传文件
+   * @param {*} uploadFiles 已有文件列表
+   * @param {*} filePath 上传的路径
+   */
+  async fileChoosed (file, uploadFiles, filePath) {
+    console.log('file choosed', file, uploadFiles)
+    const imageObject = {
+      name: file.name,
+      size: file.size,
+    }
+    
+    let uploadPath = filePath || 'anomymous.file' 
+
+    if (typeof uploadPath === 'function') {
+      uploadPath = uploadPath(file)
+    }
+
+    let result = await this.uploadBlob(file.raw, uploadPath, true)
+    imageObject.url = result.name
+    const size = await this.getImageSize(file.raw)
+    imageObject.w = size.width
+    imageObject.h = size.height
+    return imageObject
+  }
+
 
   async uploadAndCutMp3 (blob, path, start, end) {
     // check file size
@@ -20,7 +62,7 @@ export default class ImageDAO {
    * @return {Promise<void>}
    */
   async removeBlob (path) {
-    const response = await this.ctx.post(`image/remove`, {
+    const response = await this.ctx.post(`${this.bucket}/image/remove`, {
       fileId: path
     })
     return response.data
@@ -32,15 +74,21 @@ export default class ImageDAO {
    * @param path 位于个人空间的目录位置
    * @return {Promise<*|JSONValue>}
    */
-  async uploadBlob (blob, path) {
+  async uploadBlob (blob, path, isPublic) {
     // check file size
     const formData = new window.FormData()
     if (!blob.lastModifiedDate) {
       blob.lastModifiedDate = new Date()
     }
     formData.append('file', blob, blob.filename)
-    const response = await this.ctx.post(`image/upload?path=${path}`, formData)
-    return response.data
+    const response = await this.ctx.post(`${this.bucket}/image/upload?path=${path}${isPublic?'&public=true':''}`, formData)
+    return response.data.data
+  }
+
+
+  // 同时删除图片及阿里云位置
+  async removeImage (img) {
+
   }
 
   async uploadImage (file) {

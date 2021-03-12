@@ -1,31 +1,31 @@
 <template>
-<span>
-  <!-- 多选的对齐、平均分布功能-->
-  <el-tooltip content="靠左对齐" >
-    <a class="action" @click="alignLeft"><icon-align-left /></a>
-  </el-tooltip>
-  <el-tooltip content="靠右对齐" >
-  <a class="action" @click="alignRight"><icon-align-right /></a>
-  </el-tooltip>
-  <el-tooltip content="顶部对齐" >
-    <a class="action" @click="alignTop"><icon-align-top /></a>
-  </el-tooltip>
-  <el-tooltip content="底部对齐" >
-    <a class="action" v-if="elements.length > 1" @click="alignBottom"><icon-align-bottom /></a>
-  </el-tooltip>
-  <el-tooltip content="横向居中对齐" >
-    <a class="action" v-if="elements.length > 1" @click="alignVerCenter"><icon-align-vertical /></a>
-  </el-tooltip>
-  <el-tooltip content="竖向居中对齐" >
-    <a class="action" v-if="elements.length > 1" @click="alignHorCenter"><icon-align-horizontal /></a>
-  </el-tooltip>
-  <el-tooltip content="竖向等距排列" >
-    <a class="action" v-if="elements.length > 2" @click="alignAverVer"><icon-aver-ver /></a>
-  </el-tooltip>
-  <el-tooltip content="横向等距排列" >
-    <a class="action" v-if="elements.length > 2" @click="alignAverHor"><icon-aver-hor /></a>
-  </el-tooltip>
-</span>
+  <span>
+    <!-- 多选的对齐、平均分布功能-->
+    <el-tooltip content="靠左对齐">
+      <a class="action" @click="alignLeft"><icon-align-left /></a>
+    </el-tooltip>
+    <el-tooltip content="靠右对齐">
+      <a class="action" @click="alignRight"><icon-align-right /></a>
+    </el-tooltip>
+    <el-tooltip content="顶部对齐">
+      <a class="action" @click="alignTop"><icon-align-top /></a>
+    </el-tooltip>
+    <el-tooltip content="底部对齐">
+      <a v-if="elements.length > 1" class="action" @click="alignBottom"><icon-align-bottom /></a>
+    </el-tooltip>
+    <el-tooltip content="横向居中对齐">
+      <a v-if="elements.length > 1" class="action" @click="alignVerCenter"><icon-align-vertical /></a>
+    </el-tooltip>
+    <el-tooltip content="竖向居中对齐">
+      <a v-if="elements.length > 1" class="action" @click="alignHorCenter"><icon-align-horizontal /></a>
+    </el-tooltip>
+    <el-tooltip content="竖向等距排列">
+      <a v-if="elements.length > 2" class="action" @click="alignAverVer"><icon-aver-ver /></a>
+    </el-tooltip>
+    <el-tooltip content="横向等距排列">
+      <a v-if="elements.length > 2" class="action" @click="alignAverHor"><icon-aver-hor /></a>
+    </el-tooltip>
+  </span>
 </template>
 
 <script>
@@ -39,12 +39,7 @@ import IconAverHor from './res/align-aver-h.svg'
 import IconAverVer from './res/align-aver-v.svg'
 import { Tooltip } from 'element-ui'
 export default {
-  name: 'AlignElement.vue',
-  props: {
-    elements: {
-      type: Array
-    }
-  },
+  name: 'AlignElementVue',
   components: {
     [Tooltip.name]: Tooltip,
     IconAlignLeft,
@@ -55,6 +50,11 @@ export default {
     IconAlignHorizontal,
     IconAverHor,
     IconAverVer,
+  },
+  props: {
+    elements: {
+      type: Array
+    }
   },
   methods: {
     alignLeft () {

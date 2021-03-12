@@ -1,4 +1,3 @@
-import RestDAO from '../../utils/restdao.js'
 /**
  * 创建样式标签
  * @param {*} id
@@ -69,31 +68,24 @@ function addAnimation (sheet, animation) {
   sheet.insertRule(rule, pos)
 }
 
-function addFontFace (sheet, url, id) {
-  let pos = sheet.length
-  sheet.insertRule(`@font-face {
-    font-family: ${id};
-    src: url('${url}');
-  }`, pos)
-}
+async function addFontFace (sheet, url, id) {
+  // let pos = sheet.length
 
-export const fontFamilies = [{
-  id: '微软雅黑',
-  name: '系统字体'
-}, {
-  id: 'HYLeMiaoTiJ',
-  name: '汉仪乐喵体简',
-  url: 'https://font-public.canva.cn/YAC1IZZZHQU/0/HYLeMiaoTiJ.woff'
-}, {
-  id: 'HYZiYanHuanLeSongW',
-  name: '汉仪字研欢乐宋',
-  url: 'https://font-public.canva.cn/YAC1EHq8QNU/0/HYZiYanHuanLeSongW.woff'
-}]
+  const ff = new FontFace(id, `url('${url}')`)
+
+  await ff.load()
+
+  document.fonts.add(ff)
+  //
+  // sheet.insertRule(`@font-face {
+  //   font-family: ${id};
+  //   src: url('${url}');
+  // }`, pos)
+}
 
 export default class StyleRegistry {
   constructor (ctx) {
     this.sheet = createSheet('style-registry')
-    this.framedao = new RestDAO(ctx, 'danke/animation')
     this.styles = {}
     this.svgfilters = []
     this.keyframes = {}
@@ -113,17 +105,6 @@ export default class StyleRegistry {
     this.svgs = {}
     this.fonts = {}
   }
-
-  async loadAllFrames () {
-    const result = await this.framedao.list({
-      count: 1000
-    })
-
-    for (let frame of result.list) {
-      this.addFrame(frame)
-    }
-  }
-
   /**
    * 统一增加SVG内容，避免SVG图片反复使用存储位置过多的问题。 一些SVG图片也有近100K大小
    * @param {*} vector
@@ -136,13 +117,14 @@ export default class StyleRegistry {
     return this.svgs[id]
   }
 
-  addFontFace (fontface) {
+  async addFontFace (fontface) {
     let font = fontface
     if (typeof font === 'string') {
       font = fontFamilies.filter(f => f.id === fontface)[0]
     }
-    if (!this.fonts[font.id]) {
-      addFontFace(this.sheet, font.url, font.id)
+    if (font && font.url && !this.fonts[font.id]) {
+      await addFontFace(this.sheet, font.url, font.id)
+      this.fonts[font.id] = font.url
     }
   }
 
@@ -218,46 +200,5 @@ export default class StyleRegistry {
       }
     }
     return colors
-  }
-
-  /**
-   * 获取、初始化作品里所有元素的样式资源
-   */
-  initWorkStyleResource (work) {
-    // for (let name in work.frames) {
-    //   this.addFrame({
-    //     name,
-    //     cssFrame: work.frames[name]
-    //   })
-    // }
-    for (let name in work.styles) {
-      this.addStyle({
-        name,
-        cssContent: work.styles[name]
-      })
-    }
-    if (work.fonts && work.fonts.length) {
-      for (let font of work.fonts) {
-        this.addFontFace(font)
-      }
-    }
-    // init element svg content from work.svgs
-    for (let scene of work.scenes) {
-      this.initSceneSVG(scene.elements, work.svgs)
-    }
-  }
-
-  initSceneSVG (elements, svgs) {
-    for (let element of elements) {
-      if (element.svg) {
-        element.content = svgs[element.svg]
-      }
-      if (element.mask) {
-        element.maskImage = svgs[element.svg]
-      }
-      if (element.elements) {
-        this.initSceneSVG(element.elements, svgs)
-      }
-    }
   }
 }

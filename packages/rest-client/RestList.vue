@@ -1,12 +1,17 @@
 <template>
   <div class="rest-list">
-    模板地址 <el-input v-model="templateUrl" size="mini" style="width: 300px"></el-input>
-    投影 <el-input v-model="projection" size="mini" style="width: 300px"></el-input>
+    REST
+    <el-select v-model="restPath" style="width: 300px">
+      <el-option v-for="rest in restUrls" :key="rest" :value="rest" :label="rest"></el-option>
+    </el-select>
     <el-button size="mini" @click="load">
-      更新
+      列举
+    </el-button>
+    <el-button size="mini" @click="edit">
+      新增
     </el-button>
     <el-table :data="tableData" style="width: 100%" size="mini" stripe>
-      <el-table-column v-for="column of columns" :key="column" 
+      <el-table-column v-for="column of columns" :key="column"
                        :show-overflow-tooltip="true"
                        :prop="column"
                        :label="column"
@@ -14,7 +19,7 @@
       </el-table-column>
       <el-table-column>
         <template slot-scope="scope">
-          <el-button type="info" size="mini" @click="showRow(scope.row)">
+          <el-button type="info" size="mini" @click="edit(scope.row)">
             属性设置
           </el-button>
           <el-button type="success" size="mini" @click="applyUrl(scope.row)">
@@ -26,42 +31,28 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-dialog title="修改对象属性" :visible.sync="dialogVisible" fullscreen>
-      <el-form v-if="objectEditing" ref="form" :model="objectEditing" label-width="80px" size="mini">
-        <!--既有字段的修改-->
-        <el-form-item v-for="(value, key) in objectEditing" :key="key" :label="key">
-          <el-input v-model="objectEditing[key]" style="width: 400px"></el-input>
-        </el-form-item>
-        <!--处理新增的字段-->
-        <el-form-item v-for="(field, index) in formNewSets" :key="index" label="新增项">
-          <el-input v-model="field.key" style="width: 120px"></el-input>
-          <el-input v-model="field.value" style="width: 200px"></el-input>
-          <el-button type="danger" @click="formNewSets.splice(index, 1)">
-            删除
-          </el-button>
-        </el-form-item>
-        <!--新增按钮-->
-        <el-form-item>
-          <el-button type="success" @click="formNewSets.push({key: '', value: ''})">新增</el-button>
-        </el-form-item>
-        <!--保存与取消-->
-        <el-form-item>
-          <el-button type="primary" @click="patchObject">
-            保存
-          </el-button>
-          <el-button @click="dialogVisible = false">
-            取消
-          </el-button>
-        </el-form-item>
-      </el-form>
+    <el-dialog title="修改对象属性" :visible.sync="dialogVisible" fullscreen @opened="dialogOpened">
+      <div id="editor">
+      </div>
+      <el-button type="primary" @click="patchObject">
+        保存
+      </el-button>
+      <el-button @click="dialogVisible = false">
+        取消
+      </el-button>
     </el-dialog>
     <el-pagination :page-size.sync="pageSize" :total="total" @current-change="currentChange" />
   </div>
 </template>
 
 <script>
-import { Table, TableColumn, Pagination, Input, Button, Dialog, Form, FormItem } from 'element-ui'
+import { Table, TableColumn, Pagination, Input, Button, Dialog, Select, Option } from 'element-ui'
 import RestDAO from '../utils/restdao.js'
+
+import ace from 'brace'
+import 'brace/mode/json'
+import 'brace/theme/monokai'
+
 window.ResizeObserver = undefined
 export default {
   name: 'RestList',
@@ -72,12 +63,14 @@ export default {
     [Input.name]: Input,
     [Button.name]: Button,
     [Dialog.name]: Dialog,
-    [Form.name]: Form,
-    [FormItem.name]: FormItem
+    [Select.name]: Select,
+    [Option.name]: Option
   },
   data () {
     return {
-      projection: 'title,creator,updated',
+      restUrls: ['danke/work', 'danke/font', 'danke/pack'],
+      projection: '',
+      restPath: '',
       templateUrl: '/play/fit/{_id}',
       loading: false,
       currentPage: 1,
@@ -93,15 +86,20 @@ export default {
   computed: {
   },
   created () {
-    this.restdao = new RestDAO(this.ctx, this.$route.query.path)
-    this.load()
   },
   methods: {
-
+    initEditor () {
+      if (!this.editor) {
+        this.editor = ace.edit('editor')
+        this.editor.getSession().setMode('ace/mode/json')
+        this.editor.setTheme('ace/theme/monokai')
+      }
+    },
     /**
      * 加载对象实例列表 注意处理含有projection的情况
      **/
     async load () {
+      this.restdao = new RestDAO(this.ctx, this.restPath)
       this.loading = true
       let result = null
       // 指定了投影则按投影加载
@@ -119,7 +117,7 @@ export default {
           page: this.currentPage,
           count: this.pageSize
         })
-        this.columns = ['_id']
+        this.columns = ['_id','name']
       }
       this.tableData = result.list
       this.total = result.total
@@ -139,12 +137,14 @@ export default {
      * 新增、修改对象属性
      */
     async patchObject () {
-      for (let field of this.formNewSets) {
-        if (field.key && field.value) {
-          this.objectEditing[field.key] = field.value
-        }
+      const patched = JSON.parse(this.editor.getValue())
+
+      if (this.objectEditing._id) {
+        delete patched._id
+        await this.restdao.patch(this.objectEditing._id, patched)
+      } else {
+        await this.restdao.create(patched)
       }
-      await this.restdao.patch(this.objectEditing._id, this.objectEditing)
       this.dialogVisible = false
     },
     analysisFromObject (o) {
@@ -158,18 +158,22 @@ export default {
     },
     async removeObject (r) {
       if (confirm('确认删除')) {
-        debugger
         await this.restdao.delete(r)
         this.load()
       }
     },
-    showRow (r) {
-      this.objectEditing = r
+    edit (r) {
+      this.objectEditing = r || {}
       this.dialogVisible = true
     },
     currentChange (page) {
       this.currentPage = page
       this.load()
+    },
+
+    dialogOpened () {
+      this.initEditor()
+      this.editor.setValue(JSON.stringify(this.objectEditing, null,2))
     }
   }
 }
@@ -177,4 +181,8 @@ export default {
 
 <style lang="scss">
 
+#editor {
+  width: 100%;
+  height: 800px;
+}
 </style>
