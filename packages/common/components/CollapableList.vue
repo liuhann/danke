@@ -1,6 +1,6 @@
 <template>
   <div class="collapse-list">
-    <div v-for="(item, index) in items" :key="index" :style="style" class="item-wrapper" @click="itemClicked(item, index)" @dragstart="dragStart(item, $event)">
+    <div v-for="(item, index) in items" :key="index" draggable :style="style" class="item-wrapper" @click="itemClicked(item, index)" @dragstart="dragStart(item, $event)">
       <div class="item-content" :style="styleItemContent">
         <el-dropdown v-if="itemCommands && itemCommands.length" class="drop-down" @command="(cmd) => handleCommand(cmd, item)">
           <span class="el-dropdown-link">
@@ -113,6 +113,7 @@ export default {
     },
     dragStart (image, ev) {
       // stringify image info as text
+      console.log('drag start', image)
       ev.dataTransfer.setData('Text', JSON.stringify(image))
     },
     handleCommand(command, item) {

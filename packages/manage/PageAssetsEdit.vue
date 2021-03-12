@@ -239,7 +239,6 @@ export default {
     flex: 1;
     padding: 20px;
     box-sizing: border-box;
-    min-height: 300px;
     .preview-container {
       border: 1px solid #eee;
       height: 100%;
