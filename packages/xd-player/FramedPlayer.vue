@@ -78,17 +78,21 @@ export default {
       this.currentMill += this.frameStep
       seekToMill(this.work, this.currentMill)
 
+      // 触发下一帧操作
       if (this.currentMill < this.finMill) {
+        // 在puppeteer中运行
         if (window.frameReady) {
           this.$nextTick(() => {
             window.frameReady(this.currentMill)
           })
         } else {
+          // 自动触发
           setTimeout(() => {
             this.nextFrame()
           }, 16)
         }
-
+      } else {
+        window.frameEnd && window.frameEnd()
       }
     }
   }
