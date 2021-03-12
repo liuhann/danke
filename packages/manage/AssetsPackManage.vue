@@ -49,16 +49,13 @@
           <el-form-item label="名称">
             <el-input v-model="currentPack.name"></el-input>
           </el-form-item>
+          <el-form-item label="预览">
+            <el-input v-model="currentPack.url"></el-input>
+          </el-form-item>
           <el-form-item label="标签">
             <el-select v-model="currentPack.tags" multiple allow-create>
               <el-option v-for="tag in assetsTags" :key="tag.value" :label="tag.label" :value="tag.value" />
             </el-select>
-          </el-form-item>
-          <el-form-item label="作者">
-            <el-input v-model="currentPack.author"></el-input>
-          </el-form-item>
-          <el-form-item label="作者">
-            <el-input v-model="currentPack.url"></el-input>
           </el-form-item>
           <el-form-item label="类型">
             <el-select v-model="currentPack.type" size="small">
