@@ -4,35 +4,14 @@
       <el-form-item label="Package">
         <el-input v-model="html.pack" />
       </el-form-item>
-      <el-form-item label="类型">
-        <el-select v-model="html.type">
-          <el-option label="矢量图片" value="vector" />
-          <el-option label="照片" value="photo" />
-          <el-option label="文本" value="text" />
-          <el-option label="HTML" value="html" />
-          <el-option label="声音" value="audio" />
-        </el-select>
-      </el-form-item>
       <el-form-item v-if="html.type === 'text'" label="内容">
         <el-input v-model="html.text" />
       </el-form-item>
-      <el-form-item v-show="html.type === 'html'" label="HTML内容">
+      <el-form-item label="HTML内容">
         <div id="editor" />
       </el-form-item>
       <el-form-item label="默认尺寸">
         <el-input-number v-model="html.w" /> x <el-input-number v-model="html.h" />
-      </el-form-item>
-      <el-form-item label="预览">
-        <img v-if="html.s" :src="previewSnapshot" />
-        <el-upload
-          :auto-upload="false"
-          action="none"
-          accept="image/*"
-          :show-file-list="false"
-          :on-change="fileChoosed"
-        >
-          <el-button>上传文件</el-button>
-        </el-upload>
       </el-form-item>
       
       <el-form-item label="变量信息">
@@ -147,7 +126,15 @@ export default {
     },
     async load (id) {
       this.html = await this.dao.getOne(id)
-      this.editor.setValue(this.html.html)
+      
+      if (this.html.url && this.html.url.endsWith('.svg')) {
+        const fetched = await fetch(getImageUrl((this.html.url)))
+        const text = await fetched.text()
+
+        this.html.html = text
+      }
+       this.editor.setValue(this.html.html)
+     
     },
     addVariable () {
       this.html.variables.push({
@@ -158,15 +145,7 @@ export default {
       })
     },
 
-    fileChoosed (file, files) {
-      if (!this.html._id) {
-         Message.error('请先保存')
-        return
-      }
-
-      this.imagedao.fileChoosed(file, files, `public/asset-preview/${this.html._id}.png`)
-    },
-
+  
     perserve () {
       const svgValue = this.editor.getValue()
       const t = document.createElement('div')
