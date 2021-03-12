@@ -4,7 +4,7 @@
       <div class="item-content" :style="styleItemContent">
         <el-dropdown v-if="itemCommands && itemCommands.length" class="drop-down" @command="(cmd) => handleCommand(cmd, item)">
           <span class="el-dropdown-link">
-            <i class="el-icon-more-outline el-icon--right"></i>
+            <el-button icon="el-icon-more-outline" size="mini" circle />
           </span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item v-for="(command,index) in itemCommands" :key="index" :command="command.value">{{ command.label }}</el-dropdown-item>
@@ -12,8 +12,8 @@
         </el-dropdown>
 
         <div class="preview-content" :style="styleContent">
-          <img v-if="item.url" :style="imageStyle" :src="getImageUrl(item.url, 100, 80)">
-          <div v-if="item.html" class="html-container" :style="variableValues(vector)">
+          <img v-if="item.url && !item.html" :style="imageStyle" :src="getImageUrl(item.url, 100, 80)">
+          <div v-if="item.html" class="html-container" :style="getVariableStyle(item.variables)">
             <div class="styled-box" :style="{
             }" v-html="item.html"
             />
@@ -28,12 +28,14 @@
 </template>
 
 <script>
-import { Dropdown, DropdownMenu, DropdownItem } from 'element-ui'
+import { Dropdown, DropdownMenu, DropdownItem, Button } from 'element-ui'
+import { getVariableStyle } from '../../xd-builder/mixins/renderUtils'
 import { getImageUrl } from '../../utils/getImageUrl'
 
 export default {
   name: "CollapableList",
   components: {
+    [Button.name]: Button,
     [Dropdown.name]: Dropdown,
     [DropdownMenu.name]: DropdownMenu,
     [DropdownItem.name]: DropdownItem
@@ -105,6 +107,7 @@ export default {
   },
   methods: {
     getImageUrl,
+    getVariableStyle,
     itemClicked (item, index) {
       this.$emit('item-clicked', item, index)
     },
@@ -143,6 +146,14 @@ export default {
         img {
           width: 100%;
           max-height: 100%;
+        }
+        .html-container {
+          width: 100%;
+          height: 100%;
+          .styled-box {
+            width: 100%;
+            height: 100%;
+          }
         }
       }
       .title {

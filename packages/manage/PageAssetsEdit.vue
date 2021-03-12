@@ -28,6 +28,23 @@
           <label>默认值</label>
           <span>
             <el-input v-if="variable.type==='number'" v-model.number="variable.value" />
+            <el-color-picker v-else-if="variable.type === 'color'" v-model="variable.value" :predefine="[
+              '#ff4500',
+              '#ff8c00',
+              '#ffd700',
+              '#90ee90',
+              '#00ced1',
+              '#1e90ff',
+              '#c71585',
+              'rgba(255, 69, 0, 0.68)',
+              'rgb(255, 120, 0)',
+              'hsv(51, 100, 98)',
+              'hsva(120, 40, 94, 0.5)',
+              'hsl(181, 100%, 37%)',
+              'hsla(209, 100%, 56%, 0.73)',
+              '#c7158577'
+            ]"
+            />
             <el-input v-else v-model="variable.value" />
           </span>
           <label>类型</label>
@@ -37,6 +54,9 @@
             <el-option value="deg" />
             <el-option value="px" />
           </el-select>
+          <span>
+            <el-button icon="el-icon-trash" @click="removeVariable(index)">删除</el-button>
+          </span>
         </div>
       </el-form-item>
       <el-form-item label="">
@@ -48,7 +68,11 @@
     </el-form>
     <div class="preview">
       <div class="preview-container">
-        <div class="preview" :style="variableStyle" v-html="html.html"></div>
+        <div class="preview" :style="Object.assign(variableStyle, {
+          width: html.w + 'px',
+          height: html.h + 'px'
+        })" v-html="html.html"
+        ></div>
       </div>
     </div>
   </div>
@@ -58,13 +82,24 @@
 import ace from 'brace'
 import 'brace/mode/html'
 import 'brace/theme/monokai'
-import { Message, Form, FormItem, Input, Select, Option, Button, InputNumber } from 'element-ui'
+import { Message, Form, FormItem, Input, Select, Option, Button, InputNumber, ColorPicker } from 'element-ui'
 import RestDAO from '../utils/restdao.js'
 import ImageDAO from '../utils/imagedao.js'
 import { getVariableStyle } from '../xd-builder/mixins/renderUtils'
 import { getSVGViewBox, presets } from '../vectors/utils'
 import { getImageUrl } from '../utils/getImageUrl.js'
+import { shortid } from '../utils/string'
 
+function formatXml(xml, tab) { // tab = optional indent value, default is tab (\t)
+  var formatted = '', indent= '';
+  tab = tab || '\t';
+  xml.split(/>\s*</).forEach(function(node) {
+    if (node.match( /^\/\w/ )) indent = indent.substring(tab.length); // decrease indent by one 'tab'
+    formatted += indent + '<' + node + '>\r\n';
+    if (node.match( /^<?\w[^>]*[^\/]$/ )) indent += tab;              // increase indent
+  });
+  return formatted.substring(1, formatted.length-3);
+}
 export default {
   name: 'PageHtmlEdit',
   components: {
@@ -74,7 +109,8 @@ export default {
     [FormItem.name]: FormItem,
     [Button.name]: Button,
     [Select.name]: Select,
-    [Option.name]: Option
+    [Option.name]: Option,
+    [ColorPicker.name]: ColorPicker
   },
   data () {
     return {
@@ -125,15 +161,15 @@ export default {
       this.editor.setTheme('ace/theme/monokai')
     },
     async load (id) {
-      this.html = await this.dao.getOne(id)
+      this.html = Object.assign({variables: []}, await this.dao.getOne(id))
       
-      if (this.html.url && this.html.url.endsWith('.svg')) {
+      if (this.html.url && !this.html.html && this.html.url.endsWith('.svg')) {
         const fetched = await fetch(getImageUrl((this.html.url)))
         const text = await fetched.text()
 
         this.html.html = text
       }
-       this.editor.setValue(this.html.html)
+       this.editor.setValue(formatXml(this.html.html))
      
     },
     addVariable () {
@@ -143,6 +179,10 @@ export default {
         label: '颜色',
         type: 'color'
       })
+    },
+
+    removeVariable (index) {
+      this.html.variables.splice(index, 1)
     },
 
   
@@ -210,18 +250,25 @@ export default {
         })
         svg = svg.replace(new RegExp(colorList[i].replace('(', '\\(').replace(')', '\\)'), 'gm'), `var(--c${i})`)
       }
+
+      const uuid = shortid(6)
+
+      svg = svg.replace(/SVGID_1_/g, uuid)
+
       this.editor.setValue(svg)
     },
 
     async preview () {
       this.html.html = this.editor.getValue()
-      const viewbox = getSVGViewBox(this.html.html)
-      this.html.w = viewbox.width
-      this.html.h = viewbox.height
+      try {
+        const viewbox = getSVGViewBox(this.html.html)
+        this.html.w = viewbox.width
+        this.html.h = viewbox.height
+      } catch (e) { }
+
     },
     async save () {
       this.html.html = this.editor.getValue()
-      delete this.html.content
       const result = await this.dao.createOrPatch(this.html)
       this.html._id = result._id
       Message.success('保存成功')
@@ -239,16 +286,12 @@ export default {
     flex: 1;
     padding: 20px;
     box-sizing: border-box;
-    min-height: 300px;
     .preview-container {
       border: 1px solid #eee;
       height: 100%;
       .preview {
         width: 160px;
         height: 160px;
-        div {
-          height: 100%;
-        }
       }
     }
   }
