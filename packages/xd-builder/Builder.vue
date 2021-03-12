@@ -9,16 +9,13 @@
       </section>
     </div>
 
-    <div id="pop-editors">
-    </div>
     <el-drawer title="元素列表" destroy-on-close :visible.sync="drawer.elementList" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
       <scene-element-list :scene="scene" @close="toggleShowDrawer" />
     </el-drawer>
 
     <pop-element-anime :visible.sync="drawer.animation" :elements="selectedElements" />
-
-    <el-drawer title="场景列表" destroy-on-close :visible.sync="drawer.sceneList" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
-      <scene-list :work="work" :current="scene" @choose-scene="chooseScene" @close="toggleShowDrawer" />
+    <el-drawer title="场景列表" destroy-on-close :visible.sync="drawer.sceneList" direction="rtl" :modal="false" size="1024px" :wrapper-closable="false" :with-header="false">
+      <scene-list :work="work" @choose-scene="chooseScene" @close="toggleShowDrawer" />
     </el-drawer>
     <el-drawer title="元素配置" destroy-on-close :visible.sync="drawer.elementProp" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
       <element-prop-config v-if="drawer.elementProp" :element="focusedElement" @close="toggleShowDrawer" />
@@ -102,8 +99,11 @@ export default {
     async handleSystemBarCommand (cmd) {
       switch (cmd) {
         case 'save-work':
-          this.work = await saveWork(this.work, this.ctx)
-          this.$router.replace(location.pathname + '?work=' + this.work.id)
+          const result = await saveWork(this.work, this.ctx);
+          if (!this.work.id) {
+            this.work.id = result.id
+            this.$router.replace(location.pathname + '?work=' + this.work.id)
+          }
           break;
         default:
           break;
@@ -122,6 +122,9 @@ export default {
           break
         case 'anime':
           this.editAnimation(...args)
+          break
+        case 'scene-list':
+          this.drawer.sceneList = true
           break
         default:
           break;

@@ -19,6 +19,7 @@ function newWork (size) {
 }
 
 function addScene (work, currentScene) {
+  // --------enter -----------exit ----fin--------
   const scene = {
     name: '场景',
     id: shortid(),
@@ -26,9 +27,9 @@ function addScene (work, currentScene) {
     animation: {},
     background: false,
     z: 100,
-    delay: 0,
-    duration: 3,
-    exit: 1
+    enter: 0,
+    exit: 0,
+    fin: 0
   }
   if (work != null) {
     if (currentScene == null) {
@@ -101,6 +102,48 @@ function getWorkImages (work) {
   return elementUrls
 }
 
+function getWorkDuration (work) {
+  let lastMill = 0
+
+  for (let scene of work.scenes) {
+    if (scene.fin && lastMill < scene.fin) {
+      lastMill = scene.fin
+    }
+  }
+  return lastMill
+}
+
+/**
+ * 定位到某个frame， 仅用于自动播放的场景,
+ * @param work
+ * @param mill
+ */
+function seekToMill (work, cm) {
+
+  // 根据当前时间计算每个场景的stage及seek
+  //-----cm-------------cm-------------cm---------cm---
+  //-----------enter -----------exit ----fin--------
+  for (let scene of work.scenes) {
+    if (cm < scene.enter ) {
+      scene.stage = 'before'
+      scene.visible = false
+    } else if (cm > scene.enter && cm < scene.exit) {
+      scene.visible = true
+      scene.stage = 'enter'
+      scene.seek = cm - scene.enter
+    } else if (cm > scene.exit && cm < scene.fin ) {
+      scene.visible = true
+      scene.stage = 'exit'
+      scene.seek = cm - scene.exit
+    } else {
+      scene.visible = false
+      scene.stage = ''
+      scene.seek = 0
+    }
+  }
+
+}
+
 /**
  * 保存作品内容
  */
@@ -126,6 +169,8 @@ async function saveWork (work, ctx) {
 }
 
 export {
+  getWorkDuration,
+  seekToMill,
   getBackGroundScene,
   newWork,
   addScene,

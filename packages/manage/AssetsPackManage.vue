@@ -16,9 +16,13 @@
       <div v-if="currentPack" class="column" style="flex: 1;">
         <h2 class="title is-3">{{ currentPack.name }}  {{ currentPack.tags }}</h2>
         <div class="actions">
-          <el-button @click="editPack">编辑</el-button>
-          <el-button @click="deleteAllInPack">全部删除</el-button>
-          <el-button @click="deletePack">删除包</el-button>
+          <el-button-group>
+            <el-button size="mini" @click="editPack">编辑</el-button>
+            <el-button size="mini" @click="deleteAllInPack">全部删除</el-button>
+            <el-button size="mini" @click="deletePack">删除包</el-button>
+            <el-button size="mini" @click="newVector">新的</el-button>
+          </el-button-group>
+
           <div style="display: inline-block;" class="ml-2">
             <el-upload
               :auto-upload="false"
@@ -45,16 +49,13 @@
           <el-form-item label="名称">
             <el-input v-model="currentPack.name"></el-input>
           </el-form-item>
+          <el-form-item label="预览">
+            <el-input v-model="currentPack.url"></el-input>
+          </el-form-item>
           <el-form-item label="标签">
             <el-select v-model="currentPack.tags" multiple allow-create>
               <el-option v-for="tag in assetsTags" :key="tag.value" :label="tag.label" :value="tag.value" />
             </el-select>
-          </el-form-item>
-          <el-form-item label="作者">
-            <el-input v-model="currentPack.author"></el-input>
-          </el-form-item>
-          <el-form-item label="作者">
-            <el-input v-model="currentPack.url"></el-input>
           </el-form-item>
           <el-form-item label="类型">
             <el-select v-model="currentPack.type" size="small">
@@ -142,22 +143,28 @@ export default {
       this.currentPack = row
       this.fetchPackVectors()
     },
-    addHTMLVector () {
-      window.open('/h5/edit?pack=' + this.currentPack._id)
+
+    newVector () {
+      window.open('/vector/edit?pack=' + this.currentPack._id)
     },
 
-    editVector (vector) {
-      window.open('/h5/edit?id=' + vector._id)
-    },
-
-    onItemCommand (payload) {
+    async onItemCommand (payload) {
       if (payload.cmd === 'cover') {
         this.setAsPackCover(payload.item.url)
       }
       if (payload.cmd === 'content') {
-        if (payload.item.url.endsWith('.svg')) {
+        if (!payload.item.url || payload.item.url.endsWith('.svg')) {
           window.open('/vector/edit?id=' + payload.item._id)
         }
+      }
+      if (payload.cmd === 'delete') {
+        await MessageBox.confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+        await this.deleteVector(payload.item)
+        await this.fetchPackVectors()
       }
     },
 
