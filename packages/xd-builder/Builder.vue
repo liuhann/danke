@@ -133,10 +133,6 @@ export default {
 
     editAnimation (components) {
       this.drawer.animation = true
-
-      this.$nextTick(() => {
-
-      })
     },
     confirmAnime () {
 

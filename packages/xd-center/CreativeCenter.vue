@@ -100,7 +100,7 @@ export default {
       this.loadWorks()
     },
     editWork (work) {
-      this.$router.push(`/xd-lite?work=${work.id}`)
+      window.open(`/xd?work=${work.id}`)
     },
     listQuery () {
       const query = {

@@ -1,4 +1,5 @@
 import interact from 'interactjs'
+import { CouponList } from 'vant'
 import { shortid } from '../../utils/string'
 
 export default {
@@ -15,10 +16,10 @@ export default {
           onstart: event => {},
           inertia: true,
           onmove: event => {
-            for (let element of this.scene.elements) {
+            for (const element of this.scene.elements) {
               if (element.selected) {
-                element.x += event.dx / this.scale
-                element.y += event.dy / this.scale
+                element.x += Math.floor(event.dx / this.scale)
+                element.y += Math.floor(event.dy / this.scale)
               }
             }
           },
@@ -140,9 +141,9 @@ export default {
               }
             },
             onmove: event => {
-              for (let element of this.selectedElements) {
-                element.x += event.dx / this.scale
-                element.y += event.dy / this.scale
+              for (const element of this.selectedElements) {
+                element.x += Math.floor(event.dx / this.scale)
+                element.y += Math.floor(event.dy / this.scale)
               }
             },
             onend: event => {

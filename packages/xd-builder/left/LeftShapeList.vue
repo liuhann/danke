@@ -70,7 +70,7 @@ export default {
     },
 
     svgClicked (svg) {
-      this.$emit('svg', svg)
+      this.$emit('svg',svg);
     },
 
     async albumChange () {

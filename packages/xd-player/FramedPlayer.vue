@@ -19,6 +19,7 @@
 
 <script>
 import RenderScene from '../xd-builder/render/RenderScene'
+import { createFFmpeg } from '@ffmpeg/ffmpeg'
 import { seekToMill, getWorkDuration } from '../xd-builder/utils/workActions'
 import RestDAO from '../utils/restdao'
 export default {
@@ -26,6 +27,7 @@ export default {
   components: {
     RenderScene
   },
+  
   data () {
     return {
       sceneSeek: 0,
@@ -36,6 +38,7 @@ export default {
       work: null
     }
   },
+ 
   computed: {
     deviceStyle () {
       return {

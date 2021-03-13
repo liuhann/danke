@@ -34,6 +34,7 @@
     <el-color-picker v-if="focusedElement && focusedElement.hasOwnProperty('fill')" v-model="focusedElement.fill" show-alpha />
     <!-- 右侧操作功能按钮-->
     <div class="pull-right">
+      <span v-if="focusedElement">x: {{ Math.floor(focusedElement.x) }}, y: {{ Math.floor(focusedElement.y) }}, w: {{ Math.floor(focusedElement.width) }}, h: {{ Math.floor(focusedElement.height) }}</span>
       <align-element v-if="selectedElements.length > 1" :elements="selectedElements" />
       <el-tooltip v-if="selectedElements.length > 1" class="item" effect="dark" content="建组" placement="bottom">
         <a class="action" @click="groupSelectedElement"><i class="el-icon-folder-checked" /></a>

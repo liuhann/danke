@@ -1,6 +1,10 @@
 <template>
   <el-dialog id="pop-element-anime" title="动画设置" :visible="visible" width="720px" @close="$emit('update:visible', false)" @opened="setEditorValue">
     <el-tabs v-model="stage">
+      <el-tab-pane label="初始状态" name="default">
+        <div id="anime-begin-editor" class="editor">
+        </div>
+      </el-tab-pane>
       <el-tab-pane label="动画" name="enter">
         <div id="anime-enter-editor" class="editor">
         </div>
@@ -61,17 +65,29 @@ export default {
         this.exitEditor.getSession().setUseWrapMode(true);
         this.exitEditor.setTheme('ace/theme/eclipse')
       }
+
+      if (!this.beginEditor) {
+        this.beginEditor = ace.edit('anime-begin-editor')
+        this.beginEditor.getSession().setMode('ace/mode/json')
+        this.beginEditor.getSession().setTabSize(2);
+        this.beginEditor.getSession().setUseWrapMode(true);
+        this.beginEditor.setTheme('ace/theme/eclipse')
+      }
+
       this.stage = 'enter'
       this.enterEditor.setValue(JSON.stringify(this.elements[0].animation.enter, null, 2))
       this.exitEditor.setValue(JSON.stringify(this.elements[0].animation.exit, null, 2))
+      this.beginEditor.setValue(JSON.stringify(this.elements[0].style, null, 2))
     },
 
     confirmAnime () {
       const enter = this.enterEditor.getValue()
       const exit = this.exitEditor.getValue()
+      const begin = this.beginEditor.getValue()
       this.elements.forEach( el => {
         el.animation.enter = JSON.parse(enter)
         el.animation.exit = JSON.parse(exit)
+        el.style = JSON.parse(begin)
       })
       this.$emit('update:visible', false)
     }
@@ -82,7 +98,7 @@ export default {
 <style lang="scss">
 #pop-element-anime {
   .editor {
-    height: 480px;
+    height: 360px;
     border: 1px solid #eee;
   }
 }
