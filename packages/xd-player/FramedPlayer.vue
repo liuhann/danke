@@ -14,7 +14,7 @@
       </div>
     </div>
     <div><button @click="convertToVideo">运算</button></div>
-    <div>{{ currentMill }} 信息: {{ msg }}</div>
+    <div>{{ currentMill }} / {{ finMill }} 信息: {{ msg }}</div>
 
     <video id="output-video" controls></video>
   </div>
@@ -58,6 +58,8 @@ export default {
   mounted () {
     this.onLoaded()
     const that = this
+
+    window.ResizeObserver = null
     
     document.nextFrame = function () {
       that.nextFrame()
@@ -84,16 +86,48 @@ export default {
     },
 
     async convertToVideo () {
-      const ffmpeg = createFFmpeg({ log: true });
+      this.ffmpeg = createFFmpeg({ 
+        log: true,
+        // 必须要指定加载代码和WASM编码的路径， 组件的规则就是使用相同的包路径
+        corePath: "http://unpkg.zhimg.com/@ffmpeg/core@0.8.5/dist/ffmpeg-core.js"
+      });
       this.msg = 'Loading ffmpeg-core.js'
 
-      await ffmpeg.load();
+      await this.ffmpeg.load();
       this.msg = 'Loading data'
-
 
       this.frameInc = 1
       
       this.nextFrameToCanvas()
+    },
+
+    async getBlobArrayBuffer (blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = function() {
+          resolve(this.result)
+        }
+        reader.readAsArrayBuffer(blob)
+      })
+    },
+
+    base64ToArrayBuffer(base64) {
+      var binary_string = window.atob(base64);
+        var len = binary_string.length;
+        var bytes = new Uint8Array(len);
+        for (var i = 0; i < len; i++) {
+            bytes[i] = binary_string.charCodeAt(i);
+        }
+        return bytes;
+    },
+    
+    dataURLtoU8Arr(dataurl) {
+      var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+        while(n--){
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        return u8arr
     },
 
     async nextFrameToCanvas() {
@@ -107,19 +141,24 @@ export default {
         html2canvas(document.querySelector('#work-container'), {
           useCORS: true,
           scale: 1
-        }).then(canvas => {
-          canvas.toBlob(async blob => {
-            await this.ffmpeg.FS('writeFile', `tmp.${this.frameInc}.png`, blob);
-            if (this.currentMill < this.finMill) {
-              this.nextFrameToCanvas()
-            } else {
-              this.msg = 'Start ffmpeg transcoding'
-              await ffmpeg.run('-framerate', '60', '-pattern_type', 'glob', '-i', '*.png', '-c:a', 'copy', '-shortest', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', 'out.mp4');
-              const data = ffmpeg.FS('readFile', 'out.mp4');
-              const video = document.getElementById('output-video');
-              video.src = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
-            }
-          })
+        }).then(async canvas => {
+          const png = canvas.toDataURL('image/png')
+          const ab = this.dataURLtoU8Arr(png)
+          await this.ffmpeg.FS('writeFile', `tmp.${this.frameInc}.png`, ab);
+          if (this.currentMill < this.finMill) {
+            this.nextFrameToCanvas()
+          } else {
+            this.msg = 'Start ffmpeg transcoding'
+            await this.ffmpeg.run('-framerate', '60', '-pattern_type', 'glob', '-i', '*.png', '-c:a', 'copy', '-shortest', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', 'out.mp4');
+            const data = await this.ffmpeg.FS('readFile', 'out.mp4');
+
+
+            const video = document.getElementById('output-video');
+            video.src = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
+            window.open(video.src)
+
+            this.msg = 'ffmpeg transcoded!!'
+          }
         });
       })
     },
