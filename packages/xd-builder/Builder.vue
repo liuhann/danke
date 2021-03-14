@@ -104,7 +104,10 @@ export default {
             this.work.id = result.id
             this.$router.replace(location.pathname + '?work=' + this.work.id)
           }
-          break;
+          break
+        case 'export-video':
+          window.open('/work/frame/' + this.work._id)
+          break
         default:
           break;
       }

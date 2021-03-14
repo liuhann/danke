@@ -8,15 +8,18 @@
         </el-button>
         <el-dropdown-menu slot="dropdown" placement="bottom-start">
           <el-dropdown-item icon="el-icon-plus" command="save-work">保存</el-dropdown-item>
-          <el-dropdown-item>狮子头</el-dropdown-item>
-          <el-dropdown-item>螺蛳粉</el-dropdown-item>
-          <el-dropdown-item>双皮奶</el-dropdown-item>
-          <el-dropdown-item>蚵仔煎</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
     <div class="right">
-      <el-button>导出</el-button>
+      <el-dropdown @command="handleCommand">
+        <el-button>
+          导出/执行<i class="el-icon-arrow-down el-icon--right"></i>
+        </el-button>
+        <el-dropdown-menu slot="dropdown" placement="bottom-start">
+          <el-dropdown-item icon="el-icon-plus" command="export-video">导出视频</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
     </div>
   </div>
 </template>
