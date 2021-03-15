@@ -1,6 +1,6 @@
 <template>
   <div class="xd-builder">
-    <system-bar @command="handleSystemBarCommand" />
+    <system-bar :work="work" @command="handleSystemBarCommand" />
     <div id="xd" class="design-area">
       <left-aside />
       <section v-if="work && scene" class="right-section">
@@ -12,7 +12,7 @@
     <el-drawer title="元素列表" destroy-on-close :visible.sync="drawer.elementList" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
       <scene-element-list :scene="scene" @close="toggleShowDrawer" />
     </el-drawer>
-
+  
     <pop-element-anime :visible.sync="drawer.animation" :elements="selectedElements" />
     <el-drawer title="场景列表" destroy-on-close :visible.sync="drawer.sceneList" direction="rtl" :modal="false" size="1024px" :wrapper-closable="false" :with-header="false">
       <scene-list :work="work" @choose-scene="chooseScene" @close="toggleShowDrawer" />
@@ -108,8 +108,11 @@ export default {
         case 'export-video':
           window.open('/work/frame/' + this.work._id)
           break
+        case 'viewbox-resize':
+          await saveWork(this.work, this.ctx);
+          this.$router.replace(location.pathname + '?work=' + this.work.id)
         default:
-          break;
+          break
       }
     },
     onCommand (cmd, ...args) {

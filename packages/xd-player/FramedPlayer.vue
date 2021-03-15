@@ -1,22 +1,37 @@
-<!--逐帧播放器-->
 <template>
-  <div class="framed-player">
-    <div v-if="work" id="work-container" class="work-container" :style="deviceStyle">
-      <div class="device" :style="deviceStyle">
-        <render-scene v-for="(scene, index) in work.scenes" v-show="scene.visible" :key="index"
-                      :auto-play="false"
-                      :scene="scene"
-                      :stage="scene.stage"
-                      :seek="scene.seek"
-                      :view-port="work.viewBox"
-                      :view-box="work.viewBox"
-        />
+  <div class="framed-recorder">
+    <div class="left">
+      <div class="actions">
+        <div class="btns">
+          <button @click="convertToVideo">生成视频</button>
+        </div>
+        <div class="msg">
+          {{ msg }}
+        </div>
+        <div class="progress">
+          <progress :value="currentMill" :max="finMill" :text-inside="true" :stroke-width="24" :percentage="100" status="success" />
+          {{ currentMill }} / {{ finMill }}</div>
+      </div>
+      <div class="container-box">
+        <div v-if="work" id="work-container" class="work-container" :style="deviceStyle">
+          <div class="device" :style="deviceStyle">
+            <render-scene v-for="(scene, index) in work.scenes" v-show="scene.visible" :key="index"
+                          :auto-play="false"
+                          :scene="scene"
+                          :stage="scene.stage"
+                          :seek="scene.seek"
+                          :view-port="work.viewBox"
+                          :view-box="work.viewBox"
+            />
+          </div>
+        </div>
       </div>
     </div>
-    <div><button @click="convertToVideo">运算</button></div>
-    <div>{{ currentMill }} / {{ finMill }} 信息: {{ msg }}</div>
-
-    <video id="output-video" controls crossorigin></video>
+    <div class="right">
+      <div class="output">
+        <video id="output-video" controls crossorigin></video>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -26,12 +41,13 @@ import { createFFmpeg } from '@ffmpeg/ffmpeg'
 import html2canvas from 'html2canvas'
 import { seekToMill, getWorkDuration } from '../xd-builder/utils/workActions'
 import RestDAO from '../utils/restdao'
+import { Progress } from 'element-ui'
 export default {
   name: "FramedPlayer",
   components: {
-    RenderScene
+    RenderScene,
+    Progress
   },
-  
   data () {
     return {
       sceneSeek: 0,
@@ -43,7 +59,6 @@ export default {
       work: null
     }
   },
- 
   computed: {
     deviceStyle () {
       return {
@@ -146,6 +161,7 @@ export default {
       this.$nextTick(() => {
         this.msg = 'Capturing Frame ' + this.frameInc
         html2canvas(document.querySelector('#work-container'), {
+          backgroundColor: null,
           useCORS: true,
           scale: 1
         }).then(async canvas => {
@@ -164,8 +180,8 @@ export default {
 
               const src = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
               window.open(src)
-              // const video = document.getElementById('output-video');
-              // video.src = src
+              const video = document.getElementById('output-video');
+              video.src = src
               this.msg = 'ffmpeg transcoded!!'
             } catch (e) {
               console.log(e)
@@ -202,9 +218,56 @@ export default {
 </script>
 
 <style lang="scss">
+.framed-recorder {
+  height: 100%;
+  display: flex;
+  background-color: #333;
+  padding: 20px;
+  .left {
+    width: 61.8%;
+    .actions {
+      font-size: 20px;
+      line-height: 40px;
+      height: 55px;
+      display: flex;
+      button {
+        padding: 5px 10px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      .msg {
+        flex: 1;
+        text-align: center;
+        color: #eee;
+      }
+      .btns, .progress {
+        width: 320px;
+        height: 55px;
+        color: #eee;
+      }
+    }
+    .container-box {
+      height: calc(100% - 80px);
+      border: 3px solid #cc2836;
+      border-top: 12px solid #cc2836;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: auto;
+      .work-container {
+        
+      }
+    }
+  }
+  .right {
+    flex: 2;
+    padding: 10px;
+  }
+}
 .device {
   .scene {
     position: absolute;
+    overflow: hidden;
   }
 }
 </style>
