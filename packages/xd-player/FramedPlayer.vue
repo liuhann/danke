@@ -1,7 +1,7 @@
 <!--逐帧播放器-->
 <template>
   <div class="framed-player">
-    <div v-if="work" class="work-container" id="work-container">
+    <div v-if="work" id="work-container" class="work-container" :style="deviceStyle">
       <div class="device" :style="deviceStyle">
         <render-scene v-for="(scene, index) in work.scenes" v-show="scene.visible" :key="index"
                       :auto-play="false"
@@ -16,7 +16,7 @@
     <div><button @click="convertToVideo">运算</button></div>
     <div>{{ currentMill }} / {{ finMill }} 信息: {{ msg }}</div>
 
-    <video id="output-video" controls></video>
+    <video id="output-video" controls crossorigin></video>
   </div>
 </template>
 
@@ -53,6 +53,7 @@ export default {
     }
   },
   created () {
+    window.ResizeObserver = null
     this.workdao = new RestDAO(this.ctx, 'danke/work')
   },
   mounted () {
@@ -130,6 +131,12 @@ export default {
         return u8arr
     },
 
+    pad(n, width, z) {
+        z = z || '0';
+        n = n + '';
+        return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+    },
+
     async nextFrameToCanvas() {
       this.currentMill += this.frameStep
       this.frameInc ++
@@ -144,20 +151,26 @@ export default {
         }).then(async canvas => {
           const png = canvas.toDataURL('image/png')
           const ab = this.dataURLtoU8Arr(png)
-          await this.ffmpeg.FS('writeFile', `tmp.${this.frameInc}.png`, ab);
+          await this.ffmpeg.FS('writeFile', `${this.pad(this.frameInc, 6)}.png`, ab);
           if (this.currentMill < this.finMill) {
             this.nextFrameToCanvas()
           } else {
-            this.msg = 'Start ffmpeg transcoding'
-            await this.ffmpeg.run('-framerate', '60', '-pattern_type', 'glob', '-i', '*.png', '-c:a', 'copy', '-shortest', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', 'out.mp4');
-            const data = await this.ffmpeg.FS('readFile', 'out.mp4');
+            try {
+              this.msg = 'Start ffmpeg transcoding'
+              // ffmpeg -r 60 -f image2 -s 900x640 -i %06d.png -vcodec libx264 -crf 16 -pix_fmt yuv420p test.mp4
+              // await this.ffmpeg.run('-framerate', '60', '-pattern_type', 'glob','-s', '900x640', '-i', '*.png', '-c:a', 'copy', '-shortest', '-c:v', 'libx264', '-crf', '16', '-pix_fmt', 'yuv420p', 'out.mp4');
+              await this.ffmpeg.run('-r', '60', '-f', 'image2','-s', '900x640', '-i', '%06d.png', '-vcodec', 'libx264', '-crf', '16', '-pix_fmt', 'yuv420p', 'out.mp4');
+              const data = await this.ffmpeg.FS('readFile', 'out.mp4');
 
-
-            const video = document.getElementById('output-video');
-            video.src = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
-            window.open(video.src)
-
-            this.msg = 'ffmpeg transcoded!!'
+              const src = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
+              window.open(src)
+              // const video = document.getElementById('output-video');
+              // video.src = src
+              this.msg = 'ffmpeg transcoded!!'
+            } catch (e) {
+              console.log(e)
+            }
+            
           }
         });
       })
