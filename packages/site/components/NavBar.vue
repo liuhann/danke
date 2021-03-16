@@ -279,7 +279,7 @@
             <img class="avatar is-rounded" :src="avatar">
           </a>
           <div class="navbar-dropdown is-right">
-            <router-link v-if="logon" class="navbar-item" to="/creative/my">
+            <router-link v-if="logon" class="navbar-item" to="/xd/center">
               创作中心首页
             </router-link>
             <hr class="navbar-divider">
