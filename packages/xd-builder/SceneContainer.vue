@@ -4,15 +4,12 @@
       <!-- 当前屏幕内容 -->
       <div class="screen" :style="styleScreen">
         <div v-if="scene" class="scene" :style="sceneStyle">
-          <render-element
-            v-for="(element, index) of scene.elements"
-            :key="element.id"
-            :ref="element.id"
-            stage="enter"
-            :element="element"
-            :view-box="viewBox"
-            :view-port="viewPort"
-            :index="index"
+          <render-element v-for="(element, index) of scene.elements" :key="element.id"
+                            :ref="element.id"
+                            :element="element"
+                            :view-box="viewBox"
+                            :view-port="viewPort"
+                            :index="index"
           />
         </div>
       </div>

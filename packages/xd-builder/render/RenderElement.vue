@@ -372,7 +372,6 @@ export default {
     },
 
     initAnime () {
-      debugger
       this.animation = anime(Object.assign({
         targets: this.$el,
         autoplay: this.autoplay

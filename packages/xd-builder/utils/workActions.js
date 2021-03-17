@@ -1,5 +1,6 @@
 import { shortid } from '../../utils/string'
 import RestDAO from '../../utils/restdao'
+import { sleep } from '../../utils/common'
 
 /**
  * 新增作品
@@ -63,7 +64,7 @@ function nextScene (work, currentScene) {
 function getBackGroundScene (work, currentScene) {
   const index = (typeof currentScene === 'number') ? currentScene : work.scenes.indexOf(currentScene)
 
-  for (let i = index - 1; i >=0 ; i-- ) {
+  for (let i = index - 1; i >= 0; i--) {
     if (work.scenes[i].background === true) {
       return work.scenes[i]
     }
@@ -77,8 +78,8 @@ function getBackGroundScene (work, currentScene) {
 function getWorkColors (work) {
   if (work) {
     let colors = []
-    for (let scene of work.scenes) {
-      for (let element of scene.elements) {
+    for (const scene of work.scenes) {
+      for (const element of scene.elements) {
         if (element.variables) {
           colors = colors.concat(element.variables.filter(variable => variable.type === 'color').map(variable => variable.value))
         }
@@ -90,10 +91,11 @@ function getWorkColors (work) {
   }
 }
 
+// 获得Work中所有包含的图片
 function getWorkImages (work) {
   const elementUrls = {}
-  for (let scene of work.scenes) {
-    for (let element of scene.elements) {
+  for (const scene of work.scenes) {
+    for (const element of scene.elements) {
       if (element.url) {
         elementUrls[element.id] = element.url
       }
@@ -102,10 +104,11 @@ function getWorkImages (work) {
   return elementUrls
 }
 
+// 获得Work总的持续时长
 function getWorkDuration (work) {
   let lastMill = 0
 
-  for (let scene of work.scenes) {
+  for (const scene of work.scenes) {
     if (scene.fin && lastMill < scene.fin) {
       lastMill = scene.fin
     }
@@ -119,19 +122,18 @@ function getWorkDuration (work) {
  * @param mill
  */
 function seekToMill (work, cm) {
-
   // 根据当前时间计算每个场景的stage及seek
-  //-----cm-------------cm-------------cm---------cm---
-  //-----------enter -----------exit ----fin--------
-  for (let scene of work.scenes) {
-    if (cm < scene.enter ) {
+  // -----cm-------------cm-------------cm---------cm---
+  // -----------enter -----------exit ----fin--------
+  for (const scene of work.scenes) {
+    if (cm < scene.enter) {
       scene.stage = 'before'
       scene.visible = false
     } else if (cm > scene.enter && cm < scene.exit) {
       scene.visible = true
       scene.stage = 'enter'
       scene.seek = cm - scene.enter
-    } else if (cm > scene.exit && cm < scene.fin ) {
+    } else if (cm > scene.exit && cm < scene.fin) {
       scene.visible = true
       scene.stage = 'exit'
       scene.seek = cm - scene.exit
@@ -141,7 +143,34 @@ function seekToMill (work, cm) {
       scene.seek = 0
     }
   }
+}
 
+// 将每个场景按照enter、exit、fin指定的时间进行场景属性切换
+// -----------enter -----------exit ----fin--------
+async function scheduleWorkPlay (work) {
+  const promises = []
+  for (const scene of work.scenes) {
+    promises.push((async () => {
+      await sleep(scene.enter)
+      scene.stage = 'enter'
+      scene.visible = true
+    })())
+    if (scene.exit) {
+      promises.push((async () => {
+        await sleep(scene.exit)
+        scene.stage = 'exit'
+        scene.visible = true
+      })())
+    }
+    if (scene.fin) {
+      promises.push((async () => {
+        await sleep(scene.fin)
+        scene.stage = ''
+        scene.visible = false
+      })())
+    }
+  }
+  await Promise.all(promises)
 }
 
 /**
@@ -169,6 +198,7 @@ async function saveWork (work, ctx) {
 }
 
 export {
+  scheduleWorkPlay,
   getWorkDuration,
   seekToMill,
   getBackGroundScene,

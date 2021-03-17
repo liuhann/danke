@@ -3,12 +3,13 @@
     <div class="full-screened" style="z-index: -2; overflow: hidden;">
       <div v-if="work" id="device" class="device" :style="deviceStyle">
         <render-scene v-for="(scene, index) in work.scenes" v-show="scene.visible" :key="index"
-          :auto-play="false"
-          :scene="scene"
-          :stage="scene.stage"
-          :seek="scene.seek"
-          :view-port="work.viewBox"
-          :view-box="work.viewBox" />
+                      :auto-play="false"
+                      :scene="scene"
+                      :stage="scene.stage"
+                      :seek="scene.seek"
+                      :view-port="work.viewBox"
+                      :view-box="work.viewBox" 
+        />
       </div>
     </div>
     <div class="full-screened" style="z-index: -1; overflow: hidden; background-color: #222;" />
@@ -17,6 +18,7 @@
         <div class="actions">
           <div class="btns">
             <button v-if="!started" @click="convertToVideo">生成视频</button>
+            <button v-if="!previewPlaying" @click="previewPlay">播放</button>
             <button v-if="started" @click="pause = !pause">暂停</button>
           </div>
           <div class="msg">
@@ -29,7 +31,16 @@
         </div>
         <div id="container-box" class="container-box">
           <div v-if="work" id="work-container" class="work-container" :style="viewPortContainerStyle">
-            <img :src="currentFrameUrl" />
+            <img v-if="!previewPlaying" :src="currentFrameUrl" />
+            <div v-if="previewPlaying" class="device" :style="deviceStyle">
+              <render-scene v-for="(scene, index) in work.scenes" v-show="scene.visible" :key="index"
+                            auto-play
+                            :scene="scene"
+                            :stage="scene.stage"
+                            :view-port="viewPort"
+                            :view-box="work.viewBox"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -46,7 +57,7 @@
 import RenderScene from '../xd-builder/render/RenderScene'
 import { createFFmpeg } from '@ffmpeg/ffmpeg'
 import html2canvas from 'html2canvas'
-import { seekToMill, getWorkDuration } from '../xd-builder/utils/workActions'
+import { seekToMill, getWorkDuration, scheduleWorkPlay } from '../xd-builder/utils/workActions'
 import RestDAO from '../utils/restdao'
 import ImageDAO from '../utils/imagedao'
 import { Progress } from 'element-ui'
@@ -63,6 +74,7 @@ export default {
       sceneSeek: 0,
       sceneIndex: 0,
       currentMill: 0,
+      previewPlaying: false,
       finMill: 0,
       msg: '',
       frameStep: 16, // 1000/60  60帧的配置
@@ -125,8 +137,13 @@ export default {
       // this.startPlay()
     },
 
-    async startPlay () {
-     
+    async previewPlay () {
+      this.previewPlaying = true
+      await scheduleWorkPlay(this.work)
+      this.previewPlaying = false
+    },
+
+    async startPlay () {     
       this.nextFrame()
     },
 
