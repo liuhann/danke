@@ -91,16 +91,12 @@ export default {
     }
   },
   created () {
-    window.ResizeObserver = null
     this.workdao = new RestDAO(this.ctx, 'danke/work')
     this.imagedao = new ImageDAO(this.ctx)
   },
   mounted () {
     this.onLoaded()
     const that = this
-
-    window.ResizeObserver = null
-    
     document.nextFrame = function () {
       that.nextFrame()
     }

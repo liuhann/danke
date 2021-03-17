@@ -8,11 +8,9 @@
         <scene-container :work="work" :scene="scene" />
       </section>
     </div>
-
     <el-drawer title="元素列表" destroy-on-close :visible.sync="drawer.elementList" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
       <scene-element-list :scene="scene" @close="toggleShowDrawer" />
     </el-drawer>
-  
     <pop-element-anime :visible.sync="drawer.animation" :elements="selectedElements" />
     <el-drawer title="场景列表" destroy-on-close :visible.sync="drawer.sceneList" direction="rtl" :modal="false" size="1024px" :wrapper-closable="false" :with-header="false">
       <scene-list :work="work" @choose-scene="chooseScene" @close="toggleShowDrawer" />
@@ -45,7 +43,8 @@ import Mousetrap from 'mousetrap'
 import { newWork, addScene, nextScene, prevScene, saveWork } from './utils/workActions'
 
 import SystemBar from './components/SystemBar'
-import PopElementAnime from './components/PopElementAnime'
+import PopElementAnime from './components/PopElementAnime.vue'
+import { Message } from 'element-ui'
 
 export default {
   name: 'Builder',
@@ -104,6 +103,7 @@ export default {
             this.work.id = result.id
             this.$router.replace(location.pathname + '?work=' + this.work.id)
           }
+          Message.success('作品保存成功！')
           break
         case 'export-video':
           window.open('/work/frame/' + this.work._id)

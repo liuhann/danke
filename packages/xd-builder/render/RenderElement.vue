@@ -15,7 +15,6 @@
     <!--文本渲染情况下 文本内容-->
     <div v-for="(text, index) in elementTextLines" :key="index" :style="textTransformStyle" class="text">{{ text }}</div>
     <textarea v-if="element.text != null && element.editing" ref="textarea" v-model="element.text" :style="textEditStyle" @change="updateTextArea" />
-
     <div v-if="filterSVG" style="display:none;">
       <svg v-html="filterSVG">
       </svg>
@@ -373,6 +372,7 @@ export default {
     },
 
     initAnime () {
+      debugger
       this.animation = anime(Object.assign({
         targets: this.$el,
         autoplay: this.autoplay

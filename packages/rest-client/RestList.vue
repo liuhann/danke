@@ -53,7 +53,6 @@ import ace from 'brace'
 import 'brace/mode/json'
 import 'brace/theme/monokai'
 
-window.ResizeObserver = undefined
 export default {
   name: 'RestList',
   components: {

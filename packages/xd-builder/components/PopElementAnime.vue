@@ -1,5 +1,5 @@
 <template>
-  <el-dialog id="pop-element-anime" title="动画设置" :visible="visible" width="720px" @close="$emit('update:visible', false)" @opened="setEditorValue">
+  <el-dialog id="pop-element-anime" title="动画设置" modal :close-on-click-modal="false" :visible="visible" width="720px" @close="$emit('update:visible', false)" @opened="setEditorValue">
     <el-tabs v-model="stage">
       <el-tab-pane label="初始状态" name="default">
         <div id="anime-begin-editor" class="editor">
@@ -14,7 +14,7 @@
         </div>
       </el-tab-pane>
     </el-tabs>
-
+    <el-tag v-for="(tpl, key) in TPLS" :key="key" @click="addTemplate(key)">{{ key }}</el-tag>
     <span slot="footer" class="dialog-footer">
       <el-button @click="$emit('update:visible', false)">取 消</el-button>
       <el-button type="primary" @click="confirmAnime">确 定</el-button>
@@ -27,6 +27,51 @@
 import ace from 'brace'
 import 'brace/mode/json'
 import 'brace/theme/eclipse'
+
+const TPLS = {
+  'translateX': {
+    'translateX': 100
+  },
+  'translateY': {
+    'translateY': 100
+  },
+  'translateZ': {
+    'translateZ': 100
+  },
+  'rotate': {
+    'rotate': 100
+  },
+  'duration': {
+    duration: 1000
+  },
+  'scale': {
+    'scale': 1.2
+  },
+  'skew': {
+    'skew': 100
+  },
+  'rotate': {
+    'rotate': 100
+  },
+  'delay': {
+    'delay': 1000
+  },
+  'direction': {
+    direction: 'alternate'
+  },
+  'easeInQuad': {
+    easing: 'easeInQuad'
+  },
+  'easeOutQuad': {
+    easing: 'easeOutQuad'
+  },
+  'easeInOutQuad': {
+    easing: 'easeInOutQuad'
+  },
+  'easeOutInQuad': {
+    easing: 'easeOutInQuad'
+  },
+}
 
 export default {
   name: "PopElementAnime",
@@ -41,6 +86,7 @@ export default {
 
   data () {
     return {
+      TPLS,
       stage: 'enter'
     }
   },
@@ -50,6 +96,12 @@ export default {
   },
 
   methods: {
+    addTemplate (tpl) {
+      const editor = this[this.stage + 'Editor']
+      const parsed = JSON.parse(editor.getValue())
+      Object.assign(parsed, TPLS[tpl])
+      editor.setValue(JSON.stringify(parsed, null, 2))
+    },
     setEditorValue () {
       if (!this.enterEditor) {
         this.enterEditor = ace.edit('anime-enter-editor')

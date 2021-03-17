@@ -8,7 +8,7 @@
             v-for="(element, index) of scene.elements"
             :key="element.id"
             :ref="element.id"
-            :stage="element.stage"
+            stage="enter"
             :element="element"
             :view-box="viewBox"
             :view-port="viewPort"
@@ -35,28 +35,57 @@
       </div>
       <!-- 拖拽选择层 -->
       <div class="dragging-rect" :style="styleDragingRect" />
-
-      <!--缩放、平移操作区-->
-      <el-button-group class="screen-actions">
-        <el-select v-model="scaleSelected" size="mini" style="width: 100px" allow-create filterable>
-          <div slot="prefix">%</div>
-          <el-option-group>
-            <el-option label="300%" :value="300"></el-option>
-            <el-option label="200%" :value="200"></el-option>
-            <el-option label="125%" :value="125"></el-option>
-            <el-option label="100%" :value="100"></el-option>
-            <el-option label="75%" :value="75"></el-option>
-            <el-option label="50%" :value="50"></el-option>
-            <el-option label="25%" :value="25"></el-option>
-            <el-option label="10%" :value="10"></el-option>
-          </el-option-group>
-        </el-select>
-        <el-button size="mini" icon="el-icon-full-screen" @click="fitToCenter" />
-      </el-button-group>
-
-      <div class="scene-index">{{ (currentSceneIndex + 1) + '/' + work.scenes.length }}</div>
-      <el-button class="scene-btn-prev" type="info" icon="el-icon-arrow-left" circle @click="$emit('choose-scene', scenePrevious)"></el-button>
-      <el-button class="scene-btn-next" type="info" icon="el-icon-arrow-right" circle @click="$emit('choose-scene', sceneNext)"></el-button>
+      <!--组件快捷配置工具栏-->
+      <div class="short-tools screen-actions">
+        <el-form v-if="focusedElement" label-width="60px">
+          <div class="form-title">元素设置</div>
+          <el-form-item label="横坐标">
+            <el-input-number v-model="focusedElement.x" size="mini" controls-position="right"/>
+          </el-form-item>
+          <el-form-item label="纵坐标">
+            <el-input-number v-model="focusedElement.x" size="mini" controls-position="right"/>
+          </el-form-item>
+          <el-form-item label="宽度">
+            <el-input-number v-model="focusedElement.width" size="mini" controls-position="right"/>
+          </el-form-item>
+          <el-form-item label="高度">
+            <el-input-number v-model="focusedElement.height" size="mini" controls-position="right" width="40px"/>
+          </el-form-item>
+          <el-form-item label="旋转">
+            <el-input-number v-model="focusedElement.rotate" size="mini" controls-position="right" />
+          </el-form-item>
+        </el-form>
+        <el-form v-if="!focusedElement" label-width="60px">
+          <div class="form-title">场景设置</div>
+          <el-form-item label="缩放">
+            <el-select v-model="scaleSelected" size="mini" style="width: 100px" allow-create filterable>
+              <el-option-group>
+                <el-option label="300%" :value="300"></el-option>
+                <el-option label="200%" :value="200"></el-option>
+                <el-option label="125%" :value="125"></el-option>
+                <el-option label="100%" :value="100"></el-option>
+                <el-option label="75%" :value="75"></el-option>
+                <el-option label="50%" :value="50"></el-option>
+                <el-option label="25%" :value="25"></el-option>
+                <el-option label="10%" :value="10"></el-option>
+              </el-option-group>
+            </el-select>
+            <el-button size="mini" icon="el-icon-full-screen" @click="fitToCenter" />
+          </el-form-item>
+          <el-form-item label="层次">
+            <el-input-number v-model="scene.z" controls-position="right" size="mini" />
+          </el-form-item>
+          <el-form-item label="开始">
+            <el-input-number v-model="scene.enter" controls-position="right" size="mini" /> ms
+          </el-form-item>
+          <el-form-item label="结束">
+            <el-input-number v-model="scene.exit" controls-position="right" size="mini" /> ms
+          </el-form-item>
+          <el-form-item label="完成">
+            <el-input-number v-model="scene.fin" controls-position="right" size="mini" /> ms
+          </el-form-item>
+        </el-form>
+      </div>
     </div>
   </div>
 </template>
@@ -67,6 +96,7 @@ import sceneEditContainer from './mixins/sceneEditContainer.js'
 import interact from 'interactjs'
 import RenderElement from './render/RenderElement.vue'
 import interactMixins from './mixins/interactMixins.js'
+import sceneMixins from './mixins/sceneMixins.js'
 import mouseMixins from './mixins/mousetrap.js'
 import { fitRectIntoBounds, getRectPositionStyle, isPointInRect, intersectRect } from './mixins/rectUtils.js'
 import { setElementSelected, createSingleElement } from './utils/sceneActions.js'
@@ -81,7 +111,7 @@ export default {
     [Popover.name]: Popover,
     [ButtonGroup.name]: ButtonGroup
   },
-  mixins: [ interactMixins, mouseMixins, sceneEditContainer ],
+  mixins: [ interactMixins, mouseMixins, sceneEditContainer, sceneMixins ],
   props: {
     // 格式刷模式
     paste: {
@@ -421,11 +451,18 @@ export default {
   overflow: hidden;
   width: 100%;
   .screen-actions {
+    padding: 10px;
+    background: #fff;
     z-index: 1001;
+    box-shadow: #ddd 0px 1px 6px 0px;
     position: absolute;
     right: 10px;
     bottom: 10px;
     font-size: 16px;
+    width: 200px;
+    .el-form-item {
+      margin-bottom: 5px;
+    }
     .el-input__suffix {
       display: none;
     }
@@ -433,25 +470,9 @@ export default {
       right: -40px;
       top: 4px;
     }
-  }
-  .scene-btn-prev {
-    z-index: 1001;
-    position: absolute;
-    left: 10px;
-    bottom: 50%;
-    font-size: 16px;
-  }
-  .scene-btn-next {
-    z-index: 1001;
-    position: absolute;
-    right: 10px;
-    bottom: 50%;
-    font-size: 16px;
-  }
-  .scene-index {
-    position: absolute;
-    left: 10px;
-    bottom: 10px;
+    .el-input-number {
+      width: 72px;
+    }
   }
 }
 #workspace {

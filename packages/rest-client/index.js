@@ -5,7 +5,6 @@ const beforeEnter = (to, from, next) => {
     next()
   }
 }
-window.ResizeObserver = undefined
 export default {
   routes: [{
     path: '/rest/list',

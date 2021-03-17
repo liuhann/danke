@@ -4,13 +4,12 @@
     <div class="columns">
       <div class="column is-narrow" style="width: 320px;">
         <el-button size="small" type="primary" @click="newPack">增加包</el-button>
-        <el-select v-model="packType" size="small" @change="fetchPacks">
-          <el-option label="矢量" value="vector"></el-option>
-          <el-option label="照片" value="image"></el-option>
-        </el-select>
-        <el-table :data="packs" size="mini" stripe style="width: 100%" @row-click="packClicked">
-          <el-table-column prop="name" label="标题"></el-table-column>
-        </el-table>
+
+        <ul>
+          <li v-for="pack in packs" :key="pack.id" @click="packClicked(pack)">
+            {{ pack.name }}
+          </li>
+        </ul>
         <el-pagination :current-page.sync="page" :page-size="size" :total="total" @current-change="pageChange" />
       </div>
       <div v-if="currentPack" class="column" style="flex: 1;">

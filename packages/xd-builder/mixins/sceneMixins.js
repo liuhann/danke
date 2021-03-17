@@ -1,4 +1,3 @@
-import { shortid } from '../../utils/string'
 export default {
   computed: {
     // 当前唯一选中的元素
