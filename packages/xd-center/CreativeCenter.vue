@@ -12,9 +12,9 @@
         <div v-for="work in works" :key="work.id" class="work-wrapper">
           <div class="preview" @click="playWork(work)">
             <div class="work-image-container">
-              <img v-if="work.snapshot" :src="getImageUrl(work.snapshot, 120, 120, 'lfit')">
+              <video v-if="work.video" id="output-video" controls crossorigin :src="'http://image.danke.fun' + work.video"></video>
             </div>
-            <span v-if="!work.snapshot" class="no-snapshot">正在生成预览</span>
+            <span v-if="!work.snapshot && !work.video" class="no-snapshot">正在生成预览</span>
           </div>
           <div class="actions">
             <div class="title">{{ work.title }}</div>
@@ -196,7 +196,7 @@ export default {
       color: #aaacad;
     }
     .work-image-container {
-      width: 120px;
+      width: 240px;
       height: 120px;
       border:1px solid #e7e7e7;
       border-radius: 6px;

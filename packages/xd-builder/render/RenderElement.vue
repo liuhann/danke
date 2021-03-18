@@ -31,7 +31,7 @@ import textMesure from '../../utils/textMesure'
 import cubicBerziers from '../../frames/model/cubic-beziers.js'
 import { ensureFont } from '../../utils/fontfaces'
 
-import anime from 'animejs'
+import anime from 'animejs/lib/anime.js'
 
 /**
  * 元素特性组合有以下几种情况
@@ -169,7 +169,8 @@ export default {
       const style = {
         '--width': this.element.width + 'px',
         '--height': this.element.height + 'px',
-        backgroundColor: this.element.fill
+        backgroundColor: this.element.fill,
+        ...this.element.style, 
       }
 
       // 填充色情况下，图片显示为遮罩
@@ -226,7 +227,7 @@ export default {
       if (this.element.mask && this.element.mask.uid) {
         style.clipPath = `url("#${this.element.mask.uid}")`
       }
-      const result = Object.assign({}, this.element.style, style)
+      const result = Object.assign({}, style)
       return result
     },
 
@@ -355,7 +356,8 @@ export default {
   watch: {
     seekPlay () {
       if (this.animation) {
-        this.animation.seek(this.seekPlay)
+        let seek = this.animation.loop? (this.seekPlay % this.animation.duration) : this.seekPlay
+        this.animation.seek(seek)
       }
     },
     stage () {
@@ -372,13 +374,15 @@ export default {
     },
 
     initAnime () {
-      const targets = this.element.animation[this.stage].targets ? this.$el.querySelector(this.element.animation[this.stage].targets): this.$el
-      this.animation = anime(Object.assign({},  this.element.animation[this.stage], {
-        targets: targets,
-        autoplay: this.autoplay
-      }))
-      if (this.seekPlay) {
-        this.animation.seek(this.seekPlay)
+      if (this.element.animation[this.stage]) {
+        const targets = this.element.animation[this.stage].targets ? this.$el.querySelector(this.element.animation[this.stage].targets): this.$el
+        this.animation = anime(Object.assign({},  this.element.animation[this.stage], {
+          targets: targets,
+          autoplay: this.autoplay
+        }))
+        if (this.seekPlay) {
+          this.animation.seek(this.seekPlay)
+        }
       }
     },
 

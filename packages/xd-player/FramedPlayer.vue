@@ -241,6 +241,10 @@ export default {
               video.src = src
 
               let uploading = await this.imagedao.uploadBlob(mp4Blob, `public/video/${this.work.id}.mp4`, true);
+
+              this.work.video = `/public/video/${this.work.id}.mp4`
+
+              await this.workdao.patch(this.work.id, this.work)
               this.msg = 'ffmpeg transcoded!!'
             } catch (e) {
               console.log(e)

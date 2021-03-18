@@ -179,10 +179,11 @@ export default {
       }
 
       // 设置保存 ctrl+s 处理
-      Mousetrap.bind('ctrl+s', ev => {
+      Mousetrap.bind('ctrl+s', async ev => {
         ev.stopPropagation()
         ev.preventDefault()
-        this.saveWork()
+        const result = await saveWork(this.work, this.ctx);  
+        Message.success('作品保存成功！')
       })
     },
 

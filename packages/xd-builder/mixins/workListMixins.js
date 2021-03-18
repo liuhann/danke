@@ -30,7 +30,7 @@ export default {
       console.log(Dialog)
       Dialog.confirm({
         title: '标题',
-        message: '确认删除',
+        message: '确认删除'
       }).then(async () => {
         await this.workdao.delete(work)
         this.loadWorks()
@@ -76,7 +76,7 @@ export default {
 
     async loadWorks () {
       const result = await this.workdao.list(Object.assign({
-        projection: 'updated,created,creator,name,id,frames,viewBox,title,author,avatar,color,snapshot',
+        projection: 'updated,created,creator,name,id,frames,viewBox,title,author,avatar,color,snapshot,video',
         page: this.page,
         count: this.count
       }, this.listQuery()))
