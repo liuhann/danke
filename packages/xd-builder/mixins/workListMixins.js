@@ -70,7 +70,7 @@ export default {
     verticalViewPortStyle (work) {
       return {
         height: '360px',
-        width: 360 /work.viewBox.height * work.viewBox.width + 'px'
+        width: 360 / work.viewBox.height * work.viewBox.width + 'px'
       }
     },
 

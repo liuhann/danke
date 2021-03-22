@@ -11,7 +11,7 @@
       >
         <div class="pop-body">
           <div class="menu-item">
-            <div class="work-title">
+            <div v-if="work" class="work-title">
               {{ work.title }}
             </div>
           </div>

@@ -37,16 +37,16 @@
         <el-form v-if="focusedElement" label-width="60px">
           <div class="form-title">元素设置</div>
           <el-form-item label="横坐标">
-            <el-input-number v-model="focusedElement.x" size="mini" controls-position="right"/>
+            <el-input-number v-model="focusedElement.x" size="mini" controls-position="right" />
           </el-form-item>
           <el-form-item label="纵坐标">
-            <el-input-number v-model="focusedElement.x" size="mini" controls-position="right"/>
+            <el-input-number v-model="focusedElement.y" size="mini" controls-position="right" />
           </el-form-item>
           <el-form-item label="宽度">
-            <el-input-number v-model="focusedElement.width" size="mini" controls-position="right"/>
+            <el-input-number v-model="focusedElement.width" size="mini" controls-position="right" />
           </el-form-item>
           <el-form-item label="高度">
-            <el-input-number v-model="focusedElement.height" size="mini" controls-position="right" width="40px"/>
+            <el-input-number v-model="focusedElement.height" size="mini" controls-position="right" width="40px" />
           </el-form-item>
           <el-form-item label="旋转">
             <el-input-number v-model="focusedElement.rotate" size="mini" controls-position="right" />

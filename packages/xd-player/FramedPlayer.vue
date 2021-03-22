@@ -1,7 +1,7 @@
 <template>
   <div class="framed-recorder">
     <div class="full-screened" style="z-index: -2; overflow: hidden;">
-      <div v-if="work" id="device" class="device" :style="deviceStyle">
+      <div v-if="work && !previewPlaying" id="device" class="device" :style="deviceStyle">
         <render-scene v-for="(scene, index) in work.scenes" v-show="scene.visible" :key="index"
                       :auto-play="false"
                       :scene="scene"
