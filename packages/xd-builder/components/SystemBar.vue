@@ -10,11 +10,20 @@
         trigger="click"
       >
         <div class="pop-body">
-          <div class="menu-item"><el-button @click="$emit('command', 'save-work')">保存</el-button></div>
+          <div class="menu-item">
+            <div class="work-title">
+              {{ work.title }}
+            </div>
+          </div>
+          <hr />
           <div v-if="work" class="menu-item">
             宽: <el-input-number v-model="work.viewBox.width" size="mini" controls-position="right" />高: <el-input-number v-model="work.viewBox.height" size="mini" controls-position="right" /> 
             <el-button size="mini" type="success" @click="$emit('command', 'viewbox-resize')">重设页面大小</el-button>
           </div>
+          <div class="menu-item">
+            动画
+          </div>
+          <div class="menu-item hoverable" @click="$emit('command', 'save-work')">保存</div>
         </div>
         <el-button slot="reference">
           文件<i class="el-icon-arrow-down el-icon--right"></i>
@@ -60,10 +69,28 @@ export default {
 .file-menu-pop {
   padding: 0;
 
+  hr {
+    border: none;
+    border-bottom: 1px solid rgba(64,87,109,.07);
+    margin: 1px 0;
+    background: none;
+  }
+
   .menu-item {
-    padding: 10px;
-    border-bottom: 1px solid #00c4cc;
+    padding: 10px 20px;
     display: flex;
+    line-height: 28px;
+    &.hoverable {
+      cursor: pointer;
+      &:Hover {
+        background: rgba(64,87,109,.07);
+      }
+    }
+
+    .el-input-number {
+      width: 90px;
+      margin: 0 10px;
+    }
   }
 }
 

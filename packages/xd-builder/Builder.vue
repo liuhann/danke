@@ -42,7 +42,7 @@ import Mousetrap from 'mousetrap'
 
 import { newWork, addScene, nextScene, prevScene, saveWork } from './utils/workActions'
 
-import SystemBar from './components/SystemBar'
+import SystemBar from './components/SystemBar.vue'
 import PopElementAnime from './components/PopElementAnime.vue'
 import { Message } from 'element-ui'
 

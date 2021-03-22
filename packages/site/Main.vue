@@ -2,20 +2,7 @@
   <div id="site">
     <nav-bar></nav-bar>
     <section class="section">
-      <div class="tabs">
-        <ul>
-          <li v-for="channel in channels" :key="channel.value" :class="currentChannel === channel.value? 'is-active' : ''" @click="switchChanel(channel.value)"><a>{{ channel.label }}</a></li>
-        </ul>
-      </div>
-      <div class="columns is-mobile is-multiline work-list">
-        <div v-for="work in currentChannelWorks" :key="work.id" class="column work-container" :class="channelColumnSize">
-          <figure class="image is-1by1" :class="currentChannel"> 
-            <img :src="getImageUrl(work.snapshot, 240, 240)">
-          </figure>
-        </div>
-      </div>
-      <div class="columns">
-      </div>
+      <router-view />
     </section>
     <nav-footer />
   </div>

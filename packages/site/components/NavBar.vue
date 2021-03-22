@@ -13,46 +13,61 @@
     </div>
     <div class="navbar-menu" :class="menuShow? 'is-active': ''">
       <div id="navbarStartOriginal" class="navbar-start bd-navbar-start bd-is-original">
-        <a class="
-      navbar-item bd-navbar-item bd-navbar-item-base bd-navbar-item-documentation
+        <div class="navbar-item bd-navbar-item bd-navbar-item-base has-dropdown is-hoverable">
+          <a class="navbar-link bd-navbar-ellipsis">
+            <span class="icon">
+              <i class="fas fa-ellipsis-h"></i>
+            </span>
+            <span>动画片段</span>
+          </a>
+          <div class="navbar-dropdown bd-navbar-dropdown is-boxed">
+            <router-link class="navbar-item bd-is-hidden" data-route="" to="/site/label-anime">
+              <div>
+                <div class="icon-text">
+                  <span class="icon has-text-extensions">
+                    <i class="fas fa-plug"></i>
+                  </span>
+                  <span>
+                    <strong>过场动画</strong>
+                  </span>
+                </div>
+                Side projects to enhance Bulma
+              </div>
+            </router-link>
+            <hr class="navbar-divider ">
+            <a class="navbar-item" data-route="" href="https://bulma.io/the-official-bulma-book">
+              <div>
+                <div class="icon-text">
+                  <span class="icon has-text-bleeding">
+                    <i class="fas fa-bookmark"></i>
+                  </span>
+                  <span>
+                    <strong>动画标签</strong>
+                  </span>
+                </div>
+                A step-by-step guide that teaches you how to build 
+              </div>
 
-      is-active
-    " href="https://bulma.io/documentation"
-        >
-          <span class="icon has-text-primary">
-            <i class="fas fa-book"></i>
-          </span>
-          <span class="is-hidden-tablet-only is-hidden-desktop-only">
-            Documentation
-          </span>
-          <span class="is-hidden-mobile is-hidden-widescreen">
-            Docs
-          </span>
-        </a>
+            </a>
 
+            <hr class="navbar-divider ">
+            <a class="navbar-item" data-route="" href="https://bulma.io/blog">
+              <div>
+                <div class="icon-text">
+                  <span class="icon has-text-rss">
+                    <i class="fas fa-rss"></i>
+                  </span>
+                  <span>
+                    <strong>头像动画</strong>
+                  </span>
+                </div>
+                Stay updated with new features
+              </div>
 
-
-
-
-        <a class="
-  navbar-item
-  bd-navbar-item
-  bd-navbar-item-videos
-  bd-navbar-item-base
-
-
-" href="https://bulma.io/videos/"
-        >
-          <span class="icon has-text-success">
-            <i class="fas fa-play-circle"></i>
-          </span>
-
-          <span>Videos</span>
-        </a>
-
-
-
-
+            </a>
+            <hr class="navbar-divider ">
+          </div>
+        </div>
 
         <a class="
   navbar-item
@@ -157,8 +172,8 @@
             <span class="icon">
               <i class="fas fa-ellipsis-h"></i>
             </span>
+            <span>头像装饰</span>
           </a>
-
           <div class="navbar-dropdown bd-navbar-dropdown is-boxed">
             <a class="navbar-item bd-is-hidden" data-route="" href="https://bulma.io/extensions">
               <div>
