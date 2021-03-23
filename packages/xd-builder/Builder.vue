@@ -8,18 +8,12 @@
         <scene-container :work="work" :scene="scene" />
       </section>
     </div>
-    <el-drawer title="元素列表" destroy-on-close :visible.sync="drawer.elementList" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
+    <el-drawer title="元素列表" destroy-on-close :visible.sync="drawer.elementList" direction="rtl" :modal="false" size="360px" :wrapper-closable="false" :with-header="false">
       <scene-element-list :scene="scene" @close="toggleShowDrawer" />
     </el-drawer>
     <pop-element-anime :visible.sync="drawer.animation" :elements="selectedElements" />
     <el-drawer title="场景列表" destroy-on-close :visible.sync="drawer.sceneList" direction="rtl" :modal="false" size="1024px" :wrapper-closable="false" :with-header="false">
       <scene-list :work="work" @choose-scene="chooseScene" @close="toggleShowDrawer" />
-    </el-drawer>
-    <el-drawer title="元素配置" destroy-on-close :visible.sync="drawer.elementProp" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
-      <element-prop-config v-if="drawer.elementProp" :element="focusedElement" @close="toggleShowDrawer" />
-    </el-drawer>
-    <el-drawer title="作品配置" destroy-on-close :visible.sync="drawer.workProp" direction="ltr" :modal="false" size="428px" :wrapper-closable="false" :with-header="false">
-      <work-config :work="work" @close="toggleShowDrawer" />
     </el-drawer>
     <div id="textMesure" />
   </div>
@@ -35,8 +29,6 @@ import Toolbar from './toolbar/Toolbar.vue'
 import SceneList from './left/SceneList.vue'
 import SceneElementList from './left/SceneElementList.vue'
 import FrameListConfig from './left/FrameListConfig.vue'
-import ElementPropConfig from './left/ElementPropConfig.vue'
-import WorkConfig from './left/WorkConfig.vue'
 import './import-element-ui.js'
 import Mousetrap from 'mousetrap'
 
@@ -51,14 +43,12 @@ export default {
   components: {
     PopElementAnime,
     SystemBar,
-    ElementPropConfig,
     SceneList,
     Toolbar,
     SceneContainer,
     SceneElementList,
     FrameListConfig,
-    LeftAside,
-    WorkConfig
+    LeftAside
   },
   mixins: [ sceneMixin, workMixin ],
   props: {
@@ -136,6 +126,8 @@ export default {
         case 'scene-list':
           this.drawer.sceneList = true
           break
+        case 'element-list':
+          this.drawer.elementList = true
         default:
           break;
       }

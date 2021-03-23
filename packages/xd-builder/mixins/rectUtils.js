@@ -42,9 +42,16 @@ export function getRectPositionStyle (rect, viewBox, viewPort, fitMode = '') {
   if (viewBox && viewPort) {
     result = {
       left: rect.x * viewPort.width / viewBox.width + 'px',
-      top: rect.y  * viewPort.height / viewBox.height + 'px',
+      top: rect.y * viewPort.height / viewBox.height + 'px',
       width: rect.width * viewPort.width / viewBox.width + 'px',
       height: rect.height * viewPort.height / viewBox.height + 'px'
+    }
+  } else if (viewPort) {
+    result = {
+      left: 0,
+      top: 0,
+      width: viewPort.width + 'px',
+      height: viewPort.height * rect.height / rect.width + 'px'
     }
   } else {
     result = {

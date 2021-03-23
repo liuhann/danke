@@ -90,9 +90,6 @@ export default {
     },
     work: {
       type: Object
-    },
-    paste: {
-      type: Object
     }
   },
   data () {
@@ -147,8 +144,6 @@ export default {
     },
 
     showAllScenesPop () {
-
-      console.log(this.work)
     },
     togglePaste () {
       if (this.paste) {

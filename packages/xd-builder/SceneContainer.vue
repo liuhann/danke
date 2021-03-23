@@ -115,19 +115,7 @@ export default {
     [ButtonGroup.name]: ButtonGroup
   },
   mixins: [ interactMixins, mouseMixins, sceneEditContainer, sceneMixins ],
-  props: {
-    // 格式刷模式
-    paste: {
-      type: Object
-    },
-    drawing: {
-      type: Object
-    },
-    // 刷入的样式名称
-    animation: {
-      type: Object
-    }
-  },
+  props: {},
   data: function () {
     return {
       // 拖拽移动模式

@@ -1,15 +1,13 @@
 <template>
   <div id="scene-element-list">
     <div class="pop-title">
-      <span class="text">元素列表</span>
+      <h3 class="subtitle is-5">元素列表</h3>
       <a class="btn-close" @click="$emit('close')"><i class="el-icon-circle-close" /></a>
     </div>
     <draggable v-model="scene.elements" class="list-content">
       <div v-for="element of scene.elements" :key="element.id" class="element-item" :class="element.selected? 'checked': ''" @click="checkElement(element, $event)">
-        <div class="element-icon" :style="elementVariables(element)">
-          <img v-if="element.url" :src="getImageUrl(element.url)">
-          <span v-else-if="element.text">A</span>
-          <div v-else class="shape" :style="element.style" />
+        <div class="element-icon">
+          <render-element :element="element" :view-port="{width: 24, height: 24}" />
         </div>
         <div class="element-name">
           {{ element.text || element.name }}
@@ -28,10 +26,12 @@
 import draggable from 'vuedraggable'
 import { getImageUrl } from '../../utils/getImageUrl.js'
 import { assignVariables } from '../mixins/renderUtils'
+import RenderElement from '../render/RenderElement.vue'
 export default {
   name: 'SceneElementList',
   components: {
-    draggable
+    draggable,
+    RenderElement
   },
   props: {
     scene: {
@@ -89,37 +89,35 @@ export default {
 #scene-element-list {
   background: white;
   width: 100%;
+  .pop-title {
+    padding: 10px;
+    border-bottom: 1px solid #ede;
+    display: flex;
+    .subtitle {
+      flex: 1;
+    }
+  }
   .list-content {
     width: 100%;
     .element-item {
-      padding: 1rem;
-      line-height: 2.5rem;
       position: relative;
       border-bottom: 1px solid #eee;
       &:hover {
-        background: #fefefe;
+        background: #efefef;
         cursor: pointer;
       }
       &.checked {
-        background: #eee;
+        background: #efefef;
         color: rgb(90, 90, 90);
       }
       .element-icon {
-        width: 2.5rem;
-        height: 2.5rem;
+        width: 40px;
+        height: 40px;
         display: flex;
         justify-content: center;
         align-items: center;
-        font-size: 2rem;
-        img {
-          width: 100%;
-          height: 100%;
-          object-fit: contain;
-        }
-        .shape {
-          border: 1px solid #ccc;
-          width: 2rem;
-          height: 2rem;
+        .element {
+          position: inherit;
         }
       }
       .element-name {
@@ -131,8 +129,9 @@ export default {
       }
       .actions {
         .btn {
-          padding: 0 5px;
-          font-size: 1.5rem;
+          padding: 10px;
+          line-height: 36px;
+          font-size: 16px;
           color: #666;
         }
       }
