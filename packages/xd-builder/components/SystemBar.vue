@@ -12,7 +12,7 @@
         <div class="pop-body">
           <div class="menu-item">
             <div v-if="work" class="work-title">
-              {{ work.title }}
+              <el-input v-model="work.title" />
             </div>
           </div>
           <hr />
@@ -68,7 +68,6 @@ export default {
 
 .file-menu-pop {
   padding: 0;
-
   hr {
     border: none;
     border-bottom: 1px solid rgba(64,87,109,.07);
@@ -86,7 +85,16 @@ export default {
         background: rgba(64,87,109,.07);
       }
     }
-
+    .work-title {
+      width: 100%;
+     
+      .el-input {
+        font-size: 18px;
+        font-weight: bold;
+        border: none;
+        width: 90%;
+      }
+    }
     .el-input-number {
       width: 90px;
       margin: 0 10px;
@@ -109,6 +117,7 @@ export default {
     padding: 8px;
   }
 
+  
   .el-button {
     background: transparent;
     border: none;

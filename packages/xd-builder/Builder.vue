@@ -98,12 +98,7 @@ export default {
     async handleSystemBarCommand (cmd) {
       switch (cmd) {
         case 'save-work':
-          const result = await saveWork(this.work, this.ctx);
-          if (!this.work.id) {
-            this.work.id = result.id
-            this.$router.replace(location.pathname + '?work=' + this.work.id)
-          }
-          Message.success('作品保存成功！')
+          this.handleSaveWork()
           break
         case 'export-video':
           window.open('/work/frame/' + this.work._id)
@@ -115,6 +110,15 @@ export default {
           break
       }
     },
+
+    async handleSaveWork () {
+      const result = await saveWork(this.work, this.ctx);
+      if (!this.work._id) {
+        this.$router.replace(location.pathname + '?work=' + this.work.id)
+      }
+      Message.success('作品保存成功！')
+    },
+
     onCommand (cmd, ...args) {
       switch (cmd) {
         case 'add-scene':
@@ -182,8 +186,7 @@ export default {
       Mousetrap.bind('ctrl+s', async ev => {
         ev.stopPropagation()
         ev.preventDefault()
-        const result = await saveWork(this.work, this.ctx);  
-        Message.success('作品保存成功！')
+        this.handleSaveWork()
       })
     },
 

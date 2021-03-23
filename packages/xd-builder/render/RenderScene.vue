@@ -3,17 +3,18 @@
     <render-element v-for="element of scene.elements" :key="element.id"
                     :autoplay="autoPlay"
                     :variables="getElementVariable(element)"
-                    :view-port="viewPort"
+                    :view-port="sceneViewPort"
                     :element="element"
                     :view-box="viewBox"
                     :seek-play="seek"
-                    :stage="scene.stage"
+                    :stage="stage || scene.stage"
     />
   </div>
 </template>
 
 <script>
-import RenderElement from './RenderElement'
+import { fitRectIntoBounds } from '../mixins/rectUtils'
+import RenderElement from './RenderElement.vue'
 /**
  * 渲染场景
  */
@@ -53,6 +54,14 @@ export default {
       type: Object
     }
   },
+  data () {
+    return {
+      sceneViewPort: {
+        width: 240,
+        height: 160
+      }
+    }
+  },
   computed: {
     sceneClass () {
       const classes = []
@@ -65,8 +74,8 @@ export default {
     },
     sceneStyle () {
       const styles = {
-        width: this.viewPort.width + 'px',
-        height: this.viewPort.height + 'px',
+        width: this.sceneViewPort.width + 'px',
+        height: this.sceneViewPort.height + 'px',
         zIndex: this.scene.z,
         transform: 'scale(' + this.scale + ')',
         backgroundColor: this.scene.color
@@ -80,6 +89,17 @@ export default {
       }
       return styles
     },
+  },
+  mounted () {
+    if (this.viewPort) {
+      this.sceneViewPort = this.viewPort
+    } else {
+      const container = {
+          width: this.$el.parentElement.clientWidth - 20,
+          height: this.$el.parentElement.clientHeight - 20
+        }
+        this.sceneViewPort = fitRectIntoBounds(this.viewBox, container)
+    }
   },
   methods: {
     getElementVariable (element) {

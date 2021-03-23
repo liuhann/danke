@@ -374,10 +374,15 @@ export default {
     },
 
     initAnime () {
+      if (this.animation) {
+        this.animation.reset()
+        this.animation = null
+      }
       if (this.element.animation[this.stage]) {
-        const targets = this.element.animation[this.stage].targets ? this.$el.querySelector(this.element.animation[this.stage].targets): this.$el
+        console.log('init animation')
+        this.animeTargets = this.element.animation[this.stage].targets ? this.$el.querySelector(this.element.animation[this.stage].targets): this.$el
         this.animation = anime(Object.assign({},  this.element.animation[this.stage], {
-          targets: targets,
+          targets: this.animeTargets,
           autoplay: this.autoplay
         }))
         if (this.seekPlay) {

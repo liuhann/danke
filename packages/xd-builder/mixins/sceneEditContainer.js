@@ -133,7 +133,6 @@ export default {
     },
 
     onMounted () {
-      debugger;
       this.containerSize.width = this.$el.clientWidth
       this.containerSize.height = this.$el.clientHeight
       this.fitToCenter()

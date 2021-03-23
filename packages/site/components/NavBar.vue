@@ -114,23 +114,13 @@
   bd-navbar-item
   bd-navbar-item-backers
   bd-navbar-item-base
-
-
 " href="https://bulma.io/backers/"
         >
           <span class="icon has-text-patreon">
             <i class="fab fa-patreon"></i>
           </span>
-
           <span>Backers</span>
         </a>
-
-
-
-
-
-
-
         <a class="navbar-item bd-navbar-item bd-navbar-item-extensions bd-navbar-item-more bd-is-visible" href="https://bulma.io/extensions/">
           <span class="icon has-text-extensions">
             <i class="fas fa-plug"></i>
@@ -138,11 +128,6 @@
 
           <span>Extensions</span>
         </a>
-
-
-
-
-
         <a class="navbar-item bd-navbar-item bd-navbar-item-bulma-book bd-navbar-item-more" href="https://bulma.io/the-official-bulma-book/">
           <span class="icon has-text-bleeding">
             <i class="fas fa-bookmark"></i>
@@ -150,11 +135,6 @@
 
           <span>Book</span>
         </a>
-
-
-
-
-
         <a class="navbar-item bd-navbar-item bd-navbar-item-blog bd-navbar-item-more" href="https://bulma.io/blog/">
           <span class="icon has-text-rss">
             <i class="fas fa-rss"></i>
@@ -187,14 +167,8 @@
                 </div>
                 Side projects to enhance Bulma
               </div>
-
             </a>
-
             <hr class="navbar-divider ">
-
-
-
-
             <a class="navbar-item" data-route="" href="https://bulma.io/the-official-bulma-book">
               <div>
                 <div class="icon-text">
@@ -207,14 +181,8 @@
                 </div>
                 A step-by-step guide that teaches you how to build a web interface from scratch using Bulma
               </div>
-
             </a>
-
             <hr class="navbar-divider ">
-
-
-
-
             <a class="navbar-item" data-route="" href="https://bulma.io/blog">
               <div>
                 <div class="icon-text">
@@ -227,14 +195,8 @@
                 </div>
                 Stay updated with new features
               </div>
-
             </a>
-
             <hr class="navbar-divider ">
-
-
-
-
             <a class="navbar-item" data-route="" href="https://bulma.io/bulma-start">
               <div>
                 <div class="icon-text">
@@ -247,14 +209,8 @@
                 </div>
                 A tiny npm package to get started
               </div>
-
             </a>
-
             <hr class="navbar-divider ">
-
-
-
-
             <a class="navbar-item" data-route="" href="https://bulma.io/made-with-bulma">
               <div>
                 <div class="icon-text">
@@ -267,9 +223,7 @@
                 </div>
                 The official community badge
               </div>
-
             </a>
-
             <hr class="navbar-divider ">
             <a class="navbar-item" data-route="" href="https://bulma.io/alternative-to-bootstrap">
               <div>
@@ -283,7 +237,6 @@
                 </div>
                 See how Bulma is an alternative to Bootstrap
               </div>
-
             </a>
           </div>
         </div>
@@ -303,7 +256,6 @@
             </router-link>
           </div>
         </div>
-
         <div v-if="!logon" class="navbar-item">
           <div class="buttons">
             <router-link class="button is-link" to="/register">

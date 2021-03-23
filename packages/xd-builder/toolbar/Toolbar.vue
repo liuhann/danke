@@ -34,7 +34,6 @@
     <el-color-picker v-if="focusedElement && focusedElement.hasOwnProperty('fill')" v-model="focusedElement.fill" show-alpha />
     <!-- 右侧操作功能按钮-->
     <div class="pull-right">
-      <span v-if="focusedElement">x: {{ Math.floor(focusedElement.x) }}, y: {{ Math.floor(focusedElement.y) }}, w: {{ Math.floor(focusedElement.width) }}, h: {{ Math.floor(focusedElement.height) }}</span>
       <align-element v-if="selectedElements.length > 1" :elements="selectedElements" />
       <el-tooltip v-if="selectedElements.length > 1" class="item" effect="dark" content="建组" placement="bottom">
         <a class="action" @click="groupSelectedElement"><i class="el-icon-folder-checked" /></a>
@@ -43,16 +42,19 @@
         <a class="action on" @click="unGroupBlock"><i class="el-icon-folder-delete" /></a>
       </el-tooltip>
 
-      <el-tooltip class="item" effect="dark" content="页面列表" placement="bottom">
-        <a class="action" @click="$emit('command', 'element-list')"><i class="el-icon-document-copy" /></a>
+      <el-tooltip class="item" effect="dark" content="元素列表" placement="bottom">
+        <a class="action" @click="$emit('command', 'element-list')"><i class="fa fa-list-ul" /></a>
       </el-tooltip>
       <span class="separator" />
       <el-tooltip class="item" effect="dark" content="前一页" placement="bottom">
-        <a class="action" @click="$emit('command', 'prev-scene')"><i class="el-icon-back" /></a>
+        <a class="action" @click="$emit('command', 'prev-scene')"><i class="fa fa-chevron-left" /></a>
       </el-tooltip>
-      <a class="action" @click="$emit('command', 'scene-list')"><i class="el-icon-files" /><span class="text">{{ sceneIndex }}/{{ work.scenes.length }}页面</span></a>
+      <a class="action" @click="$emit('command', 'scene-list')">
+        <i class="fa fa-list-alt" />
+        <span class="text">{{ sceneIndex }}/{{ work.scenes.length }}页面</span>
+      </a>
       <el-tooltip class="item" effect="dark" content="后一页" placement="bottom">
-        <a class="action" @click="$emit('command', 'next-scene')"><i class="el-icon-right" /></a>
+        <a class="action" @click="$emit('command', 'next-scene')"><i class="fa fa-chevron-right" /></a>
       </el-tooltip>
       <a class="action" @click="$emit('command', 'add-scene')"><i class="el-icon-plus" /></a>
     </div>
@@ -333,26 +335,14 @@ export default {
     border-left: 1px solid #eee;
     padding-left: 10px;
   }
-  i.action {
-    width: 28px;
-    height: 28px;
-    margin: 0 6px;
-    display: inline-block;
-    border-radius: 4px;
-    cursor: pointer;
-    &:hover, &.on {
-      cursor: pointer;
-      box-shadow:inset 0 0 0 2px var(--mainColor);
-    }
-  }
   a.action {
     line-height: 28px;
     vertical-align: top;
     margin: 0 5px;
-    color: #0e1318;
-    font-size: 20px;
+    color: #0e1318dc;
+    font-size: 18px;
     font-weight: normal;
-    padding: 0 4px;
+    padding: 5px 8px;
     &:hover, &.on {
       cursor: pointer;
       background-color: #f1f3f4;
@@ -361,24 +351,11 @@ export default {
      display: none;
     }
     .text {
-      font-size: 14px;
+      font-size: 16px;
+      line-height: 28px;
       display: inline-block;
-      vertical-align: text-bottom;
-      margin-left: 5px;
-    }
-    img, svg {
-      width: 18px;
-      height: 28px;
-      display: inline-block;
-      vertical-align: top;
-      &.wide {
-        width: 26px;
-      }
-    }
-    svg {
-      path {
-        fill: #515151;
-      }
+      margin-left: 10px;
+      vertical-align: bottom;
     }
   }
   .icon {

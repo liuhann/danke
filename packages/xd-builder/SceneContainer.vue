@@ -5,11 +5,13 @@
       <div class="screen" :style="styleScreen">
         <div v-if="scene" class="scene" :style="sceneStyle">
           <render-element v-for="(element, index) of scene.elements" :key="element.id"
-                            :ref="element.id"
-                            :element="element"
-                            :view-box="viewBox"
-                            :view-port="viewPort"
-                            :index="index"
+                          :ref="element.id"
+                          autoplay
+                          :stage="scene.stage"
+                          :element="element"
+                          :view-box="viewBox"
+                          :view-port="viewPort"
+                          :index="index"
           />
         </div>
       </div>
@@ -54,6 +56,11 @@
         </el-form>
         <el-form v-if="!focusedElement" label-width="60px">
           <div class="form-title">场景设置</div>
+          <el-form-item label="操作">
+            <el-button size="mini" icon="el-icon-full-screen" @click="fitToCenter" />
+            <el-button size="mini" icon="fas fa-sync-alt" @click="playScene(scene)" />
+          </el-form-item>
+
           <el-form-item label="缩放">
             <el-select v-model="scaleSelected" size="mini" style="width: 100px" allow-create filterable>
               <el-option-group>
@@ -67,7 +74,6 @@
                 <el-option label="10%" :value="10"></el-option>
               </el-option-group>
             </el-select>
-            <el-button size="mini" icon="el-icon-full-screen" @click="fitToCenter" />
           </el-form-item>
           <el-form-item label="层次">
             <el-input-number v-model="scene.z" controls-position="right" size="mini" />
@@ -96,7 +102,7 @@ import interactMixins from './mixins/interactMixins.js'
 import sceneMixins from './mixins/sceneMixins.js'
 import mouseMixins from './mixins/mousetrap.js'
 import { fitRectIntoBounds, getRectPositionStyle, isPointInRect, intersectRect } from './mixins/rectUtils.js'
-import { setElementSelected, createSingleElement } from './utils/sceneActions.js'
+import { setElementSelected, createSingleElement, playScene } from './utils/sceneActions.js'
 
 
 export default {
@@ -148,7 +154,6 @@ export default {
   },
 
   computed: {
-
     scale () {
       return this.scaleSelected / 100
     },
@@ -156,7 +161,6 @@ export default {
     scaleDisplay () {
       return Math.floor(this.scale * 100) + '%'
     },
-
     styleScreen () {
       const screenStyle = {
         transform: `translateX(${this.translateX}px) translateY(${this.translateY}px)`, //scale(${this.scale})
@@ -245,6 +249,7 @@ export default {
   },
 
   methods: {
+    playScene,
     toggleActionMove () {
       this.actionMove = !this.actionMove
     },
@@ -430,13 +435,6 @@ export default {
       if (element.text) {
         this.$set(element, 'editing', true)
       }
-    },
-
-    scaleDown () {
-      this.scale -= 0.05
-    },
-    scaleUp () {
-      this.scale += 0.05
     }
   }
 }

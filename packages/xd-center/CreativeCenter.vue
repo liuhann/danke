@@ -1,49 +1,63 @@
 <template>
   <div id="creative-center" class="creative-center">
-    <div class="actions">
-      <van-button id="btn-new" type="primary" icon="plus" @click="navTo('new')">创建作品</van-button>
-    </div>
-    <div class="works-nav-wrapper">
-      <van-tabs v-model="isPublic">
-        <van-tab v-for="channel in channels" :key="channel.value" :title="channel.label"></van-tab>
-        <van-tab title="公开作品"></van-tab>
-      </van-tabs>
-      <div class="work-list-wrapper">
-        <div v-for="work in works" :key="work.id" class="work-wrapper">
-          <div class="preview" @click="playWork(work)">
-            <div class="work-image-container">
-              <video v-if="work.video" id="output-video" controls crossorigin :src="'http://image.danke.fun' + work.video"></video>
-            </div>
-            <span v-if="!work.snapshot && !work.video" class="no-snapshot">正在生成预览</span>
-          </div>
-          <div class="actions">
-            <div class="title">{{ work.title }}</div>
-            <div class="buttons">
-              <van-button icon="edit" round @click="editWork(work)"></van-button>
-              <van-button icon="delete" type="danger" round @click="deleteWork(work)" />
+    <center-nav />
+    <section class="section">
+      <div class="columns is-mobile is-multiline">
+        <div v-for="work in works" :key="work.id" class="column is-one-quarter-tablet is-three-quarters-mobile">
+          <div class="card">
+            <figure class="card-image image is-3by2">
+              <div class="scene-wrapper">
+                <render-scene auto-play stage="enter" :scene="work.scenes[0]" :view-box="work.viewBox" />
+              </div>
+            </figure>
+            <div class="card-content">
+              <div class="media">
+                <div class="media-left">
+                  <figure class="image is-48x48">
+                    <img :src="getImageUrl(work.avatar) || 'https://bulma.io/images/placeholders/96x96.png'" class="is-rounded">
+                  </figure>
+                </div>
+                <div class="media-content">
+                  {{ work.title }}
+                </div>
+                <nav class="level is-mobile">
+                  <div class="level-left">
+                    <a class="level-item" @click="editWork(work)">
+                      <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                    </a>
+                    <a class="level-item">
+                      <span class="icon is-small"><i class="fas fa-video"></i></span>
+                    </a>
+                    <a class="level-item" @click="deleteWork(work)">
+                      <span class="icon is-small"><i class="fas fa-trash"></i></span>
+                    </a>
+                    <a class="level-item" @click="shareWork(work)">
+                      <span class="icon is-small"><i class="fas fa-share"></i></span>
+                    </a>
+                  </div>
+                </nav>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   </div>
 </template>
 
 <script>
 import workListMixins from '../xd-builder/mixins/workListMixins'
+import CenterNav from './CenterNav.vue'
 import channels from '../site/channels'
 import { getImageUrl } from '../utils/getImageUrl'
 import { fitRectIntoBounds } from '../xd-builder/mixins/rectUtils'
+import RenderScene from '../xd-builder/render/RenderScene.vue'
 import Vue from 'vue'
-import Vant from 'vant';
-import 'vant/lib/index.css';
-import NavLayer from '../site/components/NavLayer'
-Vue.use(Vant);
 export default {
   name: 'CreativeCenter',
   components: {
-    // eslint-disable-next-line vue/no-unused-components
-    NavLayer
+    CenterNav,
+    RenderScene
   },
   mixins: [ workListMixins ],
   data () {
@@ -53,6 +67,10 @@ export default {
         { text: '公开作品', value: 1 },
         { text: '私有作品', value: 0 }
       ],
+      sceneViewPort: {
+        width: 200,
+        height: 160
+      },
       currentChannel: 'all',
       channelOptions: channels.map(channel => ({
         text: channel.label,
@@ -152,72 +170,19 @@ export default {
 </script>
 
 <style lang="scss">
-@media only screen and (min-width: 640px) {
-  .work-list-wrapper {
-    display: flex;
-    flex-wrap: wrap;
-    .work-wrapper {
-      width: 30%;
-      margin: 0 1%;
-    }
-  }
-}
 
-
-.work-list-wrapper {
-  margin-top: 18px;
-  .work-wrapper {
-    background: #F6F5FB;
-    display: flex;
-    margin-bottom: 10px;
-    border-radius: 16px;
-    padding: 10px;
-    .actions {
-      .title {
-        font-size: 16px;
-        color: #3E326F;
-        font-weight: bold;
-      }
-      .buttons {
-        margin-top: 16px;
-        .van-button {
-          margin-right: 16px;
-        }
-      }
-
-    }
-  }
-  .preview {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    .no-snapshot {
-      position: absolute;
-      color: #aaacad;
-    }
-    .work-image-container {
-      width: 240px;
-      height: 120px;
-      border:1px solid #e7e7e7;
-      border-radius: 6px;
-      background-color: #fff;
-      background-image: linear-gradient(45deg, #efefef 25%, transparent 25%, transparent 75%, #efefef 75%, #efefef),
-      linear-gradient(45deg, #efefef 25%, transparent 25%, transparent 75%, #efefef 75%, #efefef);
-      background-size: 20px 20px;
-      background-position: 0 0, 10px 10px;
-    }
-  }
-}
-.creative-center {
-  .actions {
-    margin: 20px
-  }
-  .works-nav-wrapper {
-    margin: 0 10px;
-
-    .van-tabs {
-      max-width: 540px;
-    }
+.scene-wrapper {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #F8F9FA;
+  .scene {
+    overflow: hidden;
   }
 }
 </style>

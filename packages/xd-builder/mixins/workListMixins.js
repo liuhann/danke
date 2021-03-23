@@ -76,7 +76,6 @@ export default {
 
     async loadWorks () {
       const result = await this.workdao.list(Object.assign({
-        projection: 'updated,created,creator,name,id,frames,viewBox,title,author,avatar,color,snapshot,video',
         page: this.page,
         count: this.count
       }, this.listQuery()))

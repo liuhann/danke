@@ -202,8 +202,18 @@ function elementStyle (element, viewBox, viewPort) {
     return style
 }
 
+function playScene (scene) {
+  scene.stage = 'enter'
+  console.log(scene)
+  setTimeout(()=> {
+    scene.stage = 'exit'
+  }, scene.exit - scene.enter)
+  setTimeout(()=> {
+    scene.stage = 'fin'
+  }, scene.fin - scene.enter)
+}
+
 function toggleElementLock (element) {
-  debugger
   element.locked = !element.locked
 }
 
@@ -229,5 +239,6 @@ export {
   deleteElement,
   setElementSelected,
   toggleElementLock,
-  unlockElement
+  unlockElement,
+  playScene
 }
