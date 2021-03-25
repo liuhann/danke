@@ -27,6 +27,7 @@ function addScene (work, currentScene) {
     elements: [],
     animation: {},
     background: false,
+    stages: [0, 3000],
     z: 100,
     enter: 0,
     exit: 0,

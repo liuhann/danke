@@ -78,6 +78,9 @@
           <el-form-item label="层次">
             <el-input-number v-model="scene.z" controls-position="right" size="mini" />
           </el-form-item>
+          <el-form-item v-for="(stage, index) in scene.stages" label="">
+            <el-input-number v-model="mill" control-position="right" />
+          </el-form-item>
           <el-form-item label="开始">
             <el-input-number v-model="scene.enter" controls-position="right" size="mini" /> ms
           </el-form-item>

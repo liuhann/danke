@@ -1,40 +1,37 @@
 <template>
   <div id="tool-bar">
-    <el-tooltip v-show="focusedElement" class="item" effect="dark" content="动态效果" placement="bottom">
-      <a class="action" @click="$emit('command', 'anime', focusedElement)"><i class="el-icon-data-line" /></a>
-    </el-tooltip>
-    <el-tooltip v-show="focusedElement" class="item" effect="dark" content="动态效果" placement="bottom">
-      <a class="action" @click="$emit('toggle-show', 'elementProp')"><i class="el-icon-s-operation" /></a>
-    </el-tooltip>
-
-    <!--  样式变量的修改-->
-    <template v-for="(variable, index) in elementStyleVariables">
-      <!-- 颜色-->
-      <el-color-picker v-if="variable.type==='color'" :key="index" v-model="variable.value" show-alpha :predefine="workColors" />
-      <!-- 渐变颜色的处理-->
-      <pop-set-gradient v-if="variable.type==='gradient'" :key="index" :variable="variable" />
-      <!-- 数字-->
-      <el-tooltip v-if="variable.type==='px' || variable.type==='number' || variable.type==='percent'" :key="index" content="数值">
-        <el-input-number v-model="variable.value" controls-position="right" size="mini" />
+    <div class="pull-left">
+      <el-tooltip v-show="focusedElement" class="item" effect="dark" content="动态效果" placement="bottom">
+        <a class="action" @click="$emit('command', 'anime', focusedElement)"><i class="fa fa-random" /></a>
       </el-tooltip>
-      <!--边框样式-->
-      <border-style v-if="variable.type==='border'" :key="index" :variable="variable" />
-      <!--字体大小-->
-      <font-size v-if="variable.type==='fontSize'" :key="index" :variable="variable" />
+        <!--  样式变量的修改-->
+      <template v-for="(variable, index) in elementStyleVariables">
+        <!-- 颜色-->
+        <el-color-picker v-if="variable.type==='color'" :key="index" v-model="variable.value" show-alpha :predefine="workColors" />
+        <!-- 渐变颜色的处理-->
+        <pop-set-gradient v-if="variable.type==='gradient'" :key="index" :variable="variable" />
+        <!-- 数字-->
+        <el-tooltip v-if="variable.type==='px' || variable.type==='number' || variable.type==='percent'" :key="index" content="数值">
+          <el-input-number v-model="variable.value" controls-position="right" size="mini" />
+        </el-tooltip>
+        <!--边框样式-->
+        <border-style v-if="variable.type==='border'" :key="index" :variable="variable" />
+        <!--字体大小-->
+        <font-size v-if="variable.type==='fontSize'" :key="index" :variable="variable" />
 
-      <font-family v-if="variable.type === 'fontFamily'" :key="index" :variable="variable" />
-      <!-- 字体对齐-->
-      <text-align v-if="variable.type==='textAlign'" :key="index" v-model="variable.value" />
-      <!-- 字体粗细-->
-      <font-weight v-if="variable.type==='fontWeight'" :key="index" v-model="variable.value" />
-    </template>
+        <font-family v-if="variable.type === 'fontFamily'" :key="index" :variable="variable" />
+        <!-- 字体对齐-->
+        <text-align v-if="variable.type==='textAlign'" :key="index" v-model="variable.value" />
+        <!-- 字体粗细-->
+        <font-weight v-if="variable.type==='fontWeight'" :key="index" v-model="variable.value" />
+      </template>
+    </div>
 
     <el-color-picker v-for="(path, index) in elementSVGPathColors" :key="index" v-model="path.f" show-alpha />
-
     <el-color-picker v-if="focusedElement && focusedElement.hasOwnProperty('fill')" v-model="focusedElement.fill" show-alpha />
     <!-- 右侧操作功能按钮-->
     <div class="pull-right">
-      <align-element v-if="selectedElements.length > 1" :elements="selectedElements" />
+      <!-- <align-element v-if="selectedElements.length > 1" :elements="selectedElements" /> -->
       <el-tooltip v-if="selectedElements.length > 1" class="item" effect="dark" content="建组" placement="bottom">
         <a class="action" @click="groupSelectedElement"><i class="el-icon-folder-checked" /></a>
       </el-tooltip>

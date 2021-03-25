@@ -62,10 +62,10 @@ export default {
       type: Object
     },
     variables: {
-      type: Array
-    },
-    index: { // 索引，多个元素时决定显示次序
-      type: Number
+      type: Array,
+      default: function () {
+        return []
+      }
     },
     autoplay: {
       type: Boolean,
@@ -73,9 +73,6 @@ export default {
     },
     seekPlay: {
       type: Number
-    },
-    selected: { // 是否选中
-      type: Boolean
     }
   },
   data () {
