@@ -4,6 +4,7 @@
 import { shortid } from '../../utils/string'
 import { Loading, Message } from 'element-ui'
 import RestDAO from '../../utils/restdao.js'
+import { tidyUpWork } from '../utils/workActions.js'
 
 export default {
   props: {
@@ -48,34 +49,11 @@ export default {
      * @param {string} workId 作品Id
      */
     async loadWork (workId) {
-      const loadingInstance1 = Loading.service({ fullscreen: true, text: '加载作品中' })
+      const loadingInstance = Loading.service({ fullscreen: true, text: '加载作品中' })
       const work = await this.workdao.getOne(workId)
-      this.work = work
+      this.work = tidyUpWork(work)
       this.scene = this.work.scenes[0]
-      loadingInstance1.close()
-    },
-
-    /**
-     * 获取、初始化作品里所有元素的样式资源
-     */
-    async initWorkStyleResource (work) {
-      const styleRegistry = this.ctx.styleRegistry
-
-      // init element svg content from work.svgs
-      for (const scene of work.scenes) {
-        // this.initSceneSVG(scene.elements, work.svgs)
-
-        for (const element of scene.elements) {
-          // 脏数据处理
-          element.animation.preview = []
-          if (!element.animation.enter) {
-            element.animation.enter = []
-          }
-          if (!element.animation.exit) {
-            element.animation.exit = []
-          }
-        }
-      }
+      loadingInstance.close()
     },
 
     initSceneSVG (elements, svgs) {

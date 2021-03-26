@@ -202,6 +202,13 @@ function elementStyle (element, viewBox, viewPort) {
     return style
 }
 
+function addSceneStage (scene) {
+  scene.stages.push({
+    name: '',
+    sec: 0
+  })
+}
+
 function playScene (scene) {
   scene.stage = 'enter'
   console.log(scene)
@@ -240,5 +247,6 @@ export {
   setElementSelected,
   toggleElementLock,
   unlockElement,
-  playScene
+  playScene,
+  addSceneStage
 }

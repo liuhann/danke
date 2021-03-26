@@ -78,17 +78,19 @@
           <el-form-item label="层次">
             <el-input-number v-model="scene.z" controls-position="right" size="mini" />
           </el-form-item>
-          <el-form-item v-for="(stage, index) in scene.stages" label="">
-            <el-input-number v-model="mill" control-position="right" />
-          </el-form-item>
           <el-form-item label="开始">
-            <el-input-number v-model="scene.enter" controls-position="right" size="mini" /> ms
+            <el-input-number v-model="scene.enter" controls-position="right" size="mini" /> 秒
           </el-form-item>
-          <el-form-item label="结束">
-            <el-input-number v-model="scene.exit" controls-position="right" size="mini" /> ms
-          </el-form-item>
+          <div class="stages">
+            <div v-for="(stage, index) in scene.stages" :key="index" class="stage">
+              <div class="stage-name"> <el-input v-model="stage.name" size="mini" /> </div>
+              <div class="stage-sec"> <el-input v-model="stage.sec" size="mini" /> </div>
+              <div class="stage-actions"> <el-button @click="removeSceneStage(scene, index)" size="mini" icon="el-icon-delete" type="text" /> </div>
+            </div>
+            <el-button size="mini" @click="addSceneStage(scene)">增加</el-button>
+          </div>
           <el-form-item label="完成">
-            <el-input-number v-model="scene.fin" controls-position="right" size="mini" /> ms
+            <el-input-number v-model="scene.fin" controls-position="right" size="mini" /> 秒
           </el-form-item>
         </el-form>
       </div>
@@ -105,7 +107,7 @@ import interactMixins from './mixins/interactMixins.js'
 import sceneMixins from './mixins/sceneMixins.js'
 import mouseMixins from './mixins/mousetrap.js'
 import { fitRectIntoBounds, getRectPositionStyle, isPointInRect, intersectRect } from './mixins/rectUtils.js'
-import { setElementSelected, createSingleElement, playScene } from './utils/sceneActions.js'
+import { setElementSelected, createSingleElement, playScene, addSceneStage, removeSceneStage } from './utils/sceneActions.js'
 
 
 export default {
@@ -240,6 +242,8 @@ export default {
   },
 
   methods: {
+    addSceneStage,
+    removeSceneStage,
     playScene,
     toggleActionMove () {
       this.actionMove = !this.actionMove
@@ -458,6 +462,15 @@ export default {
     }
     .el-input-number {
       width: 72px;
+    }
+    .stages {
+      .stage {
+        margin-bottom: 5px;;
+        >div {
+          padding: 0 5px;
+        }
+        display: flex;
+      }
     }
   }
 }

@@ -83,7 +83,6 @@ export default {
     this.onMounted()
   },
 
-
   methods: {
     async handleSystemBarCommand (cmd) {
       switch (cmd) {

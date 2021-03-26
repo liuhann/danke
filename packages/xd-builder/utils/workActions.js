@@ -26,22 +26,55 @@ function addScene (work, currentScene) {
     id: shortid(),
     elements: [],
     animation: {},
-    background: false,
-    stages: [0, 3000],
-    z: 100,
+    stages: [],
     enter: 0,
-    exit: 0,
-    fin: 0
+    fin: 0,
+    z: 100
   }
+  let prevDura = 0
   if (work != null) {
     if (currentScene == null) {
       work.scenes.push(scene)
+      prevDura = getWorkDuration(work)
     } else {
       const index = (typeof currentScene === 'number') ? currentScene : work.scenes.indexOf(currentScene)
       work.scenes.splice(index, 0, scene)
+      prevDura = getWorkDuration(work, index)
     }
   }
+
+  scene.enter = prevDura
+  scene.fin = prevDura + 3
+  
   return scene
+}
+
+// 整理work的信息
+function tidyUpWork (work) {
+  for (let scene of work.scenes) {
+
+    // 使用秒为单位
+    if (scene.enter > 1000) {
+      scene.enter = scene.enter / 1000
+    }
+    if (scene.fin > 1000) {
+      scene.fin = scene.fin / 1000
+    }
+
+    // 补充stages
+    if (!scene.stages) {
+      scene.stages = []
+    }
+
+    // exit并入作为一个stage
+    if (scene.exit) {
+      scene.stages.push({
+        name: 'exit',
+        sec: scene.exit / 1000
+      })
+    }
+  }
+  return work
 }
 
 function prevScene (work, currentScene) {
@@ -105,16 +138,22 @@ function getWorkImages (work) {
   return elementUrls
 }
 
-// 获得Work总的持续时长
-function getWorkDuration (work) {
-  let lastMill = 0
+// 获得Work总的持续时长, index表示限制场景局部限制
+function getWorkDuration (work, index) {
+  let finSec = 0
 
-  for (const scene of work.scenes) {
-    if (scene.fin && lastMill < scene.fin) {
-      lastMill = scene.fin
+  for (let i = 0; i < work.scenes.length; i++) {
+    if (index != null && i > index) break;
+
+    const scene = work.scenes[i]
+
+    const finSec = scene.stages.filter(stage => stage.name === 'fin')[0].sec
+
+    if (finSec && lastSec < finSec) {
+      lastSec = finSec
     }
   }
-  return lastMill
+  return finSec
 }
 
 /**
@@ -122,26 +161,30 @@ function getWorkDuration (work) {
  * @param work
  * @param mill
  */
-function seekToMill (work, cm) {
+function seekToMill (work, mill) {
   // 根据当前时间计算每个场景的stage及seek
   // -----cm-------------cm-------------cm---------cm---
-  // -----------enter -----------exit ----fin--------
+  // -----------enter -----------exit -----fin--------
+  const sec = mill / 1000
   for (const scene of work.scenes) {
+
     if (cm < scene.enter) {
-      scene.stage = 'before'
-      scene.visible = false
-    } else if (cm > scene.enter && cm < scene.exit) {
-      scene.visible = true
-      scene.stage = 'enter'
-      scene.seek = cm - scene.enter
-    } else if (cm > scene.exit && cm < scene.fin) {
-      scene.visible = true
-      scene.stage = 'exit'
-      scene.seek = cm - scene.exit
-    } else {
-      scene.visible = false
       scene.stage = ''
+      scene.visible = false
       scene.seek = 0
+    } else if (cm >= scene.fin) {
+      scene.stage = ''
+      scene.visible = false
+      scene.seek = 0
+    } else {
+       scene.visible = true
+       scene.stage = 'enter'
+       for (let i = 0; i < scene.stages.length; i++) {
+          if (scene.stages[i].sec + scene.enter < sec) {
+            scene.stage = scene.stages[i].name
+          }
+       }
+       scene.seek = (sec - scene.enter) * 1000
     }
   }
 }
@@ -151,24 +194,19 @@ function seekToMill (work, cm) {
 async function scheduleWorkPlay (work) {
   const promises = []
   for (const scene of work.scenes) {
-    promises.push((async () => {
-      await sleep(scene.enter)
-      scene.stage = 'enter'
-      scene.visible = true
-    })())
-    if (scene.exit) {
-      promises.push((async () => {
-        await sleep(scene.exit)
-        scene.stage = 'exit'
-        scene.visible = true
-      })())
-    }
-    if (scene.fin) {
-      promises.push((async () => {
-        await sleep(scene.fin)
-        scene.stage = ''
-        scene.visible = false
-      })())
+    for (let stage of scene.stages) {
+      if (stage.mill != null) {
+         promises.push((async () => {
+          await sleep(stage.mill * 1000)
+          scene.stage = stage.name
+          if (stage.name !== 'fin') {
+            scene.visible = true
+          } else {
+            scene.stage = ''
+            scene.visible = false
+          }
+        })())
+      }
     }
   }
   await Promise.all(promises)
@@ -199,6 +237,7 @@ async function saveWork (work, ctx) {
 }
 
 export {
+  tidyUpWork,
   scheduleWorkPlay,
   getWorkDuration,
   seekToMill,
