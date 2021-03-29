@@ -123,7 +123,7 @@ export default {
         scene.seek = 30
         scene.stage = 'before'
       }
-      this.finMill = getWorkDuration(work)
+      this.finMill = getWorkDuration(work) * 1000
 
       this.work = work
 
@@ -133,8 +133,6 @@ export default {
 
       this.viewPort.width = fit.width
       this.viewPort.height = fit.height
-      console.log(fit)
-      // this.startPlay()
     },
 
     async previewPlay () {
@@ -328,7 +326,7 @@ export default {
       justify-content: center;
       align-items: center;
       .work-container {
-        box-sizing: border-box;
+        box-sizing: content-box;
         border: 3px solid #cc2836;
         border-top: 12px solid #cc2836;
         &.recording {

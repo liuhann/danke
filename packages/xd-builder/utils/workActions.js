@@ -72,7 +72,9 @@ function tidyUpWork (work) {
         name: 'exit',
         sec: scene.exit / 1000
       })
+      delete scene.exit
     }
+    scene.stage = 'default'
   }
   return work
 }
@@ -147,10 +149,10 @@ function getWorkDuration (work, index) {
 
     const scene = work.scenes[i]
 
-    const finSec = scene.stages.filter(stage => stage.name === 'fin')[0].sec
+    const lastSec = parseInt(scene.fin) || 0
 
-    if (finSec && lastSec < finSec) {
-      lastSec = finSec
+    if (lastSec && lastSec > finSec) {
+      finSec = lastSec
     }
   }
   return finSec
@@ -168,23 +170,26 @@ function seekToMill (work, mill) {
   const sec = mill / 1000
   for (const scene of work.scenes) {
 
-    if (cm < scene.enter) {
-      scene.stage = ''
+    if (sec < scene.enter) {
+      scene.stage = 'default'
       scene.visible = false
       scene.seek = 0
-    } else if (cm >= scene.fin) {
-      scene.stage = ''
+    } else if (sec >= scene.fin) {
+      scene.stage = 'default'
       scene.visible = false
       scene.seek = 0
     } else {
        scene.visible = true
        scene.stage = 'enter'
+       let maxStageSec = 0
        for (let i = 0; i < scene.stages.length; i++) {
-          if (scene.stages[i].sec + scene.enter < sec) {
+          const stageSec = parseInt(scene.stages[i].sec) + parseInt(scene.enter)
+          if (stageSec > maxStageSec && stageSec < sec) {
             scene.stage = scene.stages[i].name
+            scene.seek = (sec - stageSec) * 1000
+            maxStageSec = stageSec
           }
        }
-       scene.seek = (sec - scene.enter) * 1000
     }
   }
 }
@@ -194,17 +199,25 @@ function seekToMill (work, mill) {
 async function scheduleWorkPlay (work) {
   const promises = []
   for (const scene of work.scenes) {
+    scene.stage = 'default'
+    scene.visible = false
+    promises.push((async () => {
+      await sleep(scene.enter * 1000)
+      scene.stage = 'enter'
+      scene.visible = true
+    })())
+
+    promises.push((async () => {
+      await sleep(scene.fin * 1000)
+      scene.stage = 'default'
+      scene.visible = false
+    })())
+
     for (let stage of scene.stages) {
-      if (stage.mill != null) {
+      if (stage.sec) {
          promises.push((async () => {
-          await sleep(stage.mill * 1000)
+          await sleep(parseInt(stage.sec) * 1000)
           scene.stage = stage.name
-          if (stage.name !== 'fin') {
-            scene.visible = true
-          } else {
-            scene.stage = ''
-            scene.visible = false
-          }
         })())
       }
     }

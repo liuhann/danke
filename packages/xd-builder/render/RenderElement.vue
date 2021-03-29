@@ -30,8 +30,10 @@ import { assignVariables } from '../mixins/renderUtils'
 import textMesure from '../../utils/textMesure'
 import cubicBerziers from '../../frames/model/cubic-beziers.js'
 import { ensureFont } from '../../utils/fontfaces'
-
+import debug from 'debug'
 import anime from 'animejs/lib/anime.js'
+
+const trace = debug('danke:rener-element')
 
 /**
  * 元素特性组合有以下几种情况
@@ -49,6 +51,10 @@ export default {
     stage: {
       type: String,
       default: ''
+    },
+    // 渲染阶段列表
+    stages: {
+      type: Array
     },
     // 缩放后的可用区域
     viewPort: {
@@ -371,12 +377,12 @@ export default {
     },
 
     initAnime () {
-      if (this.animation) {
+      if (this.stage === 'default' && this.animation) {
+        trace('reset animation')
         this.animation.reset()
         this.animation = null
-      }
-      if (this.element.animation[this.stage]) {
-        console.log('init animation')
+      } else if (this.element.animation[this.stage]) {
+        trace('init animation', this.stage)
         this.animeTargets = this.element.animation[this.stage].targets ? this.$el.querySelector(this.element.animation[this.stage].targets): this.$el
         this.animation = anime(Object.assign({},  this.element.animation[this.stage], {
           targets: this.animeTargets,

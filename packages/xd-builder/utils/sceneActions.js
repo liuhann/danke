@@ -4,6 +4,10 @@ import { getImageUrl } from '../../utils/getImageUrl'
 import { fitRectIntoBounds, getRectPositionStyle } from '../mixins/rectUtils'
 import { assignVariables } from '../mixins/renderUtils'
 import textMesure from '../../utils/textMesure'
+import sleep from '../../common/utils/sleep'
+import debug from 'debug'
+
+const trace = debug('danke:scene-actions')
 
 function createSingleElement (element, viewBox, x, y) {
   const id = shortid()
@@ -209,15 +213,26 @@ function addSceneStage (scene) {
   })
 }
 
-function playScene (scene) {
+function removeSceneStage (scene, index) {
+  scene.stages.splice(index, 1)
+}
+
+async function playScene (scene) {
+  trace('scene stage = enter')
   scene.stage = 'enter'
-  console.log(scene)
-  setTimeout(()=> {
-    scene.stage = 'exit'
-  }, scene.exit - scene.enter)
-  setTimeout(()=> {
-    scene.stage = 'fin'
-  }, scene.fin - scene.enter)
+  const promises = []
+  for (let stage of scene.stages) {
+    promises.push((async () => {
+      await sleep(parseInt(stage.sec) * 1000)
+      scene.stage = stage.name
+      trace('scene stage = ' + stage.name)
+    })());
+  }
+  promises.push((async () => {
+    await sleep((parseInt(scene.fin) - parseInt(scene.enter)) * 1000)
+    scene.stage = 'default'
+  })())
+  await Promise.all(promises)
 }
 
 function toggleElementLock (element) {
@@ -248,5 +263,6 @@ export {
   toggleElementLock,
   unlockElement,
   playScene,
-  addSceneStage
+  addSceneStage,
+  removeSceneStage
 }

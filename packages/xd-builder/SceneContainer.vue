@@ -60,7 +60,6 @@
             <el-button size="mini" icon="el-icon-full-screen" @click="fitToCenter" />
             <el-button size="mini" icon="fas fa-sync-alt" @click="playScene(scene)" />
           </el-form-item>
-
           <el-form-item label="缩放">
             <el-select v-model="scaleSelected" size="mini" style="width: 100px" allow-create filterable>
               <el-option-group>
@@ -81,18 +80,20 @@
           <el-form-item label="开始">
             <el-input-number v-model="scene.enter" controls-position="right" size="mini" /> 秒
           </el-form-item>
-          <div class="stages">
-            <div v-for="(stage, index) in scene.stages" :key="index" class="stage">
-              <div class="stage-name"> <el-input v-model="stage.name" size="mini" /> </div>
-              <div class="stage-sec"> <el-input v-model="stage.sec" size="mini" /> </div>
-              <div class="stage-actions"> <el-button @click="removeSceneStage(scene, index)" size="mini" icon="el-icon-delete" type="text" /> </div>
-            </div>
-            <el-button size="mini" @click="addSceneStage(scene)">增加</el-button>
-          </div>
           <el-form-item label="完成">
             <el-input-number v-model="scene.fin" controls-position="right" size="mini" /> 秒
           </el-form-item>
         </el-form>
+        <table class="table stages is-bordered is-narrow is-hoverable is-fullwidth">
+          <tbody>
+            <el-button size="mini" type="success" @click="addSceneStage(scene)">增加动画阶段</el-button>
+            <tr v-for="(stage, index) in scene.stages" :key="index" class="stage">
+              <td class="stage-name"> <el-input v-model="stage.name" size="mini" /> </td>
+              <td class="stage-sec"> <el-input v-model="stage.sec" size="mini" /> </td>
+              <td class="stage-actions"> <el-button @click="removeSceneStage(scene, index)" size="mini" icon="el-icon-delete" type="text" /> </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -465,11 +466,13 @@ export default {
     }
     .stages {
       .stage {
-        margin-bottom: 5px;;
-        >div {
-          padding: 0 5px;
+        .el-input {
+          input {
+            padding: 0 5px;
+            border: none;
+            background: transparent;
+          }
         }
-        display: flex;
       }
     }
   }

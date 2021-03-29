@@ -1,6 +1,8 @@
 import interact from 'interactjs'
-import { CouponList } from 'vant'
 import { shortid } from '../../utils/string'
+import debug from 'debug'
+
+const trace = debug('danke:interact')
 
 export default {
   methods: {
@@ -92,7 +94,7 @@ export default {
      * 初始化元素interact拖拽功能
      */
     initElementDragResize (node) {
-      console.log('init drag resize', node)
+      trace('init drag resize', node)
       const el = document.getElementById('mask-' + node.id)
       if (el) {
         const interactee = interact(el)

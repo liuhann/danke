@@ -12,7 +12,6 @@ import { getToken } from '../packages/user/token'
 
 Vue.use(VueRouter)
 window.Vue = Vue
-window.ResizeObserver = null
 const boot = new AsyncBoot({
   Vue,
   VueRouter,
