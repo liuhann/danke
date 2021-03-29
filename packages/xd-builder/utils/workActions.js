@@ -169,7 +169,6 @@ function seekToMill (work, mill) {
   // -----------enter -----------exit -----fin--------
   const sec = mill / 1000
   for (const scene of work.scenes) {
-
     if (sec < scene.enter) {
       scene.stage = 'default'
       scene.visible = false
@@ -179,17 +178,9 @@ function seekToMill (work, mill) {
       scene.visible = false
       scene.seek = 0
     } else {
-       scene.visible = true
-       scene.stage = 'enter'
-       let maxStageSec = 0
-       for (let i = 0; i < scene.stages.length; i++) {
-          const stageSec = parseInt(scene.stages[i].sec) + parseInt(scene.enter)
-          if (stageSec > maxStageSec && stageSec < sec) {
-            scene.stage = scene.stages[i].name
-            scene.seek = (sec - stageSec) * 1000
-            maxStageSec = stageSec
-          }
-       }
+      scene.visible = true
+      scene.stage = 'enter'
+      scene.seek = (sec - scene.enter) * 1000
     }
   }
 }
