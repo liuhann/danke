@@ -360,6 +360,7 @@ export default {
     seekPlay () {
       if (this.animation) {
         let seek = this.animation.loop? (this.seekPlay % this.animation.duration) : this.seekPlay
+        trace('seek to ', seek)
         this.animation.seek(seek)
       }
     },

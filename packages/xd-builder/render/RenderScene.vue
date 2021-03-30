@@ -38,7 +38,7 @@ export default {
     autoPlay: {
       type: Boolean
     },
-    // 渲染阶段 可以为进入、离开2个
+    // 渲染阶段
     stage: {
       type: String
     },

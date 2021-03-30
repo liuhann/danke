@@ -58,7 +58,7 @@
           <div class="form-title">场景设置</div>
           <el-form-item label="操作">
             <el-button size="mini" icon="el-icon-full-screen" @click="fitToCenter" />
-            <el-button size="mini" icon="fas fa-sync-alt" @click="playScene(scene)" />
+            <el-button size="mini" icon="fas fa-sync-alt" @click="previewPlayScene" />
           </el-form-item>
           <el-form-item label="缩放">
             <el-select v-model="scaleSelected" size="mini" style="width: 100px" allow-create filterable>
@@ -90,7 +90,7 @@
             <tr v-for="(stage, index) in scene.stages" :key="index" class="stage">
               <td class="stage-name"> <el-input v-model="stage.name" size="mini" /> </td>
               <td class="stage-sec"> <el-input v-model="stage.sec" size="mini" /> </td>
-              <td class="stage-actions"> <el-button @click="removeSceneStage(scene, index)" size="mini" icon="el-icon-delete" type="text" /> </td>
+              <td class="stage-actions"> <el-button size="mini" icon="el-icon-delete" type="text" @click="removeSceneStage(scene, index)" /> </td>
             </tr>
           </tbody>
         </table>
@@ -245,7 +245,21 @@ export default {
   methods: {
     addSceneStage,
     removeSceneStage,
-    playScene,
+    async previewPlayScene () {
+      await playScene(this.scene)
+
+      // 重置场景element
+      const elements = JSON.parse(JSON.stringify(this.scene.elements))
+      for (let element of this.scene.elements) {
+        this.destroyInteract(element)
+      }
+      this.scene.elements = []
+      this.$nextTick(() => {
+        this.scene.elements = elements
+        this.setElementsInteract()
+      })
+
+    },
     toggleActionMove () {
       this.actionMove = !this.actionMove
     },

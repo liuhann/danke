@@ -141,7 +141,7 @@ export default {
       this.previewPlaying = false
     },
 
-    async startPlay () {     
+    async startPlay () {
       this.nextFrame()
     },
 
