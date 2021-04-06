@@ -385,7 +385,9 @@ export default {
       } else if (this.element.animation[this.stage]) {
         trace('init animation', this.stage)
         this.animeTargets = this.element.animation[this.stage].targets ? this.$el.querySelector(this.element.animation[this.stage].targets): this.$el
-        this.animation = anime(Object.assign({},  this.element.animation[this.stage], {
+        this.animation = anime(Object.assign({
+          loop: false
+        },  this.element.animation[this.stage], {
           targets: this.animeTargets,
           autoplay: this.autoplay
         }))
