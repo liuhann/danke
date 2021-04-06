@@ -95,6 +95,9 @@ export default {
         case 'viewbox-resize':
           await saveWork(this.work, this.ctx);
           this.$router.replace(location.pathname + '?work=' + this.work.id)
+          break
+        case 'play-scene':
+          break
         default:
           break
       }

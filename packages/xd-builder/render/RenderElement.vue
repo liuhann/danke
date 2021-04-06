@@ -47,15 +47,6 @@ export default {
     RenderElement: () => import('./RenderElement.vue')
   },
   props: {
-    // 渲染的阶段
-    stage: {
-      type: String,
-      default: ''
-    },
-    // 渲染阶段列表
-    stages: {
-      type: Array
-    },
     // 缩放后的可用区域
     viewPort: {
       type: Object
@@ -73,11 +64,11 @@ export default {
         return []
       }
     },
-    autoplay: {
+    play: {
       type: Boolean,
       default: false
     },
-    seekPlay: {
+    seek: {
       type: Number
     }
   },
@@ -357,15 +348,15 @@ export default {
   },
 
   watch: {
-    seekPlay () {
-      if (this.animation) {
-        let seek = this.animation.loop? (this.seekPlay % this.animation.duration) : this.seekPlay
-        trace('seek to ', seek)
-        this.animation.seek(seek)
+    play () {
+      if (this.animation && this.play === true) {
+        this.animation.play()
       }
     },
-    stage () {
-      this.initAnime()
+    seek () {
+      if (this.seek >= 0) {
+        this.animation.seek(this.seek)
+      }
     }
   },
   mounted () {
@@ -378,21 +369,16 @@ export default {
     },
 
     initAnime () {
-      if (this.stage === 'default' && this.animation) {
-        trace('reset animation')
-        this.animation.reset()
-        this.animation = null
-      } else if (this.element.animation[this.stage]) {
-        trace('init animation', this.stage)
-        this.animeTargets = this.element.animation[this.stage].targets ? this.$el.querySelector(this.element.animation[this.stage].targets): this.$el
+      if (this.element.animation) {
+        this.animeTargets = this.element.animation.targets ? this.$el.querySelector(this.element.animation.targets): this.$el
         this.animation = anime(Object.assign({
           loop: false
-        },  this.element.animation[this.stage], {
+        },  this.element.animation, {
           targets: this.animeTargets,
-          autoplay: this.autoplay
+          autoplay: this.play
         }))
-        if (this.seekPlay) {
-          this.animation.seek(this.seekPlay)
+        if (this.seek >= 0) {
+          this.animation.seek(this.seek)
         }
       }
     },

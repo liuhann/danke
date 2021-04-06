@@ -5,12 +5,11 @@
       <div class="screen" :style="styleScreen">
         <div v-if="scene" class="scene" :style="sceneStyle">
           <render-element v-for="(element, index) of scene.elements" :key="element.id"
-                          :ref="element.id"
-                          autoplay
-                          :stage="scene.stage"
+                          :play="scene.play"
                           :element="element"
                           :view-box="viewBox"
                           :view-port="viewPort"
+                          :seek="scene.seek"
                           :index="index"
           />
         </div>

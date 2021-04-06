@@ -45,14 +45,12 @@ function addScene (work, currentScene) {
 
   scene.enter = prevDura
   scene.fin = prevDura + 3
-  
   return scene
 }
 
 // 整理work的信息
 function tidyUpWork (work) {
-  for (let scene of work.scenes) {
-
+  for (const scene of work.scenes) {
     // 使用秒为单位
     if (scene.enter > 1000) {
       scene.enter = scene.enter / 1000
@@ -60,21 +58,17 @@ function tidyUpWork (work) {
     if (scene.fin > 1000) {
       scene.fin = scene.fin / 1000
     }
-
-    // 补充stages
-    if (!scene.stages) {
-      scene.stages = []
-    }
-
     // exit并入作为一个stage
     if (scene.exit) {
-      scene.stages.push({
-        name: 'exit',
-        sec: scene.exit / 1000
-      })
       delete scene.exit
     }
-    scene.stage = 'default'
+    scene.play = false
+    scene.seek = 0
+    for (const element of scene.elements) {
+      if (element.animation.enter) {
+        element.animation = element.animation.enter
+      }
+    }
   }
   return work
 }

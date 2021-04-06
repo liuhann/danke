@@ -10,10 +10,6 @@
     @opened="setEditorValue" 
     @closed="closeEditor"
   >
-    <el-tabs v-if="scene" v-model="stage" @tab-click="tabChange">
-      <el-tab-pane label="动画" name="enter" />
-      <el-tab-pane v-for="stageInfo in scene.stages" :key="stageInfo.name" :name="stageInfo.name" :label="stageInfo.name" />
-    </el-tabs>
     <div id="anime-editor" class="editor">
     </div>
     <el-tag v-for="(tpl, key) in TPLS" :key="key" @click="addTemplate(key)">{{ key }}</el-tag>
@@ -94,15 +90,11 @@ export default {
 
   data () {
     return {
-      TPLS,
-      stage: 'enter'
+      TPLS
     }
   },
 
   watch: {
-    stage (current, prev) {
-      this.switchStage(current, prev)
-    }
   },
 
   mounted () {
@@ -118,8 +110,7 @@ export default {
       this.getEditor().setValue(JSON.stringify(parsed, null, 2))
     },
     setEditorValue () {
-      this.stage = 'enter'
-      this.getEditor().setValue(JSON.stringify(this.elements[0].animation[this.stage], null, 2))
+      this.getEditor().setValue(JSON.stringify(this.elements[0].animation, null, 2))
     },
 
     getEditor () {
@@ -133,25 +124,15 @@ export default {
       return this.editor
     },
 
-    switchStage(current, prev) {
-      try {
-        this.elements[0].animation[prev] = JSON.parse(this.getEditor().getValue())
-      } catch (e) { }
-      this.getEditor().setValue(JSON.stringify(this.elements[0].animation[current], null, 2))
-    },
-
     closeEditor () {
        try {
-        this.elements[0].animation[this.stage] = JSON.parse(this.getEditor().getValue())
+         this.editor.setValue('')
       } catch (e) { }
     },
 
     confirmAnime () {
-      this.elements[0].animation[this.stage] = JSON.parse(this.getEditor().getValue())
-      if (this.elements.length > 1) {
-        for (let i = 1; i < this.elements.length; i++) {
-          this.elements[i].animation = JSON.parse(JSON.stringify(this.elements[0].animation))
-        }
+      for (const element of this.elements) {
+        element.animation = JSON.parse(this.getEditor().getValue())
       }
       this.$emit('update:visible', false)
     }

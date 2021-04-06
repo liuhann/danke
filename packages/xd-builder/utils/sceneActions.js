@@ -21,10 +21,7 @@ function createSingleElement (element, viewBox, x, y) {
     style: element.style || {},
     variables: element.variables || [],
     // 动效信息
-    animation: element.animation || {
-      enter: {},
-      exit: {}
-    },
+    animation: element.animation || {},
     tags: element.tags,
     // 旋转
     rotate: 0,
@@ -42,7 +39,7 @@ function createSingleElement (element, viewBox, x, y) {
     node.name = '文本'
     node.text = element.text
     const sizeList = element.variables.filter(variable => variable.type === 'fontSize')
-    const fontSize = (sizeList && sizeList.length) ? sizeList[0].value: 40
+    const fontSize = (sizeList && sizeList.length) ? sizeList[0].value : 40
     Object.assign(node, textMesure(node.text, fontSize, 600))
   }
   if (element.html) {
@@ -136,7 +133,7 @@ function getElementMask (element) {
   return null
 }
 
-function elementColorVariables(element) {
+function elementColorVariables (element) {
   if (element && element.variables) {
     return element.variables.filter(variable => variable.type === 'color')
   } else {
@@ -151,12 +148,11 @@ function elementPxVariables (element) {
   }
 }
 
-
 /**
  * 设置单个元素为选中状态, 取消其他元素选中
  */
 function setElementSelected (scene, element) {
-  for (let e of scene.elements) {
+  for (const e of scene.elements) {
     e.selected = false
     // 编辑状态时，如果被编辑元素被选中，则不改变编辑状态
     if (element !== e && e.editing) {
@@ -168,42 +164,41 @@ function setElementSelected (scene, element) {
   }
 }
 
-
 function elementStyle (element, viewBox, viewPort) {
-    // 设置元素的长、宽到默认变量--width 、 --height
-    const style = {
-      '--width': element.width + 'px',
-      '--height': element.height + 'px'
-    }
+  // 设置元素的长、宽到默认变量--width 、 --height
+  const style = {
+    '--width': element.width + 'px',
+    '--height': element.height + 'px'
+  }
 
-    Object.assign(style, element.style)
+  Object.assign(style, element.style)
 
-    // 填充色情况下，图片显示为遮罩
-    if (element.fill && element.url) {
-      style.maskImage = `url(${getImageUrl(element.url)})`
-      style.maskSize =  element.fit || 'cover'
-      style.maskPosition = 'center center'
-    }
-    // 变量配置信息
-    assignVariables(style, element.variables)
+  // 填充色情况下，图片显示为遮罩
+  if (element.fill && element.url) {
+    style.maskImage = `url(${getImageUrl(element.url)})`
+    style.maskSize = element.fit || 'cover'
+    style.maskPosition = 'center center'
+  }
+  // 变量配置信息
+  assignVariables(style, element.variables)
 
-    if (viewBox && viewPort) {
-      // 位置信息
-      Object.assign(style, getRectPositionStyle(element, viewBox, viewPort))
-    }
+  if (viewBox && viewPort) {
+    // 位置信息
+    Object.assign(style, getRectPositionStyle(element, viewBox, viewPort))
+  }
 
-    if (element.rotate) {
-      const transforms = []
-      transforms.push(`rotate(${element.rotate}deg)`)
-      if (transforms.length) {
-        Object.assign(style, {
-          transform: transforms.join(' ')
-        })
-      }
+  if (element.rotate) {
+    const transforms = []
+    transforms.push(`rotate(${element.rotate}deg)`)
+    if (transforms.length) {
+      Object.assign(style, {
+        transform: transforms.join(' ')
+      })
     }
-    // 按大小指定视角
-    style.perspective = (element.style.perspective || element.width) + 'px'
-    return style
+  }
+  // 按大小指定视角
+  style.perspective = (element.style.perspective || element.width) + 'px'
+  return style
 }
 
 function addSceneStage (scene) {
@@ -219,20 +214,10 @@ function removeSceneStage (scene, index) {
 
 async function playScene (scene) {
   trace('scene stage = enter')
-  scene.stage = 'enter'
-  const promises = []
-  for (let stage of scene.stages) {
-    promises.push((async () => {
-      await sleep(parseInt(stage.sec) * 1000)
-      scene.stage = stage.name
-      trace('scene stage = ' + stage.name)
-    })());
-  }
-  promises.push((async () => {
-    await sleep((parseInt(scene.fin) - parseInt(scene.enter)) * 1000)
-    scene.stage = 'default'
-  })())
-  await Promise.all(promises)
+
+  scene.play = true
+  await sleep((parseInt(scene.fin) - parseInt(scene.enter)) * 1000)
+  scene.play = false
 }
 
 function toggleElementLock (element) {

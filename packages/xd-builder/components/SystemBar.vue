@@ -31,6 +31,7 @@
       </el-popover>
     </div>
     <div class="right">
+      <el-button plain type="primary" icon="el-icon-video-play" @click="$emit('command', 'play-scene')">播放场景</el-button>
       <el-dropdown @command="handleCommand">
         <el-button>
           导出/执行<i class="el-icon-arrow-down el-icon--right"></i>
