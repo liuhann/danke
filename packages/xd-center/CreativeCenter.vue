@@ -25,7 +25,7 @@
                     <a class="level-item" @click="editWork(work)">
                       <span class="icon is-small"><i class="fas fa-edit"></i></span>
                     </a>
-                    <a class="level-item">
+                    <a class="level-item" @click="playWork(work)">
                       <span class="icon is-small"><i class="fas fa-video"></i></span>
                     </a>
                     <a class="level-item" @click="deleteWork(work)">
