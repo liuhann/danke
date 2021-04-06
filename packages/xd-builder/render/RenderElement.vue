@@ -37,7 +37,7 @@ const trace = debug('danke:rener-element')
 
 /**
  * 元素特性组合有以下几种情况
- * 1、mono vector：  fill color 、
+ * 1、mono vector： fill color 、
  *  实现： backgroundColor + mask
  * 2、image or background vector: mask with mono vector
  */

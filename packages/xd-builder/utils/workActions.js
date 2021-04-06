@@ -20,15 +20,15 @@ function newWork (size) {
 }
 
 function addScene (work, currentScene) {
-  // --------enter -----------exit ----fin--------
+  // --------enter -------------fin--------
   const scene = {
     name: '场景',
     id: shortid(),
     elements: [],
     animation: {},
     stages: [],
-    enter: 0,
-    fin: 0,
+    enter: 0, // 进入时间，按从作品开始时间计算
+    fin: 0, // 消失时间，按从作品开始时间计算 只有进入和消失时间范围内 场景才可见  否则都是隐藏状态 
     z: 100
   }
   let prevDura = 0
