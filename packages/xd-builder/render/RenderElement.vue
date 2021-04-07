@@ -4,7 +4,7 @@
        :class="elementClass" :style="elementWrapperStyle" @click="elementClicked"
   >
     <!--图片渲染-->
-    <div v-if="element.html" class="html" :style="elementStyle" v-html="element.html" />
+    <div v-if="element.html" class="html" :style="elementStyle" v-html="templateStr(element.html, element)" />
     <img v-else-if="elementUrl && !element.fill" :id="'img-' + (element.name || element.id)" :src="elementUrl" :style="elementStyle">
     <div v-else-if="element.content" class="svg-content" :style="elementStyle" v-html="element.content" />
     <div v-else-if="element.elements" class="block-elements" :style="elementStyle">
@@ -12,12 +12,8 @@
     </div>
     <div v-else-if="!element.text" class="shape" :style="elementStyle">
     </div>
-    <!--文本渲染情况下 文本内容-->
-    <div v-for="(text, index) in elementTextLines" :key="index" :style="textTransformStyle" class="text">{{ text }}</div>
-    <textarea v-if="element.text != null && element.editing" ref="textarea" v-model="element.text" :style="textEditStyle" @change="updateTextArea" />
     <div v-if="filterSVG" style="display:none;">
-      <svg v-html="filterSVG">
-      </svg>
+      <svg v-html="filterSVG" />
     </div>
   </div>
 </template>
@@ -26,6 +22,7 @@
 import { getImageUrl } from '../../utils/getImageUrl.js'
 import { getRectPositionStyle } from '../mixins/rectUtils.js'
 import { getColorVariables } from '../../utils/svg'
+import { templateStr } from '../../utils/string.js'
 import { assignVariables } from '../mixins/renderUtils'
 import textMesure from '../../utils/textMesure'
 import cubicBerziers from '../../frames/model/cubic-beziers.js'
@@ -239,12 +236,13 @@ export default {
           // style.lineHeight = (zoomedSize * 1.2) + 'px'
         }
       }
-      Object.assign(style, this.elementAnimationStyle)
+      // Object.assign(style, this.elementAnimationStyle)
       return style
     },
 
     /**
      * 取 element.animations 计算元素的动画样式
+     * @deprecated
      */
     elementAnimationStyle () {
       const element = this.element
@@ -284,14 +282,6 @@ export default {
       return style
     },
 
-    elementTextLines () {
-      if (this.elementText) {
-        return this.elementText.split('\n')
-      } else {
-        return []
-      }
-    },
-
     elementTextFontSize () {
       let fonts = this.element.variables.filter(variable => variable.type === 'fontSize')
       if (fonts.length) {
@@ -309,11 +299,7 @@ export default {
         return 1
       }
     },
-
-    elementTextContent () {
-      return this.element.text.replace(/\n/g, '<br>')
-    },
-
+   
     /**
      * 获取元素的SVG正文内容
      */
@@ -363,6 +349,7 @@ export default {
     this.onMounted()
   },
   methods: {
+    templateStr,
     async onMounted () {
       await this.initElementResource()
       this.initAnime()

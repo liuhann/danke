@@ -36,7 +36,7 @@
             </el-upload>
           </div>
         </div>
-        <collapable-list :column="10" :items="packVectors" :item-commands="itemCommands" :item-padding="10" :style-item-content="{
+        <collapable-list :column="8" :items="packVectors" :item-commands="itemCommands" :item-padding="10" :style-item-content="{
           borderRadius: '10px',
           boxShadow: '0 1px 6px 0 rgb(32 33 36 / 28%)'
         }" @command="onItemCommand"
@@ -80,7 +80,7 @@ import ImageDAO from '../utils/imagedao'
 import { getImageUrl } from '../utils/getImageUrl'
 import { getVariableStyle } from '../xd-builder/mixins/renderUtils'
 import assetsTags from './assets-tags.js'
-import CollapableList from '../common/components/CollapableList'
+import CollapableList from '../common/components/CollapableList.vue'
 
 export default {
   name: 'AssetsPackManage',

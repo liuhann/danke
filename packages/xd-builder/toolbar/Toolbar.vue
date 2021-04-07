@@ -11,15 +11,10 @@
         <!-- 渐变颜色的处理-->
         <pop-set-gradient v-if="variable.type==='gradient'" :key="index" :variable="variable" />
         <!-- 数字-->
-        <el-tooltip v-if="variable.type==='px' || variable.type==='number' || variable.type==='percent'" :key="index" content="数值">
-          <el-input-number v-model="variable.value" controls-position="right" size="mini" />
-        </el-tooltip>
+        <el-input-number v-if="variable.type==='px' || variable.type==='number' || variable.type==='percent'" :key="index" v-model="variable.value" controls-position="right" size="mini" />
         <!--边框样式-->
         <border-style v-if="variable.type==='border'" :key="index" :variable="variable" />
-        <!--字体大小-->
-        <font-size v-if="variable.type==='fontSize'" :key="index" :variable="variable" />
-
-        <font-family v-if="variable.type === 'fontFamily'" :key="index" :variable="variable" />
+        <font-family v-if="variable.type === 'font-familly'" :key="index" :variable="variable" />
         <!-- 字体对齐-->
         <text-align v-if="variable.type==='textAlign'" :key="index" v-model="variable.value" />
         <!-- 字体粗细-->
@@ -308,13 +303,18 @@ export default {
   box-shadow: rgba(0, 0, 0, 0.2) 0px 0 2px;
   border-bottom: 1px solid #eee;
   .el-select {
-    border: none;
-    width: 64px;
     margin-right: 5px;
     margin-left: 5px;
+    vertical-align: top;
+    .el-select-dropdown__item {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
   }
   .el-input-number--mini {
     width: 60px;
+    vertical-align: top;
   }
   .el-color-picker__trigger {
     padding: 0;

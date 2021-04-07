@@ -1,4 +1,4 @@
-
+import template from 'lodash.template'
 // mill -> 12:03.23
 function formatAudioSecond (second) {
   return new Date(second * 1000).toISOString().replace(/.*(\d{2}:\d{2}.\d{2}).*/, '$1')
@@ -26,7 +26,13 @@ function fileExtension (fname) {
   return fname.slice((fname.lastIndexOf('.') - 1 >>> 0) + 2).toLowerCase()
 }
 
+function templateStr (str, data) {
+  const compiled = template(str)
+  return compiled(data)
+}
+
 export {
+  templateStr,
   fileExtension,
   randomRangeId,
   shortid,

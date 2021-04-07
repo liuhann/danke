@@ -4,7 +4,7 @@
       <el-form-item label="Package">
         <el-input v-model="html.pack" />
       </el-form-item>
-      <el-form-item v-if="html.type === 'text'" label="内容">
+      <el-form-item label="Text">
         <el-input v-model="html.text" />
       </el-form-item>
       <el-form-item label="HTML内容">
@@ -33,6 +33,7 @@
           <label>类型</label>
           <el-select v-model="variable.type">
             <el-option value="color" />
+            <el-option value="font-familly" />
             <el-option value="number" />
             <el-option value="deg" />
             <el-option value="px" />
@@ -48,7 +49,7 @@
     </el-form>
     <div class="preview">
       <div class="preview-container">
-        <div class="preview" :style="variableStyle" v-html="html.html"></div>
+        <div class="preview" :style="variableStyle" v-html="htmlContent"></div>
       </div>
     </div>
   </div>
@@ -64,6 +65,7 @@ import ImageDAO from '../utils/imagedao.js'
 import { getVariableStyle } from '../xd-builder/mixins/renderUtils'
 import { getSVGViewBox, presets } from '../vectors/utils'
 import { getImageUrl } from '../utils/getImageUrl.js'
+import template from 'lodash.template'
 
 export default {
   name: 'PageHtmlEdit',
@@ -81,7 +83,7 @@ export default {
       albums: [],
       html: {
         pack: '',
-        title: '',
+        text: '',
         w: 100,
         h: 100,
         html: '', //  正文
@@ -90,6 +92,11 @@ export default {
     }
   },
   computed: {
+    htmlContent() {
+      const compiled = template(this.html.html)
+      return compiled(this.html)
+    },
+
     previewSnapshot () {
       if (this.html.s) {
         return getImageUrl(this.html.s)

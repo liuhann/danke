@@ -7,7 +7,7 @@
             <el-button icon="el-icon-more-outline" size="mini" circle />
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item v-for="(command,index) in itemCommands" :key="index" :command="command.value">{{ command.label }}</el-dropdown-item>
+            <el-dropdown-item v-for="(command, index) in itemCommands" :key="index" :command="command.value">{{ command.label }}</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
 
@@ -15,7 +15,7 @@
           <img v-if="item.url && !item.html" :style="imageStyle" :src="getImageUrl(item.url, 100, 80)">
           <div v-if="item.html" class="html-container" :style="getVariableStyle(item.variables)">
             <div class="styled-box" :style="{
-            }" v-html="item.html"
+            }" v-html="templateStr(item.html, item)"
             />
           </div>
         </div>
@@ -31,6 +31,7 @@
 import { Dropdown, DropdownMenu, DropdownItem, Button } from 'element-ui'
 import { getVariableStyle } from '../../xd-builder/mixins/renderUtils'
 import { getImageUrl } from '../../utils/getImageUrl'
+import { templateStr } from '../../utils/string.js'
 
 export default {
   name: "CollapableList",
@@ -108,6 +109,7 @@ export default {
   methods: {
     getImageUrl,
     getVariableStyle,
+    templateStr,
     itemClicked (item, index) {
       this.$emit('item-clicked', item, index)
     },

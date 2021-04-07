@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import FontFamily from '../form/FontFamily'
+import FontFamily from '../form/FontFamily.vue'
 export default {
   name: "BtnSetFontFamilly",
   components: { FontFamily },
