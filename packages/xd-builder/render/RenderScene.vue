@@ -1,5 +1,5 @@
 <template>
-  <div class="scene" :style="sceneStyle" :class="sceneClass" @click="$emit('click')">
+  <div class="scene" :style="sceneStyle" @click="$emit('click')">
     <render-element v-for="element of scene.elements" :key="element.id"
                     :play="scene.play"
                     :variables="getElementVariable(element)"
@@ -62,15 +62,6 @@ export default {
     }
   },
   computed: {
-    sceneClass () {
-      const classes = []
-      for (let key in this.scene.style) {
-        if (this.scene.style[key] && this.scene.style[key].name) {
-          classes.push(this.scene.style[key].name)
-        }
-      }
-      return classes
-    },
     sceneStyle () {
       const styles = {
         width: this.sceneViewPort.width + 'px',

@@ -167,10 +167,9 @@ export default {
       if (!workId) {
         this.work = newWork({
           width: this.$route.query.width,
-          height: this.$route.query.height
-        })
+          height: this.$route.query.height,
+        }, this.$route.query.tag)
         this.scene = addScene(this.work)
-
       } else {
         await this.loadWork(workId)
         this.scene = this.work.scenes[0]

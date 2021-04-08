@@ -12,7 +12,7 @@
         </el-dropdown>
 
         <div class="preview-content" :style="styleContent">
-          <img v-if="item.url && !item.html" :style="imageStyle" :src="getImageUrl(item.url, 100, 80)">
+          <img v-if="item.url && !item.html" :style="imageStyle" :src="getImageUrl(item.url, contentWidth, contentWidth)">
           <div v-if="item.html" class="html-container" :style="getVariableStyle(item.variables)">
             <div class="styled-box" :style="{
             }" v-html="templateStr(item.html, item)"
@@ -30,7 +30,7 @@
 <script>
 import { Dropdown, DropdownMenu, DropdownItem, Button } from 'element-ui'
 import { getVariableStyle } from '../../xd-builder/mixins/renderUtils'
-import { getImageUrl } from '../../utils/getImageUrl'
+import { getImageUrl } from '../../utils/getImageUrl.js'
 import { templateStr } from '../../utils/string.js'
 
 export default {
@@ -59,10 +59,13 @@ export default {
       type: Number,
       default: 2
     },
-
-    itemPadding: {
+    itemDistance: {
       type: Number,
       default: 5
+    },
+    iconSize: {
+      type: Number,
+      default: 0.5
     },
 
     styleItemContent: {
@@ -88,11 +91,13 @@ export default {
   },
 
   computed : {
+    contentWidth () {
+      return this.gridWidth - this.itemDistance * 2
+    },
     styleContent () {
       return {
-        width: this.gridWidth/2 + 'px',
-        height: this.gridWidth/2 + 'px',
-        margin: this.showName ? '10% auto' : '20%'
+        width: this.contentWidth * this.iconSize + 'px',
+        height:this.contentWidth * this.iconSize + 'px'
       }
     }
   },
@@ -104,7 +109,7 @@ export default {
     }
     this.style.width = this.gridWidth + 'px'
     this.style.height = this.gridWidth + 'px'
-    this.style.padding = this.itemPadding + 'px'
+    this.style.padding = this.itemDistance + 'px'
   },
   methods: {
     getImageUrl,
@@ -134,18 +139,20 @@ export default {
   flex-wrap: wrap;
   .item-wrapper {
     box-sizing: border-box;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    
     .item-content {
       position: relative;
       height: 100%;
       width: 100%;
-
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       .preview-content {
         display: flex;
         justify-content: center;
         align-items: center;
+        overflow: hidden;
         img {
           width: 100%;
           max-height: 100%;

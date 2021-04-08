@@ -28,7 +28,7 @@
 import RestDAO from '../../utils/restdao'
 import { getImageUrl } from '../../utils/getImageUrl'
 import BasicElementList from '../list/BasicElementList.vue'
-import MyUploads from '../list/MyUploads'
+import MyUploads from '../list/MyUploads.vue'
 export default {
   name: "PopAlbumVector",
   components: {

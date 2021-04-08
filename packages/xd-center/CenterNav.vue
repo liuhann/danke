@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar has-shadow" role="navigation" aria-label="main navigation">
+  <nav class="navbar has-shadow" role="navigation" aria-label="main navigation" style="z-index: 9999">
     <div class="navbar-brand">
       <a class="navbar-item" href="http://www.danke.fun">
         <img :src="logo" />
@@ -30,7 +30,6 @@
                 </div>
               </div>
             </router-link>
-            <hr class="navbar-divider ">
             <router-link class="navbar-item bd-is-hidden" to="/xd?width=640&height=270">
               <div>
                 <div class="icon-text">
@@ -43,21 +42,30 @@
                 </div>
               </div>
             </router-link>
-            
-            <hr class="navbar-divider ">
-            <a class="navbar-item" data-route="" href="https://bulma.io/alternative-to-bootstrap">
-              <div>
+            <router-link class="navbar-item bd-is-hidden" to="/xd?width=1080&height=1920">
+              <div style="width: 160px;">
                 <div class="icon-text">
-                  <span class="icon has-text-bootstrap">
-                    <i class="fas fa-exchange-alt"></i>
+                  <span class="icon has-text-extensions">
+                    <i class="fas fa-grip-vertical"></i>
                   </span>
                   <span>
-                    <strong>Coming from Bootstrap</strong>
+                    <strong>手机拼图视频</strong>
                   </span>
                 </div>
-                See how Bulma is an alternative to Bootstrap
               </div>
-            </a>
+            </router-link>
+            <router-link class="navbar-item bd-is-hidden" to="/xd?width=1080&height=1920&tag=mobile-piece-together">
+              <div>
+                <div class="icon-text">
+                  <span class="icon">
+                    <i class="fas fa-film"></i>
+                  </span>
+                  <span>
+                    <strong>手机拼图视频</strong>
+                  </span>
+                </div>
+              </div>
+            </router-link>
           </div>
         </div>
         <div v-if="logon" class="navbar-item has-dropdown is-hoverable">

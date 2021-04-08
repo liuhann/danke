@@ -3,7 +3,6 @@ import { getSVGViewBox } from '../../vectors/utils'
 import { getImageUrl } from '../../utils/getImageUrl'
 import { fitRectIntoBounds, getRectPositionStyle } from '../mixins/rectUtils'
 import { assignVariables } from '../mixins/renderUtils'
-import textMesure from '../../utils/textMesure'
 import sleep from '../../common/utils/sleep'
 import debug from 'debug'
 
@@ -23,28 +22,23 @@ function createSingleElement (element, viewBox, x, y) {
     // 动效信息
     animation: element.animation || {},
     tags: element.tags,
-    // 旋转
-    rotate: 0,
+    mask: '',
     // 其他属性，交互时使用
     locked: false,
     selected: false
   }
+
   if (node.width < 200) {
     node.height = node.height * 200 / node.width
     node.width = 200
   }
-  node.variables = element.variables
   // 设置文字的自适应大小
   if (element.text) {
     node.name = '文本'
     node.text = element.text
-    const sizeList = element.variables.filter(variable => variable.type === 'fontSize')
-    const fontSize = (sizeList && sizeList.length) ? sizeList[0].value : 40
-    Object.assign(node, textMesure(node.text, fontSize, 600))
   }
   if (element.html) {
     node.html = element.html
-    node.maskImage = ''
   }
   // image has mask attr
   if (element.url) {
@@ -54,11 +48,7 @@ function createSingleElement (element, viewBox, x, y) {
         node.fit = 'fill'
       } else {
         node.fit = 'cover'
-        node.mask = null
       }
-    }
-    if (!element.url.endsWith('.svg')) {
-      node.maskImage = ''
     }
   }
 
@@ -66,6 +56,7 @@ function createSingleElement (element, viewBox, x, y) {
     node.fill = element.fill
   }
 
+  // SVG处理
   if (element.content && element._id) {
     node.svg = element._id
     node.content = element.content

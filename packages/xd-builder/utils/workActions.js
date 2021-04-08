@@ -5,8 +5,8 @@ import { sleep } from '../../utils/common'
 /**
  * 新增作品
  */
-function newWork (size) {
-  return {
+function newWork (size, tag) {
+  const work = {
     id: shortid(10),
     title: '我的作品',
     viewBox: size || {
@@ -17,6 +17,10 @@ function newWork (size) {
     colors: [],
     scenes: [] // 场景
   }
+  if (tag) {
+    work.channels.push(tag)
+  }
+  return work
 }
 
 function addScene (work, currentScene) {
