@@ -1,7 +1,7 @@
 <template>
   <div class="system-bar">
     <div class="left">
-      <el-button plain type="primary">创作中心</el-button>
+      <el-button plain type="primary" @click="toCenter">创作中心</el-button>
       <el-popover
         placement="bottom-start"
         popper-class="file-menu-pop"
@@ -60,6 +60,9 @@ export default {
   methods: {
     handleCommand (command) {
       this.$emit('command', command)
+    },
+    toCenter () {
+      this.$router.go(-1)
     }
   }
 }

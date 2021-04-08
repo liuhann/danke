@@ -13,14 +13,7 @@ export default {
   routes: [{
     path: '/xd/center',
     beforeEnter,
-    component: () => import(/* webpackChunkName: "xd-center" */'./CreativeCenter.vue'),
-    children: [{
-      path: 'my',
-      component: () => import(/* webpackChunkName: "xd-creative" */'../xd-center/MyWork.vue'),
-    }, {
-      path: 'profile',
-      component: () => import(/* webpackChunkName: "xd-creative" */'../user/UserProfile.vue'),
-    }]
+    component: () => import(/* webpackChunkName: "xd-center" */'./CreativeCenter.vue')
   }, {
     path: '/user/profile',
     beforeEnter,

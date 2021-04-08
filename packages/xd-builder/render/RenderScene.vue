@@ -107,5 +107,6 @@ export default {
 .scene {
   position: relative;
   transform-origin: top left;
+  background: #fff;
 }
 </style>
