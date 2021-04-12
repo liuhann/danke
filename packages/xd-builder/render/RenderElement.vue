@@ -70,8 +70,7 @@ export default {
     }
   },
   data () {
-    return {
-    }
+    return {}
   },
   computed: {
     elementUrl () {
@@ -96,23 +95,6 @@ export default {
       }
     },
 
-    inlineStyle () {
-      let stageVariables = this.element.variables.filter(variable => variable[this.stage] != null)
-      if (stageVariables.length) {
-        let percent0  = {}
-        assignVariables(percent0, stageVariables, this.stage)
-        let percent100  = {}
-        assignVariables(percent100, stageVariables, 'value')
-        return `<style>
-          @keyframes ${this.element.id}-enter {
-            0% ${JSON.stringify(percent0).replace(/"/g, '')}
-            100% ${JSON.stringify(percent100).replace(/"/g, '')}
-          }
-        </style>`
-      } else {
-        return ''
-      }
-    },
     elementClass () {
       let result = []
       if (this.element.hidden) {
@@ -217,6 +199,9 @@ export default {
       }
       if (this.element.mask && this.element.mask.uid) {
         style.clipPath = `url("#${this.element.mask.uid}")`
+      }
+      if (this.element.text && this.viewPort.width != this.viewBox.width) {
+        style.transform = `scale(${this.viewPort.width/this.viewBox.width})`
       }
       const result = Object.assign({}, style)
       return result
@@ -356,7 +341,7 @@ export default {
     },
 
     initAnime () {
-      if (this.element.animation) {
+      if (this.element.animation && this.play) {
         this.animeTargets = this.element.animation.targets ? this.$el.querySelector(this.element.animation.targets): this.$el
         this.animation = anime(Object.assign({
           loop: false

@@ -7,7 +7,7 @@
           <div class="card">
             <figure class="card-image image is-3by2">
               <div class="scene-wrapper">
-                <render-scene auto-play stage="enter" :scene="work.scenes[0]" :view-box="work.viewBox" :view-port="work.viewBox" />
+                <render-scene auto-play stage="enter" :scene="work.scenes[0]" :view-box="work.viewBox" />
               </div>
             </figure>
             <div class="card-content">

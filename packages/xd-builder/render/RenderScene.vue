@@ -21,10 +21,6 @@ export default {
   name: 'RenderScene',
   components: { RenderElement },
   props: {
-    scale: {
-      type: Number,
-      default: 1
-    },
     variables: {
       type: Array,
       dafault: function () {
@@ -55,6 +51,7 @@ export default {
   },
   data () {
     return {
+      scale: 0.1,
       sceneViewPort: {
         width: 240,
         height: 160
@@ -64,18 +61,9 @@ export default {
   computed: {
     sceneStyle () {
       const styles = {
-        width: this.sceneViewPort.width + 'px',
-        height: this.sceneViewPort.height + 'px',
-        zIndex: this.scene.z,
-        transform: 'scale(' + this.scale + ')',
-        backgroundColor: this.scene.color
-      }
-      for (let key in this.scene.style) {
-        if (this.scene.style[key] && !this.scene.style[key].name) {
-          Object.assign(styles, {
-            [key]: this.scene.style[key]
-          })
-        }
+        width: this.viewBox.width + 'px',
+        height: this.viewBox.height + 'px'
+        // transform: 'scale(' + this.scale + ')'
       }
       return styles
     },
@@ -89,6 +77,7 @@ export default {
           height: this.$el.parentElement.clientHeight - 20
         }
         this.sceneViewPort = fitRectIntoBounds(this.viewBox, container)
+        //this.scale = this.sceneViewPort.width / this.viewBox
     }
   },
   methods: {
