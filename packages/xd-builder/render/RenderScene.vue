@@ -4,8 +4,8 @@
                     :play="scene.play"
                     :variables="getElementVariable(element)"
                     :view-port="sceneViewPort"
-                    :element="element"
                     :view-box="viewBox"
+                    :element="element"
                     :seek="seek"
     />
   </div>
@@ -21,10 +21,6 @@ export default {
   name: 'RenderScene',
   components: { RenderElement },
   props: {
-    scale: {
-      type: Number,
-      default: 1
-    },
     variables: {
       type: Array,
       dafault: function () {
@@ -55,6 +51,7 @@ export default {
   },
   data () {
     return {
+      scale: 1,
       sceneViewPort: {
         width: 240,
         height: 160
@@ -65,17 +62,7 @@ export default {
     sceneStyle () {
       const styles = {
         width: this.sceneViewPort.width + 'px',
-        height: this.sceneViewPort.height + 'px',
-        zIndex: this.scene.z,
-        transform: 'scale(' + this.scale + ')',
-        backgroundColor: this.scene.color
-      }
-      for (let key in this.scene.style) {
-        if (this.scene.style[key] && !this.scene.style[key].name) {
-          Object.assign(styles, {
-            [key]: this.scene.style[key]
-          })
-        }
+        height: this.sceneViewPort.height + 'px'
       }
       return styles
     },
@@ -88,7 +75,9 @@ export default {
           width: this.$el.parentElement.clientWidth - 20,
           height: this.$el.parentElement.clientHeight - 20
         }
-        this.sceneViewPort = fitRectIntoBounds(this.viewBox, container)
+        const sceneViewPort = fitRectIntoBounds(this.viewBox, container)
+        this.sceneViewPort = sceneViewPort
+        this.scale = sceneViewPort.width / this.viewBox.width
     }
   },
   methods: {
@@ -106,7 +95,7 @@ export default {
 <style lang="scss">
 .scene {
   position: relative;
-  transform-origin: top left;
   background: #fff;
 }
 </style>
+
