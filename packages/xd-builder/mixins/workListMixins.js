@@ -79,6 +79,7 @@ export default {
         page: this.page,
         count: this.count
       }, this.listQuery()))
+      
       this.works = result.list
       this.total = result.total
       this.loading = false

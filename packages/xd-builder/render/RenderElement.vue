@@ -164,6 +164,11 @@ export default {
         ...this.element.style, 
       }
 
+      let scale = 1
+      if (this.viewBox && this.viewPort) {
+        scale = this.viewPort.width / this.viewBox.width
+      }
+
       // 填充色情况下，图片显示为遮罩
       if (this.element.fill && this.element.url) {
         style.maskImage = `url(${this.getImageUrl(this.element.url, this.viewPort.width * 2, this.viewPort.height * 2)})`
@@ -171,11 +176,11 @@ export default {
         style.maskPosition = 'center center'
       }
       // 变量配置信息
-      assignVariables(style, this.element.variables)
+      assignVariables(style, this.element.variables, 'value', scale)
 
       // 合并外围配置变量信息
       if (this.variables) {
-        assignVariables(style, this.variables.filter(variable => variable.variable))
+        assignVariables(style, this.variables.filter(variable => variable.variable), 'value', scale)
       }
 
       // 位置信息
@@ -335,6 +340,13 @@ export default {
 
   watch: {
     play () {
+      if (this.play === true) {
+        this.initAnime()
+      } else {
+        if(this.animation) {
+          this.animation.destory()
+        }
+      }
       if (this.animation && this.play === true) {
         this.animation.play()
       }
@@ -352,21 +364,18 @@ export default {
     templateStr,
     async onMounted () {
       await this.initElementResource()
-      this.initAnime()
     },
 
     initAnime () {
-      if (this.element.animation) {
-        this.animeTargets = this.element.animation.targets ? this.$el.querySelector(this.element.animation.targets): this.$el
-        this.animation = anime(Object.assign({
-          loop: false
-        },  this.element.animation, {
-          targets: this.animeTargets,
-          autoplay: this.play
-        }))
-        if (this.seek >= 0) {
-          this.animation.seek(this.seek)
-        }
+      this.animeTargets = this.element.animation.targets ? this.$el.querySelector(this.element.animation.targets): this.$el
+      this.animation = anime(Object.assign({
+        loop: false
+      },  this.element.animation, {
+        targets: this.animeTargets,
+        autoplay: this.play
+      }))
+      if (this.seek >= 0) {
+        this.animation.seek(this.seek)
       }
     },
 

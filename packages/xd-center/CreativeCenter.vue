@@ -6,7 +6,7 @@
         <div v-for="work in works" :key="work.id" class="column is-one-quarter-tablet is-three-quarters-mobile">
           <div class="card">
             <figure class="card-image image is-3by2">
-              <div class="scene-wrapper">
+              <div class="scene-wrapper" @mouseover="workMouseOver(work)">
                 <render-scene auto-play stage="enter" :scene="work.scenes[0]" :view-box="work.viewBox" />
               </div>
             </figure>
@@ -25,7 +25,7 @@
                     <a class="level-item" @click="editWork(work)">
                       <span class="icon is-small"><i class="fas fa-edit"></i></span>
                     </a>
-                    <a class="level-item" @click="playWork(work)">
+                    <a class="level-item" @click="playPreviewWork(work)">
                       <span class="icon is-small"><i class="fas fa-video"></i></span>
                     </a>
                     <a class="level-item" @click="deleteWork(work)">
@@ -46,10 +46,10 @@
 </template>
 
 <script>
-import workListMixins from '../xd-builder/mixins/workListMixins'
 import CenterNav from './CenterNav.vue'
 import channels from '../site/channels'
 import { getImageUrl } from '../utils/getImageUrl'
+import RestDAO from '../utils/restdao'
 import { fitRectIntoBounds } from '../xd-builder/mixins/rectUtils'
 import RenderScene from '../xd-builder/render/RenderScene.vue'
 import Vue from 'vue'
@@ -59,10 +59,10 @@ export default {
     CenterNav,
     RenderScene
   },
-  mixins: [ workListMixins ],
   data () {
     return {
       isPublic: 0,
+      works: [],
       publicOptions: [
         { text: '公开作品', value: 1 },
         { text: '私有作品', value: 0 }
@@ -97,12 +97,41 @@ export default {
     }
   },
   created () {
+     this.workdao = new RestDAO(this.ctx, 'danke/work')
   },
   mounted () {
     this.loadWorks()
   },
   methods: {
     getImageUrl,
+    async loadWorks () {
+      const result = await this.workdao.list(Object.assign({
+        page: this.page,
+        count: this.count
+      }, this.listQuery()))
+
+      for (let work of result.list) {
+        for (let scene of work.scenes) {
+          scene.play = false
+        }
+      }
+      
+      this.works = result.list
+      this.total = result.total
+      this.loading = false
+    },
+
+    workMouseOver (work) {
+      if (work.scenes && work.scenes[0]) {
+        if (!work.scenes[0].play) {
+          work.scenes[0].play = true
+
+          setTimeout(() => {
+            work.scenes[0].play = false
+          }, (work.scenes[0].fin - work.scenes[0].enter) * 1000)
+        }
+      }
+    },
 
     resetSceneViewPort() {
       
