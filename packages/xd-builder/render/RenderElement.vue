@@ -381,8 +381,8 @@ export default {
 
     async initElementResource () {
       // 加载必要的字体
-      if (this.element.variables && this.element.variables.filter(variable=> variable.type === 'fontFamily').length) {
-        await ensureFont(this.ctx, this.element.variables.filter(variable=> variable.type === 'fontFamily')[0].value)
+      if (this.element.variables && this.element.variables.filter(variable=> variable.type === 'font-familly').length) {
+        await ensureFont(this.ctx, this.element.variables.filter(variable=> variable.type === 'font-familly')[0].value)
       }
       // 对于svg图片的处理，
       if (this.element.url && this.element.url.endsWith('.svg') && this.element.tags && this.element.tags.indexOf('colorable') > -1) {

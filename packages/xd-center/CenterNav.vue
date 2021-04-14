@@ -42,14 +42,14 @@
                 </div>
               </div>
             </router-link>
-            <router-link class="navbar-item bd-is-hidden" to="/xd?width=1080&height=1920">
+            <router-link class="navbar-item bd-is-hidden" to="/xd?width=1080&height=1920&tag=mobile-single-image">
               <div style="width: 160px;">
                 <div class="icon-text">
                   <span class="icon has-text-extensions">
-                    <i class="fas fa-grip-vertical"></i>
+                    <i class="fas fa-photo-video"></i>
                   </span>
                   <span>
-                    <strong>手机拼图视频</strong>
+                    <strong>手机单图视频</strong>
                   </span>
                 </div>
               </div>
