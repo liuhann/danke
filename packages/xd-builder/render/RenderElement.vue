@@ -344,7 +344,7 @@ export default {
         this.initAnime()
       } else {
         if(this.animation) {
-          this.animation.destory()
+          this.animation = null
         }
       }
       if (this.animation && this.play === true) {

@@ -7,7 +7,7 @@
           <div class="card">
             <figure class="card-image image is-3by2">
               <div class="scene-wrapper" @mouseover="workMouseOver(work)">
-                <render-scene auto-play stage="enter" :scene="work.scenes[0]" :view-box="work.viewBox" />
+                <render-scene v-if="work.scenes.length" auto-play stage="enter" :scene="work.scenes[0]" :view-box="work.viewBox" />
               </div>
             </figure>
             <div class="card-content">
@@ -127,7 +127,14 @@ export default {
           work.scenes[0].play = true
 
           setTimeout(() => {
-            work.scenes[0].play = false
+            const scene = work.scenes[0]
+            scene.play = false
+            work.scenes = []
+
+            this.$nextTick(() => {
+              work.scenes.push(scene)
+            })
+
           }, (work.scenes[0].fin - work.scenes[0].enter) * 1000)
         }
       }

@@ -83,16 +83,6 @@
             <el-input-number v-model="scene.fin" controls-position="right" size="mini" /> 秒
           </el-form-item>
         </el-form>
-        <table class="table stages is-bordered is-narrow is-hoverable is-fullwidth">
-          <tbody>
-            <el-button size="mini" type="success" @click="addSceneStage(scene)">增加动画阶段</el-button>
-            <tr v-for="(stage, index) in scene.stages" :key="index" class="stage">
-              <td class="stage-name"> <el-input v-model="stage.name" size="mini" /> </td>
-              <td class="stage-sec"> <el-input v-model="stage.sec" size="mini" /> </td>
-              <td class="stage-actions"> <el-button size="mini" icon="el-icon-delete" type="text" @click="removeSceneStage(scene, index)" /> </td>
-            </tr>
-          </tbody>
-        </table>
       </div>
     </div>
   </div>
@@ -247,16 +237,16 @@ export default {
     async previewPlayScene () {
       await playScene(this.scene)
 
-      // 重置场景element
-      const elements = JSON.parse(JSON.stringify(this.scene.elements))
-      for (let element of this.scene.elements) {
-        this.destroyInteract(element)
-      }
-      this.scene.elements = []
-      this.$nextTick(() => {
-        this.scene.elements = elements
-        this.setElementsInteract()
-      })
+      // // 重置场景element
+      // const elements = JSON.parse(JSON.stringify(this.scene.elements))
+      // for (let element of this.scene.elements) {
+      //   this.destroyInteract(element)
+      // }
+      // this.scene.elements = []
+      // this.$nextTick(() => {
+      //   this.scene.elements = elements
+      //   this.setElementsInteract()
+      // })
 
     },
     toggleActionMove () {
