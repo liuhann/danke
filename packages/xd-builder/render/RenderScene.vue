@@ -95,7 +95,7 @@ export default {
 <style lang="scss">
 .scene {
   position: relative;
-  background: #fff;
+  background: transparent;
 }
 </style>
 

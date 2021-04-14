@@ -168,16 +168,16 @@ function seekToMill (work, mill) {
   const sec = mill / 1000
   for (const scene of work.scenes) {
     if (sec < scene.enter) {
-      scene.stage = 'default'
       scene.visible = false
+      scene.play = false
       scene.seek = 0
     } else if (sec >= scene.fin) {
-      scene.stage = 'default'
+      scene.play = false
       scene.visible = false
       scene.seek = 0
     } else {
       scene.visible = true
-      scene.stage = 'enter'
+      scene.play = true
       scene.seek = (sec - scene.enter) * 1000
     }
   }
@@ -188,30 +188,23 @@ function seekToMill (work, mill) {
 async function scheduleWorkPlay (work) {
   const promises = []
   for (const scene of work.scenes) {
-    scene.stage = 'default'
+    scene.play = false
     scene.visible = false
     promises.push((async () => {
       await sleep(scene.enter * 1000)
-      scene.stage = 'enter'
+      scene.play = true
       scene.visible = true
     })())
 
     promises.push((async () => {
       await sleep(scene.fin * 1000)
-      scene.stage = 'default'
+      scene.play = false
       scene.visible = false
     })())
-
-    for (let stage of scene.stages) {
-      if (stage.sec) {
-         promises.push((async () => {
-          await sleep(parseInt(stage.sec) * 1000)
-          scene.stage = stage.name
-        })())
-      }
-    }
   }
   await Promise.all(promises)
+
+  work.scenes[0].visible = true
 }
 
 /**

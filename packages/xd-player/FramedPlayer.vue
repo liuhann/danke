@@ -1,52 +1,40 @@
 <template>
   <div class="framed-recorder">
     <div class="full-screened" style="z-index: -2; overflow: hidden;">
-      <div v-if="work && !previewPlaying" id="device" class="device" :style="deviceStyle">
+      <div v-if="work" id="device" class="device" :style="deviceStyle">
         <render-scene v-for="(scene, index) in work.scenes" v-show="scene.visible" :key="index"
-                      :auto-play="false"
                       :scene="scene"
-                      :stage="scene.stage"
                       :seek="scene.seek"
                       :view-port="work.viewBox"
                       :view-box="work.viewBox" 
         />
       </div>
     </div>
-    <div class="full-screened" style="z-index: -1; overflow: hidden; background-color: #222;" />
-    <div class="layout">
-      <div class="left">
-        <div class="actions">
-          <div class="btns">
-            <button v-if="!started" @click="convertToVideo">生成视频</button>
-            <button v-if="!previewPlaying" @click="previewPlay">播放</button>
-            <button v-if="started" @click="pause = !pause">暂停</button>
+    <div class="full-screened" style="z-index: -1; overflow: hidden; background-color: #fff;" />
+    <div class="full-screened main-content" style="z-index:10; overflow: hidden;">
+      <div id="container-box" class="container-box">
+        <div v-if="work" id="work-container" class="work-container">
+          <div v-if="!started" class="device box" :style="viewPortContainerStyle">
+            <render-scene v-for="(scene, index) in work.scenes" v-show="scene.visible" :key="index"
+                          :scene="scene"
+                          :view-port="viewPort"
+                          :view-box="work.viewBox"
+            />
           </div>
-          <div class="msg">
-            {{ msg }}
-          </div>
-          <div class="progress">
-            <progress :value="currentMill" :max="finMill" :text-inside="true" :stroke-width="24" :percentage="100" status="success" />
-            {{ currentMill }} / {{ finMill }}
-          </div>
-        </div>
-        <div id="container-box" class="container-box">
-          <div v-if="work" id="work-container" class="work-container" :style="viewPortContainerStyle">
-            <img v-if="!previewPlaying" :src="currentFrameUrl" />
-            <div v-if="previewPlaying" class="device" :style="deviceStyle">
-              <render-scene v-for="(scene, index) in work.scenes" v-show="scene.visible" :key="index"
-                            auto-play
-                            :scene="scene"
-                            :stage="scene.stage"
-                            :view-port="viewPort"
-                            :view-box="work.viewBox"
-              />
-            </div>
+          <div v-if="started" class="frame-capture box" :style="viewPortContainerStyle">
+            <img :src="currentFrameUrl" />
           </div>
         </div>
       </div>
-      <div class="right">
-        <div class="output">
-          <video id="output-video" controls crossorigin></video>
+      <div class="actions are-medium is-flex is-justify-content-center">
+        <div v-if="!started" class="buttons">
+          <button class="button is-primary is-medium" @click="convertToVideo">生成视频</button>
+          <button class="button is-medium" @click="previewPlay">播放</button>
+          <button v-if="workVideoUrl" class="button is-medium is-success" @click="onDownload">下载视频</button>
+        </div>
+        <div v-if="started" class="progress-container">
+          <progress class="progress is-primary" :value="currentMill" :max="finMill + 300">15%</progress>
+          <div>{{ msg }}</div>
         </div>
       </div>
     </div>
@@ -62,6 +50,7 @@ import RestDAO from '../utils/restdao'
 import ImageDAO from '../utils/imagedao'
 import { Progress } from 'element-ui'
 import { fitRectIntoBounds } from '../xd-builder/mixins/rectUtils'
+import { getImageUrl } from '../utils/getImageUrl.js'
 
 export default {
   name: "FramedPlayer",
@@ -120,19 +109,28 @@ export default {
       // 初始化处理， 每个场景都设置为 visible = false
       for (let scene of work.scenes) {
         scene.visible = false
-        scene.seek = 30
-        scene.stage = 'before'
+        scene.play = false
       }
+      work.scenes[0].visible = true
       this.finMill = getWorkDuration(work) * 1000
 
       this.work = work
 
+      this.workVideoUrl = getImageUrl(work.video)
+
       const containerRect = document.querySelector('#container-box').getBoundingClientRect()
 
-      const fit = fitRectIntoBounds(work.viewBox, containerRect)
-
+      const fit = fitRectIntoBounds(work.viewBox, {
+        width: containerRect.width - 40,
+        height: containerRect.height - 40
+      })
       this.viewPort.width = fit.width
       this.viewPort.height = fit.height
+    },
+
+
+    onDownload () {
+      window.open(this.workVideoUrl)
     },
 
     async previewPlay () {
@@ -146,6 +144,8 @@ export default {
     },
 
     async convertToVideo () {
+      this.started = true
+      this.msg = 'Loading Required Libs'
       this.ffmpeg = createFFmpeg({ 
         log: true,
         // 必须要指定加载代码和WASM编码的路径， 组件的规则就是使用相同的包路径
@@ -157,7 +157,6 @@ export default {
       this.msg = 'Loading data'
 
       this.frameInc = 1
-      this.started = true
       this.nextFrameToCanvas()
     },
 
@@ -227,7 +226,8 @@ export default {
             }
           } else {
             try {
-              this.msg = 'Start ffmpeg transcoding'
+              this.currentMill = this.finMill + 100
+              this.msg = 'Start transcoding'
               // ffmpeg -r 60 -f image2 -s 900x640 -i %06d.png -vcodec libx264 -crf 16 -pix_fmt yuv420p test.mp4
               // await this.ffmpeg.run('-framerate', '60', '-pattern_type', 'glob','-s', '900x640', '-i', '*.png', '-c:a', 'copy', '-shortest', '-c:v', 'libx264', '-crf', '16', '-pix_fmt', 'yuv420p', 'out.mp4');
               await this.ffmpeg.run('-r', '60', '-f', 'image2','-s', this.work.viewBox.width + 'x' + this.work.viewBox.height, '-i', '%06d.png', '-vcodec', 'libx264', '-crf', '16', '-pix_fmt', 'yuv420p', 'out.mp4');
@@ -235,14 +235,14 @@ export default {
 
               const mp4Blob = new Blob([data.buffer], { type: 'video/mp4' })
               const src = URL.createObjectURL(mp4Blob);
-              const video = document.getElementById('output-video');
-              video.src = src
-
+              this.currentMill = this.finMill + 200
+              this.msg = '解码结束'
               let uploading = await this.imagedao.uploadBlob(mp4Blob, `public/video/${this.work.id}.mp4`, true);
-
               this.work.video = `/public/video/${this.work.id}.mp4`
-
               await this.workdao.patch(this.work.id, this.work)
+              this.currentMill = this.finMill + 300
+              this.workVideoUrl = src
+              this.started = false
               this.msg = 'ffmpeg transcoded!!'
             } catch (e) {
               console.log(e)
@@ -288,66 +288,35 @@ export default {
   bottom: 0;
 }
 
-.framed-recorder {
-  height: 100%;
-}
-
-.layout {
-  height: 100%;
+.main-content {
   display: flex;
-  background-color: #333;
-  padding: 20px;
-  .left {
-    width: 75%;
-    .actions {
-      font-size: 20px;
-      line-height: 40px;
-      height: 55px;
-      display: flex;
-      button {
-        padding: 5px 10px;
-        cursor: pointer;
-        font-size: 16px;
-      }
-      .msg {
-        flex: 1;
-        text-align: center;
-        color: #eee;
-      }
-      .btns, .progress {
-        width: 320px;
-        height: 55px;
-        color: #eee;
-      }
+  flex-direction: column;
+
+  .actions {
+    height: 6rem;
+  }
+  .progress-container {
+    width: 480px;
+    margin-top: 20px;
+  }
+  .frame-capture {
+    img {
+      width: 100%;
+      height: 100%;
     }
-    .container-box {
-      height: calc(100% - 80px);
+  }
+  .container-box {
+    flex: 1;
+    .work-container {
       display: flex;
       justify-content: center;
       align-items: center;
-      .work-container {
-        box-sizing: content-box;
-        border: 3px solid #cc2836;
-        border-top: 12px solid #cc2836;
-        &.recording {
-          border: 3px solid #cc28363d;
-          border-top: 12px solid #cc28363d;
-        }
-        .work-wrapper {
-          transform-origin: top left;
-        }
+      height: 100%;
+      .device {
+        overflow: hidden;
       }
     }
   }
-  .right {
-    width: 25%;
-    padding: 10px;
-  }
 }
-.device {
-  .scene {
-    position: absolute;
-    overflow: hidden;
-  }
-}
+
 </style>
