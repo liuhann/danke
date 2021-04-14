@@ -43,6 +43,9 @@
           <el-form-item label="纵坐标">
             <el-input-number v-model="focusedElement.y" size="mini" controls-position="right" />
           </el-form-item>
+          <el-form-item v-if="focusedElement.text != null" label="横坐标">
+            <el-input v-model="focusedElement.text" size="mini" type="textarea" />
+          </el-form-item>
           <el-form-item label="宽度">
             <el-input-number v-model="focusedElement.width" size="mini" controls-position="right" />
           </el-form-item>
