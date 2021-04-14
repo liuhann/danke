@@ -4,6 +4,7 @@
       <el-tooltip v-show="focusedElement" class="item" effect="dark" content="动态效果" placement="bottom">
         <a class="action" @click="$emit('command', 'anime', focusedElement)"><i class="fa fa-random" /></a>
       </el-tooltip>
+      <a v-show="focusedElement" class="action" @click="$emit('command', 'style', focusedElement)"><i class="fab fa-css3" /></a>
       <!--  样式变量的修改-->
       <template v-for="(variable, index) in elementStyleVariables">
         <!-- 颜色-->

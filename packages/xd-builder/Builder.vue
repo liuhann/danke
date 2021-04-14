@@ -12,6 +12,7 @@
       <scene-element-list :scene="scene" @close="toggleShowDrawer" />
     </el-drawer>
     <pop-element-anime :visible.sync="drawer.animation" :elements="selectedElements" :scene="scene" />
+    <pop-element-style :visible.sync="drawer.style" :elements="selectedElements" />
     <el-drawer title="场景列表" destroy-on-close :visible.sync="drawer.sceneList" direction="rtl" :modal="false" size="1024px" :wrapper-closable="false" :with-header="false">
       <scene-list :work="work" @choose-scene="chooseScene" @close="toggleShowDrawer" />
     </el-drawer>
@@ -36,12 +37,14 @@ import { newWork, addScene, nextScene, prevScene, saveWork } from './utils/workA
 
 import SystemBar from './components/SystemBar.vue'
 import PopElementAnime from './components/PopElementAnime.vue'
+import PopElementStyle from './components/PopElementStyle.vue'
 import { Message } from 'element-ui'
 
 export default {
   name: 'Builder',
   components: {
     PopElementAnime,
+    PopElementStyle,
     SystemBar,
     SceneList,
     Toolbar,
@@ -60,7 +63,8 @@ export default {
         elementProp: false,
         elementList: false,
         sceneList: false,
-        workProp: false
+        workProp: false,
+        style: false
       },
       viewPortRect: {
         left: 0,
@@ -123,7 +127,10 @@ export default {
           this.scene = prevScene(this.work, this.scene)
           break
         case 'anime':
-          this.editAnimation(...args)
+         this.drawer.animation = true
+          break
+        case 'style':
+           this.drawer.style = true
           break
         case 'scene-list':
           this.drawer.sceneList = true
@@ -135,12 +142,6 @@ export default {
       }
     },
 
-    editAnimation (components) {
-      this.drawer.animation = true
-    },
-    confirmAnime () {
-
-    },
     toggleShowDrawer (drawerName) {
       this.drawer.animation = false
       this.drawer.elementProp = false
