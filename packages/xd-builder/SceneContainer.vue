@@ -241,16 +241,15 @@ export default {
       await playScene(this.scene)
 
       // // 重置场景element
-      // const elements = JSON.parse(JSON.stringify(this.scene.elements))
+      const elements = JSON.parse(JSON.stringify(this.scene.elements))
       // for (let element of this.scene.elements) {
       //   this.destroyInteract(element)
       // }
-      // this.scene.elements = []
-      // this.$nextTick(() => {
-      //   this.scene.elements = elements
-      //   this.setElementsInteract()
-      // })
-
+      this.scene.elements = []
+      this.$nextTick(() => {
+        this.scene.elements = elements
+        this.setElementsInteract()
+      })
     },
     toggleActionMove () {
       this.actionMove = !this.actionMove
