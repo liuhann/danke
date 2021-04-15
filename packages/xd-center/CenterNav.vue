@@ -42,6 +42,19 @@
                 </div>
               </div>
             </router-link>
+
+            <router-link class="navbar-item bd-is-hidden" to="/xd?width=1080&height=1920&tag=volitant-background">
+              <div>
+                <div class="icon-text">
+                  <span class="icon">
+                    <i class="fas fa-braille"></i>
+                  </span>
+                  <span>
+                    <strong>动态背景</strong>
+                  </span>
+                </div>
+              </div>
+            </router-link>
             <router-link class="navbar-item bd-is-hidden" to="/xd?width=1080&height=1920&tag=mobile-single-image">
               <div style="width: 160px;">
                 <div class="icon-text">
