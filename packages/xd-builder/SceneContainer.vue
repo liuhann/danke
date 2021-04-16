@@ -100,8 +100,8 @@ import interactMixins from './mixins/interactMixins.js'
 import sceneMixins from './mixins/sceneMixins.js'
 import mouseMixins from './mixins/mousetrap.js'
 import { fitRectIntoBounds, getRectPositionStyle, isPointInRect, intersectRect } from './mixins/rectUtils.js'
-import { setElementSelected, createSingleElement, playScene, addSceneStage, removeSceneStage } from './utils/sceneActions.js'
-
+import { setElementSelected, createSingleElement, playScene } from './utils/sceneActions.js'
+import { Message } from 'element-ui'
 
 export default {
   name: 'SceneContainer',
@@ -116,6 +116,7 @@ export default {
   props: {},
   data: function () {
     return {
+      playingScene: false,
       // 拖拽移动模式
       actionMove: false,
       scaleSelected: 100,
@@ -235,20 +236,17 @@ export default {
   },
 
   methods: {
-    addSceneStage,
-    removeSceneStage,
     async previewPlayScene () {
+      this.playingScene = true
       await playScene(this.scene)
-
       // // 重置场景element
       const elements = JSON.parse(JSON.stringify(this.scene.elements))
-      // for (let element of this.scene.elements) {
-      //   this.destroyInteract(element)
-      // }
       this.scene.elements = []
       this.$nextTick(() => {
         this.scene.elements = elements
         this.setElementsInteract()
+        Message.success('播放完成')
+        this.playingScene = false
       })
     },
     toggleActionMove () {
@@ -338,6 +336,10 @@ export default {
      * 进行鼠标点击位置检测，如果点击到元素则选中或保持多个的选择状态， 点到空白则取消所有元素选中
      */
     sceneMouseDown (ev) {
+      if (this.playingScene) {
+        Message.warning('正在播放中')
+        return
+      }
       if (ev.target.closest('.screen-actions')) {
         return
       }

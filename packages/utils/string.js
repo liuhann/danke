@@ -31,11 +31,16 @@ function templateStr (str, data) {
   return compiled(data)
 }
 
+function templateNum (str, data) {
+  return parseInt(templateStr(str, data))
+}
+
 export {
   templateStr,
   fileExtension,
   randomRangeId,
   shortid,
   formatAudioSecond,
-  formatAudioSecondShow
+  formatAudioSecondShow,
+  templateNum
 }

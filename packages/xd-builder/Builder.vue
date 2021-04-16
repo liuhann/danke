@@ -11,8 +11,7 @@
     <el-drawer title="元素列表" destroy-on-close :visible.sync="drawer.elementList" direction="rtl" :modal="false" size="360px" :wrapper-closable="false" :with-header="false">
       <scene-element-list :scene="scene" @close="toggleShowDrawer" />
     </el-drawer>
-    <pop-element-anime :visible.sync="drawer.animation" :elements="selectedElements" :scene="scene" />
-    <pop-element-style :visible.sync="drawer.style" :elements="selectedElements" />
+    <pop-element-anime :visible.sync="drawer.elementProp" :element-prop-key="currentElementPropEdit" :elements="selectedElements" :scene="scene" />
     <el-drawer title="场景列表" destroy-on-close :visible.sync="drawer.sceneList" direction="rtl" :modal="false" size="1024px" :wrapper-closable="false" :with-header="false">
       <scene-list :work="work" @choose-scene="chooseScene" @close="toggleShowDrawer" />
     </el-drawer>
@@ -58,6 +57,7 @@ export default {
   },
   data () {
     return {
+      currentElementPropEdit: '',
       drawer: {
         animation: false,
         elementProp: false,
@@ -127,10 +127,16 @@ export default {
           this.scene = prevScene(this.work, this.scene)
           break
         case 'anime':
-         this.drawer.animation = true
+          this.drawer.elementProp = true
+          this.currentElementPropEdit = 'animation'
           break
         case 'style':
-           this.drawer.style = true
+          this.drawer.elementProp = true
+          this.currentElementPropEdit = 'style'
+          break
+        case 'stager':
+          this.drawer.elementProp = true
+          this.currentElementPropEdit = 'stager'
           break
         case 'scene-list':
           this.drawer.sceneList = true

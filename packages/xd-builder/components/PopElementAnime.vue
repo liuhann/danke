@@ -80,6 +80,9 @@ export default {
     visible: {
       type: Boolean
     },
+    elementPropKey: {
+      type: String
+    },
     scene: {
       type: Object
     },
@@ -102,15 +105,13 @@ export default {
   },
 
   methods: {
-    tabChange (tab) {
-    },
     addTemplate (tpl) {
       const parsed = JSON.parse(this.getEditor().getValue())
       Object.assign(parsed, TPLS[tpl])
       this.getEditor().setValue(JSON.stringify(parsed, null, 2))
     },
     setEditorValue () {
-      this.getEditor().setValue(JSON.stringify(this.elements[0].animation, null, 2))
+      this.getEditor().setValue(JSON.stringify(this.elements[0][this.elementPropKey], null, 2))
     },
 
     getEditor () {
@@ -132,7 +133,7 @@ export default {
 
     confirmAnime () {
       for (const element of this.elements) {
-        element.animation = JSON.parse(this.getEditor().getValue())
+        element[this.elementPropKey] = JSON.parse(this.getEditor().getValue())
       }
       this.$emit('update:visible', false)
     }

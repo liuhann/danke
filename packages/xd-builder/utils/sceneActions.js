@@ -1,10 +1,11 @@
-import { shortid } from '../../utils/string'
+import { shortid, templateNum } from '../../utils/string'
 import { getSVGViewBox } from '../../vectors/utils'
 import { getImageUrl } from '../../utils/getImageUrl'
 import { fitRectIntoBounds, getRectPositionStyle } from '../mixins/rectUtils'
 import { assignVariables } from '../mixins/renderUtils'
 import sleep from '../../common/utils/sleep'
 import debug from 'debug'
+import objectPath from 'object-path'
 
 const trace = debug('danke:scene-actions')
 
@@ -19,10 +20,9 @@ function createSingleElement (element, viewBox, x, y) {
     // 样式信息
     style: element.style || {},
     variables: element.variables || [],
+    stagger: {},
     // 动效信息
     animation: element.animation || {},
-    tags: element.tags,
-    mask: '',
     // 其他属性，交互时使用
     locked: false,
     selected: false
@@ -155,6 +155,54 @@ function setElementSelected (scene, element) {
   }
 }
 
+function generateStagerElements (scene, element) {
+  if (element.stager && element.stager.count > 1) {
+    for (let i = 0; i < element.stager.count; i++) {
+      const staged = JSON.parse(JSON.stringify(element))
+      staged.staged = true
+      delete staged.stager
+      staged.id = shortid()
+      if (element.stager.x) {
+        staged.x = templateNum(element.stager.x, {
+          i,
+          template: element
+        })
+      }
+      if (element.stager.y) {
+        staged.y = templateNum(element.stager.y, {
+          i,
+          template: element
+        })
+      }
+      if (element.stager.width) {
+        staged.width = templateNum(element.stager.width, {
+          i,
+          template: element
+        })
+      }
+      if (element.stager.height) {
+        staged.height = templateNum(element.stager.height, {
+          i,
+          template: element
+        })
+      }
+
+      if (element.stager.animation) {
+        for (let key in element.stager.animation) {
+          objectPath.set(staged.animation, key, templateNum(objectPath.get(element.animation, key), {
+            i,
+            template: element
+          }))
+        }
+      }
+      scene.elements.push(staged)
+      console.log(scene.elements)
+    }
+  }
+}
+
+
+
 function elementStyle (element, viewBox, viewPort) {
   // 设置元素的长、宽到默认变量--width 、 --height
   const style = {
@@ -192,22 +240,16 @@ function elementStyle (element, viewBox, viewPort) {
   return style
 }
 
-function addSceneStage (scene) {
-  scene.stages.push({
-    name: '',
-    sec: 0
-  })
-}
-
-function removeSceneStage (scene, index) {
-  scene.stages.splice(index, 1)
-}
-
 async function playScene (scene) {
   trace('scene stage = enter')
 
   scene.play = true
+  for (let element of scene.elements) {
+    generateStagerElements(scene, element)
+  }
   await sleep((parseInt(scene.fin) - parseInt(scene.enter)) * 1000)
+
+  scene.elements = scene.elements.filter(element => element.staged !== true)
   scene.play = false
 }
 
@@ -238,7 +280,6 @@ export {
   setElementSelected,
   toggleElementLock,
   unlockElement,
-  playScene,
-  addSceneStage,
-  removeSceneStage
+  generateStagerElements,
+  playScene
 }
