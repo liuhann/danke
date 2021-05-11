@@ -5,7 +5,7 @@
         <a class="action" @click="$emit('command', 'anime', focusedElement)"><i class="fa fa-random" /></a>
       </el-tooltip>
       <a v-show="focusedElement" class="action" @click="$emit('command', 'style', focusedElement)"><i class="fab fa-css3" /></a>
-      <a v-show="focusedElement" class="action" @click="$emit('command', 'stager', focusedElement)"><i class="fab fa-css3" /></a>
+      <a v-show="focusedElement" class="action" @click="$emit('command', 'stager', focusedElement)"><i class="fas fa-braille"></i></a>
       <!--  样式变量的修改-->
       <template v-for="(variable, index) in elementStyleVariables">
         <!-- 颜色-->
@@ -26,6 +26,7 @@
 
     <el-color-picker v-for="(path, index) in elementSVGPathColors" :key="index" v-model="path.f" show-alpha />
     <el-color-picker v-if="focusedElement && focusedElement.hasOwnProperty('fill')" v-model="focusedElement.fill" show-alpha />
+    <align-element v-if="selectedElements.length > 1" :elements="selectedElements" />
     <!-- 右侧操作功能按钮-->
     <div class="pull-right">
       <!-- <align-element v-if="selectedElements.length > 1" :elements="selectedElements" /> -->
@@ -66,6 +67,7 @@ import AlignElement from './AlignElement.vue'
 import FontFamily from './FontFamily.vue'
 import PopSetGradient from './PopSetGradient'
 import BorderStyle from './BorderStyle'
+
 export default {
   name: 'Toolbar',
   components: {
@@ -300,7 +302,7 @@ export default {
   background: #fff;
   line-height: 28px;
   font-size: 12px;
-  padding: 6px 12px;
+  padding: 0 12px;
   display: flex;
   box-shadow: rgba(0, 0, 0, 0.2) 0px 0 2px;
   border-bottom: 1px solid #eee;
@@ -330,19 +332,23 @@ export default {
     padding-left: 10px;
   }
   a.action {
-    line-height: 28px;
-    vertical-align: top;
     margin: 0 5px;
     color: #0e1318dc;
     font-size: 18px;
     font-weight: normal;
-    padding: 5px 8px;
+    width: 30px;
+    height: 30px;
+    text-align: center;
     &:hover, &.on {
       cursor: pointer;
       background-color: #f1f3f4;
     }
     &.disabled {
      display: none;
+    }
+    svg {
+      width: 24px;
+      height: 24px;
     }
     .text {
       font-size: 16px;
@@ -357,9 +363,19 @@ export default {
     display: inline-block;
     background-repeat: no-repeat;
     background-position: center center;
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+  .pull-left {
+    display: flex;
+    align-items: center;
   }
   .pull-right {
-    text-align: right;
+    flex-direction: row-reverse;
+    align-items: center;
+    display: flex;
     flex: 1;
   }
   .el-button {

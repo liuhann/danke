@@ -62,6 +62,17 @@ export default {
     }
   },
   computed: {
+    elements () {
+      const elements = [];
+      for (const element of scene.elements) {
+        if (element.stager) {
+          
+        } else {
+          elements.push(element);
+        }
+      }
+      return elements;
+    },
     sceneClass () {
       const classes = []
       for (let key in this.scene.style) {

@@ -118,9 +118,9 @@ export default {
       if (!this.editor) {
         this.editor = ace.edit('anime-editor')
         this.editor.getSession().setMode('ace/mode/json')
-        this.editor.getSession().setTabSize(2);
-        this.editor.getSession().setUseWrapMode(true);
-        this.editor.setTheme('ace/theme/eclipse');
+        this.editor.getSession().setTabSize(2)
+        this.editor.getSession().setUseWrapMode(true)
+        this.editor.setTheme('ace/theme/eclipse')
       }
       return this.editor
     },

@@ -117,10 +117,14 @@ export default {
         icon: 'fa fa-image'
       })
       this.current = this.tabs[0].value
+    }, 
+    
+    fileExtension (fname) {
+      return fname.slice((fname.lastIndexOf('.') - 1 >>> 0) + 2).toLowerCase()
     },
 
     async fileChoosed (file, fileList) {
-      const imageObject = await this.imagedao.fileChoosed(file, fileList, `users/${this.ctx.user.id}/` + shortid() + '.png')
+      const imageObject = await this.imagedao.fileChoosed(file, fileList, `users/${this.ctx.user.id}/` + shortid() + '.' + this.fileExtension(file.name))
       // write file info
       await this.uploadsdao.create(imageObject)
       this.fetchMyUploads()
