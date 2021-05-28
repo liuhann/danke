@@ -30,13 +30,6 @@ export default {
     seek: {
       type: Number
     },
-    autoPlay: {
-      type: Boolean
-    },
-    // 渲染阶段
-    stage: {
-      type: String
-    },
     viewBox: {
       type: Object
     },

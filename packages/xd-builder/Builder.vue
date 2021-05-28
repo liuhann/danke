@@ -15,10 +15,9 @@
     <el-drawer title="场景列表" destroy-on-close :visible.sync="drawer.sceneList" direction="rtl" :modal="false" size="1024px" :wrapper-closable="false" :with-header="false">
       <scene-list :work="work" @choose-scene="chooseScene" @close="toggleShowDrawer" />
     </el-drawer>
-    <div id="textMesure" />
+    <pop-scene-preview :scene="scene" :visible.sync="drawer.scenePlay" :view-box="work.viewBox" />
   </div>
 </template>
-
 <script>
 import StyleRegistry from './utils/StyleRegistry.js'
 import workMixin from './mixins/workMixin.js'
@@ -37,6 +36,7 @@ import { newWork, addScene, nextScene, prevScene, saveWork } from './utils/workA
 import SystemBar from './components/SystemBar.vue'
 import PopElementAnime from './components/PopElementAnime.vue'
 import PopElementStyle from './components/PopElementStyle.vue'
+import PopScenePreview from './components/PopScenePreview.vue'
 import { Message } from 'element-ui'
 
 export default {
@@ -50,6 +50,7 @@ export default {
     SceneContainer,
     SceneElementList,
     FrameListConfig,
+    PopScenePreview,
     LeftAside
   },
   mixins: [ sceneMixin, workMixin ],
@@ -59,6 +60,7 @@ export default {
     return {
       currentElementPropEdit: '',
       drawer: {
+        scenePlay: false,
         animation: false,
         elementProp: false,
         elementList: false,
@@ -101,6 +103,7 @@ export default {
           this.$router.replace(location.pathname + '?work=' + this.work.id)
           break
         case 'play-scene':
+          this.drawer.scenePlay = true;
           break
         default:
           break
@@ -243,14 +246,6 @@ export default {
 </script>
 
 <style lang="scss">
-#textMesure {
-  position: absolute;
-  visibility: hidden;
-  height: auto;
-  width: auto;
-  white-space: nowrap; /* Thanks to Herb Caudill comment */
-}
-
 .xd-builder {
   height: 100%;
   display: flex;

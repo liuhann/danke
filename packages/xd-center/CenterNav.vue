@@ -30,14 +30,14 @@
                 </div>
               </div>
             </router-link>
-            <router-link class="navbar-item bd-is-hidden" to="/xd?width=640&height=270">
+            <router-link class="navbar-item bd-is-hidden" to="/xd?width=720&height=320">
               <div>
                 <div class="icon-text">
                   <span class="icon">
-                    <i class="fas fa-lemon-o"></i>
+                    <i class="fas fa-braille"></i>
                   </span>
                   <span>
-                    <strong>动画展示</strong>
+                    <strong>横幅动画</strong>
                   </span>
                 </div>
               </div>
