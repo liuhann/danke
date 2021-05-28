@@ -22,11 +22,12 @@
         <!-- 字体粗细-->
         <font-weight v-if="variable.type==='fontWeight'" :key="index" v-model="variable.value" />
       </template>
+      <el-color-picker v-for="(path, index) in elementSVGPathColors" :key="index" v-model="path.f" show-alpha />
+      <el-color-picker v-if="focusedElement && focusedElement.hasOwnProperty('fill')" v-model="focusedElement.fill" show-alpha />
+      <align-element v-if="selectedElements.length > 1" :elements="selectedElements" />
     </div>
 
-    <el-color-picker v-for="(path, index) in elementSVGPathColors" :key="index" v-model="path.f" show-alpha />
-    <el-color-picker v-if="focusedElement && focusedElement.hasOwnProperty('fill')" v-model="focusedElement.fill" show-alpha />
-    <align-element v-if="selectedElements.length > 1" :elements="selectedElements" />
+  
     <!-- 右侧操作功能按钮-->
     <div class="pull-right">
       <!-- <align-element v-if="selectedElements.length > 1" :elements="selectedElements" /> -->
