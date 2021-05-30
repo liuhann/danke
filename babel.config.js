@@ -6,11 +6,11 @@ module.exports = {
     [
       'component',
       {
-        'libraryName': 'element-ui',
-        'styleLibraryName': 'theme-chalk'
+        libraryName: 'element-ui',
+        styleLibraryName: 'theme-chalk'
       }
     ],
-    "@babel/plugin-proposal-nullish-coalescing-operator"
+    '@babel/plugin-proposal-nullish-coalescing-operator'
     // ["@babel/plugin-proposal-object-rest-spread", {}]
   ]
 }

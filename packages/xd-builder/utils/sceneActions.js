@@ -201,8 +201,6 @@ function generateStagerElements (scene, element) {
   }
 }
 
-
-
 function elementStyle (element, viewBox, viewPort) {
   // 设置元素的长、宽到默认变量--width 、 --height
   const style = {
