@@ -17,7 +17,7 @@
     "ant-design-vue": "^1.7.4",
     "async-boot": "^1.1.16",
     "autoprefixer": "^9.8.6",
-    "axios": "^0.20.0",
+    "axios": "^0.21.1",
     "brace": "^0.11.1",
     "bulma": "^0.9.2",
     "core-js": "^3.9.1",
