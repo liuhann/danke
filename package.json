@@ -38,7 +38,7 @@
     "jszip": "^3.6.0",
     "ky": "^0.23.0",
     "lodash.template": "^4.5.0",
-    "merge": "^1.2.1",
+    "merge": "^2.1.1",
     "mini-svg-data-uri": "^1.2.3",
     "mousetrap": "^1.6.5",
     "moveable": "^0.19.4",
