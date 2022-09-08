@@ -35,7 +35,7 @@
     "image-preloader": "^1.1.1",
     "imagesloaded": "^4.1.4",
     "interactjs": "^1.10.8",
-    "jszip": "^3.6.0",
+    "jszip": "^3.7.0",
     "ky": "^0.23.0",
     "lodash.template": "^4.5.0",
     "merge": "^1.2.1",
